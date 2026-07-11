@@ -1,0 +1,843 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>GitHub CI 问题分析报告</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 34px;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 50px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 62px; font-size: 0.72rem; color: #6b7280; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
+.doc-header {
+  padding: 20px 32px 16px;
+  border-bottom: 1px solid #2a2a3e;
+  background: var(--surface-900);
+  position: sticky; top: 0; z-index: 10;
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; margin-top: 6px; }
+.doc-body { padding: 24px 32px 48px; max-width: 880px; }
+
+.doc-body h1 {
+  font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
+  margin: 1.5rem 0 0.75rem; padding-bottom: 8px;
+  border-bottom: 1px solid #2a2a3e;
+}
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+.doc-body h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+.doc-body p { line-height: 1.8; margin: 0.6rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th {
+  background: #0d0d1a; font-weight: 600; color: #9ca3af;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px;
+}
+.doc-body pre {
+  position: relative;
+  background: #0d0d1a; border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md); padding: 14px 16px;
+  overflow-x: auto; margin: 0.75rem 0;
+}
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e;
+  color: #9ca3af; padding: 3px 8px;
+  border-radius: var(--radius-sm); font-size: 0.65rem;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; opacity: 0;
+}
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 1.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 16px; }
+  .doc-header { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-header">
+      <div class="logo">📄 GitHub CI 问题分析报告</div>
+      <div class="sub">B 型演示 · 文档阅读</div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+  </aside>
+  <div class="doc-main">
+    <div class="doc-header">
+      <h1>GitHub CI 问题分析报告</h1>
+      <div class="meta">2026-07-04 | IRIS-Output</div>
+    </div>
+    <div class="doc-body" id="docBody"><p>> 涵盖 GitHub Actions (llm-radar) + http-server-cli 脚本的常见问题及解决方案。</p>
+<p>> 同类问题已去重合并。</p>
+<p>---</p>
+<h2 id="1-ci-测试环境类">1. CI 测试环境类</h2>
+<h3 id="1-1-硬编码本机路径">1.1 硬编码本机路径</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>`tests/conftest.py` 第 6 行、`tests/test_cli.py` 第 7/16/25 行写死 `/Users/jadenli/CodeSpace/...`</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>开发用 MacBook 绝对路径，未考虑 CI runner 和阿里云服务器的路径差异</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>CI 全部 16 个测试因 `FileNotFoundError` 失败</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>`Path(__file__).resolve().parent.parent` 而非固定字符串</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>✅ 已修复，commit `7bdebd5`</td>
+</tr>
+</tbody></table>
+<pre><code class="language-diff">-PROJECT_ROOT = Path("/Users/jadenli/CodeSpace/llm-radar.jaden.tech")
++PROJECT_ROOT = Path(__file__).resolve().parent.parent</code></pre>
+<h3 id="1-2-chrome-chromedriver-未安装">1.2 Chrome/chromedriver 未安装</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>`tests/test_selenium.py` 3 个测试在 CI 全部失败</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>CI runner 不预装 Chrome，`/Applications/Google Chrome.app` 不存在</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>CI 多 3 个 FAILED，但 selenium 测试对代码质量验证非必要</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>环境变量 `GITHUB_ACTIONS` 检测到 CI 时自动跳过</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>✅ 已修复，commit `436c61e`</td>
+</tr>
+</tbody></table>
+<pre><code class="language-python">pytestmark = pytest.mark.skipif(
+    os.environ.get("GITHUB_ACTIONS") == "true",
+    reason="CI has no Chrome/chromedriver binaries")</code></pre>
+<h3 id="1-3-deepseek_api_key-未配置">1.3 DEEPSEEK_API_KEY 未配置</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>workflow 引用了 `secrets.DEEPSEEK_API_KEY`，但仓库 Secrets 中未创建</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>GitHub Secrets 不存在时解析为空字符串，API 调用鉴权失败</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>集成测试（extract/merge）依赖 API key，运行时 crash</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>在 GitHub 仓库设置中创建 Secret</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>🔴 未修复（需你操作）</td>
+</tr>
+</tbody></table>
+<pre><code class="language-bash"># GitHub 网页操作:
+# 仓库 Settings -&gt; Secrets and variables -&gt; Actions
+# -&gt; New repository secret
+#   Name: DEEPSEEK_API_KEY
+#   Secret: 你的 DeepSeek API Key</code></pre>
+<p>---</p>
+<h2 id="2-shell-脚本类-http-server-cli">2. Shell 脚本类 (http-server-cli)</h2>
+<h3 id="2-1-local-关键字在函数外使用">2.1 `local` 关键字在函数外使用</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>`script/hs-mcp-demo.sh` 在函数体外使用 `local ver`，bash 报 SyntaxError</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>脚本从函数提取变量到全局作用域时遗漏了 `local` 移除</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>脚本运行时报错退出</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>删除函数外的 `local` 关键字，或用 `readonly` 替代（仅需赋值一次的场景）</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>⏳ 待处理</td>
+</tr>
+</tbody></table>
+<pre><code class="language-bash"># 排查
+bash -n script/hs-mcp-demo.sh
+grep -n '^[[:space:]]*local ' script/*.sh</code></pre>
+<h3 id="2-2-daemon-模式无限子进程链">2.2 daemon 模式无限子进程链</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>`serve_sse(port, daemon=True)` 通过 `Popen` 递归调用自身</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>子进程启动时未传 `--no-daemon` 标志，再次进入 daemon 分支</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>进程无限 fork，系统资源耗尽</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>daemon 分支 spawn 子进程时追加 `--no-daemon` 参数</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>⏳ 待处理</td>
+</tr>
+</tbody></table>
+<pre><code class="language-python"># 修复前
+def serve_sse(port, daemon=True):
+    if daemon:
+        subprocess.Popen(["python3", __file__, "mcp", "--port", str(port)])
+        # 子进程又进入 daemon=True
+
+# 修复后
+def serve_sse(port, daemon=True):
+    if daemon:
+        subprocess.Popen(["python3", __file__, "mcp", "--port", str(port), "--no-daemon"])
+        return
+    _serve_sse(port)</code></pre>
+<p>---</p>
+<h2 id="3-mcp-server-类-llm-radar-mcp-server">3. MCP Server 类 (llm-radar-mcp-server)</h2>
+<h3 id="3-1-stdio-模式-pid-覆盖">3.1 stdio 模式 PID 覆盖</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>手工启动的 MCP Server 写入 PID，Hermes Agent spawn 的实例覆盖该 PID</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>管道模式（isatty=False）跳过 PID 检查，但 Hermes 子进程是持久管道非一次性</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>`status`/`stop` 只能控制最后一个实例</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>区分"一次性管道"（echo pipe）和"持久子进程"（Hermes spawn）：持久子进程恢复 PID 检查</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>🟡 已知，待排期</td>
+</tr>
+</tbody></table>
+<h3 id="3-2-http-模式无标准-mcp-端点">3.2 HTTP 模式无标准 /mcp 端点</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>`start --port 8901` 提供自定义 REST API，非标准 MCP StreamableHTTP</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>HTTP 模式是为手工 curl 测试设计的，未考虑 Hermes Agent 对接需求</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>Hermes Agent `url:` 配置无法直接对接</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>新增 `/mcp` 端点实现 MCP JSON-RPC 2.0 over HTTP，或保持 stdio 对接</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>🟡 已知，建议方案 A（stdio + HTTP 辅查）</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="4-数据模型类">4. 数据模型类</h2>
+<h3 id="4-1-merge_entities-无滑动窗口">4.1 merge_entities 无滑动窗口</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>MCP Server 的 `merge_entities()` 不做 100 条上限和 15 天滑动窗口</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>未同步 Agent Loop 的留存逻辑</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>热点数量超过 100 条上限</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>在 MCP Server 的 `merge_entities()` 末尾添加与 Agent Loop 相同的留存逻辑</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>✅ 已修复</td>
+</tr>
+</tbody></table>
+<h3 id="4-2-稀疏字段">4.2 稀疏字段</h3>
+<table><thead><tr>
+<th>项目</th>
+<th>内容</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>问题</td>
+<td>`ref` / `status` 等字段仅部分实体有值，schema 不统一</td>
+</tr>
+<tr>
+<td>根因</td>
+<td>两套写入管道（Agent Loop + MCP）字段覆盖不完全</td>
+</tr>
+<tr>
+<td>影响</td>
+<td>迁移到 Supabase 时需定义 nullable 列</td>
+</tr>
+<tr>
+<td>**解决方案**</td>
+<td>统一两套 merge 逻辑的必填字段，清理旧数据中的稀疏字段</td>
+</tr>
+<tr>
+<td>状态</td>
+<td>🟡 建议迁移前处理</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="5-问题总览">5. 问题总览</h2>
+<table><thead><tr>
+<th>#</th>
+<th>类别</th>
+<th>问题</th>
+<th>状态</th>
+<th>优先级</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+<td>:---:</td>
+<td>:---:</td>
+</tr>
+<tr>
+<td>1</td>
+<td>CI 路径</td>
+<td>conftest.py / test_cli.py 硬编码 Mac 路径</td>
+<td>✅</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>2</td>
+<td>CI 缺少 Chrome</td>
+<td>selenium 测试 CI 失败</td>
+<td>✅</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>3</td>
+<td>CI 缺少 API Key</td>
+<td>DEEPSEEK_API_KEY Secret 未配置</td>
+<td>🔴 **需你操作**</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>4</td>
+<td>Bash 写法</td>
+<td>local 在函数外报 SyntaxError</td>
+<td>⏳</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>5</td>
+<td>Daemon 递归</td>
+<td>serve_sse daemon=True 无限 fork</td>
+<td>⏳</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>6</td>
+<td>PID 竞争</td>
+<td>多实例 stdio 模式 PID 覆盖</td>
+<td>🟡</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>7</td>
+<td>HTTP 协议</td>
+<td>HTTP 模式无标准 /mcp 端点</td>
+<td>🟡</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>8</td>
+<td>数据留存</td>
+<td>MCP merge_entities 无滑动窗口</td>
+<td>✅</td>
+<td>P2</td>
+</tr>
+</tbody></table>
+<p>---</p>
+<h2 id="6-排查命令汇总">6. 排查命令汇总</h2>
+<pre><code class="language-bash"># CI 硬编码路径
+grep -rn '/Users/jadenli' tests/
+GITHUB_ACTIONS=true python3 -m pytest tests/ -v --tb=short
+
+# Shell 语法
+bash -n script/hs-mcp-demo.sh
+grep -n '^[[:space:]]*local ' script/*.sh
+
+# MCP 状态
+cat data/mcp-server.pid
+curl http://localhost:8901/health
+
+# 数据稀疏字段
+python3 -c "
+import json
+s = json.load(open('data/snapshot.json'))
+for dim in ['providers','people','tools','llms','hotspots']:
+    items = s.get(dim, [])
+    if items:
+        all_keys = set()
+        for i in items: all_keys.update(i.keys())
+        present = {k: sum(1 for i in items if k in i) for k in all_keys}
+        sparse = {k:v for k,v in present.items() if v &lt; len(items)}
+        if sparse:
+            print(f'{dim}: {sparse}')
+"</code></pre>
+<p>---</p>
+<h2 id="附-文档命名规范头脑风暴">附：文档命名规范头脑风暴</h2>
+<p>当前涉及的 3 个文档：</p>
+<table><thead><tr>
+<th>文档</th>
+<th>当前命名</th>
+<th>类型</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>http-server-cli 方案</td>
+<td>`github-ci-cd-recommendation.md`</td>
+<td>设计方案（未来导向）</td>
+</tr>
+<tr>
+<td>本文（问题记录）</td>
+<td>`github-ci-issues-v1.0-20260704.md`</td>
+<td>问题记录（过去导向）</td>
+</tr>
+<tr>
+<td>IRIS-Output 惯例</td>
+<td>`{name}-v{major}.{minor}-{YYYYMMDD}.md`</td>
+<td>通用规范</td>
+</tr>
+</tbody></table>
+<h3 id="核心矛盾">核心矛盾</h3>
+<pre><code class="language-text">http-server-cli 命名:           IRIS-Output 命名:
+  github-ci-cd-recommendation.md    github-ci-issues-v1.0-20260704.md
+  无版本号后缀                       有版本号+日期后缀
+  无分类前缀                         无分类前缀</code></pre>
+<h3 id="推荐规范">推荐规范</h3>
+<p>按文档类型分为两类，用前缀区分：</p>
+<table><thead><tr>
+<th>类型</th>
+<th>前缀</th>
+<th>文件名模板</th>
+<th>示例</th>
+</tr></thead><tbody>
+<tr>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+<td>:---</td>
+</tr>
+<tr>
+<td>**设计方案**</td>
+<td>(无)</td>
+<td>`{domain}-{purpose}.md`</td>
+<td>`github-ci-cd-recommendation.md`</td>
+</tr>
+<tr>
+<td>**问题记录**</td>
+<td>`issues`</td>
+<td>`{domain}-issues-v{major}.{minor}-{YYYYMMDD}.md`</td>
+<td>`github-ci-issues-v1.0-20260704.md`</td>
+</tr>
+<tr>
+<td>**操作速查**</td>
+<td>`ops`</td>
+<td>`{domain}-ops-v{major}.{minor}-{YYYYMMDD}.md`</td>
+<td>`llm-radar-ops-v1.0-20260625.md`</td>
+</tr>
+<tr>
+<td>**教程/指南**</td>
+<td>`guide`</td>
+<td>`{domain}-guide-v{major}.{minor}-{YYYYMMDD}.md`</td>
+<td>`hermes-memory-guide-v1.2-20260614.md`</td>
+</tr>
+</tbody></table>
+<h3 id="分类依据">分类依据</h3>
+<ul>
+<li>**设计方案** — 推荐架构、实施方案（如 CI/CD 方案），**面向未来**，版本号在文档内</li>
+<li>**问题记录** — 踩坑记录（如本文），**面向过去**，版本号在文件名便于追溯</li>
+<li>**操作速查** — 日常命令（如 llm-radar-ops），**面向现在**，需要快速查找</li>
+<li>**教程/指南** — 知识体系（如 hermes-memory），**面向学习**，版本号在文件名</li>
+</ul>
+<p>---</p>
+<p><em>版本: 1.1 | 更新: 2026-07-04 | 来源: llm-radar CI + http-server-cli + IRIS-Output 实战</em></p></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h1, h2, h3');
+  const tocItems = [];
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    const level = h.tagName.toLowerCase().replace('h', '');
+    const link  = document.createElement('a');
+    link.href = '#' + h.id;
+    link.textContent = h.textContent;
+    link.className = 'toc-h' + level;
+    link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+  function onScroll() {
+    let current = '';
+    headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  body.querySelectorAll('pre').forEach(function(pre) {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      navigator.clipboard.writeText(text).then(function() {
+        btn.textContent = '已复制';
+        setTimeout(function() { btn.textContent = '复制'; }, 2000);
+      });
+    });
+    pre.appendChild(btn);
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,290 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>工具导航</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.cards-toolbar { display: flex; align-items: center; gap: 12px; margin-bottom: 16px; flex-wrap: wrap; }
+.cards-toolbar .search-box { flex: 1; min-width: 200px; }
+.cards-toolbar .stat-label { font-size: 0.75rem; color: #6b7280; }
+.group-pills { display: flex; flex-wrap: wrap; gap: 4px; margin-bottom: 12px; }
+.group-pill {
+  display: inline-block; padding: 3px 12px;
+  border-radius: var(--radius-full); font-size: 0.72rem;
+  background: transparent; border: 1px solid #2a2a3e;
+  color: #9ca3af; cursor: pointer; transition: all 0.15s; font-family: inherit;
+}
+.group-pill:hover { border-color: #555; color: #e0e0e0; }
+.group-pill.active { background: var(--cobalt-600); border-color: var(--cobalt-600); color: white; }
+.cards-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); gap: 12px; }
+.tool-card {
+  background: var(--surface-900); border: 1px solid #1a1a2e;
+  border-radius: var(--radius-lg); padding: 14px; cursor: pointer;
+  transition: all 0.15s; display: flex; align-items: flex-start; gap: 10px; position: relative;
+}
+.tool-card:hover { border-color: var(--cobalt-700); box-shadow: 0 2px 12px rgba(0,0,0,0.3); transform: translateY(-1px); }
+.tool-card .card-icon { width: 36px; height: 36px; border-radius: var(--radius-md); background: rgba(79,70,229,0.1); display: flex; align-items: center; justify-content: center; font-size: 1rem; flex-shrink: 0; }
+.tool-card .card-body { flex: 1; min-width: 0; }
+.tool-card .card-title { font-size: 0.85rem; font-weight: 500; color: #e0e0e0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.tool-card .card-meta { font-size: 0.72rem; color: #6b7280; margin-top: 4px; display: flex; gap: 8px; align-items: center; }
+.tool-card .card-badge { font-size: 0.65rem; background: rgba(255,255,255,0.04); color: #6b7280; padding: 1px 6px; border-radius: var(--radius-sm); }
+.tool-card .card-desc { font-size: 0.72rem; color: #6b7280; margin-top: 6px; line-height: 1.4; display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+.cards-section { margin-bottom: 24px; }
+.cards-section-title { font-size: 0.8rem; font-weight: 600; color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 10px; padding-bottom: 6px; border-bottom: 1px solid #2a2a3e; }
+.empty-state { text-align: center; padding: 48px 20px; color: #6b7280; grid-column: 1 / -1; }
+.empty-state .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+@media (max-width: 600px) { .cards-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="mb-3"><h1 style="font-size:1.2rem;margin:0;">工具导航</h1></div>
+  <div class="cards-toolbar">
+    <input class="input-dark search-box" id="searchInput" placeholder="搜索..." onkeyup="if(event.key==='Enter')renderCards()">
+    <button class="btn btn-primary" onclick="renderCards()">搜索</button>
+    <div class="flex-1"></div>
+    <span class="stat-label" id="statLabel"></span>
+  </div>
+  <div class="group-pills" id="groupPills"></div>
+  <div id="cardsContainer"></div>
+</div>
+<script>
+(function() {
+  const GROUPS = [{"key": "效率", "label": "效率"}, {"key": "监控", "label": "监控"}, {"key": "项目", "label": "项目"}, {"key": "学习", "label": "学习"}, {"key": "数据", "label": "数据"}, {"key": "管理", "label": "管理"}];
+  const ITEMS  = [{"group": "效率", "title": "Favorite Manager", "subtitle": "收藏管理", "badge": "手动", "icon": "📌", "desc": "管理用户收藏的项目，支持搜索、标签筛选、批量操作"}, {"group": "效率", "title": "Git Cloner", "subtitle": "克隆工具", "badge": "自动", "icon": "📦", "desc": "GitHub 项目克隆，支持批量、筛选、排序"}, {"group": "效率", "title": "Web2MD", "subtitle": "网页转文档", "badge": "手动", "icon": "📝", "desc": "网页内容转 Markdown，支持智读报告"}, {"group": "效率", "title": "Tool-Nav", "subtitle": "工具导航", "badge": "自动", "icon": "🧭", "desc": "工具导航首页，标签页 + iframe 集成"}, {"group": "监控", "title": "LLM-Radar", "subtitle": "情报监控", "badge": "自动", "icon": "📡", "desc": "LLM 行业情报 5 维度监控与聚合"}, {"group": "监控", "title": "Blog Watcher", "subtitle": "博客监控", "badge": "自动", "icon": "👁️", "desc": "RSS/Blog 更新监控与摘要"}, {"group": "项目", "title": "Hermes-Manager", "subtitle": "配置同步", "badge": "Python", "icon": "⚙️", "desc": "Hermes Agent 配置跨机同步工具"}, {"group": "项目", "title": "Secret-Manager", "subtitle": "密钥管理", "badge": "Python", "icon": "🔐", "desc": "API Key/Token 统一管理"}, {"group": "学习", "title": "Chaitin 面试知识库", "subtitle": "长亭科技", "badge": "知识库", "icon": "📚", "desc": "公司经营/产品体系/知识迁移结构化面试准备"}, {"group": "学习", "title": "英语对话练习", "subtitle": "AI 对话", "badge": "英语", "icon": "🗣️", "desc": "全场景英语对话练习与高频纠正"}, {"group": "数据", "title": "IRIS-Output", "subtitle": "分析报告", "badge": "Markdown", "icon": "📊", "desc": "IRIS 生成的分析报告与知识文档索引"}, {"group": "管理", "title": "Script-Manager", "subtitle": "完整性检查", "badge": "Bash", "icon": "🔍", "desc": "脚本完整性检查与一致性验证"}];
+  let activeGroup = '', activeSearch = '';
+
+  function renderCards() {
+    activeSearch = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    let filtered = ITEMS;
+    if (activeGroup) filtered = filtered.filter(function(i) { return i.group === activeGroup; });
+    if (activeSearch) filtered = filtered.filter(function(i) {
+      return (i.title+' '+(i.desc||'')+' '+(i.badge||'')).toLowerCase().indexOf(activeSearch) !== -1;
+    });
+    document.getElementById('statLabel').textContent = filtered.length + ' / ' + ITEMS.length + ' 项';
+    var grouped = {};
+    filtered.forEach(function(i) { var g = i.group||'其他'; if(!grouped[g]) grouped[g]=[]; grouped[g].push(i); });
+    var gt = {};
+    (GROUPS||[]).forEach(function(g) { gt[g.key] = g.label||g.key; });
+    var container = document.getElementById('cardsContainer');
+    var keys = Object.keys(grouped);
+    if (keys.length === 0) { container.innerHTML = '<div class="empty-state"><span class="icon">📭</span><span>无匹配项目</span></div>'; return; }
+    container.innerHTML = keys.map(function(g) {
+      return '<div class="cards-section"><div class="cards-section-title">' + (gt[g]||g) + '</div><div class="cards-grid">' +
+        grouped[g].map(function(item) {
+          var badge = item.badge ? '<span class="card-badge">'+item.badge+'</span>' : '';
+          var sub = item.subtitle ? '<span>'+item.subtitle+'</span>' : '';
+          var desc = item.desc ? '<div class="card-desc">'+item.desc+'</div>' : '';
+          var icon = item.icon || item.title.charAt(0);
+          return '<div class="tool-card"><div class="card-icon">'+icon+'</div><div class="card-body"><div class="card-title">'+item.title+'</div><div class="card-meta">'+sub+badge+'</div>'+desc+'</div></div>';
+        }).join('') + '</div></div>';
+    }).join('');
+  }
+
+  function initGroups() {
+    var el = document.getElementById('groupPills');
+    el.innerHTML = '<button class="group-pill'+(activeGroup===''?' active':'')+'" onclick="setGroup(\'\')">全部</button>' +
+      (GROUPS||[]).map(function(g) {
+        return '<button class="group-pill" data-key="'+g.key+'" onclick="setGroup(\''+g.key+'\')">'+(g.icon||'')+' '+g.label+'</button>';
+      }).join('');
+  }
+  window.setGroup = function(key) {
+    activeGroup = key;
+    document.querySelectorAll('.group-pill').forEach(function(b) { b.classList.toggle('active', b.dataset.key===key||(!b.dataset.key&&!key)); });
+    renderCards();
+  };
+  initGroups();
+  renderCards();
+})();
+</script>
+</body>
+</html>

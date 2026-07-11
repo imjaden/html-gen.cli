@@ -1,0 +1,1361 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长亭开源项目清单 · 长亭科技</title>
+<style>
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-main: #1a1a2e;
+  
+  --accent: #0f3460;
+  --highlight: #e94560;
+  --text: #eaeaea;
+  --text-dim: #8892b0;
+  --text-bright: #ccd6f6;
+  --card-bg: #1e2a4a;
+  --border: #233554;
+  --success: #64ffda;
+  --warning: #f9a825;
+  --danger: #ff5252;
+  --tab-active: #e94560;
+  
+  --table-even: #1a2744;
+  --table-odd: #16213e;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Top Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+  border-bottom: 2px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  overflow-x: auto;
+}
+
+.tab-bar::before {
+  content: "🎯 长亭科技 · 业务分析";
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--highlight);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  background: rgba(233,69,96,0.08);
+}
+
+.tab-btn {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+  background: rgba(15,52,96,0.4);
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: var(--accent);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--highlight);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ===== Layout ===== */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 52px);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  max-width: 1100px;
+}
+
+.content-section {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.content-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sub-section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.sub-section.active {
+  display: block;
+}
+
+/* ===== Typography ===== */
+h1 {
+  font-size: 28px;
+  color: var(--highlight);
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 22px;
+  color: var(--text-bright);
+  margin: 28px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 18px;
+  color: var(--success);
+  margin: 20px 0 12px;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 16px;
+  color: var(--text-bright);
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+p { margin-bottom: 12px; }
+
+.subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--highlight);
+  margin-bottom: 10px;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:nth-child(even) td { background: var(--table-even); }
+tr:nth-child(odd) td { background: var(--table-odd); }
+tr:hover td { background: rgba(233,69,96,0.08); }
+
+/* ===== Tags / Badges ===== */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 2px 4px 2px 0;
+}
+
+.tag-red { background: rgba(233,69,96,0.2); color: var(--highlight); border: 1px solid rgba(233,69,96,0.4); }
+.tag-green { background: rgba(100,255,218,0.1); color: var(--success); border: 1px solid rgba(100,255,218,0.3); }
+.tag-blue { background: rgba(15,52,96,0.4); color: #64b5f6; border: 1px solid rgba(100,180,246,0.3); }
+.tag-yellow { background: rgba(249,168,37,0.15); color: var(--warning); border: 1px solid rgba(249,168,37,0.3); }
+
+/* ===== Code / Pre ===== */
+.code-block {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.5;
+  color: #c9d1d9;
+}
+
+/* ===== Progress Bars ===== */
+.bar-container {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  gap: 10px;
+}
+
+.bar-label {
+  min-width: 120px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: #0d1117;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+.bar-value {
+  min-width: 40px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ===== Architecture Diagram ===== */
+.arch-diagram {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.arch-layer {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 12px;
+}
+
+.arch-layer-label {
+  min-width: 180px;
+  padding: 10px 16px;
+  background: var(--accent);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  color: #fff;
+  border-left: 4px solid var(--highlight);
+}
+
+.arch-layer-products {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.arch-product {
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-bright);
+  transition: all 0.2s;
+}
+
+.arch-product:hover {
+  border-color: var(--highlight);
+  background: rgba(233,69,96,0.1);
+}
+
+.arch-product.star { border-color: var(--warning); box-shadow: 0 0 10px rgba(249,168,37,0.2); }
+
+/* ===== Stat Boxes ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--highlight);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ===== Timeline ===== */
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+}
+
+.timeline-date {
+  min-width: 90px;
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+/* ===== Checklist ===== */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  background: var(--card-bg);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+
+.checklist-item.done {
+  border-left-color: var(--success);
+  opacity: 0.7;
+}
+
+.check-icon {
+  font-size: 16px;
+  min-width: 20px;
+}
+
+/* ===== Quote / Callout ===== */
+.callout {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+  border-left: 4px solid;
+}
+
+.callout-highlight {
+  background: rgba(233,69,96,0.08);
+  border-color: var(--highlight);
+}
+
+.callout-success {
+  background: rgba(100,255,218,0.05);
+  border-color: var(--success);
+}
+
+.callout-warning {
+  background: rgba(249,168,37,0.08);
+  border-color: var(--warning);
+}
+
+.callout-info {
+  background: rgba(15,52,96,0.3);
+  border-color: #64b5f6;
+}
+
+/* ===== Grid layouts ===== */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== Responsive ===== */
+
+
+/* ===== Product Card ===== */
+.product-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.product-card h4 {
+  color: var(--highlight);
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.product-field {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.product-field strong {
+  color: var(--success);
+}
+
+/* ===== Glossary ===== */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.glossary-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+
+.glossary-term {
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+.glossary-def {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--highlight); }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.5rem; color: var(--text-bright); margin-bottom: 12px; }
+.subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+.tag-green { background: rgba(52,211,153,0.15); color: #34d399; }
+.tag-yellow { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.tag-red { background: rgba(248,113,113,0.15); color: #f87171; }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+.callout { border-left: 3px solid var(--highlight); background: rgba(233,69,96,0.06); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; color: var(--text-dim); }
+.callout-success { border-left-color: var(--success); background: rgba(100,255,218,0.06); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) { body { padding: 16px; } .grid-2 { grid-template-columns: 1fr; } }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.5rem; color: var(--text-bright); margin-bottom: 16px; }
+h2 { font-size: 1.15rem; color: var(--text-bright); margin: 20px 0 10px; }
+h3 { font-size: 1rem; color: var(--text-bright); margin: 16px 0 8px; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+</style>
+</head>
+<body>
+
+<h2 id="项目一览表">项目一览表</h2>
+<table><thead><tr>
+<th>#</th>
+<th>项目名</th>
+<th>描述</th>
+<th>语言</th>
+<th>⭐ Stars</th>
+<th>⑂ Forks</th>
+<th>许可证</th>
+<th>最后更新</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><strong>SafeLine</strong></td>
+<td>SafeLine is a self-hosted WAF(Web Application Firewall) / reverse</td>
+<td>Go</td>
+<td>21515</td>
+<td>1407</td>
+<td>GPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>xray</strong></td>
+<td>一款长亭自研的完善的安全评估工具，支持常见 web 安全问题扫描和自定义 poc \</td>
+<td>使用之前务必先阅读文档</td>
+<td>Vue</td>
+<td>11609</td>
+<td>1873</td>
+<td>NOASSERTION</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>PandaWiki</strong></td>
+<td>PandaWiki 是一款 AI 大模型驱动的开源知识库搭建系统，帮助你快速构建智能化的 产品文档、技术文档、FAQ、博客系统，借</td>
+<td>TypeScript</td>
+<td>9782</td>
+<td>965</td>
+<td>AGPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>4</td>
+<td><strong>MonkeyCode</strong></td>
+<td>企业级 AI 开发平台，内置了开发环境管理、AI 模型管理、AI 任务管理、项目需求管理等能力，是真正面向专业开发团队的 AI 助</td>
+<td>TypeScript</td>
+<td>3337</td>
+<td>417</td>
+<td>AGPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>5</td>
+<td><strong>passionfruit</strong></td>
+<td>[WIP] Crappy iOS app analyzer</td>
+<td>Vue</td>
+<td>1668</td>
+<td>226</td>
+<td>MIT</td>
+<td>2026-05-09</td>
+</tr>
+<tr>
+<td>6</td>
+<td><strong>veinmind-tools</strong></td>
+<td>veinmind-tools 是由长亭科技自研，基于 veinmind-sdk 打造的容器安全工具集</td>
+<td>Go</td>
+<td>1648</td>
+<td>186</td>
+<td>MIT</td>
+<td>2026-06-08</td>
+</tr>
+<tr>
+<td>7</td>
+<td><strong>rad</strong></td>
+<td></td>
+<td>-</td>
+<td>1511</td>
+<td>123</td>
+<td>-</td>
+<td>2026-06-11</td>
+</tr>
+<tr>
+<td>8</td>
+<td><strong>xpoc</strong></td>
+<td>为供应链漏洞扫描设计的快速应急响应工具  [快速应急] [漏洞扫描] [端口扫描] [xray2.0进行时]   A fast e</td>
+<td>-</td>
+<td>1171</td>
+<td>49</td>
+<td>NOASSERTION</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>9</td>
+<td><strong>blazehttp</strong></td>
+<td>BlazeHTTP 是一款简单易用的 WAF 防护效果测试工具。BlazeHTTP stands as a user-friend</td>
+<td>Go</td>
+<td>942</td>
+<td>109</td>
+<td>GPL-3.0</td>
+<td>2026-06-12</td>
+</tr>
+<tr>
+<td>10</td>
+<td><strong>cloudwalker</strong></td>
+<td>CloudWalker Platform</td>
+<td>Go</td>
+<td>674</td>
+<td>140</td>
+<td>GPL-3.0</td>
+<td>2026-05-23</td>
+</tr>
+<tr>
+<td>11</td>
+<td><strong>KoalaQA</strong></td>
+<td>KoalaQA 是一款 AI 大模型驱动的开源售后服务社区，提供 AI 回答、AI 搜索、AI 运营等能力，帮助你快速落地售后客服</td>
+<td>TypeScript</td>
+<td>512</td>
+<td>60</td>
+<td>-</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>12</td>
+<td><strong>xapp</strong></td>
+<td></td>
+<td>-</td>
+<td>329</td>
+<td>14</td>
+<td>NOASSERTION</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>13</td>
+<td><strong>xtools</strong></td>
+<td></td>
+<td>JavaScript</td>
+<td>279</td>
+<td>71</td>
+<td>MIT</td>
+<td>2026-06-09</td>
+</tr>
+<tr>
+<td>14</td>
+<td><strong>sqlchop</strong></td>
+<td>[DEPRECATED]A novel SQL injection detection engine built on top o</td>
+<td>-</td>
+<td>253</td>
+<td>83</td>
+<td>-</td>
+<td>2026-01-25</td>
+</tr>
+<tr>
+<td>15</td>
+<td><strong>xray-plugins</strong></td>
+<td></td>
+<td>-</td>
+<td>207</td>
+<td>26</td>
+<td>GPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>16</td>
+<td><strong>strapdown-zeta</strong></td>
+<td>Instant and elegant Markdown documents in the browser, Git powere</td>
+<td>JavaScript</td>
+<td>166</td>
+<td>43</td>
+<td>NOASSERTION</td>
+<td>2025-01-07</td>
+</tr>
+<tr>
+<td>17</td>
+<td><strong>collie</strong></td>
+<td>牧云社区版</td>
+<td>TypeScript</td>
+<td>157</td>
+<td>22</td>
+<td>-</td>
+<td>2026-06-01</td>
+</tr>
+<tr>
+<td>18</td>
+<td><strong>Real-World-CTF-6th-Challenges</strong></td>
+<td>attachments and (some) writeups/source code for RWCTF 6th</td>
+<td>-</td>
+<td>125</td>
+<td>5</td>
+<td>-</td>
+<td>2026-04-23</td>
+</tr>
+<tr>
+<td>19</td>
+<td><strong>libveinmind</strong></td>
+<td>一个由长亭自研，直观而可扩展的容器安全 SDK</td>
+<td>Go</td>
+<td>118</td>
+<td>18</td>
+<td>MIT</td>
+<td>2026-05-23</td>
+</tr>
+<tr>
+<td>20</td>
+<td><strong>safeline-open-platform</strong></td>
+<td></td>
+<td>Lua</td>
+<td>104</td>
+<td>34</td>
+<td>MIT</td>
+<td>2026-06-09</td>
+</tr>
+<tr>
+<td>21</td>
+<td><strong>pro</strong></td>
+<td>A crappy tool used in our private PS4 jailbreak</td>
+<td>Python</td>
+<td>100</td>
+<td>15</td>
+<td>-</td>
+<td>2026-04-12</td>
+</tr>
+<tr>
+<td>22</td>
+<td><strong>yanshi</strong></td>
+<td>A regular language recognizer generater like Ragel, enhanced with</td>
+<td>C++</td>
+<td>100</td>
+<td>22</td>
+<td>-</td>
+<td>2026-04-24</td>
+</tr>
+<tr>
+<td>23</td>
+<td><strong>Real-World-CTF-3rd-Challenge-Attachments</strong></td>
+<td>Challenge attachments for RWCTF 3rd.</td>
+<td>-</td>
+<td>90</td>
+<td>12</td>
+<td>-</td>
+<td>2026-05-13</td>
+</tr>
+<tr>
+<td>24</td>
+<td><strong>log4j2-vaccine</strong></td>
+<td>log4j2-vaccine</td>
+<td>Java</td>
+<td>84</td>
+<td>21</td>
+<td>-</td>
+<td>2025-07-09</td>
+</tr>
+<tr>
+<td>25</td>
+<td><strong>django-pg-partitioning</strong></td>
+<td>A Django extension that supports PostgreSQL 11 time ranges and li</td>
+<td>Python</td>
+<td>76</td>
+<td>12</td>
+<td>MIT</td>
+<td>2025-02-19</td>
+</tr>
+<tr>
+<td>26</td>
+<td><strong>lua-resty-t1k</strong></td>
+<td>Lua implementation of the T1K protocol for Chaitin/SafeLine WAF</td>
+<td>Raku</td>
+<td>74</td>
+<td>13</td>
+<td>Apache-2.0</td>
+<td>2026-02-11</td>
+</tr>
+<tr>
+<td>27</td>
+<td><strong>chaitin-cli</strong></td>
+<td>Chaitin CLI for products</td>
+<td>Go</td>
+<td>66</td>
+<td>9</td>
+<td>GPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>28</td>
+<td><strong>mimicry</strong></td>
+<td>Mimicry is a dynamic deception tool that actively deceives an att</td>
+<td>Dockerfile</td>
+<td>60</td>
+<td>9</td>
+<td>-</td>
+<td>2026-03-20</td>
+</tr>
+<tr>
+<td>29</td>
+<td><strong>Real-World-CTF-5th-Challenges</strong></td>
+<td>attachments and (some) writeups/source code for RWCTF 5th</td>
+<td>Python</td>
+<td>59</td>
+<td>8</td>
+<td>-</td>
+<td>2026-01-06</td>
+</tr>
+<tr>
+<td>30</td>
+<td><strong>OctoBus</strong></td>
+<td></td>
+<td>JavaScript</td>
+<td>56</td>
+<td>4</td>
+<td>GPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>31</td>
+<td><strong>agent-compose</strong></td>
+<td></td>
+<td>Go</td>
+<td>53</td>
+<td>4</td>
+<td>AGPL-3.0</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>32</td>
+<td><strong>Real-World-CTF-3rd-Forum-Attachments</strong></td>
+<td>attachments for forum of RealWorld CTF 3rd</td>
+<td>C</td>
+<td>41</td>
+<td>3</td>
+<td>-</td>
+<td>2026-05-13</td>
+</tr>
+<tr>
+<td>33</td>
+<td><strong>systracer</strong></td>
+<td>SysTracer: Linux 系统活动跟踪器</td>
+<td>Go</td>
+<td>35</td>
+<td>9</td>
+<td>Apache-2.0</td>
+<td>2026-06-08</td>
+</tr>
+<tr>
+<td>34</td>
+<td><strong>clawlens</strong></td>
+<td></td>
+<td>Go</td>
+<td>34</td>
+<td>5</td>
+<td>Apache-2.0</td>
+<td>2026-03-26</td>
+</tr>
+<tr>
+<td>35</td>
+<td><strong>sqlchop-http-proxy</strong></td>
+<td>SQLChop reverse http proxy module</td>
+<td>JavaScript</td>
+<td>32</td>
+<td>12</td>
+<td>-</td>
+<td>2024-11-22</td>
+</tr>
+<tr>
+<td>36</td>
+<td><strong>Real-World-CTF-4th-Challenge-Attachments</strong></td>
+<td></td>
+<td>-</td>
+<td>28</td>
+<td>3</td>
+<td>-</td>
+<td>2025-09-25</td>
+</tr>
+<tr>
+<td>37</td>
+<td><strong>traefik-safeline</strong></td>
+<td>Traefik plugin to proxy requests to safeline waf</td>
+<td>Go</td>
+<td>22</td>
+<td>5</td>
+<td>-</td>
+<td>2026-05-03</td>
+</tr>
+<tr>
+<td>38</td>
+<td><strong>Real-World-CTF-2019-Quals-Attachment</strong></td>
+<td></td>
+<td>-</td>
+<td>21</td>
+<td>6</td>
+<td>-</td>
+<td>2026-05-13</td>
+</tr>
+<tr>
+<td>39</td>
+<td><strong>xray_document</strong></td>
+<td></td>
+<td>HTML</td>
+<td>16</td>
+<td>11</td>
+<td>-</td>
+<td>2025-10-06</td>
+</tr>
+<tr>
+<td>40</td>
+<td><strong>gamma</strong></td>
+<td></td>
+<td>-</td>
+<td>16</td>
+<td>2</td>
+<td>-</td>
+<td>2023-04-13</td>
+</tr>
+<tr>
+<td>41</td>
+<td><strong>querystring</strong></td>
+<td>Parse and stringify URL query strings</td>
+<td>TypeScript</td>
+<td>13</td>
+<td>2</td>
+<td>MIT</td>
+<td>2024-11-25</td>
+</tr>
+<tr>
+<td>42</td>
+<td><strong>duty.html</strong></td>
+<td>A single page for daily duty assignment</td>
+<td>HTML</td>
+<td>12</td>
+<td>2</td>
+<td>-</td>
+<td>2022-10-11</td>
+</tr>
+<tr>
+<td>43</td>
+<td><strong>t1k-go</strong></td>
+<td></td>
+<td>Go</td>
+<td>12</td>
+<td>6</td>
+<td>Apache-2.0</td>
+<td>2026-05-06</td>
+</tr>
+<tr>
+<td>44</td>
+<td><strong>DevRunner</strong></td>
+<td></td>
+<td>Dockerfile</td>
+<td>10</td>
+<td>4</td>
+<td>MIT</td>
+<td>2026-04-10</td>
+</tr>
+<tr>
+<td>45</td>
+<td><strong>ModelKit</strong></td>
+<td>一个轻量级工具库，提供 AI 模型发现与 API 密钥验证功能，助你快速集成各大模型供应商能力。</td>
+<td>Go</td>
+<td>9</td>
+<td>7</td>
+<td>AGPL-3.0</td>
+<td>2026-03-19</td>
+</tr>
+<tr>
+<td>46</td>
+<td><strong>veinmind-action</strong></td>
+<td>基于 veinmind-tools 实现的 Github Action</td>
+<td>Dockerfile</td>
+<td>8</td>
+<td>1</td>
+<td>MIT</td>
+<td>2022-08-27</td>
+</tr>
+<tr>
+<td>47</td>
+<td><strong>collie-app-cli</strong></td>
+<td>本地使用 Collie 应用或开发 Collie 应用的 CLI 工具</td>
+<td>Rust</td>
+<td>8</td>
+<td>3</td>
+<td>NOASSERTION</td>
+<td>2024-06-28</td>
+</tr>
+<tr>
+<td>48</td>
+<td><strong>telewriter</strong></td>
+<td>Another jQuery typing animation script.</td>
+<td>JavaScript</td>
+<td>7</td>
+<td>2</td>
+<td>-</td>
+<td>2020-05-09</td>
+</tr>
+<tr>
+<td>49</td>
+<td><strong>node-http-proxy</strong></td>
+<td>A full-featured http proxy for node.js</td>
+<td>JavaScript</td>
+<td>6</td>
+<td>3</td>
+<td>NOASSERTION</td>
+<td>2024-05-14</td>
+</tr>
+<tr>
+<td>50</td>
+<td><strong>scaptcha-sdk-golang</strong></td>
+<td></td>
+<td>HTML</td>
+<td>6</td>
+<td>1</td>
+<td>-</td>
+<td>2025-10-23</td>
+</tr>
+<tr>
+<td>51</td>
+<td><strong>xray-docs</strong></td>
+<td></td>
+<td>MDX</td>
+<td>5</td>
+<td>2</td>
+<td>-</td>
+<td>2025-12-10</td>
+</tr>
+<tr>
+<td>52</td>
+<td><strong>chaitin-ioc-dify-plugin</strong></td>
+<td>长亭百川云 威胁情报服务 Dify插件</td>
+<td>Python</td>
+<td>3</td>
+<td>0</td>
+<td>-</td>
+<td>2026-03-24</td>
+</tr>
+<tr>
+<td>53</td>
+<td><strong>monkeycode-cli</strong></td>
+<td>Lightweight coding agent that runs in your terminal</td>
+<td>-</td>
+<td>3</td>
+<td>1</td>
+<td>Apache-2.0</td>
+<td>2026-05-19</td>
+</tr>
+<tr>
+<td>54</td>
+<td><strong>AntLeads</strong></td>
+<td>AI 驱动的在线的商品营销系统。AI-driven lead management and marketing automatio</td>
+<td>Python</td>
+<td>3</td>
+<td>2</td>
+<td>-</td>
+<td>2026-05-28</td>
+</tr>
+<tr>
+<td>55</td>
+<td><strong>MonkeyCodeOfficialPlugins</strong></td>
+<td></td>
+<td>Python</td>
+<td>3</td>
+<td>8</td>
+<td>-</td>
+<td>2026-06-15</td>
+</tr>
+<tr>
+<td>56</td>
+<td><strong>browserslist-config-monster</strong></td>
+<td></td>
+<td>JavaScript</td>
+<td>2</td>
+<td>0</td>
+<td>-</td>
+<td>2023-05-02</td>
+</tr>
+<tr>
+<td>57</td>
+<td><strong>service</strong></td>
+<td>Run go programs as a service on major platforms.</td>
+<td>Go</td>
+<td>2</td>
+<td>0</td>
+<td>Zlib</td>
+<td>2020-07-20</td>
+</tr>
+<tr>
+<td>58</td>
+<td><strong>veinmind-jenkins</strong></td>
+<td></td>
+<td>Groovy</td>
+<td>2</td>
+<td>3</td>
+<td>-</td>
+<td>2024-08-12</td>
+</tr>
+<tr>
+<td>59</td>
+<td><strong>kong-safeline</strong></td>
+<td></td>
+<td>Lua</td>
+<td>2</td>
+<td>1</td>
+<td>-</td>
+<td>2025-10-16</td>
+</tr>
+<tr>
+<td>60</td>
+<td><strong>ingress-nginx-safeline</strong></td>
+<td></td>
+<td>Lua</td>
+<td>2</td>
+<td>3</td>
+<td>-</td>
+<td>2025-08-28</td>
+</tr>
+<tr>
+<td>61</td>
+<td><strong>daemon</strong></td>
+<td>A daemon package for use with Go (golang) services with no depend</td>
+<td>Go</td>
+<td>1</td>
+<td>1</td>
+<td>MIT</td>
+<td>2019-05-01</td>
+</tr>
+<tr>
+<td>62</td>
+<td><strong>veinmind-common-go</strong></td>
+<td></td>
+<td>Go</td>
+<td>1</td>
+<td>6</td>
+<td>MIT</td>
+<td>2026-05-23</td>
+</tr>
+<tr>
+<td>63</td>
+<td><strong>veinmind-orb</strong></td>
+<td></td>
+<td>-</td>
+<td>1</td>
+<td>0</td>
+<td>-</td>
+<td>2022-07-15</td>
+</tr>
+<tr>
+<td>64</td>
+<td><strong>t1k-docs</strong></td>
+<td></td>
+<td>HTML</td>
+<td>1</td>
+<td>0</td>
+<td>Apache-2.0</td>
+<td>2025-04-04</td>
+</tr>
+<tr>
+<td>65</td>
+<td><strong>s-captcha</strong></td>
+<td></td>
+<td>-</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>2025-04-04</td>
+</tr>
+<tr>
+<td>66</td>
+<td><strong>BFE-safeline-module</strong></td>
+<td>The WAF detection plugin for BFE</td>
+<td>Go</td>
+<td>1</td>
+<td>0</td>
+<td>-</td>
+<td>2025-07-31</td>
+</tr>
+<tr>
+<td>67</td>
+<td><strong>MonkeyCodeProjectTemplate</strong></td>
+<td></td>
+<td>-</td>
+<td>1</td>
+<td>1</td>
+<td>-</td>
+<td>2026-06-12</td>
+</tr>
+<tr>
+<td>68</td>
+<td><strong>baizhi-app-template</strong></td>
+<td></td>
+<td>TypeScript</td>
+<td>1</td>
+<td>3</td>
+<td>-</td>
+<td>2026-06-08</td>
+</tr>
+<tr>
+<td>69</td>
+<td><strong>xray_blog</strong></td>
+<td></td>
+<td>HTML</td>
+<td>0</td>
+<td>1</td>
+<td>-</td>
+<td>2021-05-12</td>
+</tr>
+<tr>
+<td>70</td>
+<td><strong>crab.fit</strong></td>
+<td>Enter your availability to find a time that works for everyone!</td>
+<td>JavaScript</td>
+<td>0</td>
+<td>0</td>
+<td>GPL-3.0</td>
+<td>2022-10-25</td>
+</tr>
+<tr>
+<td>71</td>
+<td><strong>veinmind-common-python</strong></td>
+<td></td>
+<td>Python</td>
+<td>0</td>
+<td>1</td>
+<td>MIT</td>
+<td>2023-01-28</td>
+</tr>
+<tr>
+<td>72</td>
+<td><strong>systrace-blob</strong></td>
+<td></td>
+<td>-</td>
+<td>0</td>
+<td>0</td>
+<td>Apache-2.0</td>
+<td>2022-12-07</td>
+</tr>
+<tr>
+<td>73</td>
+<td><strong>raglite-go-sdk</strong></td>
+<td></td>
+<td>Go</td>
+<td>0</td>
+<td>1</td>
+<td>MIT</td>
+<td>2026-03-11</td>
+</tr>
+<tr>
+<td>74</td>
+<td><strong>monkeycode-practise</strong></td>
+<td>monkeycode 练习项目</td>
+<td>-</td>
+<td>0</td>
+<td>0</td>
+<td>-</td>
+<td>2025-12-23</td>
+</tr>
+<tr>
+<td>75</td>
+<td><strong>2026-campus-recruitment</strong></td>
+<td></td>
+<td>-</td>
+<td>0</td>
+<td>0</td>
+<td>MIT</td>
+<td>2025-12-22</td>
+</tr>
+<tr>
+<td>76</td>
+<td><strong>CatBI</strong></td>
+<td></td>
+<td>-</td>
+<td>0</td>
+<td>0</td>
+<td>-</td>
+<td>2026-03-16</td>
+</tr>
+<tr>
+<td>77</td>
+<td><strong>bzskills</strong></td>
+<td>The open agent skills tool - npx bzskills</td>
+<td>TypeScript</td>
+<td>0</td>
+<td>0</td>
+<td>-</td>
+<td>2026-05-20</td>
+</tr>
+</tbody></table>
+<hr>
+
+
+
+<script>
+(function() {
+  var table = document.querySelector('table');
+  if (!table) return;
+  var tbody = table.querySelector('tbody');
+  if (!tbody) return;
+  var rows = tbody.querySelectorAll('tr');
+  if (rows.length <= 10) return;
+  for (var i = 10; i < rows.length; i++) rows[i].style.display = 'none';
+  var btn = document.createElement('button');
+  btn.textContent = '📋 加载全部 (' + (rows.length - 10) + ' 个项目)';
+  btn.style.cssText = 'display:block;margin:16px auto;padding:10px 24px;background:var(--cobalt-600);color:white;border:none;border-radius:6px;cursor:pointer;font-size:0.88rem;';
+  btn.onclick = function() {
+    for (var i = 10; i < rows.length; i++) rows[i].style.display = '';
+    btn.textContent = '✅ 已全部加载 (' + rows.length + ' 个项目)';
+    btn.style.background = '#2a2a3e'; btn.style.color = '#9ca3af'; btn.style.cursor = 'default';
+    btn.onclick = null;
+  };
+  table.parentNode.appendChild(btn);
+})();
+</script>
+
+</body>
+</html>

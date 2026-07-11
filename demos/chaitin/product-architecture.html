@@ -1,0 +1,349 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<link rel="icon" href="https://chaitin.cn/favicon.ico" type="image/x-icon">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>长亭科技 · 产品架构</title>
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+body{background:#0b0e1a;color:#e0e6f0;font-family:'Inter','SF Pro','PingFang SC','Microsoft YaHei',sans-serif;padding:30px 20px;min-height:100vh}
+.container{max-width:1100px;margin:0 auto}
+
+h1{font-size:20px;font-weight:700;background:linear-gradient(90deg,#60a5fa,#a78bfa);-webkit-background-clip:text;-webkit-text-fill-color:transparent;margin-bottom:2px;text-align:center}
+.sub{font-size:12px;color:#5a6380;text-align:center;margin-bottom:28px}
+
+/* Topology */
+.topo{position:relative;display:flex;flex-direction:column;align-items:center;gap:0}
+
+.layer-row{display:flex;justify-content:center;align-items:center;gap:20px;width:100%;padding:8px 0;position:relative;flex-wrap:wrap}
+.layer-label{position:absolute;left:-2px;top:50%;transform:translateY(-50%) rotate(-90deg);font-size:10px;font-weight:700;letter-spacing:2px;white-space:nowrap;color:#2a3050;text-transform:uppercase;width:20px;text-align:center}
+
+/* Nodes */
+.node{padding:6px 14px;border-radius:6px;font-size:12px;font-weight:500;text-align:center;position:relative;transition:all .25s;cursor:default;min-width:70px;border:1px solid transparent}
+.node:hover{transform:translateY(-2px);filter:brightness(1.2);z-index:10}
+.node .alias{display:block;font-size:9px;opacity:.5;margin-top:1px}
+.node .badge{position:absolute;top:-6px;right:-6px;font-size:7px;padding:1px 4px;border-radius:3px;font-weight:700;line-height:1.2}
+
+/* Wide node for hubs */
+.node-wide{padding:8px 20px;min-width:100px}
+.node-xl{padding:10px 28px;min-width:140px;font-size:13px}
+
+/* Layer backgrounds */
+.l7{background:linear-gradient(135deg,rgba(96,165,250,0.08),rgba(96,165,250,0.02));border-top:1px solid rgba(96,165,250,0.08)}
+.l6{background:linear-gradient(135deg,rgba(168,85,247,0.08),rgba(168,85,247,0.02))}
+.l5{background:linear-gradient(135deg,rgba(52,211,153,0.08),rgba(52,211,153,0.02))}
+.l4{background:linear-gradient(135deg,rgba(251,146,60,0.08),rgba(251,146,60,0.02))}
+.l3{background:linear-gradient(135deg,rgba(14,165,233,0.1),rgba(14,165,233,0.02));border-top:2px solid rgba(14,165,233,0.2);border-bottom:2px solid rgba(14,165,233,0.2)}
+.l2{background:linear-gradient(135deg,rgba(251,191,36,0.08),rgba(251,191,36,0.02))}
+.l1{background:linear-gradient(135deg,rgba(255,255,255,0.02),rgba(255,255,255,0.005))}
+
+/* Node colors */
+.n-customer{background:rgba(96,165,250,0.1);border-color:rgba(96,165,250,0.15);color:#93c5fd}
+.n-service{background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.15);color:#c084fc}
+.n-platform{background:rgba(52,211,153,0.1);border-color:rgba(52,211,153,0.15);color:#34d399}
+.n-product{background:rgba(251,146,60,0.08);border-color:rgba(251,146,60,0.12);color:#fb923c}
+.n-ai-engine{background:rgba(14,165,233,0.12);border-color:#38bdf8;color:#7dd3fc;box-shadow:0 0 12px rgba(14,165,233,0.15)}
+.n-ai-standalone{background:rgba(168,85,247,0.1);border-color:rgba(168,85,247,0.15);color:#c084fc}
+.n-data{background:rgba(251,191,36,0.06);border-color:rgba(251,191,36,0.1);color:#fbbf24}
+.n-infra{background:rgba(255,255,255,0.03);border-color:rgba(255,255,255,0.06);color:#6b7280}
+
+/* Sub-group containers */
+.group{display:flex;gap:10px;flex-wrap:wrap;justify-content:center;align-items:center;padding:4px 0}
+.group-label{width:100%;font-size:9px;font-weight:700;color:#5a6380;letter-spacing:1px;text-align:center;margin:2px 0}
+
+/* Connectors */
+.connector{display:flex;justify-content:center;align-items:center;height:34px;width:100%;position:relative}
+.connector .line{position:absolute;width:2px;height:100%;background:linear-gradient(to bottom,transparent,rgba(96,165,250,0.12),transparent)}
+.connector .arrow{position:absolute;bottom:2px;font-size:8px;color:rgba(96,165,250,0.2)}
+.connector .flow-label{position:absolute;right:20px;font-size:7px;color:#2a3050;letter-spacing:1px}
+.connector-left{left:10%}
+.connector-center{left:50%;margin-left:-1px}
+
+/* Fork connectors */
+.fork-area{display:flex;width:100%;justify-content:center;position:relative;height:30px}
+.fork-area .v-line{position:absolute;width:2px;height:50%;background:rgba(96,165,250,0.08)}
+.fork-area .h-line{position:absolute;width:60%;height:2px;top:50%;background:rgba(96,165,250,0.08)}
+.fork-area .conn-dots{position:absolute;top:50%;width:100%;display:flex;justify-content:space-around}
+.fork-area .conn-dot{width:2px;height:6px;background:rgba(96,165,250,0.08);border-radius:1px}
+
+/* Legend */
+.legend{display:flex;justify-content:center;gap:16px;flex-wrap:wrap;margin:18px 0 8px}
+.legend-item{display:flex;align-items:center;gap:4px;font-size:10px;color:#5a6380}
+.legend-dot{width:10px;height:10px;border-radius:2px}
+
+/* Divider */
+.section-title{font-size:14px;font-weight:600;color:#e0e6f0;margin:32px 0 16px;text-align:center}
+.section-title span{color:#60a5fa}
+
+/* Three AI card row */
+.ai-row{display:grid;grid-template-columns:1.5fr 1fr 1fr 1fr;gap:10px;margin:0 0 28px}
+.ai-card{border-radius:8px;padding:14px;border:1px solid #2a3050;position:relative}
+.ai-card.engine{background:linear-gradient(135deg,rgba(14,165,233,0.06),rgba(14,165,233,0.02));border-color:rgba(14,165,233,0.15)}
+.ai-card.standalone{background:linear-gradient(135deg,rgba(168,85,247,0.06),rgba(168,85,247,0.02));border-color:rgba(168,85,247,0.15)}
+
+.ai-card .ac-title{font-size:12px;font-weight:700}
+.ai-card .ac-sub{font-size:9px;color:#5a6380;margin:2px 0 6px}
+.ai-card .ac-arch{display:inline-block;padding:1px 5px;border-radius:2px;font-size:8px;font-weight:700;margin-bottom:4px}
+.ac-engine{background:rgba(14,165,233,0.12);color:#38bdf8}
+.ac-standalone{background:rgba(168,85,247,0.12);color:#c084fc}
+.ai-card .ac-deps{font-size:9px;color:#5a6380;line-height:1.5}
+.ai-card .ac-deps .dep{color:#34d399}
+.ai-card .ac-deps .nope{color:#5a6380}
+
+/* Callout */
+.callout{padding:10px 16px;border-radius:6px;font-size:11px;line-height:1.6;margin:10px 0 0;background:rgba(14,165,233,0.04);border-left:2px solid rgba(14,165,233,0.2);color:#5a6380;text-align:center}
+.callout strong{color:#e0e6f0}
+
+/* Responsive */
+@media(max-width:768px){
+  body{padding:12px}
+  .layer-row{gap:8px;padding:6px 0}
+  .node{padding:4px 8px;font-size:10px;min-width:50px}
+  .node .alias{display:none}
+  .node-xl{padding:6px 14px;min-width:80px;font-size:11px}
+  .layer-label{display:none}
+  .ai-row{grid-template-columns:1fr 1fr}
+  .connector .flow-label{display:none}
+}
+
+/* Tooltip */
+[data-tip]{position:relative}
+[data-tip]:hover::after{content:attr(data-tip);position:absolute;bottom:calc(100% + 6px);left:50%;transform:translateX(-50%);background:#111827;color:#e0e6f0;padding:4px 10px;border-radius:4px;font-size:10px;white-space:nowrap;z-index:100;border:1px solid #2a3050}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:3px;height:3px}
+::-webkit-scrollbar-track{background:#0b0e1a}
+::-webkit-scrollbar-thumb{background:#2a3050;border-radius:2px}
+</style>
+
+<style>
+body { background: #1a1a2e !important; color: #eaeaea; line-height: 1.8; }
+h1 { color: #ccd6f6; }
+</style>
+</head>
+<body>
+<div class="container">
+
+<div class="sub">自底向上 · 基础设施 → 检测引擎 → AI能力 → 安全产品 → 运营平台 → 服务 → 客户</div>
+
+<div class="legend">
+  <span class="legend-item"><span class="legend-dot" style="background:#93c5fd"></span>客户场景</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#c084fc"></span>安全服务</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#34d399"></span>运营平台</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#fb923c"></span>安全产品</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#38bdf8"></span>AI引擎</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#c084fc"></span>AI独立产品</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#fbbf24"></span>检测引擎</span>
+  <span class="legend-item"><span class="legend-dot" style="background:#6b7280"></span>基础设施</span>
+</div>
+
+<div class="topo">
+
+  <!-- ════════ L7: Customer ════════ -->
+  <div class="layer-row l7">
+    <div class="layer-label" style="color:#93c5fd">客户</div>
+    <div class="node n-customer" data-tip="等保合规/攻防演练">🏦 金融</div>
+    <div class="node n-customer" data-tip="信创替代/等保">🏛️ 政府</div>
+    <div class="node n-customer" data-tip="大规模Web防护">📡 运营商</div>
+    <div class="node n-customer" data-tip="国产化/工控安全">⚡ 能源</div>
+    <div class="node n-customer" data-tip="高并发WAF/API">🌐 互联网</div>
+    <div class="node n-customer" data-tip="勒索/数据安全">🏭 制造</div>
+    <div class="node n-customer" data-tip="大模型/Agent安全">🤖 AI企业</div>
+  </div>
+
+  <div class="connector">
+    <div class="line"></div>
+    <div class="arrow">▾</div>
+    <div class="flow-label">服务交付</div>
+  </div>
+
+  <!-- ════════ L6: Service ════════ -->
+  <div class="layer-row l6">
+    <div class="layer-label" style="color:#c084fc">服务</div>
+    <div class="node node-xl n-service" data-tip="MSS 7×24专家值守">大观 (MSS)</div>
+    <div class="node n-service" data-tip="红蓝对抗/渗透测试/应急">安全服务</div>
+  </div>
+
+  <div class="connector">
+    <div class="line"></div>
+    <div class="arrow">▾</div>
+    <div class="flow-label">平台消费</div>
+  </div>
+
+  <!-- ════════ L5: Platform ════════ -->
+  <div class="layer-row l5" style="gap:30px">
+    <div class="layer-label" style="color:#34d399">运营</div>
+    <div class="node node-xl n-platform" data-tip="SIEM+SOAR，汇入全线产品告警">万象 (SOC)</div>
+    <div class="node n-platform" data-tip="漏洞全生命周期工单管理">鉴微 (风险)</div>
+  </div>
+
+  <!-- Fork: Platform consuming products -->
+  <div class="fork-area">
+    <div class="v-line"></div>
+    <div class="h-line"></div>
+    <div class="conn-dots">
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+      <div class="conn-dot"></div>
+    </div>
+  </div>
+  <div class="connector" style="height:18px">
+    <div class="line" style="height:100%;background:rgba(52,211,153,0.06)"></div>
+    <div class="flow-label" style="color:#34d399;opacity:.4;right:10px">数据汇聚 ↑</div>
+  </div>
+
+  <!-- ════════ L4: Products ════════ -->
+  <div class="layer-row l4" style="gap:8px;position:relative">
+    <div class="layer-label" style="color:#fb923c">产品</div>
+
+    <!-- Row 1: 边界+检测 -->
+    <div class="group" style="flex:1;min-width:320px">
+      <div class="group-label">🛡️ 边界与检测</div>
+      <div class="node n-product" data-tip="WAF，语义分析替代规则匹配">雷池</div>
+      <div class="node n-product" data-tip="流量威胁检测响应">全悉</div>
+      <div class="node n-product" data-tip="主动威胁欺骗防御">谛听</div>
+      <div class="node n-product" data-tip="云工作负载保护">牧云</div>
+    </div>
+
+    <!-- Row 2: 漏洞+资产 -->
+    <div class="group" style="flex:1;min-width:280px">
+      <div class="group-label">🔍 评估与验证</div>
+      <div class="node n-product" data-tip="风险评估系统">洞鉴</div>
+      <div class="node n-product" data-tip="资产暴露面管理">云图</div>
+      <div class="node n-product" data-tip="自动化渗透测试">无锋</div>
+      <div class="node n-product" data-tip="安全验证(BAS)">御衡</div>
+    </div>
+
+    <!-- Row 3: 代码安全 -->
+    <div class="group" style="flex:1;min-width:220px">
+      <div class="group-label">💻 代码安全</div>
+      <div class="node n-product" data-tip="智能SAST代码分析">慧鉴</div>
+      <div class="node n-product" data-tip="DevSecOps平台">码力</div>
+    </div>
+  </div>
+
+  <div class="connector" style="height:18px">
+    <div class="line" style="height:100%;background:rgba(14,165,233,0.06)"></div>
+    <div class="flow-label" style="right:10px">API集成 ↑</div>
+  </div>
+
+  <!-- ════════ L3: AI Layer ════════ -->
+  <div class="layer-row l3" style="gap:30px;padding:14px 0">
+    <div class="layer-label" style="color:#38bdf8">AI</div>
+
+    <!-- AI Engine - center focus -->
+    <div class="node node-xl n-ai-engine" style="padding:12px 30px" data-tip="全线产品的AI能力底座">
+      🧠 问津 (ChaitinAI)
+      <span class="alias" style="opacity:.4;font-size:8px;letter-spacing:2px;text-align:center">★ AI ENGINE</span>
+    </div>
+
+    <!-- AI Standalone products -->
+    <div class="node n-ai-standalone" data-tip="大模型安全围栏，独立部署">守元</div>
+    <div class="node n-ai-standalone" data-tip="AI代码风险发现，独立工具">MonkeyScan</div>
+    <div class="node n-ai-standalone" data-tip="OpenClaw风险检测，独立工具">ClawLens</div>
+  </div>
+
+  <div class="connector">
+    <div class="line"></div>
+    <div class="arrow">▾</div>
+    <div class="flow-label">训练依赖</div>
+  </div>
+
+  <!-- ════════ L2: Engines ════════ -->
+  <div class="layer-row l2" style="gap:12px">
+    <div class="layer-label" style="color:#fbbf24">引擎</div>
+    <div class="node n-data" data-tip="智能语义分析">语义分析</div>
+    <div class="node n-data" data-tip="AI病毒分析">恶意文件检测</div>
+    <div class="node n-data" data-tip="CVE/CNNVD">漏洞情报</div>
+    <div class="node n-data" data-tip="威胁情报">威胁情报</div>
+    <div class="node n-data" data-tip="xray扫描引擎">xray引擎</div>
+    <div class="node n-data" data-tip="资产指纹识别">指纹识别</div>
+  </div>
+
+  <div class="connector" style="height:18px">
+    <div class="line" style="height:100%"></div>
+  </div>
+
+  <!-- ════════ L1: Infra ════════ -->
+  <div class="layer-row l1" style="gap:16px">
+    <div class="layer-label" style="color:#6b7280">基础</div>
+    <div class="node n-infra">百川云</div>
+    <div class="node n-infra">百智云</div>
+    <div class="node n-infra">CLI工具</div>
+    <div class="node n-infra">API GW</div>
+    <div class="node n-infra">GitHub 77 repo</div>
+  </div>
+
+</div>
+
+<!-- ════════ AI Products Analysis ════════ -->
+<div class="section-title"><span>◆</span> 三款 AI 产品定位 · 架构对比</div>
+
+<div class="ai-row">
+  <div class="ai-card engine">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div class="ac-title" style="color:#38bdf8">问津 · AI Engine</div>
+      <span class="ac-arch ac-engine">AI Native Engine</span>
+    </div>
+    <div class="ac-sub">全线产品AI能力底座</div>
+    <div class="ac-deps">
+      <span style="color:#5a6380">南向依赖：</span><span class="dep">数据引擎层</span><br>
+      <span style="color:#5a6380">北向被消费：</span><span class="dep">雷池·万象·谛听·无锋·慧鉴·鉴微</span><br>
+      <span style="color:#5a6380">部署：</span><span class="dep">嵌入产品 / API / 独立部署</span>
+    </div>
+  </div>
+
+  <div class="ai-card standalone">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div class="ac-title" style="color:#c084fc">守元</div>
+      <span class="ac-arch ac-standalone">AI独立</span>
+    </div>
+    <div class="ac-sub">大模型安全围栏</div>
+    <div class="ac-deps">
+      <span style="color:#5a6380">南向依赖：</span><span class="nope">无</span><br>
+      <span style="color:#5a6380">北向被消费：</span><span class="nope">无</span><br>
+      <span style="color:#5a6380">部署：</span><span class="nope">独立部署</span>
+    </div>
+  </div>
+
+  <div class="ai-card standalone">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div class="ac-title" style="color:#c084fc">MonkeyScan</div>
+      <span class="ac-arch ac-standalone">AI独立</span>
+    </div>
+    <div class="ac-sub">AI代码风险发现</div>
+    <div class="ac-deps">
+      <span style="color:#5a6380">南向依赖：</span><span class="nope">无</span><br>
+      <span style="color:#5a6380">北向被消费：</span><span class="nope">无</span><br>
+      <span style="color:#5a6380">部署：</span><span class="nope">独立工具</span>
+    </div>
+  </div>
+
+  <div class="ai-card standalone">
+    <div style="display:flex;justify-content:space-between;align-items:start">
+      <div class="ac-title" style="color:#c084fc">ClawLens</div>
+      <span class="ac-arch ac-standalone">AI独立</span>
+    </div>
+    <div class="ac-sub">OpenClaw风险检测</div>
+    <div class="ac-deps">
+      <span style="color:#5a6380">南向依赖：</span><span class="nope">无</span><br>
+      <span style="color:#5a6380">北向被消费：</span><span class="nope">无</span><br>
+      <span style="color:#5a6380">部署：</span><span class="nope">单二进制</span>
+    </div>
+  </div>
+</div>
+
+<div class="callout">
+  <strong>核心结论</strong>：问津是唯一被全线产品消费的 AI Engine；守元/MonkeyScan/ClawLens 是零依赖 AI Native 独立产品。<br>
+  万象是北向数据枢纽（消费8+产品），同时被大观和鉴微消费，是产品矩阵的<strong>数据总线</strong>。
+</div>
+
+</div>
+</body>
+</html>

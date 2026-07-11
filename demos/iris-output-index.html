@@ -1,0 +1,305 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>IRIS-Output 文件索引</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.table-toolbar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.table-toolbar .search-box { flex: 1; min-width: 200px; }
+.table-toolbar .stat-label { font-size: 0.75rem; color: #6b7280; }
+.table-wrap { border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.col-checkbox { width: 36px; }
+.col-index { width: 45px; }
+.col-index-num { text-align: center; color: #6b7280; font-size: 0.72rem; }
+.empty-state { text-align: center; padding: 48px 20px; color: #6b7280; }
+.empty-state .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="mb-3"><h1 style="font-size:1.2rem;margin:0;">IRIS-Output 文件索引</h1></div>
+  <div class="table-toolbar">
+    <input class="input-dark search-box" id="searchInput" placeholder="搜索..." onkeyup="if(event.key==='Enter')renderTable()">
+    
+    <button class="btn btn-primary" onclick="renderTable()">搜索</button>
+    <div class="flex-1"></div>
+    <span class="stat-label" id="statInfo"></span>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <colgroup id="colGroup"></colgroup>
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none"><span class="icon">📭</span><span>无匹配数据</span></div>
+  </div>
+  <div class="pager" id="pager"></div>
+</div>
+<script>
+(function() {
+  const COLUMNS = [{"key": "severity", "label": "severity", "sortable": true}, {"key": "file", "label": "file", "sortable": true}, {"key": "size", "label": "size", "sortable": true}, {"key": "desc", "label": "desc", "sortable": true}, {"key": "date", "label": "date", "sortable": true}];  // [{key, label, width?, sortable?}]
+  const DATA    = [{"severity": "🔴", "file": "hermes-agent-深度分析-v2.0-20260630.md", "size": "11K", "desc": "15层级框架 + 认知升级 + 个人优化 + Loop工程 + MCP模式", "date": "06-30"}, {"severity": "🔴", "file": "fde-求职知识库-v2.0-20260630.md", "size": "6.5K", "desc": "FDE全景 + 差距分析 + 面试话术 + 简历资源", "date": "06-30"}, {"severity": "🔴", "file": "英语对话练习-v2.0-20260630.md", "size": "3.2K", "desc": "全场景对话 + 技术表达 + 高频纠正", "date": "06-30"}, {"severity": "🟡", "file": "opencode-vs-claude-code-对比分析-v1.0-20260630.md", "size": "9.5K", "desc": "OpenCode vs Claude Code 功能/成本/选型/门槛对比", "date": "06-30"}, {"severity": "🟡", "file": "软考高项认证优先级分析-v1.0-20260630.md", "size": "5.9K", "desc": "AI Agent 趋势下软考高项认证优先级评分", "date": "06-30"}, {"severity": "🟡", "file": "mcp-服务推荐-售前安全行业-v1.0-20260630.md", "size": "6.0K", "desc": "按行业属性推荐 MCP 服务及安装示例", "date": "06-30"}, {"severity": "🔵", "file": "hermes-agent-速查手册-v2.0-20260630.md", "size": "9.4K", "desc": "命令/Session/Memory/Skill/FTS5/配置速查", "date": "06-30"}, {"severity": "🔵", "file": "web-performance-metrics-V1.0-20260610.md", "size": "3.5K", "desc": "Web 性能指标参考", "date": "06-10"}, {"severity": "🔵", "file": "git-cloner-功能测试报告-V1.0-20260614.md", "size": "5.0K", "desc": "git-cloner 测试记录", "date": "06-14"}];
+  const PAGE_SIZE = 30;
+  let filtered = [], currentPage = 1;
+  let sortKey = '', sortAsc = true;
+
+  function renderTable() {
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    filtered = DATA.filter(function(row) {
+      if (!q) return true;
+      return COLUMNS.some(function(col) {
+        return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+      });
+    });
+    if (sortKey) {
+      filtered.sort(function(a, b) {
+        const va = a[sortKey] || '', vb = b[sortKey] || '';
+        const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+        return sortAsc ? cmp : -cmp;
+      });
+    }
+    const statEl = document.getElementById('statInfo');
+    if (statEl) statEl.textContent = filtered.length + ' / ' + DATA.length + ' 条';
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageData = filtered.slice(start, start + PAGE_SIZE);
+    const empty = document.getElementById('emptyState');
+    if (empty) empty.style.display = filtered.length === 0 ? 'block' : 'none';
+    const tbody = document.getElementById('tbody');
+    if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
+    tbody.innerHTML = pageData.map(function(row) {
+      return '<tr>' + COLUMNS.map(function(col) {
+        let val = row[col.key];
+        if (col.render) val = col.render(val, row);
+        else if (val === undefined || val === null) val = '';
+        return '<td' + (col.class ? ' class="' + col.class + '"' : '') + '>' + val + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    renderPager(totalPages);
+  }
+
+  function renderPager(totalPages) {
+    const el = document.getElementById('pager');
+    if (totalPages <= 1) { el.innerHTML = ''; return; }
+    let h = '<button class="btn btn-ghost btn-sm" onclick="goPage(1)"' + (currentPage===1?' disabled':'') + '>‹‹</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage-1)+')"' + (currentPage===1?' disabled':'') + '>‹</button>';
+    h += '<span class="text-xs text-gray" style="margin:0 8px;">' + currentPage + ' / ' + totalPages + '</span>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage+1)+')"' + (currentPage===totalPages?' disabled':'') + '>›</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+totalPages+')"' + (currentPage===totalPages?' disabled':'') + '>››</button>';
+    el.innerHTML = h;
+  }
+  window.goPage = function(n) {
+    const tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    currentPage = Math.max(1, Math.min(n, tp));
+    renderTable();
+  };
+  function init() {
+    const cg = document.getElementById('colGroup');
+    cg.innerHTML = COLUMNS.map(function(c) { return '<col' + (c.width?' style="width:'+c.width+'"':'') + '>'; }).join('');
+    document.getElementById('thead').innerHTML = '<tr>' + COLUMNS.map(function(c) {
+      return '<th' + (c.sortable!==false?' class="sortable" data-key="'+c.key+'" onclick="sortBy(\''+c.key+'\')"':'') + (c.width?' style="width:'+c.width+'"':'') + '>' + c.label + '</th>';
+    }).join('') + '</tr>';
+    renderTable();
+  }
+  window.sortBy = function(key) {
+    if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; }
+    renderTable();
+  };
+  init();
+})();
+</script>
+</body>
+</html>

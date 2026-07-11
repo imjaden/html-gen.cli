@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品矩阵 · 长亭科技</title>
+<style>
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-main: #1a1a2e;
+  
+  --accent: #0f3460;
+  --highlight: #e94560;
+  --text: #eaeaea;
+  --text-dim: #8892b0;
+  --text-bright: #ccd6f6;
+  --card-bg: #1e2a4a;
+  --border: #233554;
+  --success: #64ffda;
+  --warning: #f9a825;
+  --danger: #ff5252;
+  --tab-active: #e94560;
+  
+  --table-even: #1a2744;
+  --table-odd: #16213e;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Top Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+  border-bottom: 2px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  overflow-x: auto;
+}
+
+.tab-bar::before {
+  content: "🎯 长亭科技 · 业务分析";
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--highlight);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  background: rgba(233,69,96,0.08);
+}
+
+.tab-btn {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+  background: rgba(15,52,96,0.4);
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: var(--accent);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--highlight);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ===== Layout ===== */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 52px);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  max-width: 1100px;
+}
+
+.content-section {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.content-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sub-section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.sub-section.active {
+  display: block;
+}
+
+/* ===== Typography ===== */
+h1 {
+  font-size: 28px;
+  color: var(--highlight);
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 22px;
+  color: var(--text-bright);
+  margin: 28px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 18px;
+  color: var(--success);
+  margin: 20px 0 12px;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 16px;
+  color: var(--text-bright);
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+p { margin-bottom: 12px; }
+
+.subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--highlight);
+  margin-bottom: 10px;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:nth-child(even) td { background: var(--table-even); }
+tr:nth-child(odd) td { background: var(--table-odd); }
+tr:hover td { background: rgba(233,69,96,0.08); }
+
+/* ===== Tags / Badges ===== */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 2px 4px 2px 0;
+}
+
+.tag-red { background: rgba(233,69,96,0.2); color: var(--highlight); border: 1px solid rgba(233,69,96,0.4); }
+.tag-green { background: rgba(100,255,218,0.1); color: var(--success); border: 1px solid rgba(100,255,218,0.3); }
+.tag-blue { background: rgba(15,52,96,0.4); color: #64b5f6; border: 1px solid rgba(100,180,246,0.3); }
+.tag-yellow { background: rgba(249,168,37,0.15); color: var(--warning); border: 1px solid rgba(249,168,37,0.3); }
+
+/* ===== Code / Pre ===== */
+.code-block {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.5;
+  color: #c9d1d9;
+}
+
+/* ===== Progress Bars ===== */
+.bar-container {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  gap: 10px;
+}
+
+.bar-label {
+  min-width: 120px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: #0d1117;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+.bar-value {
+  min-width: 40px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ===== Architecture Diagram ===== */
+.arch-diagram {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.arch-layer {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 12px;
+}
+
+.arch-layer-label {
+  min-width: 180px;
+  padding: 10px 16px;
+  background: var(--accent);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  color: #fff;
+  border-left: 4px solid var(--highlight);
+}
+
+.arch-layer-products {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.arch-product {
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-bright);
+  transition: all 0.2s;
+}
+
+.arch-product:hover {
+  border-color: var(--highlight);
+  background: rgba(233,69,96,0.1);
+}
+
+.arch-product.star { border-color: var(--warning); box-shadow: 0 0 10px rgba(249,168,37,0.2); }
+
+/* ===== Stat Boxes ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--highlight);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ===== Timeline ===== */
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+}
+
+.timeline-date {
+  min-width: 90px;
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+/* ===== Checklist ===== */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  background: var(--card-bg);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+
+.checklist-item.done {
+  border-left-color: var(--success);
+  opacity: 0.7;
+}
+
+.check-icon {
+  font-size: 16px;
+  min-width: 20px;
+}
+
+/* ===== Quote / Callout ===== */
+.callout {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+  border-left: 4px solid;
+}
+
+.callout-highlight {
+  background: rgba(233,69,96,0.08);
+  border-color: var(--highlight);
+}
+
+.callout-success {
+  background: rgba(100,255,218,0.05);
+  border-color: var(--success);
+}
+
+.callout-warning {
+  background: rgba(249,168,37,0.08);
+  border-color: var(--warning);
+}
+
+.callout-info {
+  background: rgba(15,52,96,0.3);
+  border-color: #64b5f6;
+}
+
+/* ===== Grid layouts ===== */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== Responsive ===== */
+
+
+/* ===== Product Card ===== */
+.product-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.product-card h4 {
+  color: var(--highlight);
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.product-field {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.product-field strong {
+  color: var(--success);
+}
+
+/* ===== Glossary ===== */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.glossary-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+
+.glossary-term {
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+.glossary-def {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--highlight); }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.5rem; color: var(--text-bright); margin-bottom: 12px; }
+.subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+.tag-green { background: rgba(52,211,153,0.15); color: #34d399; }
+.tag-yellow { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.tag-red { background: rgba(248,113,113,0.15); color: #f87171; }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+.callout { border-left: 3px solid var(--highlight); background: rgba(233,69,96,0.06); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; color: var(--text-dim); }
+.callout-success { border-left-color: var(--success); background: rgba(100,255,218,0.06); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) { body { padding: 16px; } .grid-2 { grid-template-columns: 1fr; } }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.3rem; color: var(--text-bright); margin-bottom: 16px; }
+h2 { font-size: 1.15rem; color: var(--text-bright); margin: 20px 0 10px; }
+h3 { font-size: 1rem; color: var(--text-bright); margin: 16px 0 8px; }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.matrix-wrapper { width: 100%; overflow-x: auto; }
+.section-title { font-size: 1rem; color: var(--text-bright); font-weight: 600; margin: 16px 0 10px; }
+.axis-label-row { display: flex; gap: 0; margin-bottom: 8px; }
+.axis-label-col { flex: 1; text-align: center; font-size: 0.75rem; font-weight: 700; padding: 6px 0; background: var(--table-odd); border: 1px solid var(--border); }
+.matrix-row { display: flex; border-bottom: 1px solid var(--border); }
+.osilabel { width: 130px; min-width: 130px; padding: 8px; font-size: 0.8rem; font-weight: 700; color: var(--text-bright); background: var(--table-odd); }
+.matrix-cell { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px; }
+.prod { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; cursor: pointer; }
+.prod .alias { font-size: 0.65rem; opacity: 0.7; }
+.c-scan { background: rgba(56,189,248,0.15); color: #38bdf8; }
+.c-protect { background: rgba(74,222,128,0.15); color: #4ade80; }
+.c-detect { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.c-respond { background: rgba(244,114,182,0.15); color: #f472b6; }
+.c-recover { background: rgba(251,146,60,0.15); color: #fb923c; }
+.c-ai { background: rgba(167,139,250,0.15); color: #a78bfa; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+.sortable { cursor: pointer; }
+.sortable:hover { color: var(--text-bright); }
+</style>
+</head>
+<body>
+
+<div class="panel active">
+  <div class="matrix-wrapper">
+
+    <!-- Column headers -->
+    <div class="axis-label-row">
+      <div class="axis-label-col" style="color:#fbbf24">Identify<br>识别</div>
+      <div class="axis-label-col" style="color:#4ade80">Protect<br>防护</div>
+      <div class="axis-label-col" style="color:#38bdf8">Detect<br>检测</div>
+      <div class="axis-label-col" style="color:#f472b6">Respond<br>响应</div>
+      <div class="axis-label-col" style="color:#fb923c">Recover<br>恢复</div>
+      <div class="axis-label-col ai" style="color:#a78bfa">AI 贯穿</div>
+    </div>
+
+    <!-- L7 Application Layer -->
+    <div class="matrix-row">
+      <div class="osilabel">L7 应用层<div class="proto">HTTP/HTTPS/API/DNS</div><div class="count">12+ 产品</div></div>
+      <div class="matrix-cell">
+        <span class="prod c-scan" onclick="showDetail('云图')">云图<span class="alias">ASM</span></span>
+        <span class="prod c-scan" onclick="showDetail('洞鉴')">洞鉴<span class="alias">漏扫</span></span>
+        <span class="prod c-scan" onclick="showDetail('无锋')">无锋<span class="alias">渗透</span></span>
+      </div>
+      <div class="matrix-cell">
+        <span class="prod c-waf" onclick="showDetail('雷池')">雷池<span class="alias">WAF</span></span>
+        <span class="prod c-code" onclick="showDetail('慧鉴')">慧鉴<span class="alias">SAST</span></span>
+        <span class="prod c-code" onclick="showDetail('码力')">码力<span class="alias">DevSec</span></span>
+        <span class="prod c-host" onclick="showDetail('牧云')">牧云<span class="alias">CWPP</span></span>
+        <span class="prod c-ai" onclick="showDetail('守元')">守元<span class="alias">AI围栏</span></span>
+      </div>
+      <div class="matrix-cell">
+        <span class="prod c-ops" onclick="showDetail('万象')">万象<span class="alias">SOC</span></span>
+        <span class="prod c-waf" onclick="showDetail('谛听')">谛听<span class="alias">蜜罐</span></span>
+        <span class="prod c-ai" onclick="showDetail('问津')">问津<span class="alias">安全AI</span></span>
+      </div>
+      <div class="matrix-cell">
+        <span class="prod c-ops" onclick="showDetail('万象')">万象<span class="alias">SOC</span></span>
+        <span class="prod c-service" onclick="showDetail('大观')">大观<span class="alias">MSS</span></span>
+        <span class="prod c-ai" onclick="showDetail('问津')">问津<span class="alias">研判</span></span>
+      </div>
+      <div class="matrix-cell">
+        <span class="prod c-ops" onclick="showDetail('鉴微')">鉴微<span class="alias">风险</span></span>
+        <span class="prod c-scan" onclick="showDetail('御衡')">御衡<span class="alias">BAS</span></span>
+      </div>
+      <div class="matrix-cell ai">
+        <span class="prod c-ai" onclick="showDetail('问津')">问津<span class="alias">大模型</span></span>
+        <span class="prod c-ai" onclick="showDetail('MonkeyScan')">MonkeyScan</span>
+        <span class="prod c-ai" onclick="showDetail('ClawLens')">ClawLens</span>
+      </div>
+    </div>
+
+    <!-- L6 Presentation Layer -->
+    <div class="matrix-row">
+      <div class="osilabel">L6 表示层<div class="proto">编码/加密/压缩</div><div class="count">2 产品</div></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell">
+        <span class="prod c-waf" onclick="showDetail('雷池')">雷池<span class="alias">动态加密</span></span>
+      </div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell ai"></div>
+    </div>
+
+    <!-- L5 Session Layer -->
+    <div class="matrix-row">
+      <div class="osilabel">L5 会话层<div class="proto">Session/认证</div><div class="count">1 产品</div></div>
+      <div class="matrix-cell">
+        <span class="prod c-scan" onclick="showDetail('无锋')">无锋<span class="alias">渗透</span></span>
+      </div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell ai"></div>
+    </div>
+
+    <!-- L4 Transport Layer -->
+    <div class="matrix-row">
+      <div class="osilabel">L4 传输层<div class="proto">TCP/UDP/TLS</div><div class="count">3 产品</div></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell">
+        <span class="prod c-waf" onclick="showDetail('全悉')">全悉<span class="alias">NDR</span></span>
+        <span class="prod c-waf" onclick="showDetail('谛听')">谛听<span class="alias">蜜罐</span></span>
+      </div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell ai"></div>
+    </div>
+
+    <!-- L3 Network Layer -->
+    <div class="matrix-row">
+      <div class="osilabel">L3 网络层<div class="proto">IP/ICMP/路由</div><div class="count">3 产品</div></div>
+      <div class="matrix-cell">
+        <span class="prod c-scan" onclick="showDetail('云图')">云图<span class="alias">IP</span></span>
+        <span class="prod c-scan" onclick="showDetail('洞鉴')">洞鉴<span class="alias">端口</span></span>
+      </div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell">
+        <span class="prod c-waf" onclick="showDetail('全悉')">全悉<span class="alias">NDR</span></span>
+      </div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell ai"></div>
+    </div>
+
+    <!-- L2 Data Link Layer -->
+    <div class="matrix-row">
+      <div class="osilabel">L2 数据链路<div class="proto">MAC/ARP/VLAN</div><div class="count">1 产品</div></div>
+      <div class="matrix-cell">
+        <span class="prod c-scan" onclick="showDetail('云图')">云图<span class="alias">内网</span></span>
+      </div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell"></div>
+      <div class="matrix-cell ai"></div>
+    </div>
+
+    <!-- L1 Physical -->
+    <div class="matrix-row gap">
+      <div class="osilabel">L1 物理层<div class="proto">网线/光纤/信号</div><div class="count">—</div></div>
+      <div class="matrix-cell"><span class="c-gap">未覆盖</span></div>
+      <div class="matrix-cell"><span class="c-gap">未覆盖</span></div>
+      <div class="matrix-cell"><span class="c-gap">未覆盖</span></div>
+      <div class="matrix-cell"><span class="c-gap">未覆盖</span></div>
+      <div class="matrix-cell"><span class="c-gap">未覆盖</span></div>
+      <div class="matrix-cell ai"><span class="c-gap">—</span></div>
+    </div>
+
+      <!-- Key Insights -->
+  <div class="section-title"><span>◆</span> 关键洞察</div>
+  <div class="insight-grid">
+    <div class="insight-card">
+      <div class="ic-title">L7 是绝对主场</div>
+      <div class="ic-text">超过80%的产品聚焦应用层，与长亭"Web安全起家"的基因完全吻合。雷池是2016年发家的第一款产品。</div>
+    </div>
+    <div class="insight-card">
+      <div class="ic-title">Protect 最密集</div>
+      <div class="ic-text">5个产品覆盖防护阶段，与"知攻善防"品牌定位一致。雷池+牧云+慧鉴+码力+守元构成全方位防护层。</div>
+    </div>
+    <div class="insight-card">
+      <div class="ic-title">Recover 最弱</div>
+      <div class="ic-text">只有鉴微和御衡。但灾备属存储/备份厂商赛道，长亭只覆盖"安全"部分，缺口合理。</div>
+    </div>
+    <div class="insight-card">
+      <div class="ic-title">AI 贯穿全阶段</div>
+      <div class="ic-text">问津大模型不是单阶段产品，而是每阶段的"增强剂"——这是长亭区别于竞争对手的核心差异。</div>
+    </div>
+  </div>
+
+    <!-- Density bars -->
+    <div class="legend">
+      <span class="legend-item"><span class="legend-dot" style="background:#f87171"></span>覆盖密</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#fbbf24"></span>覆盖中</span>
+      <span class="legend-item"><span class="legend-dot" style="background:#5a6380"></span>覆盖稀/无</span>
+    </div>
+
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:92%;background:linear-gradient(90deg,#f87171,#fbbf24)"></div>
+      </div>
+      <span class="density-label">L7 92%</span>
+    </div>
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:15%;background:#fbbf24"></div>
+      </div>
+      <span class="density-label">L6 15%</span>
+    </div>
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:10%;background:#fbbf24"></div>
+      </div>
+      <span class="density-label">L5 10%</span>
+    </div>
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:25%;background:#fbbf24"></div>
+      </div>
+      <span class="density-label">L4 25%</span>
+    </div>
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:25%;background:#fbbf24"></div>
+      </div>
+      <span class="density-label">L3 25%</span>
+    </div>
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:8%;background:#5a6380"></div>
+      </div>
+      <span class="density-label">L2 8%</span>
+    </div>
+    <div class="density-bar">
+      <div class="density-track">
+        <div class="density-fill" style="width:2%;background:#5a6380"></div>
+      </div>
+      <span class="density-label">L1 0%</span>
+    </div>
+  </div>
+
+
+</div>
+
+<!-- ==================== Tab 2: Product Table ==================== -->
+
+
+</body>
+</html>

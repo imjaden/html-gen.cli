@@ -1,0 +1,812 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>公司商业分析 · 纵/横菜单设计方案</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; margin-left: 80px; }
+.doc-header {
+  padding: 0;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+.doc-body { padding: 0; max-width: 880px; }
+
+.doc-body h1 {
+  font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
+  margin: 0.25rem 0 0.5rem; padding-bottom: 8px;
+  border-bottom: 1px solid #2a2a3e;
+}
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th {
+  background: #0d0d1a; font-weight: 600; color: #9ca3af;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px;
+}
+.doc-body pre {
+  position: relative;
+  background: #0d0d1a; border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md); padding: 14px 16px;
+  overflow-x: auto; margin: 0.75rem 0;
+}
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e;
+  color: #9ca3af; padding: 3px 8px;
+  border-radius: var(--radius-sm); font-size: 0.65rem;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; opacity: 0;
+}
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+/* ── Reading Progress Bar ── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0; height: 2px;
+  background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 90vw; max-height: 90vh; border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default;
+}
+.lightbox .lb-close {
+  position: fixed; top: 16px; right: 20px; font-size: 28px;
+  color: #aaa; cursor: pointer; line-height: 1;
+}
+.lightbox .lb-close:hover { color: #fff; }
+
+.doc-body img { cursor: zoom-in; }
+
+/* ── Anchor Links ── */
+.anchor-link {
+  opacity: 0; text-decoration: none; color: var(--cobalt-500);
+  font-size: 0.75em; margin-left: 4px; font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+/* ── Code Line Numbers ── */
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block; width: 2.5em; min-width: 2.5em;
+  text-align: right; padding-right: 1em;
+  color: #4a5568; user-select: none;
+}
+
+/* ── Callout Boxes ── */
+.doc-body blockquote.callout {
+  border-left-width: 4px;
+  padding: 10px 16px;
+  margin: 0.75rem 0;
+}
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note {
+  border-left-color: var(--cobalt-500);
+  background: rgba(79,70,229,0.08);
+  color: #c0c4f0;
+}
+.doc-body blockquote.callout.tip {
+  border-left-color: #34d399;
+  background: rgba(52,211,153,0.08);
+  color: #a7f3d0;
+}
+.doc-body blockquote.callout.warning {
+  border-left-color: #fbbf24;
+  background: rgba(251,191,36,0.08);
+  color: #fde68a;
+}
+.doc-body blockquote.callout.danger {
+  border-left-color: #f87171;
+  background: rgba(248,113,113,0.08);
+  color: #fecaca;
+}
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 16px; }
+  .doc-header { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-header">
+      <div class="logo">📄 公司商业分析 · 纵/横菜单设计方案</div>
+      <div class="sub"></div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+  </aside>
+  <div class="doc-main">
+    <div class="doc-header">
+      <h1>公司商业分析 · 纵/横菜单设计方案</h1>
+      <div class="meta">路径: <code>~/CodeSpace/script-miner/skills/html-demos/chaitin-menu-design-v1.0-20260707.md</code><br>创建: 2026-07-07 18:08 · 编辑: 2026-07-07 18:08<br>字数: 641 · 阅读约 3 分钟</div>
+    </div>
+    <div class="doc-body" id="docBody"><blockquote>基于长亭科技（Chaitin Tech）的数据梳理，设计适用于公司业务分析的 C 型知识库导航体系。</blockquote>
+<hr>
+<h2 id="一-当前长亭页面的菜单结构">一、当前长亭页面的菜单结构</h2>
+<h3 id="横向菜单-顶部-tab-栏-4-组">横向菜单（顶部 tab 栏）— 4 组</h3>
+<table><thead><tr>
+<th>#</th>
+<th>名称</th>
+<th>纵向条目数</th>
+</tr></thead><tbody>
+<tr>
+<td>0</td>
+<td><strong>公司经营</strong></td>
+<td>3</td>
+</tr>
+<tr>
+<td>1</td>
+<td><strong>产品体系</strong></td>
+<td>4</td>
+</tr>
+<tr>
+<td>2</td>
+<td><strong>知识迁移</strong></td>
+<td>2</td>
+</tr>
+<tr>
+<td>3</td>
+<td><strong>学以致用</strong></td>
+<td>1</td>
+</tr>
+</tbody></table>
+<h3 id="纵向菜单-左侧栏-10-项">纵向菜单（左侧栏）— 10 项</h3>
+<table><thead><tr>
+<th>横向组</th>
+<th>纵向项</th>
+<th>数据源</th>
+<th>维度标记</th>
+</tr></thead><tbody>
+<tr>
+<td>公司经营</td>
+<td>公司概况</td>
+<td>长亭业务分析.html</td>
+<td>理解</td>
+</tr>
+<tr>
+<td>公司经营</td>
+<td>发展前景</td>
+<td>同上 #发展前景</td>
+<td>理解</td>
+</tr>
+<tr>
+<td>公司经营</td>
+<td>竞争格局</td>
+<td>同上 #竞争优势</td>
+<td>能讲</td>
+</tr>
+<tr>
+<td>产品体系</td>
+<td>产品矩阵</td>
+<td>长亭产品矩阵.html</td>
+<td>知道</td>
+</tr>
+<tr>
+<td>产品体系</td>
+<td>产品架构</td>
+<td>长亭产品架构.html</td>
+<td>理解</td>
+</tr>
+<tr>
+<td>产品体系</td>
+<td>交付体系</td>
+<td>长亭交付体系.html</td>
+<td>能讲</td>
+</tr>
+<tr>
+<td>产品体系</td>
+<td>开源项目</td>
+<td>长亭开源项目.md</td>
+<td>知道</td>
+</tr>
+<tr>
+<td>知识迁移</td>
+<td>知识储备</td>
+<td>网络安全知识.md</td>
+<td>理解</td>
+</tr>
+<tr>
+<td>知识迁移</td>
+<td>速补计划</td>
+<td>安全速补.md</td>
+<td>能讲</td>
+</tr>
+<tr>
+<td>学以致用</td>
+<td>SLA监控</td>
+<td>长亭SLA监控.md</td>
+<td>能输出</td>
+</tr>
+</tbody></table>
+<p><strong>原设计定位</strong>：面试知识库（含知识迁移、速补等备考内容）</p>
+<hr>
+<h2 id="二-重新设计的商业分析菜单">二、重新设计的商业分析菜单</h2>
+<h3 id="设计原则">设计原则</h3>
+<ul>
+<li>**纵向 = 主体维度**（左侧栏 Tab）：公司分析的核心视角</li>
+<li>**横向 = 子主题**（点击左侧后右侧顶部）：该维度下的细分话题</li>
+<li>**商业分析导向**：以售前架构师视角看一家公司</li>
+</ul>
+<h3 id="新菜单结构">新菜单结构</h3>
+<pre><code class="language-">┌────────────────────────────────────────────────────────────────┐
+│  横向 Tab（4组）                                                │
+│  [🏢 公司概况] [📊 经营分析] [🧩 产品体系] [🔧 开源生态]       │
+├────────────────────────────────────────────────────────────────┤
+│  纵向  │                                                       │
+│  ──────│─────────────────────────────────────────────────────── │
+│  概述   │  · 公司画像                                          │
+│         │  · 发展历程                                          │
+│         │  · 融资与估值                                        │
+│  ──────│─────────────────────────────────────────────────────── │
+│  经营   │  · 商业模式与客户                                    │
+│  分析   │  · 市场竞争格局                                      │
+│         │  · 发展前景与战略                                    │
+│         │  · 风险与挑战                                        │
+│  ──────│─────────────────────────────────────────────────────── │
+│  产品   │  · 产品矩阵总览（OSI×IPDRR）                         │
+│  体系   │  · 核心产品解析                                      │
+│         │  · 技术架构                                          │
+│         │  · 交付体系（Agent/MCP/CLI/FDE）                     │
+│  ──────│─────────────────────────────────────────────────────── │
+│  开源   │  · 开源项目总览                                      │
+│  生态   │  · Top 10 明星项目                                   │
+│         │  · 开源战略解读                                      │
+└────────────────────────────────────────────────────────────────┘</code></pre>
+<h3 id="与原始菜单的差异">与原始菜单的差异</h3>
+<table><thead><tr>
+<th>维度</th>
+<th>原始（面试导向）</th>
+<th>新设计（商业分析导向）</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>视角</strong></td>
+<td>面试者（我需要知道什么）</td>
+<td>售前架构师（这家公司怎么样）</td>
+</tr>
+<tr>
+<td><strong>Tab 1</strong></td>
+<td>公司经营</td>
+<td>🏢 <strong>公司概况</strong>（精简聚焦）</td>
+</tr>
+<tr>
+<td><strong>Tab 2</strong></td>
+<td>产品体系</td>
+<td>📊 <strong>经营分析</strong>（新增商业模式/客户/风险）</td>
+</tr>
+<tr>
+<td><strong>Tab 3</strong></td>
+<td>知识迁移（安全知识）</td>
+<td>🧩 <strong>产品体系</strong>（保留并深化技术架构）</td>
+</tr>
+<tr>
+<td><strong>Tab 4</strong></td>
+<td>学以致用（SLA监控）</td>
+<td>🔧 <strong>开源生态</strong>（从产品体系拆出）</td>
+</tr>
+<tr>
+<td><strong>维度标记</strong></td>
+<td>理解/能讲/能输出（面试深度）</td>
+<td>不适用 → 改为信息类型标记</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三-各菜单项内容设计">三、各菜单项内容设计</h2>
+<h3 id="公司概况-3-项">🏢 公司概况 — 3 项</h3>
+<table><thead><tr>
+<th>纵向项</th>
+<th>内容范围</th>
+<th>数据来源</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>公司画像</strong></td>
+<td>全称/成立/定位/荣誉/4000+客户/6大国有银行覆盖；\"蓝莲花\"CTF战队基因；30秒电梯演讲</td>
+<td>业务分析.md §1</td>
+</tr>
+<tr>
+<td><strong>发展历程</strong></td>
+<td>2014年成立 → 清华创业 → WAF发家 → 产品线扩张 → 2026独角兽；关键里程碑时间线</td>
+<td>业务分析.md</td>
+</tr>
+<tr>
+<td><strong>融资与估值</strong></td>
+<td>融资轮次、投资方（蚂蚁集团等）、估值变化</td>
+<td>业务分析.md §5</td>
+</tr>
+</tbody></table>
+<h3 id="经营分析-4-项">📊 经营分析 — 4 项</h3>
+<table><thead><tr>
+<th>纵向项</th>
+<th>内容范围</th>
+<th>数据来源</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>商业模式</strong></td>
+<td>产品订阅+SaaS+安全服务+攻防演练；客单价段位估算；4000+客户分布</td>
+<td>业务分析.md §5</td>
+</tr>
+<tr>
+<td><strong>竞争格局</strong></td>
+<td>与奇安信/绿盟/深信服/启明星辰的差异化；\"技术流\"vs\"资源流\"；国内WAF份额第一</td>
+<td>业务分析.md §6</td>
+</tr>
+<tr>
+<td><strong>发展前景</strong></td>
+<td>双轮驱动战略（产品化+AI化）；万亿安全市场渗透率；政企/金融/运营商增长点</td>
+<td>业务分析.md §5+§7</td>
+</tr>
+<tr>
+<td><strong>风险挑战</strong></td>
+<td>市场竞争加剧、AI合规风险、人才争夺、大客户依赖</td>
+<td>业务分析.md §8</td>
+</tr>
+</tbody></table>
+<h3 id="产品体系-4-项">🧩 产品体系 — 4 项</h3>
+<table><thead><tr>
+<th>纵向项</th>
+<th>内容范围</th>
+<th>数据来源</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>产品矩阵总览</strong></td>
+<td>OSI七层覆盖图谱（L7 12+产品为主战场）；IPDRR安全能力阶段（Identify→Recover+AI）；\"一图看懂长亭产品\"</td>
+<td>产品矩阵.md §1-2</td>
+</tr>
+<tr>
+<td><strong>核心产品解析</strong></td>
+<td>雷池WAF（旗舰·语义分析引擎）；万象SOC（安全运营）；问津安全大模型；码力DevSecOps</td>
+<td>产品矩阵.md §3</td>
+</tr>
+<tr>
+<td><strong>技术架构</strong></td>
+<td>各产品的技术原理、部署架构、与竞品对比</td>
+<td>产品架构.html</td>
+</tr>
+<tr>
+<td><strong>交付体系</strong></td>
+<td>Agent/MCP/CLI/FDE 四层交付；现场实施 vs SaaS订阅</td>
+<td>交付体系.html</td>
+</tr>
+</tbody></table>
+<h3 id="开源生态-3-项">🔧 开源生态 — 3 项</h3>
+<table><thead><tr>
+<th>纵向项</th>
+<th>内容范围</th>
+<th>数据来源</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>项目总览</strong></td>
+<td>全量开源项目清单（含⭐数、语言分布）；总 Star 数、团队贡献模式</td>
+<td>开源项目.md §1</td>
+</tr>
+<tr>
+<td><strong>Top 10 明星</strong></td>
+<td>核心项目（雷池社区版等）的功能定位、社区活跃度、技术影响力</td>
+<td>开源项目.md §2</td>
+</tr>
+<tr>
+<td><strong>开源战略解读</strong></td>
+<td>开源目的（获客/品牌/生态）；\"开源版→企业版\"转化漏斗；与商业产品的协同关系</td>
+<td>开源项目.md §6</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四-与-c-型模板的映射">四、与 C 型模板的映射</h2>
+<p>C 型模板（<code>layout-knowledge.html</code>）的数据模型：</p>
+<pre><code class="language-json">{
+  "title": "条目名称",
+  "group": "类目名",       // 对应横向 Tab
+  "section": "子分类",     // 对应纵向分组
+  "badge": "标记",         // 信息类型: 概览/深度/数据
+  "content": "&lt;p&gt;HTML&lt;/p&gt;"
+}</code></pre>
+<p>横向 Tab = <code>group</code> → 公司概况 / 经营分析 / 产品体系 / 开源生态</p>
+<p>纵向分组 = <code>group</code> + <code>section</code> → 同一 group 下按 section 分组</p>
+<p>条目标记 = <code>badge</code> → 概览 / 深度 / 对比 / 数据</p>
+<hr>
+<h2 id="五-生成的-html-文件">五、生成的 HTML 文件</h2>
+<ul>
+<li>**C 型 HTML**: `chaitin-business-analysis-v1.0-20260707.html`（从 JSON 生成）</li>
+<li>**放置路径**: `html-demos/chaitin-business-analysis-v1.0-20260707.html`</li>
+<li>**挂载**: `html-demos/index.html` → C 列案例演示</li>
+</ul>
+<hr>
+<h2 id="迭代记录">迭代记录</h2>
+<table><thead><tr>
+<th>版本</th>
+<th>日期</th>
+<th>变更</th>
+</tr></thead><tbody>
+<tr>
+<td>v1.0</td>
+<td>2026-07-07</td>
+<td>初版：基于长亭科技数据设计商业分析菜单</td>
+</tr>
+</tbody></table></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    // Anchor link: ¶ icon, click copies #id to clipboard
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.textContent = '\u00b6';
+    anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      anchor.textContent = '\u2713';
+      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+    });
+    h.appendChild(anchor);
+    const level = h.tagName.toLowerCase().replace('h', '');
+    const link  = document.createElement('a');
+    link.href = '#' + h.id;
+    link.textContent = h.textContent;
+    link.className = 'toc-h' + level;
+    link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+  function onScroll() {
+    let current = '';
+    headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  body.querySelectorAll('pre').forEach(function(pre) {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      function done() {
+        btn.textContent = '已复制';
+        setTimeout(function() { btn.textContent = '复制'; }, 2000);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.pointerEvents = 'none';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    });
+    pre.appendChild(btn);
+  });
+
+  // ── Code Line Numbers ──
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent;
+    var lines = text.split('\n');
+    if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+    if (lines.length < 2) return; // single line, skip
+    code.textContent = '';
+    lines.forEach(function(line, idx) {
+      var span = document.createElement('span');
+      span.className = 'line';
+      span.textContent = line;
+      code.appendChild(span);
+      if (idx < lines.length - 1) {
+        code.appendChild(document.createTextNode('\n'));
+      }
+    });
+    code.classList.add('code-with-lines');
+  });
+
+  // ── Reading Progress Bar ──
+  const main = document.querySelector('.doc-main');
+  const bar = document.getElementById('progressBar');
+  function updateProgress() {
+    var p = main.scrollTop / (main.scrollHeight - main.clientHeight);
+    bar.style.width = (p * 100) + '%';
+  }
+  main.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ── Lightbox ──
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) {
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbImg.src = this.src;
+      lb.classList.add('active');
+    });
+  });
+  window.closeLightbox = function(e) {
+    if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) {
+      lb.classList.remove('active');
+    }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active');
+  });
+})();
+</script>
+</body>
+</html>

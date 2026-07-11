@@ -1,0 +1,997 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>html-gen · CLI 使用说明</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; margin-left: 80px; }
+.doc-header {
+  padding: 0;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+.doc-body { padding: 0; max-width: 880px; }
+
+.doc-body h1 {
+  font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
+  margin: 0.25rem 0 0.5rem; padding-bottom: 8px;
+  border-bottom: 1px solid #2a2a3e;
+}
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th {
+  background: #0d0d1a; font-weight: 600; color: #9ca3af;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px;
+}
+.doc-body pre {
+  position: relative;
+  background: #0d0d1a; border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md); padding: 14px 16px;
+  overflow-x: auto; margin: 0.75rem 0;
+}
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e;
+  color: #9ca3af; padding: 3px 8px;
+  border-radius: var(--radius-sm); font-size: 0.65rem;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; opacity: 0;
+}
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+/* ── Reading Progress Bar ── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0; height: 2px;
+  background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 90vw; max-height: 90vh; border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default;
+}
+.lightbox .lb-close {
+  position: fixed; top: 16px; right: 20px; font-size: 28px;
+  color: #aaa; cursor: pointer; line-height: 1;
+}
+.lightbox .lb-close:hover { color: #fff; }
+
+.doc-body img { cursor: zoom-in; }
+
+/* ── Anchor Links ── */
+.anchor-link {
+  opacity: 0; text-decoration: none; color: var(--cobalt-500);
+  font-size: 0.75em; margin-left: 4px; font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+/* ── Code Line Numbers ── */
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block; width: 2.5em; min-width: 2.5em;
+  text-align: right; padding-right: 1em;
+  color: #4a5568; user-select: none;
+}
+
+/* ── Callout Boxes ── */
+.doc-body blockquote.callout {
+  border-left-width: 4px;
+  padding: 10px 16px;
+  margin: 0.75rem 0;
+}
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note {
+  border-left-color: var(--cobalt-500);
+  background: rgba(79,70,229,0.08);
+  color: #c0c4f0;
+}
+.doc-body blockquote.callout.tip {
+  border-left-color: #34d399;
+  background: rgba(52,211,153,0.08);
+  color: #a7f3d0;
+}
+.doc-body blockquote.callout.warning {
+  border-left-color: #fbbf24;
+  background: rgba(251,191,36,0.08);
+  color: #fde68a;
+}
+.doc-body blockquote.callout.danger {
+  border-left-color: #f87171;
+  background: rgba(248,113,113,0.08);
+  color: #fecaca;
+}
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 16px; }
+  .doc-header { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-header">
+      <div class="logo">📄 html-gen · CLI 使用说明</div>
+      <div class="sub"></div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+  </aside>
+  <div class="doc-main">
+    <div class="doc-header">
+      <h1>html-gen · CLI 使用说明</h1>
+      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/html-gen-usage-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 1,002 · 阅读约 5 分钟</div>
+    </div>
+    <div class="doc-body" id="docBody"><hr>
+<blockquote>三层模板架构的 CLI 生成器：将 Markdown/JSON 注入模板，输出自包含单文件 HTML。</blockquote>
+<blockquote>零外部依赖，生成即用。</blockquote>
+<hr>
+<h2 id="一-概述">一、概述</h2>
+<p><code>html-gen</code> 是 HTML 模板系统的 <strong>Layer 3</strong> — CLI 生成器。它读取 Layer 2 模板，注入数据，输出单HTML 文件。</p>
+<h3 id="三层架构">三层架构</h3>
+<pre><code class="language-">Layer 1: style-guide.css       组件基座（CSS 变量/按钮/表格/弹窗/分页）
+Layer 2: layout-*.html         模板骨架（A 型表格 / B 型文档 / C 型知识库）
+Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）</code></pre>
+<h3 id="安装">安装</h3>
+<pre><code class="language-shell">pip install -e /path/to/html-templates</code></pre>
+<p>或直接运行：</p>
+<pre><code class="language-shell">python /path/to/html-gen.py &lt;子命令&gt; [参数]</code></pre>
+<hr>
+<h2 id="二-子命令总览">二、子命令总览</h2>
+<table><thead><tr>
+<th>子命令</th>
+<th>模板</th>
+<th>输入</th>
+<th>输出场景</th>
+</tr></thead><tbody>
+<tr>
+<td><code>doc</code></td>
+<td>layout-doc.html</td>
+<td><code>.md</code> Markdown</td>
+<td>分析报告、技术文档、长文阅读</td>
+</tr>
+<tr>
+<td><code>table</code></td>
+<td>layout-table.html</td>
+<td><code>.json</code> 数据</td>
+<td>文件索引、收藏管理、项目列表</td>
+</tr>
+<tr>
+<td><code>knowledge</code></td>
+<td>layout-knowledge.html</td>
+<td><code>.json</code> 条目 + 类目</td>
+<td>知识库、面试准备、项目 Wiki</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="三-doc-markdown-转文档">三、doc — Markdown 转文档</h2>
+<h3 id="用法">用法</h3>
+<pre><code class="language-shell">html-gen doc -i report.md -o report.html
+html-gen doc -i analysis.md --title "竞品分析报告" -o output.html</code></pre>
+<h3 id="参数">参数</h3>
+<table><thead><tr>
+<th>参数</th>
+<th>说明</th>
+<th>必填</th>
+</tr></thead><tbody>
+<tr>
+<td><code>-i, --input</code></td>
+<td>输入 Markdown 文件路径</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>-o, --output</code></td>
+<td>输出 HTML 路径（默认同目录同名.html）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>--title</code></td>
+<td>覆盖文档标题（默认从 <code># 标题</code> 提取）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>--subtitle</code></td>
+<td>副标题（显示在侧边栏和页头）</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="自动元信息">自动元信息</h3>
+<p>生成时自动注入以下元信息到文档顶部：</p>
+<table><thead><tr>
+<th>项目</th>
+<th>来源</th>
+<th>格式示例</th>
+</tr></thead><tbody>
+<tr>
+<td>路径</td>
+<td>文件绝对路径</td>
+<td><code>~/Documents/report.md</code></td>
+</tr>
+<tr>
+<td>创建时间</td>
+<td>文件 <code>st_ctime</code></td>
+<td><code>2026-07-07 14:30</code></td>
+</tr>
+<tr>
+<td>编辑时间</td>
+<td>文件 <code>st_mtime</code></td>
+<td><code>2026-07-07 16:45</code></td>
+</tr>
+<tr>
+<td>字数</td>
+<td><code>len(text.split())</code></td>
+<td><code>1,234</code></td>
+</tr>
+<tr>
+<td>阅读时长</td>
+<td>字数 ÷ 200</td>
+<td><code>6 分钟</code></td>
+</tr>
+</tbody></table>
+<h3 id="支持的-markdown-语法">支持的 Markdown 语法</h3>
+<table><thead><tr>
+<th>语法</th>
+<th>写法</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>标题</strong></td>
+<td><code># h1</code> / <code>## h2</code> / <code>### h3</code></td>
+<td>仅 3 级，h2/h3 自动加入 TOC</td>
+</tr>
+<tr>
+<td><strong>加粗</strong></td>
+<td><code><strong>文字</strong></code></td>
+<td>全局有效，表格内也支持</td>
+</tr>
+<tr>
+<td><strong>斜体</strong></td>
+<td><code><em>文字</em></code></td>
+<td><code>**</code> 优先匹配</td>
+</tr>
+<tr>
+<td><strong>行内代码</strong></td>
+<td><code>` </code>code<code> </code>`</td>
+<td>在 <code><pre><code></code> 内无效</td>
+</tr>
+<tr>
+<td><strong>链接</strong></td>
+<td><code><a href="url" target="_blank" rel="noopener">文字</a></code></td>
+<td>自动 <code>target="_blank"</code></td>
+</tr>
+<tr>
+<td><strong>图片</strong></td>
+<td>不解析（安全限制）</td>
+<td>用纯 HTML <code><img></code></td>
+</tr>
+<tr>
+<td><strong>围栏代码块</strong></td>
+<td><code> </code><code>` </code> 或 <code> </code><code>`</code> `</td>
+<td>支持变长 fence 嵌套，关闭行必须纯反引号无文字</td>
+</tr>
+<tr>
+<td><strong>表格</strong></td>
+<td>`\</td>
+<td>A \</td>
+<td>B \</td>
+<td>`</td>
+<td>第二行 `\</td>
+<td>:---\</td>
+<td>:---\</td>
+<td>` 标记对齐</td>
+</tr>
+<tr>
+<td><strong>无序列表</strong></td>
+<td><code>- 列表项</code></td>
+<td>连续自动合并</td>
+</tr>
+<tr>
+<td><strong>有序列表</strong></td>
+<td><code>1. 列表项</code></td>
+<td>连续自动合并</td>
+</tr>
+<tr>
+<td><strong>分隔线</strong></td>
+<td><code>---</code></td>
+<td>连续 3+ 短横</td>
+</tr>
+<tr>
+<td><strong>引用</strong></td>
+<td><code>> 文字</code></td>
+<td>单行模式</td>
+</tr>
+<tr>
+<td><strong>Callout</strong></td>
+<td><code>> <strong>Note:</strong> 文字</code></td>
+<td>支持 Note/Tip/Warning/Danger + 中文</td>
+</tr>
+</tbody></table>
+<h3 id="更多功能">更多功能</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>自动 TOC</strong></td>
+<td>从 h2/h3 生成侧边栏目录，平滑滚动</td>
+</tr>
+<tr>
+<td><strong>滚动高亮</strong></td>
+<td>当前阅读章节自动高亮</td>
+</tr>
+<tr>
+<td><strong>代码复制</strong></td>
+<td>悬停出现复制按钮，<code>execCommand</code> 兜底</td>
+</tr>
+<tr>
+<td><strong>代码行号</strong></td>
+<td>多行代码块左侧 CSS 行号，单行跳过</td>
+</tr>
+<tr>
+<td><strong>锚点链接</strong></td>
+<td>h2/h3 悬浮 ¶，点击复制 <code>#id</code></td>
+</tr>
+<tr>
+<td><strong>Callout 提示框</strong></td>
+<td>Note/Tip/Warning/Danger 彩色边框</td>
+</tr>
+<tr>
+<td><strong>外链归档</strong></td>
+<td>自动提取链接，去重排序追加到底部</td>
+</tr>
+<tr>
+<td><strong>阅读进度条</strong></td>
+<td>顶部固定 2px 进度条</td>
+</tr>
+<tr>
+<td><strong>图片灯箱</strong></td>
+<td>点击放大，Escape/外部点击关闭</td>
+</tr>
+<tr>
+<td><strong>零外部依赖</strong></td>
+<td>自包含单文件 HTML</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四-table-json-转数据表格">四、table — JSON 转数据表格</h2>
+<h3 id="用法">用法</h3>
+<pre><code class="language-shell">html-gen table -d data.json -o index.html
+html-gen table -d data.json --title "项目列表"</code></pre>
+<h3 id="参数">参数</h3>
+<table><thead><tr>
+<th>参数</th>
+<th>说明</th>
+<th>必填</th>
+</tr></thead><tbody>
+<tr>
+<td><code>-d, --data</code></td>
+<td>JSON 数据文件路径</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>--title</code></td>
+<td>页面标题（默认「数据表格」）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>-o, --output</code></td>
+<td>输出 HTML 路径（默认 <code>index.html</code>）</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="数据格式">数据格式</h3>
+<pre><code class="language-json">[
+  {
+    "项目": "Hermes Agent",
+    "Star": 50200,
+    "语言": "Python",
+    "最后提交": "2026-07-06"
+  }
+]</code></pre>
+<h3 id="列定义规则">列定义规则</h3>
+<table><thead><tr>
+<th>规则</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>自动推导</strong></td>
+<td>从第一条记录的 key 自动生成列名</td>
+</tr>
+<tr>
+<td><strong>顺序</strong></td>
+<td>按 JSON 字段顺序排列</td>
+</tr>
+<tr>
+<td><strong>列宽</strong></td>
+<td>自动适应内容</td>
+</tr>
+<tr>
+<td><strong>支持 HTML</strong></td>
+<td>单元格内容可包含 <code><a></code> <code><code></code> 等标签</td>
+</tr>
+</tbody></table>
+<h3 id="功能特性">功能特性</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>实时搜索</strong></td>
+<td>按任意字段全文匹配，输入即过滤</td>
+</tr>
+<tr>
+<td><strong>多字段排序</strong></td>
+<td>点击表头切换升/降序</td>
+</tr>
+<tr>
+<td><strong>客户端分页</strong></td>
+<td>每页 30 条，自动计算页数</td>
+</tr>
+<tr>
+<td><strong>深色主题</strong></td>
+<td>与 style-guide.css 一致</td>
+</tr>
+<tr>
+<td><strong>无数据提示</strong></td>
+<td>搜索无结果时显示「无匹配数据」</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五-knowledge-json-转知识库">五、knowledge — JSON 转知识库</h2>
+<h3 id="用法">用法</h3>
+<pre><code class="language-shell"># 最简单的启动（自动从数据推导类目）
+html-gen knowledge -d data.json -o kb.html
+
+# 带自定义分组
+html-gen knowledge -d data.json -g groups.json \
+  --title "技能知识库" \
+  --welcome "从上方类目选择" \
+  -o kb.html</code></pre>
+<h3 id="参数">参数</h3>
+<table><thead><tr>
+<th>参数</th>
+<th>说明</th>
+<th>必填</th>
+</tr></thead><tbody>
+<tr>
+<td><code>-d, --data</code></td>
+<td>条目 JSON 数据</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>-g, --groups</code></td>
+<td>类目分组 JSON（可选，自动推导）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>--title</code></td>
+<td>知识库标题</td>
+<td></td>
+</tr>
+<tr>
+<td><code>--subtitle</code></td>
+<td>副标题</td>
+<td></td>
+</tr>
+<tr>
+<td><code>--welcome</code></td>
+<td>欢迎面板提示文本</td>
+<td></td>
+</tr>
+<tr>
+<td><code>-o, --output</code></td>
+<td>输出 HTML 路径</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="数据格式">数据格式</h3>
+<pre><code class="language-json">[
+  {
+    "title": "Hermes Agent",
+    "group": "Agent 框架",
+    "section": "核心工具",
+    "badge": "能讲",
+    "desc": "&lt;p&gt;功能说明...&lt;/p&gt;",
+    "url": "detail.html"
+  }
+]</code></pre>
+<h3 id="字段说明">字段说明</h3>
+<table><thead><tr>
+<th>字段</th>
+<th>说明</th>
+<th>必填</th>
+</tr></thead><tbody>
+<tr>
+<td><code>title</code></td>
+<td>条目名称（侧栏显示）</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td>所属类目（对应横向 Tab）</td>
+<td>✅</td>
+</tr>
+<tr>
+<td><code>section</code></td>
+<td>子分类（侧栏分组）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>badge</code></td>
+<td>标记文本（如熟练度）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>desc</code></td>
+<td>内联 HTML 内容（无 url 时显示）</td>
+<td></td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>外部 HTML 路径（优先于 desc，iframe 加载）</td>
+<td></td>
+</tr>
+</tbody></table>
+<h3 id="groups-json-可选">groups.json（可选）</h3>
+<pre><code class="language-json">[
+  { "key": "Agent 框架", "label": "Agent 框架", "icon": "🤖" },
+  { "key": "HTML 工具",  "label": "HTML 工具",  "icon": "🌐" }
+]</code></pre>
+<h3 id="功能特性">功能特性</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>顶部标签栏</strong></td>
+<td>横向切换大类目，左侧章节跟随</td>
+</tr>
+<tr>
+<td><strong>左侧章节列表</strong></td>
+<td>含熟练度/标记 badge</td>
+</tr>
+<tr>
+<td><strong>双内容模式</strong></td>
+<td>有 <code>url</code> → iframe 加载；有 <code>desc</code> → 内联渲染</td>
+</tr>
+<tr>
+<td><strong>欢迎面板</strong></td>
+<td>空状态提示，显示类目图例</td>
+</tr>
+<tr>
+<td><strong>移动端自适应</strong></td>
+<td>侧边栏可收起</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六-路径与模板">六、路径与模板</h2>
+<h3 id="文件结构">文件结构</h3>
+<pre><code class="language-">html-templates/
+├── style-guide.css             Layer 1 样式基座
+├── layout-doc.html             Layer 2 B 型文档模板
+├── layout-table.html           Layer 2 A 型表格模板
+├── layout-knowledge.html       Layer 2 C 型知识库模板
+└── html-gen.py                 Layer 3 CLI 生成器
+
+html-demos/
+├── index.html                  模板展示首页
+├── demos-index.html            A 型文档索引
+├── template-*-guide.html       各方案使用说明
+├── *_demo.html                 各类型案例
+└── chaitin/                    商业分析案例子目录</code></pre>
+<h3 id="预览">预览</h3>
+<pre><code class="language-shell"># 从 skills/ 目录启动，确保 CSS 相对路径正确
+hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
+<hr>
+<h2 id="七-常见问题">七、常见问题</h2>
+<h3 id="q-生成的-html-代码块内-bold-被渲染了">Q: 生成的 HTML 代码块内 `**bold**` 被渲染了？</h3>
+<p>确保 <code>inline_format</code> 不在 <code><pre><code></code> 内执行（v1.1+ 已修复）。</p>
+<h3 id="q-复制按钮点了没反应">Q: 复制按钮点了没反应？</h3>
+<p><code>navigator.clipboard</code> 在 <code>http://</code> 非安全上下文中不可用。v1.1+ 用 <code>execCommand</code> 兜底。</p>
+<h3 id="q-代码行号显示不正常">Q: 代码行号显示不正常？</h3>
+<p>移除 <code>.code-with-lines .line { display: block }</code>。行间间距由 <code><pre></code> 的 <code>line-height</code> 统一控制（v1.1+ 已修复）。</p>
+<h3 id="q-c-型知识库内容显示-请配置-desc-内容">Q: C 型知识库内容显示「请配置 desc 内容」？</h3>
+<p>JSON 中字段名必须是 <code>desc</code>（不是 <code>content</code>）。v1.0+ 已统一。</p>
+<h3 id="q-b-型文档中-note-没有渲染为-callout">Q: B 型文档中 `> **Note:**` 没有渲染为 callout？</h3>
+<p>支持半角冒号和全角冒号（<code><strong>Note:</strong></code> / <code><strong>注意</strong>：</code>）。如不生效，检查关键词拼写。</p>
+<h3 id="q-文档中的外链底部没有归档">Q: 文档中的外链底部没有归档？</h3>
+<p>只有 <code>https?://</code> 开头的链接会被归档。相对路径和 <code>#</code> 锚点不归档。</p>
+<hr>
+<h2 id="迭代记录">迭代记录</h2>
+<table><thead><tr>
+<th>版本</th>
+<th>日期</th>
+<th>变更</th>
+</tr></thead><tbody>
+<tr>
+<td>v1.0</td>
+<td>2026-07-07</td>
+<td>初版：html-gen 完整使用说明</td>
+</tr>
+</tbody></table></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    // Anchor link: ¶ icon, click copies #id to clipboard
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.textContent = '\u00b6';
+    anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      anchor.textContent = '\u2713';
+      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+    });
+    h.appendChild(anchor);
+    const level = h.tagName.toLowerCase().replace('h', '');
+    const link  = document.createElement('a');
+    link.href = '#' + h.id;
+    link.textContent = h.textContent;
+    link.className = 'toc-h' + level;
+    link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+  function onScroll() {
+    let current = '';
+    headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  body.querySelectorAll('pre').forEach(function(pre) {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      function done() {
+        btn.textContent = '已复制';
+        setTimeout(function() { btn.textContent = '复制'; }, 2000);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.pointerEvents = 'none';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    });
+    pre.appendChild(btn);
+  });
+
+  // ── Code Line Numbers ──
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent;
+    var lines = text.split('\n');
+    if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+    if (lines.length < 2) return; // single line, skip
+    code.textContent = '';
+    lines.forEach(function(line, idx) {
+      var span = document.createElement('span');
+      span.className = 'line';
+      span.textContent = line;
+      code.appendChild(span);
+      if (idx < lines.length - 1) {
+        code.appendChild(document.createTextNode('\n'));
+      }
+    });
+    code.classList.add('code-with-lines');
+  });
+
+  // ── Reading Progress Bar ──
+  const main = document.querySelector('.doc-main');
+  const bar = document.getElementById('progressBar');
+  function updateProgress() {
+    var p = main.scrollTop / (main.scrollHeight - main.clientHeight);
+    bar.style.width = (p * 100) + '%';
+  }
+  main.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ── Lightbox ──
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) {
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbImg.src = this.src;
+      lb.classList.add('active');
+    });
+  });
+  window.closeLightbox = function(e) {
+    if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) {
+      lb.classList.remove('active');
+    }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active');
+  });
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,605 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>产品清单 · 长亭科技</title>
+<style>
+
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-main: #1a1a2e;
+  
+  --accent: #0f3460;
+  --highlight: #e94560;
+  --text: #eaeaea;
+  --text-dim: #8892b0;
+  --text-bright: #ccd6f6;
+  --card-bg: #1e2a4a;
+  --border: #233554;
+  --success: #64ffda;
+  --warning: #f9a825;
+  --danger: #ff5252;
+  --tab-active: #e94560;
+  
+  --table-even: #1a2744;
+  --table-odd: #16213e;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Top Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+  border-bottom: 2px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  overflow-x: auto;
+}
+
+.tab-bar::before {
+  content: "🎯 长亭科技 · 业务分析";
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--highlight);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  background: rgba(233,69,96,0.08);
+}
+
+.tab-btn {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+  background: rgba(15,52,96,0.4);
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: var(--accent);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--highlight);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ===== Layout ===== */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 52px);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  max-width: 1100px;
+}
+
+.content-section {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.content-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sub-section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.sub-section.active {
+  display: block;
+}
+
+/* ===== Typography ===== */
+h1 {
+  font-size: 28px;
+  color: var(--highlight);
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 22px;
+  color: var(--text-bright);
+  margin: 28px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 18px;
+  color: var(--success);
+  margin: 20px 0 12px;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 16px;
+  color: var(--text-bright);
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+p { margin-bottom: 12px; }
+
+.subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--highlight);
+  margin-bottom: 10px;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:nth-child(even) td { background: var(--table-even); }
+tr:nth-child(odd) td { background: var(--table-odd); }
+tr:hover td { background: rgba(233,69,96,0.08); }
+
+/* ===== Tags / Badges ===== */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 2px 4px 2px 0;
+}
+
+.tag-red { background: rgba(233,69,96,0.2); color: var(--highlight); border: 1px solid rgba(233,69,96,0.4); }
+.tag-green { background: rgba(100,255,218,0.1); color: var(--success); border: 1px solid rgba(100,255,218,0.3); }
+.tag-blue { background: rgba(15,52,96,0.4); color: #64b5f6; border: 1px solid rgba(100,180,246,0.3); }
+.tag-yellow { background: rgba(249,168,37,0.15); color: var(--warning); border: 1px solid rgba(249,168,37,0.3); }
+
+/* ===== Code / Pre ===== */
+.code-block {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.5;
+  color: #c9d1d9;
+}
+
+/* ===== Progress Bars ===== */
+.bar-container {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  gap: 10px;
+}
+
+.bar-label {
+  min-width: 120px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: #0d1117;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+.bar-value {
+  min-width: 40px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ===== Architecture Diagram ===== */
+.arch-diagram {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.arch-layer {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 12px;
+}
+
+.arch-layer-label {
+  min-width: 180px;
+  padding: 10px 16px;
+  background: var(--accent);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  color: #fff;
+  border-left: 4px solid var(--highlight);
+}
+
+.arch-layer-products {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.arch-product {
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-bright);
+  transition: all 0.2s;
+}
+
+.arch-product:hover {
+  border-color: var(--highlight);
+  background: rgba(233,69,96,0.1);
+}
+
+.arch-product.star { border-color: var(--warning); box-shadow: 0 0 10px rgba(249,168,37,0.2); }
+
+/* ===== Stat Boxes ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--highlight);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ===== Timeline ===== */
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+}
+
+.timeline-date {
+  min-width: 90px;
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+/* ===== Checklist ===== */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  background: var(--card-bg);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+
+.checklist-item.done {
+  border-left-color: var(--success);
+  opacity: 0.7;
+}
+
+.check-icon {
+  font-size: 16px;
+  min-width: 20px;
+}
+
+/* ===== Quote / Callout ===== */
+.callout {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+  border-left: 4px solid;
+}
+
+.callout-highlight {
+  background: rgba(233,69,96,0.08);
+  border-color: var(--highlight);
+}
+
+.callout-success {
+  background: rgba(100,255,218,0.05);
+  border-color: var(--success);
+}
+
+.callout-warning {
+  background: rgba(249,168,37,0.08);
+  border-color: var(--warning);
+}
+
+.callout-info {
+  background: rgba(15,52,96,0.3);
+  border-color: #64b5f6;
+}
+
+/* ===== Grid layouts ===== */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== Responsive ===== */
+
+
+/* ===== Product Card ===== */
+.product-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.product-card h4 {
+  color: var(--highlight);
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.product-field {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.product-field strong {
+  color: var(--success);
+}
+
+/* ===== Glossary ===== */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.glossary-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+
+.glossary-term {
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+.glossary-def {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--highlight); }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.5rem; color: var(--text-bright); margin-bottom: 12px; }
+.subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+.tag-green { background: rgba(52,211,153,0.15); color: #34d399; }
+.tag-yellow { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.tag-red { background: rgba(248,113,113,0.15); color: #f87171; }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+.callout { border-left: 3px solid var(--highlight); background: rgba(233,69,96,0.06); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; color: var(--text-dim); }
+.callout-success { border-left-color: var(--success); background: rgba(100,255,218,0.06); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) { body { padding: 16px; } .grid-2 { grid-template-columns: 1fr; } }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.3rem; color: var(--text-bright); margin-bottom: 16px; }
+h2 { font-size: 1.15rem; color: var(--text-bright); margin: 20px 0 10px; }
+h3 { font-size: 1rem; color: var(--text-bright); margin: 16px 0 8px; }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+hr { border: none; border-top: 1px solid var(--border); margin: 20px 0; }
+.matrix-wrapper { width: 100%; overflow-x: auto; }
+.section-title { font-size: 1rem; color: var(--text-bright); font-weight: 600; margin: 16px 0 10px; }
+.axis-label-row { display: flex; gap: 0; margin-bottom: 8px; }
+.axis-label-col { flex: 1; text-align: center; font-size: 0.75rem; font-weight: 700; padding: 6px 0; background: var(--table-odd); border: 1px solid var(--border); }
+.matrix-row { display: flex; border-bottom: 1px solid var(--border); }
+.osilabel { width: 130px; min-width: 130px; padding: 8px; font-size: 0.8rem; font-weight: 700; color: var(--text-bright); background: var(--table-odd); }
+.matrix-cell { flex: 1; display: flex; flex-wrap: wrap; gap: 4px; padding: 6px; }
+.prod { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; cursor: pointer; }
+.prod .alias { font-size: 0.65rem; opacity: 0.7; }
+.c-scan { background: rgba(56,189,248,0.15); color: #38bdf8; }
+.c-protect { background: rgba(74,222,128,0.15); color: #4ade80; }
+.c-detect { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.c-respond { background: rgba(244,114,182,0.15); color: #f472b6; }
+.c-recover { background: rgba(251,146,60,0.15); color: #fb923c; }
+.c-ai { background: rgba(167,139,250,0.15); color: #a78bfa; }
+table { width: 100%; border-collapse: collapse; margin: 12px 0; font-size: 0.85rem; }
+th, td { border: 1px solid var(--border); padding: 8px 12px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+.sortable { cursor: pointer; }
+.sortable:hover { color: var(--text-bright); }
+</style>
+</head>
+<body>
+
+<div class="panel">
+  <div class="section-title"><span>◆</span> 三维度分析 · 产品清单</div>
+  <div class="table-wrap">
+    <table>
+      <thead>
+        <tr><th>序号</th><th class="sortable" onclick="sortTable(1)">产品 ▼</th><th class="sortable" onclick="sortTable(2)">OSI 层 ▼</th><th class="sortable" onclick="sortTable(3)">IPDRR 阶段 ▼</th><th class="sortable" onclick="sortTable(4)">攻防角色 ▼</th><th>开源项目</th><th class="sortable" onclick="sortTable(6)">总Stars ▲</th><th>一句话技术定位</th></tr>
+      </thead>
+      <tbody>
+        <tr><td>1</td><td><b>雷池</b></td><td>L7-L6</td><td><span style="color:#4ade80">Protect</span></td><td>被动防御</td><td>SafeLine</td><td>21,515</td><td>应用层反向代理，语义分析引擎替代规则匹配</td></tr>
+        <tr><td>2</td><td><b>全悉</b></td><td>L3-L4</td><td><span style="color:#38bdf8">Detect</span></td><td>被动检测</td><td>-</td><td>-</td><td>流量侧DPI深度包分析，发现异常网络行为和C2通信</td></tr>
+        <tr><td>3</td><td><b>谛听</b></td><td>L4-L7</td><td><span style="color:#38bdf8">Detect</span></td><td>主动诱捕</td><td>mimicry</td><td>60</td><td>部署蜜罐节点诱捕攻击者，内网"警报器"</td></tr>
+        <tr><td>4</td><td><b>洞鉴</b></td><td>L3-L7</td><td><span style="color:#fbbf24">Identify</span></td><td>主动探测</td><td>xray, xpoc</td><td>12,780</td><td>自动化资产端口扫描 + Web漏洞探测</td></tr>
+        <tr><td>5</td><td><b>云图</b></td><td>L2-L7</td><td><span style="color:#fbbf24">Identify</span></td><td>主动探测</td><td>cloudwalker, rad</td><td>2,185</td><td>攻击面管理(ASM)，发现企业所有互联网暴露资产</td></tr>
+        <tr><td>6</td><td><b>无锋</b></td><td>L5-L7</td><td><span style="color:#fbbf24">Identify</span></td><td>主动攻击模拟</td><td>xray</td><td>11,609</td><td>AI驱动的自动化渗透测试，模拟攻击者完整攻击链</td></tr>
+        <tr><td>7</td><td><b>牧云</b></td><td>L7</td><td><span style="color:#4ade80">Protect</span></td><td>被动防御</td><td>collie, veinmind-tools</td><td>1,805</td><td>主机Agent采集运行时数据，检测文件/进程/网络异常</td></tr>
+        <tr><td>8</td><td><b>慧鉴</b></td><td>L7</td><td><span style="color:#4ade80">Protect</span></td><td>静态分析</td><td>-</td><td>-</td><td>解析源码AST语法树，AI识别代码安全缺陷</td></tr>
+        <tr><td>9</td><td><b>码力</b></td><td>L7</td><td><span style="color:#4ade80">Protect</span></td><td>流程嵌入</td><td>MonkeyCode</td><td>3,337</td><td>CI/CD流水线中的安全门禁，代码提交即触发检查</td></tr>
+        <tr><td>10</td><td><b>守元</b></td><td>L7</td><td><span style="color:#4ade80">Protect</span></td><td>被动防御</td><td>-</td><td>-</td><td>大模型输入输出内容过滤，prompt注入/越狱/数据泄露三重防护</td></tr>
+        <tr><td>11</td><td><b>万象</b></td><td>L7</td><td><span style="color:#38bdf8">Detect</span>+<span style="color:#f472b6">Respond</span></td><td>集中分析</td><td>-</td><td>-</td><td>SIEM+SOAR一体化，汇入所有安全设备告警做关联分析</td></tr>
+        <tr><td>12</td><td><b>鉴微</b></td><td>L7</td><td><span style="color:#fb923c">Recover</span></td><td>运营跟踪</td><td>-</td><td>-</td><td>漏洞从发现到修复的全生命周期工单管理平台</td></tr>
+        <tr><td>13</td><td><b>大观</b></td><td>L7</td><td><span style="color:#f472b6">Respond</span></td><td>服务外包</td><td>-</td><td>-</td><td>MSS安全托管，7×24专家远程值守</td></tr>
+        <tr><td>14</td><td><b>御衡</b></td><td>L7</td><td><span style="color:#fb923c">Recover</span></td><td>验证闭环</td><td>-</td><td>-</td><td>BAS平台，持续验证安全防御措施的有效性</td></tr>
+        <tr><td>15</td><td><b>问津</b></td><td>L7(贯穿)</td><td><span style="color:#a78bfa">AI 贯穿</span></td><td>AI赋能</td><td>PandaWiki, KoalaQA</td><td>10,294</td><td>安全领域垂直大模型，恶意分析/事件研判/知识问答</td></tr>
+        <tr><td>16</td><td><b>MonkeyScan</b></td><td>L7</td><td><span style="color:#a78bfa">AI</span></td><td>AI赋能</td><td>MonkeyCode</td><td>3,337</td><td>AI代码安全扫描，检测AI生成代码的安全漏洞</td></tr>
+        <tr><td>17</td><td><b>ClawLens</b></td><td>L7</td><td><span style="color:#a78bfa">AI</span></td><td>监控</td><td>clawlens</td><td>34</td><td>AI Agent 风险监控工具，配合守元构建Agent安全生态</td></tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- ==================== Tab 3: Gap Analysis ==================== -->
+
+</div>
+
+
+
+</body>
+</html>

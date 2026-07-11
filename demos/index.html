@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260705" type="image/png">
+<title>HTML 模板 · 三层架构演示</title>
+<link rel="stylesheet" href="../style-guide.css?=20260705">
+<style>
+body { padding: 32px; max-width: 1400px; margin: 0 auto; }
+
+/* ── 3-column grid ── */
+.template-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+  margin-bottom: 32px;
+}
+
+/* ── Template Card ── */
+.tpl {
+  background: var(--surface-900);
+  border: 1px solid #1a1a2e;
+  border-radius: 14px;
+  overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.tpl-head {
+  padding: 18px 20px 14px;
+  border-bottom: 1px solid #2a2a3e;
+  display: flex; align-items: center; gap: 10px;
+}
+.tpl-head .tpl-icon {
+  width: 40px; height: 40px; border-radius: 10px;
+  display: flex; align-items: center; justify-content: center;
+  font-size: 1.2rem; flex-shrink: 0;
+}
+.tpl-head .tpl-icon.ia { background: rgba(79,70,229,0.15); }
+.tpl-head .tpl-icon.ib { background: rgba(52,211,153,0.15); }
+.tpl-head .tpl-icon.ic { background: rgba(251,146,60,0.15); }
+.tpl-head .tpl-name { font-size: 1.05rem; font-weight: 600; color: #f0f0f0; }
+.tpl-head .tpl-file { font-size: 0.7rem; color: #6b7280; font-family: var(--font-mono); }
+
+.tpl-body { padding: 16px 20px 20px; flex: 1; }
+
+/* ── Scenarios as pills ── */
+.scenarios { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.scenario-pill {
+  display: inline-block; padding: 2px 10px; border-radius: 9999px;
+  font-size: 0.7rem; border: 1px solid #2a2a3e; color: #9ca3af;
+}
+
+/* ── Structure diagram ── */
+.struct { margin-bottom: 14px; }
+.struct-title { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
+.struct-box {
+  background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: 8px;
+  padding: 0px 12px; font-family: var(--font-mono); font-size: 0.7rem;
+  line-height: 1.7; overflow-x: auto; color: #b0b0c0; white-space: pre;
+}
+.struct-box .hl { color: var(--cobalt-400); }
+.struct-box .hl2 { color: #34d399; }
+.struct-box .hl3 { color: #fb923c; }
+
+/* ── Features list ── */
+.features { margin-bottom: 14px; }
+.features li {
+  font-size: 0.78rem; color: #c0c0c0; line-height: 1.7;
+  padding-left: 18px; position: relative;
+}
+.features li::before { content: '▸'; position: absolute; left: 0; color: #555; }
+.features .feat-on { color: #34d399; }
+.features .feat-off { color: #6b7280; }
+
+/* ── CLI block ── */
+.cli-box {
+  background: #0d0d1a; border: 1px solid #2a2a3e;
+  border-radius: 8px; padding: 10px 12px;
+  font-family: var(--font-mono); font-size: 0.72rem;
+  line-height: 1.6; color: #b0b0c0; margin-bottom: 14px;
+  overflow-x: auto;
+}
+.cli-box .prompt { color: #6b7280; }
+.cli-box .cmd { color: #e0e0e0; }
+.cli-box .comment { color: #555; font-style: italic; }
+
+/* ── Demo links ── */
+.demos { }
+.demos-title { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.demo-item {
+  display: flex; align-items: center; gap: 10px;
+  padding: 8px 12px; border: 1px solid #1a1a2e; border-radius: 8px;
+  margin-bottom: 6px; transition: all 0.15s; text-decoration: none;
+}
+.demo-item:hover { border-color: var(--cobalt-700); background: rgba(79,70,229,0.04); }
+.demo-item .demo-icon { font-size: 1rem; flex-shrink: 0; }
+.demo-item .demo-info { flex: 1; min-width: 0; }
+.demo-item .demo-info .demo-name { font-size: 0.8rem; font-weight: 500; color: #e0e0e0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-item .demo-info .demo-desc { font-size: 0.7rem; color: #6b7280; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-item .demo-arrow { color: #555; font-size: 0.8rem; }
+
+/* ── Layer divider ── */
+.layer-divider {
+  text-align: center; padding: 10px 0 24px; position: relative;
+}
+.layer-divider::before {
+  content: ''; position: absolute; top: 50%; left: 10%; right: 10%;
+  border-top: 1px dashed #2a2a3e;
+}
+.layer-divider span {
+  position: relative; display: inline-block;
+  background: var(--surface-950); padding: 0 16px;
+  font-size: 0.75rem; color: #6b7280;
+}
+
+/* ── Responsive ── */
+@media (max-width: 900px) { .template-grid { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+
+<div class="template-grid">
+
+  <!-- ════ A 型 · 数据表格 ════ -->
+  <div class="tpl">
+    <div class="tpl-head">
+      <div class="tpl-icon ia">📊</div>
+      <div>
+        <div class="tpl-name">A 型 · 数据表格</div>
+        <div class="tpl-file">layout-table.html</div>
+      </div>
+    </div>
+    <div class="tpl-body">
+
+      <div class="scenarios">
+        <span class="scenario-pill">文件索引</span>
+        <span class="scenario-pill">收藏管理</span>
+        <span class="scenario-pill">项目列表</span>
+        <span class="scenario-pill">数据浏览</span>
+      </div>
+
+      <div class="struct">
+      <div class="struct-title">Structure</div>
+      
+<div class="struct-box">┌─ toolbar ──────────────────────────────┐
+│  [🔍 search...]  [filter▾]  N / M      │
+├─ table ────────────────────────────────┤
+│  # │ Name     │ Size │ Date ▲          │
+│  ──┼──────────┼──────┼───────          │
+│  1 │ report-a │ 11K  │ 06-30           │
+│  2 │ report-b │ 9.5K │ 06-30           │
+│  3 │ report-c │ 9.5K │ 06-30           │
+└────────────────────────────────────────┘</div>
+      </div>
+
+      <ul class="features">
+        <li>🔍 实时搜索 — 按任意字段过滤</li>
+        <li class="feat-on">🔽 多字段排序 — 点击表头切换升/降序</li>
+        <li class="feat-on">📄 分页浏览 — 每页 30 条，自动计算页数</li>
+        <li class="feat-on">⚡ 列自动推导 — 从 JSON 首条记录自动获取列名</li>
+      </ul>
+
+      <div class="cli-box">
+        <span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span>
+      </div>
+
+      <div class="demos">
+        <div class="demos-title">案例演示</div>
+        <a class="demo-item" href="demos-index.html" target="_blank">
+          <span class="demo-icon">📋</span>
+          <span class="demo-info">
+            <span class="demo-name">html-demos 文档索引</span>
+            <span class="demo-desc">9 条记录 · 全站文件清单</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+        <a class="demo-item" href="iris-output-index.html" target="_blank">
+          <span class="demo-icon">📊</span>
+          <span class="demo-info">
+            <span class="demo-name">IRIS-Output 文件索引</span>
+            <span class="demo-desc">9 条记录 · 🔴🟡🔵⚫ 四级分类</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+        <a class="demo-item" href="git-cloner-demo.html" target="_blank">
+          <span class="demo-icon">📦</span>
+          <span class="demo-info">
+            <span class="demo-name">Git 项目列表</span>
+            <span class="demo-desc">5 个项目 · 语言/Star 排序</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ B 型 · 文档阅读 ════ -->
+  <div class="tpl">
+    <div class="tpl-head">
+      <div class="tpl-icon ib">📄</div>
+      <div>
+        <div class="tpl-name">B 型 · 文档阅读</div>
+        <div class="tpl-file">layout-doc.html</div>
+      </div>
+    </div>
+    <div class="tpl-body">
+
+      <div class="scenarios">
+        <span class="scenario-pill">分析报告</span>
+        <span class="scenario-pill">知识库</span>
+        <span class="scenario-pill">长文阅读</span>
+        <span class="scenario-pill">技术文档</span>
+      </div>
+
+      <div class="struct">
+        <div class="struct-title">Structure</div>
+        <div class="struct-box">┌─ sidebar ──────┬─ main content ───────────┐
+│  TOC           │  # Report Title          │
+│  ─────────     │                          │
+│  ▸ Overview    │  ## 1. Background        │
+│  ▸ Background  │  text with **bold**      │
+│  ▸ Comparison  │                          │
+│    ▸ Codex     │  | dim | A | B |         │
+│    ▸ CC        │  |-----|---|---|         │
+└───────────────────────────────────────────┘</div>
+      </div>
+
+      <ul class="features">
+        <li>📑 自动 TOC — 从 h2/h3 生成，点击平滑滚动</li>
+        <li class="feat-on">🎯 章节高亮 — 滚动时自动标记当前阅读位置</li>
+        <li class="feat-on">📋 代码复制 — 悬停出现复制按钮，一键复制</li>
+        <li class="feat-on">🔢 代码行号 — 多行代码 CSS counter 行号</li>
+        <li>📊 Markdown 表格渲染 — 深色主题表格样式</li>
+        <li>📌 锚点链接 — h2/h3 悬浮 ¶，点击复制 #id</li>
+        <li>💬 Callout 提示框 — Note/Tip/Warning/Danger 彩色块</li>
+        <li>🔗 外链归档 — 自动提取全文链接，底部索引</li>
+      </ul>
+
+      <div class="cli-box">
+<span class="prompt">$</span> <span class="cmd">html-gen doc \</span>
+<span class="cmd">  -i report.md \</span>
+<span class="cmd">  -o report.html</span>
+      </div>
+
+      <div class="demos">
+        <div class="demos-title">方案说明</div>
+        <a class="demo-item" href="template-B-markdown-spec-v1.0-20260707.html" target="_blank">
+          <span class="demo-icon">📐</span>
+          <span class="demo-info">
+            <span class="demo-name">B 型 · Markdown 规范说明</span>
+            <span class="demo-desc">支持的语法子集 · 规则 · 常见错误 · 不支持的语法</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+        <a class="demo-item" href="template-B-guide-v1.0-20260707.html" target="_blank">
+          <span class="demo-icon">📄</span>
+          <span class="demo-info">
+            <span class="demo-name">B 型 · 文档阅读方案</span>
+            <span class="demo-desc">使用场景 · 方案设计 · 行业对标 · 功能清单</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+        <a class="demo-item" href="template-A-guide-v1.0-20260707.html" target="_blank">
+          <span class="demo-icon">📊</span>
+          <span class="demo-info">
+            <span class="demo-name">A 型 · 数据表格方案</span>
+            <span class="demo-desc">使用场景 · 方案设计 · 行业对标 · 功能清单</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+        <a class="demo-item" href="template-C-guide-v1.0-20260707.html" target="_blank">
+          <span class="demo-icon">📚</span>
+          <span class="demo-info">
+            <span class="demo-name">C 型 · 知识库方案</span>
+            <span class="demo-desc">使用场景 · 方案设计 · 行业对标 · 功能清单</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+  <!-- ════ C 型 · 知识库 ════ -->
+  <div class="tpl">
+    <div class="tpl-head">
+      <div class="tpl-icon ic">📚</div>
+      <div>
+        <div class="tpl-name">C 型 · 知识库</div>
+        <div class="tpl-file">layout-knowledge.html</div>
+      </div>
+    </div>
+    <div class="tpl-body">
+
+      <div class="scenarios">
+        <span class="scenario-pill">知识库</span>
+        <span class="scenario-pill">面试准备</span>
+        <span class="scenario-pill">技术文档</span>
+        <span class="scenario-pill">项目 Wiki</span>
+      </div>
+
+      <div class="struct">
+        <div class="struct-title">Structure</div>
+        <div class="struct-box">┌─ tabs ─────────────────────────────────────────┐
+│  [Agent]  [HTML]  [hs CLI]  [IRIS]             │
+├─ sidebar ──┬─ content ─────────────────────────┤
+│  ▸ Codex   │  # title                          │
+│  ▸ Claude  │                                   │
+│  ▸ Hermes  │  content                          │
+│  ▸ OpenCode│  │  support iframe / inner render │
+│  ▸ OpenClaw│                                   │
+└────────────┴───────────────────────────────────┘</div>
+      </div>
+
+      <ul class="features">
+        <li>📑 顶部标签栏 — 切换大类目，左侧章节跟随切换</li>
+        <li class="feat-on">📂 左侧章节列表 — 当前类目下的条目，含熟练度 badge</li>
+        <li class="feat-on">📖 右侧内容区 — 内联渲染 / iframe / 欢迎面板</li>
+        <li>📱 移动端自适应 — 顶部可滑动，侧边栏可收起</li>
+      </ul>
+
+      <div class="cli-box">
+<span class="prompt">$</span> <span class="cmd">html-gen knowledge </span>
+<span class="cmd">  -d data.json</span>
+<span class="cmd">  -o kb.html</span>
+      </div>
+
+      <div class="demos">
+        <div class="demos-title">案例演示</div>
+        <a class="demo-item" href="chaitin-business-analysis-v1.0-20260707.html" target="_blank">
+          <span class="demo-icon">🏢</span>
+          <span class="demo-info">
+            <span class="demo-name">长亭科技 · 商业分析知识库</span>
+            <span class="demo-desc">4 个大类 · 14 个条目 · 售前架构师视角</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+        <a class="demo-item" href="knowledge-demo.html" target="_blank">
+          <span class="demo-icon">📚</span>
+          <span class="demo-info">
+            <span class="demo-name">HTML 技能知识库</span>
+            <span class="demo-desc">3 个大类 · 15 个条目 · 顶部标签 + 左侧章节</span>
+          </span>
+          <span class="demo-arrow">→</span>
+        </a>
+      </div>
+
+    </div>
+  </div>
+
+</div>
+
+<div class="layer-divider"><span>⬇ 所有页面共享同一 Layer 1 样式基座 ⬇</span></div>
+
+<div class="template-grid" style="grid-template-columns:1fr 1fr;gap:16px;">
+
+  <!-- Layer 1 card -->
+  <div class="tpl">
+    <div class="tpl-head">
+      <div class="tpl-icon" style="background:rgba(79,70,229,0.1);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">🎨</div>
+      <div>
+        <div class="tpl-name">Layer 1 · style-guide.css</div>
+        <div class="tpl-file">样式基座 · 8K</div>
+      </div>
+    </div>
+    <div class="tpl-body">
+      <div style="display:flex;flex-wrap:wrap;gap:4px;margin-bottom:10px;">
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">CSS 变量</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">按钮系统</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">表格</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">表单</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">弹窗</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">分页</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">Badge</span>
+      </div>
+      <p style="font-size:0.78rem;color:#9ca3af;line-height:1.6;">
+        从 favorite-manager 深色主题提取的完整组件库，零外部依赖。
+        所有 Layer 2 模板通过 <code style="font-size:0.7rem;">&lt;link&gt;</code> 或生成器 inline 方式引入。
+      </p>
+    </div>
+  </div>
+
+  <!-- Layer 3 card -->
+  <div class="tpl">
+    <div class="tpl-head">
+      <div class="tpl-icon" style="background:rgba(251,146,60,0.1);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">⚡</div>
+      <div>
+        <div class="tpl-name">Layer 3 · html-gen.py</div>
+        <div class="tpl-file">CLI 生成器 · 11K</div>
+      </div>
+    </div>
+    <div class="tpl-body">
+      <div style="margin-bottom:10px;">
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;margin:1px;">doc</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;margin:1px;">table</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;margin:1px;">knowledge</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;margin:1px;">--json 自动推导</span>
+        <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;margin:1px;">Markdown→HTML</span>
+      </div>
+      <p style="font-size:0.78rem;color:#9ca3af;line-height:1.6;">
+        读取模板 → inline CSS → 注入数据 → 输出自包含单文件 HTML。
+        <code style="font-size:0.7rem;">doc</code> 子命令自带简易 Markdown 渲染器（零外部依赖）。
+      </p>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>

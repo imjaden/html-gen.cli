@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title><!--TITLE--></title>
+<link rel="stylesheet" href="style-guide.css">
+<style>
+.table-toolbar {
+  display: flex; align-items: center; gap: 12px;
+  margin-bottom: 12px; flex-wrap: wrap;
+}
+.table-toolbar .search-box { flex: 1; min-width: 200px; }
+.table-toolbar .stat-label { font-size: 0.75rem; color: #6b7280; }
+.table-wrap { border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.col-checkbox { width: 36px; }
+.col-index { width: 45px; }
+.col-index-num { text-align: center; color: #6b7280; font-size: 0.72rem; }
+.empty-state { text-align: center; padding: 48px 20px; color: #6b7280; }
+.empty-state .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+  <div class="mb-3"><h1 style="font-size:1.2rem;margin:0;"><!--TITLE--></h1></div>
+  <div class="table-toolbar">
+    <input class="input-dark search-box" id="searchInput" placeholder="<!--SEARCH_PLACEHOLDER-->" onkeyup="if(event.key==='Enter')renderTable()">
+    <!--FILTERS-->
+    <button class="btn btn-primary" onclick="renderTable()">搜索</button>
+    <div class="flex-1"></div>
+    <span class="stat-label" id="statInfo"></span>
+  </div>
+  <div class="table-wrap">
+    <table class="data-table">
+      <colgroup id="colGroup"></colgroup>
+      <thead id="thead"></thead>
+      <tbody id="tbody"></tbody>
+    </table>
+    <div class="empty-state" id="emptyState" style="display:none"><span class="icon">📭</span><span>无匹配数据</span></div>
+  </div>
+  <div class="pager" id="pager"></div>
+</div>
+<script>
+(function() {
+  const COLUMNS = <!--COLUMNS-->;  // [{key, label, width?, sortable?}]
+  const DATA    = <!--DATA-->;
+  const PAGE_SIZE = 30;
+  let filtered = [], currentPage = 1;
+  let sortKey = '', sortAsc = true;
+
+  function renderTable() {
+    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
+    filtered = DATA.filter(function(row) {
+      if (!q) return true;
+      return COLUMNS.some(function(col) {
+        return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+      });
+    });
+    if (sortKey) {
+      filtered.sort(function(a, b) {
+        const va = a[sortKey] || '', vb = b[sortKey] || '';
+        const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+        return sortAsc ? cmp : -cmp;
+      });
+    }
+    const statEl = document.getElementById('statInfo');
+    if (statEl) statEl.textContent = filtered.length + ' / ' + DATA.length + ' 条';
+    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    const start = (currentPage - 1) * PAGE_SIZE;
+    const pageData = filtered.slice(start, start + PAGE_SIZE);
+    const empty = document.getElementById('emptyState');
+    if (empty) empty.style.display = filtered.length === 0 ? 'block' : 'none';
+    const tbody = document.getElementById('tbody');
+    if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
+    tbody.innerHTML = pageData.map(function(row) {
+      return '<tr>' + COLUMNS.map(function(col) {
+        let val = row[col.key];
+        if (col.render) val = col.render(val, row);
+        else if (val === undefined || val === null) val = '';
+        return '<td' + (col.class ? ' class="' + col.class + '"' : '') + '>' + val + '</td>';
+      }).join('') + '</tr>';
+    }).join('');
+    renderPager(totalPages);
+  }
+
+  function renderPager(totalPages) {
+    const el = document.getElementById('pager');
+    if (totalPages <= 1) { el.innerHTML = ''; return; }
+    let h = '<button class="btn btn-ghost btn-sm" onclick="goPage(1)"' + (currentPage===1?' disabled':'') + '>‹‹</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage-1)+')"' + (currentPage===1?' disabled':'') + '>‹</button>';
+    h += '<span class="text-xs text-gray" style="margin:0 8px;">' + currentPage + ' / ' + totalPages + '</span>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage+1)+')"' + (currentPage===totalPages?' disabled':'') + '>›</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+totalPages+')"' + (currentPage===totalPages?' disabled':'') + '>››</button>';
+    el.innerHTML = h;
+  }
+  window.goPage = function(n) {
+    const tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    currentPage = Math.max(1, Math.min(n, tp));
+    renderTable();
+  };
+  function init() {
+    const cg = document.getElementById('colGroup');
+    cg.innerHTML = COLUMNS.map(function(c) { return '<col' + (c.width?' style="width:'+c.width+'"':'') + '>'; }).join('');
+    document.getElementById('thead').innerHTML = '<tr>' + COLUMNS.map(function(c) {
+      return '<th' + (c.sortable!==false?' class="sortable" data-key="'+c.key+'" onclick="sortBy(\''+c.key+'\')"':'') + (c.width?' style="width:'+c.width+'"':'') + '>' + c.label + '</th>';
+    }).join('') + '</tr>';
+    renderTable();
+  }
+  window.sortBy = function(key) {
+    if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; }
+    renderTable();
+  };
+  init();
+})();
+</script>
+</body>
+</html>

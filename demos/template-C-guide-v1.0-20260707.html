@@ -1,0 +1,833 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>C 型 · 知识库方案</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; margin-left: 80px; }
+.doc-header {
+  padding: 0;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+.doc-body { padding: 0; max-width: 880px; }
+
+.doc-body h1 {
+  font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
+  margin: 0.25rem 0 0.5rem; padding-bottom: 8px;
+  border-bottom: 1px solid #2a2a3e;
+}
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th {
+  background: #0d0d1a; font-weight: 600; color: #9ca3af;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px;
+}
+.doc-body pre {
+  position: relative;
+  background: #0d0d1a; border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md); padding: 14px 16px;
+  overflow-x: auto; margin: 0.75rem 0;
+}
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e;
+  color: #9ca3af; padding: 3px 8px;
+  border-radius: var(--radius-sm); font-size: 0.65rem;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; opacity: 0;
+}
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+/* ── Reading Progress Bar ── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0; height: 2px;
+  background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 90vw; max-height: 90vh; border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default;
+}
+.lightbox .lb-close {
+  position: fixed; top: 16px; right: 20px; font-size: 28px;
+  color: #aaa; cursor: pointer; line-height: 1;
+}
+.lightbox .lb-close:hover { color: #fff; }
+
+.doc-body img { cursor: zoom-in; }
+
+/* ── Anchor Links ── */
+.anchor-link {
+  opacity: 0; text-decoration: none; color: var(--cobalt-500);
+  font-size: 0.75em; margin-left: 4px; font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+/* ── Code Line Numbers ── */
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block; width: 2.5em; min-width: 2.5em;
+  text-align: right; padding-right: 1em;
+  color: #4a5568; user-select: none;
+}
+
+/* ── Callout Boxes ── */
+.doc-body blockquote.callout {
+  border-left-width: 4px;
+  padding: 10px 16px;
+  margin: 0.75rem 0;
+}
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note {
+  border-left-color: var(--cobalt-500);
+  background: rgba(79,70,229,0.08);
+  color: #c0c4f0;
+}
+.doc-body blockquote.callout.tip {
+  border-left-color: #34d399;
+  background: rgba(52,211,153,0.08);
+  color: #a7f3d0;
+}
+.doc-body blockquote.callout.warning {
+  border-left-color: #fbbf24;
+  background: rgba(251,191,36,0.08);
+  color: #fde68a;
+}
+.doc-body blockquote.callout.danger {
+  border-left-color: #f87171;
+  background: rgba(248,113,113,0.08);
+  color: #fecaca;
+}
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 16px; }
+  .doc-header { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-header">
+      <div class="logo">📄 C 型 · 知识库方案</div>
+      <div class="sub"></div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+  </aside>
+  <div class="doc-main">
+    <div class="doc-header">
+      <h1>C 型 · 知识库方案</h1>
+      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/template-C-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 713 · 阅读约 4 分钟</div>
+    </div>
+    <div class="doc-body" id="docBody"><hr>
+<h2 id="使用场景">使用场景</h2>
+<p>知识库模板适合<strong>多类目知识的浏览和检索</strong>场景，是三层模板中最综合、交互最复杂的一层。</p>
+<table><thead><tr>
+<th>场景</th>
+<th>说明</th>
+<th>典型条目数</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>技能知识库</strong></td>
+<td>编程技能/工具链的整理（Agent、HTML、CLI 等）</td>
+<td>10-100 条</td>
+</tr>
+<tr>
+<td><strong>面试准备</strong></td>
+<td>按主题分类的面试题和答案整理</td>
+<td>10-50 条</td>
+</tr>
+<tr>
+<td><strong>项目 Wiki</strong></td>
+<td>多个项目的文档集合，按项目/模块归类</td>
+<td>10-200 条</td>
+</tr>
+<tr>
+<td><strong>学习笔记系统</strong></td>
+<td>按学科/课程分类的学习笔记汇总</td>
+<td>20-300 条</td>
+</tr>
+</tbody></table>
+<h3 id="不适合的场景">不适合的场景</h3>
+<ul>
+<li>**单篇长文**（仅一个类目 → 用 B 型文档）</li>
+<li>**结构化数据浏览**（需要排序/搜索表格 → 用 A 型表格）</li>
+<li>**实时协作**（C 型是只读知识索引，不是编辑器）</li>
+</ul>
+<hr>
+<h2 id="方案设计">方案设计</h2>
+<h3 id="架构">架构</h3>
+<pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
+Layer 2: layout-knowledge.html (骨架: 顶部标签 + 左侧章节 + 右侧内容)
+Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
+<h3 id="数据流">数据流</h3>
+<pre><code class="language-">JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
+                  │                       ├── 顶部标签栏
+  (可选)          │                       ├── 左侧章节列表
+  groups.json ────┤                       ├── 右侧内容面板
+                  │                       └── 欢迎面板
+                  └── 自动推导类目分组</code></pre>
+<h3 id="界面结构">界面结构</h3>
+<pre><code class="language-">┌─ 顶部标签栏 ─────────────────────────────────────────────────┐
+│  [技能]  [工具]  [框架]  [最佳实践]                           │
+├─ 左侧章节 ──────────┬─ 右侧内容 ─────────────────────────────┤
+│  ▸ Hermes Agent     │  # 标题                                │
+│  ▸ OpenClaw         │                                        │
+│  ▸ Claude Code      │  内联内容 / iframe / 欢迎面板          │
+│  ▸ Codex CLI        │                                        │
+│  ▸ OpenCode         │                                        │
+└──────────────────────┴────────────────────────────────────────┘</code></pre>
+<h3 id="关键设计决策">关键设计决策</h3>
+<table><thead><tr>
+<th>决策</th>
+<th>选择</th>
+<th>理由</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>导航模式</strong></td>
+<td>顶部标签 + 左侧章节</td>
+<td>两级导航，适合 3-10 个类目 × 每个类目 3-30 条</td>
+</tr>
+<tr>
+<td><strong>数据格式</strong></td>
+<td>JSON 嵌入</td>
+<td>与 A/B 型一致，CLI 工具链天然适配</td>
+</tr>
+<tr>
+<td><strong>类目分组</strong></td>
+<td>自动推导 + 可选 groups.json</td>
+<td>快速上手时可省去分组配置文件</td>
+</tr>
+<tr>
+<td><strong>内容渲染</strong></td>
+<td>内联 HTML</td>
+<td>内容字段直接作为 HTML 展示，支持格式化文本</td>
+</tr>
+<tr>
+<td><strong>欢迎面板</strong></td>
+<td>空状态展示 <code>--welcome</code> 文本</td>
+<td>未选中条目时的提示信息</td>
+</tr>
+<tr>
+<td><strong>熟练度 badge</strong></td>
+<td>颜色编码（红/黄/蓝/灰）</td>
+<td>快速标识掌握程度</td>
+</tr>
+<tr>
+<td><strong>移动端</strong></td>
+<td>顶部可滑动标签 + 侧边栏可收起</td>
+<td>小屏设备上的可用性保障</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="行业对标">行业对标</h2>
+<table><thead><tr>
+<th>维度</th>
+<th>C 型 · 知识库</th>
+<th>Notion Wiki</th>
+<th>Confluence</th>
+<th>GitBook</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>定位</strong></td>
+<td>知识索引 + 浏览</td>
+<td>团队知识库</td>
+<td>企业知识库</td>
+<td>文档发布平台</td>
+</tr>
+<tr>
+<td><strong>部署</strong></td>
+<td>单文件 HTML</td>
+<td>SaaS</td>
+<td>SaaS/自建</td>
+<td>SaaS</td>
+</tr>
+<tr>
+<td><strong>数据源</strong></td>
+<td>JSON 注入</td>
+<td>内置数据库</td>
+<td>内置数据库</td>
+<td>Markdown</td>
+</tr>
+<tr>
+<td><strong>导航</strong></td>
+<td>标签 + 章节</td>
+<td>侧边栏树</td>
+<td>侧边栏树</td>
+<td>侧边栏树</td>
+</tr>
+<tr>
+<td><strong>搜索</strong></td>
+<td>❌ 暂无</td>
+<td>✅ 全文</td>
+<td>✅ 全文</td>
+<td>✅ 全文</td>
+</tr>
+<tr>
+<td><strong>标签切换</strong></td>
+<td>✅</td>
+<td>⚠️ 需配置</td>
+<td>✅</td>
+<td>⚠️ 需配置</td>
+</tr>
+<tr>
+<td><strong>熟练度 badge</strong></td>
+<td>✅ 内置</td>
+<td>❌ 自建</td>
+<td>❌ 插件</td>
+<td>❌ 自建</td>
+</tr>
+<tr>
+<td><strong>离线</strong></td>
+<td>✅ 单文件</td>
+<td>❌ 需网络</td>
+<td>❌ 需网络</td>
+<td>❌ 需网络</td>
+</tr>
+<tr>
+<td><strong>外部依赖</strong></td>
+<td>零</td>
+<td>需要 JS 框架</td>
+<td>需要网络</td>
+<td>CDN</td>
+</tr>
+<tr>
+<td><strong>文件大小</strong></td>
+<td>~22KB（含 15 条）</td>
+<td>N/A</td>
+<td>N/A</td>
+<td>N/A</td>
+</tr>
+</tbody></table>
+<p><strong>核心差异</strong>：C 型专注于「知识索引 + 快速浏览」场景，是知识库的轻量级前端。适合知识管理流程中「先收拢再深度消费」的前半步。</p>
+<hr>
+<h2 id="功能清单">功能清单</h2>
+<h3 id="已实现">已实现 ✅</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+<th>优先级</th>
+</tr></thead><tbody>
+<tr>
+<td>顶部标签栏</td>
+<td>按大类目切换，标签自动匹配</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>左侧章节列表</td>
+<td>当前类目下的条目列表，含熟练度 badge</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>右侧内容面板</td>
+<td>选中条目后展示内容（HTML 内联渲染）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>欢迎面板</td>
+<td>未选定条目时显示提示信息</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>自动分组推导</td>
+<td>从数据 JSON 的 <code>group</code> 字段自动归类</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>可选 groups.json</td>
+<td>自定义类目顺序、图标、显示名称</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>深色主题</td>
+<td>与 style-guide.css 一致的 surface-950 深色主题</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>零外部依赖</td>
+<td>单文件 HTML，无需加载 CDN</td>
+<td>P0</td>
+</tr>
+</tbody></table>
+<h3 id="待实现">待实现 🔜</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+<th>优先级</th>
+</tr></thead><tbody>
+<tr>
+<td>搜索</td>
+<td>跨类目搜索条目标题和内容</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>标签筛选</td>
+<td>按标签/熟练度筛选当前类目下的条目</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>书签/收藏</td>
+<td>标记常用条目，在顶部显示收藏夹</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>iframe 深度内容</td>
+<td>点击条目后在 iframe 中加载外部内容</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>内容编辑</td>
+<td>内联编辑条目，支持 JSON 写回</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>版本历史</td>
+<td>条目的修改记录追踪</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>键盘导航</td>
+<td>← → 切换标签，↑↓ 切换条目，Enter 打开</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>折叠/展开</td>
+<td>条目支持折叠展开，节省空间</td>
+<td>P3</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="快速开始">快速开始</h2>
+<pre><code class="language-shell"># 最简单的启动
+html-gen knowledge -d data.json -o kb.html
+
+# 带自定义分组和标题
+html-gen knowledge \\
+  -d data.json -g groups.json \\
+  --title "HTML 技能知识库" \\
+  --welcome "从上方类目选择" \\
+  -o kb.html</code></pre>
+<h3 id="数据格式">数据格式</h3>
+<pre><code class="language-json">[
+  {
+    "title": "Hermes Agent 介绍",
+    "group": "Agent 框架",
+    "badge": "🟢",
+    "content": "&lt;p&gt;Hermes Agent 是...&lt;/p&gt;"
+  }
+]</code></pre>
+<h3 id="groups-json-可选">groups.json（可选）</h3>
+<pre><code class="language-json">[
+  { "key": "Agent 框架", "label": "Agent 框架", "icon": "🤖" },
+  { "key": "HTML 工具",  "label": "HTML 工具",  "icon": "🌐" }
+]</code></pre>
+<h3 id="命令行参数">命令行参数</h3>
+<pre><code class="language-">html-gen knowledge -h
+  -d, --data FILE     条目 JSON 数据（必需）
+  -g, --groups FILE   类目分组 JSON（可选）
+  --title TEXT        知识库标题
+  --subtitle TEXT     副标题
+  --welcome TEXT      欢迎面板文本
+  -o, --output FILE   输出 HTML</code></pre>
+<hr>
+<h2 id="迭代记录">迭代记录</h2>
+<table><thead><tr>
+<th>版本</th>
+<th>日期</th>
+<th>变更</th>
+</tr></thead><tbody>
+<tr>
+<td>v1.0</td>
+<td>2026-07-05</td>
+<td>初版：顶部标签 + 左侧章节 + 右侧内容</td>
+</tr>
+</tbody></table></div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    // Anchor link: ¶ icon, click copies #id to clipboard
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.textContent = '\u00b6';
+    anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      anchor.textContent = '\u2713';
+      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+    });
+    h.appendChild(anchor);
+    const level = h.tagName.toLowerCase().replace('h', '');
+    const link  = document.createElement('a');
+    link.href = '#' + h.id;
+    link.textContent = h.textContent;
+    link.className = 'toc-h' + level;
+    link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+  function onScroll() {
+    let current = '';
+    headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  body.querySelectorAll('pre').forEach(function(pre) {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      function done() {
+        btn.textContent = '已复制';
+        setTimeout(function() { btn.textContent = '复制'; }, 2000);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.pointerEvents = 'none';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    });
+    pre.appendChild(btn);
+  });
+
+  // ── Code Line Numbers ──
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent;
+    var lines = text.split('\n');
+    if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+    if (lines.length < 2) return; // single line, skip
+    code.textContent = '';
+    lines.forEach(function(line, idx) {
+      var span = document.createElement('span');
+      span.className = 'line';
+      span.textContent = line;
+      code.appendChild(span);
+      if (idx < lines.length - 1) {
+        code.appendChild(document.createTextNode('\n'));
+      }
+    });
+    code.classList.add('code-with-lines');
+  });
+
+  // ── Reading Progress Bar ──
+  const main = document.querySelector('.doc-main');
+  const bar = document.getElementById('progressBar');
+  function updateProgress() {
+    var p = main.scrollTop / (main.scrollHeight - main.clientHeight);
+    bar.style.width = (p * 100) + '%';
+  }
+  main.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ── Lightbox ──
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) {
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbImg.src = this.src;
+      lb.classList.add('active');
+    });
+  });
+  window.closeLightbox = function(e) {
+    if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) {
+      lb.classList.remove('active');
+    }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active');
+  });
+})();
+</script>
+</body>
+</html>

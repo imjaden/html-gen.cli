@@ -1,0 +1,1014 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>方案B · Markdown 规范说明</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; margin-left: 80px; }
+.doc-header {
+  padding: 0;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+.doc-body { padding: 0; max-width: 880px; }
+
+.doc-body h1 {
+  font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
+  margin: 0.25rem 0 0.5rem; padding-bottom: 8px;
+  border-bottom: 1px solid #2a2a3e;
+}
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th {
+  background: #0d0d1a; font-weight: 600; color: #9ca3af;
+  font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em;
+}
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code {
+  font-family: var(--font-mono); font-size: 0.78rem;
+  background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px;
+}
+.doc-body pre {
+  position: relative;
+  background: #0d0d1a; border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md); padding: 14px 16px;
+  overflow-x: auto; margin: 0.75rem 0;
+}
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn {
+  position: absolute; top: 6px; right: 6px;
+  background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e;
+  color: #9ca3af; padding: 3px 8px;
+  border-radius: var(--radius-sm); font-size: 0.65rem;
+  cursor: pointer; font-family: inherit;
+  transition: all 0.15s; opacity: 0;
+}
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+/* ── Reading Progress Bar ── */
+.progress-bar {
+  position: fixed; top: 0; left: 0; width: 0; height: 2px;
+  background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear;
+}
+
+/* ── Lightbox ── */
+.lightbox {
+  display: none; position: fixed; inset: 0; z-index: 1000;
+  background: rgba(0,0,0,0.85); align-items: center; justify-content: center;
+  cursor: zoom-out;
+}
+.lightbox.active { display: flex; }
+.lightbox img {
+  max-width: 90vw; max-height: 90vh; border-radius: 8px;
+  box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default;
+}
+.lightbox .lb-close {
+  position: fixed; top: 16px; right: 20px; font-size: 28px;
+  color: #aaa; cursor: pointer; line-height: 1;
+}
+.lightbox .lb-close:hover { color: #fff; }
+
+.doc-body img { cursor: zoom-in; }
+
+/* ── Anchor Links ── */
+.anchor-link {
+  opacity: 0; text-decoration: none; color: var(--cobalt-500);
+  font-size: 0.75em; margin-left: 4px; font-weight: 400;
+  transition: opacity 0.15s;
+}
+h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+/* ── Code Line Numbers ── */
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before {
+  counter-increment: line;
+  content: counter(line);
+  display: inline-block; width: 2.5em; min-width: 2.5em;
+  text-align: right; padding-right: 1em;
+  color: #4a5568; user-select: none;
+}
+
+/* ── Callout Boxes ── */
+.doc-body blockquote.callout {
+  border-left-width: 4px;
+  padding: 10px 16px;
+  margin: 0.75rem 0;
+}
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note {
+  border-left-color: var(--cobalt-500);
+  background: rgba(79,70,229,0.08);
+  color: #c0c4f0;
+}
+.doc-body blockquote.callout.tip {
+  border-left-color: #34d399;
+  background: rgba(52,211,153,0.08);
+  color: #a7f3d0;
+}
+.doc-body blockquote.callout.warning {
+  border-left-color: #fbbf24;
+  background: rgba(251,191,36,0.08);
+  color: #fde68a;
+}
+.doc-body blockquote.callout.danger {
+  border-left-color: #f87171;
+  background: rgba(248,113,113,0.08);
+  color: #fecaca;
+}
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 16px; }
+  .doc-header { padding: 16px; }
+}
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-header">
+      <div class="logo">📄 方案B · Markdown 规范说明</div>
+      <div class="sub"></div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+  </aside>
+  <div class="doc-main">
+    <div class="doc-header">
+      <h1>方案B · Markdown 规范说明</h1>
+      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/template-B-markdown-spec-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 985 · 阅读约 5 分钟</div>
+    </div>
+    <div class="doc-body" id="docBody"><hr>
+<blockquote>本文档规范了 <code>html-gen doc</code> 子命令支持的 Markdown 语法子集。</blockquote>
+<blockquote>遵循本规范的 <code>.md</code> 文件可被正确渲染为方案B 文档阅读 HTML。</blockquote>
+<hr>
+<h2 id="一-标题">一、标题</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-"># 一级标题
+## 二级标题
+### 三级标题</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>规则</th>
+<th>说明</th>
+<th>示例</th>
+</tr></thead><tbody>
+<tr>
+<td><code>#</code> 后必须有空格</td>
+<td>无空格不识别</td>
+<td><code>#标题</code> ❌ → <code>#标题</code> 渲染为段落</td>
+</tr>
+<tr>
+<td><strong>最多 3 级</strong></td>
+<td><code>####</code> 降级为段落</td>
+<td>四级及更多需用列表或分段</td>
+</tr>
+<tr>
+<td><strong>自动生成锚点</strong></td>
+<td>slug 化处理，中英文支持</td>
+<td><code># 你好 World</code> → id=<code>你好-world</code></td>
+</tr>
+<tr>
+<td><strong>自动加入 TOC</strong></td>
+<td>仅 h2/h3，h1 不加入</td>
+<td>h1 作为文档标题单独显示</td>
+</tr>
+<tr>
+<td><strong>全局行内格式</strong></td>
+<td>标题中 <code><strong>bold</strong></code> <code>` </code>code<code> </code>` 有效</td>
+<td><code>## <strong>重点</strong> 章节</code> 支持</td>
+</tr>
+</tbody></table>
+<h3 id="最佳实践">最佳实践</h3>
+<ul>
+<li>文档仅一个 `# 文档标题`，用作页面标题</li>
+<li>`##` 作为章节分隔，`###` 作为子节</li>
+<li>不要跳级（`#` → `###` 略过 `##`）</li>
+</ul>
+<hr>
+<h2 id="二-段落与行内格式">二、段落与行内格式</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-markdown">普通文字段落会自动包裹在 `&lt;p&gt;` 标签中。
+
+支持 **加粗**、*斜体*、`行内代码` 和 [链接](https://example.com)。</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>格式</th>
+<th>写法</th>
+<th>渲染结果</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>加粗</strong></td>
+<td><code><strong>文字</strong></code></td>
+<td><code><strong>文字</strong></code></td>
+</tr>
+<tr>
+<td><em>斜体</em></td>
+<td><code><em>文字</em></code></td>
+<td><code><em>文字</em></code></td>
+</tr>
+<tr>
+<td><code>行内代码</code></td>
+<td><code>` </code>代码<code> </code>`</td>
+<td><code><code>代码</code></code></td>
+</tr>
+<tr>
+<td><a href="https://example.com" target="_blank" rel="noopener">链接</a></td>
+<td><code><a href="url" target="_blank" rel="noopener">文字</a></code></td>
+<td><code><a href="url" target="_blank" rel="noopener">文字</a></code></td>
+</tr>
+</tbody></table>
+<h3 id="注意事项">注意事项</h3>
+<ul>
+<li>`**` 必须成对出现，不成对会被当作普通文本</li>
+<li>`` ` `` 必须成对出现，不成对也会被当作普通文本</li>
+<li>斜体 `*` 和加粗 `**` 混用时，解析顺序是 `**` 优先</li>
+<li>链接 url 必须是完整 URL（含 `https://`），相对路径不自动补全</li>
+<li>**以上行内格式在 `<pre><code>` 内无效** — 代码块中的 `**bold**` 保持原样</li>
+</ul>
+<hr>
+<h2 id="三-围栏代码块">三、围栏代码块</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-markdown">```python
+def hello():
+    print("Hello")
+```
+</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>规则</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>重音符号</strong></td>
+<td>必须用反引号 <code>` </code> <code>`，不支持 </code>~~~`</td>
+</tr>
+<tr>
+<td><strong>最小 3 个</strong></td>
+<td><code> </code><code>` </code> 及以上</td>
+</tr>
+<tr>
+<td><strong>语言标识</strong></td>
+<td>开 fence 后跟语言名，如 <code> </code><code>`python </code></td>
+</tr>
+<tr>
+<td><strong>关闭</strong></td>
+<td>关闭行必须 <strong>只有反引号</strong>，不可附带其他文字</td>
+</tr>
+<tr>
+<td><strong>嵌套</strong></td>
+<td>用更多反引号作为外层 fence</td>
+</tr>
+</tbody></table>
+<h3 id="嵌套示例">嵌套示例</h3>
+<p>要在代码块内展示 <code> </code><code>` </code>，外层 fence 用 4 反引号：</p>
+<pre><code class="language-markdown">````
+```
+代码块语法示例
+```
+````</code></pre>
+<h3 id="常见错误">常见错误</h3>
+<table><thead><tr>
+<th>错误写法</th>
+<th>后果</th>
+<th>正确写法</th>
+</tr></thead><tbody>
+<tr>
+<td><code> </code><code>` </code> 代码块文字`</td>
+<td>被解析器视为关闭行，代码块提前中断</td>
+<td>关闭行后另起一行写文字</td>
+</tr>
+<tr>
+<td>代码块内 <code> </code> <code>`</code> <code>` </code> 文字`</td>
+<td>同上一</td>
+<td>外层用 4 反引号 <code>`</code><code> </code><code>`</code><code>` </code><code>`</code></td>
+</tr>
+<tr>
+<td>用 <code>~~~</code> 围栏</td>
+<td>不识别，当普通文本</td>
+<td>用 <code>`</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="四-表格">四、表格</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-markdown">| 列A | 列B | 列C |
+|:---|:---|:---:|
+| 左对齐 | 左对齐 | 居中对齐 |
+| **加粗** | `code` | [链接](url) |</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>规则</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>行首</strong></td>
+<td>每行必须以 `\</td>
+<td>` 开头</td>
+</tr>
+<tr>
+<td><strong>分隔行</strong></td>
+<td>第二行 `\</td>
+<td>:---\</td>
+<td>:---\</td>
+<td>:---:\</td>
+<td>` 标记对齐方式</td>
+</tr>
+<tr>
+<td><strong>对齐</strong></td>
+<td><code>:---</code> 左对齐、<code>:---:</code> 居中对齐、<code>---:</code> 右对齐</td>
+</tr>
+<tr>
+<td><strong>行内格式</strong></td>
+<td><code><strong>bold</strong></code> <code>` </code>code<code> </code><code> </code><a href="url" target="_blank" rel="noopener">link</a>` 在表格内均有效</td>
+</tr>
+<tr>
+<td><strong>空白表格</strong></td>
+<td>无数据行的表格渲染为空 <code><tbody></code></td>
+</tr>
+</tbody></table>
+<h3 id="常见错误">常见错误</h3>
+<table><thead><tr>
+<th>错误写法</th>
+<th>后果</th>
+</tr></thead><tbody>
+<tr>
+<td>行首无 `\</td>
+<td>`</td>
+<td>不被识别为表格</td>
+</tr>
+<tr>
+<td>缺少分隔行</td>
+<td>首行被当表头，后续行全当数据行</td>
+</tr>
+<tr>
+<td>单行表格</td>
+<td>渲染为 <code><table></code> + <code><thead></code>，无 <code><tbody></code></td>
+</tr>
+<tr>
+<td>表格中有空行</td>
+<td>空行中断表格解析</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="五-列表">五、列表</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-markdown">- 无序列表项 1
+- 无序列表项 2
+
+1. 有序列表项 1
+2. 有序列表项 2</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>规则</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>无序</strong></td>
+<td><code>- </code> 行首 + 短横 + 空格</td>
+</tr>
+<tr>
+<td><strong>有序</strong></td>
+<td><code>1. </code> 行首 + 数字 + <code>.</code> + 空格</td>
+</tr>
+<tr>
+<td><strong>嵌套</strong></td>
+<td>不支持缩进嵌套，需扁平化组织</td>
+</tr>
+<tr>
+<td><strong>行内格式</strong></td>
+<td><code><strong>bold</strong></code> <code>` </code>code<code> </code><code> </code><a href="url" target="_blank" rel="noopener">link</a>` 在列表项内均有效</td>
+</tr>
+<tr>
+<td><strong>连续识别</strong></td>
+<td>相邻列表项自动合并到同一 <code><ul></code> / <code><ol></code></td>
+</tr>
+</tbody></table>
+<h3 id="常见错误">常见错误</h3>
+<table><thead><tr>
+<th>错误写法</th>
+<th>后果</th>
+<th>正确写法</th>
+</tr></thead><tbody>
+<tr>
+<td><code>* item</code></td>
+<td>被 <code>inline_format</code> 识别为斜体</td>
+<td><code>- item</code></td>
+</tr>
+<tr>
+<td><code>-item</code> 无空格</td>
+<td>不识别</td>
+<td><code>- item</code></td>
+</tr>
+<tr>
+<td><code>  - item</code> 有缩进</td>
+<td>不识别嵌套</td>
+<td>用扁平列表</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="六-分隔线">六、分隔线</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-markdown">---
+
+---
+
+---</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>规则</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>连续 3+ 短横</strong></td>
+<td><code>---</code> 及以上</td>
+</tr>
+<tr>
+<td><strong>前后空行</strong></td>
+<td>建议前后都有空行，否则可能被段落吞并</td>
+</tr>
+<tr>
+<td><strong>其他符号</strong></td>
+<td><code><em>*</em></code> <code>===</code> 不识别</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="七-引用与-callout">七、引用与 Callout</h2>
+<h3 id="语法">语法</h3>
+<pre><code class="language-markdown">&gt; 普通引用
+
+&gt; **Note:** 提示信息
+
+&gt; **Warning:** 警告信息
+
+&gt; **Tip:** 小技巧
+
+&gt; **Danger:** 危险操作</code></pre>
+<h3 id="规则">规则</h3>
+<table><thead><tr>
+<th>类型</th>
+<th>写法</th>
+<th>渲染</th>
+<th>颜色</th>
+</tr></thead><tbody>
+<tr>
+<td>普通引用</td>
+<td><code>> 文字</code></td>
+<td><code><blockquote></code></td>
+<td>钴蓝边框</td>
+</tr>
+<tr>
+<td>Note</td>
+<td><code>> <strong>Note:</strong> 文字</code></td>
+<td><code><blockquote class="callout note"></code></td>
+<td>🔵 钴蓝</td>
+</tr>
+<tr>
+<td>Tip</td>
+<td><code>> <strong>Tip:</strong> 文字</code></td>
+<td><code><blockquote class="callout tip"></code></td>
+<td>🟢 绿色</td>
+</tr>
+<tr>
+<td>Warning</td>
+<td><code>> <strong>Warning:</strong> 文字</code></td>
+<td><code><blockquote class="callout warning"></code></td>
+<td>🟡 黄色</td>
+</tr>
+<tr>
+<td>Danger</td>
+<td><code>> <strong>Danger:</strong> 文字</code></td>
+<td><code><blockquote class="callout danger"></code></td>
+<td>🔴 红色</td>
+</tr>
+</tbody></table>
+<h3 id="关键词支持">关键词支持</h3>
+<table><thead><tr>
+<th>语言</th>
+<th>支持的关键词</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>中文</strong></td>
+<td>注意 / 提示 / 警告 / 危险</td>
+</tr>
+<tr>
+<td><strong>英文</strong></td>
+<td>Note / Tip / Warning / Danger / Caution</td>
+</tr>
+<tr>
+<td><strong>冒号位置</strong></td>
+<td><code><strong>Note:</strong></code> / <code><strong>注意</strong>：</code> 均支持</td>
+</tr>
+</tbody></table>
+<h3 id="常见错误">常见错误</h3>
+<table><thead><tr>
+<th>错误写法</th>
+<th>后果</th>
+</tr></thead><tbody>
+<tr>
+<td><code>> </code> <code><strong>Note</strong> </code> (无冒号)</td>
+<td>识别为普通引用</td>
+</tr>
+<tr>
+<td><code>> ⚠️ 文字</code></td>
+<td>无 <code>**</code> 包裹 → 普通引用</td>
+</tr>
+<tr>
+<td>多行引用</td>
+<td>仅行首识别，后续行需单独写 <code>> </code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="八-元信息自动计算">八、元信息自动计算</h2>
+<p><code>html-gen doc</code> 在生成时自动注入元信息：</p>
+<table><thead><tr>
+<th>项目</th>
+<th>来源</th>
+<th>格式</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>路径</strong></td>
+<td>文件绝对路径</td>
+<td><code>~/相对路径</code></td>
+</tr>
+<tr>
+<td><strong>创建时间</strong></td>
+<td>文件 <code>st_ctime</code></td>
+<td><code>YYYY-MM-DD HH:mm</code></td>
+</tr>
+<tr>
+<td><strong>编辑时间</strong></td>
+<td>文件 <code>st_mtime</code></td>
+<td><code>YYYY-MM-DD HH:mm</code></td>
+</tr>
+<tr>
+<td><strong>字数</strong></td>
+<td><code>len(text.split())</code></td>
+<td>千分位</td>
+</tr>
+<tr>
+<td><strong>阅读时长</strong></td>
+<td>字数 / 200</td>
+<td><code>N 分钟</code></td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="九-不支持的语法-需避免">九、不支持的语法（需避免）</h2>
+<table><thead><tr>
+<th>语法</th>
+<th>原因</th>
+<th>替代方案</th>
+</tr></thead><tbody>
+<tr>
+<td><code>####</code> 四级标题</td>
+<td>渲染器限制</td>
+<td>用 <code><strong>粗体</strong></code> 或列表</td>
+</tr>
+<tr>
+<td><code>#h1</code> 无空格</td>
+<td>格式要求</td>
+<td>加空格</td>
+</tr>
+<tr>
+<td><code>~~~</code> 代码围栏</td>
+<td>渲染器限制</td>
+<td>用 <code> </code><code>` </code></td>
+</tr>
+<tr>
+<td><code>!<a href="url" target="_blank" rel="noopener">图片</a></code></td>
+<td>手写渲染器不解析</td>
+<td>外链图片暂不支持</td>
+</tr>
+<tr>
+<td>HTML 标签混写</td>
+<td>内容已被 textContent 解析</td>
+<td>在 JSON 中注入或提交 issue</td>
+</tr>
+<tr>
+<td>4 空格缩进代码块</td>
+<td>渲染器限制</td>
+<td>用围栏代码块</td>
+</tr>
+<tr>
+<td>任务列表 <code>- [ ]</code></td>
+<td>渲染器限制</td>
+<td>用表格或纯列表</td>
+</tr>
+<tr>
+<td>脚注 <code>[^1]</code></td>
+<td>渲染器限制</td>
+<td>用括号标注</td>
+</tr>
+<tr>
+<td>删除线 <code>~~text~~</code></td>
+<td>渲染器限制</td>
+<td>暂不支持</td>
+</tr>
+<tr>
+<td>自动链接 <code><url></code></td>
+<td>渲染器限制</td>
+<td>用 <code><a href="url" target="_blank" rel="noopener">text</a></code> 标准链接</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="十-快速参考卡">十、快速参考卡</h2>
+<pre><code class="language-markdown"># 文档标题
+
+## 章节标题
+### 小节标题
+
+**加粗**  *斜体*  `行内代码`  [链接](https://)
+
+```python
+def hello():
+    pass</code></pre>
+<table><thead><tr>
+<th>列1</th>
+<th>列2</th>
+</tr></thead><tbody>
+<tr>
+<td>数据</td>
+<td>数据</td>
+</tr>
+</tbody></table>
+<ul>
+<li>列表项</li>
+<li>有序项</li>
+</ul>
+<hr>
+<blockquote class="callout note"><strong>Note:</strong>提示信息</blockquote>
+<h2>🔗 参考链接</h2>
+<ol>
+<li><a href="https://example.com" target="_blank" rel="noopener">https://example.com</a></li>
+</ol>
+</div>
+  </div>
+</div>
+<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    // Anchor link: ¶ icon, click copies #id to clipboard
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.textContent = '\u00b6';
+    anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      anchor.textContent = '\u2713';
+      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+    });
+    h.appendChild(anchor);
+    const level = h.tagName.toLowerCase().replace('h', '');
+    const link  = document.createElement('a');
+    link.href = '#' + h.id;
+    link.textContent = h.textContent;
+    link.className = 'toc-h' + level;
+    link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+  function onScroll() {
+    let current = '';
+    headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true });
+  onScroll();
+  body.querySelectorAll('pre').forEach(function(pre) {
+    const btn = document.createElement('button');
+    btn.className = 'copy-btn';
+    btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      const code = pre.querySelector('code');
+      const text = code ? code.textContent : pre.textContent;
+      function done() {
+        btn.textContent = '已复制';
+        setTimeout(function() { btn.textContent = '复制'; }, 2000);
+      }
+      if (navigator.clipboard && window.isSecureContext) {
+        navigator.clipboard.writeText(text).then(done).catch(fallback);
+      } else {
+        fallback();
+      }
+      function fallback() {
+        const ta = document.createElement('textarea');
+        ta.value = text;
+        ta.style.position = 'fixed';
+        ta.style.opacity = '0';
+        ta.style.pointerEvents = 'none';
+        document.body.appendChild(ta);
+        ta.select();
+        document.execCommand('copy');
+        document.body.removeChild(ta);
+        done();
+      }
+    });
+    pre.appendChild(btn);
+  });
+
+  // ── Code Line Numbers ──
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent;
+    var lines = text.split('\n');
+    if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
+    if (lines.length < 2) return; // single line, skip
+    code.textContent = '';
+    lines.forEach(function(line, idx) {
+      var span = document.createElement('span');
+      span.className = 'line';
+      span.textContent = line;
+      code.appendChild(span);
+      if (idx < lines.length - 1) {
+        code.appendChild(document.createTextNode('\n'));
+      }
+    });
+    code.classList.add('code-with-lines');
+  });
+
+  // ── Reading Progress Bar ──
+  const main = document.querySelector('.doc-main');
+  const bar = document.getElementById('progressBar');
+  function updateProgress() {
+    var p = main.scrollTop / (main.scrollHeight - main.clientHeight);
+    bar.style.width = (p * 100) + '%';
+  }
+  main.addEventListener('scroll', updateProgress, { passive: true });
+  updateProgress();
+
+  // ── Lightbox ──
+  var lb = document.getElementById('lightbox');
+  var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) {
+    img.addEventListener('click', function(e) {
+      e.stopPropagation();
+      lbImg.src = this.src;
+      lb.classList.add('active');
+    });
+  });
+  window.closeLightbox = function(e) {
+    if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) {
+      lb.classList.remove('active');
+    }
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active');
+  });
+})();
+</script>
+</body>
+</html>

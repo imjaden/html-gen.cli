@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>发展前景 · 长亭科技</title>
+<style>
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg-main: #1a1a2e;
+  
+  --accent: #0f3460;
+  --highlight: #e94560;
+  --text: #eaeaea;
+  --text-dim: #8892b0;
+  --text-bright: #ccd6f6;
+  --card-bg: #1e2a4a;
+  --border: #233554;
+  --success: #64ffda;
+  --warning: #f9a825;
+  --danger: #ff5252;
+  --tab-active: #e94560;
+  
+  --table-even: #1a2744;
+  --table-odd: #16213e;
+}
+
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", "Helvetica Neue", Arial, sans-serif;
+  background: var(--bg-main);
+  color: var(--text);
+  line-height: 1.7;
+  min-height: 100vh;
+}
+
+/* ===== Top Tab Bar ===== */
+.tab-bar {
+  display: flex;
+  background: linear-gradient(135deg, #0a0a1a 0%, #1a1a2e 100%);
+  border-bottom: 2px solid var(--accent);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.4);
+  overflow-x: auto;
+}
+
+.tab-bar::before {
+  content: "🎯 长亭科技 · 业务分析";
+  display: flex;
+  align-items: center;
+  padding: 0 20px;
+  font-weight: 700;
+  font-size: 14px;
+  color: var(--highlight);
+  white-space: nowrap;
+  border-right: 1px solid var(--border);
+  background: rgba(233,69,96,0.08);
+}
+
+.tab-btn {
+  padding: 16px 24px;
+  background: transparent;
+  border: none;
+  color: var(--text-dim);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  white-space: nowrap;
+  position: relative;
+  font-family: inherit;
+}
+
+.tab-btn:hover {
+  color: var(--text);
+  background: rgba(15,52,96,0.4);
+}
+
+.tab-btn.active {
+  color: #fff;
+  background: var(--accent);
+}
+
+.tab-btn.active::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  right: 0;
+  height: 3px;
+  background: var(--highlight);
+  border-radius: 3px 3px 0 0;
+}
+
+/* ===== Layout ===== */
+.layout {
+  display: flex;
+  min-height: calc(100vh - 52px);
+}
+
+/* ===== Main Content ===== */
+.main-content {
+  flex: 1;
+  padding: 32px 40px;
+  overflow-y: auto;
+  max-width: 1100px;
+}
+
+.content-section {
+  display: none;
+  animation: fadeIn 0.4s ease;
+}
+
+.content-section.active {
+  display: block;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.sub-section {
+  display: none;
+  animation: fadeIn 0.3s ease;
+}
+
+.sub-section.active {
+  display: block;
+}
+
+/* ===== Typography ===== */
+h1 {
+  font-size: 28px;
+  color: var(--highlight);
+  margin-bottom: 8px;
+  font-weight: 800;
+}
+
+h2 {
+  font-size: 22px;
+  color: var(--text-bright);
+  margin: 28px 0 16px;
+  padding-bottom: 8px;
+  border-bottom: 2px solid var(--accent);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: 18px;
+  color: var(--success);
+  margin: 20px 0 12px;
+  font-weight: 600;
+}
+
+h4 {
+  font-size: 16px;
+  color: var(--text-bright);
+  margin: 16px 0 8px;
+  font-weight: 600;
+}
+
+p { margin-bottom: 12px; }
+
+.subtitle {
+  color: var(--text-dim);
+  font-size: 14px;
+  margin-bottom: 24px;
+}
+
+/* ===== Cards ===== */
+.card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 16px;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 25px rgba(0,0,0,0.3);
+}
+
+.card-title {
+  font-size: 16px;
+  font-weight: 700;
+  color: var(--highlight);
+  margin-bottom: 10px;
+}
+
+/* ===== Tables ===== */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin: 16px 0;
+  font-size: 14px;
+}
+
+th {
+  background: var(--accent);
+  color: #fff;
+  padding: 12px 14px;
+  text-align: left;
+  font-weight: 600;
+  font-size: 13px;
+  letter-spacing: 0.5px;
+}
+
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border);
+}
+
+tr:nth-child(even) td { background: var(--table-even); }
+tr:nth-child(odd) td { background: var(--table-odd); }
+tr:hover td { background: rgba(233,69,96,0.08); }
+
+/* ===== Tags / Badges ===== */
+.tag {
+  display: inline-block;
+  padding: 3px 10px;
+  border-radius: 12px;
+  font-size: 12px;
+  font-weight: 600;
+  margin: 2px 4px 2px 0;
+}
+
+.tag-red { background: rgba(233,69,96,0.2); color: var(--highlight); border: 1px solid rgba(233,69,96,0.4); }
+.tag-green { background: rgba(100,255,218,0.1); color: var(--success); border: 1px solid rgba(100,255,218,0.3); }
+.tag-blue { background: rgba(15,52,96,0.4); color: #64b5f6; border: 1px solid rgba(100,180,246,0.3); }
+.tag-yellow { background: rgba(249,168,37,0.15); color: var(--warning); border: 1px solid rgba(249,168,37,0.3); }
+
+/* ===== Code / Pre ===== */
+.code-block {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 16px;
+  font-family: "SF Mono", "Fira Code", "Consolas", monospace;
+  font-size: 13px;
+  overflow-x: auto;
+  margin: 12px 0;
+  line-height: 1.5;
+  color: #c9d1d9;
+}
+
+/* ===== Progress Bars ===== */
+.bar-container {
+  display: flex;
+  align-items: center;
+  margin: 4px 0;
+  gap: 10px;
+}
+
+.bar-label {
+  min-width: 120px;
+  font-size: 13px;
+  color: var(--text-dim);
+}
+
+.bar-track {
+  flex: 1;
+  height: 10px;
+  background: #0d1117;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 5px;
+  transition: width 1s ease;
+}
+
+.bar-value {
+  min-width: 40px;
+  font-size: 12px;
+  color: var(--text-dim);
+  text-align: right;
+}
+
+/* ===== Architecture Diagram ===== */
+.arch-diagram {
+  background: #0d1117;
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 24px;
+  margin: 20px 0;
+  overflow-x: auto;
+}
+
+.arch-layer {
+  display: flex;
+  align-items: center;
+  margin: 6px 0;
+  gap: 12px;
+}
+
+.arch-layer-label {
+  min-width: 180px;
+  padding: 10px 16px;
+  background: var(--accent);
+  border-radius: 6px;
+  font-weight: 700;
+  font-size: 13px;
+  text-align: center;
+  color: #fff;
+  border-left: 4px solid var(--highlight);
+}
+
+.arch-layer-products {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  flex: 1;
+}
+
+.arch-product {
+  padding: 8px 14px;
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  font-size: 13px;
+  color: var(--text-bright);
+  transition: all 0.2s;
+}
+
+.arch-product:hover {
+  border-color: var(--highlight);
+  background: rgba(233,69,96,0.1);
+}
+
+.arch-product.star { border-color: var(--warning); box-shadow: 0 0 10px rgba(249,168,37,0.2); }
+
+/* ===== Stat Boxes ===== */
+.stat-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 16px;
+  margin: 20px 0;
+}
+
+.stat-box {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  text-align: center;
+}
+
+.stat-value {
+  font-size: 32px;
+  font-weight: 800;
+  color: var(--highlight);
+  line-height: 1.2;
+}
+
+.stat-label {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* ===== Timeline ===== */
+.timeline-item {
+  display: flex;
+  gap: 16px;
+  margin: 16px 0;
+  padding: 16px;
+  background: var(--card-bg);
+  border-radius: 8px;
+  border-left: 3px solid var(--highlight);
+}
+
+.timeline-date {
+  min-width: 90px;
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+/* ===== Checklist ===== */
+.checklist-item {
+  display: flex;
+  align-items: flex-start;
+  gap: 10px;
+  padding: 10px 14px;
+  margin: 6px 0;
+  background: var(--card-bg);
+  border-radius: 6px;
+  border-left: 3px solid var(--accent);
+}
+
+.checklist-item.done {
+  border-left-color: var(--success);
+  opacity: 0.7;
+}
+
+.check-icon {
+  font-size: 16px;
+  min-width: 20px;
+}
+
+/* ===== Quote / Callout ===== */
+.callout {
+  padding: 16px 20px;
+  border-radius: 8px;
+  margin: 16px 0;
+  border-left: 4px solid;
+}
+
+.callout-highlight {
+  background: rgba(233,69,96,0.08);
+  border-color: var(--highlight);
+}
+
+.callout-success {
+  background: rgba(100,255,218,0.05);
+  border-color: var(--success);
+}
+
+.callout-warning {
+  background: rgba(249,168,37,0.08);
+  border-color: var(--warning);
+}
+
+.callout-info {
+  background: rgba(15,52,96,0.3);
+  border-color: #64b5f6;
+}
+
+/* ===== Grid layouts ===== */
+.grid-2 {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 16px;
+}
+
+.grid-3 {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+  gap: 16px;
+}
+
+/* ===== Responsive ===== */
+
+
+/* ===== Product Card ===== */
+.product-card {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 8px;
+  padding: 20px;
+  margin-bottom: 20px;
+}
+
+.product-card h4 {
+  color: var(--highlight);
+  font-size: 17px;
+  margin-top: 0;
+}
+
+.product-meta {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 6px;
+  margin: 8px 0;
+}
+
+.product-field {
+  margin: 8px 0;
+  font-size: 14px;
+}
+
+.product-field strong {
+  color: var(--success);
+}
+
+/* ===== Glossary ===== */
+.glossary-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 10px;
+}
+
+.glossary-item {
+  background: var(--card-bg);
+  border: 1px solid var(--border);
+  border-radius: 6px;
+  padding: 12px 16px;
+}
+
+.glossary-term {
+  font-weight: 700;
+  color: var(--highlight);
+  font-size: 14px;
+}
+
+.glossary-def {
+  font-size: 13px;
+  color: var(--text-dim);
+  margin-top: 4px;
+}
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: var(--bg-main); }
+::-webkit-scrollbar-thumb { background: var(--accent); border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: var(--highlight); }
+
+body { background: var(--bg-main); color: var(--text); padding: 24px 32px; line-height: 1.8; }
+h1 { font-size: 1.5rem; color: var(--text-bright); margin-bottom: 12px; }
+.subtitle { color: var(--text-dim); font-size: 0.9rem; margin-bottom: 20px; }
+table { width: 100%; border-collapse: collapse; margin: 16px 0; font-size: 0.88rem; }
+th, td { border: 1px solid var(--border); padding: 10px 14px; text-align: left; }
+th { background: var(--table-odd); color: var(--text-dim); font-weight: 600; }
+tr:nth-child(even) td { background: var(--table-even); }
+.card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 16px; margin: 12px 0; }
+.tag { display: inline-block; padding: 2px 8px; border-radius: 4px; font-size: 0.78rem; font-weight: 600; }
+.tag-green { background: rgba(52,211,153,0.15); color: #34d399; }
+.tag-yellow { background: rgba(251,191,36,0.15); color: #fbbf24; }
+.tag-red { background: rgba(248,113,113,0.15); color: #f87171; }
+strong { color: var(--text-bright); }
+code { background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; font-size: 0.82rem; }
+.callout { border-left: 3px solid var(--highlight); background: rgba(233,69,96,0.06); padding: 12px 16px; margin: 12px 0; border-radius: 0 6px 6px 0; color: var(--text-dim); }
+.callout-success { border-left-color: var(--success); background: rgba(100,255,218,0.06); }
+.grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+@media (max-width: 768px) { body { padding: 16px; } .grid-2 { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<div class="card" style="border-left:4px solid #64ffda;">
+      <h4>📈 乐观情景(概率35%) — 3年5-10x增长</h4>
+      <p><strong>触发条件：</strong>AI安全市场爆发 + 上市成功 + 竞争格局有利</p>
+      <ul style="padding-left:20px;">
+        <li>AI原生安全产品(守元/ClawLens)成为爆款</li>
+        <li>问津大模型技术领先，形成壁垒</li>
+        <li>成功IPO，资金优势转化为市场优势</li>
+        <li>Agentic AI安全市场高速增长，长亭占据先发优势</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid #f9a825;">
+      <h4>📊 基准情景(概率50%) — 2-3x增长</p>
+      <p><strong>触发条件：</strong>行业稳增长 + 产品持续迭代 + 竞争加剧但可承受</p>
+      <ul style="padding-left:20px;">
+        <li>雷池WAF持续贡献现金流</li>
+        <li>AI安全产品逐步起量，但未爆发</li>
+        <li>攻防演练持续带来增量需求</li>
+        <li>与大厂竞争激烈但保持差异化</li>
+      </ul>
+    </div>
+
+    <div class="card" style="border-left:4px solid #ff5252;">
+      <h4>📉 悲观情景(概率15%) — 增长放缓</h4>
+      <p><strong>触发条件：</strong>宏观下行 + AI安全变现不及预期 + 大厂挤压</p>
+      <ul style="padding-left:20px;">
+        <li>企业IT预算收紧，安全投入优先级下降</li>
+        <li>AI安全市场教育周期长，客户付费意愿低</li>
+        <li>阿里/腾讯等大厂在安全领域加大投入</li>
+        <li>上市进度受阻，影响融资和品牌</li>
+      </ul>
+    
+</body>
+</html>
