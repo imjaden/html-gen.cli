@@ -220,13 +220,29 @@ def cmd_table(args):
         sys.exit(1)
     with open(data_path) as f:
         raw = json.load(f)
-    sample = raw if isinstance(raw, list) else (raw.get('data') or raw.get('rows') or list(raw.values())[0])
-    columns = [{'key': k, 'label': k, 'sortable': True} for k in (sample[0] if sample else {}).keys()]
-    data = raw if isinstance(raw, list) else (raw.get('data') or raw.get('rows') or raw)
+
+    # ── Parse data: supports plain array OR structured object ──
+    if isinstance(raw, list):
+        data = raw
+        columns = [{'key': k, 'label': k, 'sortable': True} for k in (data[0] if data else {}).keys()]
+        tabs = []
+        options = {}
+    else:
+        # Structured object: {columns?, data?, rows?, tabs?, options?}
+        data = raw.get('data') or raw.get('rows') or []
+        if 'columns' in raw:
+            columns = raw['columns']
+        else:
+            columns = [{'key': k, 'label': k, 'sortable': True} for k in (data[0] if data else {}).keys()]
+        tabs = raw.get('tabs', [])
+        options = raw.get('options', {})
+
     tmpl = inline_style(read_template(TEMPLATE_TABLE))
     result = inject(tmpl, title=args.title or '数据表格',
                     columns=json.dumps(columns, ensure_ascii=False),
                     data=json.dumps(data, ensure_ascii=False),
+                    tabs=json.dumps(tabs, ensure_ascii=False),
+                    options=json.dumps(options, ensure_ascii=False),
                     filters='', search_placeholder='搜索...')
     out = args.output or 'index.html'
     Path(out).write_text(result, encoding='utf-8')

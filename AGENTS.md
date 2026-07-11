@@ -75,10 +75,43 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 ## 数据格式
 
-### table 输入（JSON 数组）
+### table 输入
+
+**简单格式**（JSON 数组，向后兼容）：
 ```json
 [{"列名1": "值1", "列名2": "值2"}, ...]
 ```
+
+**结构化格式**（v2.0 新增）：
+```json
+{
+  "columns": [
+    {"key": "name", "label": "项目", "sortable": true, "locale": "zh"},
+    {"key": "stars", "label": "Stars", "type": "number"},
+    {"key": "actions", "label": "操作", "type": "actions", "actions": [
+      {"label": "复制", "icon": "📋", "copyKey": "name"},
+      {"label": "打开", "icon": "🔗", "hrefKey": "url"}
+    ]}
+  ],
+  "data": [{"name": "hermes-agent", "stars": 50200, "url": "https://..."}],
+  "tabs": [
+    {"key": "all", "label": "全部"},
+    {"key": "AI框架", "label": "🤖 AI框架", "field": "group"}
+  ],
+  "options": {"exportCSV": true, "rowSelect": true, "pageSize": 30}
+}
+```
+
+列类型 (`col.type`)：
+- `string`（默认）：文本排序
+- `number`：数值排序（parseFloat 比较）
+- `actions`：操作按钮列，支持 `copyKey`（复制）和 `hrefKey`（跳转）
+
+Column `onClick`：`"url"` 使整行可点击跳转到 row.url
+
+Tab 定义：`field` 指定匹配的数据字段（默认 `group` 或 `category`）
+
+Options（均可选）：`pageSize`（默认 30）、`exportCSV`、`rowSelect`、`search`
 
 ### knowledge 输入（JSON 数组）
 ```json
