@@ -7,111 +7,473 @@
 <title><!--TITLE--></title>
 <link rel="stylesheet" href="style-guide.css">
 <style>
-.table-toolbar {
-  display: flex; align-items: center; gap: 12px;
-  margin-bottom: 12px; flex-wrap: wrap;
+/* ── Tabs ── */
+.table-tabs { display:flex; gap:4px; margin-bottom:10px; overflow-x:auto; flex-wrap:nowrap; }
+.table-tabs:empty { display:none; }
+.tab-btn {
+  padding:5px 14px; border-radius:6px 6px 0 0; cursor:pointer; font-size:0.72rem; font-weight:500;
+  background:var(--surface-900); color:#6b7280; border:1px solid #1a1a2e; border-bottom:none;
+  white-space:nowrap; transition:all 0.15s; user-select:none;
 }
-.table-toolbar .search-box { flex: 1; min-width: 200px; }
-.table-toolbar .stat-label { font-size: 0.75rem; color: #6b7280; }
-.table-wrap { border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
-.col-checkbox { width: 36px; }
-.col-index { width: 45px; }
-.col-index-num { text-align: center; color: #6b7280; font-size: 0.72rem; }
-.empty-state { text-align: center; padding: 48px 20px; color: #6b7280; }
-.empty-state .icon { font-size: 2rem; margin-bottom: 8px; display: block; }
+.tab-btn:hover { background:#1a1a2e; color:#d1d5db; }
+.tab-btn.active { background:var(--cobalt-950); color:var(--cobalt-400); border-color:var(--cobalt-700); }
+.tab-btn .count { display:inline-block; margin-left:4px; padding:1px 5px; border-radius:9999px;
+  font-size:0.55rem; background:rgba(99,102,241,0.15); color:var(--cobalt-400); }
+.tab-btn.active .count { background:rgba(99,102,241,0.25); }
+
+/* ── Header bar ── */
+.table-header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
+.stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
+  background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
+.stat-pill .num { color:var(--cobalt-400); font-weight:600; }
+.header-search { background:var(--surface-850); border:1px solid #2a2a3e; color:#e0e0e0; padding:5px 10px;
+  border-radius:6px; font-size:0.72rem; outline:none; width:180px; }
+.header-search:focus { border-color:var(--cobalt-600); }
+
+/* ── Table ── */
+.table-wrap { border:1px solid #1a1a2e; border-radius:var(--radius-lg); overflow-x:auto; }
+.data-table { width:100%; min-width:600px; border-collapse:collapse; table-layout:auto; }
+.data-table th {
+  position:sticky; top:0; z-index:10; background:var(--surface-900); border-bottom:1px solid #2a2a3e;
+  padding:6px 8px; text-align:left; font-size:0.65rem; font-weight:600; color:#9ca3af;
+  text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; user-select:none;
+  position:relative;
+}
+.data-table th.sortable { cursor:pointer; }
+.data-table th.sortable:hover { color:var(--cobalt-400); }
+.data-table th.sort-asc::after { content:' ▲'; color:var(--cobalt-400); font-size:9px; }
+.data-table th.sort-desc::after { content:' ▼'; color:var(--cobalt-400); font-size:9px; }
+.data-table th .resize-handle {
+  position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
+}
+.data-table th .resize-handle:hover { background:var(--cobalt-600); }
+.data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+  vertical-align:middle; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.data-table tbody tr { transition:background 0.12s; }
+.data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
+.data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
+.data-table tbody tr.clickable { cursor:pointer; }
+.col-checkbox { width:32px; text-align:center; }
+.col-checkbox input { cursor:pointer; accent-color:var(--cobalt-500); }
+.col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
+
+/* ── Actions ── */
+.action-btn { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
+  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.65rem; color:#6b7280;
+  background:transparent; transition:all 0.15s; margin:0 1px; }
+.action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
+
+/* ── Column toggle ── */
+.col-toggle-wrap { position:relative; display:inline-block; }
+.col-toggle-dropdown {
+  display:none; position:absolute; top:100%; right:0; z-index:50; margin-top:4px;
+  background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; padding:6px 0;
+  min-width:150px; max-height:260px; overflow-y:auto;
+}
+.col-toggle-dropdown.show { display:block; }
+.col-toggle-dropdown label { display:flex; align-items:center; gap:6px; padding:4px 12px;
+  font-size:0.72rem; color:#d1d5db; cursor:pointer; white-space:nowrap; }
+.col-toggle-dropdown label:hover { background:rgba(79,70,229,0.1); }
+.col-toggle-dropdown input { accent-color:var(--cobalt-500); }
+
+/* ── Toast ── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); padding:8px 20px;
+  background:var(--cobalt-950); color:#e0e0e0; border-radius:8px; font-size:0.78rem;
+  z-index:9999; border:1px solid var(--cobalt-700); opacity:0; transition:opacity 0.2s; white-space:nowrap; pointer-events:none; }
+.toast.show { opacity:1; }
+
+/* ── Misc ── */
+.empty-state { display:none; text-align:center; padding:48px 20px; color:#6b7280; }
+.empty-state .icon { font-size:2rem; margin-bottom:8px; display:block; }
+.flex-1 { flex:1; }
 </style>
 </head>
 <body>
 <div class="wrapper">
-  <div class="mb-3"><h1 style="font-size:1.2rem;margin:0;"><!--TITLE--></h1></div>
-  <div class="table-toolbar">
-    <input class="input-dark search-box" id="searchInput" placeholder="<!--SEARCH_PLACEHOLDER-->" onkeyup="if(event.key==='Enter')renderTable()">
-    <!--FILTERS-->
-    <button class="btn btn-primary" onclick="renderTable()">搜索</button>
-    <div class="flex-1"></div>
-    <span class="stat-label" id="statInfo"></span>
+
+<div class="table-tabs" id="tabsBar"></div>
+
+<div class="table-header">
+  <h1><!--TITLE--></h1>
+  <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
+  <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
+  <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
+  <div class="flex-1"></div>
+  <input class="header-search" id="searchInput" placeholder="<!--SEARCH_PLACEHOLDER-->" onkeydown="if(event.key==='Enter')doSearch()">
+  <!--FILTERS-->
+  <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
+  <div class="col-toggle-wrap">
+    <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="列可见性">⚙️</button>
+    <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
   </div>
-  <div class="table-wrap">
-    <table class="data-table">
-      <colgroup id="colGroup"></colgroup>
-      <thead id="thead"></thead>
-      <tbody id="tbody"></tbody>
-    </table>
-    <div class="empty-state" id="emptyState" style="display:none"><span class="icon">📭</span><span>无匹配数据</span></div>
-  </div>
-  <div class="pager" id="pager"></div>
 </div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <colgroup id="colGroup"></colgroup>
+    <thead id="thead"></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty-state" id="emptyState"><span class="icon">📭</span><span>无匹配数据</span></div>
+</div>
+
+<div class="pager" id="pager"></div>
+
+<div class="toast" id="toast"></div>
+
+</div>
+
 <script>
 (function() {
-  const COLUMNS = <!--COLUMNS-->;  // [{key, label, width?, sortable?}]
-  const DATA    = <!--DATA-->;
-  const PAGE_SIZE = 30;
-  let filtered = [], currentPage = 1;
-  let sortKey = '', sortAsc = true;
+  /* ═══════════════════════════════════════════
+     Layout Table v2.0 — 增强版
+     新增：Tabs/Sort指示/数字排序/中文排序/统计/操作列/Toast/
+           列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
+     ═══════════════════════════════════════════ */
 
-  function renderTable() {
-    const q = (document.getElementById('searchInput')?.value || '').toLowerCase().trim();
-    filtered = DATA.filter(function(row) {
-      if (!q) return true;
-      return COLUMNS.some(function(col) {
-        return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+  const COLUMNS = <!--COLUMNS-->;  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = <!--DATA-->;
+  const TABS    = <!--TABS-->;     // [{key,label,field?,match?}] or []
+  const OPTIONS = <!--OPTIONS-->;  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+
+  const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
+  const showExport = OPTIONS && OPTIONS.exportCSV;
+  const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const showSearch = OPTIONS ? OPTIONS.search !== false : true;
+
+  let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
+  let selectedRows = {}, colVisibility = {};
+
+  /* ── Tabs ── */
+  function buildTabs() {
+    const bar = document.getElementById('tabsBar');
+    if (!TABS || !TABS.length) { bar.innerHTML = ''; return; }
+    if (!activeTab) {
+      try { activeTab = localStorage.getItem('htmlgen_tab'); } catch(e) {}
+      if (!activeTab || !TABS.find(function(t){return t.key===activeTab})) activeTab = TABS[0].key;
+    }
+    bar.innerHTML = TABS.map(function(t) {
+      var cnt = t.key === TABS[0].key ? DATA.length :
+        DATA.filter(function(row) { return matchTab(row, t); }).length;
+      return '<div class="tab-btn'+(t.key===activeTab?' active':'')+'" onclick="switchTab(\''+t.key+'\')">'+t.label+'<span class="count">'+cnt+'</span></div>';
+    }).join('');
+  }
+
+  function matchTab(row, tab) {
+    if (tab.match) return row[tab.match] === tab.key;
+    if (tab.field) return row[tab.field] === tab.key;
+    return (row.group || row.category || '') === tab.key;
+  }
+
+  /* ── Filter & Sort ── */
+  function applyFilters() {
+    var q = document.getElementById('searchInput').value.toLowerCase().trim();
+    filtered = DATA.slice();
+    // Tab filter
+    if (activeTab && TABS && TABS.length && activeTab !== TABS[0].key) {
+      var tab = TABS.find(function(t){return t.key===activeTab;});
+      if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
+    }
+    // Search filter
+    if (q) {
+      filtered = filtered.filter(function(row) {
+        return COLUMNS.some(function(col) {
+          if (col.type === 'actions') return false;
+          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        });
       });
-    });
+    }
+    // Sort
     if (sortKey) {
+      var col = COLUMNS.find(function(c){return c.key===sortKey;});
+      var isNum = col && col.type === 'number';
+      var loc = col && col.locale;
       filtered.sort(function(a, b) {
-        const va = a[sortKey] || '', vb = b[sortKey] || '';
-        const cmp = typeof va === 'number' ? va - vb : String(va).localeCompare(String(vb));
+        var va = a[sortKey], vb = b[sortKey];
+        if (va === undefined || va === null) va = '';
+        if (vb === undefined || vb === null) vb = '';
+        if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc ? va - vb : vb - va; }
+        va = String(va); vb = String(vb);
+        var cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb);
         return sortAsc ? cmp : -cmp;
       });
     }
-    const statEl = document.getElementById('statInfo');
-    if (statEl) statEl.textContent = filtered.length + ' / ' + DATA.length + ' 条';
-    const totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+  }
+
+  /* ── Render ── */
+  function render() {
+    applyFilters();
+    if (!sortKey && TABS && TABS.length) {
+      // Default sort: keep original order within tab
+    }
+    updateStats();
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     if (currentPage > totalPages) currentPage = totalPages;
-    const start = (currentPage - 1) * PAGE_SIZE;
-    const pageData = filtered.slice(start, start + PAGE_SIZE);
-    const empty = document.getElementById('emptyState');
-    if (empty) empty.style.display = filtered.length === 0 ? 'block' : 'none';
-    const tbody = document.getElementById('tbody');
+    var start = (currentPage - 1) * PAGE_SIZE;
+    var pageData = filtered.slice(start, start + PAGE_SIZE);
+
+    var emptyEl = document.getElementById('emptyState');
+    if (filtered.length === 0) { emptyEl.style.display = 'block'; }
+    else { emptyEl.style.display = 'none'; }
+
+    var tbody = document.getElementById('tbody');
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
-    tbody.innerHTML = pageData.map(function(row) {
-      return '<tr>' + COLUMNS.map(function(col) {
-        let val = row[col.key];
-        if (col.render) val = col.render(val, row);
-        else if (val === undefined || val === null) val = '';
-        return '<td' + (col.class ? ' class="' + col.class + '"' : '') + '>' + val + '</td>';
-      }).join('') + '</tr>';
+
+    var cols = COLUMNS.filter(function(c) { return colVisibility[c.key] !== false; });
+
+    tbody.innerHTML = pageData.map(function(row, pi) {
+      var rowIdx = start + pi;
+      var rowClass = [];
+      if (selectedRows[rowIdx]) rowClass.push('selected');
+      if (getRowClickCol()) rowClass.push('clickable');
+      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(getRowClickCol()?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
+      if (showRowSelect) {
+        rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
+      }
+      cols.forEach(function(col) {
+        if (col.type === 'actions') {
+          rowHtml += '<td style="white-space:nowrap">'+renderActions(col, row)+'</td>';
+        } else {
+          var val = row[col.key];
+          if (col.render) val = col.render(val, row);
+          else if (val === undefined || val === null) val = '';
+          rowHtml += '<td'+(col.class?' class="'+col.class+'"':'')+'>'+val+'</td>';
+        }
+      });
+      rowHtml += '</tr>';
+      return rowHtml;
     }).join('');
     renderPager(totalPages);
   }
 
+  function renderActions(col, row) {
+    if (!col.actions) return '';
+    return col.actions.map(function(act, i) {
+      var onclick = '';
+      if (act.copyKey) onclick = 'event.stopPropagation();copyAction(\''+escapeAttr(row[act.copyKey]||'')+'\')';
+      else if (act.hrefKey) onclick = 'event.stopPropagation();window.open(\''+escapeAttr(row[act.hrefKey]||'')+'\',\'_blank\')';
+      else if (act.handler) onclick = 'event.stopPropagation();window.'+act.handler+'(event,\''+escapeAttr(JSON.stringify(row))+'\')';
+      return '<button class="action-btn '+act.class+'" onclick="'+onclick+'" title="'+(act.label||'')+'">'+(act.icon||act.label)+'</button>';
+    }).join('');
+  }
+
+  function escapeAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+  function getRowClickCol() {
+    return COLUMNS.find(function(c){return c.onClick;});
+  }
+
+  /* ── Stats ── */
+  function updateStats() {
+    document.getElementById('statTotal').textContent = DATA.length;
+    var fp = document.getElementById('statFilteredPill');
+    if (filtered.length !== DATA.length) {
+      fp.style.display = 'inline-flex';
+      document.getElementById('statFiltered').textContent = filtered.length;
+    } else { fp.style.display = 'none'; }
+    var sp = document.getElementById('statSelectedPill');
+    if (showRowSelect) {
+      var cnt = Object.keys(selectedRows).length;
+      sp.style.display = cnt > 0 ? 'inline-flex' : 'none';
+      document.getElementById('statSelected').textContent = cnt;
+    }
+  }
+
+  /* ── Pagination ── */
   function renderPager(totalPages) {
-    const el = document.getElementById('pager');
+    var el = document.getElementById('pager');
     if (totalPages <= 1) { el.innerHTML = ''; return; }
-    let h = '<button class="btn btn-ghost btn-sm" onclick="goPage(1)"' + (currentPage===1?' disabled':'') + '>‹‹</button>';
-    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage-1)+')"' + (currentPage===1?' disabled':'') + '>‹</button>';
-    h += '<span class="text-xs text-gray" style="margin:0 8px;">' + currentPage + ' / ' + totalPages + '</span>';
-    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage+1)+')"' + (currentPage===totalPages?' disabled':'') + '>›</button>';
-    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+totalPages+')"' + (currentPage===totalPages?' disabled':'') + '>››</button>';
+    var h = '<button class="btn btn-ghost btn-sm" onclick="goPage(1)"'+(currentPage===1?' disabled':'')+'>‹‹</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage-1)+')"'+(currentPage===1?' disabled':'')+'>‹</button>';
+    h += '<span class="text-xs text-gray" style="margin:0 8px;">'+currentPage+' / '+totalPages+'</span>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage+1)+')"'+(currentPage===totalPages?' disabled':'')+'>›</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+totalPages+')\"'+(currentPage===totalPages?' disabled':'')+'>››</button>';
     el.innerHTML = h;
   }
+
   window.goPage = function(n) {
-    const tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    var tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     currentPage = Math.max(1, Math.min(n, tp));
-    renderTable();
+    render();
   };
-  function init() {
-    const cg = document.getElementById('colGroup');
-    cg.innerHTML = COLUMNS.map(function(c) { return '<col' + (c.width?' style="width:'+c.width+'"':'') + '>'; }).join('');
-    document.getElementById('thead').innerHTML = '<tr>' + COLUMNS.map(function(c) {
-      return '<th' + (c.sortable!==false?' class="sortable" data-key="'+c.key+'" onclick="sortBy(\''+c.key+'\')"':'') + (c.width?' style="width:'+c.width+'"':'') + '>' + c.label + '</th>';
-    }).join('') + '</tr>';
-    renderTable();
+
+  /* ── Sort ── */
+  function initThead() {
+    var thead = document.getElementById('thead');
+    var cg = document.getElementById('colGroup');
+    var cols = COLUMNS.filter(function(c){return colVisibility[c.key]!==false;});
+    cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
+      cols.map(function(c) {
+        var w = c.width || (c.type==='actions'?'auto':'');
+        return '<col'+(w?' style="width:'+w+'"':'')+'>';
+      }).join('');
+    thead.innerHTML = '<tr>' +
+      (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
+      cols.map(function(c, ci) {
+        var sortCls = '';
+        if (c.sortable !== false && c.type !== 'actions') {
+          sortCls = ' sortable';
+          if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc';
+        }
+        return '<th class="'+sortCls+'"'+(c.sortable!==false?' onclick="sortBy(\''+c.key+'\')"':'')+
+          (c.width && c.type !== 'actions'?' style="width:'+c.width+'"':'')+'>'+c.label+'<span class="resize-handle" onmousedown="startResize(event,\''+c.key+'\')"></span></th>';
+      }).join('') + '</tr>';
   }
+
   window.sortBy = function(key) {
-    if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; }
-    renderTable();
+    if (sortKey === key) sortAsc = !sortAsc;
+    else { sortKey = key; sortAsc = true; }
+    initThead();
+    render();
   };
+
+  /* ── Row selection ── */
+  window.toggleRow = function(idx) {
+    if (selectedRows[idx]) delete selectedRows[idx]; else selectedRows[idx] = true;
+    updateStats();
+    render();
+  };
+  window.toggleAll = function(e) {
+    var checked = e.target.checked;
+    var start = (currentPage - 1) * PAGE_SIZE;
+    for (var i = start; i < start + PAGE_SIZE && i < filtered.length; i++) {
+      if (checked) selectedRows[i] = true; else delete selectedRows[i];
+    }
+    updateStats();
+    render();
+  };
+
+  /* ── Row click ── */
+  function handleRowClick(idx) {
+    var col = getRowClickCol();
+    if (!col) return;
+    var row = filtered[idx];
+    if (col.onClick === 'url' && row.url) window.open(row.url, '_blank');
+    else if (typeof col.onClick === 'function') col.onClick(row);
+  }
+  window.handleRowClick = handleRowClick;
+
+  /* ── Actions ── */
+  window.copyAction = function(text) {
+    if (navigator.clipboard) {
+      navigator.clipboard.writeText(text).then(function(){showToast('已复制: '+text);});
+    } else {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('已复制: '+text);
+    }
+  };
+
+  /* ── Column visibility ── */
+  function initColToggle() {
+    var dd = document.getElementById('colToggleDropdown');
+    dd.innerHTML = COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).map(function(c) {
+      var visible = colVisibility[c.key] !== false;
+      return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
+    }).join('');
+    document.getElementById('colToggleBtn').onclick = function(e) {
+      e.stopPropagation();
+      dd.classList.toggle('show');
+    };
+    document.addEventListener('click', function() { dd.classList.remove('show'); });
+  }
+
+  window.toggleCol = function(key, visible) {
+    colVisibility[key] = visible;
+    initColToggle();
+    initThead();
+    render();
+  };
+
+  /* ── Search (real-time debounced) ── */
+  var searchTimer;
+  document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function() { currentPage = 1; render(); }, 300);
+  });
+  window.doSearch = function() { currentPage = 1; render(); };
+
+  /* ── Tab switch ── */
+  window.switchTab = function(key) {
+    activeTab = key;
+    try { localStorage.setItem('htmlgen_tab', key); } catch(e) {}
+    buildTabs();
+    currentPage = 1;
+    render();
+  };
+
+  /* ── CSV Export ── */
+  function initExport() {
+    var btn = document.getElementById('exportBtn');
+    if (!showExport) return;
+    btn.style.display = 'inline-flex';
+    btn.onclick = function() {
+      var cols = COLUMNS.filter(function(c){return c.type!=='actions' && colVisibility[c.key]!==false;});
+      var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
+      var rows = filtered.map(function(row) {
+        return cols.map(function(c) {
+          var v = row[c.key]; if (v === null || v === undefined) v = '';
+          return '"'+String(v).replace(/"/g,'""')+'"';
+        }).join(',');
+      });
+      var csv = '\uFEFF' + header + '\n' + rows.join('\n');
+      var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'export.csv'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('已导出 '+filtered.length+' 条');
+    };
+  }
+
+  /* ── Toast ── */
+  var _toastTimer;
+  function showToast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function(){el.classList.remove('show');}, 2500);
+  }
+  window.showToast = showToast;
+
+  /* ── Column resize ── */
+  var _resizeCol, _resizeStartX, _resizeStartW;
+  window.startResize = function(e, key) {
+    e.stopPropagation(); e.preventDefault();
+    _resizeCol = key;
+    _resizeStartX = e.clientX;
+    var th = e.target.parentElement;
+    _resizeStartW = th.offsetWidth;
+    document.addEventListener('mousemove', onResizeMove);
+    document.addEventListener('mouseup', onResizeUp);
+  };
+  function onResizeMove(e) {
+    if (!_resizeCol) return;
+    var delta = e.clientX - _resizeStartX;
+    var newW = Math.max(40, _resizeStartW + delta);
+    var col = COLUMNS.find(function(c){return c.key===_resizeCol;});
+    if (col) col.width = newW + 'px';
+    initThead();
+  }
+  function onResizeUp() {
+    _resizeCol = null;
+    document.removeEventListener('mousemove', onResizeMove);
+    document.removeEventListener('mouseup', onResizeUp);
+  }
+
+  /* ── Init ── */
+  function init() {
+    // Search visibility
+    if (!showSearch) document.getElementById('searchInput').style.display = 'none';
+    initColToggle();
+    initExport();
+    buildTabs();
+    initThead();
+    render();
+  }
   init();
 })();
 </script>
