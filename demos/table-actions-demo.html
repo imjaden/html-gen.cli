@@ -273,6 +273,34 @@ pre code { background: none; padding: 0; }
 .empty-state { display:none; text-align:center; padding:48px 20px; color:#6b7280; }
 .empty-state .icon { font-size:2rem; margin-bottom:8px; display:block; }
 .flex-1 { flex:1; }
+
+/* ── Quick Search Overlay (Cmd+F) ── */
+.qs-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
+  display:none; justify-content:center; align-items:flex-start; padding-top:15vh; z-index:9999;
+}
+.qs-overlay.active { display:flex; }
+.qs-modal {
+  width:560px; max-width:90vw; background:var(--surface-900);
+  border:1px solid var(--cobalt-700); border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4); overflow:hidden;
+  animation:qsSlideIn 0.18s ease-out;
+}
+@keyframes qsSlideIn { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+.qs-input-row { display:flex; align-items:center; padding:14px 18px; gap:10px; }
+.qs-input-row .qs-icon { font-size:1.1rem; color:var(--cobalt-400); flex-shrink:0; }
+.qs-input-row input {
+  flex:1; border:none; outline:none; font-size:1rem; color:#e0e0e0;
+  background:transparent; font-family:inherit;
+}
+.qs-input-row input::placeholder { color:#555; }
+.qs-close-btn {
+  padding:4px 12px; border-radius:6px; border:1px solid #2a2a3e;
+  background:transparent; color:#9ca3af; cursor:pointer; font-size:0.72rem;
+  transition:all 0.15s;
+}
+.qs-close-btn:hover { background:#2a2a3e; color:#e0e0e0; }
+.qs-hint { display:flex; justify-content:space-between; padding:4px 18px 12px; font-size:0.62rem; color:#6b7280; }
 </style>
 </head>
 <body>
@@ -307,6 +335,21 @@ pre code { background: none; padding: 0; }
 <div class="pager" id="pager"></div>
 
 <div class="toast" id="toast"></div>
+
+<!-- Cmd+F Quick Search Overlay -->
+<div class="qs-overlay" id="qsOverlay" onclick="if(event.target===this)quickSearch.close()">
+  <div class="qs-modal">
+    <div class="qs-input-row">
+      <span class="qs-icon">🔍</span>
+      <input id="qsInput" placeholder="搜索..." onkeydown="qsHandleKey(event)" oninput="qsOnInput()">
+      <button class="qs-close-btn" onclick="quickSearch.close()">Esc</button>
+    </div>
+    <div class="qs-hint">
+      <span>Enter 搜索 · Esc 关闭</span>
+      <span id="qsMatchCount"></span>
+    </div>
+  </div>
+</div>
 
 </div>
 
@@ -680,6 +723,80 @@ pre code { background: none; padding: 0; }
     render();
   }
   init();
+
+  /* ═══════════════════════════════════════════
+     Quick Search — Cmd+F overlay
+     ═══════════════════════════════════════════ */
+  var quickSearch = {
+    overlay: document.getElementById('qsOverlay'),
+    input: document.getElementById('qsInput'),
+    active: false,
+
+    open: function() {
+      if (!showSearch) return;
+      // Copy current header search value to popup
+      this.input.value = document.getElementById('searchInput').value;
+      this.overlay.classList.add('active');
+      this.active = true;
+      this.updateMatchCount();
+      setTimeout(function() { quickSearch.input.focus(); quickSearch.input.select(); }, 80);
+    },
+
+    close: function() {
+      // Sync popup value back to header (don't trigger search)
+      document.getElementById('searchInput').value = this.input.value;
+      this.overlay.classList.remove('active');
+      this.active = false;
+    },
+
+    submit: function() {
+      // Sync + trigger search
+      document.getElementById('searchInput').value = this.input.value;
+      this.overlay.classList.remove('active');
+      this.active = false;
+      currentPage = 1;
+      render();
+    },
+
+    updateMatchCount: function() {
+      var el = document.getElementById('qsMatchCount');
+      if (!el) return;
+      var q = this.input.value.toLowerCase().trim();
+      if (!q) { el.textContent = ''; return; }
+      var cnt = DATA.filter(function(row) {
+        return COLUMNS.some(function(col) {
+          if (col.type === 'actions') return false;
+          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        });
+      }).length;
+      el.textContent = '匹配 ' + cnt + ' 条';
+    }
+  };
+
+  // Input: live match count update (no header sync)
+  window.qsOnInput = function() {
+    quickSearch.updateMatchCount();
+  };
+
+  // Keyboard: Enter/Esc handling inside popup
+  window.qsHandleKey = function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); quickSearch.submit(); }
+    else if (e.key === 'Escape') { e.preventDefault(); quickSearch.close(); }
+  };
+
+  // Global keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // Cmd+F / Ctrl+F
+    if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      if (!showSearch) return;
+      e.preventDefault();
+      quickSearch.open();
+    }
+    // Esc when overlay active
+    if (e.key === 'Escape' && quickSearch.active) {
+      quickSearch.close();
+    }
+  });
 })();
 </script>
 </body>
