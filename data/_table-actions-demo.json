@@ -1,0 +1,26 @@
+{
+  "columns": [
+    {"key": "name", "label": "名称", "sortable": true, "locale": "zh"},
+    {"key": "type", "label": "类型", "sortable": true},
+    {"key": "url", "label": "链接", "sortable": false},
+    {"key": "actions", "label": "操作", "type": "actions", "actions": [
+      {"icon": "👁️", "label": "查看详情", "desc": "打开详情页查看完整信息"},
+      {"icon": "✏️", "label": "编辑", "desc": "进入编辑模式修改数据"},
+      {"icon": "📋", "label": "复制名称", "copyKey": "name"},
+      {"icon": "🔗", "label": "打开链接", "hrefKey": "url"},
+      {"icon": "⭐", "label": "收藏", "desc": "将此项添加到收藏夹"},
+      {"icon": "🗑️", "label": "删除", "desc": "永久删除此项（需要二次确认）"}
+    ]}
+  ],
+  "data": [
+    {"name": "document.pdf", "type": "PDF 文档", "url": "https://example.com/doc.pdf"},
+    {"name": "report.xlsx", "type": "Excel 表格", "url": "https://example.com/report.xlsx"},
+    {"name": "presentation.pptx", "type": "PPT 演示", "url": "https://example.com/slides.pptx"},
+    {"name": "image.png", "type": "PNG 图片", "url": "https://example.com/photo.png"},
+    {"name": "archive.zip", "type": "压缩包", "url": "https://example.com/archive.zip"},
+    {"name": "script.py", "type": "Python 脚本", "url": "https://example.com/script.py"},
+    {"name": "config.json", "type": "JSON 配置", "url": "https://example.com/config.json"},
+    {"name": "readme.md", "type": "Markdown", "url": "https://example.com/readme.md"}
+  ],
+  "options": {"exportCSV": true, "rowSelect": true, "pageSize": 5}
+}

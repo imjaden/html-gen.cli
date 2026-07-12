@@ -10,5 +10,6 @@
   { "类型": "🏢 C 型案例", "文件": "<a href=\"chaitin-business-analysis-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-business ↗</a>", "说明": "长亭科技商业分析知识库 (4类14条)", "大小": "30KB" },
   { "类型": "📄 其他", "文件": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗</a>", "说明": "公司商业分析纵/横菜单设计方案", "大小": "27KB" },
   { "类型": "📚 C 型案例", "文件": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗</a>", "说明": "HTML 技能知识库 (3类15条)", "大小": "22KB" },
-  { "类型": "🔧 其他", "文件": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗</a>", "说明": "tool-nav 前端工具导航", "大小": "14KB" }
+  { "类型": "🔧 其他", "文件": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗</a>", "说明": "tool-nav 前端工具导航", "大小": "14KB" },
+  { "类型": "🎬 A 型演示", "文件": "<a href=\"table-actions-demo.html\" target=\"_blank\" rel=\"noopener\">table-actions-demo ↗</a>", "说明": "操作列功能演示 · 6 种按钮 + desc 模式 (8条)", "大小": "18KB" }
 ]

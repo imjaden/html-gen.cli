@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>HTML 模板演示 · 文件索引</title>
+<title>操作列功能演示</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -281,7 +281,7 @@ pre code { background: none; padding: 0; }
 <div class="table-tabs" id="tabsBar"></div>
 
 <div class="table-header">
-  <h1>HTML 模板演示 · 文件索引</h1>
+  <h1>操作列功能演示</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -318,10 +318,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "类型", "label": "类型", "sortable": true}, {"key": "文件", "label": "文件", "sortable": true}, {"key": "说明", "label": "说明", "sortable": true}, {"key": "大小", "label": "大小", "sortable": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
-  const DATA    = [{"类型": "🏠 首页", "文件": "<a href=\"index.html\" target=\"_blank\" rel=\"noopener\">index.html ↗<\/a>", "说明": "模板展示首页 · 三层架构演示", "大小": "16KB"}, {"类型": "📄 A 型方案", "文件": "<a href=\"template-A-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗<\/a>", "说明": "数据表格 · 方案说明文档", "大小": "25KB"}, {"类型": "📄 B 型方案", "文件": "<a href=\"template-B-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗<\/a>", "说明": "文档阅读 · 方案说明文档", "大小": "27KB"}, {"类型": "📐 B 型规范", "文件": "<a href=\"template-B-markdown-spec-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗<\/a>", "说明": "Markdown 语法子集规范", "大小": "27KB"}, {"类型": "📄 C 型方案", "文件": "<a href=\"template-C-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗<\/a>", "说明": "知识库 · 方案说明文档", "大小": "25KB"}, {"类型": "📊 A 型案例", "文件": "<a href=\"iris-output-index.html\" target=\"_blank\" rel=\"noopener\">iris-output-index ↗<\/a>", "说明": "IRIS-Output 文件索引 (9条)", "大小": "13KB"}, {"类型": "📊 A 型案例", "文件": "<a href=\"git-cloner-demo.html\" target=\"_blank\" rel=\"noopener\">git-cloner-demo ↗<\/a>", "说明": "Git 项目列表 (5个)", "大小": "12KB"}, {"类型": "📄 B 型案例", "文件": "<a href=\"ci-issues-demo.html\" target=\"_blank\" rel=\"noopener\">ci-issues-demo ↗<\/a>", "说明": "GitHub CI 问题分析报告", "大小": "25KB"}, {"类型": "🏢 C 型案例", "文件": "<a href=\"chaitin-business-analysis-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-business ↗<\/a>", "说明": "长亭科技商业分析知识库 (4类14条)", "大小": "30KB"}, {"类型": "📄 其他", "文件": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗<\/a>", "说明": "公司商业分析纵/横菜单设计方案", "大小": "27KB"}, {"类型": "📚 C 型案例", "文件": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗<\/a>", "说明": "HTML 技能知识库 (3类15条)", "大小": "22KB"}, {"类型": "🔧 其他", "文件": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗<\/a>", "说明": "tool-nav 前端工具导航", "大小": "14KB"}, {"类型": "🎬 A 型演示", "文件": "<a href=\"table-actions-demo.html\" target=\"_blank\" rel=\"noopener\">table-actions-demo ↗<\/a>", "说明": "操作列功能演示 · 6 种按钮 + desc 模式 (8条)", "大小": "18KB"}];
+  const COLUMNS = [{"key": "name", "label": "名称", "sortable": true, "locale": "zh"}, {"key": "type", "label": "类型", "sortable": true}, {"key": "url", "label": "链接", "sortable": false}, {"key": "actions", "label": "操作", "type": "actions", "actions": [{"icon": "👁️", "label": "查看详情", "desc": "打开详情页查看完整信息"}, {"icon": "✏️", "label": "编辑", "desc": "进入编辑模式修改数据"}, {"icon": "📋", "label": "复制名称", "copyKey": "name"}, {"icon": "🔗", "label": "打开链接", "hrefKey": "url"}, {"icon": "⭐", "label": "收藏", "desc": "将此项添加到收藏夹"}, {"icon": "🗑️", "label": "删除", "desc": "永久删除此项（需要二次确认）"}]}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"name": "document.pdf", "type": "PDF 文档", "url": "https://example.com/doc.pdf"}, {"name": "report.xlsx", "type": "Excel 表格", "url": "https://example.com/report.xlsx"}, {"name": "presentation.pptx", "type": "PPT 演示", "url": "https://example.com/slides.pptx"}, {"name": "image.png", "type": "PNG 图片", "url": "https://example.com/photo.png"}, {"name": "archive.zip", "type": "压缩包", "url": "https://example.com/archive.zip"}, {"name": "script.py", "type": "Python 脚本", "url": "https://example.com/script.py"}, {"name": "config.json", "type": "JSON 配置", "url": "https://example.com/config.json"}, {"name": "readme.md", "type": "Markdown", "url": "https://example.com/readme.md"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"exportCSV": true, "rowSelect": true, "pageSize": 5};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
