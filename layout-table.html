@@ -257,14 +257,25 @@
 
   function renderActions(col, row) {
     if (!col.actions) return '';
-    return col.actions.map(function(act, i) {
+    return col.actions.map(function(act) {
       var onclick = '';
-      if (act.copyKey) onclick = 'event.stopPropagation();copyAction(\''+escapeAttr(row[act.copyKey]||'')+'\')';
-      else if (act.hrefKey) onclick = 'event.stopPropagation();window.open(\''+escapeAttr(row[act.hrefKey]||'')+'\',\'_blank\')';
-      else if (act.handler) onclick = 'event.stopPropagation();window.'+act.handler+'(event,\''+escapeAttr(JSON.stringify(row))+'\')';
-      return '<button class="action-btn '+act.class+'" onclick="'+onclick+'" title="'+(act.label||'')+'">'+(act.icon||act.label)+'</button>';
+      if (act.copyKey) {
+        onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
+      } else if (act.hrefKey) {
+        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '') + ',"_blank")';
+      } else if (act.handler) {
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row) + ')';
+      } else if (act.desc) {
+        onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
+      }
+      return '<button class="action-btn ' + (act.class||'') + '" onclick="' + onclick + '" title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
     }).join('');
   }
+
+  /* ── Demo action: show description toast ── */
+  window.showDemoAction = function(msg) {
+    showToast(msg);
+  };
 
   function escapeAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
 
