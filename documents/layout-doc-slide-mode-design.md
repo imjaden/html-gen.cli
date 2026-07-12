@@ -2,7 +2,7 @@
 
 ## 版本
 
-v2.0 (2026-07-13)
+v2.1 (2026-07-13) — 安全审查修订
 
 ## 概述
 
@@ -11,6 +11,10 @@ v2.0 (2026-07-13)
 ## 模式切换
 
 侧边栏顶部增加模式切换按钮，一键在 doc/slide 间切换，动画过渡 0.3s。
+
+- 切换至 slide 模式时：保存 doc 模式当前滚动位置到内存
+- 切换回 doc 模式时：恢复至缓存的滚动位置（`scrollTo`）
+- 页面初次加载时默认 doc 模式
 
 ```
 ┌──────┬──────────────┐        ┌──────┬──────────────┐
@@ -27,12 +31,15 @@ v2.0 (2026-07-13)
 
 每个 `##` 二级标题作为一页。h1 标题作为封面页。
 
+**封面页内容**: h1 标题 + 副标题（`<!--SUBTITLE-->`）+ 元信息（路径/日期/字数） + h2 页数统计（如 "共 12 节"）。
+
 ```
 Page 1 (封面)      Page 2               Page 3              ...
 ┌──────────┐  ┌──────────────┐  ┌──────────────┐
 │  # h1    │  │ ## Section A │  │ ## Section B │
 │  副标题  │  │  内容...     │  │  内容...     │
 │  元信息  │  │              │  │              │
+│ 共 12 节 │  │              │  │              │
 └──────────┘  └──────────────┘  └──────────────┘
 ```
 
@@ -55,6 +62,82 @@ h2 作为页容器，h3 在该页内并列为卡片。适用于对比分析、�
 - 4+ 列切换为 2×N 网格
 - 列内内容超长时 `overflow-y: auto`
 - 点击列或 Tab 键切换焦点列，焦点列亮边框
+
+> ⚠️ **待确认**: 单个 h2 下只有 1 个 h3 时，分列模式降级为平铺还是保持单列？
+
+## 边界情况处理
+
+| 情况 | 行为 |
+|:-----|:-----|
+| 文档无 h2 | slide 模式下仅显示封面页，底部提示 "本文档无二级标题，无法分页" |
+| 空文档（无内容） | 封面页显示 h1 + 元信息，"暂无内容" 占位 |
+| 单页内容超长（超过 viewport） | slide-page 容器 `overflow-y: auto`，允许页内滚动 |
+| 代码块/表格超宽 | 水平 `overflow-x: auto`，不截断内容 |
+
+边界情况由 `html-gen.py` 生成 HTML 时通过注入 `data-` 属性或内联提示处理，不影响 slide 模式的正常功能。
+
+## 性能策略
+
+| 文档规模 | 策略 |
+|:---------|:-----|
+| ≤50 h2 节 | 全量 DOM 渲染，无性能问题 |
+| >50 h2 节 | 生成 HTML 时在封面页注入黄色提示条："⚠️ 本文档共 N 节，slide 模式下可能加载较慢" |
+| >200 h2 节 | 同上 + 建议拆分为多个文档 |
+
+当前方案为全量渲染（v1），后续版本可考虑虚拟分页（只渲染当前页 ±2 页的 DOM）。提示条不影响 slide 模式正常功能，仅为用户知情。
+
+## 安全约束
+
+**所有 DOM 内容注入必须遵守以下规则，违反即阻断合入：**
+
+### 1. 页面内容渲染 (`renderPage`)
+
+```
+✅ 允许: cloneNode + textContent / appendChild 操作现有 DOM 节点
+❌ 禁止: innerHTML / insertAdjacentHTML 直接注入从 DOM 提取的内容
+```
+
+实现方式：从 doc 模式的 DOM 中提取对应 h2 区块的 DOM 子树，使用 `cloneNode(true)` 深拷贝后 `appendChild` 到 slide 容器。不经过字符串序列化。
+
+### 2. 演讲者备注
+
+```
+提取管道: HTML comment → textContent → 转义 → textContent 注入
+```
+
+```javascript
+// 从 DOM 中定位 <!-- notes ... --> 注释节点
+var noteText = commentNode.textContent;
+// 新窗口中仅使用 textContent 设置，禁止 innerHTML
+noteWindow.document.getElementById('notes').textContent = noteText;
+```
+
+备注内容在 Markdown→HTML 环节已由 `_md_escape()` 转义特殊字符（`<` `>` `&`），新窗口渲染时使用 `textContent` 设置，双重保护。
+
+### 3. localStorage 恢复
+
+```javascript
+restoreProgress: function() {
+  try {
+    var n = parseInt(localStorage.getItem('layoutdoc_slide_page'), 10);
+    if (isNaN(n) || n < 0 || n >= this.pages.length) n = 0;  // 边界校验
+    this.goTo(n);
+  } catch(e) { this.goTo(0); }  // localStorage 不可用时回退
+}
+```
+
+### 4. 底部导航标题
+
+```javascript
+// ✅ 使用 textContent — 浏览器自动解码 HTML 实体
+document.getElementById('slidePageTitle').textContent = currentPageTitle;
+
+// ❌ 禁止 innerHTML — 若标题含 &lt; 会字面显示而非渲染为 <
+```
+
+### 5. 全屏模式 URL
+
+`F` 键进入全屏使用 `Element.requestFullscreen()` 标准 API，不涉及 `window.open()` 或 URL 跳转。无需处理 URL 参数。
 
 ## 导航交互
 
@@ -221,19 +304,23 @@ var slideMode = {
   currentPage: 0,
   pages: [],        // [{h2, h3s: [{title, content}]}]
   isFullscreen: false,
+  _docScrollPos: 0,  // doc 模式滚动位置缓存
 
   init: function() { /* 解析 DOM，按 h2/h3 建 pages 数组 */ },
-  enter: function() { /* 切换为 slide 布局 */ },
-  exit: function() { /* 恢复 doc 布局 */ },
-  goTo: function(n) { /* 渲染第 n 页 */ },
+  enter: function() { /* 保存 doc 滚动位置 → 切换 slide 布局 */ },
+  exit: function() { /* 恢复 doc 布局 → scrollTo 缓存位置 */ },
+  goTo: function(n) { /* 边界校验后渲染第 n 页 */ },
   next: function() { /* 下一页，末尾循环到首页 */ },
   prev: function() { /* 上一页 */ },
-  renderPage: function(n) { /* 生成页面 HTML */ },
-  toggleFullscreen: function() { /* 全屏切换 */ },
 
-  // localStorage
-  saveProgress: function() { localStorage.setItem('layoutdoc_slide_page', this.currentPage); },
-  restoreProgress: function() { /* 读取并跳转 */ }
+  // 安全渲染：cloneNode 深拷贝 DOM 子树，禁止 innerHTML
+  renderPage: function(n) { /* cloneNode + appendChild，见安全约束 §1 */ },
+  toggleFullscreen: function() { /* requestFullscreen API */ },
+  openNotes: function() { /* 新窗口，textContent 注入，见安全约束 §2 */ },
+
+  // localStorage（边界校验，见安全约束 §3）
+  saveProgress: function() { try { localStorage.setItem('layoutdoc_slide_page', this.currentPage); } catch(e) {} },
+  restoreProgress: function() { /* parseInt + 边界校验，NaN/越界回退 0 */ }
 };
 ```
 
