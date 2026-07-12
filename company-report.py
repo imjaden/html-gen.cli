@@ -21,6 +21,15 @@ HTML_DEMOS = SKILLS_DIR
 HTML_GEN   = SKILLS_DIR / 'html-gen.py'
 
 
+def _safe_path(prefix, rel_path):
+    """Resolve and validate path — reject traversal outside prefix."""
+    full = (prefix / rel_path).resolve()
+    if not str(full).startswith(str(prefix.resolve()) + os.sep) and full != prefix.resolve():
+        print(f"❌ 路径穿越拒绝: {rel_path}", file=sys.stderr)
+        sys.exit(1)
+    return full
+
+
 def load_schema(path):
     with open(path) as f:
         return json.load(f)
@@ -32,13 +41,13 @@ def generate(schema):
     groups  = schema['groups']
     items   = schema['items']
 
-    # 1. Write groups JSON
-    groups_path = HTML_DEMOS / out['groups_file']
+    # 1. Write groups JSON (path-validated)
+    groups_path = _safe_path(HTML_DEMOS, out['groups_file'])
     with open(groups_path, 'w') as f:
         json.dump(groups, f, ensure_ascii=False, indent=2)
     print(f"  ✅ {out['groups_file']}")
 
-    # 2. Write items JSON (keep only schema-defined fields)
+    # 2. Write items JSON (path-validated)
     clean_items = []
     for item in items:
         entry = {}
@@ -47,13 +56,13 @@ def generate(schema):
                 entry[key] = item[key]
         clean_items.append(entry)
 
-    data_path = HTML_DEMOS / out['data_file']
+    data_path = _safe_path(HTML_DEMOS, out['data_file'])
     with open(data_path, 'w') as f:
         json.dump(clean_items, f, ensure_ascii=False, indent=2)
     print(f"  ✅ {out['data_file']} ({len(clean_items)} items)")
 
-    # 3. Run html-gen knowledge
-    html_path = HTML_DEMOS / out['html_file']
+    # 3. Run html-gen knowledge (path-validated)
+    html_path = _safe_path(HTML_DEMOS, out['html_file'])
     result = subprocess.run([
         sys.executable, str(HTML_GEN), 'knowledge',
         '-d', str(data_path),
