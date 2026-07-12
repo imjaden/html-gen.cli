@@ -1,0 +1,14 @@
+level: L2
+owner: Jaden Li
+classification: public
+compliance: [none]
+data_types: []
+review_history:
+  - date: 2026-07-12
+    reviewer: Security Reviewer
+    review_level: L2
+    verdict: FAIL
+    score: 60
+    findings_total: 4
+    findings_open: 4
+    tracking: HG-SEC-001..HG-SEC-004

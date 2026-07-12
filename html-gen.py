@@ -29,7 +29,10 @@ def read_template(path):
 
 def inject(template, **kwargs):
     for key, value in kwargs.items():
-        template = template.replace(f'<!--{key.upper()}-->', str(value))
+        s = str(value)
+        # SECURITY: prevent </script> injection breaking out of <script> tags
+        s = s.replace('</', '<\\/')
+        template = template.replace(f'<!--{key.upper()}-->', s)
     return template
 
 
@@ -76,11 +79,11 @@ def md_to_html(text):
             continue
 
         if line.startswith('### '):
-            html.append(f'<h3 id="{slug(line[4:])}">{line[4:]}</h3>')
+            html.append(f'<h3 id="{slug(line[4:])}">{_md_escape(line[4:])}</h3>')
         elif line.startswith('## '):
-            html.append(f'<h2 id="{slug(line[3:])}">{line[3:]}</h2>')
+            html.append(f'<h2 id="{slug(line[3:])}">{_md_escape(line[3:])}</h2>')
         elif line.startswith('# '):
-            html.append(f'<h1 id="{slug(line[2:])}">{line[2:]}</h1>')
+            html.append(f'<h1 id="{slug(line[2:])}">{_md_escape(line[2:])}</h1>')
         elif line.startswith('|'):
             tbl = []
             while i < len(lines) and '|' in lines[i] and lines[i].strip().startswith('|'):
@@ -89,9 +92,9 @@ def md_to_html(text):
             html.append(parse_table(tbl))
             continue
         elif re.match(r'^[-*] ', line):
-            html.append(f'<li>{line[2:]}</li>')
+            html.append(f'<li>{inline_format(_md_escape(line[2:]))}</li>')
         elif re.match(r'^\d+\.\s', line):
-            html.append(f'<li>{line.split(". ",1)[1]}</li>')
+            html.append(f'<li>{inline_format(_md_escape(line.split(". ",1)[1]))}</li>')
         elif re.match(r'^-{3,}$', line.strip()):
             html.append('<hr>')
         elif line.startswith('> '):
@@ -100,13 +103,13 @@ def md_to_html(text):
                 ct_map = {'注意':'note','Note':'note','提示':'tip','Tip':'tip','警告':'warning','Warning':'warning','Caution':'caution','危险':'danger','Danger':'danger'}
                 cls = 'callout ' + ct_map.get(cm.group(1), 'note')
                 label = cm.group(1).rstrip(':')
-                html.append(f'<blockquote class="{cls}"><strong>{label}:</strong>{inline_format(cm.group(2))}</blockquote>')
+                html.append(f'<blockquote class="{cls}"><strong>{label}:</strong>{inline_format(_md_escape(cm.group(2)))}</blockquote>')
             else:
-                html.append(f'<blockquote>{inline_format(line[2:])}</blockquote>')
+                html.append(f'<blockquote>{inline_format(_md_escape(line[2:]))}</blockquote>')
         elif line.strip() == '':
             pass
         else:
-            t = inline_format(line)
+            t = inline_format(_md_escape(line))
             if t.strip():
                 html.append(f'<p>{t}</p>')
         i += 1
@@ -154,6 +157,11 @@ def slug(text):
     t = text.lower()
     t = re.sub(r'[^\w\u4e00-\u9fff]+', '-', t)
     return t.strip('-') or 'section'
+
+
+def _md_escape(text):
+    """Escape HTML in plain text content of markdown."""
+    return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
 
 
 def inline_format(text):

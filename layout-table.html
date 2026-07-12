@@ -145,6 +145,13 @@
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
 
+  /* ── Security: HTML escape ── */
+  function escapeHtml(text) {
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
   /* ── Tabs ── */
   function buildTabs() {
     const bar = document.getElementById('tabsBar');
@@ -238,6 +245,7 @@
           var val = row[col.key];
           if (col.render) val = col.render(val, row);
           else if (val === undefined || val === null) val = '';
+          else if (col.escape) val = escapeHtml(String(val));
           rowHtml += '<td'+(col.class?' class="'+col.class+'"':'')+'>'+val+'</td>';
         }
       });
