@@ -1,0 +1,303 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title><!--TITLE--></title>
+<link rel="stylesheet" href="style-guide.css">
+<style>
+.slide-wrapper { display: flex; min-height: 100vh; }
+.slide-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.slide-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.slide-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.slide-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.slide-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.slide-toc a {
+  display: block; padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af; text-decoration: none;
+  border-left: 3px solid transparent; transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.slide-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.slide-toc a.active {
+  background: rgba(79,70,229,0.1); color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.slide-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.slide-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.slide-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; position: relative; }
+.slide-page-num {
+  position: absolute; top: 12px; right: 20px; font-size: 0.7rem; color: #6b7280;
+  z-index: 5; opacity: 1; transition: opacity 0.5s;
+}
+.slide-page-num.fade { opacity: 0; }
+.slide-page {
+  flex: 1; overflow-y: auto; padding: 24px 40px 48px;
+  animation: slideFadeIn 0.22s ease;
+}
+@keyframes slideFadeIn { from{opacity:0;transform:translateX(6px)} to{opacity:1;transform:translateX(0)} }
+
+/* ── Cover Page ── */
+.slide-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.slide-cover h1 { font-size: 1.6rem; margin-bottom: 8px; color: #f0f0f0; }
+.slide-cover .slide-cover-sub { font-size: 0.95rem; color: var(--cobalt-400); margin-bottom: 6px; }
+.slide-cover .slide-cover-meta { font-size: 0.75rem; color: #6b7280; margin-bottom: 12px; }
+.slide-cover .slide-cover-meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+.slide-cover .slide-cover-count { font-size: 0.8rem; color: #9ca3af; }
+
+/* ── Content Styles ── */
+.slide-page h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 0 0 1rem 0; }
+.slide-page h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.slide-page p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.slide-page ul, .slide-page ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.slide-page li { line-height: 1.8; margin: 3px 0; }
+.slide-page table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.slide-page th, .slide-page td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.slide-page th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.slide-page tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.slide-page tr:hover { background: rgba(79,70,229,0.06); }
+.slide-page code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+.slide-page pre { background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
+.slide-page pre code { background: none; padding: 0; font-size: 0.78rem; }
+.slide-page blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.slide-page hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.slide-page img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+
+/* ── Performance Warning ── */
+.perf-warning {
+  margin: 0 40px 8px; padding: 8px 14px; border-radius: 6px;
+  background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25);
+  color: #fbbf24; font-size: 0.72rem; display: none;
+}
+
+/* ── Navigation Dots ── */
+.slide-nav { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 8px 16px 12px; }
+.slide-dots { display: flex; gap: 5px; align-items: center; }
+.slide-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #3a3a5e;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.slide-dot.active { background: var(--cobalt-400); width: 22px; border-radius: 4px; }
+.slide-dot.visited { background: #555; }
+.slide-nav-title { font-size: 0.68rem; color: #6b7280; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .slide-sidebar { display: none; }
+  .slide-page { padding: 16px 20px 40px; }
+}
+</style>
+</head>
+<body>
+<div class="slide-wrapper">
+
+  <aside class="slide-sidebar" id="sidebar">
+    <div class="slide-sidebar-header">
+      <div class="logo">🎞️ <!--TITLE--></div>
+      <div class="sub"><!--SUBTITLE--></div>
+    </div>
+    <nav class="slide-toc" id="toc"></nav>
+  </aside>
+
+  <div class="slide-main" id="slideMain">
+    <div class="perf-warning" id="perfWarning"><!--PERF_WARNING--></div>
+    <div class="slide-page-num" id="slidePageNum"></div>
+    <div class="slide-page" id="slidePage"></div>
+  </div>
+
+</div>
+
+<div class="slide-nav" id="slideNav">
+  <div class="slide-dots" id="slideDots"></div>
+  <div class="slide-nav-title" id="slideNavTitle"></div>
+</div>
+
+<!-- Hidden: content source for DOM cloning -->
+<div style="display:none">
+  <div class="doc-header">
+    <h1><!--TITLE--></h1>
+    <div class="meta"><!--METADATA--></div>
+  </div>
+  <div id="docBody"><!--CONTENT--></div>
+</div>
+
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+
+  /* ═══════ Slide Mode ═══════ */
+  var slide = {
+    currentPage: 0,
+    pages: [],
+    _h2Index: {},
+    _fadeTimer: null,
+
+    init: function() {
+      var self = this;
+      var h2s = body.querySelectorAll('h2');
+      var coverTitle = document.querySelector('.doc-header h1').textContent;
+      var coverSub = (document.querySelector('.slide-sidebar-header .sub').textContent || '').trim();
+      var coverMetaEl = document.querySelector('.doc-header .meta');
+      var coverMeta = coverMetaEl ? coverMetaEl.innerHTML : '';
+
+      // Cover page
+      this.pages.push({ type: 'cover', title: coverTitle, subtitle: coverSub, meta: coverMeta });
+
+      // h2 pages
+      h2s.forEach(function(h2, pi) {
+        var section = { type: 'h2', title: h2.textContent, id: h2.id, nodes: [] };
+        var el = h2.nextElementSibling;
+        while (el && el.tagName !== 'H2') {
+          section.nodes.push(el.cloneNode(true));
+          el = el.nextElementSibling;
+        }
+        self.pages.push(section);
+        self._h2Index[h2.id] = pi + 1;
+      });
+
+      this.buildDots();
+      this.restoreProgress();
+
+      // Show perf warning if present
+      var pw = document.getElementById('perfWarning');
+      if (pw && pw.textContent.trim()) pw.style.display = 'block';
+
+      this.goTo(this.currentPage);
+    },
+
+    goTo: function(n) {
+      if (n < 0 || n >= this.pages.length) return;
+      this.currentPage = n;
+      this.renderPage(n);
+      this.saveProgress();
+      this._syncToc();
+      this._updateDots();
+      this._showPageNum();
+    },
+
+    next: function() { if (this.currentPage < this.pages.length - 1) this.goTo(this.currentPage + 1); },
+    prev: function() { if (this.currentPage > 0) this.goTo(this.currentPage - 1); },
+
+    renderPage: function(n) {
+      var page = this.pages[n];
+      var container = document.getElementById('slidePage');
+      while (container.firstChild) container.removeChild(container.firstChild);
+
+      if (page.type === 'cover') {
+        container.className = 'slide-page slide-cover';
+        var h1 = document.createElement('h1'); h1.textContent = page.title; container.appendChild(h1);
+        if (page.subtitle) { var s = document.createElement('div'); s.className = 'slide-cover-sub'; s.textContent = page.subtitle; container.appendChild(s); }
+        var m = document.createElement('div'); m.className = 'slide-cover-meta'; m.innerHTML = page.meta; container.appendChild(m);
+        var c = document.createElement('div'); c.className = 'slide-cover-count'; c.textContent = '共 ' + (this.pages.length - 1) + ' 节'; container.appendChild(c);
+      } else {
+        container.className = 'slide-page';
+        var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
+        page.nodes.forEach(function(node) { container.appendChild(node.cloneNode(true)); });
+      }
+    },
+
+    buildDots: function() {
+      var self = this;
+      var dots = document.getElementById('slideDots');
+      if (!dots) return;
+      dots.innerHTML = '';
+      this.pages.forEach(function(p, i) {
+        var dot = document.createElement('div'); dot.className = 'slide-dot'; dot.title = p.title;
+        dot.addEventListener('click', function() { self.goTo(i); });
+        dots.appendChild(dot);
+      });
+      this._updateDots();
+    },
+
+    _updateDots: function() {
+      var el = document.getElementById('slideDots'); if (!el) return;
+      var dots = el.children;
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.remove('active', 'visited');
+        if (i === this.currentPage) dots[i].classList.add('active');
+        else if (i < this.currentPage) dots[i].classList.add('visited');
+      }
+      var t = document.getElementById('slideNavTitle'); if (t) t.textContent = this.pages[this.currentPage].title;
+    },
+
+    _showPageNum: function() {
+      var el = document.getElementById('slidePageNum'); if (!el) return;
+      el.textContent = (this.currentPage + 1) + ' / ' + this.pages.length;
+      el.classList.remove('fade'); clearTimeout(this._fadeTimer);
+      this._fadeTimer = setTimeout(function() { el.classList.add('fade'); }, 3000);
+    },
+
+    _syncToc: function() {
+      if (this.currentPage === 0) { tocItems.forEach(function(a) { a.classList.remove('active'); }); return; }
+      var page = this.pages[this.currentPage];
+      tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === page.id); });
+    },
+
+    saveProgress: function() { try { localStorage.setItem('layoutslide_page', this.currentPage); } catch(e) {} },
+
+    restoreProgress: function() {
+      try { var n = parseInt(localStorage.getItem('layoutslide_page'), 10); if (isNaN(n) || n < 0 || n >= this.pages.length) n = 0; this.currentPage = n; } catch(e) { this.currentPage = 0; }
+    }
+  };
+
+  /* ═══════ TOC ═══════ */
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      anchor.textContent = '\u2713';
+      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+    });
+    h.appendChild(anchor);
+    var level = h.tagName.toLowerCase().replace('h', '');
+    var link = document.createElement('a');
+    link.href = '#' + h.id; link.textContent = h.textContent;
+    link.className = 'toc-h' + level; link.dataset.target = h.id;
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var idx = slide._h2Index[h.id];
+      if (idx !== undefined) slide.goTo(idx);
+    });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+
+  /* ═══════ Keyboard ═══════ */
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); slide.next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); slide.prev(); }
+    else if (e.key === ' ' && !e.shiftKey) { e.preventDefault(); slide.next(); }
+    else if (e.key === ' ' && e.shiftKey) { e.preventDefault(); slide.prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); slide.goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); slide.goTo(slide.pages.length - 1); }
+    else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+    }
+  });
+
+  slide.init();
+})();
+</script>
+</body>
+</html>
