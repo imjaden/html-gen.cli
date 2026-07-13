@@ -229,16 +229,17 @@ pre code { background: none; padding: 0; }
 .doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
 .doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
 
-.doc-main { flex: 1; min-width: 0; overflow-y: auto; margin-left: 80px; }
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
 .doc-header {
-  padding: 0;
+  padding: 0 80px;
   margin-top: 30px;
   position: sticky; top: 0; z-index: 10;
+  background: var(--surface-950);
 }
 .doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
 .doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
 .doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
-.doc-body { padding: 0; max-width: 880px; }
+.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; }
 
 .doc-body h1 {
   font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
@@ -360,8 +361,8 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 @media (max-width: 768px) {
   .doc-sidebar { display: none; }
   .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
-  .doc-body { padding: 16px; }
-  .doc-header { padding: 16px; }
+  .doc-body { padding: 0 16px 40px; }
+  .doc-header { padding: 0 16px; }
 }
 </style>
 </head>
@@ -375,273 +376,273 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
   <aside class="doc-sidebar" id="sidebar">
     <div class="doc-sidebar-header">
       <div class="logo">📄 html-gen · CLI 使用说明</div>
-      <div class="sub"></div>
+      <div class="sub">三层模板架构的 CLI 生成器</div>
     </div>
     <nav class="doc-toc" id="toc"></nav>
   </aside>
-  <div class="doc-main">
+  <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen · CLI 使用说明</h1>
-      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/html-gen-usage-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 1,002 · 阅读约 5 分钟</div>
+      <div class="meta">路径: <code>/Users/jadenli/CodeSpace/html-gen/demos/html-gen-usage-guide-v1.0-20260707.md<\/code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 1,002 · 阅读约 5 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><hr>
-<blockquote>三层模板架构的 CLI 生成器：将 Markdown/JSON 注入模板，输出自包含单文件 HTML。</blockquote>
-<blockquote>零外部依赖，生成即用。</blockquote>
+<blockquote>三层模板架构的 CLI 生成器：将 Markdown/JSON 注入模板，输出自包含单文件 HTML。<\/blockquote>
+<blockquote>零外部依赖，生成即用。<\/blockquote>
 <hr>
-<h2 id="一-概述">一、概述</h2>
-<p><code>html-gen</code> 是 HTML 模板系统的 <strong>Layer 3</strong> — CLI 生成器。它读取 Layer 2 模板，注入数据，输出单HTML 文件。</p>
-<h3 id="三层架构">三层架构</h3>
+<h2 id="一-概述">一、概述<\/h2>
+<p><code>html-gen<\/code> 是 HTML 模板系统的 <strong>Layer 3<\/strong> — CLI 生成器。它读取 Layer 2 模板，注入数据，输出单HTML 文件。<\/p>
+<h3 id="三层架构">三层架构<\/h3>
 <pre><code class="language-">Layer 1: style-guide.css       组件基座（CSS 变量/按钮/表格/弹窗/分页）
 Layer 2: layout-*.html         模板骨架（A 型表格 / B 型文档 / C 型知识库）
-Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）</code></pre>
-<h3 id="安装">安装</h3>
-<pre><code class="language-shell">pip install -e /path/to/html-templates</code></pre>
-<p>或直接运行：</p>
-<pre><code class="language-shell">python /path/to/html-gen.py &lt;子命令&gt; [参数]</code></pre>
+Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）<\/code><\/pre>
+<h3 id="安装">安装<\/h3>
+<pre><code class="language-shell">pip install -e /path/to/html-templates<\/code><\/pre>
+<p>或直接运行：<\/p>
+<pre><code class="language-shell">python /path/to/html-gen.py &lt;子命令&gt; [参数]<\/code><\/pre>
 <hr>
-<h2 id="二-子命令总览">二、子命令总览</h2>
+<h2 id="二-子命令总览">二、子命令总览<\/h2>
 <table><thead><tr>
-<th>子命令</th>
-<th>模板</th>
-<th>输入</th>
-<th>输出场景</th>
-</tr></thead><tbody>
+<th>子命令<\/th>
+<th>模板<\/th>
+<th>输入<\/th>
+<th>输出场景<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><code>doc</code></td>
-<td>layout-doc.html</td>
-<td><code>.md</code> Markdown</td>
-<td>分析报告、技术文档、长文阅读</td>
-</tr>
+<td><code>doc<\/code><\/td>
+<td>layout-doc.html<\/td>
+<td><code>.md<\/code> Markdown<\/td>
+<td>分析报告、技术文档、长文阅读<\/td>
+<\/tr>
 <tr>
-<td><code>table</code></td>
-<td>layout-table.html</td>
-<td><code>.json</code> 数据</td>
-<td>文件索引、收藏管理、项目列表</td>
-</tr>
+<td><code>table<\/code><\/td>
+<td>layout-table.html<\/td>
+<td><code>.json<\/code> 数据<\/td>
+<td>文件索引、收藏管理、项目列表<\/td>
+<\/tr>
 <tr>
-<td><code>knowledge</code></td>
-<td>layout-knowledge.html</td>
-<td><code>.json</code> 条目 + 类目</td>
-<td>知识库、面试准备、项目 Wiki</td>
-</tr>
-</tbody></table>
+<td><code>knowledge<\/code><\/td>
+<td>layout-knowledge.html<\/td>
+<td><code>.json<\/code> 条目 + 类目<\/td>
+<td>知识库、面试准备、项目 Wiki<\/td>
+<\/tr>
+<\/tbody><\/table>
 <hr>
-<h2 id="三-doc-markdown-转文档">三、doc — Markdown 转文档</h2>
-<h3 id="用法">用法</h3>
+<h2 id="三-doc-markdown-转文档">三、doc — Markdown 转文档<\/h2>
+<h3 id="用法">用法<\/h3>
 <pre><code class="language-shell">html-gen doc -i report.md -o report.html
-html-gen doc -i analysis.md --title "竞品分析报告" -o output.html</code></pre>
-<h3 id="参数">参数</h3>
+html-gen doc -i analysis.md --title "竞品分析报告" -o output.html<\/code><\/pre>
+<h3 id="参数">参数<\/h3>
 <table><thead><tr>
-<th>参数</th>
-<th>说明</th>
-<th>必填</th>
-</tr></thead><tbody>
+<th>参数<\/th>
+<th>说明<\/th>
+<th>必填<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><code>-i, --input</code></td>
-<td>输入 Markdown 文件路径</td>
-<td>✅</td>
-</tr>
+<td><code>-i, --input<\/code><\/td>
+<td>输入 Markdown 文件路径<\/td>
+<td>✅<\/td>
+<\/tr>
 <tr>
-<td><code>-o, --output</code></td>
-<td>输出 HTML 路径（默认同目录同名.html）</td>
-<td></td>
-</tr>
+<td><code>-o, --output<\/code><\/td>
+<td>输出 HTML 路径（默认同目录同名.html）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>--title</code></td>
-<td>覆盖文档标题（默认从 <code># 标题</code> 提取）</td>
-<td></td>
-</tr>
+<td><code>--title<\/code><\/td>
+<td>覆盖文档标题（默认从 <code># 标题<\/code> 提取）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>--subtitle</code></td>
-<td>副标题（显示在侧边栏和页头）</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="自动元信息">自动元信息</h3>
-<p>生成时自动注入以下元信息到文档顶部：</p>
+<td><code>--subtitle<\/code><\/td>
+<td>副标题（显示在侧边栏和页头）<\/td>
+<td><\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="自动元信息">自动元信息<\/h3>
+<p>生成时自动注入以下元信息到文档顶部：<\/p>
 <table><thead><tr>
-<th>项目</th>
-<th>来源</th>
-<th>格式示例</th>
-</tr></thead><tbody>
+<th>项目<\/th>
+<th>来源<\/th>
+<th>格式示例<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td>路径</td>
-<td>文件绝对路径</td>
-<td><code>~/Documents/report.md</code></td>
-</tr>
+<td>路径<\/td>
+<td>文件绝对路径<\/td>
+<td><code>~/Documents/report.md<\/code><\/td>
+<\/tr>
 <tr>
-<td>创建时间</td>
-<td>文件 <code>st_ctime</code></td>
-<td><code>2026-07-07 14:30</code></td>
-</tr>
+<td>创建时间<\/td>
+<td>文件 <code>st_ctime<\/code><\/td>
+<td><code>2026-07-07 14:30<\/code><\/td>
+<\/tr>
 <tr>
-<td>编辑时间</td>
-<td>文件 <code>st_mtime</code></td>
-<td><code>2026-07-07 16:45</code></td>
-</tr>
+<td>编辑时间<\/td>
+<td>文件 <code>st_mtime<\/code><\/td>
+<td><code>2026-07-07 16:45<\/code><\/td>
+<\/tr>
 <tr>
-<td>字数</td>
-<td><code>len(text.split())</code></td>
-<td><code>1,234</code></td>
-</tr>
+<td>字数<\/td>
+<td><code>len(text.split())<\/code><\/td>
+<td><code>1,234<\/code><\/td>
+<\/tr>
 <tr>
-<td>阅读时长</td>
-<td>字数 ÷ 200</td>
-<td><code>6 分钟</code></td>
-</tr>
-</tbody></table>
-<h3 id="支持的-markdown-语法">支持的 Markdown 语法</h3>
+<td>阅读时长<\/td>
+<td>字数 ÷ 200<\/td>
+<td><code>6 分钟<\/code><\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="支持的-markdown-语法">支持的 Markdown 语法<\/h3>
 <table><thead><tr>
-<th>语法</th>
-<th>写法</th>
-<th>说明</th>
-</tr></thead><tbody>
+<th>语法<\/th>
+<th>写法<\/th>
+<th>说明<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><strong>标题</strong></td>
-<td><code># h1</code> / <code>## h2</code> / <code>### h3</code></td>
-<td>仅 3 级，h2/h3 自动加入 TOC</td>
-</tr>
+<td><strong>标题<\/strong><\/td>
+<td><code># h1<\/code> / <code>## h2<\/code> / <code>### h3<\/code><\/td>
+<td>仅 3 级，h2/h3 自动加入 TOC<\/td>
+<\/tr>
 <tr>
-<td><strong>加粗</strong></td>
-<td><code><strong>文字</strong></code></td>
-<td>全局有效，表格内也支持</td>
-</tr>
+<td><strong>加粗<\/strong><\/td>
+<td><code><strong>文字<\/strong><\/code><\/td>
+<td>全局有效，表格内也支持<\/td>
+<\/tr>
 <tr>
-<td><strong>斜体</strong></td>
-<td><code><em>文字</em></code></td>
-<td><code>**</code> 优先匹配</td>
-</tr>
+<td><strong>斜体<\/strong><\/td>
+<td><code><em>文字<\/em><\/code><\/td>
+<td><code>**<\/code> 优先匹配<\/td>
+<\/tr>
 <tr>
-<td><strong>行内代码</strong></td>
-<td><code>` </code>code<code> </code>`</td>
-<td>在 <code><pre><code></code> 内无效</td>
-</tr>
+<td><strong>行内代码<\/strong><\/td>
+<td><code>` <\/code>code<code> <\/code>`<\/td>
+<td>在 <code><pre><code><\/code> 内无效<\/td>
+<\/tr>
 <tr>
-<td><strong>链接</strong></td>
-<td><code><a href="url" target="_blank" rel="noopener">文字</a></code></td>
-<td>自动 <code>target="_blank"</code></td>
-</tr>
+<td><strong>链接<\/strong><\/td>
+<td><code><a href="url" target="_blank" rel="noopener">文字<\/a><\/code><\/td>
+<td>自动 <code>target="_blank"<\/code><\/td>
+<\/tr>
 <tr>
-<td><strong>图片</strong></td>
-<td>不解析（安全限制）</td>
-<td>用纯 HTML <code><img></code></td>
-</tr>
+<td><strong>图片<\/strong><\/td>
+<td>不解析（安全限制）<\/td>
+<td>用纯 HTML <code><img><\/code><\/td>
+<\/tr>
 <tr>
-<td><strong>围栏代码块</strong></td>
-<td><code> </code><code>` </code> 或 <code> </code><code>`</code> `</td>
-<td>支持变长 fence 嵌套，关闭行必须纯反引号无文字</td>
-</tr>
+<td><strong>围栏代码块<\/strong><\/td>
+<td><code> <\/code><code>` <\/code> 或 <code> <\/code><code>`<\/code> `<\/td>
+<td>支持变长 fence 嵌套，关闭行必须纯反引号无文字<\/td>
+<\/tr>
 <tr>
-<td><strong>表格</strong></td>
-<td>`\</td>
-<td>A \</td>
-<td>B \</td>
-<td>`</td>
-<td>第二行 `\</td>
-<td>:---\</td>
-<td>:---\</td>
-<td>` 标记对齐</td>
-</tr>
+<td><strong>表格<\/strong><\/td>
+<td>`\<\/td>
+<td>A \<\/td>
+<td>B \<\/td>
+<td>`<\/td>
+<td>第二行 `\<\/td>
+<td>:---\<\/td>
+<td>:---\<\/td>
+<td>` 标记对齐<\/td>
+<\/tr>
 <tr>
-<td><strong>无序列表</strong></td>
-<td><code>- 列表项</code></td>
-<td>连续自动合并</td>
-</tr>
+<td><strong>无序列表<\/strong><\/td>
+<td><code>- 列表项<\/code><\/td>
+<td>连续自动合并<\/td>
+<\/tr>
 <tr>
-<td><strong>有序列表</strong></td>
-<td><code>1. 列表项</code></td>
-<td>连续自动合并</td>
-</tr>
+<td><strong>有序列表<\/strong><\/td>
+<td><code>1. 列表项<\/code><\/td>
+<td>连续自动合并<\/td>
+<\/tr>
 <tr>
-<td><strong>分隔线</strong></td>
-<td><code>---</code></td>
-<td>连续 3+ 短横</td>
-</tr>
+<td><strong>分隔线<\/strong><\/td>
+<td><code>---<\/code><\/td>
+<td>连续 3+ 短横<\/td>
+<\/tr>
 <tr>
-<td><strong>引用</strong></td>
-<td><code>> 文字</code></td>
-<td>单行模式</td>
-</tr>
+<td><strong>引用<\/strong><\/td>
+<td><code>> 文字<\/code><\/td>
+<td>单行模式<\/td>
+<\/tr>
 <tr>
-<td><strong>Callout</strong></td>
-<td><code>> <strong>Note:</strong> 文字</code></td>
-<td>支持 Note/Tip/Warning/Danger + 中文</td>
-</tr>
-</tbody></table>
-<h3 id="更多功能">更多功能</h3>
+<td><strong>Callout<\/strong><\/td>
+<td><code>> <strong>Note:<\/strong> 文字<\/code><\/td>
+<td>支持 Note/Tip/Warning/Danger + 中文<\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="更多功能">更多功能<\/h3>
 <table><thead><tr>
-<th>功能</th>
-<th>说明</th>
-</tr></thead><tbody>
+<th>功能<\/th>
+<th>说明<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><strong>自动 TOC</strong></td>
-<td>从 h2/h3 生成侧边栏目录，平滑滚动</td>
-</tr>
+<td><strong>自动 TOC<\/strong><\/td>
+<td>从 h2/h3 生成侧边栏目录，平滑滚动<\/td>
+<\/tr>
 <tr>
-<td><strong>滚动高亮</strong></td>
-<td>当前阅读章节自动高亮</td>
-</tr>
+<td><strong>滚动高亮<\/strong><\/td>
+<td>当前阅读章节自动高亮<\/td>
+<\/tr>
 <tr>
-<td><strong>代码复制</strong></td>
-<td>悬停出现复制按钮，<code>execCommand</code> 兜底</td>
-</tr>
+<td><strong>代码复制<\/strong><\/td>
+<td>悬停出现复制按钮，<code>execCommand<\/code> 兜底<\/td>
+<\/tr>
 <tr>
-<td><strong>代码行号</strong></td>
-<td>多行代码块左侧 CSS 行号，单行跳过</td>
-</tr>
+<td><strong>代码行号<\/strong><\/td>
+<td>多行代码块左侧 CSS 行号，单行跳过<\/td>
+<\/tr>
 <tr>
-<td><strong>锚点链接</strong></td>
-<td>h2/h3 悬浮 ¶，点击复制 <code>#id</code></td>
-</tr>
+<td><strong>锚点链接<\/strong><\/td>
+<td>h2/h3 悬浮 ¶，点击复制 <code>#id<\/code><\/td>
+<\/tr>
 <tr>
-<td><strong>Callout 提示框</strong></td>
-<td>Note/Tip/Warning/Danger 彩色边框</td>
-</tr>
+<td><strong>Callout 提示框<\/strong><\/td>
+<td>Note/Tip/Warning/Danger 彩色边框<\/td>
+<\/tr>
 <tr>
-<td><strong>外链归档</strong></td>
-<td>自动提取链接，去重排序追加到底部</td>
-</tr>
+<td><strong>外链归档<\/strong><\/td>
+<td>自动提取链接，去重排序追加到底部<\/td>
+<\/tr>
 <tr>
-<td><strong>阅读进度条</strong></td>
-<td>顶部固定 2px 进度条</td>
-</tr>
+<td><strong>阅读进度条<\/strong><\/td>
+<td>顶部固定 2px 进度条<\/td>
+<\/tr>
 <tr>
-<td><strong>图片灯箱</strong></td>
-<td>点击放大，Escape/外部点击关闭</td>
-</tr>
+<td><strong>图片灯箱<\/strong><\/td>
+<td>点击放大，Escape/外部点击关闭<\/td>
+<\/tr>
 <tr>
-<td><strong>零外部依赖</strong></td>
-<td>自包含单文件 HTML</td>
-</tr>
-</tbody></table>
+<td><strong>零外部依赖<\/strong><\/td>
+<td>自包含单文件 HTML<\/td>
+<\/tr>
+<\/tbody><\/table>
 <hr>
-<h2 id="四-table-json-转数据表格">四、table — JSON 转数据表格</h2>
-<h3 id="用法">用法</h3>
+<h2 id="四-table-json-转数据表格">四、table — JSON 转数据表格<\/h2>
+<h3 id="用法">用法<\/h3>
 <pre><code class="language-shell">html-gen table -d data.json -o index.html
-html-gen table -d data.json --title "项目列表"</code></pre>
-<h3 id="参数">参数</h3>
+html-gen table -d data.json --title "项目列表"<\/code><\/pre>
+<h3 id="参数">参数<\/h3>
 <table><thead><tr>
-<th>参数</th>
-<th>说明</th>
-<th>必填</th>
-</tr></thead><tbody>
+<th>参数<\/th>
+<th>说明<\/th>
+<th>必填<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><code>-d, --data</code></td>
-<td>JSON 数据文件路径</td>
-<td>✅</td>
-</tr>
+<td><code>-d, --data<\/code><\/td>
+<td>JSON 数据文件路径<\/td>
+<td>✅<\/td>
+<\/tr>
 <tr>
-<td><code>--title</code></td>
-<td>页面标题（默认「数据表格」）</td>
-<td></td>
-</tr>
+<td><code>--title<\/code><\/td>
+<td>页面标题（默认「数据表格」）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>-o, --output</code></td>
-<td>输出 HTML 路径（默认 <code>index.html</code>）</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="数据格式">数据格式</h3>
+<td><code>-o, --output<\/code><\/td>
+<td>输出 HTML 路径（默认 <code>index.html<\/code>）<\/td>
+<td><\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="数据格式">数据格式<\/h3>
 <pre><code class="language-json">[
   {
     "项目": "Hermes Agent",
@@ -649,58 +650,58 @@ html-gen table -d data.json --title "项目列表"</code></pre>
     "语言": "Python",
     "最后提交": "2026-07-06"
   }
-]</code></pre>
-<h3 id="列定义规则">列定义规则</h3>
+]<\/code><\/pre>
+<h3 id="列定义规则">列定义规则<\/h3>
 <table><thead><tr>
-<th>规则</th>
-<th>说明</th>
-</tr></thead><tbody>
+<th>规则<\/th>
+<th>说明<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><strong>自动推导</strong></td>
-<td>从第一条记录的 key 自动生成列名</td>
-</tr>
+<td><strong>自动推导<\/strong><\/td>
+<td>从第一条记录的 key 自动生成列名<\/td>
+<\/tr>
 <tr>
-<td><strong>顺序</strong></td>
-<td>按 JSON 字段顺序排列</td>
-</tr>
+<td><strong>顺序<\/strong><\/td>
+<td>按 JSON 字段顺序排列<\/td>
+<\/tr>
 <tr>
-<td><strong>列宽</strong></td>
-<td>自动适应内容</td>
-</tr>
+<td><strong>列宽<\/strong><\/td>
+<td>自动适应内容<\/td>
+<\/tr>
 <tr>
-<td><strong>支持 HTML</strong></td>
-<td>单元格内容可包含 <code><a></code> <code><code></code> 等标签</td>
-</tr>
-</tbody></table>
-<h3 id="功能特性">功能特性</h3>
+<td><strong>支持 HTML<\/strong><\/td>
+<td>单元格内容可包含 <code><a><\/code> <code><code><\/code> 等标签<\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="功能特性">功能特性<\/h3>
 <table><thead><tr>
-<th>功能</th>
-<th>说明</th>
-</tr></thead><tbody>
+<th>功能<\/th>
+<th>说明<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><strong>实时搜索</strong></td>
-<td>按任意字段全文匹配，输入即过滤</td>
-</tr>
+<td><strong>实时搜索<\/strong><\/td>
+<td>按任意字段全文匹配，输入即过滤<\/td>
+<\/tr>
 <tr>
-<td><strong>多字段排序</strong></td>
-<td>点击表头切换升/降序</td>
-</tr>
+<td><strong>多字段排序<\/strong><\/td>
+<td>点击表头切换升/降序<\/td>
+<\/tr>
 <tr>
-<td><strong>客户端分页</strong></td>
-<td>每页 30 条，自动计算页数</td>
-</tr>
+<td><strong>客户端分页<\/strong><\/td>
+<td>每页 30 条，自动计算页数<\/td>
+<\/tr>
 <tr>
-<td><strong>深色主题</strong></td>
-<td>与 style-guide.css 一致</td>
-</tr>
+<td><strong>深色主题<\/strong><\/td>
+<td>与 style-guide.css 一致<\/td>
+<\/tr>
 <tr>
-<td><strong>无数据提示</strong></td>
-<td>搜索无结果时显示「无匹配数据」</td>
-</tr>
-</tbody></table>
+<td><strong>无数据提示<\/strong><\/td>
+<td>搜索无结果时显示「无匹配数据」<\/td>
+<\/tr>
+<\/tbody><\/table>
 <hr>
-<h2 id="五-knowledge-json-转知识库">五、knowledge — JSON 转知识库</h2>
-<h3 id="用法">用法</h3>
+<h2 id="五-knowledge-json-转知识库">五、knowledge — JSON 转知识库<\/h2>
+<h3 id="用法">用法<\/h3>
 <pre><code class="language-shell"># 最简单的启动（自动从数据推导类目）
 html-gen knowledge -d data.json -o kb.html
 
@@ -708,45 +709,45 @@ html-gen knowledge -d data.json -o kb.html
 html-gen knowledge -d data.json -g groups.json \
   --title "技能知识库" \
   --welcome "从上方类目选择" \
-  -o kb.html</code></pre>
-<h3 id="参数">参数</h3>
+  -o kb.html<\/code><\/pre>
+<h3 id="参数">参数<\/h3>
 <table><thead><tr>
-<th>参数</th>
-<th>说明</th>
-<th>必填</th>
-</tr></thead><tbody>
+<th>参数<\/th>
+<th>说明<\/th>
+<th>必填<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><code>-d, --data</code></td>
-<td>条目 JSON 数据</td>
-<td>✅</td>
-</tr>
+<td><code>-d, --data<\/code><\/td>
+<td>条目 JSON 数据<\/td>
+<td>✅<\/td>
+<\/tr>
 <tr>
-<td><code>-g, --groups</code></td>
-<td>类目分组 JSON（可选，自动推导）</td>
-<td></td>
-</tr>
+<td><code>-g, --groups<\/code><\/td>
+<td>类目分组 JSON（可选，自动推导）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>--title</code></td>
-<td>知识库标题</td>
-<td></td>
-</tr>
+<td><code>--title<\/code><\/td>
+<td>知识库标题<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>--subtitle</code></td>
-<td>副标题</td>
-<td></td>
-</tr>
+<td><code>--subtitle<\/code><\/td>
+<td>副标题<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>--welcome</code></td>
-<td>欢迎面板提示文本</td>
-<td></td>
-</tr>
+<td><code>--welcome<\/code><\/td>
+<td>欢迎面板提示文本<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>-o, --output</code></td>
-<td>输出 HTML 路径</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="数据格式">数据格式</h3>
+<td><code>-o, --output<\/code><\/td>
+<td>输出 HTML 路径<\/td>
+<td><\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="数据格式">数据格式<\/h3>
 <pre><code class="language-json">[
   {
     "title": "Hermes Agent",
@@ -756,78 +757,78 @@ html-gen knowledge -d data.json -g groups.json \
     "desc": "&lt;p&gt;功能说明...&lt;/p&gt;",
     "url": "detail.html"
   }
-]</code></pre>
-<h3 id="字段说明">字段说明</h3>
+]<\/code><\/pre>
+<h3 id="字段说明">字段说明<\/h3>
 <table><thead><tr>
-<th>字段</th>
-<th>说明</th>
-<th>必填</th>
-</tr></thead><tbody>
+<th>字段<\/th>
+<th>说明<\/th>
+<th>必填<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><code>title</code></td>
-<td>条目名称（侧栏显示）</td>
-<td>✅</td>
-</tr>
+<td><code>title<\/code><\/td>
+<td>条目名称（侧栏显示）<\/td>
+<td>✅<\/td>
+<\/tr>
 <tr>
-<td><code>group</code></td>
-<td>所属类目（对应横向 Tab）</td>
-<td>✅</td>
-</tr>
+<td><code>group<\/code><\/td>
+<td>所属类目（对应横向 Tab）<\/td>
+<td>✅<\/td>
+<\/tr>
 <tr>
-<td><code>section</code></td>
-<td>子分类（侧栏分组）</td>
-<td></td>
-</tr>
+<td><code>section<\/code><\/td>
+<td>子分类（侧栏分组）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>badge</code></td>
-<td>标记文本（如熟练度）</td>
-<td></td>
-</tr>
+<td><code>badge<\/code><\/td>
+<td>标记文本（如熟练度）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>desc</code></td>
-<td>内联 HTML 内容（无 url 时显示）</td>
-<td></td>
-</tr>
+<td><code>desc<\/code><\/td>
+<td>内联 HTML 内容（无 url 时显示）<\/td>
+<td><\/td>
+<\/tr>
 <tr>
-<td><code>url</code></td>
-<td>外部 HTML 路径（优先于 desc，iframe 加载）</td>
-<td></td>
-</tr>
-</tbody></table>
-<h3 id="groups-json-可选">groups.json（可选）</h3>
+<td><code>url<\/code><\/td>
+<td>外部 HTML 路径（优先于 desc，iframe 加载）<\/td>
+<td><\/td>
+<\/tr>
+<\/tbody><\/table>
+<h3 id="groups-json-可选">groups.json（可选）<\/h3>
 <pre><code class="language-json">[
   { "key": "Agent 框架", "label": "Agent 框架", "icon": "🤖" },
   { "key": "HTML 工具",  "label": "HTML 工具",  "icon": "🌐" }
-]</code></pre>
-<h3 id="功能特性">功能特性</h3>
+]<\/code><\/pre>
+<h3 id="功能特性">功能特性<\/h3>
 <table><thead><tr>
-<th>功能</th>
-<th>说明</th>
-</tr></thead><tbody>
+<th>功能<\/th>
+<th>说明<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td><strong>顶部标签栏</strong></td>
-<td>横向切换大类目，左侧章节跟随</td>
-</tr>
+<td><strong>顶部标签栏<\/strong><\/td>
+<td>横向切换大类目，左侧章节跟随<\/td>
+<\/tr>
 <tr>
-<td><strong>左侧章节列表</strong></td>
-<td>含熟练度/标记 badge</td>
-</tr>
+<td><strong>左侧章节列表<\/strong><\/td>
+<td>含熟练度/标记 badge<\/td>
+<\/tr>
 <tr>
-<td><strong>双内容模式</strong></td>
-<td>有 <code>url</code> → iframe 加载；有 <code>desc</code> → 内联渲染</td>
-</tr>
+<td><strong>双内容模式<\/strong><\/td>
+<td>有 <code>url<\/code> → iframe 加载；有 <code>desc<\/code> → 内联渲染<\/td>
+<\/tr>
 <tr>
-<td><strong>欢迎面板</strong></td>
-<td>空状态提示，显示类目图例</td>
-</tr>
+<td><strong>欢迎面板<\/strong><\/td>
+<td>空状态提示，显示类目图例<\/td>
+<\/tr>
 <tr>
-<td><strong>移动端自适应</strong></td>
-<td>侧边栏可收起</td>
-</tr>
-</tbody></table>
+<td><strong>移动端自适应<\/strong><\/td>
+<td>侧边栏可收起<\/td>
+<\/tr>
+<\/tbody><\/table>
 <hr>
-<h2 id="六-路径与模板">六、路径与模板</h2>
-<h3 id="文件结构">文件结构</h3>
+<h2 id="六-路径与模板">六、路径与模板<\/h2>
+<h3 id="文件结构">文件结构<\/h3>
 <pre><code class="language-">html-templates/
 ├── style-guide.css             Layer 1 样式基座
 ├── layout-doc.html             Layer 2 B 型文档模板
@@ -840,49 +841,48 @@ html-demos/
 ├── demos-index.html            A 型文档索引
 ├── template-*-guide.html       各方案使用说明
 ├── *_demo.html                 各类型案例
-└── chaitin/                    商业分析案例子目录</code></pre>
-<h3 id="预览">预览</h3>
+└── chaitin/                    商业分析案例子目录<\/code><\/pre>
+<h3 id="预览">预览<\/h3>
 <pre><code class="language-shell"># 从 skills/ 目录启动，确保 CSS 相对路径正确
-hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
+hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o<\/code><\/pre>
 <hr>
-<h2 id="七-常见问题">七、常见问题</h2>
-<h3 id="q-生成的-html-代码块内-bold-被渲染了">Q: 生成的 HTML 代码块内 `**bold**` 被渲染了？</h3>
-<p>确保 <code>inline_format</code> 不在 <code><pre><code></code> 内执行（v1.1+ 已修复）。</p>
-<h3 id="q-复制按钮点了没反应">Q: 复制按钮点了没反应？</h3>
-<p><code>navigator.clipboard</code> 在 <code>http://</code> 非安全上下文中不可用。v1.1+ 用 <code>execCommand</code> 兜底。</p>
-<h3 id="q-代码行号显示不正常">Q: 代码行号显示不正常？</h3>
-<p>移除 <code>.code-with-lines .line { display: block }</code>。行间间距由 <code><pre></code> 的 <code>line-height</code> 统一控制（v1.1+ 已修复）。</p>
-<h3 id="q-c-型知识库内容显示-请配置-desc-内容">Q: C 型知识库内容显示「请配置 desc 内容」？</h3>
-<p>JSON 中字段名必须是 <code>desc</code>（不是 <code>content</code>）。v1.0+ 已统一。</p>
-<h3 id="q-b-型文档中-note-没有渲染为-callout">Q: B 型文档中 `> **Note:**` 没有渲染为 callout？</h3>
-<p>支持半角冒号和全角冒号（<code><strong>Note:</strong></code> / <code><strong>注意</strong>：</code>）。如不生效，检查关键词拼写。</p>
-<h3 id="q-文档中的外链底部没有归档">Q: 文档中的外链底部没有归档？</h3>
-<p>只有 <code>https?://</code> 开头的链接会被归档。相对路径和 <code>#</code> 锚点不归档。</p>
+<h2 id="七-常见问题">七、常见问题<\/h2>
+<h3 id="q-生成的-html-代码块内-bold-被渲染了">Q: 生成的 HTML 代码块内 `**bold**` 被渲染了？<\/h3>
+<p>确保 <code>inline_format<\/code> 不在 <code>&lt;pre&gt;&lt;code&gt;<\/code> 内执行（v1.1+ 已修复）。<\/p>
+<h3 id="q-复制按钮点了没反应">Q: 复制按钮点了没反应？<\/h3>
+<p><code>navigator.clipboard<\/code> 在 <code>http://<\/code> 非安全上下文中不可用。v1.1+ 用 <code>execCommand<\/code> 兜底。<\/p>
+<h3 id="q-代码行号显示不正常">Q: 代码行号显示不正常？<\/h3>
+<p>移除 <code>.code-with-lines .line { display: block }<\/code>。行间间距由 <code>&lt;pre&gt;<\/code> 的 <code>line-height<\/code> 统一控制（v1.1+ 已修复）。<\/p>
+<h3 id="q-c-型知识库内容显示-请配置-desc-内容">Q: C 型知识库内容显示「请配置 desc 内容」？<\/h3>
+<p>JSON 中字段名必须是 <code>desc<\/code>（不是 <code>content<\/code>）。v1.0+ 已统一。<\/p>
+<h3 id="q-b-型文档中-note-没有渲染为-callout">Q: B 型文档中 `&gt; **Note:**` 没有渲染为 callout？<\/h3>
+<p>支持半角冒号和全角冒号（<code><strong>Note:<\/strong><\/code> / <code><strong>注意<\/strong>：<\/code>）。如不生效，检查关键词拼写。<\/p>
+<h3 id="q-文档中的外链底部没有归档">Q: 文档中的外链底部没有归档？<\/h3>
+<p>只有 <code>https?://<\/code> 开头的链接会被归档。相对路径和 <code>#<\/code> 锚点不归档。<\/p>
 <hr>
-<h2 id="迭代记录">迭代记录</h2>
+<h2 id="迭代记录">迭代记录<\/h2>
 <table><thead><tr>
-<th>版本</th>
-<th>日期</th>
-<th>变更</th>
-</tr></thead><tbody>
+<th>版本<\/th>
+<th>日期<\/th>
+<th>变更<\/th>
+<\/tr><\/thead><tbody>
 <tr>
-<td>v1.0</td>
-<td>2026-07-07</td>
-<td>初版：html-gen 完整使用说明</td>
-</tr>
-</tbody></table></div>
+<td>v1.0<\/td>
+<td>2026-07-07<\/td>
+<td>初版：html-gen 完整使用说明<\/td>
+<\/tr>
+<\/tbody><\/table></div>
   </div>
 </div>
-<script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
 <script>
 (function() {
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');
   const tocItems = [];
+
   headings.forEach(function(h, i) {
     if (!h.id) h.id = 'section-' + i;
-    // Anchor link: ¶ icon, click copies #id to clipboard
     var anchor = document.createElement('a');
     anchor.className = 'anchor-link';
     anchor.textContent = '\u00b6';
@@ -901,10 +901,15 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
     link.textContent = h.textContent;
     link.className = 'toc-h' + level;
     link.dataset.target = h.id;
-    link.addEventListener('click', function(e) { e.preventDefault(); document.getElementById(this.dataset.target).scrollIntoView({ behavior: 'smooth' }); });
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var target = document.getElementById(this.dataset.target);
+      if (target) target.scrollIntoView({ behavior: 'smooth' });
+    });
     toc.appendChild(link);
     tocItems.push(link);
   });
+
   function onScroll() {
     let current = '';
     headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
@@ -912,6 +917,7 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
   }
   window.addEventListener('scroll', onScroll, { passive: true });
   onScroll();
+
   body.querySelectorAll('pre').forEach(function(pre) {
     const btn = document.createElement('button');
     btn.className = 'copy-btn';
@@ -949,7 +955,7 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
     var text = code.textContent;
     var lines = text.split('\n');
     if (lines.length > 0 && lines[lines.length - 1] === '') lines.pop();
-    if (lines.length < 2) return; // single line, skip
+    if (lines.length < 2) return;
     code.textContent = '';
     lines.forEach(function(line, idx) {
       var span = document.createElement('span');
@@ -964,7 +970,7 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
   });
 
   // ── Reading Progress Bar ──
-  const main = document.querySelector('.doc-main');
+  const main = document.getElementById('docMain');
   const bar = document.getElementById('progressBar');
   function updateProgress() {
     var p = main.scrollTop / (main.scrollHeight - main.clientHeight);

@@ -5,16 +5,18 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 
 用法:
   html-gen doc --input report.md --output report.html [--title "xxx"]
+  html-gen slide --input report.md --output report.html [--title "xxx"]
   html-gen table --data data.json [--title "xxx"] [--output index.html]
   html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [--output kb.html]
 
-版本: 1.1(2026-07-06)
+版本: 2.2(2026-07-13)
 """
 import json, re, sys, os, argparse
 from pathlib import Path
 
 SKILLS_DIR = Path(__file__).resolve().parent
 TEMPLATE_DOC   = SKILLS_DIR / 'layout-doc.html'
+TEMPLATE_SLIDE = SKILLS_DIR / 'layout-slide.html'
 TEMPLATE_TABLE = SKILLS_DIR / 'layout-table.html'
 TEMPLATE_KNOWLEDGE = SKILLS_DIR / 'layout-knowledge.html'
 STYLE_GUIDE    = SKILLS_DIR / 'style-guide.css'
@@ -27,11 +29,16 @@ def read_template(path):
     return path.read_text(encoding='utf-8')
 
 
+# Keys injected into <script> context — need </ → <\/ escaping
+_SCRIPT_KEYS = {'columns', 'data', 'tabs', 'options', 'groups', 'items'}
+
+
 def inject(template, **kwargs):
     for key, value in kwargs.items():
         s = str(value)
-        # SECURITY: prevent </script> injection breaking out of <script> tags
-        s = s.replace('</', '<\\/')
+        # SECURITY: prevent </script> injection in <script>-context values only
+        if key in _SCRIPT_KEYS:
+            s = s.replace('</', '<\\/')
         template = template.replace(f'<!--{key.upper()}-->', s)
     return template
 
@@ -187,9 +194,21 @@ def cmd_doc(args):
     text = md.read_text(encoding='utf-8')
     title = args.title or extract_title(text) or md.stem
     content = md_to_html(text)
+
+    # ── Extract h1 for slide cover page BEFORE stripping ──
+    h1_html = ''
     if content.startswith('<h1'):
         idx = content.index('</h1>') + 5
+        h1_html = content[:idx]
         content = content[idx:].lstrip()
+
+    # ── Count h2s for slide mode performance warning ──
+    h2_count = len(re.findall(r'<h2\b', content))
+    perf_warning = ''
+    if h2_count > 50:
+        perf_warning = (f'<div class="perf-warning">'
+                        f'⚠️ 本文档共 {h2_count} 节，幻灯片模式下可能加载较慢'
+                        f'</div>')
 
     # 计算元信息
     try:
@@ -217,6 +236,63 @@ def cmd_doc(args):
     tmpl = inline_style(read_template(TEMPLATE_DOC))
     result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content)
     out = args.output or md.with_suffix('.html')
+    Path(out).write_text(result, encoding='utf-8')
+    print(f"✅ 已生成: {out}")
+
+
+def cmd_slide(args):
+    """Markdown → slide 幻灯片（h2 分页）"""
+    from datetime import datetime
+    md = Path(args.input)
+    if not md.exists():
+        print(f"❌ 文件不存在: {args.input}", file=sys.stderr)
+        sys.exit(1)
+    text = md.read_text(encoding='utf-8')
+    title = args.title or extract_title(text) or md.stem
+    content = md_to_html(text)
+
+    # Extract h1 for cover page
+    h1_html = ''
+    if content.startswith('<h1'):
+        idx = content.index('</h1>') + 5
+        h1_html = content[:idx]
+        content = content[idx:].lstrip()
+
+    # Count h2s for performance warning
+    h2_count = len(re.findall(r'<h2\b', content))
+    perf_warning = ''
+    if h2_count > 50:
+        perf_warning = (f'<div class="perf-warning">'
+                        f'⚠️ 本文档共 {h2_count} 节，幻灯片模式下可能加载较慢'
+                        f'</div>')
+
+    # Metadata
+    try:
+        rel = '~/' + str(md.resolve().relative_to(Path.home()))
+    except ValueError:
+        rel = str(md.resolve())
+    stat = md.stat()
+    wc = len(text.split())
+    rt = max(1, round(wc / 200))
+    ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
+    et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+    meta = (f"路径: <code>{rel}</code><br>"
+            f"创建: {ct} · 编辑: {et}<br>"
+            f"字数: {wc:,} · 阅读约 {rt} 分钟")
+
+    # External link archive
+    ext_links = sorted(set(re.findall(r'href="(https?://[^\"]+)"', content)))
+    if ext_links:
+        ref_html = '\n<h2>🔗 参考链接</h2>\n<ol>\n'
+        for link in ext_links:
+            ref_html += f'<li><a href="{link}" target="_blank" rel="noopener">{link}</a></li>\n'
+        ref_html += '</ol>\n'
+        content += ref_html
+
+    tmpl = inline_style(read_template(TEMPLATE_SLIDE))
+    result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content,
+                    cover=h1_html, h2_count=str(h2_count), perf_warning=perf_warning)
+    out = args.output or md.with_suffix('.slide.html')
     Path(out).write_text(result, encoding='utf-8')
     print(f"✅ 已生成: {out}")
 
@@ -303,6 +379,12 @@ def main():
     d.add_argument('--subtitle')
     d.add_argument('--metadata')
 
+    s = sub.add_parser('slide', help='Markdown → 幻灯片')
+    s.add_argument('-i', '--input', required=True)
+    s.add_argument('-o', '--output')
+    s.add_argument('--title')
+    s.add_argument('--subtitle')
+
     t = sub.add_parser('table', help='JSON → A 型数据表格')
     t.add_argument('-d', '--data', required=True)
     t.add_argument('--title', default='数据表格')
@@ -317,7 +399,7 @@ def main():
     k.add_argument('-o', '--output', default='kb.html')
 
     args = p.parse_args()
-    {'doc': cmd_doc, 'table': cmd_table, 'knowledge': cmd_knowledge}[args.command](args)
+    {'doc': cmd_doc, 'slide': cmd_slide, 'table': cmd_table, 'knowledge': cmd_knowledge}[args.command](args)
 
 
 if __name__ == '__main__':
