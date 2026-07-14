@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>B 型 · 文档阅读方案</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.slide-wrapper { display: flex; min-height: 100vh; }
+.slide-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+}
+.slide-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.slide-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.slide-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.slide-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.slide-toc a {
+  display: block; padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af; text-decoration: none;
+  border-left: 3px solid transparent; transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.slide-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.slide-toc a.active {
+  background: rgba(79,70,229,0.1); color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.slide-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.slide-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.slide-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; position: relative; }
+.slide-page-num {
+  position: absolute; top: 12px; right: 20px; font-size: 0.7rem; color: #6b7280;
+  z-index: 5; opacity: 1; transition: opacity 0.5s;
+}
+.slide-page-num.fade { opacity: 0; }
+.slide-page {
+  flex: 1; overflow-y: auto; padding: 24px 40px 48px;
+  animation: slideFadeIn 0.22s ease;
+}
+@keyframes slideFadeIn { from{opacity:0;transform:translateX(6px)} to{opacity:1;transform:translateX(0)} }
+
+/* ── Cover Page ── */
+.slide-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.slide-cover h1 { font-size: 1.6rem; margin-bottom: 8px; color: #f0f0f0; }
+.slide-cover .slide-cover-sub { font-size: 0.95rem; color: var(--cobalt-400); margin-bottom: 6px; }
+.slide-cover .slide-cover-meta { font-size: 0.75rem; color: #6b7280; margin-bottom: 12px; }
+.slide-cover .slide-cover-meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+.slide-cover .slide-cover-count { font-size: 0.8rem; color: #9ca3af; }
+
+/* ── Content Styles ── */
+.slide-page h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 0 0 1rem 0; }
+.slide-page h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.slide-page p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.slide-page ul, .slide-page ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.slide-page li { line-height: 1.8; margin: 3px 0; }
+.slide-page table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.slide-page th, .slide-page td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.slide-page th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.slide-page tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.slide-page tr:hover { background: rgba(79,70,229,0.06); }
+.slide-page code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+.slide-page pre { background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
+.slide-page pre code { background: none; padding: 0; font-size: 0.78rem; }
+.slide-page blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.slide-page hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.slide-page img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+
+/* ── Performance Warning ── */
+.perf-warning {
+  margin: 0 40px 8px; padding: 8px 14px; border-radius: 6px;
+  background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25);
+  color: #fbbf24; font-size: 0.72rem; display: none;
+}
+
+/* ── Navigation Dots ── */
+.slide-nav { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 8px 16px 12px; }
+.slide-dots { display: flex; gap: 5px; align-items: center; }
+.slide-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #3a3a5e;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.slide-dot.active { background: var(--cobalt-400); width: 22px; border-radius: 4px; }
+.slide-dot.visited { background: #555; }
+.slide-nav-title { font-size: 0.68rem; color: #6b7280; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+@media (max-width: 768px) {
+  .slide-sidebar { display: none; }
+  .slide-page { padding: 16px 20px 40px; }
+}
+</style>
+</head>
+<body>
+<div class="slide-wrapper">
+
+  <aside class="slide-sidebar" id="sidebar">
+    <div class="slide-sidebar-header">
+      <div class="logo">🎞️ B 型 · 文档阅读方案</div>
+      <div class="sub">Slide 幻灯片演示</div>
+    </div>
+    <nav class="slide-toc" id="toc"></nav>
+  </aside>
+
+  <div class="slide-main" id="slideMain">
+    <div class="perf-warning" id="perfWarning"></div>
+    <div class="slide-page-num" id="slidePageNum"></div>
+    <div class="slide-page" id="slidePage"></div>
+  </div>
+
+</div>
+
+<div class="slide-nav" id="slideNav">
+  <div class="slide-dots" id="slideDots"></div>
+  <div class="slide-nav-title" id="slideNavTitle"></div>
+</div>
+
+<!-- Hidden: content source for DOM cloning -->
+<div style="display:none">
+  <div class="doc-header">
+    <h1>B 型 · 文档阅读方案</h1>
+    <div class="meta">路径: <code>/Users/jadenli/CodeSpace/html-gen/demos/template-B-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 843 · 阅读约 4 分钟</div>
+  </div>
+  <div id="docBody"><hr>
+<h2 id="使用场景">使用场景</h2>
+<p>文档阅读模板适合<strong>长文本内容的消费和知识沉淀</strong>场景，是三层模板中功能最丰富的一层。</p>
+<table><thead><tr>
+<th>场景</th>
+<th>说明</th>
+<th>典型篇幅</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>分析报告</strong></td>
+<td>竞品分析、技术调研、市场研究的长篇报告</td>
+<td>500-5000 字</td>
+</tr>
+<tr>
+<td><strong>技术文档</strong></td>
+<td>API 手册、架构说明、最佳实践指南</td>
+<td>1000-10000 字</td>
+</tr>
+<tr>
+<td><strong>长文阅读</strong></td>
+<td>博客/Newsletter/论文的摘要整理</td>
+<td>200-3000 字</td>
+</tr>
+<tr>
+<td><strong>知识沉淀</strong></td>
+<td>个人笔记、学习总结、项目复盘</td>
+<td>500-5000 字</td>
+</tr>
+<tr>
+<td><strong>会议纪要</strong></td>
+<td>结构化会议记录，含待办、决策、讨论点</td>
+<td>200-2000 字</td>
+</tr>
+</tbody></table>
+<h3 id="不适合的场景">不适合的场景</h3>
+<ul>
+<li><strong>结构化数据浏览</strong>（搜索+排序+分页 → 用 A 型表格）</li>
+<li><strong>多类目知识浏览</strong>（顶部标签切换 → 用 C 型知识库）</li>
+<li><strong>协作编辑</strong>（B 型是只读展示，不是编辑器）</li>
+</ul>
+<hr>
+<h2 id="方案设计">方案设计</h2>
+<h3 id="架构">架构</h3>
+<pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
+Layer 2: layout-doc.html (骨架: 侧边栏TOC + 主内容区)
+Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
+<h3 id="数据流">数据流</h3>
+<pre><code class="language-">Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
+                 │                  ├── 自动 TOC
+                 │                  ├── 表格渲染
+                 │                  ├── 代码高亮
+                 │                  ├── 进度条
+                 │                  ├── callout 提示框
+                 │                  ├── 锚点链接
+                 │                  ├── 代码行号
+                 │                  └── 外链归档
+                 └── 元信息自动计算</code></pre>
+<h3 id="关键设计决策">关键设计决策</h3>
+<table><thead><tr>
+<th>决策</th>
+<th>选择</th>
+<th>理由</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>Markdown 渲染</strong></td>
+<td>手写渲染器</td>
+<td>零外部依赖，精准控制输出。仅需覆盖我们使用的语法子集</td>
+</tr>
+<tr>
+<td><strong>CSS 框架</strong></td>
+<td>参考 Docsify dark.css</td>
+<td>经过了大量实际文档的检验，适合深色主题文档阅读</td>
+</tr>
+<tr>
+<td><strong>侧边栏 TOC</strong></td>
+<td>固定 260px + 粘性定位</td>
+<td>长文导航的黄金宽度，内容区 max-width 880px 保证阅读体验</td>
+</tr>
+<tr>
+<td><strong>滚动高亮</strong></td>
+<td>JS 根据 <code>getBoundingClientRect().top ≤ 100</code> 判断</td>
+<td>纯前端，无交叉观察者依赖</td>
+</tr>
+<tr>
+<td><strong>代码行号</strong></td>
+<td>CSS counter + JS 拆分 line 元素</td>
+<td>纯前端可选，单行跳过，不影响复制按钮</td>
+</tr>
+<tr>
+<td><strong>Callout</strong></td>
+<td>正则检测 <code>> <strong>Note:</strong></code> 模式</td>
+<td>利用原有 Markdown blockquote 语法，无需新语法</td>
+</tr>
+<tr>
+<td><strong>外链归档</strong></td>
+<td>服务端 <code>re.findall</code> 提取 + 追加</td>
+<td>文档生成时一次性完成，客户零开销</td>
+</tr>
+<tr>
+<td><strong>图片灯箱</strong></td>
+<td>纯 CSS overlay + JS</td>
+<td>无第三方库，支持 Escape / 点击外部关闭</td>
+</tr>
+</tbody></table>
+<h3 id="手写-markdown-渲染器支持语法">手写 Markdown 渲染器支持语法</h3>
+<pre><code class="language-"># h1  ## h2  ### h3                    — 标题
+**bold**  *italic*                      — 行内格式
+`code`                                 — 行内代码
+``` ```
+ 代码块                              — 围栏代码块
+[link](url)                            — 链接 (target=_blank)
+| table | with | cells |               — 表格
+- list item                            — 无序列表
+1. list item                           — 有序列表
+---                                    — 分隔线
+&gt; blockquote                           — 引用
+&gt; **Note:** text                       — Callout 提示框
+&gt; **Warning:** text                    — Callout 警告
+&gt; **Tip:** text                        — Callout 提示
+&gt; **Danger:** text                     — Callout 危险</code></pre>
+<hr>
+<h2 id="行业对标">行业对标</h2>
+<table><thead><tr>
+<th>维度</th>
+<th>B 型 · 文档阅读</th>
+<th>Docsify</th>
+<th>VuePress</th>
+<th>GitBook</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>定位</strong></td>
+<td>单文件文档阅读</td>
+<td>SPA 文档站点</td>
+<td>SSG 文档站点</td>
+<td>托管文档平台</td>
+</tr>
+<tr>
+<td><strong>部署</strong></td>
+<td>单文件 HTML</td>
+<td>静态服务器</td>
+<td>构建后静态文件</td>
+<td>SaaS</td>
+</tr>
+<tr>
+<td><strong>渲染</strong></td>
+<td>服务端预渲染</td>
+<td>客户端 JS 渲染</td>
+<td>构建时 SSG</td>
+<td>服务端渲染</td>
+</tr>
+<tr>
+<td><strong>搜索</strong></td>
+<td>❌ 暂无</td>
+<td>✅ 全文搜索</td>
+<td>✅ algolia</td>
+<td>✅ 内置</td>
+</tr>
+<tr>
+<td><strong>TOC</strong></td>
+<td>✅ 自动</td>
+<td>✅ 插件</td>
+<td>✅ 自动</td>
+<td>✅ 自动</td>
+</tr>
+<tr>
+<td><strong>代码高亮</strong></td>
+<td>✅ 行号 + 复制</td>
+<td>✅ prism.js</td>
+<td>✅ prism/shiki</td>
+<td>✅ prism</td>
+</tr>
+<tr>
+<td><strong>图片</strong></td>
+<td>✅ 灯箱</td>
+<td>✅ 缩放</td>
+<td>✅ 缩放</td>
+<td>✅ 缩放</td>
+</tr>
+<tr>
+<td><strong>Callout</strong></td>
+<td>✅ 原生</td>
+<td>✅ 插件</td>
+<td>✅ 插件</td>
+<td>✅ 内置</td>
+</tr>
+<tr>
+<td><strong>离线</strong></td>
+<td>✅ 单文件完整</td>
+<td>❌ 依赖 CDN</td>
+<td>✅ 全构建</td>
+<td>❌ 需网络</td>
+</tr>
+<tr>
+<td><strong>文件大小</strong></td>
+<td>~35KB（含内容）</td>
+<td>~100KB+CDN</td>
+<td>~50KB+构建产物</td>
+<td>N/A</td>
+</tr>
+<tr>
+<td><strong>外部依赖</strong></td>
+<td>零</td>
+<td>marked.js</td>
+<td>Vue/Webpack</td>
+<td>SaaS</td>
+</tr>
+</tbody></table>
+<p><strong>核心差异</strong>：B 型不是文档站框架的替代品，而是「我需要把一个 Markdown 文件发给别人看」场景下的最优解。无需安装、无需构建、无需网络，生成即用。</p>
+<hr>
+<h2 id="功能清单">功能清单</h2>
+<h3 id="已实现">已实现 ✅</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+<th>优先级</th>
+</tr></thead><tbody>
+<tr>
+<td>Markdown → HTML 渲染</td>
+<td>手写渲染器，支持 h1-h3/表格/列表/代码块/链接/图片</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>自动侧边栏 TOC</td>
+<td>从 h2/h3 生成目录树，点击平滑滚动</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>滚动章节高亮</td>
+<td>滚动时自动标记当前阅读位置</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>代码复制按钮</td>
+<td>悬停显示，一键复制代码块内容</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>代码行号</td>
+<td>多行代码块左侧行号（CSS counter），单行跳过</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>Callout 提示框</td>
+<td><code>> <strong>Note/Tip/Warning/Danger</strong></code> → 蓝/绿/黄/红</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>锚点链接 ¶</td>
+<td>h2/h3 悬浮显示 ¶，点击复制 <code>#section-id</code> 到剪贴板</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>外链归档</td>
+<td>自动提取全文 https:// 链接，去重排序追加到底部</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>阅读进度条</td>
+<td>顶部 2px 固定钴蓝色进度条</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>图片灯箱</td>
+<td>点击放大，overlay 展示，Escape 关闭</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>自动元信息</td>
+<td>路径/创建时间/编辑时间/字数/阅读时长</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>inline 全局格式化</td>
+<td>表格内 <code><strong>bold</strong></code> <code>code</code> <code>[link]</code> 正确渲染</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>深色主题</td>
+<td>Docsify-inspired surface-950 深色主题</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>零外部依赖</td>
+<td>单文件 HTML，无需加载 CDN</td>
+<td>P0</td>
+</tr>
+</tbody></table>
+<h3 id="待实现">待实现 🔜</h3>
+<table><thead><tr>
+<th>功能</th>
+<th>说明</th>
+<th>优先级</th>
+</tr></thead><tbody>
+<tr>
+<td>Back-to-top 按钮</td>
+<td>长文阅读中快速回到顶部</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>浮动 TOC</td>
+<td>小屏设备上的悬浮目录按钮</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>正文宽度 65ch</td>
+<td>优化大屏阅读体验，限制行宽</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>面包屑导航</td>
+<td>显示文档层级路径</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>上/下一篇导航</td>
+<td>多文档间的顺序导航按钮</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>键盘快捷键</td>
+<td>j/k 滚行、Enter 打开链接、? 帮助、t 回到顶部</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>交互式进度条</td>
+<td>显示剩余分钟数、章节标题</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>图片懒加载</td>
+<td>长文档首次加载优化</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>全文搜索</td>
+<td>多文档全文搜索（需要索引支撑）</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>Tags 系统</td>
+<td>文档标签筛选和分类浏览</td>
+<td>P3</td>
+</tr>
+<tr>
+<td>视频/音频嵌入</td>
+<td>支持 iframe/embed 标签</td>
+<td>P3</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="快速开始">快速开始</h2>
+<pre><code class="language-shell"># 从 Markdown 生成文档
+html-gen doc -i report.md -o report.html
+
+# 指定标题
+html-gen doc -i analysis.md --title "竞品分析报告" -o output.html
+
+# 直接打开
+open report.html</code></pre>
+<h3 id="命令行参数">命令行参数</h3>
+<pre><code class="language-">html-gen doc -h
+  -i, --input FILE   输入 Markdown 文件（必需）
+  -o, --output FILE  输出 HTML 文件
+  --title TEXT       覆盖文档标题
+  --subtitle TEXT    副标题（显示在侧边栏和页头）</code></pre>
+<hr>
+<h2 id="迭代记录">迭代记录</h2>
+<table><thead><tr>
+<th>版本</th>
+<th>日期</th>
+<th>变更</th>
+</tr></thead><tbody>
+<tr>
+<td>v1.0</td>
+<td>2026-07-05</td>
+<td>初版：Docsify 风格 TOC + 代码复制 + Markdown 渲染</td>
+</tr>
+<tr>
+<td>v1.1</td>
+<td>2026-07-06</td>
+<td>进度条 + 灯箱 + 锚点链接 + 代码行号 + callout + 外链归档</td>
+</tr>
+</tbody></table></div>
+</div>
+
+<script>
+(function() {
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+
+  /* ═══════ Slide Mode ═══════ */
+  var slide = {
+    currentPage: 0,
+    pages: [],
+    _h2Index: {},
+    _fadeTimer: null,
+
+    init: function() {
+      var self = this;
+      var h2s = body.querySelectorAll('h2');
+      var coverTitle = document.querySelector('.doc-header h1').textContent;
+      var coverSub = (document.querySelector('.slide-sidebar-header .sub').textContent || '').trim();
+      var coverMetaEl = document.querySelector('.doc-header .meta');
+      var coverMeta = coverMetaEl ? coverMetaEl.innerHTML : '';
+
+      // Cover page
+      this.pages.push({ type: 'cover', title: coverTitle, subtitle: coverSub, meta: coverMeta });
+
+      // h2 pages
+      h2s.forEach(function(h2, pi) {
+        var section = { type: 'h2', title: h2.textContent, id: h2.id, nodes: [] };
+        var el = h2.nextElementSibling;
+        while (el && el.tagName !== 'H2') {
+          section.nodes.push(el.cloneNode(true));
+          el = el.nextElementSibling;
+        }
+        self.pages.push(section);
+        self._h2Index[h2.id] = pi + 1;
+      });
+
+      this.buildDots();
+      this.restoreProgress();
+
+      // Show perf warning if present
+      var pw = document.getElementById('perfWarning');
+      if (pw && pw.textContent.trim()) pw.style.display = 'block';
+
+      this.goTo(this.currentPage);
+    },
+
+    goTo: function(n) {
+      if (n < 0 || n >= this.pages.length) return;
+      this.currentPage = n;
+      this.renderPage(n);
+      this.saveProgress();
+      this._syncToc();
+      this._updateDots();
+      this._showPageNum();
+    },
+
+    next: function() { if (this.currentPage < this.pages.length - 1) this.goTo(this.currentPage + 1); },
+    prev: function() { if (this.currentPage > 0) this.goTo(this.currentPage - 1); },
+
+    renderPage: function(n) {
+      var page = this.pages[n];
+      var container = document.getElementById('slidePage');
+      while (container.firstChild) container.removeChild(container.firstChild);
+
+      if (page.type === 'cover') {
+        container.className = 'slide-page slide-cover';
+        var h1 = document.createElement('h1'); h1.textContent = page.title; container.appendChild(h1);
+        if (page.subtitle) { var s = document.createElement('div'); s.className = 'slide-cover-sub'; s.textContent = page.subtitle; container.appendChild(s); }
+        var m = document.createElement('div'); m.className = 'slide-cover-meta'; m.innerHTML = page.meta; container.appendChild(m);
+        var c = document.createElement('div'); c.className = 'slide-cover-count'; c.textContent = '共 ' + (this.pages.length - 1) + ' 节'; container.appendChild(c);
+      } else {
+        container.className = 'slide-page';
+        var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
+        page.nodes.forEach(function(node) { container.appendChild(node.cloneNode(true)); });
+      }
+    },
+
+    buildDots: function() {
+      var self = this;
+      var dots = document.getElementById('slideDots');
+      if (!dots) return;
+      dots.innerHTML = '';
+      this.pages.forEach(function(p, i) {
+        var dot = document.createElement('div'); dot.className = 'slide-dot'; dot.title = p.title;
+        dot.addEventListener('click', function() { self.goTo(i); });
+        dots.appendChild(dot);
+      });
+      this._updateDots();
+    },
+
+    _updateDots: function() {
+      var el = document.getElementById('slideDots'); if (!el) return;
+      var dots = el.children;
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.remove('active', 'visited');
+        if (i === this.currentPage) dots[i].classList.add('active');
+        else if (i < this.currentPage) dots[i].classList.add('visited');
+      }
+      var t = document.getElementById('slideNavTitle'); if (t) t.textContent = this.pages[this.currentPage].title;
+    },
+
+    _showPageNum: function() {
+      var el = document.getElementById('slidePageNum'); if (!el) return;
+      el.textContent = (this.currentPage + 1) + ' / ' + this.pages.length;
+      el.classList.remove('fade'); clearTimeout(this._fadeTimer);
+      this._fadeTimer = setTimeout(function() { el.classList.add('fade'); }, 3000);
+    },
+
+    _syncToc: function() {
+      if (this.currentPage === 0) { tocItems.forEach(function(a) { a.classList.remove('active'); }); return; }
+      var page = this.pages[this.currentPage];
+      tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === page.id); });
+    },
+
+    saveProgress: function() { try { localStorage.setItem('layoutslide_page', this.currentPage); } catch(e) {} },
+
+    restoreProgress: function() {
+      try { var n = parseInt(localStorage.getItem('layoutslide_page'), 10); if (isNaN(n) || n < 0 || n >= this.pages.length) n = 0; this.currentPage = n; } catch(e) { this.currentPage = 0; }
+    }
+  };
+
+  /* ═══════ TOC ═══════ */
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      navigator.clipboard.writeText(url);
+      anchor.textContent = '\u2713';
+      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+    });
+    h.appendChild(anchor);
+    var level = h.tagName.toLowerCase().replace('h', '');
+    var link = document.createElement('a');
+    link.href = '#' + h.id; link.textContent = h.textContent;
+    link.className = 'toc-h' + level; link.dataset.target = h.id;
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var idx = slide._h2Index[h.id];
+      if (idx !== undefined) slide.goTo(idx);
+    });
+    toc.appendChild(link);
+    tocItems.push(link);
+  });
+
+  /* ═══════ Keyboard ═══════ */
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); slide.next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); slide.prev(); }
+    else if (e.key === ' ' && !e.shiftKey) { e.preventDefault(); slide.next(); }
+    else if (e.key === ' ' && e.shiftKey) { e.preventDefault(); slide.prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); slide.goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); slide.goTo(slide.pages.length - 1); }
+    else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+    }
+  });
+
+  slide.init();
+})();
+</script>
+</body>
+</html>
