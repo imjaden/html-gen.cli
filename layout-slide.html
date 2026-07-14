@@ -21,8 +21,14 @@
   border-bottom: 1px solid #2a2a3e;
   flex-shrink: 0;
 }
-.slide-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); }
+.slide-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .slide-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.slide-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
+.slide-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
+.slide-h3-toggle:hover { color: #9ca3af; }
+.slide-h3-toggle.on { color: var(--cobalt-400); }
+.toc-h3 { display: none; }
+.toc-h3.show { display: block; }
 .slide-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
 .slide-toc a {
   display: block; padding: 7px 18px 7px 0;
@@ -106,7 +112,10 @@
   <aside class="slide-sidebar" id="sidebar">
     <div class="slide-sidebar-header">
       <div class="logo">🎞️ <!--TITLE--></div>
-      <div class="sub"><!--SUBTITLE--></div>
+      <div class="sub-row">
+        <div class="sub"><!--SUBTITLE--></div>
+        <div class="slide-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
+      </div>
     </div>
     <nav class="slide-toc" id="toc"></nav>
   </aside>
@@ -169,6 +178,19 @@
         self.pages.push(section);
         self._h2Index[h2.id] = pi + 1;
       });
+
+      // Update sidebar header
+      var logoEl = document.querySelector('.slide-sidebar-header .logo');
+      if (logoEl) {
+        var txt = logoEl.textContent.replace(/^🎞️\s*/, '');
+        if (txt.length > 30) txt = txt.substring(0, 30) + '…';
+        logoEl.textContent = '🎞️ ' + txt;
+      }
+      var subEl = document.querySelector('.slide-sidebar-header .sub');
+      if (subEl) {
+        var base = subEl.textContent.trim();
+        subEl.textContent = (base ? base + ' · ' : '') + '共 ' + (this.pages.length - 1) + ' 节';
+      }
 
       this.buildDots();
       this.restoreProgress();
@@ -295,6 +317,16 @@
       if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
     }
   });
+
+  /* ═══════ H3 Toggle ═══════ */
+  var _h3Visible = false;
+  window.toggleH3 = function() {
+    _h3Visible = !_h3Visible;
+    var btn = document.getElementById('h3Toggle');
+    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
+    var h3s = document.querySelectorAll('.toc-h3');
+    for (var i = 0; i < h3s.length; i++) { h3s[i].classList.toggle('show', _h3Visible); }
+  };
 
   slide.init();
 })();
