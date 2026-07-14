@@ -367,10 +367,149 @@ def cmd_knowledge(args):
     print(f"✅ 已生成: {out}")
 
 
+# ═══ Help System ═══
+
+HELP_OVERVIEW = """\
+html-gen — HTML 模板 CLI 生成器 v2.2
+
+四型模板:
+  doc       Markdown → B 型文档 (侧边栏 TOC + 阅读)
+  slide     Markdown → D 型幻灯片 (h2 分页 + 键盘翻页)
+  table     JSON     → A 型数据表格 (搜索/排序/分页)
+  knowledge JSON     → C 型知识库 (标签栏 + 章节)
+
+快速开始:
+  html-gen doc   -i report.md  -o report.html
+  html-gen slide -i slides.md  -o slides.html
+  html-gen table -d data.json  -o index.html
+  html-gen knowledge -d data.json -o kb.html
+
+详细帮助:
+  html-gen help doc        Markdown 语法规范 (B/D 型)
+  html-gen help table      JSON 数据格式 (A 型)
+  html-gen help knowledge  JSON 数据格式 (C 型)
+  html-gen help slide      slide 特有功能说明
+
+零外部依赖，输出自包含单文件 HTML。"""
+
+HELP_DOC = """\
+B/D 型 · Markdown 语法规范
+━━━━━━━━━━━━━━━━━━━━━━━━
+
+块级元素:
+  # 标题            h1 (全文唯一)
+  ## 标题           h2 (TOC + slide 分页)
+  ### 标题          h3 (TOC 子项)
+  - 列表项          无序列表 (连续自动合并)
+  1. 列表项         有序列表 (连续自动合并)
+  | A | B |         表格 (第二行 |:---|:---| 为分隔)
+  ```lang ... ```   围栏代码块 (变长 fence 嵌套)
+  > 文字            引用 (单行)
+  ---               分隔线 (3+ 短横)
+
+行内元素:
+  **加粗**  *斜体*  `代码`  [文字](url)
+
+Callout 提示框:
+  > **Note:** ...     > **注意**：...
+  > **Tip:** ...      > **提示**：...
+  > **Warning:** ...  > **警告**：...
+  > **Danger:** ...   > **危险**：...
+  > **Caution:** ...  
+
+不支持:
+  ✗ 缩进子列表 (平铺即可)
+  ✗ ![图片](url) (用 <img> 标签)
+  ✗ HTML 标签 (会被转义)"""
+
+HELP_TABLE = """\
+A 型 · 数据表格 JSON 格式
+━━━━━━━━━━━━━━━━━━━━━━
+
+简单格式 (JSON 数组):
+  [{"名称": "A", "数量": 10}, {"名称": "B", "数量": 20}]
+
+结构化格式:
+{
+  "columns": [
+    {"key": "name", "label": "名称", "sortable": true, "locale": "zh"},
+    {"key": "count", "label": "数量", "type": "number"},
+    {"key": "actions", "label": "操作", "type": "actions", "actions": [
+      {"icon": "📋", "label": "复制", "copyKey": "name"},
+      {"icon": "🔗", "label": "打开", "hrefKey": "url"},
+      {"icon": "👁️", "label": "详情", "desc": "查看详细信息"}
+    ]}
+  ],
+  "data": [...],
+  "tabs": [
+    {"key": "all", "label": "全部"},
+    {"key": "Python", "label": "🐍 Python", "field": "lang"}
+  ],
+  "options": {"pageSize": 30, "exportCSV": true, "rowSelect": true}
+}
+
+列类型: string(默认) / number / actions
+操作按钮: copyKey(复制字段) / hrefKey(打开链接) / desc(演示提示)"""
+
+HELP_KNOWLEDGE = """\
+C 型 · 知识库 JSON 格式
+━━━━━━━━━━━━━━━━━━━━
+
+条目数据:
+[
+  {
+    "title": "条目名称",    // 必填
+    "group": "所属类目",    // 必填, 对应顶部 Tab
+    "section": "子分类",    // 可选, 侧栏分组
+    "badge": "标记",        // 可选
+    "desc": "<p>HTML</p>", // 内联渲染 (与 url 二选一)
+    "url": "detail.html"    // iframe 加载 (与 desc 二选一)
+  }
+]
+
+类目分组 (可选, 不提供时从 group 自动推导):
+[
+  {"key": "类目", "label": "🤖 显示名", "icon": "🤖"}
+]"""
+
+HELP_SLIDE = """\
+D 型 · 幻灯片功能说明
+━━━━━━━━━━━━━━━━━━━
+
+分页: 每个 ## h2 为一页, h1 为封面页
+导航: ← → Space Home End 翻页
+全屏: F 键
+进度: 底部圆点 (已读/当前/未读)
+记忆: localStorage 恢复上次阅读位置
+侧栏: H3 子标题默认隐藏, 点击 H3 开关显示
+性能: >50 h2 时显示加载警告
+
+用法:
+  html-gen slide -i slides.md -o slides.html --title "标题\""""
+
+HELP_MAP = {
+    'doc': HELP_DOC,
+    'slide': HELP_SLIDE,
+    'table': HELP_TABLE,
+    'knowledge': HELP_KNOWLEDGE,
+}
+
+
+def cmd_help(args):
+    if args.topic and args.topic in HELP_MAP:
+        print(HELP_MAP[args.topic])
+    else:
+        print(HELP_OVERVIEW)
+
+
 # ═══ CLI ═══
 def main():
     p = argparse.ArgumentParser(description='HTML 模板生成器')
     sub = p.add_subparsers(dest='command', required=True)
+
+    h = sub.add_parser('help', help='显示帮助')
+    h.add_argument('topic', nargs='?', choices=['doc', 'slide', 'table', 'knowledge'],
+                   help='帮助主题 (doc/slide/table/knowledge)')
 
     d = sub.add_parser('doc', help='Markdown → B 型文档')
     d.add_argument('-i', '--input', required=True)
@@ -399,7 +538,8 @@ def main():
     k.add_argument('-o', '--output', default='kb.html')
 
     args = p.parse_args()
-    {'doc': cmd_doc, 'slide': cmd_slide, 'table': cmd_table, 'knowledge': cmd_knowledge}[args.command](args)
+    {'help': cmd_help, 'doc': cmd_doc, 'slide': cmd_slide,
+     'table': cmd_table, 'knowledge': cmd_knowledge}[args.command](args)
 
 
 if __name__ == '__main__':
