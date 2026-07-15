@@ -207,8 +207,9 @@
       }
       var subEl = document.querySelector('.slide-sidebar-header .sub');
       if (subEl) {
-        var base = subEl.textContent.trim();
-        subEl.textContent = (base ? base + ' · ' : '') + '共 ' + (this.pages.length - 1) + ' 节';
+        this._subBase = subEl.textContent.trim();
+        var total = this.pages.length - 1;
+        subEl.textContent = (this._subBase ? this._subBase + ' · ' : '') + '共 ' + total + ' 页';
       }
 
       this.buildDots();
@@ -229,6 +230,14 @@
       this._syncToc();
       this._updateDots();
       this._showPageNum();
+      // Update sidebar sub with current page
+      var subEl = document.querySelector('.slide-sidebar-header .sub');
+      if (subEl && this._subBase !== undefined) {
+        var total = this.pages.length - 1;
+        subEl.textContent = n === 0
+          ? (this._subBase ? this._subBase + ' · ' : '') + '共 ' + total + ' 页'
+          : (this._subBase ? this._subBase + ' · ' : '') + '当前 ' + n + ' 页，共 ' + total + ' 页';
+      }
     },
 
     next: function() { if (this.currentPage < this.pages.length - 1) this.goTo(this.currentPage + 1); },
