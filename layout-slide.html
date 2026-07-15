@@ -84,6 +84,14 @@
 .slide-page hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
 .slide-page img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
 
+/* ── H3 Column Mode ── */
+.slide-columns { display: flex; gap: 24px; height: 100%; }
+.slide-columns.cols-2 > .slide-col { flex: 1; min-width: 0; }
+.slide-columns.cols-3 > .slide-col { flex: 1; min-width: 0; }
+.slide-col { overflow-y: auto; }
+.slide-col h3 { font-size: 1rem; font-weight: 600; color: var(--cobalt-400); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #2a2a3e; }
+.slide-col h3:first-child { margin-top: 0; }
+
 /* ── Performance Warning ── */
 .perf-warning {
   margin: 0 40px 8px; padding: 8px 14px; border-radius: 6px;
@@ -169,14 +177,23 @@
       // Cover page
       this.pages.push({ type: 'cover', title: coverTitle, subtitle: coverSub, meta: coverMeta });
 
-      // h2 pages
+      // h2 pages — detect h3 children for column mode
       h2s.forEach(function(h2, pi) {
-        var section = { type: 'h2', title: h2.textContent, id: h2.id, nodes: [] };
+        var section = { type: 'h2', title: h2.textContent, id: h2.id, nodes: [], h3s: [] };
         var el = h2.nextElementSibling;
+        var currentH3 = null;
         while (el && el.tagName !== 'H2') {
-          section.nodes.push(el.cloneNode(true));
+          if (el.tagName === 'H3') {
+            if (currentH3) section.h3s.push(currentH3);
+            currentH3 = { title: el.textContent, id: el.id, nodes: [] };
+          } else if (currentH3) {
+            currentH3.nodes.push(el.cloneNode(true));
+          } else {
+            section.nodes.push(el.cloneNode(true));
+          }
           el = el.nextElementSibling;
         }
+        if (currentH3) section.h3s.push(currentH3);
         self.pages.push(section);
         self._h2Index[h2.id] = pi + 1;
       });
@@ -230,8 +247,35 @@
         var c = document.createElement('div'); c.className = 'slide-cover-count'; c.textContent = '共 ' + (this.pages.length - 1) + ' 节'; container.appendChild(c);
       } else {
         container.className = 'slide-page';
-        var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
-        page.nodes.forEach(function(node) { container.appendChild(node.cloneNode(true)); });
+        // h3 column mode: 2+ h3s → side-by-side columns
+        if (page.h3s && page.h3s.length >= 2) {
+          var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
+          var cols = document.createElement('div');
+          cols.className = 'slide-columns cols-' + Math.min(page.h3s.length, 3);
+          page.h3s.forEach(function(h3s) {
+            var col = document.createElement('div'); col.className = 'slide-col';
+            var h3 = document.createElement('h3'); h3.textContent = h3s.title; col.appendChild(h3);
+            h3s.nodes.forEach(function(n) { col.appendChild(n.cloneNode(true)); });
+            cols.appendChild(col);
+          });
+          container.appendChild(cols);
+          // If there are also top-level nodes (before first h3), show them above columns
+          if (page.nodes.length > 0) {
+            var topDiv = document.createElement('div');
+            page.nodes.forEach(function(n) { topDiv.appendChild(n.cloneNode(true)); });
+            container.insertBefore(topDiv, cols);
+          }
+        } else {
+          // Single column: full width (h3 降级 or no h3)
+          var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
+          page.nodes.forEach(function(node) { container.appendChild(node.cloneNode(true)); });
+          if (page.h3s) {
+            page.h3s.forEach(function(h3s) {
+              var h3 = document.createElement('h3'); h3.textContent = h3s.title; container.appendChild(h3);
+              h3s.nodes.forEach(function(n) { container.appendChild(n.cloneNode(true)); });
+            });
+          }
+        }
       }
     },
 
