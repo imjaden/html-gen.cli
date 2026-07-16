@@ -21,7 +21,8 @@
   border-bottom: 1px solid #2a2a3e;
   flex-shrink: 0;
 }
-.slide-sidebar-header .logo { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.slide-sidebar-header .slide-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.slide-sidebar-header .slide-title:hover { color: var(--cobalt-300); }
 .slide-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
 .slide-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
 .slide-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
@@ -110,6 +111,52 @@
 .slide-dot.visited { background: #555; }
 .slide-nav-title { font-size: 0.68rem; color: #6b7280; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
+/* ── Top-Right Toolbar ── */
+.top-toolbar {
+  position: fixed; top: 12px; right: 16px; z-index: 900;
+  display: flex; align-items: center; gap: 2px;
+  background: rgba(17,17,27,0.88); backdrop-filter: blur(12px);
+  border: 1px solid #2a2a3e; border-radius: 28px;
+  padding: 3px 5px;
+}
+:root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.tb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: transparent; color: #9ca3af; cursor: pointer;
+  font-size: 0.85rem; transition: all 0.2s; font-family: inherit;
+}
+.tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light {
+  --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1;
+}
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .slide-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .slide-sidebar-header { border-color: #e5e5e5; }
+:root.light .slide-toc a { color: #666; }
+:root.light .slide-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
+:root.light .slide-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
+:root.light .slide-page h2 { color: #222; }
+:root.light .slide-page h3 { color: #333; }
+:root.light .slide-page p, :root.light .slide-page li { color: #444; }
+:root.light .slide-page code { background: rgba(0,0,0,0.06); color: #555; }
+:root.light .slide-page pre { background: #f0f0f0; border-color: #ddd; color: #333; }
+:root.light .slide-page blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
+:root.light .slide-page table th { background: #f0f0f0; color: #555; }
+:root.light .slide-page table td { border-color: #ddd; }
+:root.light .slide-page hr { border-color: #ddd; }
+:root.light .slide-cover h1 { color: #222; }
+:root.light .slide-cover .slide-cover-sub { color: var(--cobalt-600); }
+:root.light .slide-nav { background: #f5f5f5; }
+:root.light .slide-dot { background: #ccc; }
+:root.light .slide-dot.visited { background: #999; }
+:root.light .perf-warning { background: rgba(251,191,36,0.08); }
+
 @media (max-width: 768px) {
   .slide-sidebar { display: none; }
   .slide-page { padding: 16px 20px 40px; }
@@ -121,7 +168,7 @@
 
   <aside class="slide-sidebar" id="sidebar">
     <div class="slide-sidebar-header">
-      <div class="logo">🎞️ <!--TITLE--></div>
+      <div class="slide-title" title="<!--TITLE-->" id="slideTitle">🎞️ <!--TITLE--></div>
       <div class="sub-row">
         <div class="sub"><!--SUBTITLE--></div>
         <div class="slide-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -143,6 +190,14 @@
   <div class="slide-nav-title" id="slideNavTitle"></div>
 </div>
 
+<!-- Top-Right Toolbar -->
+<div class="top-toolbar" id="topToolbar">
+  <button class="tb-btn active" id="langZh" onclick="setLang('zh')" title="中文">🇨🇳</button>
+  <button class="tb-btn" id="langEn" onclick="setLang('en')" title="English">🇺🇸</button>
+  <span class="tb-divider"></span>
+  <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
+</div>
+
 <!-- Hidden: content source for DOM cloning -->
 <div style="display:none">
   <div class="doc-header">
@@ -158,6 +213,78 @@
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');
   const tocItems = [];
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _lang = localStorage.getItem('layoutslide_lang');
+  _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
+  var L = {
+    zh: { pages: '共 {n} 页', current: '{m} / {n}' },
+    en: { pages: '{n} pages', current: '{m} / {n}' }
+  };
+  function t(key, params) {
+    var s = L[_lang][key];
+    Object.keys(params).forEach(function(k) { s = s.replace('{' + k + '}', params[k]); });
+    return s;
+  }
+  // Init lang buttons
+  document.getElementById('langZh').classList.toggle('active', _lang === 'zh');
+  document.getElementById('langEn').classList.toggle('active', _lang === 'en');
+
+  window.setLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _lang = lang;
+    localStorage.setItem('layoutslide_lang', lang);
+    document.getElementById('langZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    if (typeof slide !== 'undefined' && slide._updateSub) slide._updateSub();
+  };
+
+  // Theme init + toggle
+  var _theme = localStorage.getItem('layoutslide_theme');
+  if (_theme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
+
+  window.toggleTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    localStorage.setItem('layoutslide_theme', isLight ? 'light' : 'dark');
+    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  // Title click → copy path
+  document.getElementById('slideTitle').addEventListener('click', function() {
+    var metaEl = document.querySelector('.doc-header .meta');
+    var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
+    var path = m ? m[1].trim() : document.title;
+    path = path.replace(/^\/Users\/[^/]+/, '~').replace(/^\/home\/[^/]+/, '~');
+    var done = function() { showToast('已复制: ' + path); };
+    if (navigator.clipboard && window.isSecureContext) {
+      navigator.clipboard.writeText(path).then(done).catch(function() {
+        fallbackCopy(path); done();
+      });
+    } else { fallbackCopy(path); done(); }
+  });
+
+  function fallbackCopy(text) {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
+    document.body.appendChild(ta); ta.select();
+    document.execCommand('copy'); document.body.removeChild(ta);
+  }
+
+  function showToast(msg) {
+    var el = document.getElementById('slideToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'slideToast';
+      el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none';
+      document.body.appendChild(el);
+    }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide);
+    el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
 
   /* ═══════ Slide Mode ═══════ */
   var slide = {
@@ -199,7 +326,7 @@
       });
 
       // Update sidebar header
-      var logoEl = document.querySelector('.slide-sidebar-header .logo');
+      var logoEl = document.querySelector('.slide-sidebar-header .slide-title');
       if (logoEl) {
         var txt = logoEl.textContent.replace(/^🎞️\s*/, '');
         if (txt.length > 30) txt = txt.substring(0, 30) + '…';
@@ -208,9 +335,8 @@
       var subEl = document.querySelector('.slide-sidebar-header .sub');
       if (subEl) {
         this._subBase = subEl.textContent.trim();
-        var total = this.pages.length - 1;
-        subEl.textContent = (this._subBase ? this._subBase + ' · ' : '') + '共 ' + total + ' 页';
       }
+      this._updateSub();
 
       this.buildDots();
       this.restoreProgress();
@@ -230,14 +356,7 @@
       this._syncToc();
       this._updateDots();
       this._showPageNum();
-      // Update sidebar sub with current page
-      var subEl = document.querySelector('.slide-sidebar-header .sub');
-      if (subEl && this._subBase !== undefined) {
-        var total = this.pages.length - 1;
-        subEl.textContent = n === 0
-          ? (this._subBase ? this._subBase + ' · ' : '') + '共 ' + total + ' 页'
-          : (this._subBase ? this._subBase + ' · ' : '') + '当前 ' + n + ' 页，共 ' + total + ' 页';
-      }
+      this._updateSub();
     },
 
     next: function() { if (this.currentPage < this.pages.length - 1) this.goTo(this.currentPage + 1); },
@@ -323,6 +442,16 @@
       if (this.currentPage === 0) { tocItems.forEach(function(a) { a.classList.remove('active'); }); return; }
       var page = this.pages[this.currentPage];
       tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === page.id); });
+    },
+
+    _updateSub: function() {
+      var subEl = document.querySelector('.slide-sidebar-header .sub');
+      if (!subEl || this._subBase === undefined) return;
+      var total = this.pages.length - 1;
+      var text = this.currentPage === 0
+        ? t('pages', {n: total})
+        : t('current', {m: this.currentPage, n: total});
+      subEl.textContent = (this._subBase ? this._subBase + ' · ' : '') + text;
     },
 
     saveProgress: function() { try { localStorage.setItem('layoutslide_page', this.currentPage); } catch(e) {} },
