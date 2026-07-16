@@ -116,3 +116,53 @@ HG-SEC-003 的 `escapeHtml()` 采用 opt-in 设计 (`col.escape: true`)，默认
 
 ---
 
+## 2026-07-14 — 全量复查: 15 commits, D 型 slide 模板 + 重构
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (AI Deep Review)
+- **Scope**: HEAD (2f6fd80) — 15 new commits since last review
+- **Commit(s)**: 777cba4 → ... → 2f6fd80
+- **Verdict**: PASS
+- **Score**: 100 / 100 (Rating: A)
+
+### Summary
+
+全量复查 15 个新 commit，核心变更是 doc/slide 模板拆分重构 + D 型 slide 模板首次实现。上轮 4 项安全修复全部保持有效，新增代码（519 行 `layout-slide.html`、`cmd_slide()`、`install.sh`、帮助系统、测试套件）安全质量优异。设计审查中 3 个 🟡 项（`_lang` 白名单、`Object.keys` 替换 `for...in`、主题恢复）在实现中全部落实。`inject()` 优化为仅对 `<script>` 上下文 key 做 `</` 转义，非 script 值不再无故转义。`.review-level.yaml` 被误删已恢复。
+
+### 新增代码逐项扫描
+
+| # | 文件 | 行数 | 扫描结果 |
+|:-:|:-----|:----:|:---------|
+| 1 | `layout-slide.html` | 519 | ✅ `textContent`/`cloneNode`/`createElement` 全链路，仅 2 处 `innerHTML` 用于服务端生成的受信 HTML (`<!--METADATA-->`) |
+| 2 | `html-gen.py` +230 | 546 | ✅ `cmd_slide()` 安全注入，`_SCRIPT_KEYS` 精确控制转义范围，帮助系统全硬编码 |
+| 3 | `install.sh` | 56 | ✅ bash heredoc + sed，无 eval/unsafe ops |
+| 4 | `tests/test_templates.py` | 114 | ✅ `os.system()` 仅用于测试，参数全硬编码 |
+| 5 | `tests/test_slide_h3_toggle.py` | 92 | ✅ Selenium 测试，无安全问题 |
+| 6 | `layout-doc.html` ±28 | — | ✅ CSS only，无 JS 变更 |
+| 7 | `skills/html-gen/SKILL.md` | 271 | ✅ 文档 |
+| 8 | Demo HTML 文件 | ~1,800 | ✅ 由 CLI 生成，继承模板安全属性 |
+
+### 设计审查项落实 (layout-slide-toolbar-design.md)
+
+| 原审查项 | 实现状态 |
+|:---------|:---------|
+| 🟡 `_lang` 白名单校验 | ✅ L218-219: `(_lang === 'zh' \|\| _lang === 'en') ? _lang : 'zh'` |
+| 🟡 `t()` `for...in` → `Object.keys` | ✅ L226: `Object.keys(params).forEach(...)` |
+| 🟡 主题初始加载恢复 | ✅ L243-244: 读 localStorage + 应用 class |
+| 🟡 路径正则跨平台 | ✅ L260: `/^\/Users\/[^/]+/` → 追加 `/^\/home\/[^/]+/` |
+| 🟢 `window.isSecureContext` | ✅ L262: clipboard 调用前检查 |
+
+### Positives
+
+- ✅ D 型 slide 模板安全意识极强：全链路 `textContent`/`cloneNode`/`createElement`，零 `innerHTML` 注入用户数据
+- ✅ `inject()` 优化：`_SCRIPT_KEYS` 精确控制只对 script 上下文做 `</` 转义
+- ✅ 设计审查 5 个 🟡 项在实现中全部落实
+- ✅ 测试覆盖 doc/slide/table/knowledge 四型模板
+- ✅ Slide 模板全屏 API 标准调用，无 `window.open` 注入
+
+### 🔧 修复项
+
+- `.review-level.yaml` 被误删 → 已恢复并更新 (commit 2f6fd80 之后)
+
+---
+

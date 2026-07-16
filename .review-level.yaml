@@ -1,0 +1,30 @@
+level: L2
+owner: Jaden Li
+classification: public
+compliance: [none]
+data_types: []
+review_history:
+  - date: 2026-07-12
+    reviewer: Security Reviewer
+    review_level: L2
+    verdict: FAIL
+    score: 60
+    findings_total: 4
+    findings_open: 4
+    tracking: HG-SEC-001..HG-SEC-004
+  - date: 2026-07-12
+    reviewer: Security Reviewer
+    review_level: L2
+    verdict: PASS
+    score: 95
+    findings_total: 4
+    findings_open: 0
+    tracking: HG-SEC-001..HG-SEC-004 (re-review)
+  - date: 2026-07-14
+    reviewer: Security Reviewer
+    review_level: L2
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: "N/A (全量复查: 15 commits, 0 new findings)"
