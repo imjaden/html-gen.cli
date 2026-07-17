@@ -2,7 +2,7 @@
 
 ## 版本
 
-v3.1 (2026-07-14) — 决策已确认
+v3.2 (2026-07-14) — 评审修正
 
 ## 决策记录
 
@@ -18,6 +18,8 @@ v3.1 (2026-07-14) — 决策已确认
 | 8 | 设置持久化 | localStorage 记忆 |
 | 9 | 实施范围 | Phase 1 + Phase 2 全部 |
 | 10 | 实施顺序 | 侧边栏优先 |
+
+---
 
 ## 一、统一侧边栏 (slide / doc / knowledge)
 
@@ -64,15 +66,15 @@ v3.1 (2026-07-14) — 决策已确认
 
 | # | 功能 | 说明 | slide | doc | knowledge |
 |:---|:---|:---|:---:|:---:|:---:|
-| 1 | **折叠/展开** | ≡ 按钮切换，收起时仅显示图标列 | ✅ | ✅ | ✅ |
-| 2 | **标题点击复制路径** | 统一 `.sidebar-title` 交互 | ✅ | ➕ | ➕ |
+| 1 | **折叠/展开** | ◀◀ 按钮切换，收起时仅显示图标列 | ✅ | ✅ | ✅ |
+| 2 | **标题点击复制路径** | 统一 `.sidebar-title` 交互，使用 `textContent` | ✅ | ➕ | ➕ |
 | 3 | **页码/进度** | `.sidebar-sub` 显示当前位置 | ✅ | ➕ | ➕ |
 | 4 | **H3 子项开关** | 显示/隐藏 TOC 中的 h3 条目 | ✅ | ✅ | N/A |
-| 5 | **TOC 搜索** | 🔍 按钮弹出搜索框，过滤 TOC 条目 | ✅ | ✅ | N/A |
+| 5 | **TOC 搜索** | 🔍 按钮弹出搜索框，过滤 TOC 条目，150ms debounce，≥2 字符触发 | ✅ | ✅ | N/A |
 | 6 | **当前章节高亮** | 滚动/翻页时 TOC 自动高亮当前项 | ✅ | ✅ | ✅ |
 | 7 | **localStorage 状态记忆** | 折叠态、H3 开关、语言、主题 | ✅ | ➕ | ➕ |
 | 8 | **侧边栏宽度拖拽** | 右边缘拖拽调整宽度 (200-400px) | ⬜ | ⬜ | ⬜ |
-| 9 | **快捷键切换** | `[` 键折叠/展开侧边栏 | ⬜ | ⬜ | ⬜ |
+| 9 | **快捷键切换** | `[` 键折叠/展开侧边栏（输入框中不触发） | ⬜ | ⬜ | ⬜ |
 | 10 | **底部统计** | 页数/字数/阅读进度 | slide | doc | ❌ |
 
 > ✅ 已实现  ➕ 需新增  ⬜ 新功能  ❌ 不适用
@@ -91,7 +93,7 @@ v3.1 (2026-07-14) — 决策已确认
 │ ▸ Hermes   │  │                          │  │
 │ ▸ OpenCode │  └──────────────────────────┘  │
 ├────────────┤                                 │
-│ [≡]        │                                 │  ← 折叠按钮在侧边栏底部
+│ [◀◀]       │                                 │  ← 折叠按钮在侧边栏底部
 └────────────┴─────────────────────────────────┘
 ```
 
@@ -126,9 +128,9 @@ v3.1 (2026-07-14) — 决策已确认
 
 收起态仅显示顶部图标 + 底部展开按钮。
 
-### 1.5 TOC 搜索
+### 1.6 TOC 搜索
 
-点击 🔍 → 侧边栏顶部出现搜索输入框 → 输入时实时过滤 TOC 条目 → 选中跳转
+点击 🔍 → 侧边栏顶部出现搜索输入框 → 150ms debounce + ≥2 字符触发过滤 → 选中跳转
 
 ```
 ┌─────────────────────┐
@@ -139,7 +141,7 @@ v3.1 (2026-07-14) — 决策已确认
 └─────────────────────┘
 ```
 
-### 1.6 CSS 变量统一
+### 1.7 CSS 变量统一
 
 ```css
 :root {
@@ -148,6 +150,53 @@ v3.1 (2026-07-14) — 决策已确认
   --sidebar-bg: var(--surface-900);
   --sidebar-border: #2a2a3e;
 }
+```
+
+### 1.8 localStorage 命名空间
+
+所有键使用 `html-gen:` 前缀，防冲突：
+
+| 键 | 类型 | 默认值 |
+|:---|:---|:---|
+| `html-gen:sidebar:collapsed` | boolean | false |
+| `html-gen:sidebar:h3-visible` | boolean | false |
+| `html-gen:table:density` | string | "default" |
+| `html-gen:table:click-mode` | string | "tab" |
+| `html-gen:table:view-presets` | JSON array | [] (max 10) |
+
+恢复逻辑统一模式：
+
+```javascript
+function restore(key, fallback, validate) {
+  try {
+    var v = JSON.parse(localStorage.getItem(key));
+    return validate(v) ? v : fallback;
+  } catch(e) { return fallback; }
+}
+// 示例
+var collapsed = restore('html-gen:sidebar:collapsed', false, function(v) { return typeof v === 'boolean'; });
+```
+
+### 1.9 标题点击复制
+
+统一使用 `textContent` 获取路径（不受 HTML 注入影响）：
+
+```javascript
+var path = el.textContent.match(/路径:\s*(.+)/)[1].trim();
+// URL 白名单校验
+if (/^(https?:|\/|~\/)/.test(path)) {
+  navigator.clipboard.writeText(path);
+}
+```
+
+### 1.10 快捷键焦点检测
+
+```javascript
+document.addEventListener('keydown', function(e) {
+  if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+    toggleSidebar();
+  }
+});
 ```
 
 ---
@@ -181,9 +230,11 @@ v3.1 (2026-07-14) — 决策已确认
 
 ### 2.2 三种点击打开模式
 
-#### 模式 1: 新标签页打开（现有 `hrefKey`）
+#### 模式 1: 新标签页打开（默认）
 
-行为不变。`window.open(url, '_blank')`
+```javascript
+window.open(url, '_blank', 'noopener,noreferrer');
+```
 
 #### 模式 2: 弹出面板 (Modal Panel)
 
@@ -209,16 +260,15 @@ v3.1 (2026-07-14) — 决策已确认
 ```
 
 - 页面内弹出，居中，半透明遮罩
-- 显示行的所有字段（排除隐藏列）
-- 如果行有 `url` 字段且为 HTML → iframe 加载
-- 如果无 `url` → 展示键值对列表
+- 显示行的字段，尊重设置面板中的**列可见性**（隐藏列不出现在弹出面板中）
 - Esc / 点击遮罩关闭
+- 数据渲染规则见 §2.5
 
 #### 模式 3: 分栏模式 (Split View)
 
 ```
 ┌──────────────────┬──────────────────────────┐
-│ 表格 (紧凑, 3列)  │  预览面板                  │
+│ 表格 (preview列)  │  预览面板                  │
 │ ┌────┬────┬────┐ │                          │
 │ │ #  │Name│Typ │ │  📄 doc.B                │
 │ ├────┼────┼────┤ │  ─────────────────────── │
@@ -230,25 +280,24 @@ v3.1 (2026-07-14) — 决策已确认
 └──────────────────┴──────────────────────────┘
 ```
 
-- 表格自动缩小到 3-4 个核心列（标题 + 1-2 个标识列）
-- 表格列配置中标记 `col.preview: true` 的列在分栏模式下保留
+- 表格仅显示 `col.preview: true` 的列（无自动选择逻辑，完全由 col.preview 控制）
 - 表格 40% + 预览 60%
+- 拖拽分栏线调整比例：表格 min 25% / max 75%
 - 点击行 → 右侧加载内容
-- 拖拽分栏线调整比例
-- 如果行有 `url` → iframe，否则 → 行详情
+- 数据渲染规则见 §2.5
 
 ### 2.3 额外增强功能
 
 | # | 功能 | 说明 | 优先级 |
 |:---|:---|:---|:---:|
-| 11 | **密度切换** | 紧凑(28px行高)/默认(34px)/舒适(42px) | P1 |
+| 11 | **密度切换** | 紧凑(28px)/默认(34px)/舒适(42px) | P1 |
 | 12 | **行详情展开** | 点击行展开内嵌详情（手风琴），显示全部字段 | P2 |
 | 13 | **快速过滤** | 点击单元格值 → 添加为该列的过滤条件 | P2 |
 | 14 | **列冻结** | 左侧 1-2 列冻结（`position: sticky; left: 0`） | P2 |
 | 15 | **多列排序** | Shift+点击第二列表头 → 二级排序 | P2 |
 | 16 | **键盘导航** | ↑↓ 移动行高亮，Enter 打开详情 | P3 |
 | 17 | **批量操作栏** | 选中行后顶部出现批量操作（删除/导出/标记） | P3 |
-| 18 | **视图预设** | 保存/加载列可见性+排序+过滤为命名预设 | P3 |
+| 18 | **视图预设** | 保存/加载设置（最多 10 个预设，每个 ≤ 2KB） | P3 |
 | 19 | **全屏表格** | 按钮或 F 键全屏表格 | P3 |
 | 20 | **列拖拽排序** | 拖拽表头重新排列列顺序 | P3 |
 
@@ -266,15 +315,33 @@ v3.1 (2026-07-14) — 决策已确认
 }
 ```
 
-`col.preview: true` — 分栏模式下保留此列，其余列隐藏到详情面板。
+`col.preview: true` — 分栏模式下保留此列。`preview: false` 或不设置的列在分栏模式下隐藏（信息移至详情面板）。**不设自动列数选择逻辑**，完全由 `col.preview` 字段控制。
 
-### 2.5 弹出面板 / 分栏面板的数据来源
+### 2.5 弹出面板 / 分栏面板的数据渲染（安全约束）
 
-| 数据源 | 行为 |
-|:---|:---|
-| `row.url` 存在 | iframe 加载 URL |
-| `row.desc` 存在 | 内联渲染 HTML 内容 |
-| 无 url/desc | 展示键值对列表（所有字段） |
+| 数据源 | 渲染方式 | 安全说明 |
+|:---|:---|:---|
+| `row.url` 存在 | `<iframe src="..." sandbox="allow-same-origin" loading="lazy" referrerpolicy="no-referrer">` | 禁止脚本执行，仅允许同源访问 |
+| `row.desc` 存在 | `container.textContent = row.desc` | 纯文本渲染，禁止 innerHTML |
+| 无 url/desc | 展示键值对列表（所有字段） | textContent 逐字段渲染 |
+
+#### URL 白名单
+
+所有 `row.url` 在进入 iframe 或 `window.open` 前校验：
+
+```javascript
+function isSafeUrl(url) {
+  return /^(https?:|\/|~\/)/.test(url);
+}
+```
+
+非白名单 URL → 静默忽略，展示降级键值对列表。
+
+#### 安全强化规则
+
+- `window.open(url, '_blank', 'noopener,noreferrer')` — 防止新页面访问 `window.opener`
+- `row.desc` **绝不**使用 `innerHTML` 注入，统一使用 `textContent`
+- 弹出面板中显示**所有字段**时，使用 `textContent` 设置每个字段值
 
 ---
 
@@ -285,24 +352,25 @@ v3.1 (2026-07-14) — 决策已确认
 1. slide/doc 添加折叠/展开按钮 + 收起态
 2. doc 添加标题复制路径 + 页码/进度
 3. doc 添加 H3 开关
-4. 三个模板统一 CSS 变量
+4. 三个模板统一 CSS 变量 + localStorage 命名空间
+5. 快捷键焦点检测
 
 ### Phase 2 — 表格增强（P1）
 
-5. 设置面板扩展（密度 + 点击模式选择）
-6. 弹出面板模式（Modal Panel）
-7. 分栏模式（Split View）
-8. 密度切换
+6. 设置面板扩展（密度 + 点击模式选择）
+7. 弹出面板模式（Modal Panel）+ 安全渲染
+8. 分栏模式（Split View）+ min/max 比例 + sandbox iframe
+9. 密度切换
 
 ### Phase 3 — 增强体验（P2）
 
-9. 侧边栏 TOC 搜索
-10. 行详情展开
-11. 快速过滤
-12. 列冻结 + 多列排序
+10. 侧边栏 TOC 搜索（150ms debounce）
+11. 行详情展开
+12. 快速过滤
+13. 列冻结 + 多列排序
 
 ### Phase 4 — 锦上添花（P3）
 
-13. 侧边栏宽度拖拽
-14. 键盘导航 + 批量操作
-15. 视图预设 + 全屏表格
+14. 侧边栏宽度拖拽（200-400px）
+15. 键盘导航 + 批量操作
+16. 视图预设（max 10, ≤2KB each）+ 全屏表格
