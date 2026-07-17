@@ -1,0 +1,96 @@
+{
+  "columns": [
+    {
+      "key": "name",
+      "label": "项目",
+      "sortable": true,
+      "locale": "zh"
+    },
+    {
+      "key": "stars",
+      "label": "Stars",
+      "sortable": true,
+      "type": "number"
+    },
+    {
+      "key": "lang",
+      "label": "语言"
+    },
+    {
+      "key": "desc",
+      "label": "描述"
+    },
+    {
+      "key": "url",
+      "label": "URL",
+      "onClick": "url",
+      "hide": true
+    }
+  ],
+  "data": [
+    {
+      "name": "hermes-agent",
+      "stars": 50200,
+      "lang": "Python",
+      "desc": "CLI-first AI Agent: 零配置 CLI AI 代理",
+      "url": "https://hermes-agent.nousresearch.com"
+    },
+    {
+      "name": "llm-radar",
+      "stars": 1280,
+      "lang": "Python",
+      "desc": "LLM 领域动态追踪与趋势分析",
+      "url": "https://llm-radar.jaden.tech"
+    },
+    {
+      "name": "html-gen",
+      "stars": 45,
+      "lang": "Python",
+      "desc": "零依赖 Markdown → HTML 生成器。支持 A/B/C/D 四种模板",
+      "url": "https://github.com/jadenli/html-gen"
+    },
+    {
+      "name": "http-server-cli",
+      "stars": 320,
+      "lang": "Python",
+      "desc": "零依赖 HTTP 静态文件服务器，支持 CORS 和 range 请求",
+      "url": "https://github.com/jadenli/http-server-cli"
+    },
+    {
+      "name": "script-miner",
+      "stars": 89,
+      "lang": "Python",
+      "desc": "Python 脚本挖掘工具，分析代码模式与依赖",
+      "url": "https://github.com/jadenli/script-miner"
+    },
+    {
+      "name": "daily-tracker",
+      "stars": 12,
+      "lang": "Python",
+      "desc": "每日习惯追踪 CLI 工具",
+      "url": "https://github.com/jadenli/daily-tracker"
+    },
+    {
+      "name": "favorite-manager",
+      "stars": 3,
+      "lang": "Python",
+      "desc": "跨平台收藏管理工具",
+      "url": "https://github.com/jadenli/favorite-manager"
+    },
+    {
+      "name": "hermes-manager",
+      "stars": 7,
+      "lang": "Python",
+      "desc": "Hermes Agent 会话管理工具",
+      "url": "https://github.com/jadenli/hermes-manager"
+    }
+  ],
+  "options": {
+    "exportCSV": true,
+    "clickModes": [
+      "tab",
+      "modal",
+      "split"
+    ]
+  }
+}
