@@ -28,6 +28,26 @@
 .slide-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
 .slide-h3-toggle:hover { color: #9ca3af; }
 .slide-h3-toggle.on { color: var(--cobalt-400); }
+
+/* ── Sidebar Collapse ── */
+.slide-sidebar { width: 260px; min-width: 260px; transition: width 0.25s, min-width 0.25s; }
+.slide-sidebar.collapsed { width: 48px; min-width: 48px; }
+.slide-sidebar.collapsed .slide-title,
+.slide-sidebar.collapsed .sub-row,
+.slide-sidebar.collapsed .slide-h3-toggle,
+.slide-sidebar.collapsed .slide-toc,
+.slide-sidebar.collapsed .slide-sidebar-footer { display: none; }
+.slide-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.slide-sidebar.collapsed .slide-sidebar-icon { display: flex; }
+.slide-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.slide-sidebar-footer .sb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e;
+  background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem;
+  transition: all 0.15s; font-family: inherit;
+}
+.slide-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+.sb-collapse-btn { margin-left: auto; }
 .toc-h3 { display: none; }
 .toc-h3.show { display: block; }
 .slide-toc .toc-h3 { display: none; }
@@ -167,6 +187,7 @@
 <div class="slide-wrapper">
 
   <aside class="slide-sidebar" id="sidebar">
+    <div class="slide-sidebar-icon">🎞️</div>
     <div class="slide-sidebar-header">
       <div class="slide-title" title="<!--TITLE-->" id="slideTitle">🎞️ <!--TITLE--></div>
       <div class="sub-row">
@@ -175,6 +196,11 @@
       </div>
     </div>
     <nav class="slide-toc" id="toc"></nav>
+    <div class="slide-sidebar-footer">
+      <button class="sb-btn" onclick="alert('TOC 搜索功能开发中')" title="搜索 TOC (开发中)">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn sb-collapse-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
   </aside>
 
   <div class="slide-main" id="slideMain">
@@ -215,7 +241,7 @@
   const tocItems = [];
 
   /* ═══════ i18n & Theme ═══════ */
-  var _lang = localStorage.getItem('layoutslide_lang');
+  var _lang = localStorage.getItem('html-gen:layoutslide_lang');
   _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
   var L = {
     zh: { pages: '共 {n} 页', current: '{m} / {n}' },
@@ -233,14 +259,14 @@
   window.setLang = function(lang) {
     if (lang !== 'zh' && lang !== 'en') return;
     _lang = lang;
-    localStorage.setItem('layoutslide_lang', lang);
+    localStorage.setItem('html-gen:layoutslide_lang', lang);
     document.getElementById('langZh').classList.toggle('active', lang === 'zh');
     document.getElementById('langEn').classList.toggle('active', lang === 'en');
     if (typeof slide !== 'undefined' && slide._updateSub) slide._updateSub();
   };
 
   // Theme init + toggle
-  var _theme = localStorage.getItem('layoutslide_theme');
+  var _theme = localStorage.getItem('html-gen:layoutslide_theme');
   if (_theme === 'light') document.documentElement.classList.add('light');
   document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
 
@@ -248,7 +274,7 @@
     var r = document.documentElement;
     var isLight = !r.classList.contains('light');
     r.classList.toggle('light', isLight);
-    localStorage.setItem('layoutslide_theme', isLight ? 'light' : 'dark');
+    localStorage.setItem('html-gen:layoutslide_theme', isLight ? 'light' : 'dark');
     document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
   };
 
@@ -454,10 +480,10 @@
       subEl.textContent = (this._subBase ? this._subBase + ' · ' : '') + text;
     },
 
-    saveProgress: function() { try { localStorage.setItem('layoutslide_page', this.currentPage); } catch(e) {} },
+    saveProgress: function() { try { localStorage.setItem('html-gen:layoutslide_page', this.currentPage); } catch(e) {} },
 
     restoreProgress: function() {
-      try { var n = parseInt(localStorage.getItem('layoutslide_page'), 10); if (isNaN(n) || n < 0 || n >= this.pages.length) n = 0; this.currentPage = n; } catch(e) { this.currentPage = 0; }
+      try { var n = parseInt(localStorage.getItem('html-gen:layoutslide_page'), 10); if (isNaN(n) || n < 0 || n >= this.pages.length) n = 0; this.currentPage = n; } catch(e) { this.currentPage = 0; }
     }
   };
 
@@ -508,9 +534,40 @@
     _h3Visible = !_h3Visible;
     var btn = document.getElementById('h3Toggle');
     if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
+    try { localStorage.setItem('html-gen:sidebar:h3-visible', _h3Visible); } catch(e) {}
     var h3s = document.querySelectorAll('.toc-h3');
     for (var i = 0; i < h3s.length; i++) { h3s[i].classList.toggle('show', _h3Visible); }
   };
+
+  // Restore H3 state
+  try {
+    var savedH3 = localStorage.getItem('html-gen:sidebar:h3-visible');
+    if (savedH3 === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; }
+  } catch(e) {}
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _sidebarCollapsed = false;
+  window.toggleSidebar = function() {
+    _sidebarCollapsed = !_sidebarCollapsed;
+    var sb = document.getElementById('sidebar');
+    var btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
+    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:sidebar:collapsed', _sidebarCollapsed); } catch(e) {}
+  };
+
+  // Restore collapse state
+  try {
+    var savedCollapsed = localStorage.getItem('html-gen:sidebar:collapsed');
+    if (savedCollapsed === 'true') toggleSidebar();
+  } catch(e) {}
+
+  // [ shortcut — collapse sidebar (skip in inputs)
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    }
+  });
 
   slide.init();
 })();
