@@ -76,6 +76,48 @@
   font-size:0.72rem; color:#d1d5db; cursor:pointer; white-space:nowrap; }
 .col-toggle-dropdown label:hover { background:rgba(79,70,229,0.1); }
 .col-toggle-dropdown input { accent-color:var(--cobalt-500); }
+.col-toggle-dropdown .settings-section { padding:4px 12px 2px; font-size:0.62rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.04em; }
+.col-toggle-dropdown .settings-radio { display:flex; align-items:center; gap:6px; padding:2px 12px; font-size:0.7rem; color:#d1d5db; cursor:pointer; }
+.col-toggle-dropdown .settings-radio input { accent-color:var(--cobalt-500); margin:0; }
+.col-toggle-divider { height:1px; background:#2a2a3e; margin:4px 0; }
+
+/* ── Density ── */
+.data-table.dense td { padding:2px 8px; font-size:0.7rem; }
+.data-table.dense th { padding:3px 8px; font-size:0.6rem; }
+.data-table.comfortable td { padding:10px 12px; font-size:0.82rem; }
+.data-table.comfortable th { padding:10px 12px; font-size:0.72rem; }
+
+/* ── Modal Panel ── */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+.modal-overlay.active { display:flex; }
+.modal-panel { background:var(--surface-900); border:1px solid #2a2a3e; border-radius:12px; width:560px; max-width:90vw; max-height:80vh; overflow-y:auto; padding:20px 24px; animation:slideFadeIn 0.2s ease; }
+.modal-panel h3 { font-size:1rem; color:#f0f0f0; margin:0 0 12px; }
+.modal-panel .modal-close { position:absolute; top:12px; right:16px; background:none; border:none; color:#6b7280; cursor:pointer; font-size:1.2rem; }
+.modal-panel .modal-field { display:flex; padding:4px 0; border-bottom:1px solid #1a1a2e; font-size:0.78rem; }
+.modal-panel .modal-field .mf-label { color:#6b7280; width:80px; flex-shrink:0; }
+.modal-panel .modal-field .mf-value { color:#e0e0e0; flex:1; word-break:break-all; }
+.modal-panel .modal-field:last-child { border-bottom:none; }
+
+/* ── Split View ── */
+.wrapper.split-mode { display:flex; flex-direction:row; gap:0; }
+.wrapper.split-mode .table-main { flex:0 0 var(--spl-ratio, 40%); min-width:200px; overflow:auto; }
+.split-preview { display:none; flex-direction:column; background:var(--surface-900); border-left:1px solid #2a2a3e;
+  min-width:200px; position:relative; }
+.wrapper.split-mode .split-preview { display:flex; flex:1; }
+.split-preview-header { padding:10px 14px; border-bottom:1px solid #2a2a3e;
+  font-size:0.82rem; font-weight:600; color:#f0f0f0;
+  display:flex; align-items:center; gap:8px; }
+.split-preview-header .sp-close { margin-left:auto; background:none; border:none; color:#6b7280; cursor:pointer; font-size:1rem; }
+.split-preview-body { flex:1; overflow:auto; padding:14px; }
+.split-preview-body iframe { width:100%; height:70vh; border:none; }
+.split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
+.wrapper.split-mode .split-drag { display:block; }
+.split-drag:hover, .split-drag.active { background:var(--cobalt-600); }
+.split-preview .kv-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:6px; }
+.split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
+.split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
+.split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 
 /* ── Toast ── */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); padding:8px 20px;
@@ -122,6 +164,7 @@
 
 <div class="table-tabs" id="tabsBar"></div>
 
+<div class="table-main" id="tableMain">
 <div class="table-header">
   <h1><!--TITLE--></h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
@@ -132,7 +175,7 @@
   <!--FILTERS-->
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
   <div class="col-toggle-wrap">
-    <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="列可见性">⚙️</button>
+    <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="设置">⚙️</button>
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
   </div>
 </div>
@@ -147,8 +190,22 @@
 </div>
 
 <div class="pager" id="pager"></div>
+</div><!-- /table-main -->
+
+<div class="split-drag" id="splitDrag"></div>
+<div class="split-preview" id="splitPreview">
+  <div class="split-preview-header" id="splitPreviewHeader"></div>
+  <div class="split-preview-body" id="splitPreviewBody"></div>
+</div>
 
 <div class="toast" id="toast"></div>
+
+</div><!-- /wrapper -->
+
+<!-- Modal Panel -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-panel" id="modalPanel"></div>
+</div>
 
 <!-- Cmd+F Quick Search Overlay -->
 <div class="qs-overlay" id="qsOverlay" onclick="if(event.target===this)quickSearch.close()">
@@ -187,6 +244,12 @@
 
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
+  let density = 'default', clickMode = 'tab', splitRatio = 40;
+
+  // Restore from localStorage
+  try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
+  try { clickMode = localStorage.getItem('html-gen:table:click-mode') || 'tab'; } catch(e) {}
+  try { splitRatio = parseFloat(localStorage.getItem('html-gen:table:split-ratio')) || 40; } catch(e) {}
 
   /* ── Security: HTML escape ── */
   function escapeHtml(text) {
@@ -276,8 +339,8 @@
       var rowIdx = start + pi;
       var rowClass = [];
       if (selectedRows[rowIdx]) rowClass.push('selected');
-      if (getRowClickCol()) rowClass.push('clickable');
-      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(getRowClickCol()?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
+      if (isRowClickable(row)) rowClass.push('clickable');
+      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
@@ -324,6 +387,15 @@
 
   function getRowClickCol() {
     return COLUMNS.find(function(c){return c.onClick;});
+  }
+
+  function isRowClickable(row) {
+    if (clickMode === 'tab') {
+      var col = getRowClickCol();
+      return col && col.onClick === 'url' && row.url;
+    }
+    // modal or split: any row is clickable
+    return clickMode === 'modal' || clickMode === 'split';
   }
 
   /* ── Stats ── */
@@ -408,46 +480,213 @@
 
   /* ── Row click ── */
   function handleRowClick(idx) {
-    var col = getRowClickCol();
-    if (!col) return;
     var row = filtered[idx];
-    if (col.onClick === 'url' && row.url) window.open(row.url, '_blank');
-    else if (typeof col.onClick === 'function') col.onClick(row);
+    // tab mode: open in new tab (default)
+    if (clickMode === 'tab') {
+      var col = getRowClickCol();
+      if (!col || col.onClick !== 'url' || !row.url) return;
+      window.open(row.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    // modal mode: show popup
+    if (clickMode === 'modal') {
+      showModal(row);
+      return;
+    }
+    // split mode: show preview panel
+    if (clickMode === 'split') {
+      activateSplit(row, idx);
+      return;
+    }
   }
   window.handleRowClick = handleRowClick;
 
+  /* ── Modal Panel ── */
+  function showModal(row) {
+    var cols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+    var title = row[cols[0] && cols[0].key] || '详情';
+    var html = '<div style="position:relative"><button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;">✕</button><h3>'+escapeHtml(String(title))+'</h3>';
+    html += cols.map(function(c) {
+      var v = row[c.key]; if (v === null || v === undefined) v = '';
+      return '<div class="modal-field"><span class="mf-label">'+escapeHtml(c.label)+'</span><span class="mf-value">'+escapeHtml(String(v))+'</span></div>';
+    }).join('');
+    html += '</div>';
+    document.getElementById('modalPanel').innerHTML = html;
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+  window.showModal = showModal;
+  window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('active'); };
+
+  // Esc closes modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  /* ── Split View ── */
+  var splitRow = null, splitIdx = -1;
+  function activateSplit(row, idx) {
+    splitRow = row; splitIdx = idx;
+    var wrapper = document.querySelector('.wrapper');
+    wrapper.classList.add('split-mode');
+    renderSplitPreview(row);
+    // highlight active row
+    var tbody = document.getElementById('tbody');
+    var rows = tbody.querySelectorAll('tr');
+    rows.forEach(function(r){ r.classList.remove('split-active'); });
+    if (rows[idx]) rows[idx].classList.add('split-active');
+  }
+  window.activateSplit = activateSplit;
+  window.closeSplit = function() {
+    var wrapper = document.querySelector('.wrapper');
+    wrapper.classList.remove('split-mode');
+    splitRow = null; splitIdx = -1;
+    // clear highlight
+    var rows = document.getElementById('tbody').querySelectorAll('tr');
+    rows.forEach(function(r){ r.classList.remove('split-active'); });
+  };
+
+  function renderSplitPreview(row) {
+    var header = document.getElementById('splitPreviewHeader');
+    var body = document.getElementById('splitPreviewBody');
+    // title from first column
+    var titleCol = COLUMNS.find(function(c){return c.key && colVisibility[c.key]!==false;});
+    header.innerHTML = (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+      '<button class="sp-close" onclick="closeSplit()">✕</button>';
+
+    // render: url → iframe, desc → textContent, else kv-list
+    if (row.url) {
+      body.innerHTML = '<iframe src="'+escapeHtml(String(row.url))+'" sandbox="allow-same-origin"></iframe>';
+    } else if (row.desc) {
+      var d = document.createElement('div');
+      d.textContent = row.desc;
+      body.innerHTML = '';
+      body.appendChild(d);
+    } else {
+      var cols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+      body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
+        var v = row[c.key]; if (v === null || v === undefined) v = '';
+        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+      }).join('')+'</div>';
+    }
+  }
+
+  /* ── Split drag ── */
+  function initSplitDrag() {
+    var drag = document.getElementById('splitDrag');
+    var wrapper = document.querySelector('.wrapper');
+    var isDragging = false;
+
+    drag.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      isDragging = true;
+      drag.classList.add('active');
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', onDragEnd);
+    });
+
+    function onDrag(e) {
+      if (!isDragging) return;
+      var rect = wrapper.getBoundingClientRect();
+      var ratio = ((e.clientX - rect.left) / rect.width) * 100;
+      ratio = Math.max(25, Math.min(75, ratio));
+      splitRatio = ratio;
+      wrapper.style.setProperty('--spl-ratio', ratio+'%');
+      try { localStorage.setItem('html-gen:table:split-ratio', ratio); } catch(e) {}
+    }
+
+    function onDragEnd() {
+      isDragging = false;
+      drag.classList.remove('active');
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', onDragEnd);
+    }
+  }
+
+  /* ── Density ── */
+  function applyDensity() {
+    var table = document.querySelector('.data-table');
+    table.classList.remove('dense', 'comfortable');
+    if (density === 'compact') table.classList.add('dense');
+    else if (density === 'comfortable') table.classList.add('comfortable');
+  }
+
   /* ── Actions ── */
   window.copyAction = function(text) {
-    if (navigator.clipboard) {
-      navigator.clipboard.writeText(text).then(function(){showToast('已复制: '+text);});
-    } else {
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      showToast('已复制: '+text);
-    }
+    try {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function(){showToast('已复制: '+text);});
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        showToast('已复制: '+text);
+      }
+    } catch(e) { showToast('复制失败'); }
   };
 
   /* ── Column visibility ── */
   function initColToggle() {
     var dd = document.getElementById('colToggleDropdown');
-    dd.innerHTML = COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).map(function(c) {
+    var html = '';
+
+    // density section — visible when split/modal available
+    var validModes = (OPTIONS && OPTIONS.clickModes) || ['tab'];
+    var hasSplit = validModes.indexOf('split') !== -1;
+    var hasModal = validModes.indexOf('modal') !== -1;
+    var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + 1;
+    if (tabCount > 1 || density !== 'default') {
+      html += '<div class="settings-section">密度</div>';
+      ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
+        var parts = item.split(':');
+        html += '<label class="settings-radio"><input type="radio" name="density" value="'+parts[0]+'" '+(density===parts[0]?'checked':'')+' onchange="setDensity(\''+parts[0]+'\')">'+parts[1]+'</label>';
+      });
+    }
+
+    // click mode section
+    if (tabCount > 1) {
+      html += '<div class="col-toggle-divider"></div><div class="settings-section">点击模式</div>';
+      if (validModes.indexOf('tab') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="tab" '+(clickMode==='tab'?'checked':'')+' onchange="setClickMode(\'tab\')">🔗 新标签页</label>';
+      if (validModes.indexOf('modal') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="modal" '+(clickMode==='modal'?'checked':'')+' onchange="setClickMode(\'modal\')">📋 弹出面板</label>';
+      if (validModes.indexOf('split') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="split" '+(clickMode==='split'?'checked':'')+' onchange="setClickMode(\'split\')">📑 分栏预览</label>';
+    }
+
+    // column visibility
+    html += '<div class="col-toggle-divider"></div>';
+    html += COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).map(function(c) {
       var visible = colVisibility[c.key] !== false;
       return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
     }).join('');
+
+    dd.innerHTML = html;
     document.getElementById('colToggleBtn').onclick = function(e) {
       e.stopPropagation();
       dd.classList.toggle('show');
     };
     document.addEventListener('click', function() { dd.classList.remove('show'); });
   }
+  window.initColToggle = initColToggle;
 
   window.toggleCol = function(key, visible) {
     colVisibility[key] = visible;
     initColToggle();
     initThead();
     render();
+  };
+
+  window.setDensity = function(val) {
+    density = val;
+    try { localStorage.setItem('html-gen:table:density', val); } catch(e) {}
+    applyDensity();
+    initColToggle();
+  };
+
+  window.setClickMode = function(val) {
+    clickMode = val;
+    try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
+    initColToggle();
   };
 
   /* ── Search (real-time debounced) ── */
@@ -528,13 +767,19 @@
 
   /* ── Init ── */
   function init() {
+    // Restore saved split ratio
+    var wrapper = document.querySelector('.wrapper');
+    wrapper.style.setProperty('--spl-ratio', splitRatio+'%');
+
     // Search visibility
     if (!showSearch) document.getElementById('searchInput').style.display = 'none';
     initColToggle();
     initExport();
     buildTabs();
     initThead();
+    applyDensity();
     render();
+    initSplitDrag();
   }
   init();
 
