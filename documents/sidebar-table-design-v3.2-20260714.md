@@ -2,7 +2,7 @@
 
 ## 版本
 
-v3.2 (2026-07-14) — 评审修正
+v3.3 (2026-07-14) — N1/N2 修正
 
 ## 决策记录
 
@@ -182,10 +182,14 @@ var collapsed = restore('html-gen:sidebar:collapsed', false, function(v) { retur
 统一使用 `textContent` 获取路径（不受 HTML 注入影响）：
 
 ```javascript
-var path = el.textContent.match(/路径:\s*(.+)/)[1].trim();
-// URL 白名单校验
-if (/^(https?:|\/|~\/)/.test(path)) {
-  navigator.clipboard.writeText(path);
+var m = el.textContent.match(/路径:\s*(.+)/);
+if (m && /^(https?:|\/|~\/)/.test(m[1])) {
+  var path = m[1].trim();
+  try {
+    navigator.clipboard.writeText(path).catch(function() {
+      // clipboard API unavailable (non-HTTPS, permission denied) — silent fallback
+    });
+  } catch(e) { /* clipboard API not supported */ }
 }
 ```
 
@@ -323,7 +327,7 @@ window.open(url, '_blank', 'noopener,noreferrer');
 |:---|:---|:---|
 | `row.url` 存在 | `<iframe src="..." sandbox="allow-same-origin" loading="lazy" referrerpolicy="no-referrer">` | 禁止脚本执行，仅允许同源访问 |
 | `row.desc` 存在 | `container.textContent = row.desc` | 纯文本渲染，禁止 innerHTML |
-| 无 url/desc | 展示键值对列表（所有字段） | textContent 逐字段渲染 |
+| 无 url/desc | 展示键值对列表（仅用户在设置面板中可见的列） | textContent 逐字段渲染 |
 
 #### URL 白名单
 
