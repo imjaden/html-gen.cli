@@ -341,6 +341,10 @@
 
   function matchTab(row, tab) {
     if (tab.match) return row[tab.match] === tab.key;
+    if (tab.contains) {
+      var val = row[tab.field || 'profiles'] || '';
+      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+    }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
   }
@@ -661,6 +665,16 @@
   }
   window.showModal = showModal;
   window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('active'); };
+
+  // Generic action handlers for modal/split via action buttons
+  window.skillModal = function(event, row) { showModal(row); };
+  window.skillSplit = function(event, row) {
+    // Find row index in filtered data for highlight
+    for (var i = 0; i < filtered.length; i++) {
+      if (filtered[i].name === row.name) { activateSplit(row, i); return; }
+    }
+    activateSplit(row, 0);
+  };
 
   // Esc closes modal
   document.addEventListener('keydown', function(e) {
