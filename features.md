@@ -107,7 +107,12 @@ URL 白名单校验 (https?/ / ~/ 前缀) ✅ — layout-table.html
 顶部横向标签栏 (按 group 分组, 彩色圆点, 与侧边栏标题行对齐) ✅ — layout-knowledge.html
 左侧章节列表 (按 section 分组, badge 标记) ✅ — layout-knowledge.html
 侧边栏搜索 (🔍 按钮, 150ms debounce, ≥2 字符, section 自动隐藏) ✅ — layout-knowledge.html
-侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-knowledge.html
+侧边栏折叠/展开 (48px 收起态, `[` 快捷键, 图标点击展开) ✅ — layout-knowledge.html
+侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-knowledge.html
+侧边栏标题点击复制路径 (textContent + URL 白名单 + Toast) ✅ — layout-knowledge.html
+中英双语 (🇨🇳/🇺🇸, 条目数 i18n) ✅ — layout-knowledge.html
+🌙/☀️ 深色/浅色主题切换 (18+ 组件覆盖) ✅ — layout-knowledge.html
+右上角工具栏 (语言/主题, glass-morphism) ✅ — layout-knowledge.html
 iframe 内容加载 (item.url → sandbox iframe) ✅ — layout-knowledge.html
 内联 desc 渲染 (item.desc → textContent) ✅ — layout-knowledge.html
 欢迎面板 (首次加载 / 无选中, 类目图例) ✅ — layout-knowledge.html
@@ -197,6 +202,9 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | `html-gen:kw_group` | 当前 Tab 类目 | knowledge |
 | `html-gen:kw_item` | 当前选中条目 | knowledge |
 | `html-gen:kw:collapsed` | 侧边栏折叠 | knowledge |
+| `html-gen:kw_lang` | 语言 (zh/en) | knowledge |
+| `html-gen:kw_theme` | 主题 (dark/light) | knowledge |
+| `html-gen:kw:sidebar-width` | 侧边栏宽度 | knowledge |
 | `html-gen:table:density` | 密度 (default/compact/comfortable) | table |
 | `html-gen:table:click-mode` | 点击模式 (tab/modal/split/expand) | table |
 | `html-gen:table:split-ratio` | 分栏比例 (25-75) | table |
