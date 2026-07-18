@@ -197,6 +197,14 @@
   .slide-sidebar { display: none; }
   .slide-page { padding: 16px 20px 40px; }
 }
+
+@media print {
+  .slide-sidebar, .top-toolbar, .slide-navigation, .slide-dots { display: none !important; }
+  .slide-container { padding: 0; }
+  .slide-page { break-after: page; box-shadow: none; border: none; }
+  .slide-page h1, .slide-page h2, .slide-page h3 { color: #000; }
+  body { background: #fff; }
+}
 </style>
 </head>
 <body>
