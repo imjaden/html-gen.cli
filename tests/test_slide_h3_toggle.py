@@ -64,7 +64,7 @@ class TestH3Toggle(unittest.TestCase):
         toggle.click()  # show
         time.sleep(0.15)
         toggle.click()  # hide
-        time.sleep(0.15)
+        time.sleep(0.3)
 
         self.assertEqual(toggle.text.strip(), 'H3')
 

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>Phase 2-4 Test</title>
+<title>Phase 2-4 全功能演示</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -233,6 +233,15 @@ pre code { background: none; padding: 0; }
 .fs-btn { padding:3px 10px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.68rem; font-family:inherit; }
 .fs-btn:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 
+@media print {
+  .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
+  .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
+  .data-table th, .data-table td { color: #000; border-color: #ccc; }
+  .data-table th { background: #f5f5f5; }
+  body { background: #fff; }
+  .wrapper { padding: 0; }
+}
+
 /* ── Frozen columns ── */
 .data-table th.frozen-col, .data-table td.frozen-col {
   position: sticky; z-index: 11; background: var(--surface-900);
@@ -389,7 +398,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>Phase 2-4 Test</h1>
+  <h1>Phase 2-4 全功能演示</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
