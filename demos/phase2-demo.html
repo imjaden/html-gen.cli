@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>Phase 3 Demo</title>
+<title>Phase 4 Demo</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -219,6 +219,19 @@ pre code { background: none; padding: 0; }
 .filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+.data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
+
+/* ── Batch toolbar ── */
+.batch-bar { display:none; align-items:center; gap:8px; padding:6px 12px; background:rgba(79,70,229,0.12); border:1px solid var(--cobalt-600); border-radius:8px; margin-bottom:8px; }
+.batch-bar.active { display:flex; }
+.batch-bar .bb-text { font-size:0.72rem; color:var(--cobalt-300); font-weight:600; }
+.batch-bar .bb-btn { padding:3px 10px; border-radius:4px; border:1px solid var(--cobalt-600); background:transparent; color:var(--cobalt-400); cursor:pointer; font-size:0.68rem; font-family:inherit; }
+.batch-bar .bb-btn:hover { background:rgba(79,70,229,0.2); }
+
+/* ── Fullscreen ── */
+.wrapper.fullscreen { position:fixed; inset:0; z-index:999; background:var(--surface-950); padding:12px; overflow:auto; }
+.fs-btn { padding:3px 10px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.68rem; font-family:inherit; }
+.fs-btn:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 
 /* ── Frozen columns ── */
 .data-table th.frozen-col, .data-table td.frozen-col {
@@ -367,9 +380,16 @@ pre code { background: none; padding: 0; }
 
 <div class="table-tabs" id="tabsBar"></div>
 
+<div class="batch-bar" id="batchBar">
+  <span class="bb-text" id="batchCount">已选 0 条</span>
+  <button class="bb-btn" onclick="selectAllFiltered()">全选</button>
+  <button class="bb-btn" onclick="clearSelection()">取消</button>
+  <button class="bb-btn" onclick="exportSelectedCSV()">📥 导出</button>
+</div>
+
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>Phase 3 Demo</h1>
+  <h1>Phase 4 Demo</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -378,6 +398,7 @@ pre code { background: none; padding: 0; }
   <input class="header-search" id="searchInput" placeholder="搜索..." onkeydown="if(event.key==='Enter')doSearch()">
   
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
+  <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
   <div class="col-toggle-wrap">
     <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="设置">⚙️</button>
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
@@ -965,6 +986,16 @@ pre code { background: none; padding: 0; }
       return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
     }).join('');
 
+    // view presets
+    var presets = listPresets();
+    if (presets.length > 0) {
+      html += '<div class="col-toggle-divider"></div><div class="settings-section">视图预设 (' + presets.length + '/' + MAX_PRESETS + ')</div>';
+      presets.forEach(function(p) {
+        html += '<label style="display:flex;justify-content:space-between;align-items:center"><span onclick="loadPreset(\'' + p.name + '\')" style="cursor:pointer;flex:1">' + escapeHtml(p.name) + '</span><span onclick="event.stopPropagation();deletePreset(\'' + p.name + '\')" style="cursor:pointer;color:#f87171;font-size:0.65rem">✕</span></label>';
+      });
+    }
+    html += '<label style="font-size:0.65rem"><a href="#" onclick="event.preventDefault();var n=prompt(\'预设名称:\');if(n)savePreset(n)" style="color:var(--cobalt-400)">+ 保存当前视图</a></label>';
+
     dd.innerHTML = html;
     document.getElementById('colToggleBtn').onclick = function(e) {
       e.stopPropagation();
@@ -1164,6 +1195,101 @@ pre code { background: none; padding: 0; }
       quickSearch.close();
     }
   });
+
+  /* ── Keyboard Navigation ── */
+  var kbFocusIdx = -1;
+  document.addEventListener('keydown', function(e) {
+    // Only when not in input
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    var tbody = document.getElementById('tbody');
+    var rows = tbody.querySelectorAll('tr:not(.expand-row)');
+    if (!rows.length) return;
+    var pageRows = rows.length;
+    if (e.key === 'ArrowDown') { e.preventDefault(); kbFocusIdx = kbFocusIdx < 0 ? 0 : Math.min(pageRows - 1, kbFocusIdx + 1); highlightKbRow(rows); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); kbFocusIdx = kbFocusIdx < 0 ? pageRows - 1 : Math.max(0, kbFocusIdx - 1); highlightKbRow(rows); }
+    else if (e.key === 'Enter' && kbFocusIdx >= 0) { e.preventDefault(); var r = rows[kbFocusIdx]; if (r) r.click(); }
+  });
+  function highlightKbRow(rows) {
+    rows.forEach(function(r, i) { r.classList.toggle('keyboard-focus', i === kbFocusIdx); });
+    if (kbFocusIdx >= 0 && rows[kbFocusIdx]) rows[kbFocusIdx].scrollIntoView({block:'nearest'});
+  }
+
+  /* ── Batch Operations ── */
+  function updateBatchBar() {
+    if (!showRowSelect) return;
+    var cnt = Object.keys(selectedRows).length;
+    var bar = document.getElementById('batchBar');
+    bar.classList.toggle('active', cnt > 0);
+    document.getElementById('batchCount').textContent = '已选 ' + cnt + ' 条';
+  }
+  var origUpdateStats = updateStats;
+  updateStats = function() { origUpdateStats(); updateBatchBar(); };
+  window.selectAllFiltered = function() { filtered.forEach(function(r, i) { selectedRows[i] = true; }); render(); };
+  window.clearSelection = function() { selectedRows = {}; kbFocusIdx = -1; render(); };
+  window.exportSelectedCSV = function() {
+    var selected = Object.keys(selectedRows).map(function(i) { return filtered[parseInt(i)]; }).filter(Boolean);
+    if (!selected.length) { showToast('未选中任何行'); return; }
+    var cols = visibleCols({excludeActions: true});
+    var csv = '\uFEFF' + cols.map(function(c){return '"'+c.label+'"';}).join(',') + '\n' +
+      selected.map(function(r){ return cols.map(function(c){ var v = r[c.key]||''; return '"'+String(v).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'selected.csv'; a.click();
+    showToast('已导出 ' + selected.length + ' 条');
+  };
+
+  /* ── Fullscreen ── */
+  window.toggleFullscreen = function() {
+    document.querySelector('.wrapper').classList.toggle('fullscreen');
+    showToast(document.querySelector('.wrapper').classList.contains('fullscreen') ? '已进入全屏 (F 退出)' : '已退出全屏');
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'f' && !e.metaKey && !e.ctrlKey && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault(); toggleFullscreen();
+    }
+  });
+
+  /* ── View Presets ── */
+  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
+  window.savePreset = function(name) {
+    name = name || ('预设 ' + (new Date()).toLocaleTimeString());
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    var state = {density: density, clickMode: clickMode, splitRatio: splitRatio, colVisibility: colVisibility, sortKey: sortKey, sortAsc: sortAsc, name: name};
+    var json = JSON.stringify(state);
+    if (json.length > MAX_PRESET_SIZE) { showToast('预设过大，请减少列数'); return; }
+    var existing = presets.findIndex(function(p){ return p.name === name; });
+    if (existing >= 0) presets[existing] = state;
+    else { if (presets.length >= MAX_PRESETS) presets.shift(); presets.push(state); }
+    try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) { showToast('存储失败'); return; }
+    showToast('已保存: ' + name);
+  };
+  window.loadPreset = function(name) {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    var p = presets.find(function(p){ return p.name === name; });
+    if (!p) { showToast('预设不存在: ' + name); return; }
+    if (p.density) { density = p.density; applyDensity(); }
+    if (p.clickMode) { clickMode = p.clickMode; }
+    if (p.splitRatio) { splitRatio = p.splitRatio; document.querySelector('.wrapper').style.setProperty('--spl-ratio', p.splitRatio+'%'); }
+    if (p.colVisibility) { colVisibility = p.colVisibility; }
+    if (p.sortKey) { sortKey = p.sortKey; sortAsc = p.sortAsc || true; }
+    initColToggle(); initThead(); render();
+    showToast('已加载: ' + name);
+  };
+  window.deletePreset = function(name) {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    presets = presets.filter(function(p){ return p.name !== name; });
+    try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) {}
+    initColToggle();
+    showToast('已删除: ' + name);
+  };
+  window.listPresets = function() {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    return presets;
+  };
+
 })();
 </script>
 </body>
