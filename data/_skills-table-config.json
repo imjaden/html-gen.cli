@@ -4,7 +4,8 @@
       "key": "name",
       "label": "Skill 名称",
       "sortable": true,
-      "locale": "zh"
+      "locale": "zh",
+      "freeze": true
     },
     {
       "key": "category",
@@ -14,8 +15,7 @@
     {
       "key": "profiles",
       "label": "Profiles",
-      "sortable": true,
-      "escape": true
+      "sortable": true
     },
     {
       "key": "version",
@@ -24,8 +24,7 @@
     },
     {
       "key": "description",
-      "label": "描述",
-      "sortable": false
+      "label": "描述"
     },
     {
       "key": "actions",
@@ -33,19 +32,19 @@
       "type": "actions",
       "actions": [
         {
+          "icon": "🔗",
+          "label": "新标签页打开",
+          "hrefKey": "demo_url"
+        },
+        {
           "icon": "📋",
-          "label": "复制名称",
-          "copyKey": "name"
+          "label": "弹出框详情",
+          "handler": "skillModal"
         },
         {
-          "icon": "👁️",
-          "label": "查看详情",
-          "desc": "打开 Skill 详情页查看完整配置和使用说明"
-        },
-        {
-          "icon": "⭐",
-          "label": "收藏",
-          "desc": "将此 Skill 添加到常用收藏列表"
+          "icon": "📑",
+          "label": "右侧展示详情",
+          "handler": "skillSplit"
         }
       ]
     }
@@ -58,7 +57,8 @@
       "version": "2.1.0",
       "author": "Hermes Agent + Teknium",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "hermes-memory-management",
@@ -67,7 +67,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "hermes-session-management",
@@ -76,7 +77,8 @@
       "version": "1.1.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "hermes-skill-installation",
@@ -85,7 +87,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "opencode",
@@ -94,7 +97,8 @@
       "version": "1.2.0",
       "author": "Hermes Agent",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "baoyu-image-generation",
@@ -103,7 +107,8 @@
       "version": "2.0.0",
       "author": "宝玉 (JimLiu)",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "creative-ideation",
@@ -112,7 +117,8 @@
       "version": "1.0.0",
       "author": "SHL0MS",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "data-display-html-patterns",
@@ -121,7 +127,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "html-template-system",
@@ -130,7 +137,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "html-ui-refinement",
@@ -139,7 +147,8 @@
       "version": "1.0.0",
       "author": "IRIS (byHermes)",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "personal-showcase-html",
@@ -148,7 +157,8 @@
       "version": "1.2.0",
       "author": "Jaden Li",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "svg-dataflow-diagram",
@@ -157,7 +167,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "llm-industry-dashboard",
@@ -166,7 +177,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "agent-loop-workflow",
@@ -175,7 +187,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "ops",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "api-interception-scraping",
@@ -184,7 +197,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "cron-management",
@@ -193,7 +207,8 @@
       "version": "1.0.0",
       "author": "Agent",
       "profiles": "research",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "cross-profile-workflow",
@@ -202,7 +217,8 @@
       "version": "—",
       "author": "—",
       "profiles": "ops, review",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "daily-tracker",
@@ -211,7 +227,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default, personal",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "domain-migration",
@@ -220,7 +237,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "git-cloner",
@@ -229,7 +247,8 @@
       "version": "3.5.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "git-commit",
@@ -238,7 +257,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "hermes-manager",
@@ -247,7 +267,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "hermes-profile-ops",
@@ -256,7 +277,8 @@
       "version": "1.2.0",
       "author": "IRIS",
       "profiles": "ops",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "kanban-workflow",
@@ -265,7 +287,8 @@
       "version": "3.0.0",
       "author": "—",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "kuaishou-api-collect",
@@ -274,7 +297,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "local-domain-dev",
@@ -283,7 +307,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "macos-system-diagnostics",
@@ -292,7 +317,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "ops-health",
@@ -301,7 +327,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default, ops",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "platform-scraping-manager",
@@ -310,7 +337,8 @@
       "version": "1.2.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "script-miner-conventions",
@@ -319,7 +347,8 @@
       "version": "1.3.0",
       "author": "jaden",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "selenium-scraping",
@@ -328,7 +357,8 @@
       "version": "2.3.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "spec-review",
@@ -337,7 +367,8 @@
       "version": "—",
       "author": "—",
       "profiles": "ops",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "references",
@@ -346,7 +377,8 @@
       "version": "—",
       "author": "—",
       "profiles": "dev, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "templates",
@@ -355,7 +387,8 @@
       "version": "—",
       "author": "—",
       "profiles": "dev, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "github-workflow",
@@ -364,7 +397,8 @@
       "version": "1.0.0",
       "author": "—",
       "profiles": "default",
-      "file_count": 4
+      "file_count": 4,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "mcp-server-building",
@@ -373,7 +407,8 @@
       "version": "1.0.0",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "local-media-library",
@@ -382,7 +417,8 @@
       "version": "—",
       "author": "—",
       "profiles": "personal-private",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "torrent-analysis",
@@ -391,7 +427,8 @@
       "version": "—",
       "author": "—",
       "profiles": "personal-private",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "video-subtitle-generation",
@@ -400,7 +437,8 @@
       "version": "1.0.0",
       "author": "—",
       "profiles": "personal-private, research",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "evaluation",
@@ -409,7 +447,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "inference",
@@ -418,7 +457,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "models",
@@ -427,7 +467,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "research",
@@ -436,7 +477,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "structured-llm-output",
@@ -445,7 +487,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "training",
@@ -454,7 +497,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "vector-databases",
@@ -463,7 +507,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "references",
@@ -472,7 +517,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 0
+      "file_count": 0,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "evernote",
@@ -481,7 +527,8 @@
       "version": "—",
       "author": "—",
       "profiles": "personal-private",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "batch-content-analysis",
@@ -490,7 +537,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "daily-tracker",
@@ -499,7 +547,8 @@
       "version": "2.0.0",
       "author": "—",
       "profiles": "personal",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "daily-tracker-workflow",
@@ -508,7 +557,8 @@
       "version": "1.0.0",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "feishu-cli-format",
@@ -517,7 +567,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "financial-ocr-cli",
@@ -526,7 +577,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "github-profile-review",
@@ -535,7 +587,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "jaden-tech-dashboard",
@@ -544,7 +597,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "multi-source-report",
@@ -553,7 +607,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "notion-tracking-system",
@@ -562,7 +617,8 @@
       "version": "1.1.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "resume-writing",
@@ -571,7 +627,8 @@
       "version": "1.0.0",
       "author": "—",
       "profiles": "default",
-      "file_count": 4
+      "file_count": 4,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "running-weather-advisor",
@@ -580,7 +637,8 @@
       "version": "1.0.0",
       "author": "—",
       "profiles": "personal",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "spec-iterative-refinement",
@@ -589,7 +647,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "test-design-conventions",
@@ -598,7 +657,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "web-project-audit-and-readme",
@@ -607,7 +667,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "llm-radar",
@@ -616,7 +677,8 @@
       "version": "1.1.0",
       "author": "dev profile",
       "profiles": "dev",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "article-smart-reader",
@@ -625,7 +687,8 @@
       "version": "—",
       "author": "—",
       "profiles": "research",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "awesome-collector",
@@ -634,7 +697,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "comparative-matrix-analysis",
@@ -643,7 +707,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "last30days",
@@ -652,7 +717,8 @@
       "version": "1.0.0",
       "author": "Agent",
       "profiles": "research",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "long-form-content-extraction",
@@ -661,7 +727,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "research-doc-publish",
@@ -670,7 +737,8 @@
       "version": "—",
       "author": "—",
       "profiles": "research",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "video-library-research",
@@ -679,7 +747,8 @@
       "version": "1.2.0",
       "author": "Jaden Li",
       "profiles": "personal-private",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "web-research-synthesis",
@@ -688,7 +757,8 @@
       "version": "1.2.0",
       "author": "—",
       "profiles": "research",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "agent-loop-engineering",
@@ -697,7 +767,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "content-readme-audit",
@@ -706,7 +777,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "debugging-hermes-tui-commands",
@@ -715,7 +787,8 @@
       "version": "1.0.0",
       "author": "Hermes Agent",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "frontend-review-workflow",
@@ -724,7 +797,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "html-gen-table",
@@ -733,7 +807,8 @@
       "version": "2.1.0",
       "author": "dev",
       "profiles": "dev",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "local-media-browser",
@@ -742,7 +817,8 @@
       "version": "—",
       "author": "—",
       "profiles": "personal-private",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "local-tool-launcher",
@@ -751,7 +827,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "loop-workflow",
@@ -760,7 +837,8 @@
       "version": "1.4.0",
       "author": "Jaden Li",
       "profiles": "personal-private",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "openspec-generate",
@@ -769,7 +847,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "pre-publish-audit",
@@ -778,7 +857,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "profile-maintenance-loop",
@@ -787,7 +867,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "project-onboarding-docs",
@@ -796,7 +877,8 @@
       "version": "—",
       "author": "—",
       "profiles": "dev",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "project-security-review",
@@ -805,7 +887,8 @@
       "version": "1.0.0",
       "author": "Security Reviewer",
       "profiles": "review",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "project-spec-prompt-design",
@@ -814,7 +897,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "prompt-engineering-design",
@@ -823,7 +907,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "python-cli-patterns",
@@ -832,7 +917,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "requesting-code-review",
@@ -841,7 +927,8 @@
       "version": "2.1.0",
       "author": "Hermes Agent (adapted from obra/superpowers + MorAlekss)",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "safeline-waf-lab",
@@ -850,7 +937,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "security-audit",
@@ -859,7 +947,8 @@
       "version": "2.0.0",
       "author": "Hermes Agent",
       "profiles": "review",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "security-remediation",
@@ -868,7 +957,8 @@
       "version": "—",
       "author": "—",
       "profiles": "dev",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "security-review-policy",
@@ -877,7 +967,8 @@
       "version": "1.0.0",
       "author": "Security Reviewer",
       "profiles": "review",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "static-site-portfolio",
@@ -886,7 +977,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "static-site-refactoring",
@@ -895,7 +987,8 @@
       "version": "1.0.0",
       "author": "IRIS",
       "profiles": "default",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "structured-web-scraping",
@@ -904,7 +997,8 @@
       "version": "—",
       "author": "—",
       "profiles": "default",
-      "file_count": 3
+      "file_count": 3,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "systematic-debugging",
@@ -913,7 +1007,8 @@
       "version": "1.1.0",
       "author": "Hermes Agent (adapted from obra/superpowers)",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 2
+      "file_count": 2,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "tool-nav-frontend",
@@ -922,7 +1017,8 @@
       "version": "1.0.0",
       "author": "iris",
       "profiles": "default",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     },
     {
       "name": "writing-plans",
@@ -931,7 +1027,8 @@
       "version": "1.1.0",
       "author": "Hermes Agent (adapted from obra/superpowers)",
       "profiles": "default, dev, personal, personal-private, research, review, work",
-      "file_count": 1
+      "file_count": 1,
+      "demo_url": "http://jaden.local:8089/demos/index.html"
     }
   ],
   "tabs": [
@@ -940,85 +1037,61 @@
       "label": "全部"
     },
     {
-      "key": "autonomous-ai-agents",
-      "label": "🤖 AI Agents",
-      "field": "category"
+      "key": "default",
+      "label": "🏠 default",
+      "field": "profiles",
+      "contains": true
     },
     {
-      "key": "creative",
-      "label": "🎨 创意",
-      "field": "category"
+      "key": "dev",
+      "label": "🧑‍💻 dev",
+      "field": "profiles",
+      "contains": true
     },
     {
-      "key": "data-science",
-      "label": "📊 数据科学",
-      "field": "category"
+      "key": "personal",
+      "label": "👤 personal",
+      "field": "profiles",
+      "contains": true
     },
     {
-      "key": "devops",
-      "label": "⚙️ DevOps",
-      "field": "category"
-    },
-    {
-      "key": "dogfood",
-      "label": "🐶 Dogfood",
-      "field": "category"
-    },
-    {
-      "key": "github",
-      "label": "🐙 GitHub",
-      "field": "category"
-    },
-    {
-      "key": "mcp",
-      "label": "🔌 MCP",
-      "field": "category"
-    },
-    {
-      "key": "media",
-      "label": "🎬 媒体",
-      "field": "category"
-    },
-    {
-      "key": "mlops",
-      "label": "🧠 MLOps",
-      "field": "category"
-    },
-    {
-      "key": "news-summary",
-      "label": "📰 新闻",
-      "field": "category"
-    },
-    {
-      "key": "note-taking",
-      "label": "📝 笔记",
-      "field": "category"
-    },
-    {
-      "key": "productivity",
-      "label": "📋 生产力",
-      "field": "category"
-    },
-    {
-      "key": "projects",
-      "label": "📁 项目",
-      "field": "category"
+      "key": "personal-private",
+      "label": "🔒 private",
+      "field": "profiles",
+      "contains": true
     },
     {
       "key": "research",
-      "label": "🔬 研究",
-      "field": "category"
+      "label": "🔬 research",
+      "field": "profiles",
+      "contains": true
     },
     {
-      "key": "software-development",
-      "label": "💻 软件开发",
-      "field": "category"
+      "key": "review",
+      "label": "👁️ review",
+      "field": "profiles",
+      "contains": true
+    },
+    {
+      "key": "work",
+      "label": "💼 work",
+      "field": "profiles",
+      "contains": true
+    },
+    {
+      "key": "ops",
+      "label": "⚙️ ops",
+      "field": "profiles",
+      "contains": true
     }
   ],
   "options": {
     "pageSize": 25,
     "exportCSV": true,
-    "rowSelect": false,
-    "search": true
+    "clickModes": [
+      "tab",
+      "modal",
+      "split"
+    ]
   }
 }
