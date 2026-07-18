@@ -66,6 +66,42 @@
 .kw-item.filtered-out { display: none; }
 .kw-section-title.filtered-out { display: none; }
 
+/* ── Sidebar Resize ── */
+.kw-sidebar { position: relative; }
+.kw-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.kw-sidebar-resize:hover, .kw-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+
+/* ── Top-Right Toolbar ── */
+.kw-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .kw-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.kw-tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.kw-tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.kw-tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.kw-tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .kw-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-sidebar-header { border-color: #e5e5e5; }
+:root.light .kw-sidebar-footer { border-color: #e5e5e5; }
+:root.light .kw-sidebar-header .sidebar-title { color: #333; }
+:root.light .kw-sidebar-header .sub { color: #999; }
+:root.light .kw-item { color: #555; }
+:root.light .kw-item:hover { background: rgba(79,70,229,0.03); color: #333; }
+:root.light .kw-item.active { background: rgba(79,70,229,0.06); color: var(--cobalt-600); }
+:root.light .kw-tab-bar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-tab { color: #666; }
+:root.light .kw-tab:hover { color: #333; }
+:root.light .kw-tab.active { color: var(--cobalt-600); }
+:root.light .kw-content { background: #f5f5f5; }
+:root.light .kw-search-wrap { border-color: #e5e5e5; }
+:root.light .kw-search-wrap input { background: #f5f5f5; border-color: #ddd; color: #333; }
+:root.light .kw-welcome .w-title { color: #333; }
+
 /* ── Main ── */
 .kw-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
 
@@ -118,9 +154,18 @@
 </style>
 </head>
 <body>
+<!-- Top-Right Toolbar -->
+<div class="kw-toolbar" id="kwToolbar">
+  <button class="kw-tb-btn active" id="kwLangZh" onclick="setKwLang('zh')" title="中文">🇨🇳</button>
+  <button class="kw-tb-btn" id="kwLangEn" onclick="setKwLang('en')" title="English">🇺🇸</button>
+  <span class="kw-tb-divider"></span>
+  <button class="kw-tb-btn" id="kwThemeBtn" onclick="toggleKwTheme()" title="切换主题">🌙</button>
+</div>
+
 <div class="kw-wrapper">
 
   <aside class="kw-sidebar" id="kwSidebar">
+    <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
       <div class="sidebar-title" title="<!--TITLE-->">📚 <!--TITLE--></div>
@@ -179,6 +224,59 @@
     }
   }
   updateSub();
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _kwLang = (function() { try { var v = localStorage.getItem('html-gen:kw_lang'); return (v === 'zh' || v === 'en') ? v : 'zh'; } catch(e) { return 'zh'; } })();
+  document.getElementById('kwLangZh').classList.toggle('active', _kwLang === 'zh');
+  document.getElementById('kwLangEn').classList.toggle('active', _kwLang === 'en');
+
+  window.setKwLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _kwLang = lang;
+    try { localStorage.setItem('html-gen:kw_lang', lang); } catch(e) {}
+    document.getElementById('kwLangZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('kwLangEn').classList.toggle('active', lang === 'en');
+    updateSub();
+  };
+
+  var _kwTheme = (function() { try { return localStorage.getItem('html-gen:kw_theme') || 'dark'; } catch(e) { return 'dark'; } })();
+  if (_kwTheme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('kwThemeBtn').textContent = _kwTheme === 'light' ? '☀️' : '🌙';
+
+  window.toggleKwTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    try { localStorage.setItem('html-gen:kw_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('kwThemeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  function updateSub() {
+    var sub = document.querySelector('.kw-sidebar-header .sub');
+    if (sub) {
+      var base = (sub.textContent || '').replace(/\s*共\s+\d+\s*条目.*/, '').trim();
+      var label = _kwLang === 'en' ? ' items' : ' 条目';
+      sub.textContent = (base ? base + ' · ' : '') + '共 ' + ITEMS.length + label;
+    }
+  }
+  updateSub();
+
+  // Title click → copy path
+  document.querySelector('.kw-sidebar-header .sidebar-title').addEventListener('click', function() {
+    var m = this.title.match(/路径:\s*(.+)/);
+    var path = m ? m[1].trim() : window.location.href.split('?')[0];
+    if (/^(https?:|\/|~\/)/.test(path)) {
+      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
+      showKwToast('已复制: ' + path);
+    }
+  });
+
+  function showKwToast(msg) {
+    var el = document.getElementById('kwToast');
+    if (!el) { el = document.createElement('div'); el.id = 'kwToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
 
   // ── Render tabs ──
   function renderTabs() {
@@ -336,6 +434,33 @@
       _kwSearchActive = true; toggleKwSearch();
     }
   });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('kwSidebar');
+    var handle = document.getElementById('kwSbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:kw:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:kw:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
 })();
 </script>
 </body>
