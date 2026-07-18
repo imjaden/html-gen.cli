@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>Phase 2 Demo — 密度/模态/分栏</title>
+<title>Phase 3 Demo — 密度/模态/分栏/行内展开</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -304,6 +304,11 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
+.data-table tr.expand-row td { padding:10px 14px; background:rgba(79,70,229,0.06); border-top:1px solid var(--cobalt-700); }
+.data-table tr.expand-row .expand-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; }
+.data-table tr.expand-row .expand-item { padding:6px 10px; border:1px solid #1a1a2e; border-radius:6px; }
+.data-table tr.expand-row .expand-item .ex-label { font-size:0.62rem; color:#6b7280; }
+.data-table tr.expand-row .expand-item .ex-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 
 /* ── Toast ── */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); padding:8px 20px;
@@ -352,7 +357,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>Phase 2 Demo — 密度/模态/分栏</h1>
+  <h1>Phase 3 Demo — 密度/模态/分栏/行内展开</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -421,7 +426,7 @@ pre code { background: none; padding: 0; }
   const COLUMNS = [{"key": "name", "label": "项目", "sortable": true, "locale": "zh", "preview": true}, {"key": "stars", "label": "Stars", "sortable": true, "type": "number", "preview": true}, {"key": "lang", "label": "语言", "preview": true}, {"key": "desc", "label": "描述"}, {"key": "url", "label": "URL", "onClick": "url", "hide": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
   const DATA    = [{"name": "hermes-agent", "stars": 50200, "lang": "Python", "desc": "CLI-first AI Agent: 零配置 CLI AI 代理", "url": "https://hermes-agent.nousresearch.com"}, {"name": "llm-radar", "stars": 1280, "lang": "Python", "desc": "LLM 领域动态追踪与趋势分析", "url": "https://llm-radar.jaden.tech"}, {"name": "html-gen", "stars": 45, "lang": "Python", "desc": "零依赖 Markdown → HTML 生成器。支持 A/B/C/D 四种模板", "url": "https://github.com/jadenli/html-gen"}, {"name": "http-server-cli", "stars": 320, "lang": "Python", "desc": "零依赖 HTTP 静态文件服务器，支持 CORS 和 range 请求", "url": "https://github.com/jadenli/http-server-cli"}, {"name": "script-miner", "stars": 89, "lang": "Python", "desc": "Python 脚本挖掘工具，分析代码模式与依赖", "url": "https://github.com/jadenli/script-miner"}, {"name": "daily-tracker", "stars": 12, "lang": "Python", "desc": "每日习惯追踪 CLI 工具", "url": "https://github.com/jadenli/daily-tracker"}, {"name": "favorite-manager", "stars": 3, "lang": "Python", "desc": "跨平台收藏管理工具", "url": "https://github.com/jadenli/favorite-manager"}, {"name": "hermes-manager", "stars": 7, "lang": "Python", "desc": "Hermes Agent 会话管理工具", "url": "https://github.com/jadenli/hermes-manager"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {"exportCSV": true, "clickModes": ["tab", "modal", "split"]};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"exportCSV": true, "clickModes": ["tab", "modal", "split", "expand"]};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
@@ -431,6 +436,7 @@ pre code { background: none; padding: 0; }
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
+  let expandedIdx = -1;
 
   // Restore from localStorage
   try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
@@ -556,6 +562,17 @@ pre code { background: none; padding: 0; }
         }
       });
       rowHtml += '</tr>';
+      // Expand detail row (accordion mode)
+      if (expandedIdx === rowIdx) {
+        var detailCols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+        rowHtml += '<tr class="expand-row"><td colspan="' + (showRowSelect ? cols.length + 1 : cols.length) + '">';
+        rowHtml += '<div class="expand-grid">';
+        detailCols.forEach(function(c) {
+          var v = row[c.key]; if (v === null || v === undefined) v = '';
+          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + escapeHtml(String(v)) + '</div></div>';
+        });
+        rowHtml += '</div></td></tr>';
+      }
       return rowHtml;
     }).join('');
     renderPager(totalPages);
@@ -594,8 +611,8 @@ pre code { background: none; padding: 0; }
       var col = getRowClickCol();
       return col && col.onClick === 'url' && row.url;
     }
-    // modal or split: any row is clickable
-    return clickMode === 'modal' || clickMode === 'split';
+    // modal, split, or expand: any row is clickable
+    return clickMode === 'modal' || clickMode === 'split' || clickMode === 'expand';
   }
 
   /* ── Stats ── */
@@ -629,6 +646,7 @@ pre code { background: none; padding: 0; }
   window.goPage = function(n) {
     var tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     currentPage = Math.max(1, Math.min(n, tp));
+    expandedIdx = -1;
     render();
   };
 
@@ -658,6 +676,7 @@ pre code { background: none; padding: 0; }
   window.sortBy = function(key) {
     if (sortKey === key) sortAsc = !sortAsc;
     else { sortKey = key; sortAsc = true; }
+    expandedIdx = -1;
     initThead();
     render();
   };
@@ -696,6 +715,16 @@ pre code { background: none; padding: 0; }
     // split mode: show preview panel
     if (clickMode === 'split') {
       activateSplit(row, idx);
+      return;
+    }
+    // expand mode: toggle inline detail
+    if (clickMode === 'expand') {
+      if (expandedIdx === idx) {
+        expandedIdx = -1;  // collapse
+      } else {
+        expandedIdx = idx;  // expand
+      }
+      render();
       return;
     }
   }
@@ -842,7 +871,8 @@ pre code { background: none; padding: 0; }
     var validModes = (OPTIONS && OPTIONS.clickModes) || ['tab'];
     var hasSplit = validModes.indexOf('split') !== -1;
     var hasModal = validModes.indexOf('modal') !== -1;
-    var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + 1;
+    var hasExpand = validModes.indexOf('expand') !== -1;
+    var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
     if (tabCount > 1 || density !== 'default') {
       html += '<div class="settings-section">密度</div>';
       ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
@@ -857,6 +887,7 @@ pre code { background: none; padding: 0; }
       if (validModes.indexOf('tab') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="tab" '+(clickMode==='tab'?'checked':'')+' onchange="setClickMode(\'tab\')">🔗 新标签页</label>';
       if (validModes.indexOf('modal') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="modal" '+(clickMode==='modal'?'checked':'')+' onchange="setClickMode(\'modal\')">📋 弹出面板</label>';
       if (validModes.indexOf('split') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="split" '+(clickMode==='split'?'checked':'')+' onchange="setClickMode(\'split\')">📑 分栏预览</label>';
+      if (validModes.indexOf('expand') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="expand" '+(clickMode==='expand'?'checked':'')+' onchange="setClickMode(\'expand\')">📂 行内展开</label>';
     }
 
     // column visibility
@@ -877,6 +908,7 @@ pre code { background: none; padding: 0; }
 
   window.toggleCol = function(key, visible) {
     colVisibility[key] = visible;
+    expandedIdx = -1;
     initColToggle();
     initThead();
     render();
@@ -891,6 +923,7 @@ pre code { background: none; padding: 0; }
 
   window.setClickMode = function(val) {
     clickMode = val;
+    expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
     initColToggle();
   };
@@ -899,14 +932,15 @@ pre code { background: none; padding: 0; }
   var searchTimer;
   document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(function() { currentPage = 1; render(); }, 300);
+    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); }, 300);
   });
-  window.doSearch = function() { currentPage = 1; render(); };
+  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); };
 
   /* ── Tab switch ── */
   window.switchTab = function(key) {
     activeTab = key;
     try { localStorage.setItem('htmlgen_tab', key); } catch(e) {}
+    expandedIdx = -1;
     buildTabs();
     currentPage = 1;
     render();
