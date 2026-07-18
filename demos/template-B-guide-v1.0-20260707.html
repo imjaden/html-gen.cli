@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>B 型 · 文档阅读方案</title>
+<title>B 型方案说明</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -305,6 +305,16 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 .doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
 .doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
 
+/* ── TOC Search ── */
+.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.doc-toc-search.active { display: block; }
+.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.doc-toc-search input:focus { border-color: var(--cobalt-600); }
+.doc-toc-search input::placeholder { color: #555; }
+:root.light .doc-toc-search { border-color: #e5e5e5; }
+:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
+.doc-toc a.filtered-out { display: none; }
+
 /* ── Top-Right Toolbar ── */
 .top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
 :root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
@@ -361,407 +371,496 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
   <aside class="doc-sidebar" id="sidebar">
     <div class="doc-sidebar-icon">📄</div>
     <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="B 型 · 文档阅读方案" id="sidebarTitle">📄 B 型 · 文档阅读方案</div>
+      <div class="sidebar-title" title="B 型方案说明" id="sidebarTitle">📄 B 型方案说明</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
       </div>
     </div>
     <nav class="doc-toc" id="toc"></nav>
+    <!-- TOC Search -->
+    <div class="doc-toc-search" id="tocSearchWrap">
+      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    </div>
     <div class="doc-sidebar-footer">
-      <button class="sb-btn" onclick="alert('TOC 搜索功能开发中')" title="搜索 TOC (开发中)">🔍</button>
+      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
       <span style="flex:1"></span>
       <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
     </div>
   </aside>
   <div class="doc-main" id="docMain">
     <div class="doc-header">
-      <h1>B 型 · 文档阅读方案</h1>
-      <div class="meta">路径: <code>/Users/jadenli/CodeSpace/html-gen/demos/template-B-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 843 · 阅读约 4 分钟</div>
+      <h1>B 型方案说明</h1>
+      <div class="meta">路径: <code>/Users/jadenli/CodeSpace/html-gen/demos/template-B-guide-v1.0-20260707.html</code><br>创建: 2026-07-17 19:39 · 编辑: 2026-07-17 19:39<br>字数: 3,592 · 阅读约 18 分钟</div>
     </div>
-    <div class="doc-body" id="docBody"><hr>
-<h2 id="使用场景">使用场景</h2>
-<p>文档阅读模板适合<strong>长文本内容的消费和知识沉淀</strong>场景，是三层模板中功能最丰富的一层。</p>
-<table><thead><tr>
-<th>场景</th>
-<th>说明</th>
-<th>典型篇幅</th>
-</tr></thead><tbody>
-<tr>
-<td><strong>分析报告</strong></td>
-<td>竞品分析、技术调研、市场研究的长篇报告</td>
-<td>500-5000 字</td>
-</tr>
-<tr>
-<td><strong>技术文档</strong></td>
-<td>API 手册、架构说明、最佳实践指南</td>
-<td>1000-10000 字</td>
-</tr>
-<tr>
-<td><strong>长文阅读</strong></td>
-<td>博客/Newsletter/论文的摘要整理</td>
-<td>200-3000 字</td>
-</tr>
-<tr>
-<td><strong>知识沉淀</strong></td>
-<td>个人笔记、学习总结、项目复盘</td>
-<td>500-5000 字</td>
-</tr>
-<tr>
-<td><strong>会议纪要</strong></td>
-<td>结构化会议记录，含待办、决策、讨论点</td>
-<td>200-2000 字</td>
-</tr>
-</tbody></table>
-<h3 id="不适合的场景">不适合的场景</h3>
-<ul>
-<li><strong>结构化数据浏览</strong>（搜索+排序+分页 → 用 A 型表格）</li>
-<li><strong>多类目知识浏览</strong>（顶部标签切换 → 用 C 型知识库）</li>
-<li><strong>协作编辑</strong>（B 型是只读展示，不是编辑器）</li>
-</ul>
-<hr>
-<h2 id="方案设计">方案设计</h2>
-<h3 id="架构">架构</h3>
-<pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
-Layer 2: layout-doc.html (骨架: 侧边栏TOC + 主内容区)
-Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
-<h3 id="数据流">数据流</h3>
-<pre><code class="language-">Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
-                 │                  ├── 自动 TOC
-                 │                  ├── 表格渲染
-                 │                  ├── 代码高亮
-                 │                  ├── 进度条
-                 │                  ├── callout 提示框
-                 │                  ├── 锚点链接
-                 │                  ├── 代码行号
-                 │                  └── 外链归档
-                 └── 元信息自动计算</code></pre>
-<h3 id="关键设计决策">关键设计决策</h3>
-<table><thead><tr>
-<th>决策</th>
-<th>选择</th>
-<th>理由</th>
-</tr></thead><tbody>
-<tr>
-<td><strong>Markdown 渲染</strong></td>
-<td>手写渲染器</td>
-<td>零外部依赖，精准控制输出。仅需覆盖我们使用的语法子集</td>
-</tr>
-<tr>
-<td><strong>CSS 框架</strong></td>
-<td>参考 Docsify dark.css</td>
-<td>经过了大量实际文档的检验，适合深色主题文档阅读</td>
-</tr>
-<tr>
-<td><strong>侧边栏 TOC</strong></td>
-<td>固定 260px + 粘性定位</td>
-<td>长文导航的黄金宽度，内容区 max-width 880px 保证阅读体验</td>
-</tr>
-<tr>
-<td><strong>滚动高亮</strong></td>
-<td>JS 根据 <code>getBoundingClientRect().top ≤ 100</code> 判断</td>
-<td>纯前端，无交叉观察者依赖</td>
-</tr>
-<tr>
-<td><strong>代码行号</strong></td>
-<td>CSS counter + JS 拆分 line 元素</td>
-<td>纯前端可选，单行跳过，不影响复制按钮</td>
-</tr>
-<tr>
-<td><strong>Callout</strong></td>
-<td>正则检测 <code>> <strong>Note:</strong></code> 模式</td>
-<td>利用原有 Markdown blockquote 语法，无需新语法</td>
-</tr>
-<tr>
-<td><strong>外链归档</strong></td>
-<td>服务端 <code>re.findall</code> 提取 + 追加</td>
-<td>文档生成时一次性完成，客户零开销</td>
-</tr>
-<tr>
-<td><strong>图片灯箱</strong></td>
-<td>纯 CSS overlay + JS</td>
-<td>无第三方库，支持 Escape / 点击外部关闭</td>
-</tr>
-</tbody></table>
-<h3 id="手写-markdown-渲染器支持语法">手写 Markdown 渲染器支持语法</h3>
-<pre><code class="language-"># h1  ## h2  ### h3                    — 标题
-**bold**  *italic*                      — 行内格式
-`code`                                 — 行内代码
-``` ```
- 代码块                              — 围栏代码块
-[link](url)                            — 链接 (target=_blank)
-| table | with | cells |               — 表格
-- list item                            — 无序列表
-1. list item                           — 有序列表
----                                    — 分隔线
-&gt; blockquote                           — 引用
-&gt; **Note:** text                       — Callout 提示框
-&gt; **Warning:** text                    — Callout 警告
-&gt; **Tip:** text                        — Callout 提示
-&gt; **Danger:** text                     — Callout 危险</code></pre>
-<hr>
-<h2 id="行业对标">行业对标</h2>
-<table><thead><tr>
-<th>维度</th>
-<th>B 型 · 文档阅读</th>
-<th>Docsify</th>
-<th>VuePress</th>
-<th>GitBook</th>
-</tr></thead><tbody>
-<tr>
-<td><strong>定位</strong></td>
-<td>单文件文档阅读</td>
-<td>SPA 文档站点</td>
-<td>SSG 文档站点</td>
-<td>托管文档平台</td>
-</tr>
-<tr>
-<td><strong>部署</strong></td>
-<td>单文件 HTML</td>
-<td>静态服务器</td>
-<td>构建后静态文件</td>
-<td>SaaS</td>
-</tr>
-<tr>
-<td><strong>渲染</strong></td>
-<td>服务端预渲染</td>
-<td>客户端 JS 渲染</td>
-<td>构建时 SSG</td>
-<td>服务端渲染</td>
-</tr>
-<tr>
-<td><strong>搜索</strong></td>
-<td>❌ 暂无</td>
-<td>✅ 全文搜索</td>
-<td>✅ algolia</td>
-<td>✅ 内置</td>
-</tr>
-<tr>
-<td><strong>TOC</strong></td>
-<td>✅ 自动</td>
-<td>✅ 插件</td>
-<td>✅ 自动</td>
-<td>✅ 自动</td>
-</tr>
-<tr>
-<td><strong>代码高亮</strong></td>
-<td>✅ 行号 + 复制</td>
-<td>✅ prism.js</td>
-<td>✅ prism/shiki</td>
-<td>✅ prism</td>
-</tr>
-<tr>
-<td><strong>图片</strong></td>
-<td>✅ 灯箱</td>
-<td>✅ 缩放</td>
-<td>✅ 缩放</td>
-<td>✅ 缩放</td>
-</tr>
-<tr>
-<td><strong>Callout</strong></td>
-<td>✅ 原生</td>
-<td>✅ 插件</td>
-<td>✅ 插件</td>
-<td>✅ 内置</td>
-</tr>
-<tr>
-<td><strong>离线</strong></td>
-<td>✅ 单文件完整</td>
-<td>❌ 依赖 CDN</td>
-<td>✅ 全构建</td>
-<td>❌ 需网络</td>
-</tr>
-<tr>
-<td><strong>文件大小</strong></td>
-<td>~35KB（含内容）</td>
-<td>~100KB+CDN</td>
-<td>~50KB+构建产物</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td><strong>外部依赖</strong></td>
-<td>零</td>
-<td>marked.js</td>
-<td>Vue/Webpack</td>
-<td>SaaS</td>
-</tr>
-</tbody></table>
-<p><strong>核心差异</strong>：B 型不是文档站框架的替代品，而是「我需要把一个 Markdown 文件发给别人看」场景下的最优解。无需安装、无需构建、无需网络，生成即用。</p>
-<hr>
-<h2 id="功能清单">功能清单</h2>
-<h3 id="已实现">已实现 ✅</h3>
-<table><thead><tr>
-<th>功能</th>
-<th>说明</th>
-<th>优先级</th>
-</tr></thead><tbody>
-<tr>
-<td>Markdown → HTML 渲染</td>
-<td>手写渲染器，支持 h1-h3/表格/列表/代码块/链接/图片</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>自动侧边栏 TOC</td>
-<td>从 h2/h3 生成目录树，点击平滑滚动</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>滚动章节高亮</td>
-<td>滚动时自动标记当前阅读位置</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>代码复制按钮</td>
-<td>悬停显示，一键复制代码块内容</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>代码行号</td>
-<td>多行代码块左侧行号（CSS counter），单行跳过</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>Callout 提示框</td>
-<td><code>> <strong>Note/Tip/Warning/Danger</strong></code> → 蓝/绿/黄/红</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>锚点链接 ¶</td>
-<td>h2/h3 悬浮显示 ¶，点击复制 <code>#section-id</code> 到剪贴板</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>外链归档</td>
-<td>自动提取全文 https:// 链接，去重排序追加到底部</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>阅读进度条</td>
-<td>顶部 2px 固定钴蓝色进度条</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>图片灯箱</td>
-<td>点击放大，overlay 展示，Escape 关闭</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>自动元信息</td>
-<td>路径/创建时间/编辑时间/字数/阅读时长</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>inline 全局格式化</td>
-<td>表格内 <code><strong>bold</strong></code> <code>code</code> <code>[link]</code> 正确渲染</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>深色主题</td>
-<td>Docsify-inspired surface-950 深色主题</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>零外部依赖</td>
-<td>单文件 HTML，无需加载 CDN</td>
-<td>P0</td>
-</tr>
-</tbody></table>
-<h3 id="待实现">待实现 🔜</h3>
-<table><thead><tr>
-<th>功能</th>
-<th>说明</th>
-<th>优先级</th>
-</tr></thead><tbody>
-<tr>
-<td>Back-to-top 按钮</td>
-<td>长文阅读中快速回到顶部</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>浮动 TOC</td>
-<td>小屏设备上的悬浮目录按钮</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>正文宽度 65ch</td>
-<td>优化大屏阅读体验，限制行宽</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>面包屑导航</td>
-<td>显示文档层级路径</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>上/下一篇导航</td>
-<td>多文档间的顺序导航按钮</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>键盘快捷键</td>
-<td>j/k 滚行、Enter 打开链接、? 帮助、t 回到顶部</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>交互式进度条</td>
-<td>显示剩余分钟数、章节标题</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>图片懒加载</td>
-<td>长文档首次加载优化</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>全文搜索</td>
-<td>多文档全文搜索（需要索引支撑）</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>Tags 系统</td>
-<td>文档标签筛选和分类浏览</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>视频/音频嵌入</td>
-<td>支持 iframe/embed 标签</td>
-<td>P3</td>
-</tr>
-</tbody></table>
-<hr>
-<h2 id="快速开始">快速开始</h2>
-<pre><code class="language-shell"># 从 Markdown 生成文档
-html-gen doc -i report.md -o report.html
-
-# 指定标题
-html-gen doc -i analysis.md --title "竞品分析报告" -o output.html
-
-# 直接打开
-open report.html</code></pre>
-<h3 id="命令行参数">命令行参数</h3>
-<pre><code class="language-">html-gen doc -h
-  -i, --input FILE   输入 Markdown 文件（必需）
-  -o, --output FILE  输出 HTML 文件
-  --title TEXT       覆盖文档标题
-  --subtitle TEXT    副标题（显示在侧边栏和页头）</code></pre>
-<hr>
-<h2 id="迭代记录">迭代记录</h2>
-<table><thead><tr>
-<th>版本</th>
-<th>日期</th>
-<th>变更</th>
-</tr></thead><tbody>
-<tr>
-<td>v1.0</td>
-<td>2026-07-05</td>
-<td>初版：Docsify 风格 TOC + 代码复制 + Markdown 渲染</td>
-</tr>
-<tr>
-<td>v1.1</td>
-<td>2026-07-06</td>
-<td>进度条 + 灯箱 + 锚点链接 + 代码行号 + callout + 外链归档</td>
-</tr>
-</tbody></table></div>
+    <div class="doc-body" id="docBody"><p>&lt;!DOCTYPE html&gt;</p>
+<p>&lt;html lang="zh-CN"&gt;</p>
+<p>&lt;head&gt;</p>
+<p>&lt;meta charset="UTF-8"&gt;</p>
+<p>&lt;meta name="viewport" content="width=device-width, initial-scale=1.0"&gt;</p>
+<p>&lt;link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png"&gt;</p>
+<p>&lt;title&gt;B 型 · 文档阅读方案&lt;/title&gt;</p>
+<p>&lt;style&gt;</p>
+<p>/* ═══════════════════════════════════════════</p>
+<p>   style-guide.css</p>
+<p>   Layer 1 — CSS 变量 + 基础组件</p>
+<p>   来源：favorite-manager/index.html 深色主题</p>
+<p>   版本：1.0(2026-07-01)</p>
+<p>   ═══════════════════════════════════════════ */</p>
+<p>:root {</p>
+<p>  --cobalt-50: #eef2ff;</p>
+<p>  --cobalt-100: #e0e7ff;</p>
+<p>  --cobalt-400: #818cf8;</p>
+<p>  --cobalt-500: #6366f1;</p>
+<p>  --cobalt-600: #4f46e5;</p>
+<p>  --cobalt-700: #4338ca;</p>
+<p>  --cobalt-800: #3730a3;</p>
+<p>  --cobalt-900: #312e81;</p>
+<p>  --cobalt-950: #1e1b4b;</p>
+<p>  --accent-400: #facc15;</p>
+<p>  --accent-500: #eab308;</p>
+<p>  --accent-600: #ca8a04;</p>
+<p>  --surface-800: #1e1e2e;</p>
+<p>  --surface-850: #181825;</p>
+<p>  --surface-900: #11111b;</p>
+<p>  --surface-950: #0a0a14;</p>
+<p>  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;</p>
+<p>  --font-mono: 'JetBrains Mono', monospace;</p>
+<p>  --radius-sm: 4px;</p>
+<p>  --radius-md: 6px;</p>
+<p>  --radius-lg: 8px;</p>
+<p>  --radius-xl: 12px;</p>
+<p>  --radius-full: 9999px;</p>
+<p>}</p>
+<p><em>, </em>::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }</p>
+<p>body {</p>
+<p>  font-family: var(--font-sans);</p>
+<p>  background: var(--surface-950);</p>
+<p>  color: #e0e0e0;</p>
+<p>  line-height: 1.6;</p>
+<p>  -webkit-font-smoothing: antialiased;</p>
+<p>}</p>
+<p>h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }</p>
+<p>h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }</p>
+<p>h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }</p>
+<p>p  { margin-bottom: 0.6rem; }</p>
+<p>a { color: var(--cobalt-400); text-decoration: none; }</p>
+<p>a:hover { color: var(--cobalt-500); text-decoration: underline; }</p>
+<p>code {</p>
+<p>  font-family: var(--font-mono);</p>
+<p>  font-size: 0.8rem;</p>
+<p>  background: rgba(255,255,255,0.06);</p>
+<p>  padding: 2px 6px;</p>
+<p>  border-radius: var(--radius-sm);</p>
+<p>}</p>
+<p>pre {</p>
+<p>  background: #0d0d1a;</p>
+<p>  border: 1px solid #2a2a3e;</p>
+<p>  border-radius: var(--radius-md);</p>
+<p>  padding: 12px 16px;</p>
+<p>  overflow-x: auto;</p>
+<p>  margin: 0.75rem 0;</p>
+<p>}</p>
+<p>pre code { background: none; padding: 0; }</p>
+<p>/<em> ── Data Table ── </em>/</p>
+<p>.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }</p>
+<p>.data-table th {</p>
+<p>  position: sticky; top: 0; z-index: 10;</p>
+<p>  background: var(--surface-900);</p>
+<p>  border-bottom: 1px solid #2a2a3e;</p>
+<p>  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;</p>
+<p>  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;</p>
+<p>  white-space: nowrap; user-select: none;</p>
+<p>}</p>
+<p>.data-table th.sortable { cursor: pointer; }</p>
+<p>.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }</p>
+<p>.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }</p>
+<p>.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }</p>
+<p>.data-table td {</p>
+<p>  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;</p>
+<p>  font-size: 0.8rem; vertical-align: middle;</p>
+<p>  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;</p>
+<p>}</p>
+<p>.data-table tr { transition: background 0.15s; }</p>
+<p>.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }</p>
+<p>.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }</p>
+<p>/<em> ── Badges ── </em>/</p>
+<p>.badge-red    { background: #3b1f1f; color: #f87171; }</p>
+<p>.badge-yellow { background: #3b351f; color: #fbbf24; }</p>
+<p>.badge-blue   { background: #1e3a5f; color: #60a5fa; }</p>
+<p>.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }</p>
+<p>.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }</p>
+<p>/<em> ── Tag Pill ── </em>/</p>
+<p>.tag-pill {</p>
+<p>  display: inline-block; padding: 1px 8px;</p>
+<p>  border-radius: var(--radius-full);</p>
+<p>  font-size: 0.7rem; margin: 1px;</p>
+<p>  cursor: pointer; transition: opacity 0.15s;</p>
+<p>}</p>
+<p>.tag-pill:hover { opacity: 0.8; }</p>
+<p>/<em> ── Input ── </em>/</p>
+<p>.input-dark {</p>
+<p>  background: #0f0f1a;</p>
+<p>  border: 1px solid #2a2a3e;</p>
+<p>  color: #e0e0e0;</p>
+<p>  padding: 6px 12px;</p>
+<p>  border-radius: var(--radius-md);</p>
+<p>  outline: none;</p>
+<p>  font-size: 0.85rem;</p>
+<p>  font-family: inherit;</p>
+<p>}</p>
+<p>.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }</p>
+<p>.input-dark::placeholder { color: #555; }</p>
+<p>/<em> ── Buttons ── </em>/</p>
+<p>.btn {</p>
+<p>  padding: 6px 14px; border-radius: var(--radius-md);</p>
+<p>  border: none; cursor: pointer; font-size: 0.8rem;</p>
+<p>  font-family: inherit;</p>
+<p>  transition: all 0.15s;</p>
+<p>}</p>
+<p>.btn-primary { background: var(--cobalt-600); color: white; }</p>
+<p>.btn-primary:hover { background: var(--cobalt-700); }</p>
+<p>.btn-danger { background: #dc2626; color: white; }</p>
+<p>.btn-danger:hover { background: #b91c1c; }</p>
+<p>.btn-ghost {</p>
+<p>  background: transparent; color: #9ca3af;</p>
+<p>  border: 1px solid #2a2a3e;</p>
+<p>}</p>
+<p>.btn-ghost:hover { color: #e0e0e0; border-color: #555; }</p>
+<p>.btn-sm { padding: 3px 10px; font-size: 0.72rem; }</p>
+<p>/<em> ── Pager ── </em>/</p>
+<p>.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }</p>
+<p>.pager button { min-width: 32px; }</p>
+<p>/<em> ── Batch Bar ── </em>/</p>
+<p>.batch-bar {</p>
+<p>  display: none;</p>
+<p>  background: var(--cobalt-950);</p>
+<p>  border: 1px solid var(--cobalt-700);</p>
+<p>  border-radius: var(--radius-lg);</p>
+<p>  padding: 10px 16px; margin-bottom: 12px;</p>
+<p>  align-items: center; gap: 12px;</p>
+<p>}</p>
+<p>.batch-bar.active { display: flex; }</p>
+<p>/<em> ── Modal ── </em>/</p>
+<p>.modal-overlay {</p>
+<p>  position: fixed; inset: 0;</p>
+<p>  background: rgba(0,0,0,0.6);</p>
+<p>  display: none; align-items: center; justify-content: center;</p>
+<p>  z-index: 100;</p>
+<p>}</p>
+<p>.modal-overlay.active { display: flex; }</p>
+<p>.modal-box {</p>
+<p>  background: var(--surface-900);</p>
+<p>  border-radius: var(--radius-xl);</p>
+<p>  padding: 20px 24px;</p>
+<p>  width: 420px; max-width: 90vw;</p>
+<p>  border: 1px solid #2a2a3e;</p>
+<p>}</p>
+<p>.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }</p>
+<p>.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }</p>
+<p>/<em> ── Utility ── </em>/</p>
+<p>.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }</p>
+<p>.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }</p>
+<p>.flex { display: flex; }</p>
+<p>.flex-1 { flex: 1; }</p>
+<p>.gap-2 { gap: 8px; }</p>
+<p>.gap-3 { gap: 12px; }</p>
+<p>.mb-3 { margin-bottom: 12px; }</p>
+<p>.text-xs { font-size: 0.75rem; }</p>
+<p>.text-gray { color: #9ca3af; }</p>
+<p>.w-full { width: 100%; }</p>
+<p>::-webkit-scrollbar { width: 6px; }</p>
+<p>::-webkit-scrollbar-track { background: transparent; }</p>
+<p>::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }</p>
+<p>::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }</p>
+<p>&lt;/style&gt;</p>
+<p>&lt;style&gt;</p>
+<p>.doc-wrapper { display: flex; min-height: 100vh; }</p>
+<p>.doc-sidebar {</p>
+<p>  width: 260px; min-width: 260px;</p>
+<p>  background: var(--surface-900);</p>
+<p>  border-right: 1px solid #2a2a3e;</p>
+<p>  display: flex; flex-direction: column;</p>
+<p>  position: sticky; top: 0; height: 100vh;</p>
+<p>  overflow-y: auto;</p>
+<p>  transition: width 0.25s, min-width 0.25s;</p>
+<p>}</p>
+<p>.doc-sidebar.collapsed { width: 48px; min-width: 48px; }</p>
+<p>.doc-sidebar.collapsed .doc-sidebar-header,</p>
+<p>.doc-sidebar.collapsed .doc-toc,</p>
+<p>.doc-sidebar.collapsed .doc-sidebar-footer { display: none; }</p>
+<p>.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }</p>
+<p>.doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }</p>
+<p>.doc-sidebar-header {</p>
+<p>  padding: 16px 18px 12px;</p>
+<p>  border-bottom: 1px solid #2a2a3e;</p>
+<p>  flex-shrink: 0;</p>
+<p>}</p>
+<p>.doc-sidebar-header .sidebar-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }</p>
+<p>.doc-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }</p>
+<p>.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }</p>
+<p>.doc-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }</p>
+<p>.doc-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }</p>
+<p>.doc-h3-toggle:hover { color: #9ca3af; }</p>
+<p>.doc-h3-toggle.on { color: var(--cobalt-400); }</p>
+<p>.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }</p>
+<p>.doc-toc ul { list-style: none; padding: 0; margin: 0; }</p>
+<p>.doc-toc a {</p>
+<p>  display: block;</p>
+<p>  padding: 7px 18px 7px 0;</p>
+<p>  font-size: 0.8rem; color: #9ca3af;</p>
+<p>  text-decoration: none;</p>
+<p>  border-left: 3px solid transparent;</p>
+<p>  transition: all 0.15s;</p>
+<p>  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;</p>
+<p>}</p>
+<p>.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }</p>
+<p>.doc-toc a.active {</p>
+<p>  background: rgba(79,70,229,0.1);</p>
+<p>  color: var(--cobalt-400);</p>
+<p>  border-left-color: var(--cobalt-600);</p>
+<p>}</p>
+<p>.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }</p>
+<p>.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; display: none; }</p>
+<p>.doc-toc .toc-h3.show { display: block; }</p>
+<p>.doc-main { flex: 1; min-width: 0; overflow-y: auto; }</p>
+<p>.doc-header {</p>
+<p>  padding: 0 80px;</p>
+<p>  margin-top: 30px;</p>
+<p>  position: sticky; top: 0; z-index: 10;</p>
+<p>  background: var(--surface-950);</p>
+<p>}</p>
+<p>.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }</p>
+<p>.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }</p>
+<p>.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }</p>
+<p>.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; }</p>
+<p>.doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }</p>
+<p>.doc-body h1:first-child { margin-top: 0; }</p>
+<p>.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }</p>
+<p>.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }</p>
+<p>.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }</p>
+<p>.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }</p>
+<p>.doc-body li { line-height: 1.8; margin: 3px 0; }</p>
+<p>.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }</p>
+<p>.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }</p>
+<p>.doc-body th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }</p>
+<p>.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }</p>
+<p>.doc-body tr:hover { background: rgba(79,70,229,0.06); }</p>
+<p>.doc-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }</p>
+<p>.doc-body pre { position: relative; background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }</p>
+<p>.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }</p>
+<p>.copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }</p>
+<p>pre:hover .copy-btn { opacity: 1; }</p>
+<p>.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }</p>
+<p>.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }</p>
+<p>.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }</p>
+<p>.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }</p>
+<p>.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }</p>
+<p>.progress-bar { position: fixed; top: 0; left: 0; width: 0; height: 2px; background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear; }</p>
+<p>.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; cursor: zoom-out; }</p>
+<p>.lightbox.active { display: flex; }</p>
+<p>.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }</p>
+<p>.lightbox .lb-close { position: fixed; top: 16px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }</p>
+<p>.lightbox .lb-close:hover { color: #fff; }</p>
+<p>.doc-body img { cursor: zoom-in; }</p>
+<p>.anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }</p>
+<p>h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }</p>
+<p>.anchor-link:hover { color: var(--cobalt-400); }</p>
+<p>.code-with-lines { counter-reset: line; padding-left: 0; }</p>
+<p>.code-with-lines .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2.5em; min-width: 2.5em; text-align: right; padding-right: 1em; color: #4a5568; user-select: none; }</p>
+<p>.doc-body blockquote.callout { border-left-width: 4px; padding: 10px 16px; margin: 0.75rem 0; }</p>
+<p>.doc-body blockquote.callout strong { font-weight: 700; }</p>
+<p>.doc-body blockquote.callout.note { border-left-color: var(--cobalt-500); background: rgba(79,70,229,0.08); color: #c0c4f0; }</p>
+<p>.doc-body blockquote.callout.tip { border-left-color: #34d399; background: rgba(52,211,153,0.08); color: #a7f3d0; }</p>
+<p>.doc-body blockquote.callout.warning { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); color: #fde68a; }</p>
+<p>.doc-body blockquote.callout.danger { border-left-color: #f87171; background: rgba(248,113,113,0.08); color: #fecaca; }</p>
+<p>/<em> ── Sidebar Footer ── </em>/</p>
+<p>.doc-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }</p>
+<p>.doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }</p>
+<p>.doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }</p>
+<p>/<em> ── Top-Right Toolbar ── </em>/</p>
+<p>.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }</p>
+<p>:root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }</p>
+<p>.tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }</p>
+<p>.tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }</p>
+<p>.tb-btn.active { background: var(--cobalt-600); color: #fff; }</p>
+<p>.tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }</p>
+<p>/<em> ── Light Theme ── </em>/</p>
+<p>:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }</p>
+<p>:root.light body { color: #333; background: #f5f5f5; }</p>
+<p>:root.light .doc-sidebar { background: #fff; border-color: #e5e5e5; }</p>
+<p>:root.light .doc-sidebar-header { border-color: #e5e5e5; }</p>
+<p>:root.light .doc-sidebar-footer { border-color: #e5e5e5; }</p>
+<p>:root.light .doc-toc a { color: #666; }</p>
+<p>:root.light .doc-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }</p>
+<p>:root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }</p>
+<p>:root.light .doc-body h2 { color: #222; }</p>
+<p>:root.light .doc-body h3 { color: #333; }</p>
+<p>:root.light .doc-body p, :root.light .doc-body li { color: #444; }</p>
+<p>:root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }</p>
+<p>:root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }</p>
+<p>:root.light .doc-body blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }</p>
+<p>:root.light .doc-body table th { background: #f0f0f0; color: #555; }</p>
+<p>:root.light .doc-body table td { border-color: #ddd; }</p>
+<p>:root.light .doc-body hr { border-color: #ddd; }</p>
+<p>:root.light .doc-header { background: #f5f5f5; }</p>
+<p>:root.light .doc-header h1 { color: #222; }</p>
+<p>@media (max-width: 768px) {</p>
+<p>  .doc-sidebar { display: none; }</p>
+<p>  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }</p>
+<p>  .doc-body { padding: 0 16px 40px; }</p>
+<p>  .doc-header { padding: 0 16px; }</p>
+<p>}</p>
+<p>&lt;/style&gt;</p>
+<p>&lt;/head&gt;</p>
+<p>&lt;body&gt;</p>
+<p>&lt;div class="progress-bar" id="progressBar"&gt;&lt;/div&gt;</p>
+<p>&lt;div class="lightbox" id="lightbox" onclick="closeLightbox(event)"&gt;</p>
+<p>  &lt;span class="lb-close" onclick="closeLightbox()"&gt;✕&lt;/span&gt;</p>
+<p>  &lt;img id="lightboxImg" src="" alt=""&gt;</p>
+<p>&lt;/div&gt;</p>
+<p>&lt;!-- Top-Right Toolbar --&gt;</p>
+<p>&lt;div class="top-toolbar" id="topToolbar"&gt;</p>
+<p>  &lt;button class="tb-btn active" id="langZh" onclick="setLang('zh')" title="中文"&gt;🇨🇳&lt;/button&gt;</p>
+<p>  &lt;button class="tb-btn" id="langEn" onclick="setLang('en')" title="English"&gt;🇺🇸&lt;/button&gt;</p>
+<p>  &lt;span class="tb-divider"&gt;&lt;/span&gt;</p>
+<p>  &lt;button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题"&gt;🌙&lt;/button&gt;</p>
+<p>&lt;/div&gt;</p>
+<p>&lt;div class="doc-wrapper"&gt;</p>
+<p>  &lt;aside class="doc-sidebar" id="sidebar"&gt;</p>
+<p>    &lt;div class="doc-sidebar-icon"&gt;📄&lt;/div&gt;</p>
+<p>    &lt;div class="doc-sidebar-header"&gt;</p>
+<p>      &lt;div class="sidebar-title" title="B 型 · 文档阅读方案" id="sidebarTitle"&gt;📄 B 型 · 文档阅读方案&lt;/div&gt;</p>
+<p>      &lt;div class="sub-row"&gt;</p>
+<p>        &lt;div class="sub"&gt;&lt;/div&gt;</p>
+<p>        &lt;div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()"&gt;H3&lt;/div&gt;</p>
+<p>      &lt;/div&gt;</p>
+<p>    &lt;/div&gt;</p>
+<p>    &lt;nav class="doc-toc" id="toc"&gt;&lt;/nav&gt;</p>
+<p>    &lt;div class="doc-sidebar-footer"&gt;</p>
+<p>      &lt;button class="sb-btn" onclick="alert('TOC 搜索功能开发中')" title="搜索 TOC (开发中)"&gt;🔍&lt;/button&gt;</p>
+<p>      &lt;span style="flex:1"&gt;&lt;/span&gt;</p>
+<p>      &lt;button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏"&gt;◀◀&lt;/button&gt;</p>
+<p>    &lt;/div&gt;</p>
+<p>  &lt;/aside&gt;</p>
+<p>  &lt;div class="doc-main" id="docMain"&gt;</p>
+<p>    &lt;div class="doc-header"&gt;</p>
+<p>      &lt;h1&gt;B 型 · 文档阅读方案&lt;/h1&gt;</p>
+<p>      &lt;div class="meta"&gt;路径: &lt;code&gt;/Users/jadenli/CodeSpace/html-gen/demos/template-B-guide-v1.0-20260707.md&lt;/code&gt;&lt;br&gt;创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57&lt;br&gt;字数: 843 · 阅读约 4 分钟&lt;/div&gt;</p>
+<p>    &lt;/div&gt;</p>
+<p>    &lt;div class="doc-body" id="docBody"&gt;&lt;hr&gt;</p>
+<p>&lt;h2 id="使用场景"&gt;使用场景&lt;/h2&gt;</p>
+<p>&lt;p&gt;文档阅读模板适合&lt;strong&gt;长文本内容的消费和知识沉淀&lt;/strong&gt;场景，是三层模板中功能最丰富的一层。&lt;/p&gt;</p>
+<p>&lt;table&gt;&lt;thead&gt;&lt;tr&gt;</p>
+<p>&lt;th&gt;场景&lt;/th&gt;</p>
+<p>&lt;th&gt;说明&lt;/th&gt;</p>
+<p>&lt;th&gt;典型篇幅&lt;/th&gt;</p>
+<p>&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;分析报告&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;竞品分析、技术调研、市场研究的长篇报告&lt;/td&gt;</p>
+<p>&lt;td&gt;500-5000 字&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;技术文档&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;API 手册、架构说明、最佳实践指南&lt;/td&gt;</p>
+<p>&lt;td&gt;1000-10000 字&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;长文阅读&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;博客/Newsletter/论文的摘要整理&lt;/td&gt;</p>
+<p>&lt;td&gt;200-3000 字&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;知识沉淀&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;个人笔记、学习总结、项目复盘&lt;/td&gt;</p>
+<p>&lt;td&gt;500-5000 字&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;会议纪要&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;结构化会议记录，含待办、决策、讨论点&lt;/td&gt;</p>
+<p>&lt;td&gt;200-2000 字&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;/tbody&gt;&lt;/table&gt;</p>
+<p>&lt;h3 id="不适合的场景"&gt;不适合的场景&lt;/h3&gt;</p>
+<p>&lt;ul&gt;</p>
+<p>&lt;li&gt;&lt;strong&gt;结构化数据浏览&lt;/strong&gt;（搜索+排序+分页 → 用 A 型表格）&lt;/li&gt;</p>
+<p>&lt;li&gt;&lt;strong&gt;多类目知识浏览&lt;/strong&gt;（顶部标签切换 → 用 C 型知识库）&lt;/li&gt;</p>
+<p>&lt;li&gt;&lt;strong&gt;协作编辑&lt;/strong&gt;（B 型是只读展示，不是编辑器）&lt;/li&gt;</p>
+<p>&lt;/ul&gt;</p>
+<p>&lt;hr&gt;</p>
+<p>&lt;h2 id="方案设计"&gt;方案设计&lt;/h2&gt;</p>
+<p>&lt;h3 id="架构"&gt;架构&lt;/h3&gt;</p>
+<p>&lt;pre&gt;&lt;code class="language-"&gt;Layer 1: style-guide.css (CSS 变量 + 组件基座)</p>
+<p>Layer 2: layout-doc.html (骨架: 侧边栏TOC + 主内容区)</p>
+<p>Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)&lt;/code&gt;&lt;/pre&gt;</p>
+<p>&lt;h3 id="数据流"&gt;数据流&lt;/h3&gt;</p>
+<p>&lt;pre&gt;&lt;code class="language-"&gt;Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML</p>
+<p>                 │                  ├── 自动 TOC</p>
+<p>                 │                  ├── 表格渲染</p>
+<p>                 │                  ├── 代码高亮</p>
+<p>                 │                  ├── 进度条</p>
+<p>                 │                  ├── callout 提示框</p>
+<p>                 │                  ├── 锚点链接</p>
+<p>                 │                  ├── 代码行号</p>
+<p>                 │                  └── 外链归档</p>
+<p>                 └── 元信息自动计算&lt;/code&gt;&lt;/pre&gt;</p>
+<p>&lt;h3 id="关键设计决策"&gt;关键设计决策&lt;/h3&gt;</p>
+<p>&lt;table&gt;&lt;thead&gt;&lt;tr&gt;</p>
+<p>&lt;th&gt;决策&lt;/th&gt;</p>
+<p>&lt;th&gt;选择&lt;/th&gt;</p>
+<p>&lt;th&gt;理由&lt;/th&gt;</p>
+<p>&lt;/tr&gt;&lt;/thead&gt;&lt;tbody&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;Markdown 渲染&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;手写渲染器&lt;/td&gt;</p>
+<p>&lt;td&gt;零外部依赖，精准控制输出。仅需覆盖我们使用的语法子集&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;CSS 框架&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;参考 Docsify dark.css&lt;/td&gt;</p>
+<p>&lt;td&gt;经过了大量实际文档的检验，适合深色主题文档阅读&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;侧边栏 TOC&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;固定 260px + 粘性定位&lt;/td&gt;</p>
+<p>&lt;td&gt;长文导航的黄金宽度，内容区 max-width 880px 保证阅读体验&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;滚动高亮&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;JS 根据 &lt;code&gt;getBoundingClientRect().top ≤ 100&lt;/code&gt; 判断&lt;/td&gt;</p>
+<p>&lt;td&gt;纯前端，无交叉观察者依赖&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;代码行号&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;CSS counter + JS 拆分 line 元素&lt;/td&gt;</p>
+<p>&lt;td&gt;纯前端可选，单行跳过，不影响复制按钮&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;Callout&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;正则检测 &lt;code&gt;&gt; &lt;strong&gt;Note:&lt;/strong&gt;&lt;/code&gt; 模式&lt;/td&gt;</p>
+<p>&lt;td&gt;利用原有 Markdown blockquote 语法，无需新语法&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;外链归档&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;服务端 &lt;code&gt;re.findall&lt;/code&gt; 提取 + 追加&lt;/td&gt;</p>
+<p>&lt;td&gt;文档生成时一次性完成，客户零开销&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;tr&gt;</p>
+<p>&lt;td&gt;&lt;strong&gt;图片灯箱&lt;/strong&gt;&lt;/td&gt;</p>
+<p>&lt;td&gt;纯 CSS overlay + JS&lt;/td&gt;</p>
+<p>&lt;td&gt;无第三方库，支持 Escape / 点击外部关闭&lt;/td&gt;</p>
+<p>&lt;/tr&gt;</p>
+<p>&lt;/tbody&gt;&lt;/table&gt;</p>
+<p>&lt;h3 id="手写-markdown-渲染器支持语法"&gt;手写 Markdown 渲染器支持语法&lt;/h3&gt;</p>
+<p>&lt;pre&gt;&lt;code class="language-"&gt;# h1  ## h2  ### h3                    — 标题</p>
+<p><strong>bold</strong>  <em>italic</em>                      — 行内格式</p>
+<p><code>code</code>                                 — 行内代码</p>
+<h2>🔗 参考链接</h2>
+<ol>
+<li><a href="https://www.jaden.tech/static/img/favicon.png" target="_blank" rel="noopener">https://www.jaden.tech/static/img/favicon.png</a></li>
+</ol>
+</div>
   </div>
 </div>
 <script>
@@ -855,6 +954,55 @@ open report.html</code></pre>
   document.addEventListener('keydown', function(e) {
     if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
       if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    }
+  });
+
+  /* ═══════ TOC Search ═══════ */
+  var _tocSearchActive = false, _tocSearchTimer;
+  window.toggleTocSearch = function() {
+    _tocSearchActive = !_tocSearchActive;
+    var wrap = document.getElementById('tocSearchWrap');
+    var input = document.getElementById('tocSearchInput');
+    var btn = document.getElementById('tocSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _tocSearchActive);
+    if (btn) btn.style.color = _tocSearchActive ? 'var(--cobalt-400)' : '';
+    if (_tocSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doTocFilter('');
+    }
+  };
+
+  function doTocFilter(q) {
+    tocItems.forEach(function(a) {
+      a.classList.toggle('filtered-out', q.length >= 2 && a.textContent.toLowerCase().indexOf(q) === -1);
+    });
+  }
+
+  document.getElementById('tocSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_tocSearchTimer);
+    _tocSearchTimer = setTimeout(function() { doTocFilter(q); }, 150);
+  });
+
+  window.tocSearchKey = function(e) {
+    if (e.key === 'Escape') {
+      _tocSearchActive = true; toggleTocSearch(); // force close
+    } else if (e.key === 'Enter') {
+      var q = document.getElementById('tocSearchInput').value.toLowerCase().trim();
+      if (q.length >= 2) {
+        var match = tocItems.find(function(a){ return !a.classList.contains('filtered-out'); });
+        if (match) match.click();
+        toggleTocSearch();
+      }
+    }
+  };
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
+      _tocSearchActive = true; toggleTocSearch();
     }
   });
 
