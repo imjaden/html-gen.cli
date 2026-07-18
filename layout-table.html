@@ -26,7 +26,13 @@
 .table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
 .stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
   background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
-.stat-pill .num { color:var(--cobalt-400); font-weight:600; }
+.stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
+.filter-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px;
+  background:rgba(79,70,229,0.15); border:1px solid var(--cobalt-600); font-size:0.65rem; color:var(--cobalt-300); cursor:pointer; white-space:nowrap; }
+.filter-pill:hover { background:rgba(79,70,229,0.25); }
+.filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
+.data-table td.clickable-cell { cursor:pointer; }
+.data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .header-search { background:var(--surface-850); border:1px solid #2a2a3e; color:#e0e0e0; padding:5px 10px;
   border-radius:6px; font-size:0.72rem; outline:none; width:180px; }
 .header-search:focus { border-color:var(--cobalt-600); }
@@ -175,6 +181,7 @@
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
+  <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
   <div class="flex-1"></div>
   <input class="header-search" id="searchInput" placeholder="<!--SEARCH_PLACEHOLDER-->" onkeydown="if(event.key==='Enter')doSearch()">
   <!--FILTERS-->
@@ -251,6 +258,7 @@
   let selectedRows = {}, colVisibility = {};
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
+  let quickFilter = null;  // {key, value}
 
   // Restore from localStorage
   try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
@@ -317,6 +325,12 @@
         });
       });
     }
+    // Quick filter (cell click)
+    if (quickFilter) {
+      filtered = filtered.filter(function(row) {
+        return String(row[quickFilter.key] || '') === quickFilter.value;
+      });
+    }
     // Sort
     if (sortKey) {
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
@@ -372,7 +386,8 @@
           if (col.render) val = col.render(val, row);
           else if (val === undefined || val === null) val = '';
           else if (col.escape) val = escapeHtml(String(val));
-          rowHtml += '<td'+(col.class?' class="'+col.class+'"':'')+'>'+val+'</td>';
+          var valDisplay = String(val);
+          rowHtml += '<td class="clickable-cell'+(col.class?' '+col.class:'')+'" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')">'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -433,7 +448,7 @@
   function updateStats() {
     document.getElementById('statTotal').textContent = DATA.length;
     var fp = document.getElementById('statFilteredPill');
-    if (filtered.length !== DATA.length) {
+    if (filtered.length !== DATA.length || quickFilter) {
       fp.style.display = 'inline-flex';
       document.getElementById('statFiltered').textContent = filtered.length;
     } else { fp.style.display = 'none'; }
@@ -443,7 +458,34 @@
       sp.style.display = cnt > 0 ? 'inline-flex' : 'none';
       document.getElementById('statSelected').textContent = cnt;
     }
+    // Quick filter pill
+    var qfEl = document.getElementById('quickFilterPill');
+    if (quickFilter) {
+      qfEl.style.display = 'inline-flex';
+      var col = COLUMNS.find(function(c){return c.key===quickFilter.key;});
+      qfEl.innerHTML = (col ? col.label : quickFilter.key) + ': ' + escapeHtml(quickFilter.value) + '<span class="fp-close" onclick="event.stopPropagation();clearQuickFilter()">✕</span>';
+      qfEl.onclick = function() { clearQuickFilter(); };
+    } else {
+      qfEl.style.display = 'none';
+    }
   }
+
+  window.quickFilterBy = function(key, value) {
+    if (quickFilter && quickFilter.key === key && quickFilter.value === value) {
+      quickFilter = null;  // toggle off
+    } else {
+      quickFilter = {key: key, value: value};
+    }
+    expandedIdx = -1;
+    currentPage = 1;
+    render();
+  };
+
+  window.clearQuickFilter = function() {
+    quickFilter = null;
+    currentPage = 1;
+    render();
+  };
 
   /* ── Pagination ── */
   function renderPager(totalPages) {
