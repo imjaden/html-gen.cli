@@ -32,6 +32,12 @@
 /* ── Sidebar Collapse ── */
 .slide-sidebar { width: 260px; min-width: 260px; transition: width 0.25s, min-width 0.25s; }
 .slide-sidebar.collapsed { width: 48px; min-width: 48px; }
+.slide-sidebar { position: relative; }
+.slide-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.slide-sidebar-resize:hover, .slide-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
 .slide-sidebar.collapsed .slide-title,
 .slide-sidebar.collapsed .sub-row,
 .slide-sidebar.collapsed .slide-h3-toggle,
@@ -197,6 +203,7 @@
 <div class="slide-wrapper">
 
   <aside class="slide-sidebar" id="sidebar">
+    <div class="slide-sidebar-resize" id="sbResize"></div>
     <div class="slide-sidebar-icon">🎞️</div>
     <div class="slide-sidebar-header">
       <div class="slide-title" title="<!--TITLE-->" id="slideTitle">🎞️ <!--TITLE--></div>
@@ -631,6 +638,33 @@
       if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
     }
   });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('sidebar');
+    var handle = document.getElementById('sbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:slide:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:slide:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
 
   slide.init();
 })();
