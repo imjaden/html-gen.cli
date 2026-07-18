@@ -1,37 +1,222 @@
-# html-gen — Features
+# features.md — html-gen 功能清单
 
-> 零依赖 Python CLI HTML 生成器。深色主题，中文优先。
->
-> 文件命名: 固定为 `features.md`，小写，无版本号。
->
-> 适用: 风格 B 文件（无版本号，持续更新），存放在项目根目录。
+> IRIS v1.0 格式。每行 `{功能描述} {状态标记} — {关联文档/产出}`
 
-## 模板生成
+## CLI 命令
 
-1. A 型表格生成: `html-gen table <json>` ✅ — layout-table.html
-2. B 型文档生成: `html-gen doc <md>` ✅ — layout-doc.html
-3. C 型知识库生成: `html-gen knowledge <json>` ✅ — layout-knowledge.html
-4. D 型幻灯片生成: `html-gen slide <md>` ✅ — layout-slide.html
+### 主命令组 (html-gen CLI)
+html-gen doc — Markdown 转 B 型文档 ✅ — layout-doc.html
+html-gen doc -i/--input — 输入 Markdown 文件 ✅ — html-gen.py
+html-gen doc -o/--output — 输出 HTML 路径 (默认 index.html) ✅ — html-gen.py
+html-gen doc --title — 文档标题 ✅ — html-gen.py
+html-gen doc --subtitle — 副标题 ✅ — html-gen.py
+html-gen doc --metadata — 元数据 (路径信息) ✅ — html-gen.py
+html-gen slide — Markdown 转 D 型幻灯片 (h2 分页) ✅ — layout-slide.html
+html-gen slide -i/--input — 输入 Markdown 文件 ✅ — html-gen.py
+html-gen slide -o/--output — 输出 HTML 路径 ✅ — html-gen.py
+html-gen slide --title — 幻灯片标题 ✅ — html-gen.py
+html-gen slide --subtitle — 副标题 (显示在封面) ✅ — html-gen.py
+html-gen table — JSON 转 A 型数据表格 ✅ — layout-table.html
+html-gen table -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
+html-gen table --title — 表格标题 ✅ — html-gen.py
+html-gen table -o/--output — 输出 HTML 路径 (默认 index.html) ✅ — html-gen.py
+html-gen knowledge — JSON 转 C 型知识库 ✅ — layout-knowledge.html
+html-gen knowledge -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
+html-gen knowledge -g/--groups — 输入 groups JSON (类目定义) ✅ — html-gen.py
+html-gen knowledge --title — 知识库标题 ✅ — html-gen.py
+html-gen knowledge --subtitle — 副标题 ✅ — html-gen.py
+html-gen knowledge --welcome — 欢迎面板文字 ✅ — html-gen.py
+html-gen knowledge -o/--output — 输出 HTML 路径 ✅ — html-gen.py
+html-gen help — 显示帮助 ✅ — html-gen.py
+html-gen help <topic> — 按主题显示帮助 (doc/slide/table/knowledge) ✅ — html-gen.py
 
-## CLI 工具
+### 脚本工具
+company-report.py — 公司调研报告生成器 (schema → C 型知识库) ✅ — company-research-schema.json
 
-1. 多级帮助系统: `html-gen help` / `html-gen <subcommand> help` ✅
-2. 安装脚本: `bash install.sh` ✅
-3. 演示服务器: `python3 -m http.server` 🟡 — 配合 demos/ 目录
+---
 
-## 辅助工具
+## 模板功能
 
-1. 公司调研报告生成: `python3 company-report.py` ✅ — 从 schema JSON 生成知识库
-2. Chromedriver 管理: `chromedriver-manager list / check` 🟡 — Selenium 测试依赖
-3. Selenium 验收测试: `tests/selenium/test-*.py` ✅ — 4 模板覆盖测试
+### layout-doc.html (B 型文档) — 436 行
+自动 TOC 生成 (h2/h3 锚点 + 滚动高亮) ✅ — layout-doc.html
+TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-doc.html
+侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-doc.html
+侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-doc.html
+侧边栏标题点击复制路径 (textContent 安全获取) ✅ — layout-doc.html
+H3 子项开关 (显示/隐藏 TOC 中 h3 条目) ✅ — layout-doc.html
+中/英双语界面切换 (🇨🇳/🇺🇸) ✅ — layout-doc.html
+🌙/☀️ 深色/浅色主题切换 (20+ 组件覆盖) ✅ — layout-doc.html
+代码块复制按钮 (剪贴板 API + fallback execCommand) ✅ — layout-doc.html
+代码行号 (Counter CSS) ✅ — layout-doc.html
+Callout 提示框 (Note/Tip/Warning/Danger / 注意/警告/提示/危险) ✅ — layout-doc.html
+Markdown pipe table 渲染 ✅ — layout-doc.html
+阅读进度条 (顶部 2px cobalt 线) ✅ — layout-doc.html
+图片灯箱 (点击放大, Esc 关闭) ✅ — layout-doc.html
+Section anchor link (¶ 复制) ✅ — layout-doc.html
 
-## 样式体系
+### layout-slide.html (D 型幻灯片) — 673 行
+h2 分页 (每页一个 h2 section) ✅ — layout-slide.html
+H3 双列模式 (h2 下 ≥2 个 h3 → 并排列) ✅ — layout-slide.html
+H3 单列回退 (仅 1 个 h3 → 全宽) ✅ — layout-slide.html
+封面页 (标题 + 副标题 + 元数据) ✅ — layout-slide.html
+底部导航点 (点击跳转页面) ✅ — layout-slide.html
+自动 TOC 生成 (h2 条目, 页面跳转) ✅ — layout-slide.html
+TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-slide.html
+侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-slide.html
+侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-slide.html
+侧边栏标题点击复制路径 (textContent + URL 白名单) ✅ — layout-slide.html
+页码实时更新 (封面 "共 N 页"/内容页 "M / N", 中英双语) ✅ — layout-slide.html
+H3 子项开关 (localStorage 记忆, 载入恢复) ✅ — layout-slide.html
+中/英双语界面切换 (🇨🇳/🇺🇸) ✅ — layout-slide.html
+🌙/☀️ 深色/浅色主题切换 ✅ — layout-slide.html
+右上角工具栏 (语言/主题, glass-morphism) ✅ — layout-slide.html
+键盘翻页 (← → PageUp PageDown Home End) ✅ — layout-slide.html
 
-1. style-guide.css: CSS 变量 + 基础组件（按钮/表格/弹窗/分页）✅
-2. 深色主题统一设计: 所有模板共享 CSS 变量 ✅
-3. 布局自适应: 移动端 + 桌面端 🟡
+### layout-table.html (A 型表格) — 1110 行
+实时搜索 (300ms debounce) ✅ — layout-table.html
+Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.html
+多字段排序 (locale/数字/字符串, Shift+点击二级排序) ✅ — layout-table.html
+客户端分页 (默认 30 条/页, pageSize 可配) ✅ — layout-table.html
+密度切换 (紧凑 28px / 标准 34px / 舒适 42px, localStorage) ✅ — layout-table.html
+弹出面板模式 (Modal overlay, 键值列表, Esc 关闭, textContent) ✅ — layout-table.html
+分栏预览模式 (表格 40% + 预览 60%, 拖拽分栏线 25-75%) ✅ — layout-table.html
+行内展开模式 (手风琴, 点击展开详情网格, colspan 全宽) ✅ — layout-table.html
+新标签页打开模式 (window.open + noopener,noreferrer) ✅ — layout-table.html
+点击模式 (options.clickModes 控制可用模式) ✅ — layout-table.html
+快速过滤 (点击单元格值 → filter pill ✕ 关闭) ✅ — layout-table.html
+列冻结 (col.freeze:true → sticky 列, 自动 left 偏移) ✅ — layout-table.html
+分栏模式列过滤 (col.preview:true → 仅预览列显示) ✅ — layout-table.html
+列隐藏 (col.hide:true → 永不可见) ✅ — layout-table.html
+列可见性切换 (⚙️ 下拉面板, 复选框) ✅ — layout-table.html
+列宽拖拽 (resize handle, 最小 40px) ✅ — layout-table.html
+多标签页 (tabs, 按 field/match 过滤, localStorage 记忆) ✅ — layout-table.html
+操作按钮列 (copyKey/hrefKey/desc 模式) ✅ — layout-table.html
+CSV 导出 (全部 / 选中行, BOM UTF-8) ✅ — layout-table.html
+批量操作工具栏 (全选/取消/导出选中, 选中行数显式) ✅ — layout-table.html
+键盘导航 (↑↓ 移动焦点, Enter 点击行, 自动滚动) ✅ — layout-table.html
+全屏模式 (⛶ 按钮 / F 键, wrapper.fullscreen) ✅ — layout-table.html
+视图预设 (保存/加载/删除, 最多 10 个, ≤2KB, localStorage) ✅ — layout-table.html
+行选择复选框 (rowSelect, select-all) ✅ — layout-table.html
+统计面板 (总数/筛选数/选中数 pill) ✅ — layout-table.html
+Toast 通知 (2.5s 自动消失) ✅ — layout-table.html
+HTML 转义 (escapeHtml, col.escape, textContent 安全渲染) ✅ — layout-table.html
+iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
+URL 白名单校验 (https?/ / ~/ 前缀) ✅ — layout-table.html
 
-## 待定/规划
+### layout-knowledge.html (C 型知识库) — 336 行
+顶部横向标签栏 (按 group 分组, 彩色圆点, 与侧边栏标题行对齐) ✅ — layout-knowledge.html
+左侧章节列表 (按 section 分组, badge 标记) ✅ — layout-knowledge.html
+侧边栏搜索 (🔍 按钮, 150ms debounce, ≥2 字符, section 自动隐藏) ✅ — layout-knowledge.html
+侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-knowledge.html
+iframe 内容加载 (item.url → sandbox iframe) ✅ — layout-knowledge.html
+内联 desc 渲染 (item.desc → textContent) ✅ — layout-knowledge.html
+欢迎面板 (首次加载 / 无选中, 类目图例) ✅ — layout-knowledge.html
+选中状态 localStorage 恢复 (group + item) ✅ — layout-knowledge.html
+Badge 彩色标记 (知道/理解/能讲/能输出, 4 色方案) ✅ — layout-knowledge.html
 
-1. 模板市场 / 模板共享机制 🚧
-2. 多语言输出支持 🚧
+---
+
+## 数据格式
+
+### table 输入
+简单 JSON 数组 (向后兼容, 列名自推导) ✅ — html-gen.py (cmd_table)
+结构化 JSON 对象 (columns/data/tabs/options) ✅ — html-gen.py (cmd_table)
+col.type: string/number/actions ✅ — layout-table.html
+col.sortable (是否可排序) ✅ — layout-table.html
+col.locale (中文 localeCompare 排序) ✅ — layout-table.html
+col.freeze (列冻结 sticky) ✅ — layout-table.html
+col.preview (分栏模式可见性) ✅ — layout-table.html
+col.hide (永久隐藏) ✅ — layout-table.html
+col.onClick (行点击行为, "url" 跳转) ✅ — layout-table.html
+col.actions (操作按钮列, copyKey/hrefKey/desc) ✅ — layout-table.html
+col.render (自定义渲染函数) ✅ — layout-table.html
+col.escape (HTML 转义开关) ✅ — layout-table.html
+col.class (自定义 CSS class) ✅ — layout-table.html
+col.width (列宽) ✅ — layout-table.html
+tabs (多标签页, field/match 过滤) ✅ — layout-table.html
+options.pageSize (分页大小) ✅ — layout-table.html
+options.exportCSV (导出按钮) ✅ — layout-table.html
+options.rowSelect (行选择) ✅ — layout-table.html
+options.search (搜索框显隐) ✅ — layout-table.html
+options.clickModes (可用点击模式列表) ✅ — layout-table.html
+
+### knowledge 输入
+JSON 数组 (items: title/group/section/badge/url/desc) ✅ — layout-knowledge.html
+groups JSON (类目定义: key/label/icon) ✅ — layout-knowledge.html
+
+### doc/slide 输入
+Markdown 文件 (.md) ✅ — html-gen.py (cmd_doc/cmd_slide)
+Markdown 预处理 (h3 标记、页码移除, 生成预处理器副本) ✅ — html-gen.py
+
+---
+
+## 基础设施
+
+### CSS 基座
+style-guide.css (--cobalt-* 色系深色主题, CSS 变量) ✅ — style-guide.css
+:root.light 浅色主题 (20+ 组件覆盖) ✅ — layout-*.html
+
+### 模板注入
+inject() 函数 (<!--KEY--> 占位符替换) ✅ — html-gen.py
+inline_style() (CSS link → <style> 内联) ✅ — html-gen.py
+_SCRIPT_KEYS (</ 转义, 防 XSS) ✅ — html-gen.py
+自包含单文件输出 (零外部资源引用) ✅ — html-gen.py
+
+### 安全
+escapeHtml (div.textContent 渲染) ✅ — layout-table.html
+URL 白名单 (https?/ / ~/) ✅ — layout-doc.html/layout-slide.html
+iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
+window.open noopener,noreferrer ✅ — layout-table.html
+textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-knowledge.html
+clipboard API try/catch fallback ✅ — layout-table.html
+localStorage try/catch + 类型校验 ✅ — layout-*.html
+path traversal 校验 (_safe_path) ✅ — company-report.py
+script 上下文 </ 转义 (inject) ✅ — html-gen.py
+
+### 测试
+test_templates.py (7 个回归测试: doc/slide/table/knowledge) ✅ — tests/test_templates.py
+test_slide_h3_toggle.py (4 个 Selenium 测试: H3 显隐/JS 错误) ✅ — tests/test_slide_h3_toggle.py
+pytest 11/11 全绿 ✅ — CI/提交前置
+
+---
+
+## localStorage 命名空间
+
+| Key | 用途 | 模板 |
+|:---|:---|:---|
+| `html-gen:doc_lang` | 语言 (zh/en) | doc |
+| `html-gen:doc_theme` | 主题 (dark/light) | doc |
+| `html-gen:doc:h3-visible` | H3 开关 | doc |
+| `html-gen:doc:sidebar-collapsed` | 侧边栏折叠 | doc |
+| `html-gen:doc:sidebar-width` | 侧边栏宽度 | doc |
+| `html-gen:layoutslide_lang` | 语言 (zh/en) | slide |
+| `html-gen:layoutslide_theme` | 主题 (dark/light) | slide |
+| `html-gen:layoutslide:h3-visible` | H3 开关 | slide |
+| `html-gen:sidebar:collapsed` | 侧边栏折叠 | slide |
+| `html-gen:slide:sidebar-width` | 侧边栏宽度 | slide |
+| `html-gen:kw_group` | 当前 Tab 类目 | knowledge |
+| `html-gen:kw_item` | 当前选中条目 | knowledge |
+| `html-gen:kw:collapsed` | 侧边栏折叠 | knowledge |
+| `html-gen:table:density` | 密度 (default/compact/comfortable) | table |
+| `html-gen:table:click-mode` | 点击模式 (tab/modal/split/expand) | table |
+| `html-gen:table:split-ratio` | 分栏比例 (25-75) | table |
+| `html-gen:table:presets` | 视图预设 (JSON array, max 10) | table |
+| `htmlgen_tab` | Tab 选择 | table |
+
+---
+
+## 项目统计
+
+| 指标 | 数值 |
+|:---|---:|
+| Python 文件 | 4 (html-gen 546行 / company-report 101行 / test×2) |
+| 模板文件 | 4 (doc 436行 / slide 673行 / table 1110行 / knowledge 336行) |
+| CSS 基座 | 1 (style-guide.css) |
+| 数据文件 | 7 |
+| Demo 文件 | 18 |
+| 设计文档 | 4 |
+| 测试用例 | 11 (7 回归 + 4 Selenium) |
+| CLI 子命令 | 5 (doc/slide/table/knowledge/help) |
+| CLI 参数 | 15 |
+| localStorage keys | 16 |
+| 零外部依赖 | ✅ (Python stdlib only) |
