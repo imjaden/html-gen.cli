@@ -5,7 +5,8 @@
       "label": "项目",
       "sortable": true,
       "locale": "zh",
-      "preview": true
+      "preview": true,
+      "freeze": true
     },
     {
       "key": "stars",

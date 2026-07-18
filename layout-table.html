@@ -33,6 +33,12 @@
 .filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+
+/* ── Frozen columns ── */
+.data-table th.frozen-col, .data-table td.frozen-col {
+  position: sticky; z-index: 11; background: var(--surface-900);
+}
+.data-table th.frozen-col { z-index: 12; }
 .header-search { background:var(--surface-850); border:1px solid #2a2a3e; color:#e0e0e0; padding:5px 10px;
   border-radius:6px; font-size:0.72rem; outline:none; width:180px; }
 .header-search:focus { border-color:var(--cobalt-600); }
@@ -346,6 +352,21 @@
         return sortAsc ? cmp : -cmp;
       });
     }
+    // Secondary sort
+    if (sortKey2 && sortKey2 !== sortKey) {
+      var col2 = COLUMNS.find(function(c){return c.key===sortKey2;});
+      var isNum2 = col2 && col2.type === 'number';
+      var loc2 = col2 && col2.locale;
+      filtered.sort(function(a, b) {
+        var va = a[sortKey2], vb = b[sortKey2];
+        if (va === undefined || va === null) va = '';
+        if (vb === undefined || vb === null) vb = '';
+        if (isNum2) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc2 ? va - vb : vb - va; }
+        va = String(va); vb = String(vb);
+        var cmp = loc2 ? va.localeCompare(vb, loc2) : va.localeCompare(vb);
+        return sortAsc2 ? cmp : -cmp;
+      });
+    }
   }
 
   /* ── Render ── */
@@ -368,6 +389,9 @@
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
     var cols = visibleCols();
+    var frozenOffsets = [];
+    var fo = 0;
+    cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
 
     tbody.innerHTML = pageData.map(function(row, pi) {
       var rowIdx = start + pi;
@@ -386,8 +410,9 @@
           if (col.render) val = col.render(val, row);
           else if (val === undefined || val === null) val = '';
           else if (col.escape) val = escapeHtml(String(val));
-          var valDisplay = String(val);
-          rowHtml += '<td class="clickable-cell'+(col.class?' '+col.class:'')+'" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')">'+val+'</td>';
+          var freezeCls = col.freeze ? ' frozen-col' : '';
+          var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -511,30 +536,31 @@
     var thead = document.getElementById('thead');
     var cg = document.getElementById('colGroup');
     var cols = visibleCols();
+    var frozenOffset = 0;
+    var frozenStyles = [];
+    cols.forEach(function(c) {
+      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += 120; }
+      else { frozenStyles.push(''); }
+    });
     cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
-      cols.map(function(c) {
-        var w = c.width || (c.type==='actions'?'auto':'');
-        return '<col'+(w?' style="width:'+w+'"':'')+'>';
-      }).join('');
+      cols.map(function(c) { var w = c.width || (c.type==='actions'?'auto':''); return '<col'+(w?' style="width:'+w+'"':'')+'>'; }).join('');
     thead.innerHTML = '<tr>' +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
-        if (c.sortable !== false && c.type !== 'actions') {
-          sortCls = ' sortable';
-          if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc';
-        }
-        return '<th class="'+sortCls+'"'+(c.sortable!==false?' onclick="sortBy(\''+c.key+'\')"':'')+
-          (c.width && c.type !== 'actions'?' style="width:'+c.width+'"':'')+'>'+c.label+'<span class="resize-handle" onmousedown="startResize(event,\''+c.key+'\')"></span></th>';
+        if (c.sortable !== false && c.type !== 'actions') { sortCls = ' sortable'; if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc'; if (sortKey2 === c.key) sortCls += ' sort-asc'; }
+        var freezeCls = c.freeze ? ' frozen-col' : '';
+        var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
+        return '<th class="' + sortCls + freezeCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
+          (c.width && c.type !== 'actions' ? ' style="width:' + c.width + '"' : '') + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
       }).join('') + '</tr>';
   }
 
-  window.sortBy = function(key) {
-    if (sortKey === key) sortAsc = !sortAsc;
-    else { sortKey = key; sortAsc = true; }
-    expandedIdx = -1;
-    initThead();
-    render();
+  var sortKey2 = '', sortAsc2 = true;
+  window.sortBy = function(key, event) {
+    if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
+    else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
+    expandedIdx = -1; initThead(); render();
   };
 
   /* ── Row selection ── */
