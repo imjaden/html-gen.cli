@@ -121,7 +121,7 @@
 <div class="kw-wrapper">
 
   <aside class="kw-sidebar" id="kwSidebar">
-    <div class="kw-sidebar-icon">📚</div>
+    <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
       <div class="sidebar-title" title="<!--TITLE-->">📚 <!--TITLE--></div>
       <div class="sub"><!--SUBTITLE--></div>
@@ -269,6 +269,12 @@
     try { localStorage.setItem('html-gen:kw:collapsed', _collapsed); } catch(e) {}
   };
   try { if (localStorage.getItem('html-gen:kw:collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'IFRAME') {
+      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    }
+  });
 
   /* ── Sidebar Search ── */
   var _kwSearchActive = false, _kwSearchTimer;
