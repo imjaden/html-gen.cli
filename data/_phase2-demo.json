@@ -93,7 +93,8 @@
     "clickModes": [
       "tab",
       "modal",
-      "split"
+      "split",
+      "expand"
     ]
   }
 }
