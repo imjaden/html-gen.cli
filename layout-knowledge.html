@@ -57,6 +57,15 @@
 .kw-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
 .kw-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
 
+/* ── Sidebar Search ── */
+.kw-search-wrap { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.kw-search-wrap.active { display: block; }
+.kw-search-wrap input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.kw-search-wrap input:focus { border-color: var(--cobalt-600); }
+.kw-search-wrap input::placeholder { color: #555; }
+.kw-item.filtered-out { display: none; }
+.kw-section-title.filtered-out { display: none; }
+
 /* ── Main ── */
 .kw-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
 
@@ -118,8 +127,12 @@
       <div class="sub"><!--SUBTITLE--></div>
     </div>
     <div id="kwSectionsContainer"></div>
+    <!-- Sidebar Search -->
+    <div class="kw-search-wrap" id="kwSearchWrap">
+      <input type="text" id="kwSearchInput" placeholder="搜索...">
+    </div>
     <div class="kw-sidebar-footer">
-      <button class="sb-btn" onclick="alert('TOC 搜索功能开发中')" title="搜索 (开发中)">🔍</button>
+      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索">🔍</button>
       <span style="flex:1"></span>
       <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
     </div>
@@ -256,6 +269,67 @@
     try { localStorage.setItem('html-gen:kw:collapsed', _collapsed); } catch(e) {}
   };
   try { if (localStorage.getItem('html-gen:kw:collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  /* ── Sidebar Search ── */
+  var _kwSearchActive = false, _kwSearchTimer;
+  window.toggleKwSearch = function() {
+    _kwSearchActive = !_kwSearchActive;
+    var wrap = document.getElementById('kwSearchWrap');
+    var input = document.getElementById('kwSearchInput');
+    var btn = document.getElementById('kwSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _kwSearchActive);
+    if (btn) btn.style.color = _kwSearchActive ? 'var(--cobalt-400)' : '';
+    if (_kwSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doKwFilter('');
+    }
+  };
+
+  function doKwFilter(q) {
+    var items = document.querySelectorAll('.kw-item');
+    var titles = document.querySelectorAll('.kw-section-title');
+    var hasMatch = false;
+    items.forEach(function(el) {
+      var text = (el.querySelector('.kw-item-text') || {}).textContent || '';
+      var match = q.length < 2 || text.toLowerCase().indexOf(q) !== -1;
+      el.classList.toggle('filtered-out', !match);
+      if (match) hasMatch = true;
+    });
+    // Hide section titles if all their items are filtered out
+    titles.forEach(function(title) {
+      var next = title.nextElementSibling;
+      var allHidden = true;
+      while (next && !next.classList.contains('kw-section-title')) {
+        if (!next.classList.contains('filtered-out')) { allHidden = false; break; }
+        next = next.nextElementSibling;
+      }
+      title.classList.toggle('filtered-out', allHidden);
+    });
+  }
+
+  document.getElementById('kwSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_kwSearchTimer);
+    _kwSearchTimer = setTimeout(function() { doKwFilter(q); }, 150);
+  });
+
+  document.getElementById('kwSearchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); }
+    else if (e.key === 'Enter') {
+      var firstVisible = document.querySelector('.kw-item:not(.filtered-out)');
+      if (firstVisible) firstVisible.click();
+      _kwSearchActive = true; toggleKwSearch();
+    }
+  });
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_kwSearchActive && !e.target.closest('.kw-search-wrap') && e.target !== document.getElementById('kwSearchBtn')) {
+      _kwSearchActive = true; toggleKwSearch();
+    }
+  });
 })();
 </script>
 </body>
