@@ -418,7 +418,7 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "name", "label": "项目", "sortable": true, "locale": "zh"}, {"key": "stars", "label": "Stars", "sortable": true, "type": "number"}, {"key": "lang", "label": "语言"}, {"key": "desc", "label": "描述"}, {"key": "url", "label": "URL", "onClick": "url", "hide": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const COLUMNS = [{"key": "name", "label": "项目", "sortable": true, "locale": "zh", "preview": true}, {"key": "stars", "label": "Stars", "sortable": true, "type": "number", "preview": true}, {"key": "lang", "label": "语言", "preview": true}, {"key": "desc", "label": "描述"}, {"key": "url", "label": "URL", "onClick": "url", "hide": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
   const DATA    = [{"name": "hermes-agent", "stars": 50200, "lang": "Python", "desc": "CLI-first AI Agent: 零配置 CLI AI 代理", "url": "https://hermes-agent.nousresearch.com"}, {"name": "llm-radar", "stars": 1280, "lang": "Python", "desc": "LLM 领域动态追踪与趋势分析", "url": "https://llm-radar.jaden.tech"}, {"name": "html-gen", "stars": 45, "lang": "Python", "desc": "零依赖 Markdown → HTML 生成器。支持 A/B/C/D 四种模板", "url": "https://github.com/jadenli/html-gen"}, {"name": "http-server-cli", "stars": 320, "lang": "Python", "desc": "零依赖 HTTP 静态文件服务器，支持 CORS 和 range 请求", "url": "https://github.com/jadenli/http-server-cli"}, {"name": "script-miner", "stars": 89, "lang": "Python", "desc": "Python 脚本挖掘工具，分析代码模式与依赖", "url": "https://github.com/jadenli/script-miner"}, {"name": "daily-tracker", "stars": 12, "lang": "Python", "desc": "每日习惯追踪 CLI 工具", "url": "https://github.com/jadenli/daily-tracker"}, {"name": "favorite-manager", "stars": 3, "lang": "Python", "desc": "跨平台收藏管理工具", "url": "https://github.com/jadenli/favorite-manager"}, {"name": "hermes-manager", "stars": 7, "lang": "Python", "desc": "Hermes Agent 会话管理工具", "url": "https://github.com/jadenli/hermes-manager"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
   const OPTIONS = {"exportCSV": true, "clickModes": ["tab", "modal", "split"]};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
@@ -430,7 +430,7 @@ pre code { background: none; padding: 0; }
 
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
-  let density = 'default', clickMode = 'tab', splitRatio = 40;
+  let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
 
   // Restore from localStorage
   try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
@@ -442,6 +442,20 @@ pre code { background: none; padding: 0; }
     var d = document.createElement('div');
     d.textContent = text;
     return d.innerHTML;
+  }
+
+  /* ── Visible columns (respects visibility toggle + split mode preview filter) ── */
+  function visibleCols(opts) {
+    opts = opts || {};
+    return COLUMNS.filter(function(c) {
+      if (opts.requireKey && !c.key) return false;
+      if (opts.excludeActions && c.type === 'actions') return false;
+      if (c.hide) return false;
+      if (colVisibility[c.key] === false) return false;
+      // split mode: only show preview columns
+      if (splitActive && c.preview !== true) return false;
+      return true;
+    });
   }
 
   /* ── Tabs ── */
@@ -519,7 +533,7 @@ pre code { background: none; padding: 0; }
     var tbody = document.getElementById('tbody');
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
-    var cols = COLUMNS.filter(function(c) { return colVisibility[c.key] !== false; });
+    var cols = visibleCols();
 
     tbody.innerHTML = pageData.map(function(row, pi) {
       var rowIdx = start + pi;
@@ -622,7 +636,7 @@ pre code { background: none; padding: 0; }
   function initThead() {
     var thead = document.getElementById('thead');
     var cg = document.getElementById('colGroup');
-    var cols = COLUMNS.filter(function(c){return colVisibility[c.key]!==false;});
+    var cols = visibleCols();
     cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
       cols.map(function(c) {
         var w = c.width || (c.type==='actions'?'auto':'');
@@ -689,7 +703,7 @@ pre code { background: none; padding: 0; }
 
   /* ── Modal Panel ── */
   function showModal(row) {
-    var cols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+    var cols = visibleCols({requireKey: true, excludeActions: true});
     var title = row[cols[0] && cols[0].key] || '详情';
     var html = '<div style="position:relative"><button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;">✕</button><h3>'+escapeHtml(String(title))+'</h3>';
     html += cols.map(function(c) {
@@ -714,8 +728,11 @@ pre code { background: none; padding: 0; }
   var splitRow = null, splitIdx = -1;
   function activateSplit(row, idx) {
     splitRow = row; splitIdx = idx;
+    splitActive = true;
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.add('split-mode');
+    initThead();
+    render();  // re-render with preview-only cols
     renderSplitPreview(row);
     // highlight active row
     var tbody = document.getElementById('tbody');
@@ -725,9 +742,12 @@ pre code { background: none; padding: 0; }
   }
   window.activateSplit = activateSplit;
   window.closeSplit = function() {
+    splitActive = false;
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.remove('split-mode');
     splitRow = null; splitIdx = -1;
+    initThead();
+    render();
     // clear highlight
     var rows = document.getElementById('tbody').querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
@@ -737,7 +757,7 @@ pre code { background: none; padding: 0; }
     var header = document.getElementById('splitPreviewHeader');
     var body = document.getElementById('splitPreviewBody');
     // title from first column
-    var titleCol = COLUMNS.find(function(c){return c.key && colVisibility[c.key]!==false;});
+    var titleCol = visibleCols({requireKey: true})[0];
     header.innerHTML = (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
@@ -750,7 +770,7 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+      var cols = visibleCols({requireKey: true, excludeActions: true});
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
@@ -898,7 +918,7 @@ pre code { background: none; padding: 0; }
     if (!showExport) return;
     btn.style.display = 'inline-flex';
     btn.onclick = function() {
-      var cols = COLUMNS.filter(function(c){return c.type!=='actions' && colVisibility[c.key]!==false;});
+      var cols = visibleCols({excludeActions: true});
       var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
       var rows = filtered.map(function(row) {
         return cols.map(function(c) {

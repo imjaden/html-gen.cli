@@ -4,17 +4,20 @@
       "key": "name",
       "label": "项目",
       "sortable": true,
-      "locale": "zh"
+      "locale": "zh",
+      "preview": true
     },
     {
       "key": "stars",
       "label": "Stars",
       "sortable": true,
-      "type": "number"
+      "type": "number",
+      "preview": true
     },
     {
       "key": "lang",
-      "label": "语言"
+      "label": "语言",
+      "preview": true
     },
     {
       "key": "desc",
