@@ -292,6 +292,8 @@
 
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
+  // Restore column visibility from localStorage
+  try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -840,6 +842,7 @@
   window.toggleCol = function(key, visible) {
     colVisibility[key] = visible;
     expandedIdx = -1;
+    try { localStorage.setItem('html-gen:table:col-visibility', JSON.stringify(colVisibility)); } catch(e) {}
     initColToggle();
     initThead();
     render();
