@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>Phase 3 Demo — 快速过滤</title>
+<title>Phase 3 Demo</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -219,6 +219,12 @@ pre code { background: none; padding: 0; }
 .filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+
+/* ── Frozen columns ── */
+.data-table th.frozen-col, .data-table td.frozen-col {
+  position: sticky; z-index: 11; background: var(--surface-900);
+}
+.data-table th.frozen-col { z-index: 12; }
 .header-search { background:var(--surface-850); border:1px solid #2a2a3e; color:#e0e0e0; padding:5px 10px;
   border-radius:6px; font-size:0.72rem; outline:none; width:180px; }
 .header-search:focus { border-color:var(--cobalt-600); }
@@ -363,7 +369,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>Phase 3 Demo — 快速过滤</h1>
+  <h1>Phase 3 Demo</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -430,7 +436,7 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "name", "label": "项目", "sortable": true, "locale": "zh", "preview": true}, {"key": "stars", "label": "Stars", "sortable": true, "type": "number", "preview": true}, {"key": "lang", "label": "语言", "preview": true}, {"key": "desc", "label": "描述"}, {"key": "url", "label": "URL", "onClick": "url", "hide": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const COLUMNS = [{"key": "name", "label": "项目", "sortable": true, "locale": "zh", "preview": true, "freeze": true}, {"key": "stars", "label": "Stars", "sortable": true, "type": "number", "preview": true}, {"key": "lang", "label": "语言", "preview": true}, {"key": "desc", "label": "描述"}, {"key": "url", "label": "URL", "onClick": "url", "hide": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
   const DATA    = [{"name": "hermes-agent", "stars": 50200, "lang": "Python", "desc": "CLI-first AI Agent: 零配置 CLI AI 代理", "url": "https://hermes-agent.nousresearch.com"}, {"name": "llm-radar", "stars": 1280, "lang": "Python", "desc": "LLM 领域动态追踪与趋势分析", "url": "https://llm-radar.jaden.tech"}, {"name": "html-gen", "stars": 45, "lang": "Python", "desc": "零依赖 Markdown → HTML 生成器。支持 A/B/C/D 四种模板", "url": "https://github.com/jadenli/html-gen"}, {"name": "http-server-cli", "stars": 320, "lang": "Python", "desc": "零依赖 HTTP 静态文件服务器，支持 CORS 和 range 请求", "url": "https://github.com/jadenli/http-server-cli"}, {"name": "script-miner", "stars": 89, "lang": "Python", "desc": "Python 脚本挖掘工具，分析代码模式与依赖", "url": "https://github.com/jadenli/script-miner"}, {"name": "daily-tracker", "stars": 12, "lang": "Python", "desc": "每日习惯追踪 CLI 工具", "url": "https://github.com/jadenli/daily-tracker"}, {"name": "favorite-manager", "stars": 3, "lang": "Python", "desc": "跨平台收藏管理工具", "url": "https://github.com/jadenli/favorite-manager"}, {"name": "hermes-manager", "stars": 7, "lang": "Python", "desc": "Hermes Agent 会话管理工具", "url": "https://github.com/jadenli/hermes-manager"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
   const OPTIONS = {"exportCSV": true, "clickModes": ["tab", "modal", "split", "expand"]};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
@@ -532,6 +538,21 @@ pre code { background: none; padding: 0; }
         return sortAsc ? cmp : -cmp;
       });
     }
+    // Secondary sort
+    if (sortKey2 && sortKey2 !== sortKey) {
+      var col2 = COLUMNS.find(function(c){return c.key===sortKey2;});
+      var isNum2 = col2 && col2.type === 'number';
+      var loc2 = col2 && col2.locale;
+      filtered.sort(function(a, b) {
+        var va = a[sortKey2], vb = b[sortKey2];
+        if (va === undefined || va === null) va = '';
+        if (vb === undefined || vb === null) vb = '';
+        if (isNum2) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc2 ? va - vb : vb - va; }
+        va = String(va); vb = String(vb);
+        var cmp = loc2 ? va.localeCompare(vb, loc2) : va.localeCompare(vb);
+        return sortAsc2 ? cmp : -cmp;
+      });
+    }
   }
 
   /* ── Render ── */
@@ -554,6 +575,9 @@ pre code { background: none; padding: 0; }
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
     var cols = visibleCols();
+    var frozenOffsets = [];
+    var fo = 0;
+    cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
 
     tbody.innerHTML = pageData.map(function(row, pi) {
       var rowIdx = start + pi;
@@ -572,8 +596,9 @@ pre code { background: none; padding: 0; }
           if (col.render) val = col.render(val, row);
           else if (val === undefined || val === null) val = '';
           else if (col.escape) val = escapeHtml(String(val));
-          var valDisplay = String(val);
-          rowHtml += '<td class="clickable-cell'+(col.class?' '+col.class:'')+'" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')">'+val+'</td>';
+          var freezeCls = col.freeze ? ' frozen-col' : '';
+          var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -697,30 +722,31 @@ pre code { background: none; padding: 0; }
     var thead = document.getElementById('thead');
     var cg = document.getElementById('colGroup');
     var cols = visibleCols();
+    var frozenOffset = 0;
+    var frozenStyles = [];
+    cols.forEach(function(c) {
+      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += 120; }
+      else { frozenStyles.push(''); }
+    });
     cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
-      cols.map(function(c) {
-        var w = c.width || (c.type==='actions'?'auto':'');
-        return '<col'+(w?' style="width:'+w+'"':'')+'>';
-      }).join('');
+      cols.map(function(c) { var w = c.width || (c.type==='actions'?'auto':''); return '<col'+(w?' style="width:'+w+'"':'')+'>'; }).join('');
     thead.innerHTML = '<tr>' +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
-        if (c.sortable !== false && c.type !== 'actions') {
-          sortCls = ' sortable';
-          if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc';
-        }
-        return '<th class="'+sortCls+'"'+(c.sortable!==false?' onclick="sortBy(\''+c.key+'\')"':'')+
-          (c.width && c.type !== 'actions'?' style="width:'+c.width+'"':'')+'>'+c.label+'<span class="resize-handle" onmousedown="startResize(event,\''+c.key+'\')"></span></th>';
+        if (c.sortable !== false && c.type !== 'actions') { sortCls = ' sortable'; if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc'; if (sortKey2 === c.key) sortCls += ' sort-asc'; }
+        var freezeCls = c.freeze ? ' frozen-col' : '';
+        var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
+        return '<th class="' + sortCls + freezeCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
+          (c.width && c.type !== 'actions' ? ' style="width:' + c.width + '"' : '') + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
       }).join('') + '</tr>';
   }
 
-  window.sortBy = function(key) {
-    if (sortKey === key) sortAsc = !sortAsc;
-    else { sortKey = key; sortAsc = true; }
-    expandedIdx = -1;
-    initThead();
-    render();
+  var sortKey2 = '', sortAsc2 = true;
+  window.sortBy = function(key, event) {
+    if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
+    else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
+    expandedIdx = -1; initThead(); render();
   };
 
   /* ── Row selection ── */
