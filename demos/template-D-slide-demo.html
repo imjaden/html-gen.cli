@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>D 型 Slide 演示</title>
+<title>D 型 Slide</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -229,8 +229,9 @@ pre code { background: none; padding: 0; }
 .slide-sidebar.collapsed .slide-h3-toggle,
 .slide-sidebar.collapsed .slide-toc,
 .slide-sidebar.collapsed .slide-sidebar-footer { display: none; }
-.slide-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.slide-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
 .slide-sidebar.collapsed .slide-sidebar-icon { display: flex; }
+.slide-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
 .slide-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
 .slide-sidebar-footer .sb-btn {
   display: inline-flex; align-items: center; justify-content: center;
@@ -400,7 +401,7 @@ pre code { background: none; padding: 0; }
     <div class="slide-sidebar-resize" id="sbResize"></div>
     <div class="slide-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">🎞️</div>
     <div class="slide-sidebar-header">
-      <div class="slide-title" title="D 型 Slide 演示" id="slideTitle">🎞️ D 型 Slide 演示</div>
+      <div class="slide-title" title="D 型 Slide" id="slideTitle">🎞️ D 型 Slide</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="slide-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -442,7 +443,7 @@ pre code { background: none; padding: 0; }
 <!-- Hidden: content source for DOM cloning -->
 <div style="display:none">
   <div class="doc-header">
-    <h1>D 型 Slide 演示</h1>
+    <h1>D 型 Slide</h1>
     <div class="meta">路径: <code>/Users/jadenli/CodeSpace/html-gen/demos/template-B-markdown-spec-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 985 · 阅读约 5 分钟</div>
   </div>
   <div id="docBody"><hr>
@@ -1322,6 +1323,8 @@ def hello():
     if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
     try { localStorage.setItem('html-gen:sidebar:collapsed', _sidebarCollapsed); } catch(e) {}
   };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
 
   // Restore collapse state
   try {
@@ -1329,10 +1332,12 @@ def hello():
     if (savedCollapsed === 'true') toggleSidebar();
   } catch(e) {}
 
-  // [ shortcut — collapse sidebar (skip in inputs)
+  // [ collapse / ] expand — skip in inputs
   document.addEventListener('keydown', function(e) {
-    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
     }
   });
 

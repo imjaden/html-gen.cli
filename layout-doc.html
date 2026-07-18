@@ -27,8 +27,9 @@
 .doc-sidebar.collapsed .doc-sidebar-header,
 .doc-sidebar.collapsed .doc-toc,
 .doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
-.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
 .doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
+.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
 .doc-sidebar-header {
   padding: 16px 18px 12px;
   border-bottom: 1px solid #2a2a3e;
@@ -311,11 +312,15 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
     try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
     setTimeout(function() { updateProgress(); }, 300);
   };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
   try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
     }
   });
 
