@@ -479,7 +479,7 @@
       } else if (act.hrefKey) {
         onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '') + ',"_blank")';
       } else if (act.handler) {
-        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row) + ')';
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
       } else if (act.desc) {
         onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
       }
