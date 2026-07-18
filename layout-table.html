@@ -429,11 +429,13 @@
         } else {
           var val = row[col.key];
           if (col.render) val = col.render(val, row);
-          else if (val === undefined || val === null) val = '';
           else if (col.escape) val = escapeHtml(String(val));
+          else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')"'+freezeStyle+'>'+val+'</td>';
+          var qfKey = JSON.stringify(col.key).replace(/\"/g, '&quot;');
+          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/\"/g, '&quot;');
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -766,6 +768,13 @@
   };
 
   /* ── Column visibility ── */
+  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
+  function listPresets() {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    return presets;
+  }
+
   function initColToggle() {
     var dd = document.getElementById('colToggleDropdown');
     var html = '';
@@ -839,6 +848,7 @@
     expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
     initColToggle();
+    render();
   };
 
   /* ── Search (real-time debounced) ── */
@@ -1063,7 +1073,6 @@
   });
 
   /* ── View Presets ── */
-  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
   window.savePreset = function(name) {
     name = name || ('预设 ' + (new Date()).toLocaleTimeString());
     var presets = [];
@@ -1097,11 +1106,6 @@
     try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) {}
     initColToggle();
     showToast('已删除: ' + name);
-  };
-  window.listPresets = function() {
-    var presets = [];
-    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
-    return presets;
   };
 
 })();

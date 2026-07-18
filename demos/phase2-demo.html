@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>Phase 4 Demo</title>
+<title>Phase 2-4 Test</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -389,7 +389,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>Phase 4 Demo</h1>
+  <h1>Phase 2-4 Test</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -615,11 +615,13 @@ pre code { background: none; padding: 0; }
         } else {
           var val = row[col.key];
           if (col.render) val = col.render(val, row);
-          else if (val === undefined || val === null) val = '';
           else if (col.escape) val = escapeHtml(String(val));
+          else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+JSON.stringify(col.key)+','+JSON.stringify(String(row[col.key]||''))+')"'+freezeStyle+'>'+val+'</td>';
+          var qfKey = JSON.stringify(col.key).replace(/\"/g, '&quot;');
+          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/\"/g, '&quot;');
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -952,6 +954,13 @@ pre code { background: none; padding: 0; }
   };
 
   /* ── Column visibility ── */
+  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
+  function listPresets() {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    return presets;
+  }
+
   function initColToggle() {
     var dd = document.getElementById('colToggleDropdown');
     var html = '';
@@ -1025,6 +1034,7 @@ pre code { background: none; padding: 0; }
     expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
     initColToggle();
+    render();
   };
 
   /* ── Search (real-time debounced) ── */
@@ -1249,7 +1259,6 @@ pre code { background: none; padding: 0; }
   });
 
   /* ── View Presets ── */
-  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
   window.savePreset = function(name) {
     name = name || ('预设 ' + (new Date()).toLocaleTimeString());
     var presets = [];
@@ -1283,11 +1292,6 @@ pre code { background: none; padding: 0; }
     try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) {}
     initColToggle();
     showToast('已删除: ' + name);
-  };
-  window.listPresets = function() {
-    var presets = [];
-    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
-    return presets;
   };
 
 })();
