@@ -47,19 +47,43 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 ### layout-doc.html（B 型文档）
 - 左侧粘性侧边栏 + 右侧内容区
-- 自动生成 TOC（h2/h3）
-- 代码复制、代码行号、Callout 提示框、外链归档、阅读进度条
+- 自动生成 TOC（h2/h3），实时高亮当前章节
+- TOC 搜索（🔍 按钮，150ms debounce，≥2 字符触发过滤）
+- 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
+- 侧边栏宽度拖拽（200-400px，localStorage 持久化）
+- H3 子项开关，中/英双语，🌙/☀️ 主题切换
+- 标题点击复制路径（textContent 安全获取）
+- 代码复制（剪贴板 + fallback）、行号、Callout 提示框、阅读进度条、图片灯箱
 
 ### layout-table.html（A 型表格）
-- 实时搜索、多字段排序、客户端分页（30 条/页）
+- 实时搜索（300ms debounce）+ Cmd+F Spotlight 弹窗搜索
+- 多字段排序（Shift+点击二级排序），数字/中文 locale 排序
+- 客户端分页（默认 30 条/页，可配置）
+- **密度切换**：紧凑(28px) / 标准(34px) / 舒适(42px)
+- **四种点击模式**（`options.clickModes` 控制）：
+  - 🔗 新标签页：`window.open(url, '_blank', 'noopener,noreferrer')`
+  - 📋 弹出面板：居中 overlay，键值列表（textContent 安全渲染）
+  - 📑 分栏预览：表格 40% + 预览 60%，拖拽分栏线 (25-75%)
+  - 📂 行内展开：手风琴模式，点击展开详情网格
+- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭
+- **列冻结**：`col.freeze: true` → sticky 列，自动计算 left 偏移
+- **分栏模式列过滤**：`col.preview: true` → 仅预览列显示于分栏表格
+- **列隐藏**：`col.hide: true` → 永不可见
+- **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
+- **批量操作**：选中行出现工具栏（全选/取消/导出 CSV）
+- **视图预设**：保存/加载/删除设置（密度/模式/排序/列可见性，最多 10 个，≤2KB）
 - 列名从 JSON 首条 key 自动推导
 - 支持单元格 HTML（`<a>`、`<code>` 等）
+- 支持操作按钮列（`copyKey` / `hrefKey`）、多标签页、CSV 导出、列宽拖拽
 
 ### layout-knowledge.html（C 型知识库）
-- 顶部横向标签栏（按 group 分组）
-- 左侧章节列表（按 section 和 badge 标记）
+- 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
+- 左侧章节列表（按 section 分组，badge 标记显式）
+- 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏）
+- 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 双内容模式：有 `url` → iframe 加载，有 `desc` → 内联渲染
 - 空状态显示欢迎面板
+- 上次选择状态 localStorage 恢复（group + item）
 
 ## Markdown → HTML 转换规则
 
@@ -107,11 +131,22 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - `number`：数值排序（parseFloat 比较）
 - `actions`：操作按钮列，支持 `copyKey`（复制）和 `hrefKey`（跳转）
 
-Column `onClick`：`"url"` 使整行可点击跳转到 row.url
+列属性：
+- `col.sortable`：是否可排序（默认 true）
+- `col.locale`：排序 locale（如 `"zh"` 用于中文排序）
+- `col.freeze`：列冻结（sticky，自动计算 left 偏移）
+- `col.preview`：分栏模式下是否显示（默认 false）
+- `col.hide`：永远隐藏（默认 false）
+- `col.onClick`：`"url"` 使整行可点击跳转到 row.url
 
 Tab 定义：`field` 指定匹配的数据字段（默认 `group` 或 `category`）
 
-Options（均可选）：`pageSize`（默认 30）、`exportCSV`、`rowSelect`、`search`
+Options（均可选）：
+- `pageSize`：每页条数（默认 30）
+- `exportCSV`：显示导出按钮（默认 false）
+- `rowSelect`：行选择 + 批量操作工具栏（默认 false）
+- `search`：搜索框可见性（默认 true）
+- `clickModes`：允许的点击模式 `["tab", "modal", "split", "expand"]`（默认 `["tab"]`）
 
 ### knowledge 输入（JSON 数组）
 ```json
