@@ -149,6 +149,13 @@
   .kw-sidebar.open { display: flex; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
   .kw-body { padding: 16px; }
 }
+
+@media print {
+  .kw-sidebar, .kw-tab-bar, .kw-toolbar { display: none !important; }
+  .kw-body { color: #000; }
+  .kw-welcome { display: none !important; }
+  body { background: #fff; }
+}
 .kw-sidebar::-webkit-scrollbar { width: 4px; }
 .kw-sidebar::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
 </style>
