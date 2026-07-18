@@ -212,7 +212,41 @@ pre code { background: none; padding: 0; }
 .table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
 .stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
   background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
-.stat-pill .num { color:var(--cobalt-400); font-weight:600; }
+.stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
+.filter-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px;
+  background:rgba(79,70,229,0.15); border:1px solid var(--cobalt-600); font-size:0.65rem; color:var(--cobalt-300); cursor:pointer; white-space:nowrap; }
+.filter-pill:hover { background:rgba(79,70,229,0.25); }
+.filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
+.data-table td.clickable-cell { cursor:pointer; }
+.data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+.data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
+
+/* ── Batch toolbar ── */
+.batch-bar { display:none; align-items:center; gap:8px; padding:6px 12px; background:rgba(79,70,229,0.12); border:1px solid var(--cobalt-600); border-radius:8px; margin-bottom:8px; }
+.batch-bar.active { display:flex; }
+.batch-bar .bb-text { font-size:0.72rem; color:var(--cobalt-300); font-weight:600; }
+.batch-bar .bb-btn { padding:3px 10px; border-radius:4px; border:1px solid var(--cobalt-600); background:transparent; color:var(--cobalt-400); cursor:pointer; font-size:0.68rem; font-family:inherit; }
+.batch-bar .bb-btn:hover { background:rgba(79,70,229,0.2); }
+
+/* ── Fullscreen ── */
+.wrapper.fullscreen { position:fixed; inset:0; z-index:999; background:var(--surface-950); padding:12px; overflow:auto; }
+.fs-btn { padding:3px 10px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.68rem; font-family:inherit; }
+.fs-btn:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+
+@media print {
+  .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
+  .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
+  .data-table th, .data-table td { color: #000; border-color: #ccc; }
+  .data-table th { background: #f5f5f5; }
+  body { background: #fff; }
+  .wrapper { padding: 0; }
+}
+
+/* ── Frozen columns ── */
+.data-table th.frozen-col, .data-table td.frozen-col {
+  position: sticky; z-index: 11; background: var(--surface-900);
+}
+.data-table th.frozen-col { z-index: 12; }
 .header-search { background:var(--surface-850); border:1px solid #2a2a3e; color:#e0e0e0; padding:5px 10px;
   border-radius:6px; font-size:0.72rem; outline:none; width:180px; }
 .header-search:focus { border-color:var(--cobalt-600); }
@@ -304,6 +338,11 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
+.data-table tr.expand-row td { padding:10px 14px; background:rgba(79,70,229,0.06); border-top:1px solid var(--cobalt-700); }
+.data-table tr.expand-row .expand-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; }
+.data-table tr.expand-row .expand-item { padding:6px 10px; border:1px solid #1a1a2e; border-radius:6px; }
+.data-table tr.expand-row .expand-item .ex-label { font-size:0.62rem; color:#6b7280; }
+.data-table tr.expand-row .expand-item .ex-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 
 /* ── Toast ── */
 .toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); padding:8px 20px;
@@ -350,16 +389,25 @@ pre code { background: none; padding: 0; }
 
 <div class="table-tabs" id="tabsBar"></div>
 
+<div class="batch-bar" id="batchBar">
+  <span class="bb-text" id="batchCount">已选 0 条</span>
+  <button class="bb-btn" onclick="selectAllFiltered()">全选</button>
+  <button class="bb-btn" onclick="clearSelection()">取消</button>
+  <button class="bb-btn" onclick="exportSelectedCSV()">📥 导出</button>
+</div>
+
 <div class="table-main" id="tableMain">
 <div class="table-header">
   <h1>Hermes Skills 清单</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
+  <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
   <div class="flex-1"></div>
   <input class="header-search" id="searchInput" placeholder="搜索..." onkeydown="if(event.key==='Enter')doSearch()">
   
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
+  <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
   <div class="col-toggle-wrap">
     <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="设置">⚙️</button>
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
@@ -430,7 +478,9 @@ pre code { background: none; padding: 0; }
 
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
-  let density = 'default', clickMode = 'tab', splitRatio = 40;
+  let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
+  let expandedIdx = -1;
+  let quickFilter = null;  // {key, value}
 
   // Restore from localStorage
   try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
@@ -442,6 +492,20 @@ pre code { background: none; padding: 0; }
     var d = document.createElement('div');
     d.textContent = text;
     return d.innerHTML;
+  }
+
+  /* ── Visible columns (respects visibility toggle + split mode preview filter) ── */
+  function visibleCols(opts) {
+    opts = opts || {};
+    return COLUMNS.filter(function(c) {
+      if (opts.requireKey && !c.key) return false;
+      if (opts.excludeActions && c.type === 'actions') return false;
+      if (c.hide) return false;
+      if (colVisibility[c.key] === false) return false;
+      // split mode: only show preview columns
+      if (splitActive && c.preview !== true) return false;
+      return true;
+    });
   }
 
   /* ── Tabs ── */
@@ -483,6 +547,12 @@ pre code { background: none; padding: 0; }
         });
       });
     }
+    // Quick filter (cell click)
+    if (quickFilter) {
+      filtered = filtered.filter(function(row) {
+        return String(row[quickFilter.key] || '') === quickFilter.value;
+      });
+    }
     // Sort
     if (sortKey) {
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
@@ -496,6 +566,21 @@ pre code { background: none; padding: 0; }
         va = String(va); vb = String(vb);
         var cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb);
         return sortAsc ? cmp : -cmp;
+      });
+    }
+    // Secondary sort
+    if (sortKey2 && sortKey2 !== sortKey) {
+      var col2 = COLUMNS.find(function(c){return c.key===sortKey2;});
+      var isNum2 = col2 && col2.type === 'number';
+      var loc2 = col2 && col2.locale;
+      filtered.sort(function(a, b) {
+        var va = a[sortKey2], vb = b[sortKey2];
+        if (va === undefined || va === null) va = '';
+        if (vb === undefined || vb === null) vb = '';
+        if (isNum2) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc2 ? va - vb : vb - va; }
+        va = String(va); vb = String(vb);
+        var cmp = loc2 ? va.localeCompare(vb, loc2) : va.localeCompare(vb);
+        return sortAsc2 ? cmp : -cmp;
       });
     }
   }
@@ -519,7 +604,10 @@ pre code { background: none; padding: 0; }
     var tbody = document.getElementById('tbody');
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
-    var cols = COLUMNS.filter(function(c) { return colVisibility[c.key] !== false; });
+    var cols = visibleCols();
+    var frozenOffsets = [];
+    var fo = 0;
+    cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
 
     tbody.innerHTML = pageData.map(function(row, pi) {
       var rowIdx = start + pi;
@@ -536,12 +624,27 @@ pre code { background: none; padding: 0; }
         } else {
           var val = row[col.key];
           if (col.render) val = col.render(val, row);
-          else if (val === undefined || val === null) val = '';
           else if (col.escape) val = escapeHtml(String(val));
-          rowHtml += '<td'+(col.class?' class="'+col.class+'"':'')+'>'+val+'</td>';
+          else if (val === undefined || val === null) val = '';
+          var freezeCls = col.freeze ? ' frozen-col' : '';
+          var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+          var qfKey = JSON.stringify(col.key).replace(/\"/g, '&quot;');
+          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/\"/g, '&quot;');
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
+      // Expand detail row (accordion mode)
+      if (expandedIdx === rowIdx) {
+        var detailCols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+        rowHtml += '<tr class="expand-row"><td colspan="' + (showRowSelect ? cols.length + 1 : cols.length) + '">';
+        rowHtml += '<div class="expand-grid">';
+        detailCols.forEach(function(c) {
+          var v = row[c.key]; if (v === null || v === undefined) v = '';
+          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + escapeHtml(String(v)) + '</div></div>';
+        });
+        rowHtml += '</div></td></tr>';
+      }
       return rowHtml;
     }).join('');
     renderPager(totalPages);
@@ -580,15 +683,15 @@ pre code { background: none; padding: 0; }
       var col = getRowClickCol();
       return col && col.onClick === 'url' && row.url;
     }
-    // modal or split: any row is clickable
-    return clickMode === 'modal' || clickMode === 'split';
+    // modal, split, or expand: any row is clickable
+    return clickMode === 'modal' || clickMode === 'split' || clickMode === 'expand';
   }
 
   /* ── Stats ── */
   function updateStats() {
     document.getElementById('statTotal').textContent = DATA.length;
     var fp = document.getElementById('statFilteredPill');
-    if (filtered.length !== DATA.length) {
+    if (filtered.length !== DATA.length || quickFilter) {
       fp.style.display = 'inline-flex';
       document.getElementById('statFiltered').textContent = filtered.length;
     } else { fp.style.display = 'none'; }
@@ -598,7 +701,34 @@ pre code { background: none; padding: 0; }
       sp.style.display = cnt > 0 ? 'inline-flex' : 'none';
       document.getElementById('statSelected').textContent = cnt;
     }
+    // Quick filter pill
+    var qfEl = document.getElementById('quickFilterPill');
+    if (quickFilter) {
+      qfEl.style.display = 'inline-flex';
+      var col = COLUMNS.find(function(c){return c.key===quickFilter.key;});
+      qfEl.innerHTML = (col ? col.label : quickFilter.key) + ': ' + escapeHtml(quickFilter.value) + '<span class="fp-close" onclick="event.stopPropagation();clearQuickFilter()">✕</span>';
+      qfEl.onclick = function() { clearQuickFilter(); };
+    } else {
+      qfEl.style.display = 'none';
+    }
   }
+
+  window.quickFilterBy = function(key, value) {
+    if (quickFilter && quickFilter.key === key && quickFilter.value === value) {
+      quickFilter = null;  // toggle off
+    } else {
+      quickFilter = {key: key, value: value};
+    }
+    expandedIdx = -1;
+    currentPage = 1;
+    render();
+  };
+
+  window.clearQuickFilter = function() {
+    quickFilter = null;
+    currentPage = 1;
+    render();
+  };
 
   /* ── Pagination ── */
   function renderPager(totalPages) {
@@ -615,6 +745,7 @@ pre code { background: none; padding: 0; }
   window.goPage = function(n) {
     var tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
     currentPage = Math.max(1, Math.min(n, tp));
+    expandedIdx = -1;
     render();
   };
 
@@ -622,30 +753,32 @@ pre code { background: none; padding: 0; }
   function initThead() {
     var thead = document.getElementById('thead');
     var cg = document.getElementById('colGroup');
-    var cols = COLUMNS.filter(function(c){return colVisibility[c.key]!==false;});
+    var cols = visibleCols();
+    var frozenOffset = 0;
+    var frozenStyles = [];
+    cols.forEach(function(c) {
+      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += 120; }
+      else { frozenStyles.push(''); }
+    });
     cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
-      cols.map(function(c) {
-        var w = c.width || (c.type==='actions'?'auto':'');
-        return '<col'+(w?' style="width:'+w+'"':'')+'>';
-      }).join('');
+      cols.map(function(c) { var w = c.width || (c.type==='actions'?'auto':''); return '<col'+(w?' style="width:'+w+'"':'')+'>'; }).join('');
     thead.innerHTML = '<tr>' +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
-        if (c.sortable !== false && c.type !== 'actions') {
-          sortCls = ' sortable';
-          if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc';
-        }
-        return '<th class="'+sortCls+'"'+(c.sortable!==false?' onclick="sortBy(\''+c.key+'\')"':'')+
-          (c.width && c.type !== 'actions'?' style="width:'+c.width+'"':'')+'>'+c.label+'<span class="resize-handle" onmousedown="startResize(event,\''+c.key+'\')"></span></th>';
+        if (c.sortable !== false && c.type !== 'actions') { sortCls = ' sortable'; if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc'; if (sortKey2 === c.key) sortCls += ' sort-asc'; }
+        var freezeCls = c.freeze ? ' frozen-col' : '';
+        var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
+        return '<th class="' + sortCls + freezeCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
+          (c.width && c.type !== 'actions' ? ' style="width:' + c.width + '"' : '') + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
       }).join('') + '</tr>';
   }
 
-  window.sortBy = function(key) {
-    if (sortKey === key) sortAsc = !sortAsc;
-    else { sortKey = key; sortAsc = true; }
-    initThead();
-    render();
+  var sortKey2 = '', sortAsc2 = true;
+  window.sortBy = function(key, event) {
+    if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
+    else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
+    expandedIdx = -1; initThead(); render();
   };
 
   /* ── Row selection ── */
@@ -684,12 +817,22 @@ pre code { background: none; padding: 0; }
       activateSplit(row, idx);
       return;
     }
+    // expand mode: toggle inline detail
+    if (clickMode === 'expand') {
+      if (expandedIdx === idx) {
+        expandedIdx = -1;  // collapse
+      } else {
+        expandedIdx = idx;  // expand
+      }
+      render();
+      return;
+    }
   }
   window.handleRowClick = handleRowClick;
 
   /* ── Modal Panel ── */
   function showModal(row) {
-    var cols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+    var cols = visibleCols({requireKey: true, excludeActions: true});
     var title = row[cols[0] && cols[0].key] || '详情';
     var html = '<div style="position:relative"><button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;">✕</button><h3>'+escapeHtml(String(title))+'</h3>';
     html += cols.map(function(c) {
@@ -714,8 +857,11 @@ pre code { background: none; padding: 0; }
   var splitRow = null, splitIdx = -1;
   function activateSplit(row, idx) {
     splitRow = row; splitIdx = idx;
+    splitActive = true;
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.add('split-mode');
+    initThead();
+    render();  // re-render with preview-only cols
     renderSplitPreview(row);
     // highlight active row
     var tbody = document.getElementById('tbody');
@@ -725,9 +871,12 @@ pre code { background: none; padding: 0; }
   }
   window.activateSplit = activateSplit;
   window.closeSplit = function() {
+    splitActive = false;
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.remove('split-mode');
     splitRow = null; splitIdx = -1;
+    initThead();
+    render();
     // clear highlight
     var rows = document.getElementById('tbody').querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
@@ -737,7 +886,7 @@ pre code { background: none; padding: 0; }
     var header = document.getElementById('splitPreviewHeader');
     var body = document.getElementById('splitPreviewBody');
     // title from first column
-    var titleCol = COLUMNS.find(function(c){return c.key && colVisibility[c.key]!==false;});
+    var titleCol = visibleCols({requireKey: true})[0];
     header.innerHTML = (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
@@ -750,7 +899,7 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+      var cols = visibleCols({requireKey: true, excludeActions: true});
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
@@ -814,6 +963,13 @@ pre code { background: none; padding: 0; }
   };
 
   /* ── Column visibility ── */
+  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
+  function listPresets() {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    return presets;
+  }
+
   function initColToggle() {
     var dd = document.getElementById('colToggleDropdown');
     var html = '';
@@ -822,7 +978,8 @@ pre code { background: none; padding: 0; }
     var validModes = (OPTIONS && OPTIONS.clickModes) || ['tab'];
     var hasSplit = validModes.indexOf('split') !== -1;
     var hasModal = validModes.indexOf('modal') !== -1;
-    var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + 1;
+    var hasExpand = validModes.indexOf('expand') !== -1;
+    var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
     if (tabCount > 1 || density !== 'default') {
       html += '<div class="settings-section">密度</div>';
       ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
@@ -837,6 +994,7 @@ pre code { background: none; padding: 0; }
       if (validModes.indexOf('tab') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="tab" '+(clickMode==='tab'?'checked':'')+' onchange="setClickMode(\'tab\')">🔗 新标签页</label>';
       if (validModes.indexOf('modal') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="modal" '+(clickMode==='modal'?'checked':'')+' onchange="setClickMode(\'modal\')">📋 弹出面板</label>';
       if (validModes.indexOf('split') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="split" '+(clickMode==='split'?'checked':'')+' onchange="setClickMode(\'split\')">📑 分栏预览</label>';
+      if (validModes.indexOf('expand') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="expand" '+(clickMode==='expand'?'checked':'')+' onchange="setClickMode(\'expand\')">📂 行内展开</label>';
     }
 
     // column visibility
@@ -845,6 +1003,16 @@ pre code { background: none; padding: 0; }
       var visible = colVisibility[c.key] !== false;
       return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
     }).join('');
+
+    // view presets
+    var presets = listPresets();
+    if (presets.length > 0) {
+      html += '<div class="col-toggle-divider"></div><div class="settings-section">视图预设 (' + presets.length + '/' + MAX_PRESETS + ')</div>';
+      presets.forEach(function(p) {
+        html += '<label style="display:flex;justify-content:space-between;align-items:center"><span onclick="loadPreset(\'' + p.name + '\')" style="cursor:pointer;flex:1">' + escapeHtml(p.name) + '</span><span onclick="event.stopPropagation();deletePreset(\'' + p.name + '\')" style="cursor:pointer;color:#f87171;font-size:0.65rem">✕</span></label>';
+      });
+    }
+    html += '<label style="font-size:0.65rem"><a href="#" onclick="event.preventDefault();var n=prompt(\'预设名称:\');if(n)savePreset(n)" style="color:var(--cobalt-400)">+ 保存当前视图</a></label>';
 
     dd.innerHTML = html;
     document.getElementById('colToggleBtn').onclick = function(e) {
@@ -857,6 +1025,7 @@ pre code { background: none; padding: 0; }
 
   window.toggleCol = function(key, visible) {
     colVisibility[key] = visible;
+    expandedIdx = -1;
     initColToggle();
     initThead();
     render();
@@ -871,22 +1040,25 @@ pre code { background: none; padding: 0; }
 
   window.setClickMode = function(val) {
     clickMode = val;
+    expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
     initColToggle();
+    render();
   };
 
   /* ── Search (real-time debounced) ── */
   var searchTimer;
   document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(function() { currentPage = 1; render(); }, 300);
+    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); }, 300);
   });
-  window.doSearch = function() { currentPage = 1; render(); };
+  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); };
 
   /* ── Tab switch ── */
   window.switchTab = function(key) {
     activeTab = key;
     try { localStorage.setItem('htmlgen_tab', key); } catch(e) {}
+    expandedIdx = -1;
     buildTabs();
     currentPage = 1;
     render();
@@ -898,7 +1070,7 @@ pre code { background: none; padding: 0; }
     if (!showExport) return;
     btn.style.display = 'inline-flex';
     btn.onclick = function() {
-      var cols = COLUMNS.filter(function(c){return c.type!=='actions' && colVisibility[c.key]!==false;});
+      var cols = visibleCols({excludeActions: true});
       var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
       var rows = filtered.map(function(row) {
         return cols.map(function(c) {
@@ -1042,6 +1214,95 @@ pre code { background: none; padding: 0; }
       quickSearch.close();
     }
   });
+
+  /* ── Keyboard Navigation ── */
+  var kbFocusIdx = -1;
+  document.addEventListener('keydown', function(e) {
+    // Only when not in input
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    var tbody = document.getElementById('tbody');
+    var rows = tbody.querySelectorAll('tr:not(.expand-row)');
+    if (!rows.length) return;
+    var pageRows = rows.length;
+    if (e.key === 'ArrowDown') { e.preventDefault(); kbFocusIdx = kbFocusIdx < 0 ? 0 : Math.min(pageRows - 1, kbFocusIdx + 1); highlightKbRow(rows); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); kbFocusIdx = kbFocusIdx < 0 ? pageRows - 1 : Math.max(0, kbFocusIdx - 1); highlightKbRow(rows); }
+    else if (e.key === 'Enter' && kbFocusIdx >= 0) { e.preventDefault(); var r = rows[kbFocusIdx]; if (r) r.click(); }
+  });
+  function highlightKbRow(rows) {
+    rows.forEach(function(r, i) { r.classList.toggle('keyboard-focus', i === kbFocusIdx); });
+    if (kbFocusIdx >= 0 && rows[kbFocusIdx]) rows[kbFocusIdx].scrollIntoView({block:'nearest'});
+  }
+
+  /* ── Batch Operations ── */
+  function updateBatchBar() {
+    if (!showRowSelect) return;
+    var cnt = Object.keys(selectedRows).length;
+    var bar = document.getElementById('batchBar');
+    bar.classList.toggle('active', cnt > 0);
+    document.getElementById('batchCount').textContent = '已选 ' + cnt + ' 条';
+  }
+  var origUpdateStats = updateStats;
+  updateStats = function() { origUpdateStats(); updateBatchBar(); };
+  window.selectAllFiltered = function() { filtered.forEach(function(r, i) { selectedRows[i] = true; }); render(); };
+  window.clearSelection = function() { selectedRows = {}; kbFocusIdx = -1; render(); };
+  window.exportSelectedCSV = function() {
+    var selected = Object.keys(selectedRows).map(function(i) { return filtered[parseInt(i)]; }).filter(Boolean);
+    if (!selected.length) { showToast('未选中任何行'); return; }
+    var cols = visibleCols({excludeActions: true});
+    var csv = '\uFEFF' + cols.map(function(c){return '"'+c.label+'"';}).join(',') + '\n' +
+      selected.map(function(r){ return cols.map(function(c){ var v = r[c.key]||''; return '"'+String(v).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'selected.csv'; a.click();
+    showToast('已导出 ' + selected.length + ' 条');
+  };
+
+  /* ── Fullscreen ── */
+  window.toggleFullscreen = function() {
+    document.querySelector('.wrapper').classList.toggle('fullscreen');
+    showToast(document.querySelector('.wrapper').classList.contains('fullscreen') ? '已进入全屏 (F 退出)' : '已退出全屏');
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'f' && !e.metaKey && !e.ctrlKey && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault(); toggleFullscreen();
+    }
+  });
+
+  /* ── View Presets ── */
+  window.savePreset = function(name) {
+    name = name || ('预设 ' + (new Date()).toLocaleTimeString());
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    var state = {density: density, clickMode: clickMode, splitRatio: splitRatio, colVisibility: colVisibility, sortKey: sortKey, sortAsc: sortAsc, name: name};
+    var json = JSON.stringify(state);
+    if (json.length > MAX_PRESET_SIZE) { showToast('预设过大，请减少列数'); return; }
+    var existing = presets.findIndex(function(p){ return p.name === name; });
+    if (existing >= 0) presets[existing] = state;
+    else { if (presets.length >= MAX_PRESETS) presets.shift(); presets.push(state); }
+    try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) { showToast('存储失败'); return; }
+    showToast('已保存: ' + name);
+  };
+  window.loadPreset = function(name) {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    var p = presets.find(function(p){ return p.name === name; });
+    if (!p) { showToast('预设不存在: ' + name); return; }
+    if (p.density) { density = p.density; applyDensity(); }
+    if (p.clickMode) { clickMode = p.clickMode; }
+    if (p.splitRatio) { splitRatio = p.splitRatio; document.querySelector('.wrapper').style.setProperty('--spl-ratio', p.splitRatio+'%'); }
+    if (p.colVisibility) { colVisibility = p.colVisibility; }
+    if (p.sortKey) { sortKey = p.sortKey; sortAsc = p.sortAsc || true; }
+    initColToggle(); initThead(); render();
+    showToast('已加载: ' + name);
+  };
+  window.deletePreset = function(name) {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    presets = presets.filter(function(p){ return p.name !== name; });
+    try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) {}
+    initColToggle();
+    showToast('已删除: ' + name);
+  };
+
 })();
 </script>
 </body>
