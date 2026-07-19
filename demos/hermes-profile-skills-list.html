@@ -663,13 +663,13 @@ pre code { background: none; padding: 0; }
       if (act.copyKey) {
         onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
       } else if (act.hrefKey) {
-        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '') + ',"_blank")';
+        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '').replace(/"/g, '&quot;') + ',"_blank","noopener,noreferrer")';
       } else if (act.handler) {
         onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
       } else if (act.desc) {
         onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
       }
-      return '<button class="action-btn ' + (act.class||'') + '" onclick="' + onclick + '" title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
+      return '<button class="action-btn ' + (act.class||'') + '" onclick=\'' + onclick + '\' title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
     }).join('');
   }
 
