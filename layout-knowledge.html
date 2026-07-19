@@ -222,16 +222,6 @@
     '能输出':{bg:'rgba(251,146,60,0.12)',color:'#fb923c',border:'rgba(251,146,60,0.25)'},
   };
 
-  // Update .sub with item count
-  function updateSub() {
-    var sub = document.querySelector('.kw-sidebar-header .sub');
-    if (sub) {
-      var base = (sub.textContent || '').replace(/\s*共\s+\d+\s*条目.*/, '').trim();
-      sub.textContent = (base ? base + ' · ' : '') + '共 ' + ITEMS.length + ' 条目';
-    }
-  }
-  updateSub();
-
   /* ═══════ i18n & Theme ═══════ */
   var _kwLang = (function() { try { var v = localStorage.getItem('html-gen:kw_lang'); return (v === 'zh' || v === 'en') ? v : 'zh'; } catch(e) { return 'zh'; } })();
   document.getElementById('kwLangZh').classList.toggle('active', _kwLang === 'zh');
