@@ -318,8 +318,11 @@
       if (opts.excludeActions && c.type === 'actions') return false;
       if (c.hide) return false;
       if (colVisibility[c.key] === false) return false;
-      // split mode: only show preview columns
-      if (splitActive && c.preview !== true) return false;
+      // split mode: only show preview columns (if any column has preview:true)
+      if (splitActive) {
+        var hasAnyPreview = COLUMNS.some(function(x) { return x.preview === true; });
+        if (hasAnyPreview && c.preview !== true) return false;
+      }
       return true;
     });
   }
