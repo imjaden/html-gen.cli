@@ -103,10 +103,14 @@ class TestHermesSkills(unittest.TestCase):
         self.assertNotIn('split-mode', (wrapper.get_attribute('class') or '').split())
 
     def test_05_url_button(self):
-        """🔗 button should exist and be clickable."""
+        """🔗 button should exist and have a valid onclick."""
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
         url_btns = [b for b in btns if b.get_attribute('title') == '新标签页打开']
         self.assertTrue(len(url_btns) > 0, "No URL action buttons found")
+        # Verify onclick is well-formed (no broken attributes)
+        onclick = url_btns[0].get_attribute('onclick')
+        self.assertIn('window.open', onclick or '', "URL button should have window.open")
+        self.assertIn('noopener', onclick or '', "Should have noopener for security")
 
     # ── No JS errors ──
 
@@ -133,6 +137,13 @@ class TestHermesSkills(unittest.TestCase):
             split_btns[0].click()
             time.sleep(0.2)
             self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
+            time.sleep(0.1)
+
+        # Click URL button (should not error — opens new tab)
+        btns2 = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        url_btns = [b for b in btns2 if b.get_attribute('title') == '新标签页打开']
+        if url_btns:
+            url_btns[0].click()
             time.sleep(0.1)
 
         errs = self._errors()
