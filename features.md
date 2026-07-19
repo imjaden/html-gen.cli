@@ -41,6 +41,7 @@ company-report.py — 公司调研报告生成器 (schema → C 型知识库) �
 自动 TOC 生成 (h2/h3 锚点 + 滚动高亮) ✅ — layout-doc.html
 TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-doc.html
 侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-doc.html
+侧边栏按键分离 (`[` 折叠 / `]` 展开, 输入框豁免) ✅ — layout-doc.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-doc.html
 侧边栏标题点击复制路径 (textContent 安全获取) ✅ — layout-doc.html
 H3 子项开关 (显示/隐藏 TOC 中 h3 条目) ✅ — layout-doc.html
@@ -62,7 +63,8 @@ H3 单列回退 (仅 1 个 h3 → 全宽) ✅ — layout-slide.html
 底部导航点 (点击跳转页面) ✅ — layout-slide.html
 自动 TOC 生成 (h2 条目, 页面跳转) ✅ — layout-slide.html
 TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-slide.html
-侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-slide.html
+侧边栏折叠/展开 (48px 收起态, `[`/`]` 按键) ✅ — layout-slide.html
+侧边栏按键分离 (`[` 折叠 / `]` 展开) ✅ — layout-slide.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-slide.html
 侧边栏标题点击复制路径 (textContent + URL 白名单) ✅ — layout-slide.html
 页码实时更新 (封面 "共 N 页"/内容页 "M / N", 中英双语) ✅ — layout-slide.html
@@ -90,7 +92,9 @@ Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.h
 列可见性切换 (⚙️ 下拉面板, 复选框) ✅ — layout-table.html
 列宽拖拽 (resize handle, 最小 40px) ✅ — layout-table.html
 多标签页 (tabs, 按 field/match 过滤, localStorage 记忆) ✅ — layout-table.html
-操作按钮列 (copyKey/hrefKey/desc 模式) ✅ — layout-table.html
+操作按钮列 (copyKey/hrefKey/desc/handler 模式) ✅ — layout-table.html
+Tab 包含匹配 (tab.contains — 逗号分隔字段) ✅ — layout-table.html
+列可见性 localStorage 持久化 (html-gen:table:col-visibility) ✅ — layout-table.html
 CSV 导出 (全部 / 选中行, BOM UTF-8) ✅ — layout-table.html
 批量操作工具栏 (全选/取消/导出选中, 选中行数显式) ✅ — layout-table.html
 键盘导航 (↑↓ 移动焦点, Enter 点击行, 自动滚动) ✅ — layout-table.html
@@ -207,6 +211,7 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | `html-gen:kw:sidebar-width` | 侧边栏宽度 | knowledge |
 | `html-gen:table:density` | 密度 (default/compact/comfortable) | table |
 | `html-gen:table:click-mode` | 点击模式 (tab/modal/split/expand) | table |
+| `html-gen:table:col-visibility` | 列可见性 (JSON) | table |
 | `html-gen:table:split-ratio` | 分栏比例 (25-75) | table |
 | `html-gen:table:presets` | 视图预设 (JSON array, max 10) | table |
 | `htmlgen_tab` | Tab 选择 | table |
@@ -218,13 +223,13 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | 指标 | 数值 |
 |:---|---:|
 | Python 文件 | 4 (html-gen 546行 / company-report 101行 / test×2) |
-| 模板文件 | 4 (doc 436行 / slide 673行 / table 1110行 / knowledge 336行) |
+| 模板文件 | 4 (doc 444行 / slide 681行 / table 1143行 / knowledge 342行) |
 | CSS 基座 | 1 (style-guide.css) |
 | 数据文件 | 7 |
 | Demo 文件 | 18 |
 | 设计文档 | 4 |
-| 测试用例 | 11 (7 回归 + 4 Selenium) |
+| 测试用例 | 42 (7 回归 + 35 Selenium) |
 | CLI 子命令 | 5 (doc/slide/table/knowledge/help) |
 | CLI 参数 | 15 |
-| localStorage keys | 16 |
+| localStorage keys | 17 |
 | 零外部依赖 | ✅ (Python stdlib only) |

@@ -370,7 +370,7 @@ def cmd_knowledge(args):
 # ═══ Help System ═══
 
 HELP_OVERVIEW = """\
-html-gen — HTML 模板 CLI 生成器 v2.2
+html-gen — HTML 模板 CLI 生成器 v3.0
 
 四型模板:
   doc       Markdown → B 型文档 (侧边栏 TOC + 阅读)
@@ -432,24 +432,47 @@ A 型 · 数据表格 JSON 格式
 结构化格式:
 {
   "columns": [
-    {"key": "name", "label": "名称", "sortable": true, "locale": "zh"},
+    {"key": "name", "label": "名称", "sortable": true, "locale": "zh",
+     "freeze": true,          // 列冻结 (sticky)
+     "preview": true},        // 分栏模式可见
     {"key": "count", "label": "数量", "type": "number"},
     {"key": "actions", "label": "操作", "type": "actions", "actions": [
       {"icon": "📋", "label": "复制", "copyKey": "name"},
       {"icon": "🔗", "label": "打开", "hrefKey": "url"},
-      {"icon": "👁️", "label": "详情", "desc": "查看详细信息"}
+      {"icon": "📋", "label": "弹窗", "handler": "skillModal"},
+      {"icon": "📑", "label": "分栏", "handler": "skillSplit"}
     ]}
   ],
   "data": [...],
   "tabs": [
     {"key": "all", "label": "全部"},
-    {"key": "Python", "label": "🐍 Python", "field": "lang"}
+    {"key": "Python", "label": "🐍 Python", "field": "lang"},
+    {"key": "dev", "label": "🧑‍💻 dev", "field": "profiles", "contains": true}
   ],
-  "options": {"pageSize": 30, "exportCSV": true, "rowSelect": true}
+  "options": {
+    "pageSize": 30, "exportCSV": true, "rowSelect": true,
+    "clickModes": ["tab", "modal", "split", "expand"]
+  }
 }
 
-列类型: string(默认) / number / actions
-操作按钮: copyKey(复制字段) / hrefKey(打开链接) / desc(演示提示)"""
+列属性:
+  type:     string(默认) / number(数值排序) / actions(操作按钮)
+  sortable: 是否可排序 / locale: 排序语言(zh) / freeze: 列冻结
+  preview:  分栏模式可见 / hide: 列隐藏 / onClick: 行点击跳转
+  escape:   HTML转义 / render: 自定义渲染 / class: CSS类 / width: 列宽
+
+Tab 属性:
+  field:    匹配字段 / match: 精确匹配字段 / contains: 逗号分隔包含匹配
+
+选项:
+  pageSize:  分页大小(默认30) / exportCSV: 导出按钮 / rowSelect: 行选择
+  search:    搜索框显隐 / clickModes: 允许的点击模式列表
+
+点击模式:
+  tab      — 🔗 新标签页打开 (window.open, noopener)
+  modal    — 📋 居中弹出面板 (键值列表, Esc关闭)
+  split    — 📑 分栏预览 (表格40% + 详情60%, 拖拽分栏线)
+  expand   — 📂 行内手风琴展开 (网格布局)"""
 
 HELP_KNOWLEDGE = """\
 C 型 · 知识库 JSON 格式
