@@ -341,7 +341,7 @@
     const bar = document.getElementById('tabsBar');
     if (!TABS || !TABS.length) { bar.innerHTML = ''; return; }
     if (!activeTab) {
-      try { activeTab = localStorage.getItem('htmlgen_tab'); } catch(e) {}
+      try { activeTab = localStorage.getItem('html-gen:table:tab'); } catch(e) {}
       if (!activeTab || !TABS.find(function(t){return t.key===activeTab})) activeTab = TABS[0].key;
     }
     bar.innerHTML = TABS.map(function(t) {
@@ -385,34 +385,34 @@
         return String(row[quickFilter.key] || '') === quickFilter.value;
       });
     }
-    // Sort
+    // Sort (primary + secondary combined for stable ordering)
     if (sortKey) {
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
       var loc = col && col.locale;
-      filtered.sort(function(a, b) {
-        var va = a[sortKey], vb = b[sortKey];
-        if (va === undefined || va === null) va = '';
-        if (vb === undefined || vb === null) vb = '';
-        if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc ? va - vb : vb - va; }
-        va = String(va); vb = String(vb);
-        var cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb);
-        return sortAsc ? cmp : -cmp;
-      });
-    }
-    // Secondary sort
-    if (sortKey2 && sortKey2 !== sortKey) {
-      var col2 = COLUMNS.find(function(c){return c.key===sortKey2;});
+      var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
-        var va = a[sortKey2], vb = b[sortKey2];
+        // Primary key
+        var va = a[sortKey], vb = b[sortKey];
         if (va === undefined || va === null) va = '';
         if (vb === undefined || vb === null) vb = '';
-        if (isNum2) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc2 ? va - vb : vb - va; }
-        va = String(va); vb = String(vb);
-        var cmp = loc2 ? va.localeCompare(vb, loc2) : va.localeCompare(vb);
-        return sortAsc2 ? cmp : -cmp;
+        var cmp;
+        if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
+        else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
+        if (cmp !== 0) return sortAsc ? cmp : -cmp;
+        // Secondary key (only when primary equal)
+        if (col2 && sortKey2 !== sortKey) {
+          var va2 = a[sortKey2], vb2 = b[sortKey2];
+          if (va2 === undefined || va2 === null) va2 = '';
+          if (vb2 === undefined || vb2 === null) vb2 = '';
+          var cmp2;
+          if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
+          else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
+          return sortAsc2 ? cmp2 : -cmp2;
+        }
+        return 0;
       });
     }
   }
@@ -900,7 +900,7 @@
   /* ── Tab switch ── */
   window.switchTab = function(key) {
     activeTab = key;
-    try { localStorage.setItem('htmlgen_tab', key); } catch(e) {}
+    try { localStorage.setItem('html-gen:table:tab', key); } catch(e) {}
     expandedIdx = -1;
     buildTabs();
     currentPage = 1;

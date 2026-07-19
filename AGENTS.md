@@ -74,7 +74,9 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - **视图预设**：保存/加载/删除设置（密度/模式/排序/列可见性，最多 10 个，≤2KB）
 - 列名从 JSON 首条 key 自动推导
 - 支持单元格 HTML（`<a>`、`<code>` 等）
-- 支持操作按钮列（`copyKey` / `hrefKey`）、多标签页、CSV 导出、列宽拖拽
+- 支持操作按钮列（`copyKey` / `hrefKey` / `desc` / `handler`）、多标签页、CSV 导出、列宽拖拽
+- `handler` 模式：自定义 JS 函数名，由模板 `window.{handler}(event, row)` 调用
+- 列可见性 localStorage 持久化（`html-gen:table:col-visibility`）
 
 ### layout-knowledge.html（C 型知识库）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
@@ -140,6 +142,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - `col.onClick`：`"url"` 使整行可点击跳转到 row.url
 
 Tab 定义：`field` 指定匹配的数据字段（默认 `group` 或 `category`）
+- `tab.contains`：逗号分隔包含匹配（如 `"field": "profiles", "contains": true`）
 
 Options（均可选）：
 - `pageSize`：每页条数（默认 30）

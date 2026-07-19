@@ -142,7 +142,7 @@ col.render (自定义渲染函数) ✅ — layout-table.html
 col.escape (HTML 转义开关) ✅ — layout-table.html
 col.class (自定义 CSS class) ✅ — layout-table.html
 col.width (列宽) ✅ — layout-table.html
-tabs (多标签页, field/match 过滤) ✅ — layout-table.html
+tabs (多标签页, field/match/contains 过滤) ✅ — layout-table.html
 options.pageSize (分页大小) ✅ — layout-table.html
 options.exportCSV (导出按钮) ✅ — layout-table.html
 options.rowSelect (行选择) ✅ — layout-table.html
@@ -214,7 +214,7 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | `html-gen:table:col-visibility` | 列可见性 (JSON) | table |
 | `html-gen:table:split-ratio` | 分栏比例 (25-75) | table |
 | `html-gen:table:presets` | 视图预设 (JSON array, max 10) | table |
-| `htmlgen_tab` | Tab 选择 | table |
+| `html-gen:table:tab` | Tab 选择 | table |
 
 ---
 
