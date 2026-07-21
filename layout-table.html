@@ -47,6 +47,14 @@
 .fs-btn { padding:3px 10px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.68rem; font-family:inherit; }
 .fs-btn:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 
+/* ── Ratio presets dropdown ── */
+.ratio-dropdown { position:absolute; top:100%; right:0; background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; z-index:50; min-width:130px; box-shadow:0 4px 16px rgba(0,0,0,0.4); margin-top:4px; display:none; }
+.ratio-dropdown.show { display:block; }
+.ratio-dropdown .ratio-opt { padding:6px 12px; cursor:pointer; font-size:0.72rem; color:#b0b0c0; white-space:nowrap; }
+.ratio-dropdown .ratio-opt:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+.ratio-dropdown .ratio-opt.active { color:var(--cobalt-400); font-weight:600; }
+.ratio-wrap { position:relative; display:inline-block; }
+
 @media print {
   .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
   .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
@@ -151,6 +159,9 @@
   font-size:0.82rem; font-weight:600; color:#f0f0f0;
   display:flex; align-items:center; gap:8px; }
 .split-preview-header .sp-close { margin-left:auto; background:none; border:none; color:#6b7280; cursor:pointer; font-size:1rem; }
+.split-preview-header .sp-nav { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.7rem; font-family:inherit; }
+.split-preview-header .sp-nav:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+.split-preview-header .sp-nav:disabled { opacity:0.3; cursor:default; }
 .split-preview-body { flex:1; overflow:auto; padding:14px; }
 .split-preview-body iframe { width:100%; height:70vh; border:none; }
 .split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
@@ -161,6 +172,12 @@
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
+.data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
+.data-table th.sticky-right, .data-table td.sticky-right {
+  position:sticky; right:0; z-index:5; background:var(--surface-950);
+}
+.data-table th.sticky-right { z-index:15; background:var(--surface-900); }
+.data-table tbody tr:hover td.sticky-right { background:rgba(79,70,229,0.07); }
 .data-table tr.expand-row td { padding:10px 14px; background:rgba(79,70,229,0.06); border-top:1px solid var(--cobalt-700); }
 .data-table tr.expand-row .expand-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; }
 .data-table tr.expand-row .expand-item { padding:6px 10px; border:1px solid #1a1a2e; border-radius:6px; }
@@ -231,6 +248,10 @@
   <!--FILTERS-->
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
   <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
+  <div class="ratio-wrap">
+    <button class="fs-btn" id="ratioBtn" onclick="toggleRatioDropdown()" title="分栏比例">▦</button>
+    <div class="ratio-dropdown" id="ratioDropdown"></div>
+  </div>
   <div class="col-toggle-wrap">
     <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="设置">⚙️</button>
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
@@ -293,6 +314,10 @@
   const DATA    = <!--DATA-->;
   const TABS    = <!--TABS-->;     // [{key,label,field?,match?}] or []
   const OPTIONS = <!--OPTIONS-->;  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  // Support columnsSplit for dedicated split-mode columns
+  if (OPTIONS && OPTIONS.columnsSplit) {
+    COLUMNS._splitCols = OPTIONS.columnsSplit;
+  }
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
@@ -327,8 +352,11 @@
       if (opts.excludeActions && c.type === 'actions') return false;
       if (c.hide) return false;
       if (colVisibility[c.key] === false) return false;
-      // split mode: only show preview columns (if any column has preview:true)
+      // split mode: use columnsSplit if defined, else preview filter
       if (splitActive) {
+        if (COLUMNS._splitCols) {
+          return COLUMNS._splitCols.indexOf(c.key) !== -1;
+        }
         var hasAnyPreview = COLUMNS.some(function(x) { return x.preview === true; });
         if (hasAnyPreview && c.preview !== true) return false;
       }
@@ -459,10 +487,11 @@
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
+          var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-          var qfKey = JSON.stringify(col.key).replace(/\"/g, '&quot;');
-          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/\"/g, '&quot;');
-          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
+          var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
+          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -600,8 +629,9 @@
         var sortCls = '';
         if (c.sortable !== false && c.type !== 'actions') { sortCls = ' sortable'; if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc'; if (sortKey2 === c.key) sortCls += ' sort-asc'; }
         var freezeCls = c.freeze ? ' frozen-col' : '';
+        var stickyCls = c.stickyRight ? ' sticky-right' : '';
         var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
-        return '<th class="' + sortCls + freezeCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
+        return '<th class="' + sortCls + freezeCls + stickyCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
           (c.width && c.type !== 'actions' ? ' style="width:' + c.width + '"' : '') + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
       }).join('') + '</tr>';
   }
@@ -712,6 +742,11 @@
     if (rows[idx]) rows[idx].classList.add('split-active');
   }
   window.activateSplit = activateSplit;
+  window.splitNav = function(dir) {
+    var newIdx = splitIdx + dir;
+    if (newIdx < 0 || newIdx >= filtered.length) return;
+    activateSplit(filtered[newIdx], newIdx);
+  };
   window.closeSplit = function() {
     splitActive = false;
     var wrapper = document.querySelector('.wrapper');
@@ -729,7 +764,9 @@
     var body = document.getElementById('splitPreviewBody');
     // title from first column
     var titleCol = visibleCols({requireKey: true})[0];
-    header.innerHTML = (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+    header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
+      '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
+      ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
     // render: url → iframe, desc → textContent, else kv-list
@@ -780,6 +817,51 @@
       document.removeEventListener('mouseup', onDragEnd);
     }
   }
+
+  /* ── Ratio Presets ── */
+  var RATIOS = [
+    {key:'100',label:'仅表格',   tc:'1',rp:'0'},
+    {key:'37',label:'3:7 紧凑',  tc:'3',rp:'7'},
+    {key:'46',label:'4:6 标准',  tc:'4',rp:'6'},
+    {key:'55',label:'5:5 平分',  tc:'5',rp:'5'},
+    {key:'64',label:'6:4 宽屏',  tc:'6',rp:'4'},
+  ];
+  var _currentRatioKey = '46';
+
+  function applyRatioPreset(key) {
+    _currentRatioKey = key;
+    try { localStorage.setItem('html-gen:table:ratio-preset', key); } catch(e) {}
+    var r = RATIOS.find(function(x){return x.key===key;});
+    if (!r) return;
+    if (key === '100') {
+      closeSplit();
+    } else {
+      splitRatio = parseInt(r.tc) / (parseInt(r.tc) + parseInt(r.rp)) * 100;
+      document.querySelector('.wrapper').style.setProperty('--spl-ratio', splitRatio+'%');
+      try { localStorage.setItem('html-gen:table:split-ratio', splitRatio); } catch(e) {}
+    }
+    renderRatioDropdown();
+  }
+
+  function renderRatioDropdown() {
+    var el = document.getElementById('ratioDropdown');
+    if (!el) return;
+    var cur = _currentRatioKey;
+    el.innerHTML = RATIOS.map(function(r) {
+      return '<div class="ratio-opt'+(r.key===cur?' active':'')+'" onclick="event.stopPropagation();applyRatioPreset(\''+r.key+'\')">'+r.label+(r.key===cur?' ✔':'')+'</div>';
+    }).join('');
+  }
+
+  window.toggleRatioDropdown = function() {
+    var el = document.getElementById('ratioDropdown');
+    if (!el) return;
+    renderRatioDropdown();
+    el.classList.toggle('show');
+    document.getElementById('colToggleDropdown').classList.remove('show');
+  };
+
+  try { _currentRatioKey = localStorage.getItem('html-gen:table:ratio-preset') || '46'; } catch(e) {}
+  window.applyRatioPreset = applyRatioPreset;
 
   /* ── Density ── */
   function applyDensity() {

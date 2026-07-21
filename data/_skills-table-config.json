@@ -46,7 +46,8 @@
           "label": "右侧展示详情",
           "handler": "skillSplit"
         }
-      ]
+      ],
+      "stickyRight": true
     }
   ],
   "data": [
@@ -1092,6 +1093,10 @@
       "tab",
       "modal",
       "split"
+    ],
+    "columnsSplit": [
+      "name",
+      "actions"
     ]
   }
 }
