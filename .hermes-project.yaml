@@ -1,0 +1,9 @@
+project: html-gen
+profiles:
+- dev
+- review
+sessions:
+- profile: dev
+  title: html-gen-dev
+- profile: review
+  title: html-gen-review

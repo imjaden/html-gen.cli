@@ -33,6 +33,8 @@
 .filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+.data-table .cell-pills { display:flex; flex-wrap:wrap; gap:2px; }
+.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -484,7 +486,16 @@
           rowHtml += '<td style="white-space:nowrap" class="'+stickyCls2.trim()+'">'+renderActions(col, row)+'</td>';
         } else {
           var val = row[col.key];
-          if (col.render) val = col.render(val, row);
+          if (col.type === 'pills') {
+              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
+              var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
+              var freezeCls = col.freeze ? ' frozen-col' : '';
+              var stickyCls = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              return;
+            }
+            if (col.render) val = col.render(val, row);
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
