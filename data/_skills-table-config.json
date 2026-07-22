@@ -16,7 +16,8 @@
       "key": "profiles",
       "label": "Profiles",
       "sortable": true,
-      "escape": true
+      "escape": true,
+      "width": "180px"
     },
     {
       "key": "version",
@@ -25,7 +26,8 @@
     },
     {
       "key": "description",
-      "label": "描述"
+      "label": "描述",
+      "width": "300px"
     },
     {
       "key": "actions",
@@ -48,7 +50,8 @@
           "handler": "skillSplit"
         }
       ],
-      "stickyRight": true
+      "stickyRight": true,
+      "width": "130px"
     }
   ],
   "data": [
