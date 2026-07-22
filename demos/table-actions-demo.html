@@ -299,7 +299,7 @@ pre code { background: none; padding: 0; }
 .col-toggle-dropdown {
   display:none; position:absolute; top:100%; right:0; z-index:50; margin-top:4px;
   background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; padding:6px 0;
-  min-width:150px; max-height:260px; overflow-y:auto;
+  min-width:200px; min-height:300px; max-height:400px; overflow-y:auto;
 }
 .col-toggle-dropdown.show { display:block; }
 .col-toggle-dropdown label { display:flex; align-items:center; gap:6px; padding:4px 12px;
@@ -689,7 +689,13 @@ pre code { background: none; padding: 0; }
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
           var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
           var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
-          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
+          var tdOnclick = '';
+          if (col.onCellClick === 'split') {
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+          } else if (col.quickFilter !== false) {
+            tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          }
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -918,6 +924,134 @@ pre code { background: none; padding: 0; }
     activateSplit(row, 0);
   };
 
+  /* ── Skills-specific modal & split renderers ── */
+  if (OPTIONS && OPTIONS.modalRenderer === 'skills') {
+    window.skillModal = function(event, row) {
+      var h = '<div style="position:relative">';
+      h += '<button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;background:none;border:none;color:#6b7280;font-size:1.2rem;cursor:pointer;z-index:1">✕</button>';
+      h += '<h3 style="margin:0 0 14px;font-size:0.95rem;color:#f0f0f0">📋 Skill 详细信息</h3>';
+
+      // Fields
+      var fields = [
+        {label:'名称', value: row.name},
+        {label:'分类', value: row.category},
+        {label:'作者', value: row.author || '-'},
+        {label:'描述', value: row.description || '-'},
+      ];
+      fields.forEach(function(f) {
+        h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+        h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">'+escapeHtml(f.label)+'</span>';
+        h += '<span style="color:#e0e0e0;word-break:break-all">'+escapeHtml(String(f.value))+'</span>';
+        h += '</div>';
+      });
+
+      // Tags — computed from name words
+      var tags = (row.name||'').split(/[-_]/).filter(function(s){return s.length>1;});
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">标签</span>';
+      h += '<span>';
+      tags.forEach(function(t) {
+        h += '<span style="display:inline-block;padding:1px 6px;border-radius:9999px;font-size:0.62rem;background:rgba(79,70,229,0.12);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.2);margin:1px">'+escapeHtml(t)+'</span>';
+      });
+      h += '</span></div>';
+
+      // Version — tag style
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">版本</span>';
+      h += '<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:0.65rem;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">'+escapeHtml(row.version||'-')+'</span>';
+      h += '</div>';
+
+      // Path with copy button
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">路径</span>';
+      h += '<span style="color:#e0e0e0;font-size:0.7rem;word-break:break-all;flex:1">'+escapeHtml(row.skill_path||'')+'</span>';
+      h += '<span onclick="event.stopPropagation();copyAction(\''+(row.skill_path||'').replace(/'/g,"\\'")+'\')" style="cursor:pointer;font-size:0.8rem;flex-shrink:0" title="拷贝路径">📋</span>';
+      h += '</div>';
+
+      // Profiles — tag style
+      var profiles = (row.profiles||'').split(/,\\s*/).filter(Boolean);
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">所属 Profile</span>';
+      h += '<span>';
+      profiles.forEach(function(p) {
+        h += '<span style="display:inline-block;padding:1px 6px;border-radius:9999px;font-size:0.62rem;background:rgba(79,70,229,0.12);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.2);margin:1px">'+escapeHtml(p)+'</span>';
+      });
+      h += '</span></div>';
+
+      // Chinese content & scripts
+      var hasChinese = /[\u4e00-\u9fff]/.test(row.description||'') ? '✅ 是' : '❌ 否';
+      var hasScript = (row.file_count||0) > 1 ? '✅ 是' : '❌ 否';
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">中文内容</span>';
+      h += '<span style="color:#e0e0e0">'+hasChinese+'</span>';
+      h += '</div>';
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">有脚本</span>';
+      h += '<span style="color:#e0e0e0">'+hasScript+'</span>';
+      h += '</div>';
+
+      // File count
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">文件数</span>';
+      h += '<span style="color:#e0e0e0">'+escapeHtml(String(row.file_count||0))+'</span>';
+      h += '</div>';
+
+      h += '</div>';
+      document.getElementById('modalPanel').innerHTML = h;
+      document.getElementById('modalOverlay').classList.add('active');
+    };
+
+    window.skillSplit = function(event, row) {
+      for (var i = 0; i < filtered.length; i++) {
+        if (filtered[i].name === row.name) { showSkillSplit(row, i); return; }
+      }
+      showSkillSplit(row, 0);
+    };
+
+    function showSkillSplit(row, idx) {
+      splitRow = row; splitIdx = idx;
+      splitActive = true;
+      var wrapper = document.querySelector('.wrapper');
+      wrapper.classList.add('split-mode');
+      initThead();
+      render();
+      // Render SKILL.md content
+      var header = document.getElementById('splitPreviewHeader');
+      header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
+        '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
+        ' ' + escapeHtml(row.name||'详情') +
+        '<button class="sp-close" onclick="closeSplit()">✕</button>';
+      var body = document.getElementById('splitPreviewBody');
+      body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280">⏳ 加载中...</div>';
+      // Try to fetch SKILL.md
+      var mdUrl = '/skills/' + encodeURIComponent(row.category) + '/' + encodeURIComponent(row.name) + '/SKILL.md';
+      fetch(mdUrl).then(function(resp) {
+        if (resp.ok) return resp.text();
+        throw new Error('HTTP ' + resp.status);
+      }).then(function(text) {
+        // Simple markdown → HTML
+        var html = text
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/^### (.+)$/gm,'<h3 style="margin:1em 0 0.4em;font-size:0.85rem;color:#e0e0e0">$1</h3>')
+          .replace(/^## (.+)$/gm,'<h2 style="margin:1.2em 0 0.5em;font-size:0.95rem;color:#f0f0f0">$1</h2>')
+          .replace(/^# (.+)$/gm,'<h1 style="margin:1.4em 0 0.6em;font-size:1.1rem;color:#f0f0f0">$1</h1>')
+          .replace(/`([^`]+)`/g,'<code style="background:#1a1a2e;padding:1px 4px;border-radius:3px;font-size:0.7rem">$1</code>')
+          .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+          .replace(/\*(.+?)\*/g,'<i>$1</i>')
+          .replace(/^\- (.+)$/gm,'<li style="margin-left:16px">$1</li>')
+          .replace(/\n/g,'<br>');
+        body.innerHTML = '<div style="font-size:0.75rem;line-height:1.7;color:#b0b0c0;padding:8px 0">'+html+'</div>';
+      }).catch(function(err) {
+        body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:0.75rem">⚠ 无法加载 SKILL.md<br><span style="font-size:0.62rem">'+escapeHtml(mdUrl)+'</span><br><span style="font-size:0.62rem">'+escapeHtml(err.message)+'</span></div>';
+      });
+      // Highlight
+      var tbody = document.getElementById('tbody');
+      var rows = tbody.querySelectorAll('tr');
+      rows.forEach(function(r){ r.classList.remove('split-active'); });
+      if (rows[idx]) rows[idx].classList.add('split-active');
+    }
+  }
+
   // Esc closes modal
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
@@ -942,6 +1076,7 @@ pre code { background: none; padding: 0; }
     if (rows[idx]) rows[idx].classList.add('split-active');
   }
   window.activateSplit = activateSplit;
+  window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
   window.splitNav = function(dir) {
     var newIdx = splitIdx + dir;
     if (newIdx < 0 || newIdx >= filtered.length) return;
@@ -1106,10 +1241,13 @@ pre code { background: none; padding: 0; }
     var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
     if (tabCount > 1 || density !== 'default') {
       html += '<div class="settings-section">密度</div>';
+      html += '<div style="display:flex;gap:4px;padding:4px 8px">';
       ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
         var parts = item.split(':');
-        html += '<label class="settings-radio"><input type="radio" name="density" value="'+parts[0]+'" '+(density===parts[0]?'checked':'')+' onchange="setDensity(\''+parts[0]+'\')">'+parts[1]+'</label>';
+        var active = density===parts[0];
+        html += '<label class="settings-radio" style="flex:1;text-align:center;padding:3px 6px;border-radius:4px;cursor:pointer;font-size:0.68rem;'+(active?'background:rgba(79,70,229,0.2);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.3)':'color:#9ca3af')+'"><input type="radio" name="density" value="'+parts[0]+'" '+(active?'checked':'')+' onchange="setDensity(\''+parts[0]+'\')" style="display:none">'+parts[1]+'</label>';
       });
+      html += '</div>';
     }
 
     // click mode section
@@ -1123,19 +1261,11 @@ pre code { background: none; padding: 0; }
 
     // column visibility
     html += '<div class="col-toggle-divider"></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 12px"><span class="settings-section" style="padding:0">列可见性</span><span onclick="document.getElementById(\'colToggleDropdown\').classList.remove(\'show\')" style="cursor:pointer;font-size:0.8rem;color:#6b7280" title="关闭">✕</span></div>';
     html += COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).map(function(c) {
       var visible = colVisibility[c.key] !== false;
       return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
     }).join('');
-
-    // column widths display
-    html += '<div class="col-toggle-divider"></div><div class="settings-section">列宽 (px)</div>';
-    html += '<div style="font-size:0.62rem;color:#9ca3af;padding:2px 0;line-height:1.6">';
-    COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).forEach(function(c) {
-      var w = c.width || '-';
-      html += escapeHtml(c.label) + ': <b style="color:#e0e0e0">' + w + '</b>  ';
-    });
-    html += '</div>';
 
     // view presets
     var presets = listPresets();
@@ -1148,6 +1278,7 @@ pre code { background: none; padding: 0; }
     html += '<label style="font-size:0.65rem"><a href="#" onclick="event.preventDefault();var n=prompt(\'预设名称:\');if(n)savePreset(n)" style="color:var(--cobalt-400)">+ 保存当前视图</a></label>';
 
     dd.innerHTML = html;
+    dd.onclick = function(e) { e.stopPropagation(); };
     document.getElementById('colToggleBtn').onclick = function(e) {
       e.stopPropagation();
       dd.classList.toggle('show');
@@ -1180,7 +1311,10 @@ pre code { background: none; padding: 0; }
     clickMode = val;
     expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
+    var dd = document.getElementById('colToggleDropdown');
+    var wasOpen = dd.classList.contains('show');
     initColToggle();
+    if (wasOpen) document.getElementById('colToggleDropdown').classList.add('show');
     render();
   };
 

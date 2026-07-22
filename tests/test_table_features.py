@@ -36,7 +36,7 @@ def select_click_mode(driver, mode):
     radios = driver.find_elements(By.NAME, 'clickMode')
     target = [r for r in radios if r.get_attribute('value') == mode]
     assert target, f"Click mode '{mode}' radio not found"
-    target[0].click()
+    driver.execute_script("arguments[0].click();", target[0])
     time.sleep(0.3)
     # Close dropdown by clicking elsewhere
     driver.find_element(By.TAG_NAME, 'body').click()
@@ -48,7 +48,8 @@ def select_density(driver, density):
     radios = driver.find_elements(By.NAME, 'density')
     target = [r for r in radios if r.get_attribute('value') == density]
     assert target, f"Density '{density}' radio not found"
-    target[0].click()
+    # Density inputs are display:none in horizontal layout; click the parent label
+    driver.execute_script("arguments[0].click();", target[0])
     time.sleep(0.15)
 
 

@@ -16,9 +16,9 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 
 | 文件 | 用途 |
 |:---|:---|
-| `html-gen.py` | 主 CLI，3 个子命令，301 行 |
+| `html-gen.py` | 主 CLI，3 个子命令，569 行 |
 | `company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库 |
-| `style-guide.css` | Layer 1 深色主题 CSS 基座，184 行 |
+| `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |
 | `layout-table.html` | A 型表格模板：搜索 + 排序 + 分页 |
 | `layout-knowledge.html` | C 型知识库模板：顶部标签栏 + 左侧章节 + iframe/内联内容 |
@@ -56,29 +56,35 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - 代码复制（剪贴板 + fallback）、行号、Callout 提示框、阅读进度条、图片灯箱
 
 ### layout-table.html（A 型表格）
+- **Cinema 纪律化宽度模型**：`table-layout:fixed`，每列强制显式 width（默认 120px，actions 100px），无 colgroup，td `max-width:0` 强制截断
 - 实时搜索（300ms debounce）+ Cmd+F Spotlight 弹窗搜索
 - 多字段排序（Shift+点击二级排序），数字/中文 locale 排序
 - 客户端分页（默认 30 条/页，可配置）
-- **密度切换**：紧凑(28px) / 标准(34px) / 舒适(42px)
-- **四种点击模式**（`options.clickModes` 控制）：
+- **密度切换**：紧凑(28px) / 标准(34px) / 舒适(42px)，设置面板横向展示
+- **五种点击模式**（`options.clickModes` 控制）：
   - 🔗 新标签页：`window.open(url, '_blank', 'noopener,noreferrer')`
-  - 📋 弹出面板：居中 overlay，键值列表（textContent 安全渲染）
-  - 📑 分栏预览：表格 40% + 预览 60%，拖拽分栏线 (25-75%)
+  - 📋 弹出面板：居中 overlay，键值列表（textContent 安全渲染）；支持自定义渲染器（`options.modalRenderer: 'skills'`）
+  - 📑 分栏预览：表格 + 预览并排，拖拽分栏线，比例预设 (▦)，▲▼ 导航；支持 SKILL.md 加载
   - 📂 行内展开：手风琴模式，点击展开详情网格
-- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭
-- **列冻结**：`col.freeze: true` → sticky 列，自动计算 left 偏移
-- **分栏模式列过滤**：`col.preview: true` → 仅预览列显示于分栏表格
+  - 🎯 单元格点击：`col.onCellClick: 'split'` 直接打开分栏
+- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭；`col.quickFilter: false` 禁用
+- **列冻结**：`col.freeze: true` → sticky 列，动态计算 left 偏移（基于 `col.width`）
+- **右侧固定列**：`col.stickyRight: true` → 水平滚动时保持在视口右侧
+- **分栏模式列过滤**：`col.preview: true` → 仅预览列显示于分栏表格；`options.columnsSplit` 指定分栏列集
 - **列隐藏**：`col.hide: true` → 永不可见
 - **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
 - **批量操作**：选中行出现工具栏（全选/取消/导出 CSV）
 - **视图预设**：保存/加载/删除设置（密度/模式/排序/列可见性，最多 10 个，≤2KB）
 - 列名从 JSON 首条 key 自动推导
 - 支持单元格 HTML（`<a>`、`<code>` 等）
-- 支持操作按钮列（`copyKey` / `hrefKey` / `desc` / `handler`）、多标签页、CSV 导出、列宽拖拽
+- 支持操作按钮列（`copyKey` / `hrefKey` / `desc` / `handler`）、多标签页、CSV 导出
 - `handler` 模式：自定义 JS 函数名，由模板 `window.{handler}(event, row)` 调用
 - 列可见性 localStorage 持久化（`html-gen:table:col-visibility`）
-- 列宽度 localStorage 持久化（`html-gen:table:col-widths`）
-- Cinema 纪律化宽度模型：每列强制显式 width（默认 120px，actions 100px），`table-layout:fixed` + `td max-width:0`，无 colgroup
+- 列宽度 localStorage 持久化（`html-gen:table:col-widths`），拖拽 resize 直接操作 DOM
+- 列宽拖拽可禁用（`options.columnResize: false`）
+- 设置面板：⚙️ 下拉，密度/点击模式/列可见性/视图预设，内部点击不关闭，✕ 关闭按钮
+- `printColWidths()` 控制台调试函数
+- 安全：`copyAction()` 含 execCommand fallback（headless Chrome 兼容）
 
 ### layout-knowledge.html（C 型知识库）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
@@ -134,14 +140,21 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - `string`（默认）：文本排序
 - `number`：数值排序（parseFloat 比较）
 - `actions`：操作按钮列，支持 `copyKey`（复制）和 `hrefKey`（跳转）
+- `pills`：标签样式渲染，逗号分隔值转 tag pills
 
 列属性：
 - `col.sortable`：是否可排序（默认 true）
 - `col.locale`：排序 locale（如 `"zh"` 用于中文排序）
-- `col.freeze`：列冻结（sticky，自动计算 left 偏移）
+- `col.freeze`：列冻结（sticky，动态计算 left 偏移基于 col.width）
+- `col.stickyRight`：右侧固定列（水平滚动时粘在视口右侧）
 - `col.preview`：分栏模式下是否显示（默认 false）
 - `col.hide`：永远隐藏（默认 false）
 - `col.onClick`：`"url"` 使整行可点击跳转到 row.url
+- `col.onCellClick`：`"split"` 点击单元格直接打开分栏预览
+- `col.quickFilter`：false 时禁用该列的点击筛选
+- `col.width`：列宽（如 `"150px"`），影院模型下必设，默认 fallback 120px
+- `col.escape`：HTML 转义（默认 false）
+- `col.render`：自定义渲染函数（已废弃，优先用 type 或 onCellClick）
 
 Tab 定义：`field` 指定匹配的数据字段（默认 `group` 或 `category`）
 - `tab.contains`：逗号分隔包含匹配（如 `"field": "profiles", "contains": true`）
@@ -152,6 +165,9 @@ Options（均可选）：
 - `rowSelect`：行选择 + 批量操作工具栏（默认 false）
 - `search`：搜索框可见性（默认 true）
 - `clickModes`：允许的点击模式 `["tab", "modal", "split", "expand"]`（默认 `["tab"]`）
+- `columnResize`：列宽拖拽（默认 true，false 时隐藏 resize handle）
+- `columnsSplit`：分栏模式专用列集（如 `["name", "actions"]`）
+- `modalRenderer`：自定义模态框渲染器（如 `"skills"` 激活结构化详情面板）
 
 ### knowledge 输入（JSON 数组）
 ```json
@@ -179,6 +195,14 @@ Options（均可选）：
 - Python 模板注入使用 `inject(template, **kwargs)` 函数
 - CSS 使用 `--cobalt-*` 色系深色主题变量
 
+## 测试治理
+
+- Selenium 测试：headless Chrome，`localStorage.clear()` setUp，`window.__testErrors` 跟踪
+- Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
+- 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
+- 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
+- 当前 57 tests（7 回归 + 50 Selenium）
+
 ## 目录结构
 
 ```
@@ -191,11 +215,13 @@ html-gen/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 ├── company-research-schema.json # 公司调研 schema
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
+├── tests/                      # Selenium + 回归测试 (57 tests)
 └── demos/                      # 生成的 HTML 示例
     ├── index.html              # 模板展示首页
     ├── demos-index.html        # A 型文档索引
-    ├── template-*-guide.*      # 各模板使用说明
-    ├── *_demo.html             # 各类型案例
+    ├── hermes-profile-skills-list.html  # 主力 demo: Hermes Skills 列表
+    ├── phase2-demo.html        # 功能测试 demo
+    ├── table-actions-demo.html # 操作按钮 demo
     └── chaitin/                # 长亭科技商业分析案例
 ```
 
@@ -206,5 +232,3 @@ html-gen/
 - 模板和 CSS 通过 `Path(__file__).resolve().parent` 自定位，无需外部配置
 - `company-report.py` 调用同目录的 `html-gen.py knowledge`，通过 subprocess 运行
 - 输出均为自包含单文件 HTML，无外部资源引用
-
-最初从 `script-miner` 项目抽离，现已完全独立运行。
