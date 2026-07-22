@@ -90,7 +90,7 @@ Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.h
 分栏模式列过滤 (col.preview:true → 仅预览列显示) ✅ — layout-table.html
 列隐藏 (col.hide:true → 永不可见) ✅ — layout-table.html
 列可见性切换 (⚙️ 下拉面板, 复选框) ✅ — layout-table.html
-列宽拖拽 (resize handle, 最小 40px) ✅ — layout-table.html
+列宽拖拽 (resize handle, 最小 40px, localStorage 持久化) ✅ — layout-table.html
 多标签页 (tabs, 按 field/match 过滤, localStorage 记忆) ✅ — layout-table.html
 操作按钮列 (copyKey/hrefKey/desc/handler 模式) ✅ — layout-table.html
 Tab 包含匹配 (tab.contains — 逗号分隔字段) ✅ — layout-table.html

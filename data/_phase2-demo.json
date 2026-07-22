@@ -6,29 +6,34 @@
       "sortable": true,
       "locale": "zh",
       "preview": true,
-      "freeze": true
+      "freeze": true,
+      "width": "120px"
     },
     {
       "key": "stars",
       "label": "Stars",
       "sortable": true,
       "type": "number",
-      "preview": true
+      "preview": true,
+      "width": "120px"
     },
     {
       "key": "lang",
       "label": "语言",
-      "preview": true
+      "preview": true,
+      "width": "120px"
     },
     {
       "key": "desc",
-      "label": "描述"
+      "label": "描述",
+      "width": "120px"
     },
     {
       "key": "url",
       "label": "URL",
       "onClick": "url",
-      "hide": true
+      "hide": true,
+      "width": "120px"
     }
   ],
   "data": [

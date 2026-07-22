@@ -77,6 +77,8 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - 支持操作按钮列（`copyKey` / `hrefKey` / `desc` / `handler`）、多标签页、CSV 导出、列宽拖拽
 - `handler` 模式：自定义 JS 函数名，由模板 `window.{handler}(event, row)` 调用
 - 列可见性 localStorage 持久化（`html-gen:table:col-visibility`）
+- 列宽度 localStorage 持久化（`html-gen:table:col-widths`）
+- Cinema 纪律化宽度模型：每列强制显式 width（默认 120px，actions 100px），`table-layout:fixed` + `td max-width:0`，无 colgroup
 
 ### layout-knowledge.html（C 型知识库）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐

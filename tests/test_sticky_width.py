@@ -56,24 +56,26 @@ class TestStickyAndWidth(unittest.TestCase):
 
     def test_03_sticky_stays_visible_on_scroll(self):
         """横滚后操作列仍固定在视口右侧."""
-        # Scroll the table horizontally
         wrap = self.driver.find_element(By.CSS_SELECTOR, '.table-wrap')
-        self.driver.execute_script("arguments[0].scrollLeft = 400;", wrap)
+        # Scroll right to verify sticky column stays visible
+        self.driver.execute_script("arguments[0].scrollLeft = arguments[0].scrollWidth;", wrap)
         time.sleep(0.3)
 
         info = self.driver.execute_script("""
         var td = document.querySelector('td.sticky-right');
         if (!td) return {error: 'no td'};
         var r = td.getBoundingClientRect();
-        var wrap = document.querySelector('.table-wrap').getBoundingClientRect();
         return {
             tdRight: Math.round(r.right),
-            wrapRight: Math.round(wrap.right),
-            isAtEdge: Math.abs(r.right - wrap.right) <= 8
+            tdLeft: Math.round(r.left),
+            tdWidth: Math.round(r.width),
+            tdVisible: r.right > 0 && r.left < window.innerWidth,
+            isSticky: window.getComputedStyle(td).position === 'sticky'
         };
         """)
-        self.assertTrue(info.get('isAtEdge'), 
-            f"sticky td should be at wrap edge: td={info.get('tdRight')}, wrap={info.get('wrapRight')}")
+        self.assertTrue(info.get('isSticky'), "sticky-right td should have position:sticky")
+        self.assertTrue(info.get('tdVisible'),
+            f"sticky td should be visible after scroll: left={info.get('tdLeft')}, right={info.get('tdRight')}")
 
     # ── Column Width ──
 

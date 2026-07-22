@@ -5,13 +5,15 @@
       "label": "Skill 名称",
       "sortable": true,
       "locale": "zh",
-      "freeze": true
+      "freeze": true,
+      "width": "120px"
     },
     {
       "key": "category",
       "label": "分类",
       "sortable": true,
-      "type": "pills"
+      "type": "pills",
+      "width": "120px"
     },
     {
       "key": "profiles",
@@ -24,7 +26,8 @@
     {
       "key": "version",
       "label": "版本",
-      "sortable": true
+      "sortable": true,
+      "width": "120px"
     },
     {
       "key": "description",

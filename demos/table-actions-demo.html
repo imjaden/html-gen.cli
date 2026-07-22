@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>操作列功能演示</title>
+<title>Table Actions Demo</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -72,7 +72,7 @@ pre {
 pre code { background: none; padding: 0; }
 
 /* ── Data Table ── */
-.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table { width: 100%; border-collapse: collapse; }
 .data-table th {
   position: sticky; top: 0; z-index: 10;
   background: var(--surface-900);
@@ -219,6 +219,8 @@ pre code { background: none; padding: 0; }
 .filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+.data-table .cell-pills { display:flex; flex-wrap:wrap; gap:2px; }
+.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -232,6 +234,14 @@ pre code { background: none; padding: 0; }
 .wrapper.fullscreen { position:fixed; inset:0; z-index:999; background:var(--surface-950); padding:12px; overflow:auto; }
 .fs-btn { padding:3px 10px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.68rem; font-family:inherit; }
 .fs-btn:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+
+/* ── Ratio presets dropdown ── */
+.ratio-dropdown { position:absolute; top:100%; right:0; background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; z-index:50; min-width:130px; box-shadow:0 4px 16px rgba(0,0,0,0.4); margin-top:4px; display:none; }
+.ratio-dropdown.show { display:block; }
+.ratio-dropdown .ratio-opt { padding:6px 12px; cursor:pointer; font-size:0.72rem; color:#b0b0c0; white-space:nowrap; }
+.ratio-dropdown .ratio-opt:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+.ratio-dropdown .ratio-opt.active { color:var(--cobalt-400); font-weight:600; }
+.ratio-wrap { position:relative; display:inline-block; }
 
 @media print {
   .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
@@ -253,7 +263,7 @@ pre code { background: none; padding: 0; }
 
 /* ── Table ── */
 .table-wrap { border:1px solid #1a1a2e; border-radius:var(--radius-lg); overflow-x:auto; }
-.data-table { width:100%; min-width:600px; border-collapse:collapse; table-layout:auto; }
+.data-table { width:100%; min-width:600px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
 .data-table th {
   position:sticky; top:0; z-index:10; background:var(--surface-900); border-bottom:1px solid #2a2a3e;
   padding:6px 8px; text-align:left; font-size:0.65rem; font-weight:600; color:#9ca3af;
@@ -269,7 +279,7 @@ pre code { background: none; padding: 0; }
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
 .data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
-  vertical-align:middle; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
 .data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
@@ -319,15 +329,27 @@ pre code { background: none; padding: 0; }
 .modal-panel .modal-field:last-child { border-bottom:none; }
 
 /* ── Split View ── */
-.wrapper.split-mode { display:flex; flex-direction:row; gap:0; }
-.wrapper.split-mode .table-main { flex:0 0 var(--spl-ratio, 40%); min-width:200px; overflow:auto; }
+.wrapper.split-mode {
+  display: grid;
+  grid-template-columns: var(--spl-ratio, 40%) 5px 1fr;
+  grid-template-rows: auto auto 1fr;
+}
+.wrapper.split-mode .table-tabs { grid-column: 1 / -1; }
+.wrapper.split-mode .batch-bar { grid-column: 1 / -1; }
+.wrapper.split-mode .table-main { overflow: auto; min-width: 200px; }
+.wrapper.split-mode .split-drag { display: block !important; grid-column: 2; }
+.wrapper.split-mode .split-preview { display: flex; }
+.wrapper.split-mode .toast { display: none !important; }
 .split-preview { display:none; flex-direction:column; background:var(--surface-900); border-left:1px solid #2a2a3e;
   min-width:200px; position:relative; }
-.wrapper.split-mode .split-preview { display:flex; flex:1; }
+.wrapper.split-mode .split-preview { display:flex; }
 .split-preview-header { padding:10px 14px; border-bottom:1px solid #2a2a3e;
   font-size:0.82rem; font-weight:600; color:#f0f0f0;
   display:flex; align-items:center; gap:8px; }
 .split-preview-header .sp-close { margin-left:auto; background:none; border:none; color:#6b7280; cursor:pointer; font-size:1rem; }
+.split-preview-header .sp-nav { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.7rem; font-family:inherit; }
+.split-preview-header .sp-nav:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+.split-preview-header .sp-nav:disabled { opacity:0.3; cursor:default; }
 .split-preview-body { flex:1; overflow:auto; padding:14px; }
 .split-preview-body iframe { width:100%; height:70vh; border:none; }
 .split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
@@ -338,6 +360,12 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
+.data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
+.data-table th.sticky-right, .data-table td.sticky-right {
+  position:sticky; right:0; z-index:5; background:var(--surface-950);
+}
+.data-table th.sticky-right { z-index:15; background:var(--surface-900); }
+.data-table tbody tr:hover td.sticky-right { background:rgba(79,70,229,0.07); }
 .data-table tr.expand-row td { padding:10px 14px; background:rgba(79,70,229,0.06); border-top:1px solid var(--cobalt-700); }
 .data-table tr.expand-row .expand-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; }
 .data-table tr.expand-row .expand-item { padding:6px 10px; border:1px solid #1a1a2e; border-radius:6px; }
@@ -398,7 +426,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>操作列功能演示</h1>
+  <h1>Table Actions Demo</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -408,6 +436,10 @@ pre code { background: none; padding: 0; }
   
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
   <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
+  <div class="ratio-wrap">
+    <button class="fs-btn" id="ratioBtn" onclick="toggleRatioDropdown()" title="分栏比例">▦</button>
+    <div class="ratio-dropdown" id="ratioDropdown"></div>
+  </div>
   <div class="col-toggle-wrap">
     <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="设置">⚙️</button>
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
@@ -416,7 +448,6 @@ pre code { background: none; padding: 0; }
 
 <div class="table-wrap">
   <table class="data-table">
-    <colgroup id="colGroup"></colgroup>
     <thead id="thead"></thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -466,10 +497,14 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "name", "label": "名称", "sortable": true, "locale": "zh"}, {"key": "type", "label": "类型", "sortable": true}, {"key": "url", "label": "链接", "sortable": false}, {"key": "actions", "label": "操作", "type": "actions", "actions": [{"icon": "👁️", "label": "查看详情", "desc": "打开详情页查看完整信息"}, {"icon": "✏️", "label": "编辑", "desc": "进入编辑模式修改数据"}, {"icon": "📋", "label": "复制名称", "copyKey": "name"}, {"icon": "🔗", "label": "打开链接", "hrefKey": "url"}, {"icon": "⭐", "label": "收藏", "desc": "将此项添加到收藏夹"}, {"icon": "🗑️", "label": "删除", "desc": "永久删除此项（需要二次确认）"}]}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const COLUMNS = [{"key": "name", "label": "名称", "sortable": true, "locale": "zh", "width": "120px"}, {"key": "type", "label": "类型", "sortable": true, "width": "120px"}, {"key": "url", "label": "链接", "sortable": false, "width": "120px"}, {"key": "actions", "label": "操作", "type": "actions", "actions": [{"icon": "👁️", "label": "查看详情", "desc": "打开详情页查看完整信息"}, {"icon": "✏️", "label": "编辑", "desc": "进入编辑模式修改数据"}, {"icon": "📋", "label": "复制名称", "copyKey": "name"}, {"icon": "🔗", "label": "打开链接", "hrefKey": "url"}, {"icon": "⭐", "label": "收藏", "desc": "将此项添加到收藏夹"}, {"icon": "🗑️", "label": "删除", "desc": "永久删除此项（需要二次确认）"}], "width": "100px"}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
   const DATA    = [{"name": "document.pdf", "type": "PDF 文档", "url": "https://example.com/doc.pdf"}, {"name": "report.xlsx", "type": "Excel 表格", "url": "https://example.com/report.xlsx"}, {"name": "presentation.pptx", "type": "PPT 演示", "url": "https://example.com/slides.pptx"}, {"name": "image.png", "type": "PNG 图片", "url": "https://example.com/photo.png"}, {"name": "archive.zip", "type": "压缩包", "url": "https://example.com/archive.zip"}, {"name": "script.py", "type": "Python 脚本", "url": "https://example.com/script.py"}, {"name": "config.json", "type": "JSON 配置", "url": "https://example.com/config.json"}, {"name": "readme.md", "type": "Markdown", "url": "https://example.com/readme.md"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
   const OPTIONS = {"exportCSV": true, "rowSelect": true, "pageSize": 5};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  // Support columnsSplit for dedicated split-mode columns
+  if (OPTIONS && OPTIONS.columnsSplit) {
+    COLUMNS._splitCols = OPTIONS.columnsSplit;
+  }
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
@@ -478,6 +513,8 @@ pre code { background: none; padding: 0; }
 
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
   let selectedRows = {}, colVisibility = {};
+  // Restore column visibility from localStorage
+  try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -502,8 +539,14 @@ pre code { background: none; padding: 0; }
       if (opts.excludeActions && c.type === 'actions') return false;
       if (c.hide) return false;
       if (colVisibility[c.key] === false) return false;
-      // split mode: only show preview columns
-      if (splitActive && c.preview !== true) return false;
+      // split mode: use columnsSplit if defined, else preview filter
+      if (splitActive) {
+        if (COLUMNS._splitCols) {
+          return COLUMNS._splitCols.indexOf(c.key) !== -1;
+        }
+        var hasAnyPreview = COLUMNS.some(function(x) { return x.preview === true; });
+        if (hasAnyPreview && c.preview !== true) return false;
+      }
       return true;
     });
   }
@@ -513,7 +556,7 @@ pre code { background: none; padding: 0; }
     const bar = document.getElementById('tabsBar');
     if (!TABS || !TABS.length) { bar.innerHTML = ''; return; }
     if (!activeTab) {
-      try { activeTab = localStorage.getItem('htmlgen_tab'); } catch(e) {}
+      try { activeTab = localStorage.getItem('html-gen:table:tab'); } catch(e) {}
       if (!activeTab || !TABS.find(function(t){return t.key===activeTab})) activeTab = TABS[0].key;
     }
     bar.innerHTML = TABS.map(function(t) {
@@ -525,6 +568,10 @@ pre code { background: none; padding: 0; }
 
   function matchTab(row, tab) {
     if (tab.match) return row[tab.match] === tab.key;
+    if (tab.contains) {
+      var val = row[tab.field || 'profiles'] || '';
+      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+    }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
   }
@@ -553,34 +600,34 @@ pre code { background: none; padding: 0; }
         return String(row[quickFilter.key] || '') === quickFilter.value;
       });
     }
-    // Sort
+    // Sort (primary + secondary combined for stable ordering)
     if (sortKey) {
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
       var loc = col && col.locale;
-      filtered.sort(function(a, b) {
-        var va = a[sortKey], vb = b[sortKey];
-        if (va === undefined || va === null) va = '';
-        if (vb === undefined || vb === null) vb = '';
-        if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc ? va - vb : vb - va; }
-        va = String(va); vb = String(vb);
-        var cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb);
-        return sortAsc ? cmp : -cmp;
-      });
-    }
-    // Secondary sort
-    if (sortKey2 && sortKey2 !== sortKey) {
-      var col2 = COLUMNS.find(function(c){return c.key===sortKey2;});
+      var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
-        var va = a[sortKey2], vb = b[sortKey2];
+        // Primary key
+        var va = a[sortKey], vb = b[sortKey];
         if (va === undefined || va === null) va = '';
         if (vb === undefined || vb === null) vb = '';
-        if (isNum2) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; return sortAsc2 ? va - vb : vb - va; }
-        va = String(va); vb = String(vb);
-        var cmp = loc2 ? va.localeCompare(vb, loc2) : va.localeCompare(vb);
-        return sortAsc2 ? cmp : -cmp;
+        var cmp;
+        if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
+        else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
+        if (cmp !== 0) return sortAsc ? cmp : -cmp;
+        // Secondary key (only when primary equal)
+        if (col2 && sortKey2 !== sortKey) {
+          var va2 = a[sortKey2], vb2 = b[sortKey2];
+          if (va2 === undefined || va2 === null) va2 = '';
+          if (vb2 === undefined || vb2 === null) vb2 = '';
+          var cmp2;
+          if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
+          else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
+          return sortAsc2 ? cmp2 : -cmp2;
+        }
+        return 0;
       });
     }
   }
@@ -620,17 +667,28 @@ pre code { background: none; padding: 0; }
       }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
-          rowHtml += '<td style="white-space:nowrap">'+renderActions(col, row)+'</td>';
+          var stickyCls2 = col.stickyRight ? ' sticky-right' : '';
+          rowHtml += '<td style="white-space:nowrap" class="'+stickyCls2.trim()+'">'+renderActions(col, row)+'</td>';
         } else {
           var val = row[col.key];
-          if (col.render) val = col.render(val, row);
+          if (col.type === 'pills') {
+              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
+              var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
+              var freezeCls = col.freeze ? ' frozen-col' : '';
+              var stickyCls = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              return;
+            }
+            if (col.render) val = col.render(val, row);
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
+          var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-          var qfKey = JSON.stringify(col.key).replace(/\"/g, '&quot;');
-          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/\"/g, '&quot;');
-          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
+          var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
+          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';
@@ -657,13 +715,13 @@ pre code { background: none; padding: 0; }
       if (act.copyKey) {
         onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
       } else if (act.hrefKey) {
-        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '') + ',"_blank")';
+        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '').replace(/"/g, '&quot;') + ',"_blank","noopener,noreferrer")';
       } else if (act.handler) {
-        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row) + ')';
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
       } else if (act.desc) {
         onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
       }
-      return '<button class="action-btn ' + (act.class||'') + '" onclick="' + onclick + '" title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
+      return '<button class="action-btn ' + (act.class||'') + '" onclick=\'' + onclick + '\' title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
     }).join('');
   }
 
@@ -752,25 +810,28 @@ pre code { background: none; padding: 0; }
   /* ── Sort ── */
   function initThead() {
     var thead = document.getElementById('thead');
-    var cg = document.getElementById('colGroup');
     var cols = visibleCols();
+    // Ensure every column has an explicit width (Cinema-disciplined model)
+    cols.forEach(function(c) {
+      if (!c.width) c.width = c.type === 'actions' ? '100px' : '120px';
+    });
     var frozenOffset = 0;
     var frozenStyles = [];
     cols.forEach(function(c) {
-      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += 120; }
+      var w = c.width ? parseInt(c.width) : 120;
+      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += w; }
       else { frozenStyles.push(''); }
     });
-    cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
-      cols.map(function(c) { var w = c.width || (c.type==='actions'?'auto':''); return '<col'+(w?' style="width:'+w+'"':'')+'>'; }).join('');
     thead.innerHTML = '<tr>' +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
         if (c.sortable !== false && c.type !== 'actions') { sortCls = ' sortable'; if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc'; if (sortKey2 === c.key) sortCls += ' sort-asc'; }
         var freezeCls = c.freeze ? ' frozen-col' : '';
+        var stickyCls = c.stickyRight ? ' sticky-right' : '';
         var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
-        return '<th class="' + sortCls + freezeCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
-          (c.width && c.type !== 'actions' ? ' style="width:' + c.width + '"' : '') + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
+        return '<th class="' + sortCls + freezeCls + stickyCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
+          ' style="width:' + c.width + '"' + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
       }).join('') + '</tr>';
   }
 
@@ -846,6 +907,16 @@ pre code { background: none; padding: 0; }
   window.showModal = showModal;
   window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('active'); };
 
+  // Generic action handlers for modal/split via action buttons
+  window.skillModal = function(event, row) { showModal(row); };
+  window.skillSplit = function(event, row) {
+    // Find row index in filtered data for highlight
+    for (var i = 0; i < filtered.length; i++) {
+      if (filtered[i].name === row.name) { activateSplit(row, i); return; }
+    }
+    activateSplit(row, 0);
+  };
+
   // Esc closes modal
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
@@ -870,6 +941,11 @@ pre code { background: none; padding: 0; }
     if (rows[idx]) rows[idx].classList.add('split-active');
   }
   window.activateSplit = activateSplit;
+  window.splitNav = function(dir) {
+    var newIdx = splitIdx + dir;
+    if (newIdx < 0 || newIdx >= filtered.length) return;
+    activateSplit(filtered[newIdx], newIdx);
+  };
   window.closeSplit = function() {
     splitActive = false;
     var wrapper = document.querySelector('.wrapper');
@@ -887,7 +963,9 @@ pre code { background: none; padding: 0; }
     var body = document.getElementById('splitPreviewBody');
     // title from first column
     var titleCol = visibleCols({requireKey: true})[0];
-    header.innerHTML = (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+    header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
+      '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
+      ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
     // render: url → iframe, desc → textContent, else kv-list
@@ -938,6 +1016,51 @@ pre code { background: none; padding: 0; }
       document.removeEventListener('mouseup', onDragEnd);
     }
   }
+
+  /* ── Ratio Presets ── */
+  var RATIOS = [
+    {key:'100',label:'仅表格',   tc:'1',rp:'0'},
+    {key:'37',label:'3:7 紧凑',  tc:'3',rp:'7'},
+    {key:'46',label:'4:6 标准',  tc:'4',rp:'6'},
+    {key:'55',label:'5:5 平分',  tc:'5',rp:'5'},
+    {key:'64',label:'6:4 宽屏',  tc:'6',rp:'4'},
+  ];
+  var _currentRatioKey = '46';
+
+  function applyRatioPreset(key) {
+    _currentRatioKey = key;
+    try { localStorage.setItem('html-gen:table:ratio-preset', key); } catch(e) {}
+    var r = RATIOS.find(function(x){return x.key===key;});
+    if (!r) return;
+    if (key === '100') {
+      closeSplit();
+    } else {
+      splitRatio = parseInt(r.tc) / (parseInt(r.tc) + parseInt(r.rp)) * 100;
+      document.querySelector('.wrapper').style.setProperty('--spl-ratio', splitRatio+'%');
+      try { localStorage.setItem('html-gen:table:split-ratio', splitRatio); } catch(e) {}
+    }
+    renderRatioDropdown();
+  }
+
+  function renderRatioDropdown() {
+    var el = document.getElementById('ratioDropdown');
+    if (!el) return;
+    var cur = _currentRatioKey;
+    el.innerHTML = RATIOS.map(function(r) {
+      return '<div class="ratio-opt'+(r.key===cur?' active':'')+'" onclick="event.stopPropagation();applyRatioPreset(\''+r.key+'\')">'+r.label+(r.key===cur?' ✔':'')+'</div>';
+    }).join('');
+  }
+
+  window.toggleRatioDropdown = function() {
+    var el = document.getElementById('ratioDropdown');
+    if (!el) return;
+    renderRatioDropdown();
+    el.classList.toggle('show');
+    document.getElementById('colToggleDropdown').classList.remove('show');
+  };
+
+  try { _currentRatioKey = localStorage.getItem('html-gen:table:ratio-preset') || '46'; } catch(e) {}
+  window.applyRatioPreset = applyRatioPreset;
 
   /* ── Density ── */
   function applyDensity() {
@@ -1026,6 +1149,7 @@ pre code { background: none; padding: 0; }
   window.toggleCol = function(key, visible) {
     colVisibility[key] = visible;
     expandedIdx = -1;
+    try { localStorage.setItem('html-gen:table:col-visibility', JSON.stringify(colVisibility)); } catch(e) {}
     initColToggle();
     initThead();
     render();
@@ -1057,7 +1181,7 @@ pre code { background: none; padding: 0; }
   /* ── Tab switch ── */
   window.switchTab = function(key) {
     activeTab = key;
-    try { localStorage.setItem('htmlgen_tab', key); } catch(e) {}
+    try { localStorage.setItem('html-gen:table:tab', key); } catch(e) {}
     expandedIdx = -1;
     buildTabs();
     currentPage = 1;
@@ -1099,13 +1223,14 @@ pre code { background: none; padding: 0; }
   window.showToast = showToast;
 
   /* ── Column resize ── */
-  var _resizeCol, _resizeStartX, _resizeStartW;
+  var COL_WIDTHS_KEY = 'html-gen:table:col-widths';
+  var _resizeCol, _resizeStartX, _resizeStartW, _resizeTh;
   window.startResize = function(e, key) {
     e.stopPropagation(); e.preventDefault();
     _resizeCol = key;
     _resizeStartX = e.clientX;
-    var th = e.target.parentElement;
-    _resizeStartW = th.offsetWidth;
+    _resizeTh = e.target.parentElement;
+    _resizeStartW = _resizeTh.offsetWidth;
     document.addEventListener('mousemove', onResizeMove);
     document.addEventListener('mouseup', onResizeUp);
   };
@@ -1113,18 +1238,37 @@ pre code { background: none; padding: 0; }
     if (!_resizeCol) return;
     var delta = e.clientX - _resizeStartX;
     var newW = Math.max(40, _resizeStartW + delta);
-    var col = COLUMNS.find(function(c){return c.key===_resizeCol;});
-    if (col) col.width = newW + 'px';
-    initThead();
+    // Direct DOM update (no full thead rebuild — avoids flicker)
+    if (_resizeTh) _resizeTh.style.width = newW + 'px';
   }
   function onResizeUp() {
+    if (_resizeCol && _resizeTh) {
+      var newW = _resizeTh.offsetWidth;
+      var col = COLUMNS.find(function(c){return c.key===_resizeCol;});
+      if (col) col.width = newW + 'px';
+      // Persist to localStorage
+      try {
+        var saved = {};
+        COLUMNS.forEach(function(c) { if (c.width) saved[c.key] = c.width; });
+        localStorage.setItem(COL_WIDTHS_KEY, JSON.stringify(saved));
+      } catch(e) {}
+    }
     _resizeCol = null;
+    _resizeTh = null;
     document.removeEventListener('mousemove', onResizeMove);
     document.removeEventListener('mouseup', onResizeUp);
   }
 
   /* ── Init ── */
   function init() {
+    // Restore saved column widths
+    try {
+      var savedWidths = localStorage.getItem(COL_WIDTHS_KEY);
+      if (savedWidths) {
+        var wmap = JSON.parse(savedWidths);
+        COLUMNS.forEach(function(c) { if (wmap[c.key]) c.width = wmap[c.key]; });
+      }
+    } catch(e) {}
     // Restore saved split ratio
     var wrapper = document.querySelector('.wrapper');
     wrapper.style.setProperty('--spl-ratio', splitRatio+'%');
