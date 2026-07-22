@@ -219,8 +219,8 @@ pre code { background: none; padding: 0; }
 .filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
-.data-table .cell-pills { display:flex; flex-wrap:wrap; gap:2px; }
-.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); }
+.data-table .cell-pills { }
+.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -509,6 +509,7 @@ pre code { background: none; padding: 0; }
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
   const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
   let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
@@ -831,7 +832,7 @@ pre code { background: none; padding: 0; }
         var stickyCls = c.stickyRight ? ' sticky-right' : '';
         var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
         return '<th class="' + sortCls + freezeCls + stickyCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
-          ' style="width:' + c.width + '"' + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
+          ' style="width:' + c.width + '"' + freezeStyle + '>' + c.label + (columnResize ? '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span>' : '') + '</th>';
       }).join('') + '</tr>';
   }
 
@@ -1127,6 +1128,15 @@ pre code { background: none; padding: 0; }
       return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
     }).join('');
 
+    // column widths display
+    html += '<div class="col-toggle-divider"></div><div class="settings-section">列宽 (px)</div>';
+    html += '<div style="font-size:0.62rem;color:#9ca3af;padding:2px 0;line-height:1.6">';
+    COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).forEach(function(c) {
+      var w = c.width || '-';
+      html += escapeHtml(c.label) + ': <b style="color:#e0e0e0">' + w + '</b>  ';
+    });
+    html += '</div>';
+
     // view presets
     var presets = listPresets();
     if (presets.length > 0) {
@@ -1150,7 +1160,11 @@ pre code { background: none; padding: 0; }
     colVisibility[key] = visible;
     expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:col-visibility', JSON.stringify(colVisibility)); } catch(e) {}
+    // Preserve dropdown open state across rebuild
+    var dd = document.getElementById('colToggleDropdown');
+    var wasOpen = dd.classList.contains('show');
     initColToggle();
+    if (wasOpen) document.getElementById('colToggleDropdown').classList.add('show');
     initThead();
     render();
   };
@@ -1258,6 +1272,19 @@ pre code { background: none; padding: 0; }
     document.removeEventListener('mousemove', onResizeMove);
     document.removeEventListener('mouseup', onResizeUp);
   }
+
+  /* ── Debug: Print column widths ── */
+  window.printColWidths = function() {
+    var ths = document.querySelectorAll('.data-table th');
+    var widths = [];
+    for (var i = 0; i < ths.length; i++) {
+      var th = ths[i];
+      var cs = window.getComputedStyle(th);
+      widths.push({ label: th.textContent.trim() || '(checkbox)', width: cs.width });
+    }
+    console.table(widths);
+    return widths;
+  };
 
   /* ── Init ── */
   function init() {
