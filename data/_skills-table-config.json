@@ -68,7 +68,9 @@
       "author": "Hermes Agent + Teknium",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-agent",
+      "skill_md": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-agent/SKILL.md"
     },
     {
       "name": "hermes-memory-management",
@@ -78,7 +80,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-memory-management",
+      "skill_md": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-memory-management/SKILL.md"
     },
     {
       "name": "hermes-session-management",
@@ -88,7 +92,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-session-management",
+      "skill_md": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-session-management/SKILL.md"
     },
     {
       "name": "hermes-skill-installation",
@@ -98,7 +104,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-skill-installation",
+      "skill_md": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/hermes-skill-installation/SKILL.md"
     },
     {
       "name": "opencode",
@@ -108,7 +116,9 @@
       "author": "Hermes Agent",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/opencode",
+      "skill_md": "/Users/jadenli/.hermes/skills/autonomous-ai-agents/opencode/SKILL.md"
     },
     {
       "name": "baoyu-image-generation",
@@ -118,7 +128,9 @@
       "author": "宝玉 (JimLiu)",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/baoyu-image-generation",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/baoyu-image-generation/SKILL.md"
     },
     {
       "name": "creative-ideation",
@@ -128,7 +140,9 @@
       "author": "SHL0MS",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/creative-ideation",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/creative-ideation/SKILL.md"
     },
     {
       "name": "data-display-html-patterns",
@@ -138,7 +152,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/data-display-html-patterns",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/data-display-html-patterns/SKILL.md"
     },
     {
       "name": "html-template-system",
@@ -148,7 +164,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/html-template-system",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/html-template-system/SKILL.md"
     },
     {
       "name": "html-ui-refinement",
@@ -158,7 +176,9 @@
       "author": "IRIS (byHermes)",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/html-ui-refinement",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/html-ui-refinement/SKILL.md"
     },
     {
       "name": "personal-showcase-html",
@@ -168,7 +188,9 @@
       "author": "Jaden Li",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/personal-showcase-html",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/personal-showcase-html/SKILL.md"
     },
     {
       "name": "svg-dataflow-diagram",
@@ -178,7 +200,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/creative/svg-dataflow-diagram",
+      "skill_md": "/Users/jadenli/.hermes/skills/creative/svg-dataflow-diagram/SKILL.md"
     },
     {
       "name": "llm-industry-dashboard",
@@ -188,7 +212,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/data-science/llm-industry-dashboard",
+      "skill_md": "/Users/jadenli/.hermes/skills/data-science/llm-industry-dashboard/SKILL.md"
     },
     {
       "name": "agent-loop-workflow",
@@ -198,7 +224,9 @@
       "author": "IRIS",
       "profiles": "ops",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/agent-loop-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/agent-loop-workflow/SKILL.md"
     },
     {
       "name": "api-interception-scraping",
@@ -208,7 +236,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/api-interception-scraping",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/api-interception-scraping/SKILL.md"
     },
     {
       "name": "cron-management",
@@ -218,7 +248,9 @@
       "author": "Agent",
       "profiles": "research",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/cron-management",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/cron-management/SKILL.md"
     },
     {
       "name": "cross-profile-workflow",
@@ -228,7 +260,9 @@
       "author": "—",
       "profiles": "ops, review",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/cross-profile-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/cross-profile-workflow/SKILL.md"
     },
     {
       "name": "daily-tracker",
@@ -238,7 +272,9 @@
       "author": "IRIS",
       "profiles": "default, personal",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/daily-tracker",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/daily-tracker/SKILL.md"
     },
     {
       "name": "domain-migration",
@@ -248,7 +284,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/domain-migration",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/domain-migration/SKILL.md"
     },
     {
       "name": "git-cloner",
@@ -258,7 +296,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/git-cloner",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/git-cloner/SKILL.md"
     },
     {
       "name": "git-commit",
@@ -268,7 +308,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/git-commit",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/git-commit/SKILL.md"
     },
     {
       "name": "hermes-manager",
@@ -278,7 +320,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/hermes-manager",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/hermes-manager/SKILL.md"
     },
     {
       "name": "hermes-profile-ops",
@@ -288,7 +332,9 @@
       "author": "IRIS",
       "profiles": "ops",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/hermes-profile-ops",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/hermes-profile-ops/SKILL.md"
     },
     {
       "name": "kanban-workflow",
@@ -298,7 +344,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/kanban-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/kanban-workflow/SKILL.md"
     },
     {
       "name": "kuaishou-api-collect",
@@ -308,7 +356,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/kuaishou-api-collect",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/kuaishou-api-collect/SKILL.md"
     },
     {
       "name": "local-domain-dev",
@@ -318,7 +368,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/local-domain-dev",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/local-domain-dev/SKILL.md"
     },
     {
       "name": "macos-system-diagnostics",
@@ -328,7 +380,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/macos-system-diagnostics",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/macos-system-diagnostics/SKILL.md"
     },
     {
       "name": "ops-health",
@@ -338,7 +392,9 @@
       "author": "IRIS",
       "profiles": "default, ops",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/ops-health",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/ops-health/SKILL.md"
     },
     {
       "name": "platform-scraping-manager",
@@ -348,7 +404,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/platform-scraping-manager",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/platform-scraping-manager/SKILL.md"
     },
     {
       "name": "script-miner-conventions",
@@ -358,7 +416,9 @@
       "author": "jaden",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/script-miner-conventions",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/script-miner-conventions/SKILL.md"
     },
     {
       "name": "selenium-scraping",
@@ -368,7 +428,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/selenium-scraping",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/selenium-scraping/SKILL.md"
     },
     {
       "name": "spec-review",
@@ -378,7 +440,9 @@
       "author": "—",
       "profiles": "ops",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/devops/spec-review",
+      "skill_md": "/Users/jadenli/.hermes/skills/devops/spec-review/SKILL.md"
     },
     {
       "name": "references",
@@ -388,7 +452,9 @@
       "author": "—",
       "profiles": "dev, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/dogfood/references",
+      "skill_md": "/Users/jadenli/.hermes/skills/dogfood/references/SKILL.md"
     },
     {
       "name": "templates",
@@ -398,7 +464,9 @@
       "author": "—",
       "profiles": "dev, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/dogfood/templates",
+      "skill_md": "/Users/jadenli/.hermes/skills/dogfood/templates/SKILL.md"
     },
     {
       "name": "github-workflow",
@@ -408,7 +476,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 4,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/github/github-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/github/github-workflow/SKILL.md"
     },
     {
       "name": "mcp-server-building",
@@ -418,7 +488,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mcp/mcp-server-building",
+      "skill_md": "/Users/jadenli/.hermes/skills/mcp/mcp-server-building/SKILL.md"
     },
     {
       "name": "local-media-library",
@@ -428,7 +500,9 @@
       "author": "—",
       "profiles": "personal-private",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/media/local-media-library",
+      "skill_md": "/Users/jadenli/.hermes/skills/media/local-media-library/SKILL.md"
     },
     {
       "name": "torrent-analysis",
@@ -438,7 +512,9 @@
       "author": "—",
       "profiles": "personal-private",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/media/torrent-analysis",
+      "skill_md": "/Users/jadenli/.hermes/skills/media/torrent-analysis/SKILL.md"
     },
     {
       "name": "video-subtitle-generation",
@@ -448,7 +524,9 @@
       "author": "—",
       "profiles": "personal-private, research",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/media/video-subtitle-generation",
+      "skill_md": "/Users/jadenli/.hermes/skills/media/video-subtitle-generation/SKILL.md"
     },
     {
       "name": "evaluation",
@@ -458,7 +536,9 @@
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/evaluation",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/evaluation/SKILL.md"
     },
     {
       "name": "inference",
@@ -468,7 +548,9 @@
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/inference",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/inference/SKILL.md"
     },
     {
       "name": "models",
@@ -478,7 +560,9 @@
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/models",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/models/SKILL.md"
     },
     {
       "name": "research",
@@ -488,7 +572,9 @@
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/research",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/research/SKILL.md"
     },
     {
       "name": "structured-llm-output",
@@ -498,7 +584,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/structured-llm-output",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/structured-llm-output/SKILL.md"
     },
     {
       "name": "training",
@@ -508,7 +596,9 @@
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/training",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/training/SKILL.md"
     },
     {
       "name": "vector-databases",
@@ -518,7 +608,9 @@
       "author": "—",
       "profiles": "default, dev, ops, personal, personal-private, research, review, work",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/mlops/vector-databases",
+      "skill_md": "/Users/jadenli/.hermes/skills/mlops/vector-databases/SKILL.md"
     },
     {
       "name": "references",
@@ -528,7 +620,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 0,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/news-summary/references",
+      "skill_md": "/Users/jadenli/.hermes/skills/news-summary/references/SKILL.md"
     },
     {
       "name": "evernote",
@@ -538,7 +632,9 @@
       "author": "—",
       "profiles": "personal-private",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/note-taking/evernote",
+      "skill_md": "/Users/jadenli/.hermes/skills/note-taking/evernote/SKILL.md"
     },
     {
       "name": "batch-content-analysis",
@@ -548,7 +644,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/batch-content-analysis",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/batch-content-analysis/SKILL.md"
     },
     {
       "name": "daily-tracker",
@@ -558,7 +656,9 @@
       "author": "—",
       "profiles": "personal",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/daily-tracker",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/daily-tracker/SKILL.md"
     },
     {
       "name": "daily-tracker-workflow",
@@ -568,7 +668,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/daily-tracker-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/daily-tracker-workflow/SKILL.md"
     },
     {
       "name": "feishu-cli-format",
@@ -578,7 +680,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/feishu-cli-format",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/feishu-cli-format/SKILL.md"
     },
     {
       "name": "financial-ocr-cli",
@@ -588,7 +692,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/financial-ocr-cli",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/financial-ocr-cli/SKILL.md"
     },
     {
       "name": "github-profile-review",
@@ -598,7 +704,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/github-profile-review",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/github-profile-review/SKILL.md"
     },
     {
       "name": "jaden-tech-dashboard",
@@ -608,7 +716,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/jaden-tech-dashboard",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/jaden-tech-dashboard/SKILL.md"
     },
     {
       "name": "multi-source-report",
@@ -618,7 +728,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/multi-source-report",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/multi-source-report/SKILL.md"
     },
     {
       "name": "notion-tracking-system",
@@ -628,7 +740,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/notion-tracking-system",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/notion-tracking-system/SKILL.md"
     },
     {
       "name": "resume-writing",
@@ -638,7 +752,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 4,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/resume-writing",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/resume-writing/SKILL.md"
     },
     {
       "name": "running-weather-advisor",
@@ -648,7 +764,9 @@
       "author": "—",
       "profiles": "personal",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/running-weather-advisor",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/running-weather-advisor/SKILL.md"
     },
     {
       "name": "spec-iterative-refinement",
@@ -658,7 +776,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/spec-iterative-refinement",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/spec-iterative-refinement/SKILL.md"
     },
     {
       "name": "test-design-conventions",
@@ -668,7 +788,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/test-design-conventions",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/test-design-conventions/SKILL.md"
     },
     {
       "name": "web-project-audit-and-readme",
@@ -678,7 +800,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/productivity/web-project-audit-and-readme",
+      "skill_md": "/Users/jadenli/.hermes/skills/productivity/web-project-audit-and-readme/SKILL.md"
     },
     {
       "name": "llm-radar",
@@ -688,7 +812,9 @@
       "author": "dev profile",
       "profiles": "dev",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/projects/llm-radar",
+      "skill_md": "/Users/jadenli/.hermes/skills/projects/llm-radar/SKILL.md"
     },
     {
       "name": "article-smart-reader",
@@ -698,7 +824,9 @@
       "author": "—",
       "profiles": "research",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/article-smart-reader",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/article-smart-reader/SKILL.md"
     },
     {
       "name": "awesome-collector",
@@ -708,7 +836,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/awesome-collector",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/awesome-collector/SKILL.md"
     },
     {
       "name": "comparative-matrix-analysis",
@@ -718,7 +848,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/comparative-matrix-analysis",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/comparative-matrix-analysis/SKILL.md"
     },
     {
       "name": "last30days",
@@ -728,7 +860,9 @@
       "author": "Agent",
       "profiles": "research",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/last30days",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/last30days/SKILL.md"
     },
     {
       "name": "long-form-content-extraction",
@@ -738,7 +872,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/long-form-content-extraction",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/long-form-content-extraction/SKILL.md"
     },
     {
       "name": "research-doc-publish",
@@ -748,7 +884,9 @@
       "author": "—",
       "profiles": "research",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/research-doc-publish",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/research-doc-publish/SKILL.md"
     },
     {
       "name": "video-library-research",
@@ -758,7 +896,9 @@
       "author": "Jaden Li",
       "profiles": "personal-private",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/video-library-research",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/video-library-research/SKILL.md"
     },
     {
       "name": "web-research-synthesis",
@@ -768,7 +908,9 @@
       "author": "—",
       "profiles": "research",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/research/web-research-synthesis",
+      "skill_md": "/Users/jadenli/.hermes/skills/research/web-research-synthesis/SKILL.md"
     },
     {
       "name": "agent-loop-engineering",
@@ -778,7 +920,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/agent-loop-engineering",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/agent-loop-engineering/SKILL.md"
     },
     {
       "name": "content-readme-audit",
@@ -788,7 +932,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/content-readme-audit",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/content-readme-audit/SKILL.md"
     },
     {
       "name": "debugging-hermes-tui-commands",
@@ -798,7 +944,9 @@
       "author": "Hermes Agent",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/debugging-hermes-tui-commands",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/debugging-hermes-tui-commands/SKILL.md"
     },
     {
       "name": "frontend-review-workflow",
@@ -808,7 +956,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/frontend-review-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/frontend-review-workflow/SKILL.md"
     },
     {
       "name": "html-gen-table",
@@ -818,7 +968,9 @@
       "author": "dev",
       "profiles": "dev",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/html-gen-table",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/html-gen-table/SKILL.md"
     },
     {
       "name": "local-media-browser",
@@ -828,7 +980,9 @@
       "author": "—",
       "profiles": "personal-private",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/local-media-browser",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/local-media-browser/SKILL.md"
     },
     {
       "name": "local-tool-launcher",
@@ -838,7 +992,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/local-tool-launcher",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/local-tool-launcher/SKILL.md"
     },
     {
       "name": "loop-workflow",
@@ -848,7 +1004,9 @@
       "author": "Jaden Li",
       "profiles": "personal-private",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/loop-workflow",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/loop-workflow/SKILL.md"
     },
     {
       "name": "openspec-generate",
@@ -858,7 +1016,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/openspec-generate",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/openspec-generate/SKILL.md"
     },
     {
       "name": "pre-publish-audit",
@@ -868,7 +1028,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/pre-publish-audit",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/pre-publish-audit/SKILL.md"
     },
     {
       "name": "profile-maintenance-loop",
@@ -878,7 +1040,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/profile-maintenance-loop",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/profile-maintenance-loop/SKILL.md"
     },
     {
       "name": "project-onboarding-docs",
@@ -888,7 +1052,9 @@
       "author": "—",
       "profiles": "dev",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/project-onboarding-docs",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/project-onboarding-docs/SKILL.md"
     },
     {
       "name": "project-security-review",
@@ -898,7 +1064,9 @@
       "author": "Security Reviewer",
       "profiles": "review",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/project-security-review",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/project-security-review/SKILL.md"
     },
     {
       "name": "project-spec-prompt-design",
@@ -908,7 +1076,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/project-spec-prompt-design",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/project-spec-prompt-design/SKILL.md"
     },
     {
       "name": "prompt-engineering-design",
@@ -918,7 +1088,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/prompt-engineering-design",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/prompt-engineering-design/SKILL.md"
     },
     {
       "name": "python-cli-patterns",
@@ -928,7 +1100,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/python-cli-patterns",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/python-cli-patterns/SKILL.md"
     },
     {
       "name": "requesting-code-review",
@@ -938,7 +1112,9 @@
       "author": "Hermes Agent (adapted from obra/superpowers + MorAlekss)",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/requesting-code-review",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/requesting-code-review/SKILL.md"
     },
     {
       "name": "safeline-waf-lab",
@@ -948,7 +1124,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/safeline-waf-lab",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/safeline-waf-lab/SKILL.md"
     },
     {
       "name": "security-audit",
@@ -958,7 +1136,9 @@
       "author": "Hermes Agent",
       "profiles": "review",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/security-audit",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/security-audit/SKILL.md"
     },
     {
       "name": "security-remediation",
@@ -968,7 +1148,9 @@
       "author": "—",
       "profiles": "dev",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/security-remediation",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/security-remediation/SKILL.md"
     },
     {
       "name": "security-review-policy",
@@ -978,7 +1160,9 @@
       "author": "Security Reviewer",
       "profiles": "review",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/security-review-policy",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/security-review-policy/SKILL.md"
     },
     {
       "name": "static-site-portfolio",
@@ -988,7 +1172,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/static-site-portfolio",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/static-site-portfolio/SKILL.md"
     },
     {
       "name": "static-site-refactoring",
@@ -998,7 +1184,9 @@
       "author": "IRIS",
       "profiles": "default",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/static-site-refactoring",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/static-site-refactoring/SKILL.md"
     },
     {
       "name": "structured-web-scraping",
@@ -1008,7 +1196,9 @@
       "author": "—",
       "profiles": "default",
       "file_count": 3,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/structured-web-scraping",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/structured-web-scraping/SKILL.md"
     },
     {
       "name": "systematic-debugging",
@@ -1018,7 +1208,9 @@
       "author": "Hermes Agent (adapted from obra/superpowers)",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 2,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/systematic-debugging",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/systematic-debugging/SKILL.md"
     },
     {
       "name": "tool-nav-frontend",
@@ -1028,7 +1220,9 @@
       "author": "iris",
       "profiles": "default",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/tool-nav-frontend",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/tool-nav-frontend/SKILL.md"
     },
     {
       "name": "writing-plans",
@@ -1038,7 +1232,9 @@
       "author": "Hermes Agent (adapted from obra/superpowers)",
       "profiles": "default, dev, personal, personal-private, research, review, work",
       "file_count": 1,
-      "demo_url": "http://jaden.local:8089/demos/index.html"
+      "demo_url": "http://jaden.local:8089/demos/index.html",
+      "skill_path": "/Users/jadenli/.hermes/skills/software-development/writing-plans",
+      "skill_md": "/Users/jadenli/.hermes/skills/software-development/writing-plans/SKILL.md"
     }
   ],
   "tabs": [
@@ -1109,6 +1305,7 @@
       "actions"
     ],
     "rowSelect": false,
-    "columnResize": false
+    "columnResize": false,
+    "modalRenderer": "skills"
   }
 }
