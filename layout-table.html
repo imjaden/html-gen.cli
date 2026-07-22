@@ -732,6 +732,134 @@
     activateSplit(row, 0);
   };
 
+  /* ── Skills-specific modal & split renderers ── */
+  if (OPTIONS && OPTIONS.modalRenderer === 'skills') {
+    window.skillModal = function(event, row) {
+      var h = '<div style="position:relative">';
+      h += '<button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;background:none;border:none;color:#6b7280;font-size:1.2rem;cursor:pointer;z-index:1">✕</button>';
+      h += '<h3 style="margin:0 0 14px;font-size:0.95rem;color:#f0f0f0">📋 Skill 详细信息</h3>';
+
+      // Fields
+      var fields = [
+        {label:'名称', value: row.name},
+        {label:'分类', value: row.category},
+        {label:'作者', value: row.author || '-'},
+        {label:'描述', value: row.description || '-'},
+      ];
+      fields.forEach(function(f) {
+        h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+        h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">'+escapeHtml(f.label)+'</span>';
+        h += '<span style="color:#e0e0e0;word-break:break-all">'+escapeHtml(String(f.value))+'</span>';
+        h += '</div>';
+      });
+
+      // Tags — computed from name words
+      var tags = (row.name||'').split(/[-_]/).filter(function(s){return s.length>1;});
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">标签</span>';
+      h += '<span>';
+      tags.forEach(function(t) {
+        h += '<span style="display:inline-block;padding:1px 6px;border-radius:9999px;font-size:0.62rem;background:rgba(79,70,229,0.12);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.2);margin:1px">'+escapeHtml(t)+'</span>';
+      });
+      h += '</span></div>';
+
+      // Version — tag style
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">版本</span>';
+      h += '<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:0.65rem;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">'+escapeHtml(row.version||'-')+'</span>';
+      h += '</div>';
+
+      // Path with copy button
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">路径</span>';
+      h += '<span style="color:#e0e0e0;font-size:0.7rem;word-break:break-all;flex:1">'+escapeHtml(row.skill_path||'')+'</span>';
+      h += '<span onclick="event.stopPropagation();navigator.clipboard.writeText(\''+(row.skill_path||'').replace(/'/g,"\\'")+'\');showToast(\'已拷贝路径\')" style="cursor:pointer;font-size:0.8rem;flex-shrink:0" title="拷贝路径">📋</span>';
+      h += '</div>';
+
+      // Profiles — tag style
+      var profiles = (row.profiles||'').split(/,\\s*/).filter(Boolean);
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">所属 Profile</span>';
+      h += '<span>';
+      profiles.forEach(function(p) {
+        h += '<span style="display:inline-block;padding:1px 6px;border-radius:9999px;font-size:0.62rem;background:rgba(79,70,229,0.12);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.2);margin:1px">'+escapeHtml(p)+'</span>';
+      });
+      h += '</span></div>';
+
+      // Chinese content & scripts
+      var hasChinese = /[\u4e00-\u9fff]/.test(row.description||'') ? '✅ 是' : '❌ 否';
+      var hasScript = (row.file_count||0) > 1 ? '✅ 是' : '❌ 否';
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">中文内容</span>';
+      h += '<span style="color:#e0e0e0">'+hasChinese+'</span>';
+      h += '</div>';
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">有脚本</span>';
+      h += '<span style="color:#e0e0e0">'+hasScript+'</span>';
+      h += '</div>';
+
+      // File count
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">文件数</span>';
+      h += '<span style="color:#e0e0e0">'+escapeHtml(String(row.file_count||0))+'</span>';
+      h += '</div>';
+
+      h += '</div>';
+      document.getElementById('modalPanel').innerHTML = h;
+      document.getElementById('modalOverlay').classList.add('active');
+    };
+
+    window.skillSplit = function(event, row) {
+      for (var i = 0; i < filtered.length; i++) {
+        if (filtered[i].name === row.name) { showSkillSplit(row, i); return; }
+      }
+      showSkillSplit(row, 0);
+    };
+
+    function showSkillSplit(row, idx) {
+      splitRow = row; splitIdx = idx;
+      splitActive = true;
+      var wrapper = document.querySelector('.wrapper');
+      wrapper.classList.add('split-mode');
+      initThead();
+      render();
+      // Render SKILL.md content
+      var header = document.getElementById('splitPreviewHeader');
+      header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
+        '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
+        ' ' + escapeHtml(row.name||'详情') +
+        '<button class="sp-close" onclick="closeSplit()">✕</button>';
+      var body = document.getElementById('splitPreviewBody');
+      body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280">⏳ 加载中...</div>';
+      // Try to fetch SKILL.md
+      var mdUrl = '/skills/' + encodeURIComponent(row.category) + '/' + encodeURIComponent(row.name) + '/SKILL.md';
+      fetch(mdUrl).then(function(resp) {
+        if (resp.ok) return resp.text();
+        throw new Error('HTTP ' + resp.status);
+      }).then(function(text) {
+        // Simple markdown → HTML
+        var html = text
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/^### (.+)$/gm,'<h3 style="margin:1em 0 0.4em;font-size:0.85rem;color:#e0e0e0">$1</h3>')
+          .replace(/^## (.+)$/gm,'<h2 style="margin:1.2em 0 0.5em;font-size:0.95rem;color:#f0f0f0">$1</h2>')
+          .replace(/^# (.+)$/gm,'<h1 style="margin:1.4em 0 0.6em;font-size:1.1rem;color:#f0f0f0">$1</h1>')
+          .replace(/`([^`]+)`/g,'<code style="background:#1a1a2e;padding:1px 4px;border-radius:3px;font-size:0.7rem">$1</code>')
+          .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+          .replace(/\*(.+?)\*/g,'<i>$1</i>')
+          .replace(/^\- (.+)$/gm,'<li style="margin-left:16px">$1</li>')
+          .replace(/\n/g,'<br>');
+        body.innerHTML = '<div style="font-size:0.75rem;line-height:1.7;color:#b0b0c0;padding:8px 0">'+html+'</div>';
+      }).catch(function(err) {
+        body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:0.75rem">⚠ 无法加载 SKILL.md<br><span style="font-size:0.62rem">'+escapeHtml(mdUrl)+'</span><br><span style="font-size:0.62rem">'+escapeHtml(err.message)+'</span></div>';
+      });
+      // Highlight
+      var tbody = document.getElementById('tbody');
+      var rows = tbody.querySelectorAll('tr');
+      rows.forEach(function(r){ r.classList.remove('split-active'); });
+      if (rows[idx]) rows[idx].classList.add('split-active');
+    }
+  }
+
   // Esc closes modal
   document.addEventListener('keydown', function(e) {
     if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
