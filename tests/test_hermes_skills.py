@@ -149,6 +149,153 @@ class TestHermesSkills(unittest.TestCase):
         errs = self._errors()
         self.assertEqual(len(errs), 0, f"JS errors: {errs}")
 
+    # ── Skills Modal Detail Panel ──
+
+    def test_07_modal_structured_fields(self):
+        """Modal should show structured fields: 名称/分类/作者/描述."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
+        self.assertTrue(len(modal_btns) > 0)
+        modal_btns[0].click()
+        time.sleep(0.3)
+
+        panel = self.driver.find_element(By.ID, 'modalPanel')
+        text = panel.text
+        # Verify key fields present
+        self.assertIn('名称', text, "Should show 名称 field")
+        self.assertIn('分类', text, "Should show 分类 field")
+        self.assertIn('描述', text, "Should show 描述 field")
+        self.assertIn('路径', text, "Should show 路径 field")
+        self.assertIn('文件数', text, "Should show 文件数 field")
+
+        self.driver.find_element(By.CSS_SELECTOR, '.modal-close').click()
+        time.sleep(0.15)
+
+    def test_08_modal_tag_pills(self):
+        """Modal should render 标签 and Profile as tag pills."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
+        modal_btns[0].click()
+        time.sleep(0.3)
+
+        # Tag pills should be inline-block with border-radius
+        pills = self.driver.find_elements(By.CSS_SELECTOR, '#modalPanel span[style*="border-radius:9999px"]')
+        self.assertGreater(len(pills), 0, f"Should have tag pills, found {len(pills)}")
+
+        self.driver.find_element(By.CSS_SELECTOR, '.modal-close').click()
+        time.sleep(0.15)
+
+    def test_09_modal_copy_path_no_error(self):
+        """Copy path button should not throw JS error."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
+        modal_btns[0].click()
+        time.sleep(0.3)
+
+        # Click the copy icon (📋 in the 路径 row)
+        copy_btn = self.driver.execute_script("""
+        var panel = document.getElementById('modalPanel');
+        var spans = panel.querySelectorAll('span[title="拷贝路径"]');
+        return spans.length > 0 ? true : false;
+        """)
+        self.assertTrue(copy_btn, "Should have copy path button")
+        self.driver.execute_script(
+            "var s = document.querySelector('#modalPanel span[title=\"拷贝路径\"]');"
+            "if (s) s.click();"
+        )
+        time.sleep(0.3)
+
+        errs = self._errors()
+        self.assertEqual(len(errs), 0, f"Copy path should not throw JS error: {errs}")
+
+        self.driver.find_element(By.CSS_SELECTOR, '.modal-close').click()
+        time.sleep(0.15)
+
+    def test_10_modal_version_badge(self):
+        """Modal should show version as yellow badge."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
+        modal_btns[0].click()
+        time.sleep(0.3)
+
+        # Version badge has fbbf24 (yellow) color
+        badge = self.driver.execute_script("""
+        var panel = document.getElementById('modalPanel');
+        var spans = panel.querySelectorAll('span');
+        for (var i = 0; i < spans.length; i++) {
+            if (spans[i].textContent.trim() === '版本') {
+                var next = spans[i].parentElement.querySelector('span[style*="fbbf24"]');
+                return next ? next.textContent.trim() : null;
+            }
+        }
+        return null;
+        """)
+        self.assertIsNotNone(badge, "Version badge should exist")
+        self.assertNotEqual(badge, '', "Version badge should have text")
+
+        self.driver.find_element(By.CSS_SELECTOR, '.modal-close').click()
+        time.sleep(0.15)
+
+    # ── Skills Split Panel ──
+
+    def test_11_split_opens_with_content(self):
+        """Split panel should open and attempt to load SKILL.md."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        split_btns = [b for b in btns if b.get_attribute('title') == '右侧展示详情']
+        self.assertTrue(len(split_btns) > 0)
+        split_btns[0].click()
+        time.sleep(0.4)
+
+        body = self.driver.find_element(By.ID, 'splitPreviewBody')
+        self.assertTrue(len(body.text) > 0, "Split body should have content")
+
+        self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
+        time.sleep(0.15)
+
+    def test_12_split_nav_buttons(self):
+        """Split panel should have ▲▼ navigation buttons."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        split_btns = [b for b in btns if b.get_attribute('title') == '右侧展示详情']
+        split_btns[0].click()
+        time.sleep(0.3)
+
+        nav_btns = self.driver.find_elements(By.CSS_SELECTOR, '.sp-nav')
+        self.assertEqual(len(nav_btns), 2, "Should have ▲▼ nav buttons")
+
+        self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
+        time.sleep(0.15)
+
+    # ── No JS errors after all interactions ──
+
+    def test_13_no_js_errors_after_skills_modal_split(self):
+        """No JS errors after opening modal + split in skills renderer."""
+        # Open modal
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
+        if modal_btns:
+            modal_btns[0].click()
+            time.sleep(0.2)
+            # Try copy button
+            self.driver.execute_script(
+                "var s = document.querySelector('#modalPanel span[title=\"拷贝路径\"]');"
+                "if (s) s.click();"
+            )
+            time.sleep(0.15)
+            self.driver.find_element(By.CSS_SELECTOR, '.modal-close').click()
+            time.sleep(0.1)
+
+        # Open split
+        btns2 = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
+        split_btns = [b for b in btns2 if b.get_attribute('title') == '右侧展示详情']
+        if split_btns:
+            split_btns[0].click()
+            time.sleep(0.3)
+            self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
+            time.sleep(0.1)
+
+        errs = self._errors()
+        self.assertEqual(len(errs), 0, f"JS errors after skills modal+split: {errs}")
+
 
 if __name__ == '__main__':
-    unittest.main(verbosity=2)
+    unittest.main()
