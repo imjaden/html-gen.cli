@@ -15,7 +15,8 @@
     {
       "key": "profiles",
       "label": "Profiles",
-      "sortable": true
+      "sortable": true,
+      "escape": true
     },
     {
       "key": "version",
@@ -1092,11 +1093,13 @@
     "clickModes": [
       "tab",
       "modal",
-      "split"
+      "split",
+      "expand"
     ],
     "columnsSplit": [
       "name",
       "actions"
-    ]
+    ],
+    "rowSelect": true
   }
 }
