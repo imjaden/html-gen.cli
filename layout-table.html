@@ -113,7 +113,7 @@
 .col-toggle-dropdown {
   display:none; position:absolute; top:100%; right:0; z-index:50; margin-top:4px;
   background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; padding:6px 0;
-  min-width:150px; max-height:260px; overflow-y:auto;
+  min-width:200px; min-height:300px; max-height:400px; overflow-y:auto;
 }
 .col-toggle-dropdown.show { display:block; }
 .col-toggle-dropdown label { display:flex; align-items:center; gap:6px; padding:4px 12px;
@@ -884,6 +884,7 @@
     if (rows[idx]) rows[idx].classList.add('split-active');
   }
   window.activateSplit = activateSplit;
+  window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
   window.splitNav = function(dir) {
     var newIdx = splitIdx + dir;
     if (newIdx < 0 || newIdx >= filtered.length) return;
@@ -1048,10 +1049,13 @@
     var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
     if (tabCount > 1 || density !== 'default') {
       html += '<div class="settings-section">密度</div>';
+      html += '<div style="display:flex;gap:4px;padding:4px 8px">';
       ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
         var parts = item.split(':');
-        html += '<label class="settings-radio"><input type="radio" name="density" value="'+parts[0]+'" '+(density===parts[0]?'checked':'')+' onchange="setDensity(\''+parts[0]+'\')">'+parts[1]+'</label>';
+        var active = density===parts[0];
+        html += '<label class="settings-radio" style="flex:1;text-align:center;padding:3px 6px;border-radius:4px;cursor:pointer;font-size:0.68rem;'+(active?'background:rgba(79,70,229,0.2);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.3)':'color:#9ca3af')+'"><input type="radio" name="density" value="'+parts[0]+'" '+(active?'checked':'')+' onchange="setDensity(\''+parts[0]+'\')" style="display:none">'+parts[1]+'</label>';
       });
+      html += '</div>';
     }
 
     // click mode section
@@ -1065,19 +1069,11 @@
 
     // column visibility
     html += '<div class="col-toggle-divider"></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 12px"><span class="settings-section" style="padding:0">列可见性</span><span onclick="document.getElementById(\'colToggleDropdown\').classList.remove(\'show\')" style="cursor:pointer;font-size:0.8rem;color:#6b7280" title="关闭">✕</span></div>';
     html += COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).map(function(c) {
       var visible = colVisibility[c.key] !== false;
       return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
     }).join('');
-
-    // column widths display
-    html += '<div class="col-toggle-divider"></div><div class="settings-section">列宽 (px)</div>';
-    html += '<div style="font-size:0.62rem;color:#9ca3af;padding:2px 0;line-height:1.6">';
-    COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).forEach(function(c) {
-      var w = c.width || '-';
-      html += escapeHtml(c.label) + ': <b style="color:#e0e0e0">' + w + '</b>  ';
-    });
-    html += '</div>';
 
     // view presets
     var presets = listPresets();
@@ -1090,6 +1086,7 @@
     html += '<label style="font-size:0.65rem"><a href="#" onclick="event.preventDefault();var n=prompt(\'预设名称:\');if(n)savePreset(n)" style="color:var(--cobalt-400)">+ 保存当前视图</a></label>';
 
     dd.innerHTML = html;
+    dd.onclick = function(e) { e.stopPropagation(); };
     document.getElementById('colToggleBtn').onclick = function(e) {
       e.stopPropagation();
       dd.classList.toggle('show');
@@ -1122,7 +1119,10 @@
     clickMode = val;
     expandedIdx = -1;
     try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
+    var dd = document.getElementById('colToggleDropdown');
+    var wasOpen = dd.classList.contains('show');
     initColToggle();
+    if (wasOpen) document.getElementById('colToggleDropdown').classList.add('show');
     render();
   };
 

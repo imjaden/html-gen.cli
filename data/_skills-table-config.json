@@ -6,7 +6,9 @@
       "sortable": true,
       "locale": "zh",
       "freeze": true,
-      "width": "100px"
+      "width": "100px",
+      "quickFilter": false,
+      "onCellClick": "split"
     },
     {
       "key": "category",
