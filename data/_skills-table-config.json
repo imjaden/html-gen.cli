@@ -10,14 +10,16 @@
     {
       "key": "category",
       "label": "分类",
-      "sortable": true
+      "sortable": true,
+      "type": "pills"
     },
     {
       "key": "profiles",
       "label": "Profiles",
       "sortable": true,
       "escape": true,
-      "width": "180px"
+      "width": "150px",
+      "type": "pills"
     },
     {
       "key": "version",
@@ -27,7 +29,7 @@
     {
       "key": "description",
       "label": "描述",
-      "width": "300px"
+      "width": "200px"
     },
     {
       "key": "actions",
