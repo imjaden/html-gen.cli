@@ -96,7 +96,7 @@
 
 | # | Severity | Title | Fix | Status |
 |:-:|:--------:|:------|:----|:------:|
-| 1 | 🔴 | JSON 注入 `<script>` 标签 | `inject()` 中 `</` → `<\\/` 转义 | ✅ Verified |
+| 1 | 🔴 | JSON 注入 `<script>` 标签 | `inject()` 中 `</` → `<\/` 转义 | ✅ Verified |
 | 2 | 🔴 | 路径穿越 | `_safe_path()` 路径边界校验 | ✅ Verified |
 | 3 | 🟡 | innerHTML XSS | `escapeHtml()` + `col.escape` 列选项 | ⚠️ Opt-in (向后兼容) |
 | 4 | 🟡 | MD 解析器 HTML 转义 | `_md_escape()` 统一转义 `&<>` | ✅ Verified |
@@ -166,3 +166,77 @@ HG-SEC-003 的 `escapeHtml()` 采用 opt-in 设计 (`col.escape: true`)，默认
 
 ---
 
+## 2026-07-23 — Design Document Review: 46 unpushed commits
+
+- **Reviewer**: Security Reviewer
+- **Type**: Design Document Review (治理规范审计)
+- **Level**: L2
+- **Scope**: 46 unpushed commits (ff42a8a..42c6340), 4 design docs, 72 project files
+- **Verdict**: PASS
+
+### Summary
+
+对 46 个未 push commit 进行三轮治理规范审查：commit message 规范、文件命名规范、设计文档质量。项目整体规范执行良好，仅 1 个 commit 缺 @scope 前缀，设计文档安全性规范完善。
+
+### 一、Commit Message 规范检查
+
+约定格式: `type@scope: subject`（AGENTS.md: `git commit 格式：type@scope: subject`）
+
+| 结果 | 数量 |
+|:---|:----:|
+| ✅ 符合 | 45/46 (97.8%) |
+| 🔴 违规 | 1 |
+
+> 🔴 **HG-DESIGN-CONV-001**: `ff42a8a docs: fix blockquote per-line spacing` — 缺 `@html-gen` scope。属 oldest commit，后续 45 个无一违规。
+
+**Type 分布**: add(12) · fixed(11) · docs(5) · feat(4) · fix(3) · refactor(2) · rename(2) · tune(1) · docs no-scope(1)
+
+### 二、文件命名规范检查
+
+约定: hyphens · 无中文 · data/ `_` 前缀例外 · 设计文档 `{topic}-{type}-v{ver}-{date}.md`
+
+| 结果 | 数量 |
+|:---|:----:|
+| ✅ 规范 | 65 |
+| 🟡 pytest 例外 | 7 (`tests/test_*.py` — 业界标准) |
+
+**设计文档全部合规**:
+- `cmd-f-search-design-v1.0-20260712.md` ✅
+- `sidebar-table-design-v3.2-20260714.md` ✅
+- `slide-toolbar-design-v1.0-20260714.md` ✅
+- `table-actions-design-v1.0-20260712.md` ✅
+
+### 三、设计文档质量审查
+
+#### sidebar-table-design-v3.2 — 🟢 优秀
+
+| 维度 | 评估 |
+|:-----|:-----|
+| 合理性 | 10 项决策记录 + 当前状态分析 + knowledge 迁移路径清晰 |
+| 严格性 | CSS 变量/API/localStorage schema/restore() validate 模式全定义 |
+| 安全性 | §2.5 独立安全章节: sandbox iframe/isSafeUrl()/textContent/noopener/视图预设 2KB 限制 |
+
+**亮点**: §2.5 为模板级安全章节 — iframe sandbox、URL 白名单、textContent 管道、`noopener,noreferrer` 四层防护俱全。
+
+#### table-actions-design-v1.0 — 🟢 良好
+
+6 类按钮分类 + 4 组合场景 + TypeScript 接口。配置驱动，安全风险低。
+
+#### 前次审查回顾
+
+- `slide-toolbar-design` — v2.1 5 项安全约束已全部闭合
+- `cmd-f-search-design` — 纯 UI 覆盖层，无安全风险
+
+### 🔧 待修复
+
+| Issue | File | Fix |
+|:------|:-----|:----|
+| HG-DESIGN-CONV-001 | `ff42a8a` 缺 @scope | `git rebase -i` → `docs@html-gen: fix` |
+
+### Positives
+
+- ✅ 46 个 commit 中 45 个 (97.8%) 严格遵循 `type@scope: subject`
+- ✅ 4 个设计文档均遵循 `{topic}-{type}-v{ver}-{date}.md`
+- ✅ `sidebar-table-design-v3.2` §2.5 是项目安全文化成熟的标志
+- ✅ localStorage 迁移至 `html-gen:` 命名空间
+- ✅ 设计文档与 46 个 commit 实现高度一致（Phase 1-4 全部对应）
