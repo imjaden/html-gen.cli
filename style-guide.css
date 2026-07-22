@@ -64,7 +64,7 @@ pre {
 pre code { background: none; padding: 0; }
 
 /* ── Data Table ── */
-.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table { width: 100%; border-collapse: collapse; }
 .data-table th {
   position: sticky; top: 0; z-index: 10;
   background: var(--surface-900);

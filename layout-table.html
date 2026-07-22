@@ -77,7 +77,7 @@
 
 /* ── Table ── */
 .table-wrap { border:1px solid #1a1a2e; border-radius:var(--radius-lg); overflow-x:auto; }
-.data-table { width:100%; min-width:600px; border-collapse:separate; border-spacing:0; table-layout:auto; }
+.data-table { width:100%; min-width:600px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
 .data-table th {
   position:sticky; top:0; z-index:10; background:var(--surface-900); border-bottom:1px solid #2a2a3e;
   padding:6px 8px; text-align:left; font-size:0.65rem; font-weight:600; color:#9ca3af;
@@ -93,7 +93,7 @@
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
 .data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
-  vertical-align:middle; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+  vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
 .data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
@@ -262,7 +262,6 @@
 
 <div class="table-wrap">
   <table class="data-table">
-    <colgroup id="colGroup"></colgroup>
     <thead id="thead"></thead>
     <tbody id="tbody"></tbody>
   </table>
@@ -625,16 +624,18 @@
   /* ── Sort ── */
   function initThead() {
     var thead = document.getElementById('thead');
-    var cg = document.getElementById('colGroup');
     var cols = visibleCols();
+    // Ensure every column has an explicit width (Cinema-disciplined model)
+    cols.forEach(function(c) {
+      if (!c.width) c.width = c.type === 'actions' ? '100px' : '120px';
+    });
     var frozenOffset = 0;
     var frozenStyles = [];
     cols.forEach(function(c) {
-      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += 120; }
+      var w = c.width ? parseInt(c.width) : 120;
+      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += w; }
       else { frozenStyles.push(''); }
     });
-    cg.innerHTML = (showRowSelect ? '<col class="col-checkbox">' : '') +
-      cols.map(function(c) { var w = c.width || (c.type==='actions'?'auto':''); return '<col'+(w?' style="width:'+w+'"':'')+'>'; }).join('');
     thead.innerHTML = '<tr>' +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
@@ -644,7 +645,7 @@
         var stickyCls = c.stickyRight ? ' sticky-right' : '';
         var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
         return '<th class="' + sortCls + freezeCls + stickyCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
-          (c.width && c.type !== 'actions' ? ' style="width:' + c.width + '"' : '') + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
+          ' style="width:' + c.width + '"' + freezeStyle + '>' + c.label + '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span></th>';
       }).join('') + '</tr>';
   }
 
@@ -1036,13 +1037,14 @@
   window.showToast = showToast;
 
   /* ── Column resize ── */
-  var _resizeCol, _resizeStartX, _resizeStartW;
+  var COL_WIDTHS_KEY = 'html-gen:table:col-widths';
+  var _resizeCol, _resizeStartX, _resizeStartW, _resizeTh;
   window.startResize = function(e, key) {
     e.stopPropagation(); e.preventDefault();
     _resizeCol = key;
     _resizeStartX = e.clientX;
-    var th = e.target.parentElement;
-    _resizeStartW = th.offsetWidth;
+    _resizeTh = e.target.parentElement;
+    _resizeStartW = _resizeTh.offsetWidth;
     document.addEventListener('mousemove', onResizeMove);
     document.addEventListener('mouseup', onResizeUp);
   };
@@ -1050,18 +1052,37 @@
     if (!_resizeCol) return;
     var delta = e.clientX - _resizeStartX;
     var newW = Math.max(40, _resizeStartW + delta);
-    var col = COLUMNS.find(function(c){return c.key===_resizeCol;});
-    if (col) col.width = newW + 'px';
-    initThead();
+    // Direct DOM update (no full thead rebuild — avoids flicker)
+    if (_resizeTh) _resizeTh.style.width = newW + 'px';
   }
   function onResizeUp() {
+    if (_resizeCol && _resizeTh) {
+      var newW = _resizeTh.offsetWidth;
+      var col = COLUMNS.find(function(c){return c.key===_resizeCol;});
+      if (col) col.width = newW + 'px';
+      // Persist to localStorage
+      try {
+        var saved = {};
+        COLUMNS.forEach(function(c) { if (c.width) saved[c.key] = c.width; });
+        localStorage.setItem(COL_WIDTHS_KEY, JSON.stringify(saved));
+      } catch(e) {}
+    }
     _resizeCol = null;
+    _resizeTh = null;
     document.removeEventListener('mousemove', onResizeMove);
     document.removeEventListener('mouseup', onResizeUp);
   }
 
   /* ── Init ── */
   function init() {
+    // Restore saved column widths
+    try {
+      var savedWidths = localStorage.getItem(COL_WIDTHS_KEY);
+      if (savedWidths) {
+        var wmap = JSON.parse(savedWidths);
+        COLUMNS.forEach(function(c) { if (wmap[c.key]) c.width = wmap[c.key]; });
+      }
+    } catch(e) {}
     // Restore saved split ratio
     var wrapper = document.querySelector('.wrapper');
     wrapper.style.setProperty('--spl-ratio', splitRatio+'%');
