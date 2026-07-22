@@ -90,15 +90,18 @@ Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.h
 分栏模式列过滤 (col.preview:true → 仅预览列显示) ✅ — layout-table.html
 列隐藏 (col.hide:true → 永不可见) ✅ — layout-table.html
 列可见性切换 (⚙️ 下拉面板, 复选框) ✅ — layout-table.html
-列宽拖拽 (resize handle, 最小 40px, localStorage 持久化) ✅ — layout-table.html
+列宽拖拽 (resize handle, 最小 40px, localStorage 持久化, 可禁用) ✅ — layout-table.html
 多标签页 (tabs, 按 field/match 过滤, localStorage 记忆) ✅ — layout-table.html
 操作按钮列 (copyKey/hrefKey/desc/handler 模式) ✅ — layout-table.html
 Tab 包含匹配 (tab.contains — 逗号分隔字段) ✅ — layout-table.html
 列可见性 localStorage 持久化 (html-gen:table:col-visibility) ✅ — layout-table.html
+列宽度 localStorage 持久化 (html-gen:table:col-widths) ✅ — layout-table.html
 CSV 导出 (全部 / 选中行, BOM UTF-8) ✅ — layout-table.html
 批量操作工具栏 (全选/取消/导出选中, 选中行数显式) ✅ — layout-table.html
 键盘导航 (↑↓ 移动焦点, Enter 点击行, 自动滚动) ✅ — layout-table.html
 全屏模式 (⛶ 按钮 / F 键, wrapper.fullscreen) ✅ — layout-table.html
+分栏比例预设 (▦ 下拉: 100%/3:7/4:6/5:5/6:4, localStorage) ✅ — layout-table.html
+分栏面板导航 (▲▼ 按钮切换上/下一条) ✅ — layout-table.html
 视图预设 (保存/加载/删除, 最多 10 个, ≤2KB, localStorage) ✅ — layout-table.html
 行选择复选框 (rowSelect, select-all) ✅ — layout-table.html
 统计面板 (总数/筛选数/选中数 pill) ✅ — layout-table.html
@@ -106,6 +109,18 @@ Toast 通知 (2.5s 自动消失) ✅ — layout-table.html
 HTML 转义 (escapeHtml, col.escape, textContent 安全渲染) ✅ — layout-table.html
 iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
 URL 白名单校验 (https?/ / ~/ 前缀) ✅ — layout-table.html
+Cinema 纪律化宽度 (table-layout:fixed, 每列显式 width, td max-width:0, 无 colgroup) ✅ — layout-table.html
+Pills 标签列 (col.type:pills, 逗号分隔→tag pills) ✅ — layout-table.html
+右侧固定列 (col.stickyRight:true, position:sticky) ✅ — layout-table.html
+分栏列过滤增强 (options.columnsSplit + col.preview fallback) ✅ — layout-table.html
+单元格点击分栏 (col.onCellClick:split) ✅ — layout-table.html
+单元格筛选禁用 (col.quickFilter:false) ✅ — layout-table.html
+列宽拖拽禁用 (options.columnResize:false) ✅ — layout-table.html
+自定义模态框渲染器 (options.modalRenderer:skills) ✅ — layout-table.html
+SKILL.md 加载 (split 面板 fetch + 简单 Markdown 渲染) ✅ — layout-table.html
+设置面板 UX (密度横向/内部点击不关闭/✕关闭按钮) ✅ — layout-table.html
+printColWidths() 调试函数 ✅ — layout-table.html
+copyAction() clipboard fallback (execCommand, headless Chrome 兼容) ✅ — layout-table.html
 
 ### layout-knowledge.html (C 型知识库) — 336 行
 顶部横向标签栏 (按 group 分组, 彩色圆点, 与侧边栏标题行对齐) ✅ — layout-knowledge.html
