@@ -503,7 +503,13 @@
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
           var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
           var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
-          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '" onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"'+freezeStyle+'>'+val+'</td>';
+          var tdOnclick = '';
+          if (col.onCellClick === 'split') {
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+          } else if (col.quickFilter !== false) {
+            tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          }
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
       });
       rowHtml += '</tr>';

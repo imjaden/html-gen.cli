@@ -296,6 +296,45 @@ class TestHermesSkills(unittest.TestCase):
         errs = self._errors()
         self.assertEqual(len(errs), 0, f"JS errors after skills modal+split: {errs}")
 
+    def test_14_name_click_opens_split(self):
+        """Click SKILL 名称 cell → opens split view."""
+        # Click the first name cell (td at col index 0, but with rowSelect=false items start at 0)
+        cells = self.driver.find_elements(By.CSS_SELECTOR, 'td.clickable-cell')
+        # The first clickable-cell should be the name column
+        self.assertTrue(len(cells) > 0, "No clickable cells found")
+        # Click the first name cell
+        cells[0].click()
+        time.sleep(0.4)
+
+        wrapper = self.driver.find_element(By.CSS_SELECTOR, '.wrapper')
+        self.assertIn('split-mode', (wrapper.get_attribute('class') or '').split(),
+                      "Wrapper should have split-mode after name click")
+
+        # Verify split body has content
+        body = self.driver.find_element(By.ID, 'splitPreviewBody')
+        self.assertTrue(len(body.text) > 0, "Split body should have content")
+
+        # Close split
+        self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
+        time.sleep(0.15)
+        self.assertNotIn('split-mode', (wrapper.get_attribute('class') or '').split())
+
+    def test_15_name_no_quick_filter(self):
+        """Click name cell should NOT trigger quickFilterBy — should openSplitAt instead."""
+        cells = self.driver.find_elements(By.CSS_SELECTOR, 'td.clickable-cell')
+        onclick = cells[0].get_attribute('onclick') or ''
+        self.assertIn('openSplitAt', onclick,
+                      f"Name cell should have openSplitAt, got: {onclick[:80]}")
+        self.assertNotIn('quickFilterBy', onclick,
+                         f"Name cell should NOT have quickFilterBy, got: {onclick[:80]}")
+
+        # Close any split that opened from test_14
+        try:
+            self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
+            time.sleep(0.15)
+        except:
+            pass
+
 
 if __name__ == '__main__':
     unittest.main()
