@@ -480,7 +480,8 @@
       }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
-          rowHtml += '<td style="white-space:nowrap">'+renderActions(col, row)+'</td>';
+          var stickyCls2 = col.stickyRight ? ' sticky-right' : '';
+          rowHtml += '<td style="white-space:nowrap" class="'+stickyCls2.trim()+'">'+renderActions(col, row)+'</td>';
         } else {
           var val = row[col.key];
           if (col.render) val = col.render(val, row);
