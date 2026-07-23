@@ -9,7 +9,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
   html-gen table --data data.json [--title "xxx"] [--output index.html]
   html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [--output kb.html]
 
-版本: 2.2(2026-07-13)
+版本: 3.1(2026-07-23)
 """
 import json, re, sys, os, argparse
 from pathlib import Path
@@ -423,8 +423,8 @@ Callout 提示框:
   ✗ HTML 标签 (会被转义)"""
 
 HELP_TABLE = """\
-A 型 · 数据表格 JSON 格式
-━━━━━━━━━━━━━━━━━━━━━━
+A 型 · 数据表格 JSON 格式 (Cinema 纪律化宽度模型)
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 
 简单格式 (JSON 数组):
   [{"名称": "A", "数量": 10}, {"名称": "B", "数量": 20}]
@@ -433,10 +433,16 @@ A 型 · 数据表格 JSON 格式
 {
   "columns": [
     {"key": "name", "label": "名称", "sortable": true, "locale": "zh",
-     "freeze": true,          // 列冻结 (sticky)
-     "preview": true},        // 分栏模式可见
+     "width": "120px",          // 列宽 (必设, 默认 120px)
+     "freeze": true,            // 列冻结 (sticky)
+     "preview": true,           // 分栏模式可见
+     "quickFilter": false,      // 禁用点击筛选
+     "onCellClick": "split"},  // 单元格点击 → 分栏
     {"key": "count", "label": "数量", "type": "number"},
-    {"key": "actions", "label": "操作", "type": "actions", "actions": [
+    {"key": "tags", "label": "标签", "type": "pills"},
+    {"key": "actions", "label": "操作", "type": "actions",
+     "stickyRight": true,       // 右侧固定列
+     "actions": [
       {"icon": "📋", "label": "复制", "copyKey": "name"},
       {"icon": "🔗", "label": "打开", "hrefKey": "url"},
       {"icon": "📋", "label": "弹窗", "handler": "skillModal"},
@@ -451,27 +457,42 @@ A 型 · 数据表格 JSON 格式
   ],
   "options": {
     "pageSize": 30, "exportCSV": true, "rowSelect": true,
-    "clickModes": ["tab", "modal", "split", "expand"]
+    "clickModes": ["tab", "modal", "split", "expand"],
+    "columnResize": false,       // 禁用列宽拖拽
+    "columnsSplit": ["name", "actions"],  // 分栏专用列集
+    "modalRenderer": "skills"   // 自定义模态框渲染器
   }
 }
 
+列类型:
+  string(默认) / number(数值排序) / actions(操作按钮) / pills(标签样式)
+
 列属性:
-  type:     string(默认) / number(数值排序) / actions(操作按钮)
-  sortable: 是否可排序 / locale: 排序语言(zh) / freeze: 列冻结
-  preview:  分栏模式可见 / hide: 列隐藏 / onClick: 行点击跳转
-  escape:   HTML转义 / render: 自定义渲染 / class: CSS类 / width: 列宽
+  width:     列宽 (Cinema 模型下必设, 默认 120px, actions 100px)
+  sortable:  是否可排序 / locale: 排序语言(zh)
+  freeze:    列冻结 (sticky, left 偏移基于 col.width 动态计算)
+  stickyRight: 右侧固定列 (水平滚动时粘在视口右侧)
+  preview:   分栏模式可见 / hide: 列隐藏
+  quickFilter: false 禁用点击筛选
+  onCellClick: "split" 单元格点击直接打开分栏
+  onClick:   "url" 行点击跳转
+  escape:    HTML转义 / render: 自定义渲染 / class: CSS类
 
 Tab 属性:
-  field:    匹配字段 / match: 精确匹配字段 / contains: 逗号分隔包含匹配
+  field: 匹配字段 / match: 精确匹配字段 / contains: 逗号分隔包含匹配
 
 选项:
-  pageSize:  分页大小(默认30) / exportCSV: 导出按钮 / rowSelect: 行选择
-  search:    搜索框显隐 / clickModes: 允许的点击模式列表
+  pageSize:      分页大小(默认30) / exportCSV: 导出按钮
+  rowSelect:     行选择复选框 / search: 搜索框显隐(默认true)
+  clickModes:    允许的点击模式 ["tab","modal","split","expand"]
+  columnResize:  列宽拖拽 (默认true, false时隐藏 resize handle)
+  columnsSplit:  分栏模式专用列集 (如 ["name","actions"])
+  modalRenderer: 自定义模态框渲染器 (如 "skills" 结构化详情)
 
 点击模式:
   tab      — 🔗 新标签页打开 (window.open, noopener)
-  modal    — 📋 居中弹出面板 (键值列表, Esc关闭)
-  split    — 📑 分栏预览 (表格40% + 详情60%, 拖拽分栏线)
+  modal    — 📋 居中弹出面板 (键值列表/Esc关闭/自定义渲染器)
+  split    — 📑 分栏预览 (表格+详情, 拖拽分栏线, ▦ 比例预设, ▲▼ 导航)
   expand   — 📂 行内手风琴展开 (网格布局)"""
 
 HELP_KNOWLEDGE = """\
