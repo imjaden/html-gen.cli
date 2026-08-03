@@ -25,3 +25,13 @@ build/
 
 # Env
 .env
+
+# Hermes workspace files
+.hermes-project.yaml
+
+# Runtime cache
+cache/
+logs/
+
+# pytest
+.pytest_cache/
