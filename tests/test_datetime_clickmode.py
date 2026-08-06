@@ -11,7 +11,7 @@ CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromed
 PROJECT = Path(__file__).resolve().parent.parent
 TMPL = PROJECT / 'layout-table.html'
 STYLE = PROJECT / 'style-guide.css'
-DEMO = PROJECT / 'demos' / '_test_datetime_clickmode.html'
+DEMO = Path('/tmp') / '_test_datetime_clickmode.html'
 
 
 def generate_html(data, options=None):

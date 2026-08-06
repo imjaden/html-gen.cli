@@ -74,7 +74,7 @@ H3 子项开关 (localStorage 记忆, 载入恢复) ✅ — layout-slide.html
 右上角工具栏 (语言/主题, glass-morphism) ✅ — layout-slide.html
 键盘翻页 (← → PageUp PageDown Home End) ✅ — layout-slide.html
 
-### layout-table.html (A 型表格) — 1436 行
+### layout-table.html (A 型表格) — 1440 行
 实时搜索 (300ms debounce) ✅ — layout-table.html
 Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.html
 多字段排序 (locale/数字/日期/字符串, Shift+点击二级排序) ✅ — layout-table.html
