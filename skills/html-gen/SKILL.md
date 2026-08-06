@@ -1,7 +1,7 @@
 ---
 name: html-gen
 description: Use when asked to generate HTML from markdown or JSON using html-gen, create data table pages, knowledge bases, slide presentations, or document pages. Use when user references html-gen CLI or wants markdown converted to styled HTML.
-version: 2.2.0
+version: 2.3.0
 author: dev
 license: MIT
 metadata:
@@ -31,7 +31,7 @@ metadata:
 
 ```shell
 # B 型 — Markdown → 文档
-html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]
+html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]（自动剥离 YAML frontmatter）
 
 # D 型 — Markdown → 幻灯片
 html-gen slide -i slides.md -o slides.html [--title "标题"] [--subtitle "副标题"]
@@ -269,3 +269,8 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 - [ ] CLI 命令执行成功，输出 `✅ 已生成: xxx.html`
 - [ ] 生成的 HTML 在浏览器中正常渲染
 - [ ] 链接、表格、代码块显示正确
+
+
+## 变更记录
+- v2.3.0 (2026-08-06): 新增 frontmatter 自动剥离; 修复 doc/slide 侧边栏 sticky 失效
+- v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项
