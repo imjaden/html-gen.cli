@@ -74,17 +74,17 @@ H3 子项开关 (localStorage 记忆, 载入恢复) ✅ — layout-slide.html
 右上角工具栏 (语言/主题, glass-morphism) ✅ — layout-slide.html
 键盘翻页 (← → PageUp PageDown Home End) ✅ — layout-slide.html
 
-### layout-table.html (A 型表格) — 1110 行
+### layout-table.html (A 型表格) — 1436 行
 实时搜索 (300ms debounce) ✅ — layout-table.html
 Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.html
-多字段排序 (locale/数字/字符串, Shift+点击二级排序) ✅ — layout-table.html
+多字段排序 (locale/数字/日期/字符串, Shift+点击二级排序) ✅ — layout-table.html
 客户端分页 (默认 30 条/页, pageSize 可配) ✅ — layout-table.html
 密度切换 (紧凑 28px / 标准 34px / 舒适 42px, localStorage) ✅ — layout-table.html
 弹出面板模式 (Modal overlay, 键值列表, Esc 关闭, textContent) ✅ — layout-table.html
 分栏预览模式 (表格 40% + 预览 60%, 拖拽分栏线 25-75%) ✅ — layout-table.html
 行内展开模式 (手风琴, 点击展开详情网格, colspan 全宽) ✅ — layout-table.html
 新标签页打开模式 (window.open + noopener,noreferrer) ✅ — layout-table.html
-点击模式 (options.clickModes 控制可用模式) ✅ — layout-table.html
+点击模式 (options.clickModes 列表, 兼容单数 clickMode) ✅ — layout-table.html
 快速过滤 (点击单元格值 → filter pill ✕ 关闭) ✅ — layout-table.html
 列冻结 (col.freeze:true → sticky 列, 自动 left 偏移) ✅ — layout-table.html
 分栏模式列过滤 (col.preview:true → 仅预览列显示) ✅ — layout-table.html
@@ -111,6 +111,7 @@ iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
 URL 白名单校验 (https?/ / ~/ 前缀) ✅ — layout-table.html
 Cinema 纪律化宽度 (table-layout:fixed, 每列显式 width, td max-width:0, 无 colgroup) ✅ — layout-table.html
 Pills 标签列 (col.type:pills, 逗号分隔→tag pills) ✅ — layout-table.html
+Datetime 排序 (col.type:datetime, Date.parse 比较) ✅ — layout-table.html
 右侧固定列 (col.stickyRight:true, position:sticky) ✅ — layout-table.html
 分栏列过滤增强 (options.columnsSplit + col.preview fallback) ✅ — layout-table.html
 单元格点击分栏 (col.onCellClick:split) ✅ — layout-table.html
@@ -145,7 +146,7 @@ Badge 彩色标记 (知道/理解/能讲/能输出, 4 色方案) ✅ — layout-
 ### table 输入
 简单 JSON 数组 (向后兼容, 列名自推导) ✅ — html-gen.py (cmd_table)
 结构化 JSON 对象 (columns/data/tabs/options) ✅ — html-gen.py (cmd_table)
-col.type: string/number/actions ✅ — layout-table.html
+col.type: string/number/datetime/pills/actions ✅ — layout-table.html
 col.sortable (是否可排序) ✅ — layout-table.html
 col.locale (中文 localeCompare 排序) ✅ — layout-table.html
 col.freeze (列冻结 sticky) ✅ — layout-table.html
@@ -157,6 +158,9 @@ col.render (自定义渲染函数) ✅ — layout-table.html
 col.escape (HTML 转义开关) ✅ — layout-table.html
 col.class (自定义 CSS class) ✅ — layout-table.html
 col.width (列宽) ✅ — layout-table.html
+col.stickyRight (右侧固定列) ✅ — layout-table.html
+col.quickFilter (禁用点击筛选) ✅ — layout-table.html
+col.onCellClick (单元格点击→分栏) ✅ — layout-table.html
 tabs (多标签页, field/match/contains 过滤) ✅ — layout-table.html
 options.pageSize (分页大小) ✅ — layout-table.html
 options.exportCSV (导出按钮) ✅ — layout-table.html
