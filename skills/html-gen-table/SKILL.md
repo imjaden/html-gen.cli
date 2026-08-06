@@ -1,7 +1,7 @@
 ---
 name: html-gen-table
 description: Use when building data table HTML pages with html-gen. Covers column config, actions, tabs, sorting, CSV export, and row selection for the A-type layout-table template.
-version: 2.1.0
+version: 2.2.0
 author: dev
 license: MIT
 metadata:
@@ -68,9 +68,11 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 | `key` | string | ✅ | 数据字段名 |
 | `label` | string | ✅ | 表头显示名 |
 | `sortable` | bool | | 是否可排序（默认 true） |
-| `type` | string | | `string`(默认) / `number` / `actions` |
+| `type` | string | | `string`(默认) / `number` / `datetime` / `pills` / `actions` |
 | `locale` | string | | 排序 locale，如 `"zh"` |
 | `width` | string | | CSS 宽度，如 `"120px"` |
+| `freeze` | bool | | 列冻结 (sticky left) |
+| `quickFilter` | bool | | 点击单元格值筛选 (默认 true) |
 | `class` | string | | 单元格 CSS class |
 | `escape` | bool | | 是否 HTML 转义值（安全） |
 | `render` | func | | 自定义渲染函数 |
@@ -82,6 +84,10 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 **type: "string"** (默认) — 文本排序，使用 `localeCompare`；配合 `locale: "zh"` 实现中文拼音排序
 
 **type: "number"** — 数值排序，使用 `parseFloat` 比较，空值视为 0
+
+**type: "datetime"** — 日期排序，使用 `Date.parse` 比较，空值视为 0；渲染原样展示 ISO 日期字符串
+
+**type: "pills"** — 标签样式，逗号分隔字符串渲染为 tag pills
 
 **type: "actions"** — 操作按钮列，每个按钮支持三种模式：
 
@@ -120,6 +126,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 | `exportCSV` | bool | false | 显示 CSV 导出按钮 |
 | `rowSelect` | bool | false | 启用行选择（checkbox） |
 | `search` | bool | true | 显示搜索框 |
+| `clickModes` | array | `["tab"]` | 允许的点击模式 `"tab"`/`"modal"`/`"split"`/`"expand"`; 兼容单数 `clickMode` |
 
 ## 操作按钮 Emoji 参考
 
@@ -179,3 +186,8 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 - [ ] 生成的 HTML 在浏览器中表格正常渲染
 - [ ] 排序、搜索、分页功能正常
 - [ ] 操作按钮点击有响应（copyKey 复制 / hrefKey 跳转 / desc Toast）
+
+
+## 变更记录
+- v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项; 兼容单数 clickMode
+- v2.1.0: 列冻结、右侧固定列、分栏列过滤增强、单元格点击分栏、自定义模态框渲染器、SKILL.md 加载

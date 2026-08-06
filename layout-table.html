@@ -419,9 +419,11 @@
     if (sortKey) {
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
+      var isDate = col && col.type === 'datetime';
       var loc = col && col.locale;
       var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
+      var isDate2 = col2 && col2.type === 'datetime';
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
         // Primary key
@@ -430,6 +432,7 @@
         if (vb === undefined || vb === null) vb = '';
         var cmp;
         if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
+        else if (isDate) { va = Date.parse(va) || 0; vb = Date.parse(vb) || 0; cmp = va - vb; }
         else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
         if (cmp !== 0) return sortAsc ? cmp : -cmp;
         // Secondary key (only when primary equal)
@@ -439,6 +442,7 @@
           if (vb2 === undefined || vb2 === null) vb2 = '';
           var cmp2;
           if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
+          else if (isDate2) { va2 = Date.parse(va2) || 0; vb2 = Date.parse(vb2) || 0; cmp2 = va2 - vb2; }
           else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
           return sortAsc2 ? cmp2 : -cmp2;
         }
@@ -1048,7 +1052,15 @@
     var html = '';
 
     // density section — visible when split/modal available
-    var validModes = (OPTIONS && OPTIONS.clickModes) || ['tab'];
+    var clickModes = (OPTIONS && OPTIONS.clickModes) ||
+                     (OPTIONS && OPTIONS.clickMode ? [OPTIONS.clickMode] : null) ||
+                     ['tab'];
+    var validModes = clickModes;
+    // Also set default clickMode from singular if no plural
+    if (OPTIONS && OPTIONS.clickMode && !OPTIONS.clickModes) {
+      clickMode = OPTIONS.clickMode;
+      try { localStorage.setItem('html-gen:table:click-mode', OPTIONS.clickMode); } catch(e) {}
+    }
     var hasSplit = validModes.indexOf('split') !== -1;
     var hasModal = validModes.indexOf('modal') !== -1;
     var hasExpand = validModes.indexOf('expand') !== -1;
