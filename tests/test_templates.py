@@ -110,5 +110,91 @@ class TestBackwardCompat(unittest.TestCase):
         self.assertIn('kw-wrapper', html)
 
 
+class TestDocSlideFrontmatter(unittest.TestCase):
+    """D5: frontmatter strip + sticky sidebar tests."""
+
+    def test_doc_frontmatter_stripped(self):
+        """D2+D3+D4: frontmatter stripped, fm title as <title>."""
+        tmp_md = Path('/tmp/test-fm-doc.md')
+        tmp_md.write_text('---\ntitle: TestDoc\n---\n# 正文标题\n## Section 1\n内容')
+        out = Path('/tmp/test-fm-doc.html')
+        run_gen('doc', '-i', str(tmp_md), '-o', str(out))
+        html = out.read_text()
+        self.assertNotIn('<p>title:', html, "Frontmatter should not leak into body")
+        self.assertNotIn('---', html.split('<body')[1] if '<body' in html else html,
+                         "Frontmatter delimiter should not appear in body")
+        self.assertIn('<title>TestDoc</title>', html, "FM title should be <title>")
+        # Cleanup
+        tmp_md.unlink(missing_ok=True)
+        out.unlink(missing_ok=True)
+
+    def test_slide_frontmatter_stripped(self):
+        """D2+D5: slide frontmatter stripped, no leakage."""
+        tmp_md = Path('/tmp/test-fm-slide.md')
+        tmp_md.write_text('---\ntitle: TestSlide\n---\n# 封面\n## Page 1\n内容')
+        out = Path('/tmp/test-fm-slide.html')
+        run_gen('slide', '-i', str(tmp_md), '-o', str(out))
+        html = out.read_text()
+        # Frontmatter delimiter should not appear in body
+        self.assertNotIn('---\ntitle:', html,
+                         "Frontmatter YAML should not leak")
+        self.assertIn('<title>TestSlide</title>', html, "FM title should be <title>")
+        self.assertNotIn('<p>title:', html, "Raw frontmatter key:value should not appear")
+        tmp_md.unlink(missing_ok=True)
+        out.unlink(missing_ok=True)
+
+    def test_doc_no_frontmatter_regression(self):
+        """D2: doc without frontmatter still works, h1 from body."""
+        tmp_md = Path('/tmp/test-no-fm.md')
+        tmp_md.write_text('# 无FM标题\n## Section\n内容')
+        out = Path('/tmp/test-no-fm.html')
+        run_gen('doc', '-i', str(tmp_md), '-o', str(out))
+        html = out.read_text()
+        self.assertIn('<title>无FM标题</title>', html, "Body # should be title")
+        tmp_md.unlink(missing_ok=True)
+        out.unlink(missing_ok=True)
+
+    def test_sidebar_sticky(self):
+        """D1: sidebar sticky survives scroll to bottom."""
+        from selenium import webdriver
+        from selenium.webdriver.chrome.options import Options
+        from selenium.webdriver.chrome.service import Service
+        import time
+
+        tmp_md = Path('/tmp/test-sticky.md')
+        lines = ['# Sticky Test']
+        for i in range(50):
+            lines.append(f'## Section {i}\n\nParagraph content for section {i}.\n')
+        tmp_md.write_text('\n'.join(lines))
+        out = Path('/tmp/test-sticky.html')
+        run_gen('doc', '-i', str(tmp_md), '-o', str(out))
+
+        opts = Options()
+        opts.add_argument('--headless')
+        opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-dev-shm-usage')
+        driver = webdriver.Chrome(
+            service=Service('/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'),
+            options=opts)
+        try:
+            driver.get(f'file://{out}')
+            time.sleep(0.5)
+            driver.execute_script(
+                "window.__testErrors = [];"
+                "window.onerror = function(m) { window.__testErrors.push(String(m)); };")
+            driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
+            time.sleep(0.3)
+            sidebar_top = driver.execute_script(
+                "var s = document.querySelector('.doc-sidebar');"
+                "return s ? s.getBoundingClientRect().top : -1;")
+            self.assertGreaterEqual(sidebar_top, -1, f"Sidebar should be visible, top={sidebar_top}")
+            errs = driver.execute_script("return window.__testErrors;")
+            self.assertEqual(len(errs), 0, f"JS errors: {errs}")
+        finally:
+            driver.quit()
+            tmp_md.unlink(missing_ok=True)
+            out.unlink(missing_ok=True)
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

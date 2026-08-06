@@ -166,6 +166,15 @@ def slug(text):
     return t.strip('-') or 'section'
 
 
+def strip_frontmatter(text):
+    """剥离 markdown 顶部 YAML frontmatter（--- 开头 --- 结束）。"""
+    if text.startswith('---'):
+        m = re.match(r'^---\n.*?\n---\n?', text, re.DOTALL)
+        if m:
+            return text[m.end():], m.group(0)
+    return text, ''
+
+
 def _md_escape(text):
     """Escape HTML in plain text content of markdown."""
     return text.replace('&', '&amp;').replace('<', '&lt;').replace('>', '&gt;')
@@ -192,7 +201,11 @@ def cmd_doc(args):
         print(f"❌ 文件不存在: {args.input}", file=sys.stderr)
         sys.exit(1)
     text = md.read_text(encoding='utf-8')
-    title = args.title or extract_title(text) or md.stem
+    # ── D2: frontmatter 自动剥离 ──
+    text, fm = strip_frontmatter(text)
+    # ── D4: title 优先级: --title > fm title > body # > stem ──
+    fm_title = re.search(r'^title:\s*(.+)$', fm, re.MULTILINE)
+    title = args.title or (fm_title.group(1).strip() if fm_title else '') or extract_title(text) or md.stem
     content = md_to_html(text)
 
     # ── Extract h1 for slide cover page BEFORE stripping ──
@@ -248,7 +261,11 @@ def cmd_slide(args):
         print(f"❌ 文件不存在: {args.input}", file=sys.stderr)
         sys.exit(1)
     text = md.read_text(encoding='utf-8')
-    title = args.title or extract_title(text) or md.stem
+    # ── D2: frontmatter 自动剥离 ──
+    text, fm = strip_frontmatter(text)
+    # ── D4: title 优先级 ──
+    fm_title = re.search(r'^title:\s*(.+)$', fm, re.MULTILINE)
+    title = args.title or (fm_title.group(1).strip() if fm_title else '') or extract_title(text) or md.stem
     content = md_to_html(text)
 
     # Extract h1 for cover page
