@@ -1,9 +1,15 @@
 project: html-gen
 profiles:
-- dev
+- ops
 - review
+- dev
 sessions:
-- profile: dev
-  title: html-gen-dev
-- profile: review
+- role: ops
+  profile: ops
+  title: html-gen-ops
+- role: review
+  profile: review
   title: html-gen-review
+- role: dev
+  profile: dev
+  title: html-gen-dev
