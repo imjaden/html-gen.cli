@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260706" type="image/png">
+<title>以剧读史</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+/* ── Layout ── */
+.kw-wrapper { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ── */
+.kw-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  transition: width 0.25s, min-width 0.25s;
+}
+.kw-sidebar.collapsed { width: 48px; min-width: 48px; }
+.kw-sidebar.collapsed .kw-sidebar-header,
+.kw-sidebar.collapsed .kw-sections,
+.kw-sidebar.collapsed .kw-sidebar-footer { display: none; }
+.kw-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.kw-sidebar.collapsed .kw-sidebar-icon { display: flex; }
+.kw-sidebar-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.kw-sidebar-header .sidebar-title { font-size: 0.82rem; font-weight: 700; color: var(--cobalt-400); cursor: pointer; }
+.kw-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
+.kw-sidebar-header .sub { font-size: 0.7rem; color: #6b7280; margin-top: 2px; }
+.kw-sections { flex: 1; overflow-y: auto; padding: 6px 0; display: none; }
+.kw-sections.active { display: block; }
+.kw-section-title {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px 4px; font-size: 0.7rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: #6b7280; cursor: default; user-select: none;
+}
+.kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.kw-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px 8px 28px; cursor: pointer; transition: all 0.12s;
+  border-left: 3px solid transparent; color: #9ca3af; font-size: 0.82rem;
+}
+.kw-item:hover { background: rgba(79,70,229,0.04); color: #e0e0e0; }
+.kw-item.active { background: rgba(79,70,229,0.08); color: var(--cobalt-400); border-left-color: var(--cobalt-600); }
+.kw-item .kw-item-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kw-item .kw-item-badge { font-size: 0.62rem; padding: 1px 6px; border-radius: 8px; font-weight: 600; letter-spacing: 0.02em; flex-shrink: 0; }
+
+/* ── Sidebar Footer ── */
+.kw-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.kw-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
+.kw-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+
+/* ── Sidebar Search ── */
+.kw-search-wrap { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.kw-search-wrap.active { display: block; }
+.kw-search-wrap input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.kw-search-wrap input:focus { border-color: var(--cobalt-600); }
+.kw-search-wrap input::placeholder { color: #555; }
+.kw-item.filtered-out { display: none; }
+.kw-section-title.filtered-out { display: none; }
+
+/* ── Sidebar Resize ── */
+.kw-sidebar { position: relative; }
+.kw-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.kw-sidebar-resize:hover, .kw-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+
+/* ── Top-Right Toolbar ── */
+.kw-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .kw-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.kw-tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.kw-tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.kw-tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.kw-tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .kw-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-sidebar-header { border-color: #e5e5e5; }
+:root.light .kw-sidebar-footer { border-color: #e5e5e5; }
+:root.light .kw-sidebar-header .sidebar-title { color: #333; }
+:root.light .kw-sidebar-header .sub { color: #999; }
+:root.light .kw-item { color: #555; }
+:root.light .kw-item:hover { background: rgba(79,70,229,0.03); color: #333; }
+:root.light .kw-item.active { background: rgba(79,70,229,0.06); color: var(--cobalt-600); }
+:root.light .kw-tab-bar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-tab { color: #666; }
+:root.light .kw-tab:hover { color: #333; }
+:root.light .kw-tab.active { color: var(--cobalt-600); }
+:root.light .kw-content { background: #f5f5f5; }
+:root.light .kw-search-wrap { border-color: #e5e5e5; }
+:root.light .kw-search-wrap input { background: #f5f5f5; border-color: #ddd; color: #333; }
+:root.light .kw-welcome .w-title { color: #333; }
+
+/* ── Main ── */
+.kw-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* ── Tab Bar (aligned with sidebar title) ── */
+.kw-tab-bar {
+  height: 48px; min-height: 48px;
+  display: flex; align-items: stretch;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  overflow-x: auto; overflow-y: hidden;
+  flex-shrink: 0;
+}
+.kw-tab-bar::-webkit-scrollbar { height: 0; }
+.kw-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 20px; cursor: pointer; white-space: nowrap;
+  font-size: 0.82rem; font-weight: 500;
+  color: #9ca3af; border-bottom: 2px solid transparent;
+  transition: all 0.15s; flex-shrink: 0; user-select: none;
+}
+.kw-tab:hover { background: rgba(79,70,229,0.04); color: #e0e0e0; }
+.kw-tab.active { color: var(--cobalt-400); border-bottom-color: var(--cobalt-600); }
+.kw-tab .kw-tab-icon { font-size: 0.9rem; }
+
+/* ── Content area ── */
+.kw-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--surface-950); }
+.kw-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+
+/* ── Welcome ── */
+.kw-welcome { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 40px 20px; text-align: center; }
+.kw-welcome.active { display: flex; }
+.kw-welcome .w-title { font-size: 1.3rem; font-weight: 700; color: #e0e0e0; }
+.kw-welcome .w-sub { font-size: 0.85rem; color: #6b7280; max-width: 440px; line-height: 1.7; }
+.kw-welcome .w-legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.kw-welcome .w-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #9ca3af; }
+.kw-welcome .w-legend-item .ldot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Content iframe ── */
+.kw-frame-wrap { display: none; flex: 1; flex-direction: column; }
+.kw-frame-wrap.active { display: flex; }
+.kw-frame-wrap iframe { width: 100%; flex: 1; border: none; background: var(--surface-950); }
+
+@media (max-width: 768px) {
+  .kw-sidebar { display: none; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 100; }
+  .kw-sidebar.open { display: flex; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .kw-body { padding: 16px; }
+}
+
+@media print {
+  .kw-sidebar, .kw-tab-bar, .kw-toolbar { display: none !important; }
+  .kw-body { color: #000; }
+  .kw-welcome { display: none !important; }
+  body { background: #fff; }
+}
+.kw-sidebar::-webkit-scrollbar { width: 4px; }
+.kw-sidebar::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
+</style>
+</head>
+<body>
+<!-- Top-Right Toolbar -->
+<div class="kw-toolbar" id="kwToolbar">
+  <button class="kw-tb-btn active" id="kwLangZh" onclick="setKwLang('zh')" title="中文">🇨🇳</button>
+  <button class="kw-tb-btn" id="kwLangEn" onclick="setKwLang('en')" title="English">🇺🇸</button>
+  <span class="kw-tb-divider"></span>
+  <button class="kw-tb-btn" id="kwThemeBtn" onclick="toggleKwTheme()" title="切换主题">🌙</button>
+</div>
+
+<div class="kw-wrapper">
+
+  <aside class="kw-sidebar" id="kwSidebar">
+    <div class="kw-sidebar-resize" id="kwSbResize"></div>
+    <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
+    <div class="kw-sidebar-header">
+      <div class="sidebar-title" title="以剧读史">📚 以剧读史</div>
+      <div class="sub">影视历史知识库</div>
+    </div>
+    <div id="kwSectionsContainer"></div>
+    <!-- Sidebar Search -->
+    <div class="kw-search-wrap" id="kwSearchWrap">
+      <input type="text" id="kwSearchInput" placeholder="搜索...">
+    </div>
+    <div class="kw-sidebar-footer">
+      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
+  </aside>
+
+  <div class="kw-main">
+    <div class="kw-tab-bar" id="kwTabBar"></div>
+    <div class="kw-content">
+      <div class="kw-welcome active" id="welcomePanel">
+        <div class="w-title">📚 以剧读史</div>
+        <div class="w-sub">从经典历史影视剧出发，读历史脉络，学职场谋略。左侧选择剧集与知识点分类。</div>
+        <div class="w-legend" id="wLegend"></div>
+      </div>
+      <div class="kw-frame-wrap" id="frameWrap">
+        <iframe id="contentFrame" src="about:blank" style="width:100%;flex:1;border:none;background:var(--surface-950);display:none;"></iframe>
+        <div class="kw-body" id="kwBody"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const GROUPS = [{"key": "中国历史", "label": "中国历史", "icon": "🏛️"}, {"key": "大明王朝1566", "label": "大明王朝1566", "icon": "📜"}];  // [{key, label, icon}]
+  const ITEMS  = [{"title": "唐·贞观气象", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：618—907 年，历 21 帝 289 年。<\/p><p><strong>时代特征<\/strong>：开放包容、万国来朝；科举取士、府兵均田；贞观之治与开元盛世并称两大高峰。<\/p><p><strong>代表影视剧<\/strong>：《贞观之治》《长安十二时辰》。<\/p>"}, {"title": "宋·文治巅峰", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：960—1279 年，历 18 帝 319 年。<\/p><p><strong>时代特征<\/strong>：重文轻武，经济文化登峰造极；活字印刷、指南针、火药成型；《清明上河图》里的市井繁华。<\/p><p><strong>代表影视剧<\/strong>：《清平乐》。<\/p>"}, {"title": "元·草原入主", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：1271—1368 年，历 11 帝 98 年。<\/p><p><strong>时代特征<\/strong>：蒙古铁骑西征南讨，行省制度影响至今；民族等级森严、权臣更迭频繁。<\/p><p><strong>代表影视剧<\/strong>：《成吉思汗》。<\/p>"}, {"title": "明·帝王心术", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：1368—1644 年，历 16 帝 276 年。<\/p><p><strong>时代特征<\/strong>：皇权极盛，内阁与厂卫并立；嘉靖不上朝而天下照转，帝王心术登峰造极。<\/p><p><strong>代表影视剧<\/strong>：《大明王朝1566》（已收录）。<\/p>"}, {"title": "清·康雍乾盛世", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：1644—1912 年，历 12 帝 268 年。<\/p><p><strong>时代特征<\/strong>：满汉一体、中央集权巅峰；疆域辽阔、人口破亿，康雍乾三代盛世。<\/p><p><strong>代表影视剧<\/strong>：《康熙王朝》（已收录）、《雍正王朝》。<\/p>"}, {"title": "已收录剧集", "group": "中国历史", "section": "代表影视剧", "desc": "<p>本库当前收录剧集（按朝代组织，渐进式补充）：<\/p><ul><li><strong>明朝<\/strong>：《大明王朝1566》——嘉靖朝七年朝堂权谋<\/li><li><strong>清朝<\/strong>：《康熙王朝》——康熙一生文治武功（规划中）<\/li><\/ul>"}, {"title": "待收录剧集", "group": "中国历史", "section": "代表影视剧", "desc": "<p>按朝代规划的代表剧清单：<\/p><ul><li><strong>唐<\/strong>：《贞观之治》《长安十二时辰》<\/li><li><strong>宋<\/strong>：《清平乐》<\/li><li><strong>元<\/strong>：《成吉思汗》<\/li><li><strong>明<\/strong>：《大明王朝1566》✔ 已收录<\/li><li><strong>清<\/strong>：《康熙王朝》✔ 已收录、《雍正王朝》<\/li><\/ul>"}, {"title": "观剧顺序建议", "group": "中国历史", "section": "观剧指南", "desc": "<p><strong>入门建议<\/strong>：先看《大明王朝1566》——节奏最密、权谋最纯粹，一剧看懂明代朝堂的运行逻辑。<\/p><p><strong>朝代串联<\/strong>：按「唐→宋→元→明→清」观剧，可感知中国帝制从开放到收敛、再到集权巅峰的脉络。<\/p><p><strong>观影姿势<\/strong>：历史剧非纪录片，剧情为纲、史实为目；本库条目均标注「剧中设定」，请区分看待。<\/p>"}, {"title": "一剧看懂大明1566", "group": "大明王朝1566", "section": "概述", "desc": "<p><strong>一句话<\/strong>：一部由「改稻为桑」国策引发的嘉靖朝堂大戏，被誉为国产历史剧巅峰（豆瓣 9.7+）。<\/p><p><strong>主创<\/strong>：编剧刘和平、导演张黎，2007 年播出，46 集。<\/p><p><strong>时间跨度<\/strong>：嘉靖三十九年（1560）至嘉靖四十五年（1566）驾崩，共七年。<\/p><p><strong>故事主线<\/strong>：国库空虚之下，严党在浙江强推「改稻为桑」，毁堤淹田激起民变；清流代表海瑞以《治安疏》直斥君非；皇权、严党、清流三方角力，直至嘉靖驾崩、隆庆继位。<\/p><p><strong>⚠ 剧中设定<\/strong>：人物有历史原型，情节多有虚构，非正史。<\/p>"}, {"title": "嘉靖朝的底色", "group": "大明王朝1566", "section": "概述", "desc": "<p><strong>朝局<\/strong>：嘉靖帝奉玄修道、多年不上朝，严嵩父子专权二十年，内阁、司礼监、六部层层博弈。<\/p><p><strong>财政<\/strong>：东南倭患、北疆俺答与宫廷营造双重耗银，国库空虚——「改稻为桑」正是为填窟窿而生的国策。<\/p><p><strong>三方格局<\/strong>：皇权（嘉靖）、严党（严嵩/严世蕃/浙江系）、清流（徐阶/高拱/张居正/海瑞），外加司礼监与织造局居中通传。<\/p><p><strong>史实钩子<\/strong>：海瑞上《治安疏》与严嵩倒台均史有其事，剧中将其编织进「改稻为桑」主线。<\/p>"}, {"title": "看懂朝堂三方", "group": "大明王朝1566", "section": "概述", "desc": "<p><strong>皇权<\/strong>：嘉靖以「长江黄河论」自况——清浊并用，让严党与清流互斗，皇权稳坐钓鱼台。<\/p><p><strong>严党<\/strong>：严嵩以「顺」固宠，严世蕃以「贪」敛财，浙江系（郑泌昌、何茂才）以「狠」执行。<\/p><p><strong>清流<\/strong>：徐阶隐忍待时，海瑞以命相搏——两种截然不同的「清」。<\/p><p><strong>看剧要点<\/strong>：台词无一句废话；每个「忠」字背后都是利益计算；海瑞是唯一的「不合群者」。<\/p>"}, {"title": "改稻为桑国策出台", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-01.html"}, {"title": "毁堤淹田九县", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-02.html"}, {"title": "海瑞赴任淳安", "group": "大明王朝1566", "section": "时间轴", "badge": "人物", "url": "drama/daming-timeline-03.html"}, {"title": "审通倭案", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-04.html"}, {"title": "严嵩倒台", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-05.html"}, {"title": "海瑞上治安疏", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-06.html"}, {"title": "嘉靖驾崩·海瑞出狱", "group": "大明王朝1566", "section": "时间轴", "badge": "结局", "url": "drama/daming-timeline-07.html"}, {"title": "李代桃僵·毁堤淹田", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-01.html"}, {"title": "破釜沉舟·海瑞上疏", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-02.html"}, {"title": "分而治之·嘉靖御下", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-03.html"}, {"title": "顺水推舟·严嵩固宠", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-04.html"}, {"title": "韬光养晦·徐阶倒严", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-05.html"}, {"title": "将计就计·海瑞审案", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-06.html"}];   // [{title, group, section?, badge?, url?, desc?}]
+
+  let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
+  let activeItem = null;
+  const COLORS = ['#38bdf8','#34d399','#c084fc','#fb923c','#f472b6','#fbbf24','#818cf8'];
+  const BADGE_COLORS = {
+    '知道':{bg:'rgba(56,189,248,0.12)',color:'#38bdf8',border:'rgba(56,189,248,0.25)'},
+    '理解':{bg:'rgba(52,211,153,0.12)',color:'#34d399',border:'rgba(52,211,153,0.25)'},
+    '能讲':{bg:'rgba(192,132,252,0.12)',color:'#c084fc',border:'rgba(192,132,252,0.25)'},
+    '能输出':{bg:'rgba(251,146,60,0.12)',color:'#fb923c',border:'rgba(251,146,60,0.25)'},
+  };
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _kwLang = (function() { try { var v = localStorage.getItem('html-gen:kw_lang'); return (v === 'zh' || v === 'en') ? v : 'zh'; } catch(e) { return 'zh'; } })();
+  document.getElementById('kwLangZh').classList.toggle('active', _kwLang === 'zh');
+  document.getElementById('kwLangEn').classList.toggle('active', _kwLang === 'en');
+
+  window.setKwLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _kwLang = lang;
+    try { localStorage.setItem('html-gen:kw_lang', lang); } catch(e) {}
+    document.getElementById('kwLangZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('kwLangEn').classList.toggle('active', lang === 'en');
+    updateSub();
+  };
+
+  var _kwTheme = (function() { try { return localStorage.getItem('html-gen:kw_theme') || 'dark'; } catch(e) { return 'dark'; } })();
+  if (_kwTheme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('kwThemeBtn').textContent = _kwTheme === 'light' ? '☀️' : '🌙';
+
+  window.toggleKwTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    try { localStorage.setItem('html-gen:kw_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('kwThemeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  function updateSub() {
+    var sub = document.querySelector('.kw-sidebar-header .sub');
+    if (sub) {
+      var base = (sub.textContent || '').replace(/\s*共\s+\d+\s*条目.*/, '').trim();
+      var label = _kwLang === 'en' ? ' items' : ' 条目';
+      sub.textContent = (base ? base + ' · ' : '') + '共 ' + ITEMS.length + label;
+    }
+  }
+  updateSub();
+
+  // Title click → copy path
+  document.querySelector('.kw-sidebar-header .sidebar-title').addEventListener('click', function() {
+    var m = this.title.match(/路径:\s*(.+)/);
+    var path = m ? m[1].trim() : window.location.href.split('?')[0];
+    if (/^(https?:|\/|~\/)/.test(path)) {
+      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
+      showKwToast('已复制: ' + path);
+    }
+  });
+
+  function showKwToast(msg) {
+    var el = document.getElementById('kwToast');
+    if (!el) { el = document.createElement('div'); el.id = 'kwToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
+
+  // ── Render tabs ──
+  function renderTabs() {
+    var bar = document.getElementById('kwTabBar');
+    bar.innerHTML = (GROUPS || []).map(function(g, i) {
+      var c = COLORS[i % COLORS.length];
+      return '<div class="kw-tab' + (g.key === activeGroup ? ' active' : '') + '" data-key="' + g.key + '" onclick="switchGroup(\'' + g.key + '\')">' +
+        (g.icon ? '<span class="kw-tab-icon">' + g.icon + '</span>' : '<span class="kw-tab-icon" style="color:' + c + '">●</span>') +
+        g.label + '</div>';
+    }).join('');
+    renderSidebar();
+  }
+
+  window.switchGroup = function(key) {
+    activeGroup = key;
+    try { localStorage.setItem('html-gen:kw_group', key); } catch(e) {}
+    document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
+    renderSidebar();
+    var firstItem = ITEMS.find(function(i) { return i.group === key; });
+    if (firstItem) selectItem(firstItem.title);
+  };
+
+  // ── Render sidebar sections ──
+  function renderSidebar() {
+    var container = document.getElementById('kwSectionsContainer');
+    var groupItems = ITEMS.filter(function(item) { return item.group === activeGroup; });
+    var sections = {};
+    groupItems.forEach(function(item) {
+      var sec = item.section || item.group || 'default';
+      if (!sections[sec]) sections[sec] = [];
+      sections[sec].push(item);
+    });
+    var html = '';
+    var keys = Object.keys(sections);
+    keys.forEach(function(sec) {
+      var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
+      var c = COLORS[Math.max(0, ci) % COLORS.length];
+      if (keys.length > 1) html += '<div class="kw-section-title"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
+      sections[sec].forEach(function(item) {
+        var badgeHtml = '';
+        if (item.badge) {
+          var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
+          badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
+        }
+        html += '<div class="kw-item" onclick="selectItem(\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+      });
+    });
+    container.innerHTML = html || '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.78rem;">暂无内容</div>';
+  }
+
+  // ── Select item ──
+  window.selectItem = function(title) {
+    activeItem = title;
+    try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
+    document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
+    var item = ITEMS.find(function(i) { return i.title === title; });
+    if (!item) return;
+    document.getElementById('welcomePanel').classList.remove('active');
+    document.getElementById('frameWrap').classList.add('active');
+    var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + '?t=' + Date.now(); }
+    else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
+    else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
+  };
+
+  function renderLegend() {
+    var el = document.getElementById('wLegend');
+    el.innerHTML = (GROUPS || []).map(function(g, i) { var c = COLORS[i % COLORS.length]; return '<span class="w-legend-item"><span class="ldot" style="background:' + c + '"></span> ' + g.label + '</span>'; }).join('');
+  }
+
+  // Restore last state
+  var savedGroup = localStorage.getItem('html-gen:kw_group');
+  var savedItem = localStorage.getItem('html-gen:kw_item');
+  if (savedGroup && savedItem) {
+    var exists = ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
+    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedItem); }, 50); return; }
+  }
+  renderTabs();
+  renderLegend();
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _collapsed = false;
+  window.toggleSidebar = function() {
+    _collapsed = !_collapsed;
+    var sb = document.getElementById('kwSidebar'), btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _collapsed);
+    if (btn) btn.textContent = _collapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:kw:collapsed', _collapsed); } catch(e) {}
+  };
+  try { if (localStorage.getItem('html-gen:kw:collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'IFRAME') {
+      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    }
+  });
+
+  /* ── Sidebar Search ── */
+  var _kwSearchActive = false, _kwSearchTimer;
+  window.toggleKwSearch = function() {
+    _kwSearchActive = !_kwSearchActive;
+    var wrap = document.getElementById('kwSearchWrap');
+    var input = document.getElementById('kwSearchInput');
+    var btn = document.getElementById('kwSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _kwSearchActive);
+    if (btn) btn.style.color = _kwSearchActive ? 'var(--cobalt-400)' : '';
+    if (_kwSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doKwFilter('');
+    }
+  };
+
+  function doKwFilter(q) {
+    var items = document.querySelectorAll('.kw-item');
+    var titles = document.querySelectorAll('.kw-section-title');
+    var hasMatch = false;
+    items.forEach(function(el) {
+      var text = (el.querySelector('.kw-item-text') || {}).textContent || '';
+      var match = q.length < 2 || text.toLowerCase().indexOf(q) !== -1;
+      el.classList.toggle('filtered-out', !match);
+      if (match) hasMatch = true;
+    });
+    // Hide section titles if all their items are filtered out
+    titles.forEach(function(title) {
+      var next = title.nextElementSibling;
+      var allHidden = true;
+      while (next && !next.classList.contains('kw-section-title')) {
+        if (!next.classList.contains('filtered-out')) { allHidden = false; break; }
+        next = next.nextElementSibling;
+      }
+      title.classList.toggle('filtered-out', allHidden);
+    });
+  }
+
+  document.getElementById('kwSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_kwSearchTimer);
+    _kwSearchTimer = setTimeout(function() { doKwFilter(q); }, 150);
+  });
+
+  document.getElementById('kwSearchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); }
+    else if (e.key === 'Enter') {
+      var firstVisible = document.querySelector('.kw-item:not(.filtered-out)');
+      if (firstVisible) firstVisible.click();
+      _kwSearchActive = true; toggleKwSearch();
+    }
+  });
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_kwSearchActive && !e.target.closest('.kw-search-wrap') && e.target !== document.getElementById('kwSearchBtn')) {
+      _kwSearchActive = true; toggleKwSearch();
+    }
+  });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('kwSidebar');
+    var handle = document.getElementById('kwSbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:kw:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:kw:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
+})();
+</script>
+</body>
+</html>

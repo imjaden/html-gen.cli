@@ -201,7 +201,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 57 tests（7 回归 + 50 Selenium）
+- 当前 73 tests（7 回归 + 66 Selenium）
 
 ## 目录结构
 
@@ -215,14 +215,16 @@ html-gen/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 ├── company-research-schema.json # 公司调研 schema
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (57 tests)
+├── tests/                      # Selenium + 回归测试 (73 tests)
 └── demos/                      # 生成的 HTML 示例
     ├── index.html              # 模板展示首页
     ├── demos-index.html        # A 型文档索引
     ├── hermes-profile-skills-list.html  # 主力 demo: Hermes Skills 列表
     ├── phase2-demo.html        # 功能测试 demo
     ├── table-actions-demo.html # 操作按钮 demo
-    └── chaitin/                # 长亭科技商业分析案例
+    ├── drama-knowledge.html    # 以剧读史影视历史知识库（中国历史 + 大明王朝1566）
+    ├── chaitin/                # 长亭科技商业分析案例
+    └── drama/                  # 以剧读史独立页（时间轴 + 36计策，md 源 + html）
 ```
 
 ## 项目独立性
