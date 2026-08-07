@@ -11,6 +11,7 @@ html-gen doc -o/--output — 输出 HTML 路径 (默认 index.html) ✅ — html
 html-gen doc --title — 文档标题 ✅ — html-gen.py
 html-gen doc --subtitle — 副标题 ✅ — html-gen.py
 html-gen doc --metadata — 元数据 (路径信息) ✅ — html-gen.py
+html-gen doc — YAML frontmatter 自动剥离 ✅ — html-gen.py
 html-gen slide — Markdown 转 D 型幻灯片 (h2 分页) ✅ — layout-slide.html
 html-gen slide -i/--input — 输入 Markdown 文件 ✅ — html-gen.py
 html-gen slide -o/--output — 输出 HTML 路径 ✅ — html-gen.py

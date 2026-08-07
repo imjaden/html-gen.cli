@@ -57,7 +57,7 @@
       "events": "改稻为桑国策出台",
       "tab": "plot",
       "source": "剧中设定",
-      "url": "drama/daming-strategy-01.html"
+      "url": "drama/daming-timeline-01.html"
     },
     {
       "era": "嘉靖三十九年夏",
@@ -67,7 +67,7 @@
       "events": "毁堤淹田九县",
       "tab": "plot",
       "source": "剧中设定",
-      "url": "drama/daming-strategy-02.html"
+      "url": "drama/daming-timeline-02.html"
     },
     {
       "era": "嘉靖三十九年(1560)前后",
@@ -77,7 +77,7 @@
       "events": "海瑞赴任淳安",
       "tab": "plot",
       "source": "史实",
-      "url": "drama/daming-strategy-03.html"
+      "url": "drama/daming-timeline-03.html"
     },
     {
       "era": "嘉靖四十年(1561)前后",
@@ -87,7 +87,7 @@
       "events": "审通倭案",
       "tab": "plot",
       "source": "剧中设定",
-      "url": "drama/daming-strategy-04.html"
+      "url": "drama/daming-timeline-04.html"
     },
     {
       "era": "嘉靖四十年(1561)",
@@ -97,7 +97,7 @@
       "events": "严嵩倒台",
       "tab": "plot",
       "source": "史实",
-      "url": "drama/daming-strategy-05.html"
+      "url": "drama/daming-timeline-05.html"
     },
     {
       "era": "嘉靖四十四年(1565)",
@@ -107,7 +107,7 @@
       "events": "海瑞上治安疏",
       "tab": "plot",
       "source": "史实",
-      "url": "drama/daming-strategy-06.html"
+      "url": "drama/daming-timeline-06.html"
     },
     {
       "era": "嘉靖四十五年十二月",
@@ -117,7 +117,7 @@
       "events": "嘉靖驾崩·海瑞出狱",
       "tab": "plot",
       "source": "史实",
-      "url": "drama/daming-timeline-01.html"
+      "url": "drama/daming-timeline-07.html"
     }
   ],
   "options": {
