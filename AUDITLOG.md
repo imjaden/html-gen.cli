@@ -240,3 +240,33 @@ HG-SEC-003 的 `escapeHtml()` 采用 opt-in 设计 (`col.escape: true`)，默认
 - ✅ `sidebar-table-design-v3.2` §2.5 是项目安全文化成熟的标志
 - ✅ localStorage 迁移至 `html-gen:` 命名空间
 - ✅ 设计文档与 46 个 commit 实现高度一致（Phase 1-4 全部对应）
+
+---
+
+## 2026-08-06 — 以剧读史知识库表格化改造 · 设计审查
+
+- **Reviewer**: Security Reviewer
+- **Type**: Design Document Review
+- **Level**: L2
+- **Scope**: `documents/drama-kb-table-design-v1.0-20260806.md`
+- **Verdict**: CONDITIONAL PASS
+- **Score**: 90 / 100 (Rating: A)
+
+### Summary
+
+对 drama 知识库表格化改造设计文档（K1-K3 模板改动 + 4 份 table data + 6 条目索引 + 12 个测试）做三维审查。需求覆盖 7/7 全部，模板改动 4 个 selectItem 调用点完整，chaitin 向后兼容路径验证通过。3 个 🟡 修正项（剧中设定标注/JSON 列定义/测试补充）不阻塞 D1 启动。
+
+### Findings
+
+| # | Severity | Title | Detail | Status |
+|:-:|:--------:|:------|:-------|:------:|
+| 1 | 🟡 | D2-1: 剧中设定标注缺失 | T2/T4 虚构事件未标注 source | Open |
+| 2 | 🟡 | D2-2: 表格列定义缺 JSON | T1-T4 缺结构化 columns/tabs 配置 | Open |
+| 3 | 🟡 | D4-1: 测试缺 section 点击 | T4 仅测 item 点击，需补 section 标题级 | Open |
+
+### 📄 完整报告
+
+`documents/review/drama-kb-table-review-v1.0-20260806.md`
+
+---
+
