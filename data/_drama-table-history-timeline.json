@@ -1,0 +1,79 @@
+{
+  "columns": [
+    {
+      "key": "dynasty",
+      "label": "朝代",
+      "sortable": true
+    },
+    {
+      "key": "start",
+      "label": "开始年代",
+      "type": "number"
+    },
+    {
+      "key": "end",
+      "label": "结束年份",
+      "type": "number"
+    },
+    {
+      "key": "founder",
+      "label": "开创者（及谥号）",
+      "sortable": true
+    },
+    {
+      "key": "ethnicity",
+      "label": "民族"
+    },
+    {
+      "key": "events",
+      "label": "主要事件"
+    }
+  ],
+  "data": [
+    {
+      "dynasty": "唐",
+      "start": 618,
+      "end": 907,
+      "founder": "唐高祖李渊（神尧大圣大光孝皇帝）",
+      "ethnicity": "汉族（陇西李氏，胡汉交融）",
+      "events": "贞观之治、开元盛世、安史之乱"
+    },
+    {
+      "dynasty": "宋",
+      "start": 960,
+      "end": 1279,
+      "founder": "宋太祖赵匡胤（启运立极英武睿文神德圣功至明大孝皇帝）",
+      "ethnicity": "汉族",
+      "events": "重文轻武、靖康之变、南宋偏安"
+    },
+    {
+      "dynasty": "元",
+      "start": 1271,
+      "end": 1368,
+      "founder": "元世祖忽必烈（圣德神功文武皇帝）",
+      "ethnicity": "蒙古族",
+      "events": "行省制、四等人制、红巾军起义"
+    },
+    {
+      "dynasty": "明",
+      "start": 1368,
+      "end": 1644,
+      "founder": "明太祖朱元璋（高皇帝）",
+      "ethnicity": "汉族",
+      "events": "废丞相设内阁、厂卫、土木堡之变"
+    },
+    {
+      "dynasty": "清",
+      "start": 1644,
+      "end": 1912,
+      "founder": "清太祖努尔哈赤（高皇帝，追尊）",
+      "ethnicity": "满族",
+      "events": "康雍乾盛世、鸦片战争、辛亥革命"
+    }
+  ],
+  "options": {
+    "pageSize": 10,
+    "exportCSV": true,
+    "search": true
+  }
+}

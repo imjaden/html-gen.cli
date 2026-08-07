@@ -92,6 +92,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏）
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 双内容模式：有 `url` → iframe 加载，有 `desc` → 内联渲染
+- section 标题可点击：单条目 section 点击标题直接加载 (K2)
 - 空状态显示欢迎面板
 - 上次选择状态 localStorage 恢复（group + item）
 

@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260706" type="image/png">
-<title>以剧读史</title>
+<title>以剧读史 · 影视历史知识库</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -225,8 +225,10 @@ pre code { background: none; padding: 0; }
   display: flex; align-items: center; gap: 8px;
   padding: 10px 16px 4px; font-size: 0.7rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em;
-  color: #6b7280; cursor: default; user-select: none;
+  color: #6b7280; cursor: pointer; user-select: none;
 }
+.kw-section-title:hover { color: #e0e0e0; }
+.kw-section-title.active { color: var(--cobalt-400); }
 .kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .kw-item {
   display: flex; align-items: center; gap: 8px;
@@ -361,8 +363,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
-      <div class="sidebar-title" title="以剧读史">📚 以剧读史</div>
-      <div class="sub">影视历史知识库</div>
+      <div class="sidebar-title" title="以剧读史 · 影视历史知识库">📚 以剧读史 · 影视历史知识库</div>
+      <div class="sub"></div>
     </div>
     <div id="kwSectionsContainer"></div>
     <!-- Sidebar Search -->
@@ -380,8 +382,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-tab-bar" id="kwTabBar"></div>
     <div class="kw-content">
       <div class="kw-welcome active" id="welcomePanel">
-        <div class="w-title">📚 以剧读史</div>
-        <div class="w-sub">从经典历史影视剧出发，读历史脉络，学职场谋略。左侧选择剧集与知识点分类。</div>
+        <div class="w-title">📚 以剧读史 · 影视历史知识库</div>
+        <div class="w-sub">从左侧菜单选择，以经典影视剧为线索，梳理中国历史脉络。</div>
         <div class="w-legend" id="wLegend"></div>
       </div>
       <div class="kw-frame-wrap" id="frameWrap">
@@ -396,7 +398,7 @@ pre code { background: none; padding: 0; }
 <script>
 (function() {
   const GROUPS = [{"key": "中国历史", "label": "中国历史", "icon": "🏛️"}, {"key": "大明王朝1566", "label": "大明王朝1566", "icon": "📜"}];  // [{key, label, icon}]
-  const ITEMS  = [{"title": "唐·贞观气象", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：618—907 年，历 21 帝 289 年。<\/p><p><strong>时代特征<\/strong>：开放包容、万国来朝；科举取士、府兵均田；贞观之治与开元盛世并称两大高峰。<\/p><p><strong>代表影视剧<\/strong>：《贞观之治》《长安十二时辰》。<\/p>"}, {"title": "宋·文治巅峰", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：960—1279 年，历 18 帝 319 年。<\/p><p><strong>时代特征<\/strong>：重文轻武，经济文化登峰造极；活字印刷、指南针、火药成型；《清明上河图》里的市井繁华。<\/p><p><strong>代表影视剧<\/strong>：《清平乐》。<\/p>"}, {"title": "元·草原入主", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：1271—1368 年，历 11 帝 98 年。<\/p><p><strong>时代特征<\/strong>：蒙古铁骑西征南讨，行省制度影响至今；民族等级森严、权臣更迭频繁。<\/p><p><strong>代表影视剧<\/strong>：《成吉思汗》。<\/p>"}, {"title": "明·帝王心术", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：1368—1644 年，历 16 帝 276 年。<\/p><p><strong>时代特征<\/strong>：皇权极盛，内阁与厂卫并立；嘉靖不上朝而天下照转，帝王心术登峰造极。<\/p><p><strong>代表影视剧<\/strong>：《大明王朝1566》（已收录）。<\/p>"}, {"title": "清·康雍乾盛世", "group": "中国历史", "section": "朝代脉络", "desc": "<p>时间跨度：1644—1912 年，历 12 帝 268 年。<\/p><p><strong>时代特征<\/strong>：满汉一体、中央集权巅峰；疆域辽阔、人口破亿，康雍乾三代盛世。<\/p><p><strong>代表影视剧<\/strong>：《康熙王朝》（已收录）、《雍正王朝》。<\/p>"}, {"title": "已收录剧集", "group": "中国历史", "section": "代表影视剧", "desc": "<p>本库当前收录剧集（按朝代组织，渐进式补充）：<\/p><ul><li><strong>明朝<\/strong>：《大明王朝1566》——嘉靖朝七年朝堂权谋<\/li><li><strong>清朝<\/strong>：《康熙王朝》——康熙一生文治武功（规划中）<\/li><\/ul>"}, {"title": "待收录剧集", "group": "中国历史", "section": "代表影视剧", "desc": "<p>按朝代规划的代表剧清单：<\/p><ul><li><strong>唐<\/strong>：《贞观之治》《长安十二时辰》<\/li><li><strong>宋<\/strong>：《清平乐》<\/li><li><strong>元<\/strong>：《成吉思汗》<\/li><li><strong>明<\/strong>：《大明王朝1566》✔ 已收录<\/li><li><strong>清<\/strong>：《康熙王朝》✔ 已收录、《雍正王朝》<\/li><\/ul>"}, {"title": "观剧顺序建议", "group": "中国历史", "section": "观剧指南", "desc": "<p><strong>入门建议<\/strong>：先看《大明王朝1566》——节奏最密、权谋最纯粹，一剧看懂明代朝堂的运行逻辑。<\/p><p><strong>朝代串联<\/strong>：按「唐→宋→元→明→清」观剧，可感知中国帝制从开放到收敛、再到集权巅峰的脉络。<\/p><p><strong>观影姿势<\/strong>：历史剧非纪录片，剧情为纲、史实为目；本库条目均标注「剧中设定」，请区分看待。<\/p>"}, {"title": "一剧看懂大明1566", "group": "大明王朝1566", "section": "概述", "desc": "<p><strong>一句话<\/strong>：一部由「改稻为桑」国策引发的嘉靖朝堂大戏，被誉为国产历史剧巅峰（豆瓣 9.7+）。<\/p><p><strong>主创<\/strong>：编剧刘和平、导演张黎，2007 年播出，46 集。<\/p><p><strong>时间跨度<\/strong>：嘉靖三十九年（1560）至嘉靖四十五年（1566）驾崩，共七年。<\/p><p><strong>故事主线<\/strong>：国库空虚之下，严党在浙江强推「改稻为桑」，毁堤淹田激起民变；清流代表海瑞以《治安疏》直斥君非；皇权、严党、清流三方角力，直至嘉靖驾崩、隆庆继位。<\/p><p><strong>⚠ 剧中设定<\/strong>：人物有历史原型，情节多有虚构，非正史。<\/p>"}, {"title": "嘉靖朝的底色", "group": "大明王朝1566", "section": "概述", "desc": "<p><strong>朝局<\/strong>：嘉靖帝奉玄修道、多年不上朝，严嵩父子专权二十年，内阁、司礼监、六部层层博弈。<\/p><p><strong>财政<\/strong>：东南倭患、北疆俺答与宫廷营造双重耗银，国库空虚——「改稻为桑」正是为填窟窿而生的国策。<\/p><p><strong>三方格局<\/strong>：皇权（嘉靖）、严党（严嵩/严世蕃/浙江系）、清流（徐阶/高拱/张居正/海瑞），外加司礼监与织造局居中通传。<\/p><p><strong>史实钩子<\/strong>：海瑞上《治安疏》与严嵩倒台均史有其事，剧中将其编织进「改稻为桑」主线。<\/p>"}, {"title": "看懂朝堂三方", "group": "大明王朝1566", "section": "概述", "desc": "<p><strong>皇权<\/strong>：嘉靖以「长江黄河论」自况——清浊并用，让严党与清流互斗，皇权稳坐钓鱼台。<\/p><p><strong>严党<\/strong>：严嵩以「顺」固宠，严世蕃以「贪」敛财，浙江系（郑泌昌、何茂才）以「狠」执行。<\/p><p><strong>清流<\/strong>：徐阶隐忍待时，海瑞以命相搏——两种截然不同的「清」。<\/p><p><strong>看剧要点<\/strong>：台词无一句废话；每个「忠」字背后都是利益计算；海瑞是唯一的「不合群者」。<\/p>"}, {"title": "改稻为桑国策出台", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-01.html"}, {"title": "毁堤淹田九县", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-02.html"}, {"title": "海瑞赴任淳安", "group": "大明王朝1566", "section": "时间轴", "badge": "人物", "url": "drama/daming-timeline-03.html"}, {"title": "审通倭案", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-04.html"}, {"title": "严嵩倒台", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-05.html"}, {"title": "海瑞上治安疏", "group": "大明王朝1566", "section": "时间轴", "badge": "关键事件", "url": "drama/daming-timeline-06.html"}, {"title": "嘉靖驾崩·海瑞出狱", "group": "大明王朝1566", "section": "时间轴", "badge": "结局", "url": "drama/daming-timeline-07.html"}, {"title": "李代桃僵·毁堤淹田", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-01.html"}, {"title": "破釜沉舟·海瑞上疏", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-02.html"}, {"title": "分而治之·嘉靖御下", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-03.html"}, {"title": "顺水推舟·严嵩固宠", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-04.html"}, {"title": "韬光养晦·徐阶倒严", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-05.html"}, {"title": "将计就计·海瑞审案", "group": "大明王朝1566", "section": "36计策", "badge": "计谋", "url": "drama/daming-strategy-06.html"}];   // [{title, group, section?, badge?, url?, desc?}]
+  const ITEMS  = [{"title": "概述", "group": "中国历史", "section": "概述", "url": "drama/history-overview.html"}, {"title": "时间轴", "group": "中国历史", "section": "时间轴", "url": "drama/history-timeline-table.html"}, {"title": "36计策", "group": "中国历史", "section": "36计策", "url": "drama/history-strategy-table.html"}, {"title": "概述", "group": "大明王朝1566", "section": "概述", "url": "drama/daming-overview.html"}, {"title": "时间轴", "group": "大明王朝1566", "section": "时间轴", "url": "drama/daming-timeline-table.html"}, {"title": "36计策", "group": "大明王朝1566", "section": "36计策", "url": "drama/daming-strategy-table.html"}];   // [{title, group, section?, badge?, url?, desc?}]
 
   let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
   let activeItem = null;
@@ -479,7 +481,7 @@ pre code { background: none; padding: 0; }
     document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
     renderSidebar();
     var firstItem = ITEMS.find(function(i) { return i.group === key; });
-    if (firstItem) selectItem(firstItem.title);
+    if (firstItem) selectItem(activeGroup, firstItem.title);
   };
 
   // ── Render sidebar sections ──
@@ -497,25 +499,36 @@ pre code { background: none; padding: 0; }
     keys.forEach(function(sec) {
       var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
       var c = COLORS[Math.max(0, ci) % COLORS.length];
-      if (keys.length > 1) html += '<div class="kw-section-title"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
-      sections[sec].forEach(function(item) {
+      if (keys.length > 1) html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
+      // Single-item section matching section name: skip kw-item row (section title itself is the click target)
+      var isSingleItem = sections[sec].length === 1 && sections[sec][0].title === sec;
+      if (!isSingleItem) {
+        sections[sec].forEach(function(item) {
         var badgeHtml = '';
         if (item.badge) {
           var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
           badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
         }
-        html += '<div class="kw-item" onclick="selectItem(\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
       });
+      }
     });
     container.innerHTML = html || '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.78rem;">暂无内容</div>';
   }
 
+  // ── Select section (click section title) ──
+  window.selectSection = function(group, sec) {
+    var item = ITEMS.find(function(i) { return i.group === group && i.section === sec; });
+    if (!item) return;
+    selectItem(group, item.title);
+  };
+
   // ── Select item ──
-  window.selectItem = function(title) {
+  window.selectItem = function(group, title) {
     activeItem = title;
     try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
     document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
-    var item = ITEMS.find(function(i) { return i.title === title; });
+    var item = ITEMS.find(function(i) { return i.group === group && i.title === title; });
     if (!item) return;
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
@@ -535,7 +548,7 @@ pre code { background: none; padding: 0; }
   var savedItem = localStorage.getItem('html-gen:kw_item');
   if (savedGroup && savedItem) {
     var exists = ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
-    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedItem); }, 50); return; }
+    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); return; }
   }
   renderTabs();
   renderLegend();

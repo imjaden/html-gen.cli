@@ -1,0 +1,82 @@
+{
+  "columns": [
+    {
+      "key": "strategy",
+      "label": "计策",
+      "sortable": true
+    },
+    {
+      "key": "event",
+      "label": "历史事件",
+      "sortable": true
+    },
+    {
+      "key": "figures",
+      "label": "主要人物"
+    },
+    {
+      "key": "outcome",
+      "label": "结局"
+    },
+    {
+      "key": "source",
+      "label": "出处",
+      "sortable": true
+    }
+  ],
+  "data": [
+    {
+      "strategy": "李代桃僵",
+      "event": "毁堤淹田",
+      "figures": "严世蕃、郑泌昌、何茂才",
+      "outcome": "郑何被清算",
+      "source": "剧中设定",
+      "url": "drama/daming-strategy-01.html"
+    },
+    {
+      "strategy": "破釜沉舟",
+      "event": "海瑞上疏",
+      "figures": "海瑞、嘉靖",
+      "outcome": "下狱后获释",
+      "source": "史实",
+      "url": "drama/daming-strategy-02.html"
+    },
+    {
+      "strategy": "分而治之",
+      "event": "嘉靖御下二十年",
+      "figures": "嘉靖、严嵩、徐阶",
+      "outcome": "朝局制衡",
+      "source": "史实",
+      "url": "drama/daming-strategy-03.html"
+    },
+    {
+      "strategy": "顺水推舟",
+      "event": "严嵩固宠",
+      "figures": "严嵩",
+      "outcome": "终致倾覆",
+      "source": "史实",
+      "url": "drama/daming-strategy-04.html"
+    },
+    {
+      "strategy": "韬光养晦",
+      "event": "徐阶倒严",
+      "figures": "徐阶、严嵩",
+      "outcome": "严党覆灭",
+      "source": "史实",
+      "url": "drama/daming-strategy-05.html"
+    },
+    {
+      "strategy": "将计就计",
+      "event": "海瑞审通倭案",
+      "figures": "海瑞、郑泌昌、何茂才",
+      "outcome": "郑何落网",
+      "source": "剧中设定",
+      "url": "drama/daming-strategy-06.html"
+    }
+  ],
+  "options": {
+    "pageSize": 10,
+    "exportCSV": true,
+    "search": true
+  }
+}
