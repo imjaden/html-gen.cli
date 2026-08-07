@@ -1,4 +1,4 @@
-"""Selenium test: drama-knowledge.html — 以剧读史影视历史知识库."""
+"""Selenium test: drama-knowledge.html — 以剧读史影视历史知识库 (v2: section-as-menu)."""
 import time, unittest
 from pathlib import Path
 
@@ -43,113 +43,129 @@ class TestDramaKnowledge(unittest.TestCase):
         return self.driver.execute_script("return window.__testErrors;")
 
     def _tab_labels(self):
-        # tab 文本含 icon（如 "📜\n大明王朝1566"），取末行纯 label
         return [t.text.split('\n')[-1].strip() for t in self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')]
 
     def _section_titles(self):
         return [s.text for s in self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')]
 
-    def _item_titles(self):
-        return [i.text for i in self.driver.find_elements(By.CSS_SELECTOR, '.kw-item .kw-item-text')]
+    def _iframe_src(self):
+        src = self.driver.find_element(By.ID, 'contentFrame').get_attribute('src') or ''
+        return src.split('?')[0]
 
-    # ── Tabs ──
+    # ── T1: Tab order ──
 
     def test_01_tabs_render_order(self):
         labels = self._tab_labels()
-        self.assertEqual(labels, ['中国历史', '大明王朝1566'], "Tab 顺序应为 中国历史 → 大明王朝1566")
+        self.assertEqual(labels, ['中国历史', '大明王朝1566'],
+                         f"Tabs: {labels}")
 
-    def test_02_default_group_history(self):
-        # 默认选中第一个 group：中国历史（总览索引层）
-        active = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab.active')
-        self.assertEqual(len(active), 1)
-        self.assertEqual(active[0].text.split('\n')[-1].strip(), '中国历史')
-        self.assertEqual(len(self._item_titles()), 8, "中国历史 Tab 应有 8 条")
-        self.assertEqual(self._section_titles(), ['朝代脉络', '代表影视剧', '观剧指南'])
+    # ── T2: Section rendering (3 sections, no kw-item rows) ──
 
-    # ── Switch to 大明王朝1566 ──
+    def test_02_sections_render_as_menu(self):
+        """D2: 中国历史 group: 3 sections, 0 items (single-item sections skipped)."""
+        sections = self._section_titles()
+        self.assertEqual(sections, ['概述', '时间轴', '36计策'],
+                         f"Sections: {sections}")
+        items = self.driver.find_elements(By.CSS_SELECTOR, '.kw-item')
+        self.assertEqual(len(items), 0, "Single-item sections should not render kw-item rows")
 
-    def test_03_switch_to_daming(self):
-        tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
-        tabs[1].click()
-        time.sleep(0.4)
-        self.assertEqual(self._section_titles(), ['概述', '时间轴', '36计策'], "section 顺序应为 概述→时间轴→36计策")
-        items = self._item_titles()
-        self.assertEqual(len(items), 16, "大明王朝1566 Tab 应有 16 条")
-        self.assertEqual(items[0], '一剧看懂大明1566')
-        # 时间轴 7 条 + 36计策 6 条
-        timeline = [t for t in items if t in ('改稻为桑国策出台', '毁堤淹田九县', '海瑞赴任淳安',
-                                              '审通倭案', '严嵩倒台', '海瑞上治安疏', '嘉靖驾崩·海瑞出狱')]
-        self.assertEqual(len(timeline), 7, "时间轴应有 7 条")
+    # ── T3: Section click opens iframe ──
 
-    # ── Content modes ──
+    def test_03_section_click_timeline_history(self):
+        """Click 中国历史 时间轴 section → iframe src = history-timeline-table.html."""
+        sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        # 时间轴 is the 2nd section
+        sections[1].click()
+        time.sleep(0.3)
+        src = self._iframe_src()
+        self.assertTrue(src.endswith('drama/history-timeline-table.html'),
+                        f"Expected timeline, got: {src}")
 
-    def test_04_desc_inline(self):
+    def test_04_section_click_overview_daming(self):
+        """Click 大明 概述 section → iframe src = daming-overview.html."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
         time.sleep(0.3)
-        self.driver.find_element(By.CSS_SELECTOR, '.kw-item').click()  # 一剧看懂大明1566
+        sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        sections[0].click()  # 概述
         time.sleep(0.3)
-        body = self.driver.find_element(By.ID, 'kwBody')
-        self.assertEqual(body.value_of_css_property('display'), 'block')
-        self.assertIn('改稻为桑', body.text)
-        frame = self.driver.find_element(By.ID, 'contentFrame')
-        self.assertEqual(frame.value_of_css_property('display'), 'none', "desc 条目不应显示 iframe")
+        src = self._iframe_src()
+        self.assertTrue(src.endswith('drama/daming-overview.html'),
+                        f"Expected overview, got: {src}")
 
-    def test_05_timeline_url(self):
+    def test_05_section_click_strategy_daming(self):
+        """Click 大明 36计策 section → iframe src = daming-strategy-table.html."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
         time.sleep(0.3)
-        # 时间轴第一条：改稻为桑国策出台
-        self.driver.find_element(By.XPATH, "//div[contains(@class,'kw-item')][.//span[text()='改稻为桑国策出台']]").click()
+        sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        sections[2].click()  # 36计策
         time.sleep(0.3)
-        src = (self.driver.find_element(By.ID, 'contentFrame').get_attribute('src') or '').split('?')[0]
-        self.assertTrue(src.endswith('drama/daming-timeline-01.html'), f"iframe src 错误: {src}")
-        body = self.driver.find_element(By.ID, 'kwBody')
-        self.assertEqual(body.value_of_css_property('display'), 'none', "url 条目不应显示内联 body")
+        src = self._iframe_src()
+        self.assertTrue(src.endswith('drama/daming-strategy-table.html'),
+                        f"Expected strategy, got: {src}")
 
-    def test_06_strategy_url(self):
+    # ── T4: Title 重复不串组 ──
+
+    def test_06_title_duplicate_no_cross_group(self):
+        """'概述' in 中国历史 != '概述' in 大明 (K1: selectItem by group+title)."""
+        # Click 中国历史 概述
+        sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        sections[0].click()
+        time.sleep(0.3)
+        self.assertTrue(self._iframe_src().endswith('drama/history-overview.html'))
+        # Switch to 大明, click 概述
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
         time.sleep(0.3)
-        self.driver.find_element(By.XPATH, "//div[contains(@class,'kw-item')][.//span[text()='李代桃僵·毁堤淹田']]").click()
+        sections2 = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        sections2[0].click()
         time.sleep(0.3)
-        src = (self.driver.find_element(By.ID, 'contentFrame').get_attribute('src') or '').split('?')[0]
-        self.assertTrue(src.endswith('drama/daming-strategy-01.html'), f"iframe src 错误: {src}")
+        self.assertTrue(self._iframe_src().endswith('drama/daming-overview.html'),
+                        "Cross-group title should not collide")
 
-    def test_07_badge_rendered(self):
+    # ── T5: State restore ──
+
+    def test_07_restore_state(self):
+        """Refresh restores group + section."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
         time.sleep(0.3)
-        badges = [b.text for b in self.driver.find_elements(By.CSS_SELECTOR, '.kw-item-badge')]
-        self.assertIn('关键事件', badges)
-        self.assertIn('计谋', badges)
-
-    # ── State restore ──
-
-    def test_08_restore_state(self):
-        tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
-        tabs[1].click()
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()  # 时间轴
         time.sleep(0.3)
-        self.driver.find_element(By.XPATH, "//div[contains(@class,'kw-item')][.//span[text()='严嵩倒台']]").click()
-        time.sleep(0.3)
-        # 刷新后应恢复 group + item
         self.driver.get('file://' + str(DEMO))
         time.sleep(0.6)
         active = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab.active')
         self.assertEqual(len(active), 1)
-        self.assertEqual(active[0].text.split('\n')[-1].strip(), '大明王朝1566', "刷新后应恢复上次 group")
-        active_item = self.driver.find_elements(By.CSS_SELECTOR, '.kw-item.active .kw-item-text')
-        self.assertEqual(len(active_item), 1)
-        self.assertEqual(active_item[0].text, '严嵩倒台', "刷新后应恢复上次 item")
+        self.assertEqual(active[0].text.split('\n')[-1].strip(), '大明王朝1566',
+                         "Should restore group")
+        self.assertTrue(self._iframe_src().endswith('drama/daming-timeline-table.html'),
+                        "Should restore section URL")
 
-    # ── JS errors ──
+    # ── T6: Table content pages ──
 
-    def test_09_no_js_errors(self):
+    def test_08_daming_timeline_tabs(self):
+        """大明时间轴 table 应有 2 tabs (年号总览 + 剧情节点)."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
         time.sleep(0.3)
-        for item in self._item_titles():
-            try:
-                self.driver.find_element(By.XPATH, f"//div[contains(@class,'kw-item')][.//span[text()='{item}']]").click()
-                time.sleep(0.1)
-            except Exception:
-                pass
-        self.assertEqual(self._errors(), [], f"JS 错误: {self._errors()}")
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()
+        time.sleep(0.5)
+        # Switch to iframe content
+        frame = self.driver.find_element(By.ID, 'contentFrame')
+        self.driver.switch_to.frame(frame)
+        tabs = self.driver.find_elements(By.CSS_SELECTOR, '.tab-btn')
+        self.assertGreaterEqual(len(tabs), 2, f"Should have ≥2 tabs, got {len(tabs)}")
+        self.driver.switch_to.default_content()
+
+    # ── T7: JS errors ──
+
+    def test_09_no_js_errors(self):
+        """Exercise all sections → no JS errors."""
+        for tab_idx in [0, 1]:
+            self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[tab_idx].click()
+            time.sleep(0.3)
+            sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+            for si in range(len(sections)):
+                sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+                sections[si].click()
+                time.sleep(0.15)
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
 
 if __name__ == '__main__':

@@ -39,8 +39,10 @@
   display: flex; align-items: center; gap: 8px;
   padding: 10px 16px 4px; font-size: 0.7rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em;
-  color: #6b7280; cursor: default; user-select: none;
+  color: #6b7280; cursor: pointer; user-select: none;
 }
+.kw-section-title:hover { color: #e0e0e0; }
+.kw-section-title.active { color: var(--cobalt-400); }
 .kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .kw-item {
   display: flex; align-items: center; gap: 8px;
@@ -293,7 +295,7 @@
     document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
     renderSidebar();
     var firstItem = ITEMS.find(function(i) { return i.group === key; });
-    if (firstItem) selectItem(firstItem.title);
+    if (firstItem) selectItem(activeGroup, firstItem.title);
   };
 
   // ── Render sidebar sections ──
@@ -311,25 +313,36 @@
     keys.forEach(function(sec) {
       var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
       var c = COLORS[Math.max(0, ci) % COLORS.length];
-      if (keys.length > 1) html += '<div class="kw-section-title"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
-      sections[sec].forEach(function(item) {
+      if (keys.length > 1) html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
+      // Single-item section matching section name: skip kw-item row (section title itself is the click target)
+      var isSingleItem = sections[sec].length === 1 && sections[sec][0].title === sec;
+      if (!isSingleItem) {
+        sections[sec].forEach(function(item) {
         var badgeHtml = '';
         if (item.badge) {
           var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
           badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
         }
-        html += '<div class="kw-item" onclick="selectItem(\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
       });
+      }
     });
     container.innerHTML = html || '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.78rem;">暂无内容</div>';
   }
 
+  // ── Select section (click section title) ──
+  window.selectSection = function(group, sec) {
+    var item = ITEMS.find(function(i) { return i.group === group && i.section === sec; });
+    if (!item) return;
+    selectItem(group, item.title);
+  };
+
   // ── Select item ──
-  window.selectItem = function(title) {
+  window.selectItem = function(group, title) {
     activeItem = title;
     try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
     document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
-    var item = ITEMS.find(function(i) { return i.title === title; });
+    var item = ITEMS.find(function(i) { return i.group === group && i.title === title; });
     if (!item) return;
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
@@ -349,7 +362,7 @@
   var savedItem = localStorage.getItem('html-gen:kw_item');
   if (savedGroup && savedItem) {
     var exists = ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
-    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedItem); }, 50); return; }
+    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); return; }
   }
   renderTabs();
   renderLegend();

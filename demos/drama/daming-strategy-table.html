@@ -1,0 +1,1626 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<title>大明王朝1566 · 36计策</title>
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: #e0e0e0;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+/* ── Tabs ── */
+.table-tabs { display:flex; gap:4px; margin-bottom:10px; overflow-x:auto; flex-wrap:nowrap; }
+.table-tabs:empty { display:none; }
+.tab-btn {
+  padding:5px 14px; border-radius:6px 6px 0 0; cursor:pointer; font-size:0.72rem; font-weight:500;
+  background:var(--surface-900); color:#6b7280; border:1px solid #1a1a2e; border-bottom:none;
+  white-space:nowrap; transition:all 0.15s; user-select:none;
+}
+.tab-btn:hover { background:#1a1a2e; color:#d1d5db; }
+.tab-btn.active { background:var(--cobalt-950); color:var(--cobalt-400); border-color:var(--cobalt-700); }
+.tab-btn .count { display:inline-block; margin-left:4px; padding:1px 5px; border-radius:9999px;
+  font-size:0.55rem; background:rgba(99,102,241,0.15); color:var(--cobalt-400); }
+.tab-btn.active .count { background:rgba(99,102,241,0.25); }
+
+/* ── Header bar ── */
+.table-header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
+.table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
+.stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
+  background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
+.stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
+.filter-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px;
+  background:rgba(79,70,229,0.15); border:1px solid var(--cobalt-600); font-size:0.65rem; color:var(--cobalt-300); cursor:pointer; white-space:nowrap; }
+.filter-pill:hover { background:rgba(79,70,229,0.25); }
+.filter-pill .fp-close { font-weight:700; margin-left:2px; color:var(--cobalt-400); }
+.data-table td.clickable-cell { cursor:pointer; }
+.data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
+.data-table .cell-pills { }
+.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px; }
+.data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
+
+/* ── Batch toolbar ── */
+.batch-bar { display:none; align-items:center; gap:8px; padding:6px 12px; background:rgba(79,70,229,0.12); border:1px solid var(--cobalt-600); border-radius:8px; margin-bottom:8px; }
+.batch-bar.active { display:flex; }
+.batch-bar .bb-text { font-size:0.72rem; color:var(--cobalt-300); font-weight:600; }
+.batch-bar .bb-btn { padding:3px 10px; border-radius:4px; border:1px solid var(--cobalt-600); background:transparent; color:var(--cobalt-400); cursor:pointer; font-size:0.68rem; font-family:inherit; }
+.batch-bar .bb-btn:hover { background:rgba(79,70,229,0.2); }
+
+/* ── Fullscreen ── */
+.wrapper.fullscreen { position:fixed; inset:0; z-index:999; background:var(--surface-950); padding:12px; overflow:auto; }
+.fs-btn { padding:3px 10px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.68rem; font-family:inherit; }
+.fs-btn:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+
+/* ── Ratio presets dropdown ── */
+.ratio-dropdown { position:absolute; top:100%; right:0; background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; z-index:50; min-width:130px; box-shadow:0 4px 16px rgba(0,0,0,0.4); margin-top:4px; display:none; }
+.ratio-dropdown.show { display:block; }
+.ratio-dropdown .ratio-opt { padding:6px 12px; cursor:pointer; font-size:0.72rem; color:#b0b0c0; white-space:nowrap; }
+.ratio-dropdown .ratio-opt:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+.ratio-dropdown .ratio-opt.active { color:var(--cobalt-400); font-weight:600; }
+.ratio-wrap { position:relative; display:inline-block; }
+
+@media print {
+  .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
+  .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
+  .data-table th, .data-table td { color: #000; border-color: #ccc; }
+  .data-table th { background: #f5f5f5; }
+  body { background: #fff; }
+  .wrapper { padding: 0; }
+}
+
+/* ── Frozen columns ── */
+.data-table th.frozen-col, .data-table td.frozen-col {
+  position: sticky; z-index: 11; background: var(--surface-900);
+}
+.data-table th.frozen-col { z-index: 12; }
+.header-search { background:var(--surface-850); border:1px solid #2a2a3e; color:#e0e0e0; padding:5px 10px;
+  border-radius:6px; font-size:0.72rem; outline:none; width:180px; }
+.header-search:focus { border-color:var(--cobalt-600); }
+
+/* ── Table ── */
+.table-wrap { border:1px solid #1a1a2e; border-radius:var(--radius-lg); overflow-x:auto; }
+.data-table { width:100%; min-width:600px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
+.data-table th {
+  position:sticky; top:0; z-index:10; background:var(--surface-900); border-bottom:1px solid #2a2a3e;
+  padding:6px 8px; text-align:left; font-size:0.65rem; font-weight:600; color:#9ca3af;
+  text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; user-select:none;
+  position:relative;
+}
+.data-table th.sortable { cursor:pointer; }
+.data-table th.sortable:hover { color:var(--cobalt-400); }
+.data-table th.sort-asc::after { content:' ▲'; color:var(--cobalt-400); font-size:9px; }
+.data-table th.sort-desc::after { content:' ▼'; color:var(--cobalt-400); font-size:9px; }
+.data-table th .resize-handle {
+  position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
+}
+.data-table th .resize-handle:hover { background:var(--cobalt-600); }
+.data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+  vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
+.data-table tbody tr { transition:background 0.12s; }
+.data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
+.data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
+.data-table tbody tr.clickable { cursor:pointer; }
+.col-checkbox { width:32px; text-align:center; }
+.col-checkbox input { cursor:pointer; accent-color:var(--cobalt-500); }
+.col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
+
+/* ── Actions ── */
+.action-btn { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
+  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.65rem; color:#6b7280;
+  background:transparent; transition:all 0.15s; margin:0 1px; }
+.action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
+
+/* ── Column toggle ── */
+.col-toggle-wrap { position:relative; display:inline-block; }
+.col-toggle-dropdown {
+  display:none; position:absolute; top:100%; right:0; z-index:50; margin-top:4px;
+  background:var(--surface-900); border:1px solid #2a2a3e; border-radius:8px; padding:6px 0;
+  min-width:200px; min-height:300px; max-height:400px; overflow-y:auto;
+}
+.col-toggle-dropdown.show { display:block; }
+.col-toggle-dropdown label { display:flex; align-items:center; gap:6px; padding:4px 12px;
+  font-size:0.72rem; color:#d1d5db; cursor:pointer; white-space:nowrap; }
+.col-toggle-dropdown label:hover { background:rgba(79,70,229,0.1); }
+.col-toggle-dropdown input { accent-color:var(--cobalt-500); }
+.col-toggle-dropdown .settings-section { padding:4px 12px 2px; font-size:0.62rem; color:#6b7280; text-transform:uppercase; letter-spacing:0.04em; }
+.col-toggle-dropdown .settings-radio { display:flex; align-items:center; gap:6px; padding:2px 12px; font-size:0.7rem; color:#d1d5db; cursor:pointer; }
+.col-toggle-dropdown .settings-radio input { accent-color:var(--cobalt-500); margin:0; }
+.col-toggle-divider { height:1px; background:#2a2a3e; margin:4px 0; }
+
+/* ── Density ── */
+.data-table.dense td { padding:2px 8px; font-size:0.7rem; }
+.data-table.dense th { padding:3px 8px; font-size:0.6rem; }
+.data-table.comfortable td { padding:10px 12px; font-size:0.82rem; }
+.data-table.comfortable th { padding:10px 12px; font-size:0.72rem; }
+
+/* ── Modal Panel ── */
+.modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
+.modal-overlay.active { display:flex; }
+.modal-panel { background:var(--surface-900); border:1px solid #2a2a3e; border-radius:12px; width:560px; max-width:90vw; max-height:80vh; overflow-y:auto; padding:20px 24px; animation:slideFadeIn 0.2s ease; }
+.modal-panel h3 { font-size:1rem; color:#f0f0f0; margin:0 0 12px; }
+.modal-panel .modal-close { position:absolute; top:12px; right:16px; background:none; border:none; color:#6b7280; cursor:pointer; font-size:1.2rem; }
+.modal-panel .modal-field { display:flex; padding:4px 0; border-bottom:1px solid #1a1a2e; font-size:0.78rem; }
+.modal-panel .modal-field .mf-label { color:#6b7280; width:80px; flex-shrink:0; }
+.modal-panel .modal-field .mf-value { color:#e0e0e0; flex:1; word-break:break-all; }
+.modal-panel .modal-field:last-child { border-bottom:none; }
+
+/* ── Split View ── */
+.wrapper.split-mode {
+  display: grid;
+  grid-template-columns: var(--spl-ratio, 40%) 5px 1fr;
+  grid-template-rows: auto auto 1fr;
+}
+.wrapper.split-mode .table-tabs { grid-column: 1 / -1; }
+.wrapper.split-mode .batch-bar { grid-column: 1 / -1; }
+.wrapper.split-mode .table-main { overflow: auto; min-width: 200px; }
+.wrapper.split-mode .split-drag { display: block !important; grid-column: 2; }
+.wrapper.split-mode .split-preview { display: flex; }
+.wrapper.split-mode .toast { display: none !important; }
+.split-preview { display:none; flex-direction:column; background:var(--surface-900); border-left:1px solid #2a2a3e;
+  min-width:200px; position:relative; }
+.wrapper.split-mode .split-preview { display:flex; }
+.split-preview-header { padding:10px 14px; border-bottom:1px solid #2a2a3e;
+  font-size:0.82rem; font-weight:600; color:#f0f0f0;
+  display:flex; align-items:center; gap:8px; }
+.split-preview-header .sp-close { margin-left:auto; background:none; border:none; color:#6b7280; cursor:pointer; font-size:1rem; }
+.split-preview-header .sp-nav { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.7rem; font-family:inherit; }
+.split-preview-header .sp-nav:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
+.split-preview-header .sp-nav:disabled { opacity:0.3; cursor:default; }
+.split-preview-body { flex:1; overflow:auto; padding:14px; }
+.split-preview-body iframe { width:100%; height:70vh; border:none; }
+.split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
+.wrapper.split-mode .split-drag { display:block; }
+.split-drag:hover, .split-drag.active { background:var(--cobalt-600); }
+.split-preview .kv-list { display:grid; grid-template-columns:repeat(auto-fill, minmax(200px, 1fr)); gap:6px; }
+.split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
+.split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
+.split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.data-table tr.split-active { outline:2px solid var(--cobalt-500); }
+.data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
+.data-table th.sticky-right, .data-table td.sticky-right {
+  position:sticky; right:0; z-index:5; background:var(--surface-950);
+}
+.data-table th.sticky-right { z-index:15; background:var(--surface-900); }
+.data-table tbody tr:hover td.sticky-right { background:rgba(79,70,229,0.07); }
+.data-table tr.expand-row td { padding:10px 14px; background:rgba(79,70,229,0.06); border-top:1px solid var(--cobalt-700); }
+.data-table tr.expand-row .expand-grid { display:grid; grid-template-columns:repeat(auto-fill, minmax(220px, 1fr)); gap:8px; }
+.data-table tr.expand-row .expand-item { padding:6px 10px; border:1px solid #1a1a2e; border-radius:6px; }
+.data-table tr.expand-row .expand-item .ex-label { font-size:0.62rem; color:#6b7280; }
+.data-table tr.expand-row .expand-item .ex-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+
+/* ── Toast ── */
+.toast { position:fixed; bottom:24px; left:50%; transform:translateX(-50%); padding:8px 20px;
+  background:var(--cobalt-950); color:#e0e0e0; border-radius:8px; font-size:0.78rem;
+  z-index:9999; border:1px solid var(--cobalt-700); opacity:0; transition:opacity 0.2s; white-space:nowrap; pointer-events:none; }
+.toast.show { opacity:1; }
+
+/* ── Misc ── */
+.empty-state { display:none; text-align:center; padding:48px 20px; color:#6b7280; }
+.empty-state .icon { font-size:2rem; margin-bottom:8px; display:block; }
+.flex-1 { flex:1; }
+
+/* ── Quick Search Overlay (Cmd+F) ── */
+.qs-overlay {
+  position:fixed; inset:0; background:rgba(0,0,0,0.5); backdrop-filter:blur(4px);
+  display:none; justify-content:center; align-items:flex-start; padding-top:15vh; z-index:9999;
+}
+.qs-overlay.active { display:flex; }
+.qs-modal {
+  width:560px; max-width:90vw; background:var(--surface-900);
+  border:1px solid var(--cobalt-700); border-radius:12px;
+  box-shadow:0 20px 60px rgba(0,0,0,0.4); overflow:hidden;
+  animation:qsSlideIn 0.18s ease-out;
+}
+@keyframes qsSlideIn { from{opacity:0;transform:translateY(-12px)} to{opacity:1;transform:translateY(0)} }
+.qs-input-row { display:flex; align-items:center; padding:14px 18px; gap:10px; }
+.qs-input-row .qs-icon { font-size:1.1rem; color:var(--cobalt-400); flex-shrink:0; }
+.qs-input-row input {
+  flex:1; border:none; outline:none; font-size:1rem; color:#e0e0e0;
+  background:transparent; font-family:inherit;
+}
+.qs-input-row input::placeholder { color:#555; }
+.qs-close-btn {
+  padding:4px 12px; border-radius:6px; border:1px solid #2a2a3e;
+  background:transparent; color:#9ca3af; cursor:pointer; font-size:0.72rem;
+  transition:all 0.15s;
+}
+.qs-close-btn:hover { background:#2a2a3e; color:#e0e0e0; }
+.qs-hint { display:flex; justify-content:space-between; padding:4px 18px 12px; font-size:0.62rem; color:#6b7280; }
+</style>
+</head>
+<body>
+<div class="wrapper">
+
+<div class="table-tabs" id="tabsBar"></div>
+
+<div class="batch-bar" id="batchBar">
+  <span class="bb-text" id="batchCount">已选 0 条</span>
+  <button class="bb-btn" onclick="selectAllFiltered()">全选</button>
+  <button class="bb-btn" onclick="clearSelection()">取消</button>
+  <button class="bb-btn" onclick="exportSelectedCSV()">📥 导出</button>
+</div>
+
+<div class="table-main" id="tableMain">
+<div class="table-header">
+  <h1>大明王朝1566 · 36计策</h1>
+  <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
+  <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
+  <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
+  <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
+  <div class="flex-1"></div>
+  <input class="header-search" id="searchInput" placeholder="搜索..." onkeydown="if(event.key==='Enter')doSearch()">
+  
+  <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
+  <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
+  <div class="ratio-wrap">
+    <button class="fs-btn" id="ratioBtn" onclick="toggleRatioDropdown()" title="分栏比例">▦</button>
+    <div class="ratio-dropdown" id="ratioDropdown"></div>
+  </div>
+  <div class="col-toggle-wrap">
+    <button class="btn btn-ghost btn-sm" id="colToggleBtn" title="设置">⚙️</button>
+    <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
+  </div>
+</div>
+
+<div class="table-wrap">
+  <table class="data-table">
+    <thead id="thead"></thead>
+    <tbody id="tbody"></tbody>
+  </table>
+  <div class="empty-state" id="emptyState"><span class="icon">📭</span><span>无匹配数据</span></div>
+</div>
+
+<div class="pager" id="pager"></div>
+</div><!-- /table-main -->
+
+<div class="split-drag" id="splitDrag"></div>
+<div class="split-preview" id="splitPreview">
+  <div class="split-preview-header" id="splitPreviewHeader"></div>
+  <div class="split-preview-body" id="splitPreviewBody"></div>
+</div>
+
+<div class="toast" id="toast"></div>
+
+</div><!-- /wrapper -->
+
+<!-- Modal Panel -->
+<div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
+  <div class="modal-panel" id="modalPanel"></div>
+</div>
+
+<!-- Cmd+F Quick Search Overlay -->
+<div class="qs-overlay" id="qsOverlay" onclick="if(event.target===this)quickSearch.close()">
+  <div class="qs-modal">
+    <div class="qs-input-row">
+      <span class="qs-icon">🔍</span>
+      <input id="qsInput" placeholder="搜索..." onkeydown="qsHandleKey(event)" oninput="qsOnInput()">
+      <button class="qs-close-btn" onclick="quickSearch.close()">Esc</button>
+    </div>
+    <div class="qs-hint">
+      <span>Enter 搜索 · Esc 关闭</span>
+      <span id="qsMatchCount"></span>
+    </div>
+  </div>
+</div>
+
+</div>
+
+<script>
+(function() {
+  /* ═══════════════════════════════════════════
+     Layout Table v2.0 — 增强版
+     新增：Tabs/Sort指示/数字排序/中文排序/统计/操作列/Toast/
+           列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
+     ═══════════════════════════════════════════ */
+
+  const COLUMNS = [{"key": "strategy", "label": "计策", "sortable": true}, {"key": "event", "label": "历史事件", "sortable": true}, {"key": "figures", "label": "主要人物"}, {"key": "outcome", "label": "结局"}, {"key": "source", "label": "出处", "sortable": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"strategy": "李代桃僵", "event": "毁堤淹田", "figures": "严世蕃、郑泌昌、何茂才", "outcome": "郑何被清算", "source": "剧中设定", "url": "drama/daming-strategy-01.html"}, {"strategy": "破釜沉舟", "event": "海瑞上疏", "figures": "海瑞、嘉靖", "outcome": "下狱后获释", "source": "史实", "url": "drama/daming-strategy-02.html"}, {"strategy": "分而治之", "event": "嘉靖御下二十年", "figures": "嘉靖、严嵩、徐阶", "outcome": "朝局制衡", "source": "史实", "url": "drama/daming-strategy-03.html"}, {"strategy": "顺水推舟", "event": "严嵩固宠", "figures": "严嵩", "outcome": "终致倾覆", "source": "史实", "url": "drama/daming-strategy-04.html"}, {"strategy": "韬光养晦", "event": "徐阶倒严", "figures": "徐阶、严嵩", "outcome": "严党覆灭", "source": "史实", "url": "drama/daming-strategy-05.html"}, {"strategy": "将计就计", "event": "海瑞审通倭案", "figures": "海瑞、郑泌昌、何茂才", "outcome": "郑何落网", "source": "剧中设定", "url": "drama/daming-strategy-06.html"}];
+  const TABS    = [];     // [{key,label,field?,match?}] or []
+  const OPTIONS = {"pageSize": 10, "exportCSV": true, "search": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  // Support columnsSplit for dedicated split-mode columns
+  if (OPTIONS && OPTIONS.columnsSplit) {
+    COLUMNS._splitCols = OPTIONS.columnsSplit;
+  }
+
+  const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
+  const showExport = OPTIONS && OPTIONS.exportCSV;
+  const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
+  const showSearch = OPTIONS ? OPTIONS.search !== false : true;
+
+  let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
+  let selectedRows = {}, colVisibility = {};
+  // Restore column visibility from localStorage
+  try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
+  let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
+  let expandedIdx = -1;
+  let quickFilter = null;  // {key, value}
+
+  // Restore from localStorage
+  try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
+  try { clickMode = localStorage.getItem('html-gen:table:click-mode') || 'tab'; } catch(e) {}
+  try { splitRatio = parseFloat(localStorage.getItem('html-gen:table:split-ratio')) || 40; } catch(e) {}
+
+  /* ── Security: HTML escape ── */
+  function escapeHtml(text) {
+    var d = document.createElement('div');
+    d.textContent = text;
+    return d.innerHTML;
+  }
+
+  /* ── Visible columns (respects visibility toggle + split mode preview filter) ── */
+  function visibleCols(opts) {
+    opts = opts || {};
+    return COLUMNS.filter(function(c) {
+      if (opts.requireKey && !c.key) return false;
+      if (opts.excludeActions && c.type === 'actions') return false;
+      if (c.hide) return false;
+      if (colVisibility[c.key] === false) return false;
+      // split mode: use columnsSplit if defined, else preview filter
+      if (splitActive) {
+        if (COLUMNS._splitCols) {
+          return COLUMNS._splitCols.indexOf(c.key) !== -1;
+        }
+        var hasAnyPreview = COLUMNS.some(function(x) { return x.preview === true; });
+        if (hasAnyPreview && c.preview !== true) return false;
+      }
+      return true;
+    });
+  }
+
+  /* ── Tabs ── */
+  function buildTabs() {
+    const bar = document.getElementById('tabsBar');
+    if (!TABS || !TABS.length) { bar.innerHTML = ''; return; }
+    if (!activeTab) {
+      try { activeTab = localStorage.getItem('html-gen:table:tab'); } catch(e) {}
+      if (!activeTab || !TABS.find(function(t){return t.key===activeTab})) activeTab = TABS[0].key;
+    }
+    bar.innerHTML = TABS.map(function(t) {
+      var cnt = t.key === TABS[0].key ? DATA.length :
+        DATA.filter(function(row) { return matchTab(row, t); }).length;
+      return '<div class="tab-btn'+(t.key===activeTab?' active':'')+'" onclick="switchTab(\''+t.key+'\')">'+t.label+'<span class="count">'+cnt+'</span></div>';
+    }).join('');
+  }
+
+  function matchTab(row, tab) {
+    if (tab.match) return row[tab.match] === tab.key;
+    if (tab.contains) {
+      var val = row[tab.field || 'profiles'] || '';
+      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+    }
+    if (tab.field) return row[tab.field] === tab.key;
+    return (row.group || row.category || '') === tab.key;
+  }
+
+  /* ── Filter & Sort ── */
+  function applyFilters() {
+    var q = document.getElementById('searchInput').value.toLowerCase().trim();
+    filtered = DATA.slice();
+    // Tab filter
+    if (activeTab && TABS && TABS.length && activeTab !== TABS[0].key) {
+      var tab = TABS.find(function(t){return t.key===activeTab;});
+      if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
+    }
+    // Search filter
+    if (q) {
+      filtered = filtered.filter(function(row) {
+        return COLUMNS.some(function(col) {
+          if (col.type === 'actions') return false;
+          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        });
+      });
+    }
+    // Quick filter (cell click)
+    if (quickFilter) {
+      filtered = filtered.filter(function(row) {
+        return String(row[quickFilter.key] || '') === quickFilter.value;
+      });
+    }
+    // Sort (primary + secondary combined for stable ordering)
+    if (sortKey) {
+      var col = COLUMNS.find(function(c){return c.key===sortKey;});
+      var isNum = col && col.type === 'number';
+      var isDate = col && col.type === 'datetime';
+      var loc = col && col.locale;
+      var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
+      var isNum2 = col2 && col2.type === 'number';
+      var isDate2 = col2 && col2.type === 'datetime';
+      var loc2 = col2 && col2.locale;
+      filtered.sort(function(a, b) {
+        // Primary key
+        var va = a[sortKey], vb = b[sortKey];
+        if (va === undefined || va === null) va = '';
+        if (vb === undefined || vb === null) vb = '';
+        var cmp;
+        if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
+        else if (isDate) { va = Date.parse(va) || 0; vb = Date.parse(vb) || 0; cmp = va - vb; }
+        else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
+        if (cmp !== 0) return sortAsc ? cmp : -cmp;
+        // Secondary key (only when primary equal)
+        if (col2 && sortKey2 !== sortKey) {
+          var va2 = a[sortKey2], vb2 = b[sortKey2];
+          if (va2 === undefined || va2 === null) va2 = '';
+          if (vb2 === undefined || vb2 === null) vb2 = '';
+          var cmp2;
+          if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
+          else if (isDate2) { va2 = Date.parse(va2) || 0; vb2 = Date.parse(vb2) || 0; cmp2 = va2 - vb2; }
+          else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
+          return sortAsc2 ? cmp2 : -cmp2;
+        }
+        return 0;
+      });
+    }
+  }
+
+  /* ── Render ── */
+  function render() {
+    applyFilters();
+    if (!sortKey && TABS && TABS.length) {
+      // Default sort: keep original order within tab
+    }
+    updateStats();
+    var totalPages = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    if (currentPage > totalPages) currentPage = totalPages;
+    var start = (currentPage - 1) * PAGE_SIZE;
+    var pageData = filtered.slice(start, start + PAGE_SIZE);
+
+    var emptyEl = document.getElementById('emptyState');
+    if (filtered.length === 0) { emptyEl.style.display = 'block'; }
+    else { emptyEl.style.display = 'none'; }
+
+    var tbody = document.getElementById('tbody');
+    if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
+
+    var cols = visibleCols();
+    var frozenOffsets = [];
+    var fo = 0;
+    cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
+
+    tbody.innerHTML = pageData.map(function(row, pi) {
+      var rowIdx = start + pi;
+      var rowClass = [];
+      if (selectedRows[rowIdx]) rowClass.push('selected');
+      if (isRowClickable(row)) rowClass.push('clickable');
+      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
+      if (showRowSelect) {
+        rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
+      }
+      cols.forEach(function(col) {
+        if (col.type === 'actions') {
+          var stickyCls2 = col.stickyRight ? ' sticky-right' : '';
+          rowHtml += '<td style="white-space:nowrap" class="'+stickyCls2.trim()+'">'+renderActions(col, row)+'</td>';
+        } else {
+          var val = row[col.key];
+          if (col.type === 'pills') {
+              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
+              var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
+              var freezeCls = col.freeze ? ' frozen-col' : '';
+              var stickyCls = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              return;
+            }
+            if (col.render) val = col.render(val, row);
+          else if (col.escape) val = escapeHtml(String(val));
+          else if (val === undefined || val === null) val = '';
+          var freezeCls = col.freeze ? ' frozen-col' : '';
+          var stickyCls = col.stickyRight ? ' sticky-right' : '';
+          var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
+          var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
+          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
+          var tdOnclick = '';
+          if (col.onCellClick === 'split') {
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+          } else if (col.quickFilter !== false) {
+            tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          }
+          rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
+        }
+      });
+      rowHtml += '</tr>';
+      // Expand detail row (accordion mode)
+      if (expandedIdx === rowIdx) {
+        var detailCols = COLUMNS.filter(function(c) { return c.key && c.type !== 'actions' && colVisibility[c.key] !== false; });
+        rowHtml += '<tr class="expand-row"><td colspan="' + (showRowSelect ? cols.length + 1 : cols.length) + '">';
+        rowHtml += '<div class="expand-grid">';
+        detailCols.forEach(function(c) {
+          var v = row[c.key]; if (v === null || v === undefined) v = '';
+          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + escapeHtml(String(v)) + '</div></div>';
+        });
+        rowHtml += '</div></td></tr>';
+      }
+      return rowHtml;
+    }).join('');
+    renderPager(totalPages);
+  }
+
+  function renderActions(col, row) {
+    if (!col.actions) return '';
+    return col.actions.map(function(act) {
+      var onclick = '';
+      if (act.copyKey) {
+        onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
+      } else if (act.hrefKey) {
+        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '').replace(/"/g, '&quot;') + ',"_blank","noopener,noreferrer")';
+      } else if (act.handler) {
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
+      } else if (act.desc) {
+        onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
+      }
+      return '<button class="action-btn ' + (act.class||'') + '" onclick=\'' + onclick + '\' title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
+    }).join('');
+  }
+
+  /* ── Demo action: show description toast ── */
+  window.showDemoAction = function(msg) {
+    showToast(msg);
+  };
+
+  function escapeAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+  function getRowClickCol() {
+    return COLUMNS.find(function(c){return c.onClick;});
+  }
+
+  function isRowClickable(row) {
+    if (clickMode === 'tab') {
+      var col = getRowClickCol();
+      return col && col.onClick === 'url' && row.url;
+    }
+    // modal, split, or expand: any row is clickable
+    return clickMode === 'modal' || clickMode === 'split' || clickMode === 'expand';
+  }
+
+  /* ── Stats ── */
+  function updateStats() {
+    document.getElementById('statTotal').textContent = DATA.length;
+    var fp = document.getElementById('statFilteredPill');
+    if (filtered.length !== DATA.length || quickFilter) {
+      fp.style.display = 'inline-flex';
+      document.getElementById('statFiltered').textContent = filtered.length;
+    } else { fp.style.display = 'none'; }
+    var sp = document.getElementById('statSelectedPill');
+    if (showRowSelect) {
+      var cnt = Object.keys(selectedRows).length;
+      sp.style.display = cnt > 0 ? 'inline-flex' : 'none';
+      document.getElementById('statSelected').textContent = cnt;
+    }
+    // Quick filter pill
+    var qfEl = document.getElementById('quickFilterPill');
+    if (quickFilter) {
+      qfEl.style.display = 'inline-flex';
+      var col = COLUMNS.find(function(c){return c.key===quickFilter.key;});
+      qfEl.innerHTML = (col ? col.label : quickFilter.key) + ': ' + escapeHtml(quickFilter.value) + '<span class="fp-close" onclick="event.stopPropagation();clearQuickFilter()">✕</span>';
+      qfEl.onclick = function() { clearQuickFilter(); };
+    } else {
+      qfEl.style.display = 'none';
+    }
+  }
+
+  window.quickFilterBy = function(key, value) {
+    if (quickFilter && quickFilter.key === key && quickFilter.value === value) {
+      quickFilter = null;  // toggle off
+    } else {
+      quickFilter = {key: key, value: value};
+    }
+    expandedIdx = -1;
+    currentPage = 1;
+    render();
+  };
+
+  window.clearQuickFilter = function() {
+    quickFilter = null;
+    currentPage = 1;
+    render();
+  };
+
+  /* ── Pagination ── */
+  function renderPager(totalPages) {
+    var el = document.getElementById('pager');
+    if (totalPages <= 1) { el.innerHTML = ''; return; }
+    var h = '<button class="btn btn-ghost btn-sm" onclick="goPage(1)"'+(currentPage===1?' disabled':'')+'>‹‹</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage-1)+')"'+(currentPage===1?' disabled':'')+'>‹</button>';
+    h += '<span class="text-xs text-gray" style="margin:0 8px;">'+currentPage+' / '+totalPages+'</span>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+(currentPage+1)+')"'+(currentPage===totalPages?' disabled':'')+'>›</button>';
+    h += '<button class="btn btn-ghost btn-sm" onclick="goPage('+totalPages+')\"'+(currentPage===totalPages?' disabled':'')+'>››</button>';
+    el.innerHTML = h;
+  }
+
+  window.goPage = function(n) {
+    var tp = Math.max(1, Math.ceil(filtered.length / PAGE_SIZE));
+    currentPage = Math.max(1, Math.min(n, tp));
+    expandedIdx = -1;
+    render();
+  };
+
+  /* ── Sort ── */
+  function initThead() {
+    var thead = document.getElementById('thead');
+    var cols = visibleCols();
+    // Ensure every column has an explicit width (Cinema-disciplined model)
+    cols.forEach(function(c) {
+      if (!c.width) c.width = c.type === 'actions' ? '100px' : '120px';
+    });
+    var frozenOffset = 0;
+    var frozenStyles = [];
+    cols.forEach(function(c) {
+      var w = c.width ? parseInt(c.width) : 120;
+      if (c.freeze) { frozenStyles.push('left:' + frozenOffset + 'px'); frozenOffset += w; }
+      else { frozenStyles.push(''); }
+    });
+    thead.innerHTML = '<tr>' +
+      (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
+      cols.map(function(c, ci) {
+        var sortCls = '';
+        if (c.sortable !== false && c.type !== 'actions') { sortCls = ' sortable'; if (sortKey === c.key) sortCls += sortAsc ? ' sort-asc' : ' sort-desc'; if (sortKey2 === c.key) sortCls += ' sort-asc'; }
+        var freezeCls = c.freeze ? ' frozen-col' : '';
+        var stickyCls = c.stickyRight ? ' sticky-right' : '';
+        var freezeStyle = frozenStyles[ci] ? ' style="' + frozenStyles[ci] + '"' : '';
+        return '<th class="' + sortCls + freezeCls + stickyCls + '"' + (c.sortable !== false ? ' onclick="sortBy(\'' + c.key + '\',event)"' : '') +
+          ' style="width:' + c.width + '"' + freezeStyle + '>' + c.label + (columnResize ? '<span class="resize-handle" onmousedown="startResize(event,\'' + c.key + '\')"></span>' : '') + '</th>';
+      }).join('') + '</tr>';
+  }
+
+  var sortKey2 = '', sortAsc2 = true;
+  window.sortBy = function(key, event) {
+    if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
+    else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
+    expandedIdx = -1; initThead(); render();
+  };
+
+  /* ── Row selection ── */
+  window.toggleRow = function(idx) {
+    if (selectedRows[idx]) delete selectedRows[idx]; else selectedRows[idx] = true;
+    updateStats();
+    render();
+  };
+  window.toggleAll = function(e) {
+    var checked = e.target.checked;
+    var start = (currentPage - 1) * PAGE_SIZE;
+    for (var i = start; i < start + PAGE_SIZE && i < filtered.length; i++) {
+      if (checked) selectedRows[i] = true; else delete selectedRows[i];
+    }
+    updateStats();
+    render();
+  };
+
+  /* ── Row click ── */
+  function handleRowClick(idx) {
+    var row = filtered[idx];
+    // tab mode: open in new tab (default)
+    if (clickMode === 'tab') {
+      var col = getRowClickCol();
+      if (!col || col.onClick !== 'url' || !row.url) return;
+      window.open(row.url, '_blank', 'noopener,noreferrer');
+      return;
+    }
+    // modal mode: show popup
+    if (clickMode === 'modal') {
+      showModal(row);
+      return;
+    }
+    // split mode: show preview panel
+    if (clickMode === 'split') {
+      activateSplit(row, idx);
+      return;
+    }
+    // expand mode: toggle inline detail
+    if (clickMode === 'expand') {
+      if (expandedIdx === idx) {
+        expandedIdx = -1;  // collapse
+      } else {
+        expandedIdx = idx;  // expand
+      }
+      render();
+      return;
+    }
+  }
+  window.handleRowClick = handleRowClick;
+
+  /* ── Modal Panel ── */
+  function showModal(row) {
+    var cols = visibleCols({requireKey: true, excludeActions: true});
+    var title = row[cols[0] && cols[0].key] || '详情';
+    var html = '<div style="position:relative"><button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;">✕</button><h3>'+escapeHtml(String(title))+'</h3>';
+    html += cols.map(function(c) {
+      var v = row[c.key]; if (v === null || v === undefined) v = '';
+      return '<div class="modal-field"><span class="mf-label">'+escapeHtml(c.label)+'</span><span class="mf-value">'+escapeHtml(String(v))+'</span></div>';
+    }).join('');
+    html += '</div>';
+    document.getElementById('modalPanel').innerHTML = html;
+    document.getElementById('modalOverlay').classList.add('active');
+  }
+  window.showModal = showModal;
+  window.closeModal = function() { document.getElementById('modalOverlay').classList.remove('active'); };
+
+  // Generic action handlers for modal/split via action buttons
+  window.skillModal = function(event, row) { showModal(row); };
+  window.skillSplit = function(event, row) {
+    // Find row index in filtered data for highlight
+    for (var i = 0; i < filtered.length; i++) {
+      if (filtered[i].name === row.name) { activateSplit(row, i); return; }
+    }
+    activateSplit(row, 0);
+  };
+
+  /* ── Skills-specific modal & split renderers ── */
+  if (OPTIONS && OPTIONS.modalRenderer === 'skills') {
+    window.skillModal = function(event, row) {
+      var h = '<div style="position:relative">';
+      h += '<button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;background:none;border:none;color:#6b7280;font-size:1.2rem;cursor:pointer;z-index:1">✕</button>';
+      h += '<h3 style="margin:0 0 14px;font-size:0.95rem;color:#f0f0f0">📋 Skill 详细信息</h3>';
+
+      // Fields
+      var fields = [
+        {label:'名称', value: row.name},
+        {label:'分类', value: row.category},
+        {label:'作者', value: row.author || '-'},
+        {label:'描述', value: row.description || '-'},
+      ];
+      fields.forEach(function(f) {
+        h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+        h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">'+escapeHtml(f.label)+'</span>';
+        h += '<span style="color:#e0e0e0;word-break:break-all">'+escapeHtml(String(f.value))+'</span>';
+        h += '</div>';
+      });
+
+      // Tags — computed from name words
+      var tags = (row.name||'').split(/[-_]/).filter(function(s){return s.length>1;});
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">标签</span>';
+      h += '<span>';
+      tags.forEach(function(t) {
+        h += '<span style="display:inline-block;padding:1px 6px;border-radius:9999px;font-size:0.62rem;background:rgba(79,70,229,0.12);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.2);margin:1px">'+escapeHtml(t)+'</span>';
+      });
+      h += '</span></div>';
+
+      // Version — tag style
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">版本</span>';
+      h += '<span style="display:inline-block;padding:1px 8px;border-radius:9999px;font-size:0.65rem;background:rgba(251,191,36,0.15);color:#fbbf24;border:1px solid rgba(251,191,36,0.3)">'+escapeHtml(row.version||'-')+'</span>';
+      h += '</div>';
+
+      // Path with copy button
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">路径</span>';
+      h += '<span style="color:#e0e0e0;font-size:0.7rem;word-break:break-all;flex:1">'+escapeHtml(row.skill_path||'')+'</span>';
+      h += '<span onclick="event.stopPropagation();copyAction(\''+(row.skill_path||'').replace(/'/g,"\\'")+'\')" style="cursor:pointer;font-size:0.8rem;flex-shrink:0" title="拷贝路径">📋</span>';
+      h += '</div>';
+
+      // Profiles — tag style
+      var profiles = (row.profiles||'').split(/,\\s*/).filter(Boolean);
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">所属 Profile</span>';
+      h += '<span>';
+      profiles.forEach(function(p) {
+        h += '<span style="display:inline-block;padding:1px 6px;border-radius:9999px;font-size:0.62rem;background:rgba(79,70,229,0.12);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.2);margin:1px">'+escapeHtml(p)+'</span>';
+      });
+      h += '</span></div>';
+
+      // Chinese content & scripts
+      var hasChinese = /[\u4e00-\u9fff]/.test(row.description||'') ? '✅ 是' : '❌ 否';
+      var hasScript = (row.file_count||0) > 1 ? '✅ 是' : '❌ 否';
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">中文内容</span>';
+      h += '<span style="color:#e0e0e0">'+hasChinese+'</span>';
+      h += '</div>';
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">有脚本</span>';
+      h += '<span style="color:#e0e0e0">'+hasScript+'</span>';
+      h += '</div>';
+
+      // File count
+      h += '<div style="padding:5px 0;border-bottom:1px solid #1a1a2e;font-size:0.78rem;display:flex;gap:10px">';
+      h += '<span style="color:#6b7280;min-width:60px;flex-shrink:0">文件数</span>';
+      h += '<span style="color:#e0e0e0">'+escapeHtml(String(row.file_count||0))+'</span>';
+      h += '</div>';
+
+      h += '</div>';
+      document.getElementById('modalPanel').innerHTML = h;
+      document.getElementById('modalOverlay').classList.add('active');
+    };
+
+    window.skillSplit = function(event, row) {
+      for (var i = 0; i < filtered.length; i++) {
+        if (filtered[i].name === row.name) { showSkillSplit(row, i); return; }
+      }
+      showSkillSplit(row, 0);
+    };
+
+    function showSkillSplit(row, idx) {
+      splitRow = row; splitIdx = idx;
+      splitActive = true;
+      var wrapper = document.querySelector('.wrapper');
+      wrapper.classList.add('split-mode');
+      initThead();
+      render();
+      // Render SKILL.md content
+      var header = document.getElementById('splitPreviewHeader');
+      header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
+        '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
+        ' ' + escapeHtml(row.name||'详情') +
+        '<button class="sp-close" onclick="closeSplit()">✕</button>';
+      var body = document.getElementById('splitPreviewBody');
+      body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280">⏳ 加载中...</div>';
+      // Try to fetch SKILL.md
+      var mdUrl = '/skills/' + encodeURIComponent(row.category) + '/' + encodeURIComponent(row.name) + '/SKILL.md';
+      fetch(mdUrl).then(function(resp) {
+        if (resp.ok) return resp.text();
+        throw new Error('HTTP ' + resp.status);
+      }).then(function(text) {
+        // Simple markdown → HTML
+        var html = text
+          .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+          .replace(/^### (.+)$/gm,'<h3 style="margin:1em 0 0.4em;font-size:0.85rem;color:#e0e0e0">$1</h3>')
+          .replace(/^## (.+)$/gm,'<h2 style="margin:1.2em 0 0.5em;font-size:0.95rem;color:#f0f0f0">$1</h2>')
+          .replace(/^# (.+)$/gm,'<h1 style="margin:1.4em 0 0.6em;font-size:1.1rem;color:#f0f0f0">$1</h1>')
+          .replace(/`([^`]+)`/g,'<code style="background:#1a1a2e;padding:1px 4px;border-radius:3px;font-size:0.7rem">$1</code>')
+          .replace(/\*\*(.+?)\*\*/g,'<b>$1</b>')
+          .replace(/\*(.+?)\*/g,'<i>$1</i>')
+          .replace(/^\- (.+)$/gm,'<li style="margin-left:16px">$1</li>')
+          .replace(/\n/g,'<br>');
+        body.innerHTML = '<div style="font-size:0.75rem;line-height:1.7;color:#b0b0c0;padding:8px 0">'+html+'</div>';
+      }).catch(function(err) {
+        body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:0.75rem">⚠ 无法加载 SKILL.md<br><span style="font-size:0.62rem">'+escapeHtml(mdUrl)+'</span><br><span style="font-size:0.62rem">'+escapeHtml(err.message)+'</span></div>';
+      });
+      // Highlight
+      var tbody = document.getElementById('tbody');
+      var rows = tbody.querySelectorAll('tr');
+      rows.forEach(function(r){ r.classList.remove('split-active'); });
+      if (rows[idx]) rows[idx].classList.add('split-active');
+    }
+  }
+
+  // Esc closes modal
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && document.getElementById('modalOverlay').classList.contains('active')) {
+      closeModal();
+    }
+  });
+
+  /* ── Split View ── */
+  var splitRow = null, splitIdx = -1;
+  function activateSplit(row, idx) {
+    splitRow = row; splitIdx = idx;
+    splitActive = true;
+    var wrapper = document.querySelector('.wrapper');
+    wrapper.classList.add('split-mode');
+    initThead();
+    render();  // re-render with preview-only cols
+    renderSplitPreview(row);
+    // highlight active row
+    var tbody = document.getElementById('tbody');
+    var rows = tbody.querySelectorAll('tr');
+    rows.forEach(function(r){ r.classList.remove('split-active'); });
+    if (rows[idx]) rows[idx].classList.add('split-active');
+  }
+  window.activateSplit = activateSplit;
+  window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
+  window.splitNav = function(dir) {
+    var newIdx = splitIdx + dir;
+    if (newIdx < 0 || newIdx >= filtered.length) return;
+    activateSplit(filtered[newIdx], newIdx);
+  };
+  window.closeSplit = function() {
+    splitActive = false;
+    var wrapper = document.querySelector('.wrapper');
+    wrapper.classList.remove('split-mode');
+    splitRow = null; splitIdx = -1;
+    initThead();
+    render();
+    // clear highlight
+    var rows = document.getElementById('tbody').querySelectorAll('tr');
+    rows.forEach(function(r){ r.classList.remove('split-active'); });
+  };
+
+  function renderSplitPreview(row) {
+    var header = document.getElementById('splitPreviewHeader');
+    var body = document.getElementById('splitPreviewBody');
+    // title from first column
+    var titleCol = visibleCols({requireKey: true})[0];
+    header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
+      '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
+      ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+      '<button class="sp-close" onclick="closeSplit()">✕</button>';
+
+    // render: url → iframe, desc → textContent, else kv-list
+    if (row.url) {
+      body.innerHTML = '<iframe src="'+escapeHtml(String(row.url))+'" sandbox="allow-same-origin"></iframe>';
+    } else if (row.desc) {
+      var d = document.createElement('div');
+      d.textContent = row.desc;
+      body.innerHTML = '';
+      body.appendChild(d);
+    } else {
+      var cols = visibleCols({requireKey: true, excludeActions: true});
+      body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
+        var v = row[c.key]; if (v === null || v === undefined) v = '';
+        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+      }).join('')+'</div>';
+    }
+  }
+
+  /* ── Split drag ── */
+  function initSplitDrag() {
+    var drag = document.getElementById('splitDrag');
+    var wrapper = document.querySelector('.wrapper');
+    var isDragging = false;
+
+    drag.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      isDragging = true;
+      drag.classList.add('active');
+      document.addEventListener('mousemove', onDrag);
+      document.addEventListener('mouseup', onDragEnd);
+    });
+
+    function onDrag(e) {
+      if (!isDragging) return;
+      var rect = wrapper.getBoundingClientRect();
+      var ratio = ((e.clientX - rect.left) / rect.width) * 100;
+      ratio = Math.max(25, Math.min(75, ratio));
+      splitRatio = ratio;
+      wrapper.style.setProperty('--spl-ratio', ratio+'%');
+      try { localStorage.setItem('html-gen:table:split-ratio', ratio); } catch(e) {}
+    }
+
+    function onDragEnd() {
+      isDragging = false;
+      drag.classList.remove('active');
+      document.removeEventListener('mousemove', onDrag);
+      document.removeEventListener('mouseup', onDragEnd);
+    }
+  }
+
+  /* ── Ratio Presets ── */
+  var RATIOS = [
+    {key:'100',label:'仅表格',   tc:'1',rp:'0'},
+    {key:'37',label:'3:7 紧凑',  tc:'3',rp:'7'},
+    {key:'46',label:'4:6 标准',  tc:'4',rp:'6'},
+    {key:'55',label:'5:5 平分',  tc:'5',rp:'5'},
+    {key:'64',label:'6:4 宽屏',  tc:'6',rp:'4'},
+  ];
+  var _currentRatioKey = '46';
+
+  function applyRatioPreset(key) {
+    _currentRatioKey = key;
+    try { localStorage.setItem('html-gen:table:ratio-preset', key); } catch(e) {}
+    var r = RATIOS.find(function(x){return x.key===key;});
+    if (!r) return;
+    if (key === '100') {
+      closeSplit();
+    } else {
+      splitRatio = parseInt(r.tc) / (parseInt(r.tc) + parseInt(r.rp)) * 100;
+      document.querySelector('.wrapper').style.setProperty('--spl-ratio', splitRatio+'%');
+      try { localStorage.setItem('html-gen:table:split-ratio', splitRatio); } catch(e) {}
+    }
+    renderRatioDropdown();
+  }
+
+  function renderRatioDropdown() {
+    var el = document.getElementById('ratioDropdown');
+    if (!el) return;
+    var cur = _currentRatioKey;
+    el.innerHTML = RATIOS.map(function(r) {
+      return '<div class="ratio-opt'+(r.key===cur?' active':'')+'" onclick="event.stopPropagation();applyRatioPreset(\''+r.key+'\')">'+r.label+(r.key===cur?' ✔':'')+'</div>';
+    }).join('');
+  }
+
+  window.toggleRatioDropdown = function() {
+    var el = document.getElementById('ratioDropdown');
+    if (!el) return;
+    renderRatioDropdown();
+    el.classList.toggle('show');
+    document.getElementById('colToggleDropdown').classList.remove('show');
+  };
+
+  try { _currentRatioKey = localStorage.getItem('html-gen:table:ratio-preset') || '46'; } catch(e) {}
+  window.applyRatioPreset = applyRatioPreset;
+
+  /* ── Density ── */
+  function applyDensity() {
+    var table = document.querySelector('.data-table');
+    table.classList.remove('dense', 'comfortable');
+    if (density === 'compact') table.classList.add('dense');
+    else if (density === 'comfortable') table.classList.add('comfortable');
+  }
+
+  /* ── Actions ── */
+  window.copyAction = function(text) {
+    try {
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(function(){showToast('已复制: '+text);});
+      } else {
+        var ta = document.createElement('textarea');
+        ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+        document.body.appendChild(ta); ta.select();
+        document.execCommand('copy'); document.body.removeChild(ta);
+        showToast('已复制: '+text);
+      }
+    } catch(e) { showToast('复制失败'); }
+  };
+
+  /* ── Column visibility ── */
+  var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
+  function listPresets() {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    return presets;
+  }
+
+  function initColToggle() {
+    var dd = document.getElementById('colToggleDropdown');
+    var html = '';
+
+    // density section — visible when split/modal available
+    var clickModes = (OPTIONS && OPTIONS.clickModes) ||
+                     (OPTIONS && OPTIONS.clickMode ? [OPTIONS.clickMode] : null) ||
+                     ['tab'];
+    var validModes = clickModes;
+    // Also set default clickMode from singular if no plural
+    if (OPTIONS && OPTIONS.clickMode && !OPTIONS.clickModes) {
+      clickMode = OPTIONS.clickMode;
+      try { localStorage.setItem('html-gen:table:click-mode', OPTIONS.clickMode); } catch(e) {}
+    }
+    var hasSplit = validModes.indexOf('split') !== -1;
+    var hasModal = validModes.indexOf('modal') !== -1;
+    var hasExpand = validModes.indexOf('expand') !== -1;
+    var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
+    if (tabCount > 1 || density !== 'default') {
+      html += '<div class="settings-section">密度</div>';
+      html += '<div style="display:flex;gap:4px;padding:4px 8px">';
+      ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
+        var parts = item.split(':');
+        var active = density===parts[0];
+        html += '<label class="settings-radio" style="flex:1;text-align:center;padding:3px 6px;border-radius:4px;cursor:pointer;font-size:0.68rem;'+(active?'background:rgba(79,70,229,0.2);color:var(--cobalt-400);border:1px solid rgba(79,70,229,0.3)':'color:#9ca3af')+'"><input type="radio" name="density" value="'+parts[0]+'" '+(active?'checked':'')+' onchange="setDensity(\''+parts[0]+'\')" style="display:none">'+parts[1]+'</label>';
+      });
+      html += '</div>';
+    }
+
+    // click mode section
+    if (tabCount > 1) {
+      html += '<div class="col-toggle-divider"></div><div class="settings-section">点击模式</div>';
+      if (validModes.indexOf('tab') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="tab" '+(clickMode==='tab'?'checked':'')+' onchange="setClickMode(\'tab\')">🔗 新标签页</label>';
+      if (validModes.indexOf('modal') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="modal" '+(clickMode==='modal'?'checked':'')+' onchange="setClickMode(\'modal\')">📋 弹出面板</label>';
+      if (validModes.indexOf('split') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="split" '+(clickMode==='split'?'checked':'')+' onchange="setClickMode(\'split\')">📑 分栏预览</label>';
+      if (validModes.indexOf('expand') !== -1) html += '<label class="settings-radio"><input type="radio" name="clickMode" value="expand" '+(clickMode==='expand'?'checked':'')+' onchange="setClickMode(\'expand\')">📂 行内展开</label>';
+    }
+
+    // column visibility
+    html += '<div class="col-toggle-divider"></div>';
+    html += '<div style="display:flex;justify-content:space-between;align-items:center;padding:2px 12px"><span class="settings-section" style="padding:0">列可见性</span><span onclick="document.getElementById(\'colToggleDropdown\').classList.remove(\'show\')" style="cursor:pointer;font-size:0.8rem;color:#6b7280" title="关闭">✕</span></div>';
+    html += COLUMNS.filter(function(c){return c.key && c.type !== 'actions';}).map(function(c) {
+      var visible = colVisibility[c.key] !== false;
+      return '<label><input type="checkbox" '+(visible?'checked':'')+' onchange="toggleCol(\''+c.key+'\',this.checked)">'+c.label+'</label>';
+    }).join('');
+
+    // view presets
+    var presets = listPresets();
+    if (presets.length > 0) {
+      html += '<div class="col-toggle-divider"></div><div class="settings-section">视图预设 (' + presets.length + '/' + MAX_PRESETS + ')</div>';
+      presets.forEach(function(p) {
+        html += '<label style="display:flex;justify-content:space-between;align-items:center"><span onclick="loadPreset(\'' + p.name + '\')" style="cursor:pointer;flex:1">' + escapeHtml(p.name) + '</span><span onclick="event.stopPropagation();deletePreset(\'' + p.name + '\')" style="cursor:pointer;color:#f87171;font-size:0.65rem">✕</span></label>';
+      });
+    }
+    html += '<label style="font-size:0.65rem"><a href="#" onclick="event.preventDefault();var n=prompt(\'预设名称:\');if(n)savePreset(n)" style="color:var(--cobalt-400)">+ 保存当前视图</a></label>';
+
+    dd.innerHTML = html;
+    dd.onclick = function(e) { e.stopPropagation(); };
+    document.getElementById('colToggleBtn').onclick = function(e) {
+      e.stopPropagation();
+      dd.classList.toggle('show');
+    };
+    document.addEventListener('click', function() { dd.classList.remove('show'); });
+  }
+  window.initColToggle = initColToggle;
+
+  window.toggleCol = function(key, visible) {
+    colVisibility[key] = visible;
+    expandedIdx = -1;
+    try { localStorage.setItem('html-gen:table:col-visibility', JSON.stringify(colVisibility)); } catch(e) {}
+    // Preserve dropdown open state across rebuild
+    var dd = document.getElementById('colToggleDropdown');
+    var wasOpen = dd.classList.contains('show');
+    initColToggle();
+    if (wasOpen) document.getElementById('colToggleDropdown').classList.add('show');
+    initThead();
+    render();
+  };
+
+  window.setDensity = function(val) {
+    density = val;
+    try { localStorage.setItem('html-gen:table:density', val); } catch(e) {}
+    applyDensity();
+    initColToggle();
+  };
+
+  window.setClickMode = function(val) {
+    clickMode = val;
+    expandedIdx = -1;
+    try { localStorage.setItem('html-gen:table:click-mode', val); } catch(e) {}
+    var dd = document.getElementById('colToggleDropdown');
+    var wasOpen = dd.classList.contains('show');
+    initColToggle();
+    if (wasOpen) document.getElementById('colToggleDropdown').classList.add('show');
+    render();
+  };
+
+  /* ── Search (real-time debounced) ── */
+  var searchTimer;
+  document.getElementById('searchInput').addEventListener('input', function() {
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); }, 300);
+  });
+  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); };
+
+  /* ── Tab switch ── */
+  window.switchTab = function(key) {
+    activeTab = key;
+    try { localStorage.setItem('html-gen:table:tab', key); } catch(e) {}
+    expandedIdx = -1;
+    buildTabs();
+    currentPage = 1;
+    render();
+  };
+
+  /* ── CSV Export ── */
+  function initExport() {
+    var btn = document.getElementById('exportBtn');
+    if (!showExport) return;
+    btn.style.display = 'inline-flex';
+    btn.onclick = function() {
+      var cols = visibleCols({excludeActions: true});
+      var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
+      var rows = filtered.map(function(row) {
+        return cols.map(function(c) {
+          var v = row[c.key]; if (v === null || v === undefined) v = '';
+          return '"'+String(v).replace(/"/g,'""')+'"';
+        }).join(',');
+      });
+      var csv = '\uFEFF' + header + '\n' + rows.join('\n');
+      var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+      var url = URL.createObjectURL(blob);
+      var a = document.createElement('a');
+      a.href = url; a.download = 'export.csv'; a.click();
+      URL.revokeObjectURL(url);
+      showToast('已导出 '+filtered.length+' 条');
+    };
+  }
+
+  /* ── Toast ── */
+  var _toastTimer;
+  function showToast(msg) {
+    var el = document.getElementById('toast');
+    el.textContent = msg; el.classList.add('show');
+    clearTimeout(_toastTimer);
+    _toastTimer = setTimeout(function(){el.classList.remove('show');}, 2500);
+  }
+  window.showToast = showToast;
+
+  /* ── Column resize ── */
+  var COL_WIDTHS_KEY = 'html-gen:table:col-widths';
+  var _resizeCol, _resizeStartX, _resizeStartW, _resizeTh;
+  window.startResize = function(e, key) {
+    e.stopPropagation(); e.preventDefault();
+    _resizeCol = key;
+    _resizeStartX = e.clientX;
+    _resizeTh = e.target.parentElement;
+    _resizeStartW = _resizeTh.offsetWidth;
+    document.addEventListener('mousemove', onResizeMove);
+    document.addEventListener('mouseup', onResizeUp);
+  };
+  function onResizeMove(e) {
+    if (!_resizeCol) return;
+    var delta = e.clientX - _resizeStartX;
+    var newW = Math.max(40, _resizeStartW + delta);
+    // Direct DOM update (no full thead rebuild — avoids flicker)
+    if (_resizeTh) _resizeTh.style.width = newW + 'px';
+  }
+  function onResizeUp() {
+    if (_resizeCol && _resizeTh) {
+      var newW = _resizeTh.offsetWidth;
+      var col = COLUMNS.find(function(c){return c.key===_resizeCol;});
+      if (col) col.width = newW + 'px';
+      // Persist to localStorage
+      try {
+        var saved = {};
+        COLUMNS.forEach(function(c) { if (c.width) saved[c.key] = c.width; });
+        localStorage.setItem(COL_WIDTHS_KEY, JSON.stringify(saved));
+      } catch(e) {}
+    }
+    _resizeCol = null;
+    _resizeTh = null;
+    document.removeEventListener('mousemove', onResizeMove);
+    document.removeEventListener('mouseup', onResizeUp);
+  }
+
+  /* ── Debug: Print column widths ── */
+  window.printColWidths = function() {
+    var ths = document.querySelectorAll('.data-table th');
+    var widths = [];
+    for (var i = 0; i < ths.length; i++) {
+      var th = ths[i];
+      var cs = window.getComputedStyle(th);
+      widths.push({ label: th.textContent.trim() || '(checkbox)', width: cs.width });
+    }
+    console.table(widths);
+    return widths;
+  };
+
+  /* ── Init ── */
+  function init() {
+    // Restore saved column widths
+    try {
+      var savedWidths = localStorage.getItem(COL_WIDTHS_KEY);
+      if (savedWidths) {
+        var wmap = JSON.parse(savedWidths);
+        COLUMNS.forEach(function(c) { if (wmap[c.key]) c.width = wmap[c.key]; });
+      }
+    } catch(e) {}
+    // Restore saved split ratio
+    var wrapper = document.querySelector('.wrapper');
+    wrapper.style.setProperty('--spl-ratio', splitRatio+'%');
+
+    // Search visibility
+    if (!showSearch) document.getElementById('searchInput').style.display = 'none';
+    initColToggle();
+    initExport();
+    buildTabs();
+    initThead();
+    applyDensity();
+    render();
+    initSplitDrag();
+  }
+  init();
+
+  /* ═══════════════════════════════════════════
+     Quick Search — Cmd+F overlay
+     ═══════════════════════════════════════════ */
+  var quickSearch = {
+    overlay: document.getElementById('qsOverlay'),
+    input: document.getElementById('qsInput'),
+    active: false,
+
+    open: function() {
+      if (!showSearch) return;
+      // Copy current header search value to popup
+      this.input.value = document.getElementById('searchInput').value;
+      this.overlay.classList.add('active');
+      this.active = true;
+      this.updateMatchCount();
+      setTimeout(function() { quickSearch.input.focus(); quickSearch.input.select(); }, 80);
+    },
+
+    close: function() {
+      // Sync popup value back to header (don't trigger search)
+      document.getElementById('searchInput').value = this.input.value;
+      this.overlay.classList.remove('active');
+      this.active = false;
+    },
+
+    submit: function() {
+      // Sync + trigger search
+      document.getElementById('searchInput').value = this.input.value;
+      this.overlay.classList.remove('active');
+      this.active = false;
+      currentPage = 1;
+      render();
+    },
+
+    updateMatchCount: function() {
+      var el = document.getElementById('qsMatchCount');
+      if (!el) return;
+      var q = this.input.value.toLowerCase().trim();
+      if (!q) { el.textContent = ''; return; }
+      var cnt = DATA.filter(function(row) {
+        return COLUMNS.some(function(col) {
+          if (col.type === 'actions') return false;
+          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        });
+      }).length;
+      el.textContent = '匹配 ' + cnt + ' 条';
+    }
+  };
+
+  // Input: live match count update (no header sync)
+  window.qsOnInput = function() {
+    quickSearch.updateMatchCount();
+  };
+
+  // Keyboard: Enter/Esc handling inside popup
+  window.qsHandleKey = function(e) {
+    if (e.key === 'Enter') { e.preventDefault(); quickSearch.submit(); }
+    else if (e.key === 'Escape') { e.preventDefault(); quickSearch.close(); }
+  };
+
+  // Global keyboard shortcuts
+  document.addEventListener('keydown', function(e) {
+    // Cmd+F / Ctrl+F
+    if ((e.metaKey || e.ctrlKey) && e.key === 'f') {
+      if (!showSearch) return;
+      e.preventDefault();
+      quickSearch.open();
+    }
+    // Esc when overlay active
+    if (e.key === 'Escape' && quickSearch.active) {
+      quickSearch.close();
+    }
+  });
+
+  /* ── Keyboard Navigation ── */
+  var kbFocusIdx = -1;
+  document.addEventListener('keydown', function(e) {
+    // Only when not in input
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    var tbody = document.getElementById('tbody');
+    var rows = tbody.querySelectorAll('tr:not(.expand-row)');
+    if (!rows.length) return;
+    var pageRows = rows.length;
+    if (e.key === 'ArrowDown') { e.preventDefault(); kbFocusIdx = kbFocusIdx < 0 ? 0 : Math.min(pageRows - 1, kbFocusIdx + 1); highlightKbRow(rows); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); kbFocusIdx = kbFocusIdx < 0 ? pageRows - 1 : Math.max(0, kbFocusIdx - 1); highlightKbRow(rows); }
+    else if (e.key === 'Enter' && kbFocusIdx >= 0) { e.preventDefault(); var r = rows[kbFocusIdx]; if (r) r.click(); }
+  });
+  function highlightKbRow(rows) {
+    rows.forEach(function(r, i) { r.classList.toggle('keyboard-focus', i === kbFocusIdx); });
+    if (kbFocusIdx >= 0 && rows[kbFocusIdx]) rows[kbFocusIdx].scrollIntoView({block:'nearest'});
+  }
+
+  /* ── Batch Operations ── */
+  function updateBatchBar() {
+    if (!showRowSelect) return;
+    var cnt = Object.keys(selectedRows).length;
+    var bar = document.getElementById('batchBar');
+    bar.classList.toggle('active', cnt > 0);
+    document.getElementById('batchCount').textContent = '已选 ' + cnt + ' 条';
+  }
+  var origUpdateStats = updateStats;
+  updateStats = function() { origUpdateStats(); updateBatchBar(); };
+  window.selectAllFiltered = function() { filtered.forEach(function(r, i) { selectedRows[i] = true; }); render(); };
+  window.clearSelection = function() { selectedRows = {}; kbFocusIdx = -1; render(); };
+  window.exportSelectedCSV = function() {
+    var selected = Object.keys(selectedRows).map(function(i) { return filtered[parseInt(i)]; }).filter(Boolean);
+    if (!selected.length) { showToast('未选中任何行'); return; }
+    var cols = visibleCols({excludeActions: true});
+    var csv = '\uFEFF' + cols.map(function(c){return '"'+c.label+'"';}).join(',') + '\n' +
+      selected.map(function(r){ return cols.map(function(c){ var v = r[c.key]||''; return '"'+String(v).replace(/"/g,'""')+'"'; }).join(','); }).join('\n');
+    var blob = new Blob([csv], {type:'text/csv;charset=utf-8'});
+    var a = document.createElement('a'); a.href = URL.createObjectURL(blob); a.download = 'selected.csv'; a.click();
+    showToast('已导出 ' + selected.length + ' 条');
+  };
+
+  /* ── Fullscreen ── */
+  window.toggleFullscreen = function() {
+    document.querySelector('.wrapper').classList.toggle('fullscreen');
+    showToast(document.querySelector('.wrapper').classList.contains('fullscreen') ? '已进入全屏 (F 退出)' : '已退出全屏');
+  };
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'f' && !e.metaKey && !e.ctrlKey && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
+      e.preventDefault(); toggleFullscreen();
+    }
+  });
+
+  /* ── View Presets ── */
+  window.savePreset = function(name) {
+    name = name || ('预设 ' + (new Date()).toLocaleTimeString());
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    var state = {density: density, clickMode: clickMode, splitRatio: splitRatio, colVisibility: colVisibility, sortKey: sortKey, sortAsc: sortAsc, name: name};
+    var json = JSON.stringify(state);
+    if (json.length > MAX_PRESET_SIZE) { showToast('预设过大，请减少列数'); return; }
+    var existing = presets.findIndex(function(p){ return p.name === name; });
+    if (existing >= 0) presets[existing] = state;
+    else { if (presets.length >= MAX_PRESETS) presets.shift(); presets.push(state); }
+    try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) { showToast('存储失败'); return; }
+    showToast('已保存: ' + name);
+  };
+  window.loadPreset = function(name) {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    var p = presets.find(function(p){ return p.name === name; });
+    if (!p) { showToast('预设不存在: ' + name); return; }
+    if (p.density) { density = p.density; applyDensity(); }
+    if (p.clickMode) { clickMode = p.clickMode; }
+    if (p.splitRatio) { splitRatio = p.splitRatio; document.querySelector('.wrapper').style.setProperty('--spl-ratio', p.splitRatio+'%'); }
+    if (p.colVisibility) { colVisibility = p.colVisibility; }
+    if (p.sortKey) { sortKey = p.sortKey; sortAsc = p.sortAsc || true; }
+    initColToggle(); initThead(); render();
+    showToast('已加载: ' + name);
+  };
+  window.deletePreset = function(name) {
+    var presets = [];
+    try { presets = JSON.parse(localStorage.getItem('html-gen:table:presets')) || []; } catch(e) {}
+    presets = presets.filter(function(p){ return p.name !== name; });
+    try { localStorage.setItem('html-gen:table:presets', JSON.stringify(presets)); } catch(e) {}
+    initColToggle();
+    showToast('已删除: ' + name);
+  };
+
+})();
+</script>
+</body>
+</html>
