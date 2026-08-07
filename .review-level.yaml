@@ -37,3 +37,14 @@ review_history:
     findings_total: 1
     findings_open: 1
     tracking: HG-DESIGN-CONV-001 (commit convention)
+  - date: 2026-08-06
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "drama-kb-table-design-v1.0 — 以剧读史知识库表格化改造"
+    verdict: CONDITIONAL_PASS
+    score: 90
+    findings_total: 3
+    findings_open: 3
+    tracking: D2-1 (剧中设定标注), D2-2 (JSON列定义), D4-1 (测试补充)
+    report: documents/review/drama-kb-table-review-v1.0-20260806.md
