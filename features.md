@@ -38,9 +38,10 @@ company-report.py — 公司调研报告生成器 (schema → C 型知识库) �
 
 ## 模板功能
 
-### layout-doc.html (B 型文档) — 436 行
+### layout-doc.html (B 型文档) — 448 行
 自动 TOC 生成 (h2/h3 锚点 + 滚动高亮) ✅ — layout-doc.html
 TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-doc.html
+侧边栏 sticky 修复 (桌面 sticky, mobile fixed) ✅ — layout-doc.html
 侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-doc.html
 侧边栏按键分离 (`[` 折叠 / `]` 展开, 输入框豁免) ✅ — layout-doc.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-doc.html
@@ -56,7 +57,7 @@ Markdown pipe table 渲染 ✅ — layout-doc.html
 图片灯箱 (点击放大, Esc 关闭) ✅ — layout-doc.html
 Section anchor link (¶ 复制) ✅ — layout-doc.html
 
-### layout-slide.html (D 型幻灯片) — 673 行
+### layout-slide.html (D 型幻灯片) — 685 行
 h2 分页 (每页一个 h2 section) ✅ — layout-slide.html
 H3 双列模式 (h2 下 ≥2 个 h3 → 并排列) ✅ — layout-slide.html
 H3 单列回退 (仅 1 个 h3 → 全宽) ✅ — layout-slide.html
@@ -64,6 +65,7 @@ H3 单列回退 (仅 1 个 h3 → 全宽) ✅ — layout-slide.html
 底部导航点 (点击跳转页面) ✅ — layout-slide.html
 自动 TOC 生成 (h2 条目, 页面跳转) ✅ — layout-slide.html
 TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-slide.html
+侧边栏 sticky 修复 (桌面 sticky) ✅ — layout-slide.html
 侧边栏折叠/展开 (48px 收起态, `[`/`]` 按键) ✅ — layout-slide.html
 侧边栏按键分离 (`[` 折叠 / `]` 展开) ✅ — layout-slide.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-slide.html
@@ -124,7 +126,7 @@ SKILL.md 加载 (split 面板 fetch + 简单 Markdown 渲染) ✅ — layout-tab
 printColWidths() 调试函数 ✅ — layout-table.html
 copyAction() clipboard fallback (execCommand, headless Chrome 兼容) ✅ — layout-table.html
 
-### layout-knowledge.html (C 型知识库) — 336 行
+### layout-knowledge.html (C 型知识库) — 477 行
 顶部横向标签栏 (按 group 分组, 彩色圆点, 与侧边栏标题行对齐) ✅ — layout-knowledge.html
 左侧章节列表 (按 section 分组, badge 标记) ✅ — layout-knowledge.html
 侧边栏搜索 (🔍 按钮, 150ms debounce, ≥2 字符, section 自动隐藏) ✅ — layout-knowledge.html
