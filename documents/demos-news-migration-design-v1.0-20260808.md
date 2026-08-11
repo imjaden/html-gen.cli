@@ -140,9 +140,9 @@ data/
 ## 落地清单（本设计实施时）
 
 1. 本设计文档 commit（docs@html-gen）
-2. 将迁移 prompt 保存为 `documents/news-migration-prompt-20260808.md`（或 skills/ 内模板）
+2. 迁移 prompt 独立文件: documents/news-migration-prompt-20260808.md ✅
 3. 首次试运行一个示例专题验证流程（可选，用户指定主题后执行）
-4. demos-index.html 生成方式确认（_demos-data.json 的驱动命令）
+4. demos-index.html 生成方式确认 ✅（html-gen table -d data/_demos-data.json --title "Demos Index"）
 
 ## 待确认
 
