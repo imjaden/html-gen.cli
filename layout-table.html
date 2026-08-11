@@ -385,7 +385,8 @@
     if (tab.match) return row[tab.match] === tab.key;
     if (tab.contains) {
       var val = row[tab.field || 'profiles'] || '';
-      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+      var target = tab.value || tab.key;
+      return val.split(/[,，、]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
     }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
@@ -491,7 +492,7 @@
         } else {
           var val = row[col.key];
           if (col.type === 'pills') {
-              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
+              var items = (val || '').toString().split(/[,，、]+/).map(function(s){return s.trim();}).filter(Boolean);
               var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
               var freezeCls = col.freeze ? ' frozen-col' : '';
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
