@@ -1,16 +1,92 @@
 [
-  { "类型": "🏠 首页", "文件": "<a href=\"index.html\" target=\"_blank\" rel=\"noopener\">index.html ↗</a>", "说明": "模板展示首页 · 三层架构演示", "大小": "16KB" },
-  { "类型": "📄 A 型方案", "文件": "<a href=\"template-A-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗</a>", "说明": "数据表格 · 方案说明文档", "大小": "25KB" },
-  { "类型": "📄 B 型方案", "文件": "<a href=\"template-B-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗</a>", "说明": "文档阅读 · 方案说明文档", "大小": "27KB" },
-  { "类型": "📐 B 型规范", "文件": "<a href=\"template-B-markdown-spec-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗</a>", "说明": "Markdown 语法子集规范", "大小": "27KB" },
-  { "类型": "📄 C 型方案", "文件": "<a href=\"template-C-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗</a>", "说明": "知识库 · 方案说明文档", "大小": "25KB" },
-  { "类型": "📊 A 型案例", "文件": "<a href=\"iris-output-index.html\" target=\"_blank\" rel=\"noopener\">iris-output-index ↗</a>", "说明": "IRIS-Output 文件索引 (9条)", "大小": "13KB" },
-  { "类型": "📊 A 型案例", "文件": "<a href=\"git-cloner-demo.html\" target=\"_blank\" rel=\"noopener\">git-cloner-demo ↗</a>", "说明": "Git 项目列表 (5个)", "大小": "12KB" },
-  { "类型": "📄 B 型案例", "文件": "<a href=\"ci-issues-demo.html\" target=\"_blank\" rel=\"noopener\">ci-issues-demo ↗</a>", "说明": "GitHub CI 问题分析报告", "大小": "25KB" },
-  { "类型": "🏢 C 型案例", "文件": "<a href=\"chaitin-business-analysis-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-business ↗</a>", "说明": "长亭科技商业分析知识库 (4类14条)", "大小": "30KB" },
-  { "类型": "📄 其他", "文件": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗</a>", "说明": "公司商业分析纵/横菜单设计方案", "大小": "27KB" },
-  { "类型": "📚 C 型案例", "文件": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗</a>", "说明": "HTML 技能知识库 (3类15条)", "大小": "22KB" },
-  { "类型": "🔧 其他", "文件": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗</a>", "说明": "tool-nav 前端工具导航", "大小": "14KB" },
-  { "类型": "🎬 A 型演示", "文件": "<a href=\"table-actions-demo.html\" target=\"_blank\" rel=\"noopener\">table-actions-demo ↗</a>", "说明": "操作列功能演示 · 6 种按钮 + desc 模式 (8条)", "大小": "18KB" },
-  { "类型": "📊 A 型案例", "文件": "<a href=\"hermes-profile-skills-list.html\" target=\"_blank\" rel=\"noopener\">hermes-profile-skills-list ↗</a>", "说明": "Hermes Skills 清单 · 全 Profile (98条/15类)", "大小": "45KB" }
+ {
+  "类型": "🏠 首页",
+  "文件": "<a href=\"index.html\" target=\"_blank\" rel=\"noopener\">index.html ↗</a>",
+  "说明": "模板展示首页 · 三层架构演示",
+  "大小": "16KB"
+ },
+ {
+  "类型": "📄 A 型方案",
+  "文件": "<a href=\"template-A-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗</a>",
+  "说明": "数据表格 · 方案说明文档",
+  "大小": "25KB"
+ },
+ {
+  "类型": "📄 B 型方案",
+  "文件": "<a href=\"template-B-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗</a>",
+  "说明": "文档阅读 · 方案说明文档",
+  "大小": "27KB"
+ },
+ {
+  "类型": "📐 B 型规范",
+  "文件": "<a href=\"template-B-markdown-spec-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗</a>",
+  "说明": "Markdown 语法子集规范",
+  "大小": "27KB"
+ },
+ {
+  "类型": "📄 C 型方案",
+  "文件": "<a href=\"template-C-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗</a>",
+  "说明": "知识库 · 方案说明文档",
+  "大小": "25KB"
+ },
+ {
+  "类型": "📊 A 型案例",
+  "文件": "<a href=\"iris-output-index.html\" target=\"_blank\" rel=\"noopener\">iris-output-index ↗</a>",
+  "说明": "IRIS-Output 文件索引 (9条)",
+  "大小": "13KB"
+ },
+ {
+  "类型": "📊 A 型案例",
+  "文件": "<a href=\"git-cloner-demo.html\" target=\"_blank\" rel=\"noopener\">git-cloner-demo ↗</a>",
+  "说明": "Git 项目列表 (5个)",
+  "大小": "12KB"
+ },
+ {
+  "类型": "📄 B 型案例",
+  "文件": "<a href=\"ci-issues-demo.html\" target=\"_blank\" rel=\"noopener\">ci-issues-demo ↗</a>",
+  "说明": "GitHub CI 问题分析报告",
+  "大小": "25KB"
+ },
+ {
+  "类型": "🏢 C 型案例",
+  "文件": "<a href=\"chaitin-business-analysis-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-business ↗</a>",
+  "说明": "长亭科技商业分析知识库 (4类14条)",
+  "大小": "30KB"
+ },
+ {
+  "类型": "📄 其他",
+  "文件": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗</a>",
+  "说明": "公司商业分析纵/横菜单设计方案",
+  "大小": "27KB"
+ },
+ {
+  "类型": "📚 C 型案例",
+  "文件": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗</a>",
+  "说明": "HTML 技能知识库 (3类15条)",
+  "大小": "22KB"
+ },
+ {
+  "类型": "🔧 其他",
+  "文件": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗</a>",
+  "说明": "tool-nav 前端工具导航",
+  "大小": "14KB"
+ },
+ {
+  "类型": "🎬 A 型演示",
+  "文件": "<a href=\"table-actions-demo.html\" target=\"_blank\" rel=\"noopener\">table-actions-demo ↗</a>",
+  "说明": "操作列功能演示 · 6 种按钮 + desc 模式 (8条)",
+  "大小": "18KB"
+ },
+ {
+  "类型": "📊 A 型案例",
+  "文件": "<a href=\"hermes-profile-skills-list.html\" target=\"_blank\" rel=\"noopener\">hermes-profile-skills-list ↗</a>",
+  "说明": "Hermes Skills 清单 · 全 Profile (98条/15类)",
+  "大小": "45KB"
+ },
+ {
+  "类型": "🌍 A 型案例",
+  "文件": "<a href=\"demos/countries/countries-table.html\" target=\"_blank\" rel=\"noopener\">countries-table ↗</a>",
+  "说明": "全球 195 国速查：中英名/首都坐标/大洲/面积/人口/GDP/Google Earth 定位",
+  "大小": "138KB"
+ }
 ]
