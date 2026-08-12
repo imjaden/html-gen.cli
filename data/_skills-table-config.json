@@ -15,7 +15,8 @@
       "label": "分类",
       "sortable": true,
       "type": "pills",
-      "width": "100px"
+      "width": "100px",
+      "pillFilter": true
     },
     {
       "key": "profiles",
@@ -23,7 +24,8 @@
       "sortable": true,
       "escape": true,
       "width": "100px",
-      "type": "pills"
+      "type": "pills",
+      "pillFilter": true
     },
     {
       "key": "version",

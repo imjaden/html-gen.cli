@@ -88,7 +88,7 @@ Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.h
 行内展开模式 (手风琴, 点击展开详情网格, colspan 全宽) ✅ — layout-table.html
 新标签页打开模式 (window.open + noopener,noreferrer) ✅ — layout-table.html
 点击模式 (options.clickModes 列表, 兼容单数 clickMode) ✅ — layout-table.html
-快速过滤 (点击单元格值 → filter pill ✕ 关闭) ✅ — layout-table.html
+快速过滤 (默认关, col.quickFilter:true 启用, filter pill ✕ 关闭) ✅ — layout-table.html
 列冻结 (col.freeze:true → sticky 列, 自动 left 偏移) ✅ — layout-table.html
 分栏模式列过滤 (col.preview:true → 仅预览列显示) ✅ — layout-table.html
 列隐藏 (col.hide:true → 永不可见) ✅ — layout-table.html
@@ -113,12 +113,12 @@ HTML 转义 (escapeHtml, col.escape, textContent 安全渲染) ✅ — layout-ta
 iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
 URL 白名单校验 (https?/ / ~/ 前缀) ✅ — layout-table.html
 Cinema 纪律化宽度 (table-layout:fixed, 每列显式 width, td max-width:0, 无 colgroup) ✅ — layout-table.html
-Pills 标签列 (col.type:pills, 逗号分隔→tag pills) ✅ — layout-table.html
+Pills 标签列 (col.type:pills, 逗号分隔→tag pills, 标签筛选默认开 pillFilter:false 关闭) ✅ — layout-table.html
 Datetime 排序 (col.type:datetime, Date.parse 比较) ✅ — layout-table.html
 右侧固定列 (col.stickyRight:true, position:sticky) ✅ — layout-table.html
 分栏列过滤增强 (options.columnsSplit + col.preview fallback) ✅ — layout-table.html
 单元格点击分栏 (col.onCellClick:split) ✅ — layout-table.html
-单元格筛选禁用 (col.quickFilter:false) ✅ — layout-table.html
+单元格筛选禁用 (默认关, col.quickFilter:true 启用) ✅ — layout-table.html
 列宽拖拽禁用 (options.columnResize:false) ✅ — layout-table.html
 自定义模态框渲染器 (options.modalRenderer:skills) ✅ — layout-table.html
 SKILL.md 加载 (split 面板 fetch + 简单 Markdown 渲染) ✅ — layout-table.html

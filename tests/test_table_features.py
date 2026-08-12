@@ -38,8 +38,8 @@ def select_click_mode(driver, mode):
     assert target, f"Click mode '{mode}' radio not found"
     driver.execute_script("arguments[0].click();", target[0])
     time.sleep(0.3)
-    # Close dropdown by clicking elsewhere
-    driver.find_element(By.TAG_NAME, 'body').click()
+    # Close dropdown via JS (avoid body.click intercept by table rows)
+    driver.execute_script("document.getElementById('colToggleDropdown').classList.remove('show');")
     time.sleep(0.2)
 
 
@@ -145,11 +145,14 @@ class TestTableFeatures(unittest.TestCase):
     # ── Quick Filter ──
 
     def test_06_quick_filter(self):
+        """Click a column with quickFilter:true, filter pill appears."""
         cells = self.driver.find_elements(By.CSS_SELECTOR, '.clickable-cell')
         self.assertTrue(len(cells) > 0, "No clickable cells")
 
-        # QuickFilterBy works regardless of click mode
-        cells[0].click()
+        # stars column (index 1) has quickFilter:true in _phase2-demo.json
+        stars_idx = 1
+        self.assertGreater(len(cells), stars_idx, "Not enough cells")
+        cells[stars_idx].click()
         time.sleep(0.3)
 
         pill = self.driver.find_element(By.ID, 'quickFilterPill')
@@ -181,6 +184,22 @@ class TestTableFeatures(unittest.TestCase):
         time.sleep(0.1)
         focused2 = self.driver.find_elements(By.CSS_SELECTOR, '.keyboard-focus')
         self.assertEqual(len(focused2), 1)
+
+    def test_06b_quickfilter_default_off(self):
+        """Column without quickFilter:true should not trigger filter (D1 default-off)."""
+        cells = self.driver.find_elements(By.CSS_SELECTOR, '.clickable-cell')
+        # First cell (name) has NO quickFilter:true
+        cells[0].click()
+        time.sleep(0.3)
+
+        # Should have opened split (firstKeyCol default D3), not created filter pill
+        wrapper = self.driver.find_element(By.CSS_SELECTOR, '.wrapper')
+        self.assertIn('split-mode', (wrapper.get_attribute('class') or '').split(),
+                      "First column click should open split (D3 firstKeyCol)")
+
+        # Close split via JS (avoid stale element / overlay issues)
+        self.driver.execute_script("if(window.closeSplit) closeSplit();")
+        time.sleep(0.15)
 
     # ── Column Freeze ──
 
