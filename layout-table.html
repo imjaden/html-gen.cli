@@ -332,6 +332,8 @@
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
+  // initialHidden: 表格默认隐藏列（⚙️ 可开启；分栏详情全列渲染不受影响）；用户切换过则尊重用户
+  COLUMNS.forEach(function(c) { if (c.initialHidden && colVisibility[c.key] === undefined) colVisibility[c.key] = false; });
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -388,7 +390,7 @@
     if (tab.contains) {
       var val = row[tab.field || 'profiles'] || '';
       var target = tab.value || tab.key;
-      return val.split(/[,，、]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
+      return val.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
     }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
@@ -418,7 +420,7 @@
         var v = String(row[quickFilter.key] || '');
         if (quickFilter.mode === 'contains') {
           // 标签筛选：顿号/逗号切分后包含匹配
-          return v.split(/[,，、]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
+          return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
         }
         return v === quickFilter.value;
       });
@@ -501,7 +503,7 @@
         } else {
           var val = row[col.key];
           if (col.type === 'pills') {
-              var items = (val || '').toString().split(/[,，、]+/).map(function(s){return s.trim();}).filter(Boolean);
+              var items = (val || '').toString().split(/[,，、/]+/).map(function(s){return s.trim();}).filter(Boolean);
               // pillFilter 默认开: 标签点击筛选, pillFilter: false 可关闭
               var pillsHtml = items.map(function(s){
                 return '<span class="cell-pill'+(col.pillFilter !== false ? ' pill-clickable' : '')+'"'+
@@ -951,7 +953,8 @@
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = visibleCols({requireKey: true, excludeActions: true});
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
