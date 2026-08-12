@@ -218,7 +218,13 @@ html-gen/
 ├── company-research-schema.json # 公司调研 schema
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
 ├── tests/                      # Selenium + 回归测试 (73 tests)
-└── demos/                      # 生成的 HTML 示例
+├── skills/                    # 项目 skills prompt
+    │   ├── html-gen/SKILL.md
+    │   ├── html-gen-table/SKILL.md
+    │   │   └── references/table-demo-prompt.md
+    │   ├── html-gen-doc/SKILL.md
+    │   └── html-gen-knowledge/SKILL.md
+    └── demos/                      # 生成的 HTML 示例
     ├── index.html              # 模板展示首页
     ├── demos-index.html        # A 型文档索引
     ├── hermes-profile-skills-list.html  # 主力 demo: Hermes Skills 列表
