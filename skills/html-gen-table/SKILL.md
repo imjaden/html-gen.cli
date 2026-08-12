@@ -1,7 +1,7 @@
 ---
 name: html-gen-table
 description: Use when building data table HTML pages with html-gen. Covers column config, actions, tabs, sorting, CSV export, and row selection for the A-type layout-table template.
-version: 2.2.0
+version: 2.3.0
 author: dev
 license: MIT
 metadata:
@@ -72,7 +72,10 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 | `locale` | string | | 排序 locale，如 `"zh"` |
 | `width` | string | | CSS 宽度，如 `"120px"` |
 | `freeze` | bool | | 列冻结 (sticky left) |
-| `quickFilter` | bool | | 点击单元格值筛选 (默认 true) |
+| `quickFilter` | bool | | 点击单元格值精确筛选，**默认关**，显式 `true` 才启用 |
+| `pillFilter` | bool | | pills 列标签点击筛选（contains 匹配），默认开，`false` 关闭 |
+| `onCellClick` | string | | 单元格点击行为：`"split"` 分栏预览 / `"modal"` 弹出详情 |
+| `preview` | bool | | 分栏模式下显示的列（split 预览/表格仅显示 preview 列，未配 preview 列则全显） |
 | `class` | string | | 单元格 CSS class |
 | `escape` | bool | | 是否 HTML 转义值（安全） |
 | `render` | func | | 自定义渲染函数 |
@@ -87,7 +90,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 **type: "datetime"** — 日期排序，使用 `Date.parse` 比较，空值视为 0；渲染原样展示 ISO 日期字符串
 
-**type: "pills"** — 标签样式，逗号分隔字符串渲染为 tag pills
+**type: "pills"** — 标签样式，逗号/顿号/中文逗号分隔字符串渲染为 tag pills（分隔符 `[,，、]+`）；标签点击筛选默认开（`pillFilter: false` 关闭）
 
 **type: "actions"** — 操作按钮列，每个按钮支持三种模式：
 
@@ -116,7 +119,19 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 - `key`: Tab 标识，第一个 Tab 的 key 用于"全部"
 - `label`: 显示文本（可含 Emoji）
 - `field`: 匹配的数据字段名（默认 `group` 或 `category`）
+- `contains`: 数组字段包含匹配（值用逗号/顿号分隔时，如 `"field": "region_tags", "contains": true`）
+- `value`: contains 模式下匹配的目标值（不配则用 key 匹配）；Tab 计数 = 匹配行数
 - Tab 选择自动保存到 localStorage
+
+## 单元格点击行为（默认）
+
+点击行为优先级链（从高到低）：
+1. `col.onCellClick: 'split'` / `'modal'`（显式配置）
+2. `col.quickFilter: true`（显式筛选）
+3. **第 1 列（首个有 key 的数据列）→ 默认打开分栏预览**（展示该行元信息）
+4. 其余列 → 无操作
+
+即：普通单元格默认无筛选；需要按值筛选的列显式配 `quickFilter: true`；标签列默认可点筛选（pillFilter）。
 
 ## 全局选项 (OPTIONS)
 
@@ -189,5 +204,6 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 
 ## 变更记录
+- v2.3.0 (2026-08-06): quickFilter 默认关（显式 true 启用）+ pillFilter/onCellClick/preview 列属性; tabs value/contains 匹配; pills 顿号分隔; 第 1 列默认分栏
 - v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项; 兼容单数 clickMode
 - v2.1.0: 列冻结、右侧固定列、分栏列过滤增强、单元格点击分栏、自定义模态框渲染器、SKILL.md 加载
