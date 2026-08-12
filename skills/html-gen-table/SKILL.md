@@ -70,7 +70,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 | `sortable` | bool | | 是否可排序（默认 true） |
 | `type` | string | | `string`(默认) / `number` / `datetime` / `pills` / `actions` |
 | `locale` | string | | 排序 locale，如 `"zh"` |
-| `width` | string | | CSS 宽度，如 `"120px"` |
+| `width` | string | | CSS 宽度，如 `"120px"`。**仅作初始值**——列宽拖拽会记忆到 localStorage（`html-gen:table:col-widths`）并在刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效 |
 | `freeze` | bool | | 列冻结 (sticky left) |
 | `quickFilter` | bool | | 点击单元格值精确筛选，**默认关**，显式 `true` 才启用 |
 | `pillFilter` | bool | | pills 列标签点击筛选（contains 匹配），默认开，`false` 关闭 |
