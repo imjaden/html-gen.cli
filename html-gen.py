@@ -598,9 +598,87 @@ def main():
     k.add_argument('--welcome', default='')
     k.add_argument('-o', '--output', default='kb.html')
 
+    pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>)')
+    pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
+    pr.add_argument('--brief', action='store_true', help='仅输出摘要')
+
     args = p.parse_args()
     {'help': cmd_help, 'doc': cmd_doc, 'slide': cmd_slide,
-     'table': cmd_table, 'knowledge': cmd_knowledge}[args.command](args)
+     'table': cmd_table, 'knowledge': cmd_knowledge, 'prompt': cmd_prompt}[args.command](args)
+
+
+def cmd_prompt(args):
+    """输出项目 skills prompt 内容."""
+    import subprocess as _sp
+    SKILLS_DIR = Path(__file__).resolve().parent / 'skills'
+    if not SKILLS_DIR.is_dir():
+        print("❌ skills/ 目录不存在", file=sys.stderr); sys.exit(1)
+
+    # 收集所有 skill
+    skills = []
+    for d in sorted(SKILLS_DIR.iterdir()):
+        if d.is_dir():
+            smd = d / 'SKILL.md'
+            if smd.exists():
+                skills.append({'name': d.name, 'path': smd, 'dir': d})
+
+    if not skills:
+        print("❌ 无可用 skill", file=sys.stderr); sys.exit(1)
+
+    # 无参: 列出所有
+    if not args.skill:
+        print("可用 skills:\n")
+        for s in skills:
+            desc = ''
+            try:
+                with open(s['path']) as _f:
+                    for _line in _f:
+                        if _line.startswith('description:'):
+                            desc = _line.split(':',1)[1].strip(); break
+            except: pass
+            refs = [r.name for r in s['dir'].glob('references/*.md')]
+            print(f"  {s['name']}")
+            if desc: print(f"    {desc}")
+            if refs: print(f"    references: {', '.join(refs)}")
+            print(f"    用法: html-gen prompt {s['name']}")
+            print()
+        return
+
+    # 带参: 查找 skill
+    target = next((s for s in skills if s['name'] == args.skill), None)
+    if not target:
+        print(f"❌ skill '{args.skill}' 不存在", file=sys.stderr)
+        print(f"可用: {', '.join(s['name'] for s in skills)}")
+        sys.exit(1)
+
+    # 输出 SKILL.md 全文
+    content_text = Path(target['path']).read_text(encoding='utf-8')
+
+    if args.brief:
+        # 仅摘要: description + 章节标题 + references
+        lines = content_text.split('\n')
+        desc = next((l.split(':',1)[1].strip() for l in lines if l.startswith('description:')), '')
+        headings = [l for l in lines if l.startswith('## ')]
+        refs = [r.name for r in target['dir'].glob('references/*.md')]
+        if desc: print(desc); print()
+        if headings:
+            print('章节:')
+            for h in headings: print(f"  {h[3:]}")
+            print()
+        if refs: print(f"references: {', '.join(refs)}")
+        return
+
+    # 全文
+    print(content_text)
+
+    # 拼接 references
+    refs = sorted(target['dir'].glob('references/*.md'))
+    if refs:
+        print('\n---\n')
+        for r in refs:
+            print(f'## {r.stem}')
+            print(r.read_text(encoding='utf-8'))
+            print()
 
 
 if __name__ == '__main__':
