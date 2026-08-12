@@ -479,6 +479,8 @@
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
     var cols = visibleCols();
+    // 第 1 个可见非 actions 列 (用于默认分栏)
+    var firstKeyCol = cols.find(function(c) { return c.type !== 'actions'; });
     var frozenOffsets = [];
     var fo = 0;
     cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
@@ -500,6 +502,7 @@
           var val = row[col.key];
           if (col.type === 'pills') {
               var items = (val || '').toString().split(/[,，、]+/).map(function(s){return s.trim();}).filter(Boolean);
+              // pillFilter 默认开: 标签点击筛选, pillFilter: false 可关闭
               var pillsHtml = items.map(function(s){
                 return '<span class="cell-pill'+(col.pillFilter !== false ? ' pill-clickable' : '')+'"'+
                   (col.pillFilter !== false ? ' onclick="event.stopPropagation();quickFilterBy(\''+escapeAttr(col.key)+'\',\''+escapeAttr(s)+'\',\'contains\')"' : '')+
@@ -522,8 +525,12 @@
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
             tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
-          } else if (col.quickFilter !== false) {
+          } else if (col.quickFilter === true) {
+            // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          } else if (col === firstKeyCol) {
+            // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }

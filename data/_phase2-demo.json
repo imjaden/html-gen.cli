@@ -15,7 +15,8 @@
       "sortable": true,
       "type": "number",
       "preview": true,
-      "width": "120px"
+      "width": "120px",
+      "quickFilter": true
     },
     {
       "key": "lang",

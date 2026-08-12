@@ -61,7 +61,8 @@
       "sortable": true,
       "preview": true,
       "width": "120px",
-      "type": "pills"
+      "type": "pills",
+      "pillFilter": true
     },
     {
       "key": "area_km2",

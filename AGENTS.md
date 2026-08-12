@@ -67,7 +67,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
   - 📑 分栏预览：表格 + 预览并排，拖拽分栏线，比例预设 (▦)，▲▼ 导航；支持 SKILL.md 加载
   - 📂 行内展开：手风琴模式，点击展开详情网格
   - 🎯 单元格点击：`col.onCellClick: 'split'` 直接打开分栏
-- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭；`col.quickFilter: false` 禁用
+- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭；`col.quickFilter: true` 启用 (默认关)
 - **列冻结**：`col.freeze: true` → sticky 列，动态计算 left 偏移（基于 `col.width`）
 - **右侧固定列**：`col.stickyRight: true` → 水平滚动时保持在视口右侧
 - **分栏模式列过滤**：`col.preview: true` → 仅预览列显示于分栏表格；`options.columnsSplit` 指定分栏列集
@@ -152,7 +152,8 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - `col.hide`：永远隐藏（默认 false）
 - `col.onClick`：`"url"` 使整行可点击跳转到 row.url
 - `col.onCellClick`：`"split"` 点击单元格直接打开分栏预览
-- `col.quickFilter`：false 时禁用该列的点击筛选
+- `col.quickFilter`：true 启用点击筛选 (默认关)
+- `col.pillFilter`：false 禁用标签筛选 (默认开)
 - `col.width`：列宽（如 `"150px"`），影院模型下必设，默认 fallback 120px
 - `col.escape`：HTML 转义（默认 false）
 - `col.render`：自定义渲染函数（已废弃，优先用 type 或 onCellClick）
