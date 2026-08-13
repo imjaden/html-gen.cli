@@ -99,7 +99,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ## Markdown → HTML 转换规则
 
 `md_to_html()` 在 `html-gen.py` 中实现，零依赖纯 Python：
-- h1–h3 标题（自动加 id 锚点）
+- h1–h6 标题（自动加 id 锚点，h4-h6 不入 TOC）
 - `**加粗**`、`*斜体*`、`` `代码` ``、`[链接](url)`
 - 围栏代码块（支持变长 fence 嵌套）
 - 表格（Markdown pipe table）
