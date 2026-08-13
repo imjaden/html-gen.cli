@@ -78,6 +78,9 @@
 .doc-body h1:first-child { margin-top: 0; }
 .doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
 .doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
+.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
+.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
 .doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
 .doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
 .doc-body li { line-height: 1.8; margin: 3px 0; }
@@ -107,7 +110,7 @@ pre:hover .copy-btn { opacity: 1; }
 .doc-body img { cursor: zoom-in; }
 
 .anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
-h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
 .anchor-link:hover { color: var(--cobalt-400); }
 
 .code-with-lines { counter-reset: line; padding-left: 0; }
@@ -154,6 +157,9 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 :root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
 :root.light .doc-body h2 { color: #222; }
 :root.light .doc-body h3 { color: #333; }
+:root.light .doc-body h4 { color: #444; }
+:root.light .doc-body h5 { color: #555; }
+:root.light .doc-body h6 { color: #666; }
 :root.light .doc-body p, :root.light .doc-body li { color: #444; }
 :root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
 :root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
@@ -382,6 +388,16 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
     var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
     link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
     toc.appendChild(link); tocItems.push(link);
+  });
+
+  // h4-h6 anchors (not in TOC)
+  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.href = '#' + h.id;
+    anchor.textContent = '\u00b6';
+    h.appendChild(anchor);
   });
 
   function onScroll() {

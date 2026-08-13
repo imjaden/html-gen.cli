@@ -85,7 +85,13 @@ def md_to_html(text):
             i += 1
             continue
 
-        if line.startswith('### '):
+        if line.startswith('###### '):
+            html.append(f'<h6 id="{slug(line[7:])}">{_md_escape(line[7:])}</h6>')
+        elif line.startswith('##### '):
+            html.append(f'<h5 id="{slug(line[6:])}">{_md_escape(line[6:])}</h5>')
+        elif line.startswith('#### '):
+            html.append(f'<h4 id="{slug(line[5:])}">{_md_escape(line[5:])}</h4>')
+        elif line.startswith('### '):
             html.append(f'<h3 id="{slug(line[4:])}">{_md_escape(line[4:])}</h3>')
         elif line.startswith('## '):
             html.append(f'<h2 id="{slug(line[3:])}">{_md_escape(line[3:])}</h2>')
