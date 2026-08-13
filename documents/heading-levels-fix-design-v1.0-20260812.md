@@ -74,7 +74,25 @@ light 主题对应（L156 后追加）：
 h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
 ```
 
-### 3. layout-slide.html 同步
+### 3. layout-doc.html JS — 拆分 anchor 循环（review D-新增）
+
+现状 L376-385 单一 forEach 同时做 anchor-link 追加 + TOC 链接生成，headings 仅 h2/h3，h4-h6 不会获得 ¶ 复制链接锚点。
+
+修复（拆分循环，TOC 保持不变）：
+```js
+// 原有循环不动: headings (h2/h3) 追加 anchor + TOC 链接
+// 新增独立循环: h4-h6 仅追加 anchor-link，不进 TOC
+document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h) {
+  if (!h.id) h.id = 'section-' + h.textContent;
+  var anchor = document.createElement('a');
+  anchor.className = 'anchor-link';
+  anchor.href = '#' + h.id;
+  anchor.textContent = '¶';
+  h.appendChild(anchor);
+});
+```
+
+### 3a. layout-slide.html 同步
 
 slide 模板同样使用 md_to_html()，需同步 h4-h6 样式（slide-body 若存在）或确认现有样式覆盖。若 slide 无 h4+ 使用场景，仅保证渲染不泄漏即可（<h4> 标签落入默认样式）。
 
@@ -98,6 +116,7 @@ slide 模板同样使用 md_to_html()，需同步 h4-h6 样式（slide-body 若�
 **Selenium**（复用 test_doc_sidebar.py 模式或新增）：
 - test_doc_h4_h5_render: 生成含 h4/h5 的 doc，检查 DOM 中 h4/h5 存在且 textContent 正确，0 JS errors
 - test_doc_toc_excludes_h4: TOC 链接数不含 h4（保证不进 TOC）
+- test_doc_h4_anchor_link: h4 元素包含 .anchor-link 子元素（D-新增拆分循环生效），且 TOC 仍仅 h2/h3
 
 ### 7. 文档同步
 
@@ -116,9 +135,9 @@ slide 模板同样使用 md_to_html()，需同步 h4-h6 样式（slide-body 若�
 | 文件 | 改动 |
 |:--|:--|
 | html-gen.py | md_to_html L88-93 加 3 分支 |
-| layout-doc.html | CSS h4/h5/h6 样式 + light 主题 + 锚点 hover |
+| layout-doc.html | CSS h4/h5/h6 样式 + light 主题 + 锚点 hover；JS 拆分 anchor 循环（D-新增） |
 | layout-slide.html | 同步样式（若适用） |
-| tests/ | 新增回归 + Selenium 测试 |
+| tests/ | 新增回归 + Selenium 测试（含 anchor-link） |
 | AGENTS.md | 标题规则 h1-h6 |
 | features.md | 标题渲染条目（若存在） |
 
