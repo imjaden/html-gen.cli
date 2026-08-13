@@ -81,3 +81,14 @@ review_history:
     findings_open: 0
     tracking: "N/A (D1-D7 fully implemented, 84 tests, firstKeyCol dynamic)"
     report: documents/review/table-quickfilter-default-implementation-review-v1.0-20260808.md
+  - date: 2026-08-12
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "heading-levels-fix — h4-h6 标题渲染支持"
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: "N/A (CONDITIONAL PASS → 复检 D-新增 anchor-loop split closed)"
+    report: documents/review/heading-levels-fix-review-v1.0-20260812.md
