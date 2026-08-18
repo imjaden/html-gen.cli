@@ -120,15 +120,18 @@ class TestHistoryTables(unittest.TestCase):
         self.assertEqual(self._headers(),
                          ['序号', '年号', '皇帝', '庙号', '起止年份', '关键人物', '主要事件', '出处'],
                          f"大明时间轴表头: {self._headers()}")
-        # 默认筛选嘉靖
+        # 默认筛选嘉靖（总览 + 7 剧情事件 = 8 行）
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 1, f"默认应筛选嘉靖 1 行: {len(rows)}")
-        self.assertIn('嘉靖', rows[0].text)
-        # 清筛选 17 行
+        self.assertEqual(len(rows), 8, f"默认应筛选嘉靖 8 行: {len(rows)}")
+        text = ' '.join(r.text for r in rows)
+        self.assertIn('改稻为桑', text, "嘉靖拆分应含改稻为桑")
+        self.assertIn('毁堤淹田', text, "嘉靖拆分应含毁堤淹田")
+        self.assertIn('治安疏', text, "嘉靖拆分应含治安疏")
+        # 清筛选 24 行（16 年号 + 嘉靖 8）
         self.driver.execute_script("clearQuickFilter();")
         time.sleep(0.6)
-        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 17,
-                         "应 17 个年号")
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 24,
+                         "应 24 行（16 年号 + 嘉靖拆分 8）")
         # 嘉靖 split 详情（pills 格子整格点击）
         jia = self._row_by_text(1, '嘉靖')
         self.driver.execute_script("arguments[0].click();", jia.find_elements(By.TAG_NAME, 'td')[1])

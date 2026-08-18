@@ -161,7 +161,7 @@ class TestDramaKnowledge(unittest.TestCase):
                          ['序号', '年号', '皇帝', '庙号', '起止年份', '关键人物', '主要事件', '出处'],
                          f"大明时间轴表头: {heads}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 1, f"默认应筛选嘉靖 1 行: {len(rows)}")
+        self.assertEqual(len(rows), 8, f"默认应筛选嘉靖拆分 8 行: {len(rows)}")
         self.assertIn('嘉靖', rows[0].text, f"默认行应为嘉靖: {rows[0].text[:40]}")
         self.driver.switch_to.default_content()
 
