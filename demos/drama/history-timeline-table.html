@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>中国历史 · 朝代表</title>
+<title>中国历史 · 朝代时间轴</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -221,6 +221,8 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
 .data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px; }
+.data-table .cell-pill.pill-clickable { cursor:pointer; }
+.data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -426,7 +428,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>中国历史 · 朝代表</h1>
+  <h1>中国历史 · 朝代时间轴</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -497,10 +499,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "dynasty", "label": "朝代", "sortable": true}, {"key": "start", "label": "开始年代", "type": "number"}, {"key": "end", "label": "结束年份", "type": "number"}, {"key": "founder", "label": "开创者（及谥号）", "sortable": true}, {"key": "ethnicity", "label": "民族"}, {"key": "events", "label": "主要事件"}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
-  const DATA    = [{"dynasty": "唐", "start": 618, "end": 907, "founder": "唐高祖李渊（神尧大圣大光孝皇帝）", "ethnicity": "汉族（陇西李氏，胡汉交融）", "events": "贞观之治、开元盛世、安史之乱"}, {"dynasty": "宋", "start": 960, "end": 1279, "founder": "宋太祖赵匡胤（启运立极英武睿文神德圣功至明大孝皇帝）", "ethnicity": "汉族", "events": "重文轻武、靖康之变、南宋偏安"}, {"dynasty": "元", "start": 1271, "end": 1368, "founder": "元世祖忽必烈（圣德神功文武皇帝）", "ethnicity": "蒙古族", "events": "行省制、四等人制、红巾军起义"}, {"dynasty": "明", "start": 1368, "end": 1644, "founder": "明太祖朱元璋（高皇帝）", "ethnicity": "汉族", "events": "废丞相设内阁、厂卫、土木堡之变"}, {"dynasty": "清", "start": 1644, "end": 1912, "founder": "清太祖努尔哈赤（高皇帝，追尊）", "ethnicity": "满族", "events": "康雍乾盛世、鸦片战争、辛亥革命"}];
+  const COLUMNS = [{"key": "period", "label": "分期", "sortable": true, "locale": "zh", "width": "140px", "preview": true}, {"key": "dynasty", "label": "朝代", "sortable": true, "locale": "zh", "width": "90px", "freeze": true, "preview": true}, {"key": "time", "label": "起止时间", "sortable": true, "locale": "zh", "width": "150px", "preview": true}, {"key": "founder", "label": "建立者", "sortable": true, "locale": "zh", "width": "140px", "preview": true}, {"key": "capital", "label": "都城", "sortable": true, "locale": "zh", "width": "100px", "preview": true}, {"key": "ethnicity", "label": "民族", "sortable": true, "locale": "zh", "width": "90px", "preview": true}, {"key": "golden", "label": "治世/盛世", "sortable": true, "locale": "zh", "width": "130px", "preview": true}, {"key": "events", "label": "制度/大事", "sortable": true, "locale": "zh", "width": "250px", "preview": true}, {"key": "world", "label": "同时期西方大事", "sortable": true, "locale": "zh", "width": "260px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"period": "史前", "dynasty": "传说时代", "time": "约前3000—约前2070", "founder": "三皇五帝·尧舜禹（传说）", "capital": "—", "ethnicity": "华夏族起源", "golden": "禅让制", "events": "河姆渡/半坡遗址、炎黄传说", "world": "古埃及文明兴起（约前3100 统一）"}, {"period": "早期国家", "dynasty": "夏", "time": "约前2070—约前1600", "founder": "禹（启继位·家天下）", "capital": "阳城", "ethnicity": "华夏族", "golden": "—", "events": "第一个王朝、二里头遗址、世袭制", "world": "古巴比伦《汉谟拉比法典》（约前1754）"}, {"period": "早期国家", "dynasty": "商", "time": "约前1600—前1046", "founder": "汤", "capital": "亳→殷", "ethnicity": "华夏族", "golden": "青铜文明鼎盛", "events": "甲骨文、司母戊鼎、盘庚迁殷", "world": "古埃及新王国、迈锡尼文明"}, {"period": "早期国家", "dynasty": "西周", "time": "前1046—前771", "founder": "周武王姬发", "capital": "镐京", "ethnicity": "华夏族", "golden": "成康之治", "events": "分封制、宗法制、礼乐制", "world": "古希腊荷马时代、亚述帝国"}, {"period": "东周·争霸", "dynasty": "春秋", "time": "前770—前476", "founder": "周平王（东迁）", "capital": "洛邑", "ethnicity": "华夏族", "golden": "—", "events": "齐桓公称霸、孔子创立儒学", "world": "释迦牟尼创佛教（前6世纪）、波斯帝国"}, {"period": "东周·兼并", "dynasty": "战国", "time": "前475—前221", "founder": "—", "capital": "洛邑", "ethnicity": "华夏族", "golden": "—", "events": "商鞅变法、百家争鸣、都江堰", "world": "古希腊苏格拉底/柏拉图/亚里士多德"}, {"period": "统一多民族国家建立", "dynasty": "秦", "time": "前221—前207", "founder": "秦始皇嬴政", "capital": "咸阳", "ethnicity": "华夏→汉", "golden": "—", "events": "郡县制、书同文车同轨、焚书坑儒、万里长城", "world": "罗马共和国扩张（布匿战争）"}, {"period": "统一多民族国家建立", "dynasty": "西汉", "time": "前202—9", "founder": "汉高祖刘邦", "capital": "长安", "ethnicity": "汉族", "golden": "文景之治", "events": "推恩令、罢黜百家独尊儒术、张骞通西域、丝绸之路", "world": "凯撒遇刺（前44）、屋大维建罗马帝国（前27）"}, {"period": "统一多民族国家建立", "dynasty": "新", "time": "9—23", "founder": "王莽", "capital": "长安", "ethnicity": "汉族", "golden": "—", "events": "王莽改制（失败）", "world": "罗马帝国早期"}, {"period": "统一多民族国家建立", "dynasty": "东汉", "time": "25—220", "founder": "光武帝刘秀", "capital": "洛阳", "ethnicity": "汉族", "golden": "光武中兴", "events": "蔡伦改进造纸术、黄巾起义", "world": "基督教创立（约1世纪）"}, {"period": "政权分立与民族交融", "dynasty": "三国", "time": "220—280", "founder": "曹丕/刘备/孙权", "capital": "洛阳/成都/建业", "ethnicity": "汉族", "golden": "—", "events": "官渡之战、赤壁之战、三国鼎立", "world": "罗马帝国三世纪危机"}, {"period": "政权分立与民族交融", "dynasty": "西晋", "time": "266—316", "founder": "司马炎", "capital": "洛阳", "ethnicity": "汉族", "golden": "—", "events": "八王之乱、五胡内迁", "world": "罗马帝国晚期"}, {"period": "政权分立与民族交融", "dynasty": "东晋", "time": "317—420", "founder": "司马睿", "capital": "建康", "ethnicity": "汉族（南迁）", "golden": "—", "events": "淝水之战、江南开发", "world": "罗马帝国分裂（395）"}, {"period": "政权分立与民族交融", "dynasty": "南北朝", "time": "420—589", "founder": "—", "capital": "建康等", "ethnicity": "汉族/鲜卑等", "golden": "—", "events": "北魏孝文帝改革（汉化）、民族大交融", "world": "西罗马帝国灭亡（476）、法兰克王国兴起"}, {"period": "繁荣与开放", "dynasty": "隋", "time": "581—618", "founder": "隋文帝杨坚", "capital": "大兴", "ethnicity": "汉族", "golden": "开皇之治", "events": "大运河、科举制创立", "world": "伊斯兰教创立（610）"}, {"period": "繁荣与开放", "dynasty": "唐", "time": "618—907", "founder": "唐高祖李渊", "capital": "长安", "ethnicity": "汉族", "golden": "贞观之治、开元盛世", "events": "安史之乱、文成公主入藏、黄巢起义", "world": "阿拉伯帝国全盛、查理曼加冕（800）"}, {"period": "民族关系发展与社会变化", "dynasty": "五代十国", "time": "907—960", "founder": "—", "capital": "开封等", "ethnicity": "汉族", "golden": "—", "events": "藩镇割据延续", "world": "神圣罗马帝国建立（962）"}, {"period": "民族关系发展与社会变化", "dynasty": "北宋", "time": "960—1127", "founder": "宋太祖赵匡胤", "capital": "东京", "ethnicity": "汉族", "golden": "—", "events": "陈桥兵变、重文轻武、王安石变法、澶渊之盟", "world": "诺曼征服（1066）、十字军东征"}, {"period": "民族关系发展与社会变化", "dynasty": "南宋", "time": "1127—1279", "founder": "宋高宗赵构", "capital": "临安", "ethnicity": "汉族", "golden": "—", "events": "岳飞抗金、经济重心南移完成、崖山海战", "world": "蒙古西征、文艺复兴萌芽"}, {"period": "民族关系发展与社会变化", "dynasty": "元", "time": "1271—1368", "founder": "元世祖忽必烈", "capital": "大都", "ethnicity": "蒙古族", "golden": "—", "events": "行省制、四等人制、澎湖巡检司", "world": "但丁《神曲》、黑死病"}, {"period": "统一多民族国家巩固", "dynasty": "明", "time": "1368—1644", "founder": "明太祖朱元璋", "capital": "应天→北京", "ethnicity": "汉族", "golden": "—", "events": "八股取士、郑和下西洋、戚继光抗倭、明末农民起义", "world": "新航路开辟（1492）、宗教改革（1517）"}, {"period": "统一多民族国家巩固", "dynasty": "清", "time": "1636—1912", "founder": "清世祖顺治", "capital": "北京", "ethnicity": "满族", "golden": "康乾盛世", "events": "闭关锁国、设台湾府、鸦片战争（1840）", "world": "英国资产阶级革命（1640）、工业革命（1765）、法国大革命（1789）"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {"pageSize": 10, "exportCSV": true, "search": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
@@ -516,6 +518,8 @@ pre code { background: none; padding: 0; }
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
+  // initialHidden: 表格默认隐藏列（⚙️ 可开启；分栏详情全列渲染不受影响）；用户切换过则尊重用户
+  COLUMNS.forEach(function(c) { if (c.initialHidden && colVisibility[c.key] === undefined) colVisibility[c.key] = false; });
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -571,7 +575,8 @@ pre code { background: none; padding: 0; }
     if (tab.match) return row[tab.match] === tab.key;
     if (tab.contains) {
       var val = row[tab.field || 'profiles'] || '';
-      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+      var target = tab.value || tab.key;
+      return val.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
     }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
@@ -586,19 +591,25 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
     if (q) {
+      var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
-        return COLUMNS.some(function(col) {
-          if (col.type === 'actions') return false;
-          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        return searchKeys.some(function(k) {
+          return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
         });
       });
     }
-    // Quick filter (cell click)
+    // Quick filter (cell click / pill click)
     if (quickFilter) {
       filtered = filtered.filter(function(row) {
-        return String(row[quickFilter.key] || '') === quickFilter.value;
+        var v = String(row[quickFilter.key] || '');
+        if (quickFilter.mode === 'contains') {
+          // 标签筛选：顿号/逗号切分后包含匹配
+          return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
+        }
+        return v === quickFilter.value;
       });
     }
     // Sort (primary + secondary combined for stable ordering)
@@ -657,6 +668,8 @@ pre code { background: none; padding: 0; }
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
     var cols = visibleCols();
+    // 第 1 个可见非 actions 列 (用于默认分栏)
+    var firstKeyCol = cols.find(function(c) { return c.type !== 'actions'; });
     var frozenOffsets = [];
     var fo = 0;
     cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
@@ -677,8 +690,13 @@ pre code { background: none; padding: 0; }
         } else {
           var val = row[col.key];
           if (col.type === 'pills') {
-              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
-              var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
+              var items = (val || '').toString().split(/[,，、/]+/).map(function(s){return s.trim();}).filter(Boolean);
+              // pillFilter 默认开: 标签点击筛选, pillFilter: false 可关闭
+              var pillsHtml = items.map(function(s){
+                return '<span class="cell-pill'+(col.pillFilter !== false ? ' pill-clickable' : '')+'"'+
+                  (col.pillFilter !== false ? ' onclick="event.stopPropagation();quickFilterBy(\''+escapeAttr(col.key)+'\',\''+escapeAttr(s)+'\',\'contains\')"' : '')+
+                  '>'+escapeHtml(s)+'</span>';
+              }).join('');
               var freezeCls = col.freeze ? ' frozen-col' : '';
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
@@ -686,6 +704,7 @@ pre code { background: none; padding: 0; }
               return;
             }
             if (col.render) val = col.render(val, row);
+          else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
@@ -696,8 +715,12 @@ pre code { background: none; padding: 0; }
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
             tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
-          } else if (col.quickFilter !== false) {
+          } else if (col.quickFilter === true) {
+            // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          } else if (col === firstKeyCol) {
+            // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
@@ -782,11 +805,12 @@ pre code { background: none; padding: 0; }
     }
   }
 
-  window.quickFilterBy = function(key, value) {
-    if (quickFilter && quickFilter.key === key && quickFilter.value === value) {
+  window.quickFilterBy = function(key, value, mode) {
+    mode = mode || 'exact';
+    if (quickFilter && quickFilter.key === key && quickFilter.value === value && (quickFilter.mode || 'exact') === mode) {
       quickFilter = null;  // toggle off
     } else {
-      quickFilter = {key: key, value: value};
+      quickFilter = {key: key, value: value, mode: mode};
     }
     expandedIdx = -1;
     currentPage = 1;
@@ -1117,7 +1141,8 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = visibleCols({requireKey: true, excludeActions: true});
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
