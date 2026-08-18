@@ -175,6 +175,8 @@
 .split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.split-preview .kv-item-full { grid-column: 1 / -1; }
+.split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -325,6 +327,7 @@
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
   const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const showIndex = OPTIONS && OPTIONS.showIndex;
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
@@ -496,6 +499,9 @@
       var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
+      }
+      if (showIndex) {
+        rowHtml += '<td class="col-index-num">' + (rowIdx + 1) + '</td>';
       }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
@@ -672,6 +678,7 @@
       else { frozenStyles.push(''); }
     });
     thead.innerHTML = '<tr>' +
+      (showIndex ? '<th class="col-index-num" style="width:42px">序号</th>' : '') +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
@@ -955,11 +962,13 @@
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
       var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
-        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
+        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
   }
