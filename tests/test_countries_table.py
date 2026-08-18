@@ -178,7 +178,44 @@ class TestCountriesTable(unittest.TestCase):
         self.assertIn('塞尔维亚族 83.3%', text, "应显示塞尔维亚民族占比")
         self.assertIn('东正教 84.6%', text, "应显示塞尔维亚信仰占比")
 
-    def test_10_no_js_errors(self):
+    # ── 新需求：千位符 / 搜索限定 / 亚洲标签修正 ──
+
+    def test_11_thousands_format(self):
+        # 面积/人口/GDP 千位符展示
+        row = self._row_for_country('中国')
+        self.assertIsNotNone(row)
+        tds = row.find_elements(By.TAG_NAME, 'td')
+        row_text = ' | '.join(td.text for td in tds)
+        self.assertIn('9,562,910', row_text, "面积应千位符: 9,562,910")
+        self.assertIn('140,898', row_text, "人口应千位符: 140,898")
+        self.assertIn('187,296.7', row_text, "GDP 应千位符带小数: 187,296.7")
+
+    def test_12_search_fields_limited(self):
+        # 搜索只匹配 国家/英文名/首都/首都英文
+        # 1) 首都英文可搜到
+        self._search('Beijing')
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 1, f"首都英文 Beijing 应筛出 1 行（中国）: {len(rows)}")
+        self.assertIn('中国', rows[0].text)
+        # 2) 面积数字（非搜索字段）搜不到
+        self._search('9562910')
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 0, f"面积数字不应命中搜索（限定 4 字段）: {len(rows)}")
+        # 3) 英文名可搜
+        self._search('China')
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 1, "英文名 China 应筛出 1 行")
+        self._clear_search()
+
+    def test_13_iran_afghanistan_west_asia(self):
+        # 伊朗/阿富汗 → 亚洲、西亚
+        for name, expected in [('伊朗', ['亚洲', '西亚']), ('阿富汗', ['亚洲', '西亚'])]:
+            row = self._row_for_country(name)
+            self.assertIsNotNone(row)
+            pills = row.find_elements(By.CSS_SELECTOR, '.cell-pill')
+            self.assertEqual([p.text for p in pills], expected, f"{name} 标签应为 {expected}")
+
+    def test_14_no_js_errors(self):
         self._clear_search()
         for _ in range(6):
             tabs = self.driver.find_elements(By.CSS_SELECTOR, '.tab-btn')

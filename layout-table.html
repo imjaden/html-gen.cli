@@ -405,12 +405,13 @@
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
     if (q) {
+      var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
-        return COLUMNS.some(function(col) {
-          if (col.type === 'actions') return false;
-          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        return searchKeys.some(function(k) {
+          return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
         });
       });
     }
@@ -517,6 +518,7 @@
               return;
             }
             if (col.render) val = col.render(val, row);
+          else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';

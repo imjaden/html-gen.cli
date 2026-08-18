@@ -71,7 +71,8 @@
       "sortable": true,
       "width": "95px",
       "quickFilter": false,
-      "preview": true
+      "preview": true,
+      "format": "thousands"
     },
     {
       "key": "pop_wan",
@@ -80,7 +81,8 @@
       "sortable": true,
       "width": "95px",
       "quickFilter": false,
-      "preview": true
+      "preview": true,
+      "format": "thousands"
     },
     {
       "key": "gdp_yi",
@@ -89,7 +91,8 @@
       "sortable": true,
       "width": "115px",
       "quickFilter": false,
-      "preview": true
+      "preview": true,
+      "format": "thousands"
     },
     {
       "key": "loc_url",
@@ -363,7 +366,7 @@
       "capital_en": "Tehran",
       "capital_lat": 35.6878,
       "capital_lon": 51.4447,
-      "region_tags": "亚洲、南亚",
+      "region_tags": "亚洲、西亚",
       "area_km2": 1745150,
       "pop_wan": 9157,
       "gdp_yi": 4752.5,
@@ -3003,7 +3006,7 @@
       "capital_en": "Kabul",
       "capital_lat": 34.5228,
       "capital_lon": 69.1761,
-      "region_tags": "亚洲、南亚",
+      "region_tags": "亚洲、西亚",
       "area_km2": 652870,
       "pop_wan": 4265,
       "gdp_yi": 177.8,
@@ -3296,6 +3299,12 @@
   ],
   "options": {
     "pageSize": 50,
-    "exportCSV": true
+    "exportCSV": true,
+    "searchFields": [
+      "country_zh",
+      "country_en",
+      "capital_zh",
+      "capital_en"
+    ]
   }
 }
