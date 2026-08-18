@@ -361,6 +361,8 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.split-preview .kv-item-full { grid-column: 1 / -1; }
+.split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -499,10 +501,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "strategy", "label": "计策", "sortable": true}, {"key": "event", "label": "历史事件", "sortable": true}, {"key": "figures", "label": "主要人物"}, {"key": "outcome", "label": "结局"}, {"key": "source", "label": "出处", "sortable": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
-  const DATA    = [{"strategy": "李代桃僵", "event": "毁堤淹田", "figures": "严世蕃、郑泌昌、何茂才", "outcome": "郑何被清算", "source": "剧中设定", "url": "drama/daming-strategy-01.html"}, {"strategy": "破釜沉舟", "event": "海瑞上疏", "figures": "海瑞、嘉靖", "outcome": "下狱后获释", "source": "史实", "url": "drama/daming-strategy-02.html"}, {"strategy": "分而治之", "event": "嘉靖御下二十年", "figures": "嘉靖、严嵩、徐阶", "outcome": "朝局制衡", "source": "史实", "url": "drama/daming-strategy-03.html"}, {"strategy": "顺水推舟", "event": "严嵩固宠", "figures": "严嵩", "outcome": "终致倾覆", "source": "史实", "url": "drama/daming-strategy-04.html"}, {"strategy": "韬光养晦", "event": "徐阶倒严", "figures": "徐阶、严嵩", "outcome": "严党覆灭", "source": "史实", "url": "drama/daming-strategy-05.html"}, {"strategy": "将计就计", "event": "海瑞审通倭案", "figures": "海瑞、郑泌昌、何茂才", "outcome": "郑何落网", "source": "剧中设定", "url": "drama/daming-strategy-06.html"}];
+  const COLUMNS = [{"key": "strategy", "label": "计名", "sortable": true, "locale": "zh", "width": "90px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "category", "label": "分类", "type": "pills", "sortable": true, "locale": "zh", "width": "90px", "preview": true}, {"key": "alias", "label": "别名", "sortable": true, "locale": "zh", "width": "90px", "preview": true}, {"key": "idiom", "label": "衍生成语", "sortable": true, "locale": "zh", "width": "120px", "preview": true}, {"key": "event", "label": "历史事件", "sortable": true, "locale": "zh", "width": "260px", "preview": true, "onCellClick": "split", "splitFull": true}, {"key": "figures", "label": "主要人物", "sortable": true, "locale": "zh", "width": "160px", "preview": true, "splitFull": true}, {"key": "outcome", "label": "结局", "sortable": true, "locale": "zh", "width": "180px", "preview": true, "splitFull": true}, {"key": "source", "label": "出处", "sortable": true, "locale": "zh", "width": "220px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"strategy": "李代桃僵", "category": "敌战计", "alias": "—", "idiom": "李代桃僵", "event": "毁堤淹田：严党借改稻为桑之名毁堤淹田，逼农民贱卖田地", "figures": "严世蕃、郑泌昌、何茂才", "outcome": "郑泌昌、何茂才被清算，严党受挫", "source": "剧中设定（《三十六计》第十一计）"}, {"strategy": "破釜沉舟", "category": "—", "alias": "—", "idiom": "破釜沉舟", "event": "海瑞呈《治安疏》直言进谏，嘉靖震怒下狱", "figures": "海瑞、嘉靖", "outcome": "海瑞下狱，嘉靖临终前悔悟释疑", "source": "史实+剧中演绎（成语典故）"}, {"strategy": "分而治之", "category": "—", "alias": "—", "idiom": "分而治之", "event": "嘉靖'长江黄河论'：以严嵩制清流、以清流制严嵩", "figures": "嘉靖、严嵩、徐阶", "outcome": "朝局维持平衡，国库空虚日甚", "source": "剧中设定（嘉靖御下之道）"}, {"strategy": "顺水推舟", "category": "—", "alias": "—", "idiom": "顺水推舟", "event": "严嵩借杨继盛弹劾案顺水推舟除掉政敌", "figures": "严嵩、杨继盛、徐阶", "outcome": "杨继盛被杀，清流受挫", "source": "剧中设定"}, {"strategy": "韬光养晦", "category": "—", "alias": "—", "idiom": "韬光养晦", "event": "徐阶隐忍多年，暗结言官与裕王，静待时机", "figures": "徐阶、严嵩、张居正", "outcome": "严嵩倒台，徐阶拜首辅", "source": "剧中设定（以史实为蓝本）"}, {"strategy": "将计就计", "category": "—", "alias": "—", "idiom": "将计就计", "event": "海瑞审通倭案，将计就计诱出真凶", "figures": "海瑞、何茂才、倭寇", "outcome": "冤案昭雪，倭患线索浮出水面", "source": "剧中设定"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {"pageSize": 10, "exportCSV": true, "search": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"pageSize": 10, "exportCSV": true, "search": true, "showIndex": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
@@ -511,6 +513,7 @@ pre code { background: none; padding: 0; }
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
   const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const showIndex = OPTIONS && OPTIONS.showIndex;
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
@@ -682,6 +685,9 @@ pre code { background: none; padding: 0; }
       var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
+      }
+      if (showIndex) {
+        rowHtml += '<td class="col-index-num">' + (rowIdx + 1) + '</td>';
       }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
@@ -858,6 +864,7 @@ pre code { background: none; padding: 0; }
       else { frozenStyles.push(''); }
     });
     thead.innerHTML = '<tr>' +
+      (showIndex ? '<th class="col-index-num" style="width:42px">序号</th>' : '') +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
@@ -1141,11 +1148,13 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
       var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
-        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
+        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
   }
@@ -1480,6 +1489,11 @@ pre code { background: none; padding: 0; }
     applyDensity();
     render();
     initSplitDrag();
+    // 默认筛选：options.defaultFilter {key, value, mode} 加载后自动筛选（如大明时间轴默认选中嘉靖）
+    var _df = OPTIONS && OPTIONS.defaultFilter;
+    if (_df && _df.key && _df.value) {
+      quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
   }
   init();
 

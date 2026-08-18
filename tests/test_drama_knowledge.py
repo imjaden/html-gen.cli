@@ -148,17 +148,21 @@ class TestDramaKnowledge(unittest.TestCase):
 
     # ── T6: Table content pages ──
 
-    def test_08_daming_timeline_tabs(self):
-        """大明时间轴 table 应有 2 tabs (年号总览 + 剧情节点)."""
+    def test_08_daming_timeline_single_table(self):
+        """大明时间轴 table 应为单表 17 年号，默认筛选嘉靖（本剧年号）."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
         time.sleep(0.3)
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()
         time.sleep(0.5)
-        # Switch to iframe content
         frame = self.driver.find_element(By.ID, 'contentFrame')
         self.driver.switch_to.frame(frame)
-        tabs = self.driver.find_elements(By.CSS_SELECTOR, '.tab-btn')
-        self.assertGreaterEqual(len(tabs), 2, f"Should have ≥2 tabs, got {len(tabs)}")
+        heads = [th.text for th in self.driver.find_elements(By.CSS_SELECTOR, 'thead th')]
+        self.assertEqual(heads,
+                         ['序号', '年号', '皇帝', '庙号', '起止年份', '关键人物', '主要事件', '出处'],
+                         f"大明时间轴表头: {heads}")
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 1, f"默认应筛选嘉靖 1 行: {len(rows)}")
+        self.assertIn('嘉靖', rows[0].text, f"默认行应为嘉靖: {rows[0].text[:40]}")
         self.driver.switch_to.default_content()
 
     def test_08b_iframe_doc_bare_mode(self):

@@ -520,7 +520,9 @@
               var freezeCls = col.freeze ? ' frozen-col' : '';
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
             if (col.render) val = col.render(val, row);
@@ -1303,6 +1305,11 @@
     applyDensity();
     render();
     initSplitDrag();
+    // 默认筛选：options.defaultFilter {key, value, mode} 加载后自动筛选（如大明时间轴默认选中嘉靖）
+    var _df = OPTIONS && OPTIONS.defaultFilter;
+    if (_df && _df.key && _df.value) {
+      quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
   }
   init();
 

@@ -113,6 +113,49 @@ class TestHistoryTables(unittest.TestCase):
         self.assertIn('查理曼', pv, "西方大事应含查理曼")
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
+    # ── 大明王朝1566 两表 ──
+
+    def test_06_daming_timeline(self):
+        self._load('daming-timeline-table.html')
+        self.assertEqual(self._headers(),
+                         ['序号', '年号', '皇帝', '庙号', '起止年份', '关键人物', '主要事件', '出处'],
+                         f"大明时间轴表头: {self._headers()}")
+        # 默认筛选嘉靖
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 1, f"默认应筛选嘉靖 1 行: {len(rows)}")
+        self.assertIn('嘉靖', rows[0].text)
+        # 清筛选 17 行
+        self.driver.execute_script("clearQuickFilter();")
+        time.sleep(0.6)
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 17,
+                         "应 17 个年号")
+        # 嘉靖 split 详情（pills 格子整格点击）
+        jia = self._row_by_text(1, '嘉靖')
+        self.driver.execute_script("arguments[0].click();", jia.find_elements(By.TAG_NAME, 'td')[1])
+        time.sleep(0.8)
+        pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
+        self.assertIn('严嵩专权', pv, "嘉靖详情应含主要事件")
+        self.assertIn('本剧主线', pv, "嘉靖出处应标本剧主线")
+
+    def test_07_daming_strategy(self):
+        self._load('daming-strategy-table.html')
+        self.assertEqual(self._headers(),
+                         ['序号', '计名', '分类', '别名', '衍生成语', '历史事件', '主要人物', '结局', '出处'],
+                         f"大明计策表头: {self._headers()}")
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 6, f"应 6 行: {len(rows)}")
+        first = rows[0].find_elements(By.TAG_NAME, 'td')
+        self.assertEqual(first[0].text, '1', "序号应为 1")
+        self.assertEqual(first[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '敌战计',
+                         "李代桃僵分类应为敌战计")
+        self.driver.execute_script("arguments[0].click();", first[1])
+        time.sleep(0.8)
+        pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
+        self.assertIn('毁堤淹田', pv, "详情应含历史事件")
+        self.assertIn('严世蕃', pv, "详情应含主要人物")
+        self.assertIn('被清算', pv, "详情应含结局")
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
+
 
 if __name__ == '__main__':
     unittest.main()
