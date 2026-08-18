@@ -364,7 +364,7 @@ pre code { background: none; padding: 0; }
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
       <div class="sidebar-title" title="以剧读史">📚 以剧读史</div>
-      <div class="sub">影视历史知识库</div>
+      <div class="sub"></div>
     </div>
     <div id="kwSectionsContainer"></div>
     <!-- Sidebar Search -->
@@ -576,10 +576,10 @@ pre code { background: none; padding: 0; }
     activeGroup = savedGroup; renderTabs();
     if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
     else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
-    return;
+  } else {
+    renderTabs();
+    renderLegend();
   }
-  renderTabs();
-  renderLegend();
 
   /* ═══════ Sidebar Collapse ═══════ */
   var _collapsed = false;
