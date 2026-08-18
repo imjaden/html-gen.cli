@@ -37,13 +37,16 @@
 .kw-sections.active { display: block; }
 .kw-section-title {
   display: flex; align-items: center; gap: 8px;
-  padding: 10px 16px 4px; font-size: 0.7rem; font-weight: 700;
+  padding: 10px 16px 4px; font-size: 0.82rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em;
   color: #6b7280; cursor: pointer; user-select: none;
 }
 .kw-section-title:hover { color: #e0e0e0; }
 .kw-section-title.active { color: var(--cobalt-400); }
 .kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.kw-section-title .kw-section-icon { font-size: 0.9rem; flex-shrink: 0; }
+/* 搜索/折叠功能隐藏（与顶部菜单同高同字体；按钮功能保留但不再展示） */
+#kwSearchBtn, #collapseBtn { display: none !important; }
 .kw-item {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 16px 8px 28px; cursor: pointer; transition: all 0.12s;
