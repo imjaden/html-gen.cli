@@ -30,7 +30,7 @@ class TestDocSidebar(unittest.TestCase):
 
     def setUp(self):
         self.driver.set_window_size(1280, 800)
-        self.driver.get('file://' + str(DEMO))
+        self.driver.get('file://' + str(DEMO) + '?sidebar=1&toolbar=1')
         time.sleep(0.6)
         self.driver.execute_script(
             "window.__testErrors = [];"

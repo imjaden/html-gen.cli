@@ -72,7 +72,7 @@ pre {
 pre code { background: none; padding: 0; }
 
 /* ── Data Table ── */
-.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table { width: 100%; border-collapse: collapse; }
 .data-table th {
   position: sticky; top: 0; z-index: 10;
   background: var(--surface-900);
@@ -198,17 +198,29 @@ pre code { background: none; padding: 0; }
   width: 260px; min-width: 260px;
   background: var(--surface-900);
   border-right: 1px solid #2a2a3e;
-  display: flex; flex-direction: column;
+  flex-direction: column;
   position: sticky; top: 0; height: 100vh;
   overflow-y: auto;
   transition: width 0.25s, min-width 0.25s;
 }
+
+/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
+.doc-sidebar { display: none; }
+.top-toolbar { display: none; }
+body.show-sidebar .doc-sidebar { display: flex; }
+body.show-toolbar .top-toolbar { display: flex; }
 .doc-sidebar.collapsed { width: 48px; min-width: 48px; }
+.doc-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.doc-sidebar-resize:hover, .doc-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
 .doc-sidebar.collapsed .doc-sidebar-header,
 .doc-sidebar.collapsed .doc-toc,
 .doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
-.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
 .doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
+.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
 .doc-sidebar-header {
   padding: 16px 18px 12px;
   border-bottom: 1px solid #2a2a3e;
@@ -258,6 +270,9 @@ pre code { background: none; padding: 0; }
 .doc-body h1:first-child { margin-top: 0; }
 .doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
 .doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
+.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
+.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
 .doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
 .doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
 .doc-body li { line-height: 1.8; margin: 3px 0; }
@@ -287,7 +302,7 @@ pre:hover .copy-btn { opacity: 1; }
 .doc-body img { cursor: zoom-in; }
 
 .anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
-h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
 .anchor-link:hover { color: var(--cobalt-400); }
 
 .code-with-lines { counter-reset: line; padding-left: 0; }
@@ -305,8 +320,18 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 .doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
 .doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
 
+/* ── TOC Search ── */
+.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.doc-toc-search.active { display: block; }
+.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.doc-toc-search input:focus { border-color: var(--cobalt-600); }
+.doc-toc-search input::placeholder { color: #555; }
+:root.light .doc-toc-search { border-color: #e5e5e5; }
+:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
+.doc-toc a.filtered-out { display: none; }
+
 /* ── Top-Right Toolbar ── */
-.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
 :root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
 .tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
 .tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
@@ -324,6 +349,9 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 :root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
 :root.light .doc-body h2 { color: #222; }
 :root.light .doc-body h3 { color: #333; }
+:root.light .doc-body h4 { color: #444; }
+:root.light .doc-body h5 { color: #555; }
+:root.light .doc-body h6 { color: #666; }
 :root.light .doc-body p, :root.light .doc-body li { color: #444; }
 :root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
 :root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
@@ -339,6 +367,14 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
   .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
   .doc-body { padding: 0 16px 40px; }
   .doc-header { padding: 0 16px; }
+}
+
+@media print {
+  .doc-sidebar, .top-toolbar, .progress-bar { display: none !important; }
+  .doc-body { color: #000; }
+  .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
+  .doc-body code { background: #f0f0f0; color: #000; }
+  .doc-body a { color: #000; text-decoration: underline; }
 }
 </style>
 </head>
@@ -359,17 +395,22 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 
 <div class="doc-wrapper">
   <aside class="doc-sidebar" id="sidebar">
-    <div class="doc-sidebar-icon">📄</div>
+    <div class="doc-sidebar-resize" id="sbResize"></div>
+    <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
     <div class="doc-sidebar-header">
       <div class="sidebar-title" title="html-gen · CLI 使用说明" id="sidebarTitle">📄 html-gen · CLI 使用说明</div>
       <div class="sub-row">
-        <div class="sub">三层模板架构的 CLI 生成器</div>
+        <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
       </div>
     </div>
     <nav class="doc-toc" id="toc"></nav>
+    <!-- TOC Search -->
+    <div class="doc-toc-search" id="tocSearchWrap">
+      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    </div>
     <div class="doc-sidebar-footer">
-      <button class="sb-btn" onclick="alert('TOC 搜索功能开发中')" title="搜索 TOC (开发中)">🔍</button>
+      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
       <span style="flex:1"></span>
       <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
     </div>
@@ -377,7 +418,7 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen · CLI 使用说明</h1>
-      <div class="meta">路径: <code>/Users/jadenli/CodeSpace/html-gen/demos/html-gen-usage-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 1,002 · 阅读约 5 分钟</div>
+      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/html-gen-usage-guide-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 1,002 · 阅读约 5 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <blockquote>三层模板架构的 CLI 生成器：将 Markdown/JSON 注入模板，输出自包含单文件 HTML。</blockquote>
@@ -870,6 +911,11 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
 </div>
 <script>
 (function() {
+  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
+  var params = new URLSearchParams(location.search);
+  if (params.get('sidebar') === '1') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') === '1') document.body.classList.add('show-toolbar');
+
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');
@@ -954,11 +1000,64 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
     try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
     setTimeout(function() { updateProgress(); }, 300);
   };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
   try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
 
   document.addEventListener('keydown', function(e) {
-    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA') {
-      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+    }
+  });
+
+  /* ═══════ TOC Search ═══════ */
+  var _tocSearchActive = false, _tocSearchTimer;
+  window.toggleTocSearch = function() {
+    _tocSearchActive = !_tocSearchActive;
+    var wrap = document.getElementById('tocSearchWrap');
+    var input = document.getElementById('tocSearchInput');
+    var btn = document.getElementById('tocSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _tocSearchActive);
+    if (btn) btn.style.color = _tocSearchActive ? 'var(--cobalt-400)' : '';
+    if (_tocSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doTocFilter('');
+    }
+  };
+
+  function doTocFilter(q) {
+    tocItems.forEach(function(a) {
+      a.classList.toggle('filtered-out', q.length >= 2 && a.textContent.toLowerCase().indexOf(q) === -1);
+    });
+  }
+
+  document.getElementById('tocSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_tocSearchTimer);
+    _tocSearchTimer = setTimeout(function() { doTocFilter(q); }, 150);
+  });
+
+  window.tocSearchKey = function(e) {
+    if (e.key === 'Escape') {
+      _tocSearchActive = true; toggleTocSearch(); // force close
+    } else if (e.key === 'Enter') {
+      var q = document.getElementById('tocSearchInput').value.toLowerCase().trim();
+      if (q.length >= 2) {
+        var match = tocItems.find(function(a){ return !a.classList.contains('filtered-out'); });
+        if (match) match.click();
+        toggleTocSearch();
+      }
+    }
+  };
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
+      _tocSearchActive = true; toggleTocSearch();
     }
   });
 
@@ -972,6 +1071,16 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
     var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
     link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
     toc.appendChild(link); tocItems.push(link);
+  });
+
+  // h4-h6 anchors (not in TOC)
+  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.href = '#' + h.id;
+    anchor.textContent = '\u00b6';
+    h.appendChild(anchor);
   });
 
   function onScroll() {
@@ -1005,6 +1114,33 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o</code></pre>
   body.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function(e) { e.stopPropagation(); lbImg.src = this.src; lb.classList.add('active'); }); });
   window.closeLightbox = function(e) { if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) lb.classList.remove('active'); };
   document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active'); });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('sidebar');
+    var handle = document.getElementById('sbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:doc:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:doc:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
 })();
 </script>
 </body>

@@ -153,6 +153,24 @@ class TestDramaKnowledge(unittest.TestCase):
         self.assertGreaterEqual(len(tabs), 2, f"Should have ≥2 tabs, got {len(tabs)}")
         self.driver.switch_to.default_content()
 
+    def test_08b_iframe_doc_bare_mode(self):
+        """iframe 内 doc 页默认隐藏 sidebar/toolbar (嵌入降级)."""
+        # 中国历史 → 概述 (doc page, 非 table)
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[0].click()
+        time.sleep(0.6)
+        frame = self.driver.find_element(By.ID, 'contentFrame')
+        self.driver.switch_to.frame(frame)
+        # doc page inside iframe: sidebar/toolbar hidden by default (no param)
+        sidebar_disp = self.driver.execute_script(
+            "var el = document.getElementById('sidebar'); return el ? getComputedStyle(el).display : 'MISSING';"
+        )
+        toolbar_disp = self.driver.execute_script(
+            "var el = document.getElementById('topToolbar'); return el ? getComputedStyle(el).display : 'MISSING';"
+        )
+        self.driver.switch_to.default_content()
+        self.assertEqual(sidebar_disp, 'none', f"iframe doc sidebar should be hidden, got {sidebar_disp}")
+        self.assertEqual(toolbar_disp, 'none', f"iframe doc toolbar should be hidden, got {toolbar_disp}")
+
     # ── T7: JS errors ──
 
     def test_09_no_js_errors(self):
