@@ -1,4 +1,4 @@
-"""Selenium test: layout-doc bare mode — sidebar/toolbar URL param control."""
+"""Selenium test: layout-doc bare mode — 默认展示，?sidebar=0 / ?toolbar=0 显式隐藏."""
 import time, unittest
 from pathlib import Path
 
@@ -43,55 +43,58 @@ class TestDocBare(unittest.TestCase):
 
     def _sidebar_display(self):
         return self.driver.execute_script(
-            "return getComputedStyle(document.getElementById('sidebar')).display;"
-        )
+            "return getComputedStyle(document.getElementById('sidebar')).display;")
 
     def _toolbar_display(self):
         return self.driver.execute_script(
-            "return getComputedStyle(document.getElementById('topToolbar')).display;"
-        )
+            "return getComputedStyle(document.getElementById('topToolbar')).display;")
 
-    # ── Bare mode: no param → both hidden ──
+    # ── 默认展示（无参）──
 
-    def test_01_no_param_both_hidden(self):
+    def test_01_no_param_both_visible(self):
         self._load()
-        self.assertEqual(self._sidebar_display(), 'none', "sidebar should be hidden by default")
-        self.assertEqual(self._toolbar_display(), 'none', "toolbar should be hidden by default")
+        self.assertEqual(self._sidebar_display(), 'flex', "sidebar 默认应展示")
+        self.assertEqual(self._toolbar_display(), 'flex', "toolbar 默认应展示")
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
-    # ── sidebar=1 only ──
+    # ── sidebar=0 显式隐藏侧边栏 ──
 
-    def test_02_sidebar_only(self):
-        self._load('?sidebar=1')
-        self.assertEqual(self._sidebar_display(), 'flex', "sidebar should show with ?sidebar=1")
-        self.assertEqual(self._toolbar_display(), 'none', "toolbar should stay hidden")
+    def test_02_sidebar_zero_hidden(self):
+        self._load('?sidebar=0')
+        self.assertEqual(self._sidebar_display(), 'none', "sidebar=0 应隐藏侧边栏")
+        self.assertEqual(self._toolbar_display(), 'flex', "toolbar 保持展示")
 
-    # ── toolbar=1 only ──
+    # ── toolbar=0 显式隐藏工具栏 ──
 
-    def test_03_toolbar_only(self):
-        self._load('?toolbar=1')
-        self.assertEqual(self._sidebar_display(), 'none', "sidebar should stay hidden")
-        self.assertEqual(self._toolbar_display(), 'flex', "toolbar should show with ?toolbar=1")
+    def test_03_toolbar_zero_hidden(self):
+        self._load('?toolbar=0')
+        self.assertEqual(self._sidebar_display(), 'flex', "sidebar 保持展示")
+        self.assertEqual(self._toolbar_display(), 'none', "toolbar=0 应隐藏工具栏")
 
-    # ── both ──
+    # ── 两者显式隐藏（knowledge 嵌入场景）──
 
-    def test_04_both_visible(self):
+    def test_04_both_zero_hidden(self):
+        self._load('?sidebar=0&toolbar=0')
+        self.assertEqual(self._sidebar_display(), 'none', "嵌入场景侧边栏隐藏")
+        self.assertEqual(self._toolbar_display(), 'none', "嵌入场景工具栏隐藏")
+
+    # ── 兼容：显式 1 仍展示 ──
+
+    def test_05_explicit_one_visible(self):
         self._load('?sidebar=1&toolbar=1')
-        self.assertEqual(self._sidebar_display(), 'flex', "sidebar should show")
-        self.assertEqual(self._toolbar_display(), 'flex', "toolbar should show")
+        self.assertEqual(self._sidebar_display(), 'flex', "sidebar=1 展示")
+        self.assertEqual(self._toolbar_display(), 'flex', "toolbar=1 展示")
 
-    # ── collapsed still works under show-sidebar (N5) ──
+    # ── 默认展示下 collapsed 仍可用 ──
 
-    def test_05_collapsed_under_sidebar(self):
-        self._load('?sidebar=1')
-        # Collapse via keyboard shortcut '['
+    def test_06_collapsed_works(self):
+        self._load()
         self.driver.find_element(By.TAG_NAME, 'body').send_keys('[')
         time.sleep(0.3)
         sidebar = self.driver.find_element(By.ID, 'sidebar')
         classes = sidebar.get_attribute('class') or ''
-        self.assertIn('collapsed', classes, "sidebar should collapse under show-sidebar")
-        # Still displayed (flex), just 48px
-        self.assertEqual(self._sidebar_display(), 'flex', "collapsed sidebar still flex")
+        self.assertIn('collapsed', classes, "默认展示下侧边栏可折叠")
+        self.assertEqual(self._sidebar_display(), 'flex', "collapsed 侧边栏仍 flex（48px）")
 
 
 if __name__ == '__main__':

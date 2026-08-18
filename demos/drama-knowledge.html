@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260706" type="image/png">
-<title>以剧读史 · 影视历史知识库</title>
+<title>以剧读史</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -363,8 +363,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
-      <div class="sidebar-title" title="以剧读史 · 影视历史知识库">📚 以剧读史 · 影视历史知识库</div>
-      <div class="sub"></div>
+      <div class="sidebar-title" title="以剧读史">📚 以剧读史</div>
+      <div class="sub">影视历史知识库</div>
     </div>
     <div id="kwSectionsContainer"></div>
     <!-- Sidebar Search -->
@@ -382,8 +382,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-tab-bar" id="kwTabBar"></div>
     <div class="kw-content">
       <div class="kw-welcome active" id="welcomePanel">
-        <div class="w-title">📚 以剧读史 · 影视历史知识库</div>
-        <div class="w-sub">从左侧菜单选择，以经典影视剧为线索，梳理中国历史脉络。</div>
+        <div class="w-title">📚 以剧读史</div>
+        <div class="w-sub">从经典历史影视剧出发，读历史脉络，学职场谋略。左侧选择剧集与知识点分类。</div>
         <div class="w-legend" id="wLegend"></div>
       </div>
       <div class="kw-frame-wrap" id="frameWrap">
@@ -533,7 +533,7 @@ pre code { background: none; padding: 0; }
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
     var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
-    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + '?t=' + Date.now(); }
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
   };

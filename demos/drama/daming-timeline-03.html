@@ -400,7 +400,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
     <div class="doc-sidebar-header">
       <div class="sidebar-title" title="大明王朝1566 · 海瑞赴任淳安" id="sidebarTitle">📄 大明王朝1566 · 海瑞赴任淳安</div>
       <div class="sub-row">
-        <div class="sub"></div>
+        <div class="sub">以剧读史 · 剧中设定</div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
       </div>
     </div>
@@ -441,8 +441,9 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 (function() {
   // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
   var params = new URLSearchParams(location.search);
-  if (params.get('sidebar') === '1') document.body.classList.add('show-sidebar');
-  if (params.get('toolbar') === '1') document.body.classList.add('show-toolbar');
+  // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
+  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
 
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');

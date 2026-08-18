@@ -805,7 +805,7 @@ for dim in ['providers','people','tools','llms','hotspots']:
 <script>
 (function() {
   var params = new URLSearchParams(location.search);
-  if (params.get('sidebar') === '1') document.body.classList.add('show-sidebar');
+  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
 
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
