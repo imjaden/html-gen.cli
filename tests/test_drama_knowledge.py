@@ -64,8 +64,16 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_02_sections_render_as_menu(self):
         """D2: 中国历史 group: 3 sections, 0 items (single-item sections skipped)."""
         sections = self._section_titles()
-        self.assertEqual(sections, ['概述', '时间轴', '36计策'],
+        self.assertEqual([s.split('\n')[-1] for s in sections], ['概述', '时间轴', '36计策'],
                          f"Sections: {sections}")
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
+
+    def test_02b_section_icons(self):
+        """D4: section 菜单项带 icon 前缀（📋/📅/🧮）."""
+        sections = self._section_titles()
+        self.assertEqual(sections[0].split('\n')[0], '📋', f"概述 icon: {sections[0]}")
+        self.assertEqual(sections[1].split('\n')[0], '📅', f"时间轴 icon: {sections[1]}")
+        self.assertEqual(sections[2].split('\n')[0], '🧮', f"36计策 icon: {sections[2]}")
         items = self.driver.find_elements(By.CSS_SELECTOR, '.kw-item')
         self.assertEqual(len(items), 0, "Single-item sections should not render kw-item rows")
 
@@ -172,6 +180,35 @@ class TestDramaKnowledge(unittest.TestCase):
         self.assertEqual(toolbar_disp, 'none', f"iframe doc toolbar should be hidden, got {toolbar_disp}")
 
     # ── T7: JS errors ──
+
+    def test_15_tab_memory_restore(self):
+        """需求 3: 切页签后刷新，恢复之前查看的页签（group 单独记忆）."""
+        tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
+        tabs[1].click()  # 大明王朝1566
+        time.sleep(0.4)
+        self.driver.refresh()
+        time.sleep(0.8)
+        active = self.driver.execute_script(
+            "var a=document.querySelector('.kw-tab.active'); return a ? a.textContent : 'NONE';")
+        self.assertIn('大明', active, f"刷新后应恢复大明页签: {active}")
+
+    def test_16_url_sync_and_restore(self):
+        """需求 3: 点 section 实时更新 URL（group+item）；带 URL 打开定位指定页."""
+        # 中国历史 → 36计策 section
+        sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        sections[2].click()  # 36计策
+        time.sleep(0.6)
+        url = self.driver.execute_script("return location.href;")
+        self.assertIn('group=', url, f"URL 应含 group: {url}")
+        self.assertIn('item=', url, f"URL 应含 item: {url}")
+        # 带 URL 重新打开 → 定位 36计策
+        self.driver.get(url)
+        time.sleep(0.9)
+        active_sec = self.driver.execute_script(
+            "var a=document.querySelector('.kw-section-title.active'); return a ? a.textContent : 'NONE';")
+        self.assertIn('36计策', active_sec, f"URL 打开应定位 36计策: {active_sec}")
+        frame_src = self.driver.find_element(By.ID, 'contentFrame').get_attribute('src') or ''
+        self.assertIn('history-strategy-table.html', frame_src, f"iframe 应为 36计策表: {frame_src}")
 
     def test_09_no_js_errors(self):
         """Exercise all sections → no JS errors."""

@@ -499,7 +499,11 @@ pre code { background: none; padding: 0; }
     keys.forEach(function(sec) {
       var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
       var c = COLORS[Math.max(0, ci) % COLORS.length];
-      if (keys.length > 1) html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
+      if (keys.length > 1) {
+        var secIcon = sections[sec][0] && sections[sec][0].section_icon;
+        html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')">' +
+          (secIcon ? '<span class="kw-section-icon">' + secIcon + '</span>' : '<span class="dot" style="background:' + c + '"></span>') + sec + '</div>';
+      }
       // Single-item section matching section name: skip kw-item row (section title itself is the click target)
       var isSingleItem = sections[sec].length === 1 && sections[sec][0].title === sec;
       if (!isSingleItem) {
@@ -524,6 +528,19 @@ pre code { background: none; padding: 0; }
   };
 
   // ── Select item ──
+  // URL 参数同步（拷贝 URL 可定位指定页签/条目）
+  function syncUrl() {
+    try {
+      var u = new URL(window.location.href);
+      if (activeGroup) u.searchParams.set('group', activeGroup);
+      else u.searchParams.delete('group');
+      if (activeItem && ITEMS.some(function(i){ return i.group === activeGroup && i.title === activeItem; }))
+        u.searchParams.set('item', activeItem);
+      else u.searchParams.delete('item');
+      history.replaceState(null, '', u.toString());
+    } catch(e) {}
+  }
+
   window.selectItem = function(group, title) {
     activeItem = title;
     try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
@@ -536,6 +553,7 @@ pre code { background: none; padding: 0; }
     if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
+    syncUrl();
   };
 
   function renderLegend() {
@@ -543,12 +561,17 @@ pre code { background: none; padding: 0; }
     el.innerHTML = (GROUPS || []).map(function(g, i) { var c = COLORS[i % COLORS.length]; return '<span class="w-legend-item"><span class="ldot" style="background:' + c + '"></span> ' + g.label + '</span>'; }).join('');
   }
 
-  // Restore last state
-  var savedGroup = localStorage.getItem('html-gen:kw_group');
-  var savedItem = localStorage.getItem('html-gen:kw_item');
-  if (savedGroup && savedItem) {
-    var exists = ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
-    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); return; }
+  // Restore last state: URL 参数优先 > localStorage > 默认
+  var urlParams = new URLSearchParams(location.search);
+  var savedGroup = urlParams.get('group') || localStorage.getItem('html-gen:kw_group');
+  var savedItem = urlParams.get('item') || localStorage.getItem('html-gen:kw_item');
+  var groupValid = savedGroup && GROUPS.some(function(g) { return g.key === savedGroup; });
+  var itemValid = savedItem && ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
+  if (groupValid) {
+    activeGroup = savedGroup; renderTabs();
+    if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
+    else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
+    return;
   }
   renderTabs();
   renderLegend();
