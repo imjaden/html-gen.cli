@@ -361,6 +361,8 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.split-preview .kv-item-full { grid-column: 1 / -1; }
+.split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -499,10 +501,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "era", "label": "年号", "sortable": true}, {"key": "emperor", "label": "皇帝（及谥号）", "sortable": true}, {"key": "start", "label": "开始年代", "type": "number"}, {"key": "end", "label": "结束年份", "type": "number"}, {"key": "events", "label": "主要事件"}, {"key": "source", "label": "出处", "sortable": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
-  const DATA    = [{"era": "嘉靖", "emperor": "明世宗朱厚熜（肃皇帝）", "start": 1522, "end": 1566, "events": "改稻为桑、严嵩专权、海瑞上疏", "tab": "overview"}, {"era": "嘉靖三十九年(1560)", "emperor": "嘉靖、严嵩、严世蕃", "start": 1560, "end": 1560, "events": "改稻为桑国策出台", "tab": "plot", "source": "剧中设定", "url": "drama/daming-timeline-01.html"}, {"era": "嘉靖三十九年夏", "emperor": "严世蕃、郑泌昌、何茂才", "start": 1560, "end": 1560, "events": "毁堤淹田九县", "tab": "plot", "source": "剧中设定", "url": "drama/daming-timeline-02.html"}, {"era": "嘉靖三十九年(1560)前后", "emperor": "海瑞、郑泌昌、何茂才", "start": 1560, "end": 1560, "events": "海瑞赴任淳安", "tab": "plot", "source": "史实", "url": "drama/daming-timeline-03.html"}, {"era": "嘉靖四十年(1561)前后", "emperor": "海瑞、郑泌昌、何茂才", "start": 1561, "end": 1561, "events": "审通倭案", "tab": "plot", "source": "剧中设定", "url": "drama/daming-timeline-04.html"}, {"era": "嘉靖四十年(1561)", "emperor": "嘉靖、徐阶、严嵩", "start": 1561, "end": 1561, "events": "严嵩倒台", "tab": "plot", "source": "史实", "url": "drama/daming-timeline-05.html"}, {"era": "嘉靖四十四年(1565)", "emperor": "海瑞、嘉靖", "start": 1565, "end": 1565, "events": "海瑞上治安疏", "tab": "plot", "source": "史实", "url": "drama/daming-timeline-06.html"}, {"era": "嘉靖四十五年十二月", "emperor": "嘉靖、裕王、海瑞", "start": 1566, "end": 1566, "events": "嘉靖驾崩·海瑞出狱", "tab": "plot", "source": "史实", "url": "drama/daming-timeline-07.html"}];
-  const TABS    = [{"key": "overview", "label": "年号总览"}, {"key": "plot", "label": "剧情节点"}];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {"pageSize": 10, "exportCSV": true, "search": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const COLUMNS = [{"key": "era", "label": "年号", "type": "pills", "sortable": true, "locale": "zh", "width": "80px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "emperor", "label": "皇帝", "sortable": true, "locale": "zh", "width": "130px", "preview": true, "onCellClick": "split"}, {"key": "temple", "label": "庙号", "type": "pills", "sortable": true, "locale": "zh", "width": "70px", "preview": true, "onCellClick": "split"}, {"key": "period", "label": "起止年份", "sortable": true, "locale": "zh", "width": "100px", "preview": true}, {"key": "figures", "label": "关键人物", "sortable": true, "locale": "zh", "width": "180px", "preview": true, "splitFull": true}, {"key": "events", "label": "主要事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "splitFull": true}, {"key": "source", "label": "出处", "sortable": true, "locale": "zh", "width": "130px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"era": "洪武", "emperor": "明太祖朱元璋", "temple": "太祖", "period": "1368—1398", "figures": "徐达、常遇春、刘伯温", "events": "开国，废丞相，设锦衣卫，八股取士", "source": "《明史》"}, {"era": "建文", "emperor": "明惠帝朱允炆", "temple": "惠帝", "period": "1399—1402", "figures": "方孝孺、齐泰、朱棣", "events": "削藩引发靖难之役，成祖夺位", "source": "《明史》"}, {"era": "永乐", "emperor": "明成祖朱棣", "temple": "成祖", "period": "1403—1424", "figures": "郑和、解缙、姚广孝", "events": "迁都北京，郑和下西洋，编《永乐大典》", "source": "《明史》"}, {"era": "洪熙", "emperor": "明仁宗朱高炽", "temple": "仁宗", "period": "1425", "figures": "杨士奇、杨荣", "events": "仁宣之治开端（在位仅 10 个月）", "source": "《明史》"}, {"era": "宣德", "emperor": "明宣宗朱瞻基", "temple": "宣宗", "period": "1426—1435", "figures": "杨士奇、杨溥、于谦", "events": "仁宣之治，宣德炉，平汉王叛乱", "source": "《明史》"}, {"era": "正统", "emperor": "明英宗朱祁镇", "temple": "英宗", "period": "1436—1449", "figures": "王振、于谦", "events": "土木堡之变，英宗被瓦剌俘虏", "source": "《明史》"}, {"era": "景泰", "emperor": "明代宗朱祁钰", "temple": "代宗", "period": "1450—1457", "figures": "于谦", "events": "北京保卫战退瓦剌，夺门之变被废", "source": "《明史》"}, {"era": "天顺", "emperor": "明英宗朱祁镇", "temple": "英宗", "period": "1457—1464", "figures": "李贤、石亨、徐有贞", "events": "夺门复辟，冤杀于谦", "source": "《明史》"}, {"era": "成化", "emperor": "明宪宗朱见深", "temple": "宪宗", "period": "1465—1487", "figures": "万贵妃、汪直", "events": "设西厂，传奉官泛滥", "source": "《明史》"}, {"era": "弘治", "emperor": "明孝宗朱祐樘", "temple": "孝宗", "period": "1488—1505", "figures": "刘健、谢迁、李东阳", "events": "弘治中兴，一夫一妻", "source": "《明史》"}, {"era": "正德", "emperor": "明武宗朱厚照", "temple": "武宗", "period": "1506—1521", "figures": "刘瑾、江彬", "events": "刘瑾专权，应州大捷御驾亲征", "source": "《明史》"}, {"era": "嘉靖", "emperor": "明世宗朱厚熜", "temple": "世宗", "period": "1522—1566", "figures": "严嵩、徐阶、海瑞、张居正", "events": "严嵩专权、改稻为桑、海瑞上《治安疏》", "source": "《明史》·本剧主线"}, {"era": "隆庆", "emperor": "明穆宗朱载坖", "temple": "穆宗", "period": "1567—1572", "figures": "高拱、张居正", "events": "隆庆开关，俺答封贡", "source": "《明史》"}, {"era": "万历", "emperor": "明神宗朱翊钧", "temple": "神宗", "period": "1573—1620", "figures": "张居正、戚继光、李成梁", "events": "张居正改革，万历三大征", "source": "《明史》"}, {"era": "泰昌", "emperor": "明光宗朱常洛", "temple": "光宗", "period": "1620", "figures": "东林党诸臣", "events": "红丸案，'一月天子'", "source": "《明史》"}, {"era": "天启", "emperor": "明熹宗朱由校", "temple": "熹宗", "period": "1621—1627", "figures": "魏忠贤、孙承宗、袁崇焕", "events": "阉党专权，东林党争", "source": "《明史》"}, {"era": "崇祯", "emperor": "明思宗朱由检", "temple": "思宗", "period": "1628—1644", "figures": "袁崇焕、李自成、洪承畴", "events": "辽事、农民起义，1644 明亡", "source": "《明史》"}];
+  const TABS    = [];     // [{key,label,field?,match?}] or []
+  const OPTIONS = {"pageSize": 20, "exportCSV": true, "search": true, "showIndex": true, "defaultFilter": {"key": "era", "value": "嘉靖"}};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
@@ -511,6 +513,7 @@ pre code { background: none; padding: 0; }
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
   const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const showIndex = OPTIONS && OPTIONS.showIndex;
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
@@ -683,6 +686,9 @@ pre code { background: none; padding: 0; }
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
+      if (showIndex) {
+        rowHtml += '<td class="col-index-num">' + (rowIdx + 1) + '</td>';
+      }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
           var stickyCls2 = col.stickyRight ? ' sticky-right' : '';
@@ -700,7 +706,9 @@ pre code { background: none; padding: 0; }
               var freezeCls = col.freeze ? ' frozen-col' : '';
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
             if (col.render) val = col.render(val, row);
@@ -858,6 +866,7 @@ pre code { background: none; padding: 0; }
       else { frozenStyles.push(''); }
     });
     thead.innerHTML = '<tr>' +
+      (showIndex ? '<th class="col-index-num" style="width:42px">序号</th>' : '') +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
@@ -1141,11 +1150,13 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
       var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
-        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
+        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
   }
@@ -1480,6 +1491,11 @@ pre code { background: none; padding: 0; }
     applyDensity();
     render();
     initSplitDrag();
+    // 默认筛选：options.defaultFilter {key, value, mode} 加载后自动筛选（如大明时间轴默认选中嘉靖）
+    var _df = OPTIONS && OPTIONS.defaultFilter;
+    if (_df && _df.key && _df.value) {
+      quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
   }
   init();
 
