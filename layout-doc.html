@@ -12,11 +12,17 @@
   width: 260px; min-width: 260px;
   background: var(--surface-900);
   border-right: 1px solid #2a2a3e;
-  display: flex; flex-direction: column;
+  flex-direction: column;
   position: sticky; top: 0; height: 100vh;
   overflow-y: auto;
   transition: width 0.25s, min-width 0.25s;
 }
+
+/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
+.doc-sidebar { display: none; }
+.top-toolbar { display: none; }
+body.show-sidebar .doc-sidebar { display: flex; }
+body.show-toolbar .top-toolbar { display: flex; }
 .doc-sidebar.collapsed { width: 48px; min-width: 48px; }
 .doc-sidebar-resize {
   position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
@@ -139,7 +145,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 .doc-toc a.filtered-out { display: none; }
 
 /* ── Top-Right Toolbar ── */
-.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
 :root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
 .tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
 .tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
@@ -233,6 +239,11 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 </div>
 <script>
 (function() {
+  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
+  var params = new URLSearchParams(location.search);
+  if (params.get('sidebar') === '1') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') === '1') document.body.classList.add('show-toolbar');
+
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');

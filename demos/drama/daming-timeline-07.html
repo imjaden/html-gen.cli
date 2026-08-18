@@ -198,11 +198,17 @@ pre code { background: none; padding: 0; }
   width: 260px; min-width: 260px;
   background: var(--surface-900);
   border-right: 1px solid #2a2a3e;
-  display: flex; flex-direction: column;
+  flex-direction: column;
   position: sticky; top: 0; height: 100vh;
   overflow-y: auto;
   transition: width 0.25s, min-width 0.25s;
 }
+
+/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
+.doc-sidebar { display: none; }
+.top-toolbar { display: none; }
+body.show-sidebar .doc-sidebar { display: flex; }
+body.show-toolbar .top-toolbar { display: flex; }
 .doc-sidebar.collapsed { width: 48px; min-width: 48px; }
 .doc-sidebar-resize {
   position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
@@ -264,6 +270,9 @@ pre code { background: none; padding: 0; }
 .doc-body h1:first-child { margin-top: 0; }
 .doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
 .doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
+.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
+.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
 .doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
 .doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
 .doc-body li { line-height: 1.8; margin: 3px 0; }
@@ -293,7 +302,7 @@ pre:hover .copy-btn { opacity: 1; }
 .doc-body img { cursor: zoom-in; }
 
 .anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
-h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
+h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
 .anchor-link:hover { color: var(--cobalt-400); }
 
 .code-with-lines { counter-reset: line; padding-left: 0; }
@@ -322,7 +331,7 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 .doc-toc a.filtered-out { display: none; }
 
 /* ── Top-Right Toolbar ── */
-.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+.top-toolbar { position: fixed; top: 12px; right: 16px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
 :root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
 .tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
 .tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
@@ -340,6 +349,9 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 :root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
 :root.light .doc-body h2 { color: #222; }
 :root.light .doc-body h3 { color: #333; }
+:root.light .doc-body h4 { color: #444; }
+:root.light .doc-body h5 { color: #555; }
+:root.light .doc-body h6 { color: #666; }
 :root.light .doc-body p, :root.light .doc-body li { color: #444; }
 :root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
 :root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
@@ -388,7 +400,7 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
     <div class="doc-sidebar-header">
       <div class="sidebar-title" title="大明王朝1566 · 嘉靖驾崩·海瑞出狱" id="sidebarTitle">📄 大明王朝1566 · 嘉靖驾崩·海瑞出狱</div>
       <div class="sub-row">
-        <div class="sub">以剧读史 · 剧中设定</div>
+        <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
       </div>
     </div>
@@ -428,6 +440,11 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
 </div>
 <script>
 (function() {
+  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
+  var params = new URLSearchParams(location.search);
+  if (params.get('sidebar') === '1') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') === '1') document.body.classList.add('show-toolbar');
+
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');
@@ -583,6 +600,16 @@ h2:hover .anchor-link, h3:hover .anchor-link { opacity: 1; }
     var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
     link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
     toc.appendChild(link); tocItems.push(link);
+  });
+
+  // h4-h6 anchors (not in TOC)
+  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.href = '#' + h.id;
+    anchor.textContent = '\u00b6';
+    h.appendChild(anchor);
   });
 
   function onScroll() {

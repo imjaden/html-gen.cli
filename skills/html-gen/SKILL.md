@@ -31,7 +31,9 @@ metadata:
 
 ```shell
 # B 型 — Markdown → 文档
-html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]（自动剥离 YAML frontmatter）
+html-gen doc -i report.md -o report.html
+
+> 默认隐藏侧边栏/工具栏（Bare 模式）；独立完整浏览加 `?sidebar=1&toolbar=1` [--title "标题"] [--subtitle "副标题"]（自动剥离 YAML frontmatter）
 
 # D 型 — Markdown → 幻灯片
 html-gen slide -i slides.md -o slides.html [--title "标题"] [--subtitle "副标题"]
@@ -108,7 +110,9 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 **用法**:
 ```shell
-html-gen doc -i report.md -o report.html --title "标题" --subtitle "副标题"
+html-gen doc -i report.md -o report.html
+
+> 默认隐藏侧边栏/工具栏（Bare 模式）；独立完整浏览加 `?sidebar=1&toolbar=1` --title "标题" --subtitle "副标题"
 ```
 
 ## D 型 · 幻灯片 (slide)

@@ -49,6 +49,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - 左侧粘性侧边栏 + 右侧内容区
 - 自动生成 TOC（h2/h3），实时高亮当前章节
 - TOC 搜索（🔍 按钮，150ms debounce，≥2 字符触发过滤）
+- **Bare 模式**：默认隐藏侧边栏/工具栏，`?sidebar=1&toolbar=1` 展示；知识库嵌入自动降级
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 侧边栏宽度拖拽（200-400px，localStorage 持久化）
 - H3 子项开关，中/英双语，🌙/☀️ 主题切换
@@ -90,6 +91,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
 - 左侧章节列表（按 section 分组，badge 标记显式）
 - 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏）
+- **Bare 模式**：默认隐藏侧边栏/工具栏，`?sidebar=1&toolbar=1` 展示；知识库嵌入自动降级
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 双内容模式：有 `url` → iframe 加载，有 `desc` → 内联渲染
 - section 标题可点击：单条目 section 点击标题直接加载 (K2)
