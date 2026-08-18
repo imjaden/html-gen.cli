@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260706" type="image/png">
-<title>长亭科技商业分析</title>
+<title>知识库</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -72,7 +72,7 @@ pre {
 pre code { background: none; padding: 0; }
 
 /* ── Data Table ── */
-.data-table { width: 100%; border-collapse: collapse; table-layout: fixed; }
+.data-table { width: 100%; border-collapse: collapse; }
 .data-table th {
   position: sticky; top: 0; z-index: 10;
   background: var(--surface-900);
@@ -225,8 +225,10 @@ pre code { background: none; padding: 0; }
   display: flex; align-items: center; gap: 8px;
   padding: 10px 16px 4px; font-size: 0.7rem; font-weight: 700;
   text-transform: uppercase; letter-spacing: 0.06em;
-  color: #6b7280; cursor: default; user-select: none;
+  color: #6b7280; cursor: pointer; user-select: none;
 }
+.kw-section-title:hover { color: #e0e0e0; }
+.kw-section-title.active { color: var(--cobalt-400); }
 .kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .kw-item {
   display: flex; align-items: center; gap: 8px;
@@ -335,6 +337,13 @@ pre code { background: none; padding: 0; }
   .kw-sidebar.open { display: flex; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
   .kw-body { padding: 16px; }
 }
+
+@media print {
+  .kw-sidebar, .kw-tab-bar, .kw-toolbar { display: none !important; }
+  .kw-body { color: #000; }
+  .kw-welcome { display: none !important; }
+  body { background: #fff; }
+}
 .kw-sidebar::-webkit-scrollbar { width: 4px; }
 .kw-sidebar::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
 </style>
@@ -354,8 +363,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
-      <div class="sidebar-title" title="长亭科技商业分析">📚 长亭科技商业分析</div>
-      <div class="sub">Business Analysis Knowledge Base</div>
+      <div class="sidebar-title" title="知识库">📚 知识库</div>
+      <div class="sub"></div>
     </div>
     <div id="kwSectionsContainer"></div>
     <!-- Sidebar Search -->
@@ -373,8 +382,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-tab-bar" id="kwTabBar"></div>
     <div class="kw-content">
       <div class="kw-welcome active" id="welcomePanel">
-        <div class="w-title">📚 长亭科技商业分析</div>
-        <div class="w-sub">选择一个类目和条目以查看详细内容</div>
+        <div class="w-title">📚 知识库</div>
+        <div class="w-sub">从上方类目选择，浏览整理的知识内容。</div>
         <div class="w-legend" id="wLegend"></div>
       </div>
       <div class="kw-frame-wrap" id="frameWrap">
@@ -400,16 +409,6 @@ pre code { background: none; padding: 0; }
     '能讲':{bg:'rgba(192,132,252,0.12)',color:'#c084fc',border:'rgba(192,132,252,0.25)'},
     '能输出':{bg:'rgba(251,146,60,0.12)',color:'#fb923c',border:'rgba(251,146,60,0.25)'},
   };
-
-  // Update .sub with item count
-  function updateSub() {
-    var sub = document.querySelector('.kw-sidebar-header .sub');
-    if (sub) {
-      var base = (sub.textContent || '').replace(/\s*共\s+\d+\s*条目.*/, '').trim();
-      sub.textContent = (base ? base + ' · ' : '') + '共 ' + ITEMS.length + ' 条目';
-    }
-  }
-  updateSub();
 
   /* ═══════ i18n & Theme ═══════ */
   var _kwLang = (function() { try { var v = localStorage.getItem('html-gen:kw_lang'); return (v === 'zh' || v === 'en') ? v : 'zh'; } catch(e) { return 'zh'; } })();
@@ -482,7 +481,7 @@ pre code { background: none; padding: 0; }
     document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
     renderSidebar();
     var firstItem = ITEMS.find(function(i) { return i.group === key; });
-    if (firstItem) selectItem(firstItem.title);
+    if (firstItem) selectItem(activeGroup, firstItem.title);
   };
 
   // ── Render sidebar sections ──
@@ -500,30 +499,41 @@ pre code { background: none; padding: 0; }
     keys.forEach(function(sec) {
       var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
       var c = COLORS[Math.max(0, ci) % COLORS.length];
-      if (keys.length > 1) html += '<div class="kw-section-title"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
-      sections[sec].forEach(function(item) {
+      if (keys.length > 1) html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')"><span class="dot" style="background:' + c + '"></span>' + sec + '</div>';
+      // Single-item section matching section name: skip kw-item row (section title itself is the click target)
+      var isSingleItem = sections[sec].length === 1 && sections[sec][0].title === sec;
+      if (!isSingleItem) {
+        sections[sec].forEach(function(item) {
         var badgeHtml = '';
         if (item.badge) {
           var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
           badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
         }
-        html += '<div class="kw-item" onclick="selectItem(\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
       });
+      }
     });
     container.innerHTML = html || '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.78rem;">暂无内容</div>';
   }
 
+  // ── Select section (click section title) ──
+  window.selectSection = function(group, sec) {
+    var item = ITEMS.find(function(i) { return i.group === group && i.section === sec; });
+    if (!item) return;
+    selectItem(group, item.title);
+  };
+
   // ── Select item ──
-  window.selectItem = function(title) {
+  window.selectItem = function(group, title) {
     activeItem = title;
     try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
     document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
-    var item = ITEMS.find(function(i) { return i.title === title; });
+    var item = ITEMS.find(function(i) { return i.group === group && i.title === title; });
     if (!item) return;
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
     var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
-    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + '?t=' + Date.now(); }
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
   };
@@ -538,7 +548,7 @@ pre code { background: none; padding: 0; }
   var savedItem = localStorage.getItem('html-gen:kw_item');
   if (savedGroup && savedItem) {
     var exists = ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
-    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedItem); }, 50); return; }
+    if (exists) { activeGroup = savedGroup; renderTabs(); setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); return; }
   }
   renderTabs();
   renderLegend();
