@@ -220,7 +220,7 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
-.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px; }
+.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
 .data-table .cell-pill.pill-clickable { cursor:pointer; }
 .data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
@@ -280,7 +280,7 @@ pre code { background: none; padding: 0; }
   position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
-.data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+.data-table td { padding:7px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
   vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
@@ -291,8 +291,8 @@ pre code { background: none; padding: 0; }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
 
 /* ── Actions ── */
-.action-btn { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
-  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.65rem; color:#6b7280;
+.action-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.62rem; color:#6b7280;
   background:transparent; transition:all 0.15s; margin:0 1px; }
 .action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
 
@@ -518,6 +518,8 @@ pre code { background: none; padding: 0; }
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
+  // initialHidden: 表格默认隐藏列（⚙️ 可开启；分栏详情全列渲染不受影响）；用户切换过则尊重用户
+  COLUMNS.forEach(function(c) { if (c.initialHidden && colVisibility[c.key] === undefined) colVisibility[c.key] = false; });
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -574,7 +576,7 @@ pre code { background: none; padding: 0; }
     if (tab.contains) {
       var val = row[tab.field || 'profiles'] || '';
       var target = tab.value || tab.key;
-      return val.split(/[,，、]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
+      return val.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
     }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
@@ -589,12 +591,13 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
     if (q) {
+      var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
-        return COLUMNS.some(function(col) {
-          if (col.type === 'actions') return false;
-          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        return searchKeys.some(function(k) {
+          return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
         });
       });
     }
@@ -604,7 +607,7 @@ pre code { background: none; padding: 0; }
         var v = String(row[quickFilter.key] || '');
         if (quickFilter.mode === 'contains') {
           // 标签筛选：顿号/逗号切分后包含匹配
-          return v.split(/[,，、]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
+          return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
         }
         return v === quickFilter.value;
       });
@@ -687,7 +690,7 @@ pre code { background: none; padding: 0; }
         } else {
           var val = row[col.key];
           if (col.type === 'pills') {
-              var items = (val || '').toString().split(/[,，、]+/).map(function(s){return s.trim();}).filter(Boolean);
+              var items = (val || '').toString().split(/[,，、/]+/).map(function(s){return s.trim();}).filter(Boolean);
               // pillFilter 默认开: 标签点击筛选, pillFilter: false 可关闭
               var pillsHtml = items.map(function(s){
                 return '<span class="cell-pill'+(col.pillFilter !== false ? ' pill-clickable' : '')+'"'+
@@ -701,6 +704,7 @@ pre code { background: none; padding: 0; }
               return;
             }
             if (col.render) val = col.render(val, row);
+          else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
@@ -1137,7 +1141,8 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = visibleCols({requireKey: true, excludeActions: true});
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';

@@ -3,36 +3,42 @@
     "title": "概述",
     "group": "中国历史",
     "section": "概述",
-    "url": "drama/history-overview.html"
+    "url": "drama/history-overview.html",
+    "section_icon": "📋"
   },
   {
     "title": "时间轴",
     "group": "中国历史",
     "section": "时间轴",
-    "url": "drama/history-timeline-table.html"
+    "url": "drama/history-timeline-table.html",
+    "section_icon": "📅"
   },
   {
     "title": "36计策",
     "group": "中国历史",
     "section": "36计策",
-    "url": "drama/history-strategy-table.html"
+    "url": "drama/history-strategy-table.html",
+    "section_icon": "🧮"
   },
   {
     "title": "概述",
     "group": "大明王朝1566",
     "section": "概述",
-    "url": "drama/daming-overview.html"
+    "url": "drama/daming-overview.html",
+    "section_icon": "📋"
   },
   {
     "title": "时间轴",
     "group": "大明王朝1566",
     "section": "时间轴",
-    "url": "drama/daming-timeline-table.html"
+    "url": "drama/daming-timeline-table.html",
+    "section_icon": "📅"
   },
   {
     "title": "36计策",
     "group": "大明王朝1566",
     "section": "36计策",
-    "url": "drama/daming-strategy-table.html"
+    "url": "drama/daming-strategy-table.html",
+    "section_icon": "🧮"
   }
 ]
