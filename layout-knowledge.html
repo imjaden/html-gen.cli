@@ -390,10 +390,10 @@
     activeGroup = savedGroup; renderTabs();
     if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
     else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
-    return;
+  } else {
+    renderTabs();
+    renderLegend();
   }
-  renderTabs();
-  renderLegend();
 
   /* ═══════ Sidebar Collapse ═══════ */
   var _collapsed = false;

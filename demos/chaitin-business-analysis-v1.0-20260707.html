@@ -547,6 +547,11 @@ pre code { background: none; padding: 0; }
     document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
     var item = ITEMS.find(function(i) { return i.group === group && i.title === title; });
     if (!item) return;
+    // 高亮所属 section（section-as-menu 单 item 模式无 kw-item 行，靠 section-title 呈现）
+    var secName = item.section || item.title;
+    document.querySelectorAll('.kw-section-title').forEach(function(el) {
+      el.classList.toggle('active', el.textContent.indexOf(secName) !== -1);
+    });
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
     var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
@@ -571,10 +576,10 @@ pre code { background: none; padding: 0; }
     activeGroup = savedGroup; renderTabs();
     if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
     else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
-    return;
+  } else {
+    renderTabs();
+    renderLegend();
   }
-  renderTabs();
-  renderLegend();
 
   /* ═══════ Sidebar Collapse ═══════ */
   var _collapsed = false;
