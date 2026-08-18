@@ -48,8 +48,8 @@ class TestKnowledgeSidebar(unittest.TestCase):
     # ── Search ──
 
     def test_01_search_open(self):
-        btn = self.driver.find_element(By.ID, 'kwSearchBtn')
-        btn.click()
+        # 按钮已隐藏（display:none），功能保留：直接调用 JS
+        self.driver.execute_script("toggleKwSearch();")
         time.sleep(0.15)
         wrap = self.driver.find_element(By.ID, 'kwSearchWrap')
         self.assertIn('active', (wrap.get_attribute('class') or '').split())
@@ -61,8 +61,7 @@ class TestKnowledgeSidebar(unittest.TestCase):
             tabs[0].click()
             time.sleep(0.3)
 
-        btn = self.driver.find_element(By.ID, 'kwSearchBtn')
-        btn.click()
+        self.driver.execute_script("toggleKwSearch();")
         time.sleep(0.1)
 
         inp = self.driver.find_element(By.ID, 'kwSearchInput')
