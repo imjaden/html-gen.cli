@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -37,7 +39,8 @@ def select_click_mode(driver, mode):
     target = [r for r in radios if r.get_attribute('value') == mode]
     assert target, f"Click mode '{mode}' radio not found"
     driver.execute_script("arguments[0].click();", target[0])
-    time.sleep(0.3)
+    time.sleep(0.15)  # [speedup]
+
     # Close dropdown via JS (avoid body.click intercept by table rows)
     driver.execute_script("document.getElementById('colToggleDropdown').classList.remove('show');")
     time.sleep(0.2)
@@ -71,7 +74,7 @@ class TestTableFeatures(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1280, 800)
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.6)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.data-table')))
         error_collector(self.driver)
 
     # ── Density ──
@@ -153,7 +156,8 @@ class TestTableFeatures(unittest.TestCase):
         stars_idx = 1
         self.assertGreater(len(cells), stars_idx, "Not enough cells")
         cells[stars_idx].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         pill = self.driver.find_element(By.ID, 'quickFilterPill')
         disp = pill.value_of_css_property('display')
@@ -190,7 +194,8 @@ class TestTableFeatures(unittest.TestCase):
         cells = self.driver.find_elements(By.CSS_SELECTOR, '.clickable-cell')
         # First cell (name) has NO quickFilter:true
         cells[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Should have opened split (firstKeyCol default D3), not created filter pill
         wrapper = self.driver.find_element(By.CSS_SELECTOR, '.wrapper')

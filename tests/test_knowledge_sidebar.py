@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -36,7 +38,7 @@ class TestKnowledgeSidebar(unittest.TestCase):
         self.driver.execute_script("localStorage.clear();")
         # Reload clean
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.6)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.kw-tab')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -59,14 +61,16 @@ class TestKnowledgeSidebar(unittest.TestCase):
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
         if len(tabs) > 0:
             tabs[0].click()
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
 
         self.driver.execute_script("toggleKwSearch();")
         time.sleep(0.1)
 
         inp = self.driver.find_element(By.ID, 'kwSearchInput')
         inp.send_keys('ags')
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Check that items exist
         items = self.driver.find_elements(By.CSS_SELECTOR, '.kw-item')
@@ -108,12 +112,14 @@ class TestKnowledgeSidebar(unittest.TestCase):
 
     def test_06_sidebar_collapse(self):
         self.driver.execute_script("toggleSidebar();")
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         sb = self.driver.find_element(By.ID, 'kwSidebar')
         self.assertIn('collapsed', (sb.get_attribute('class') or '').split())
 
         self.driver.execute_script("toggleSidebar();")
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.assertNotIn('collapsed', (sb.get_attribute('class') or '').split())
 
     # ── Tab Switch ──
@@ -123,7 +129,8 @@ class TestKnowledgeSidebar(unittest.TestCase):
         self.assertGreater(len(tabs), 0, "Should have tabs")
         if len(tabs) > 1:
             tabs[1].click()
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
             self.assertIn('active', (tabs[1].get_attribute('class') or '').split())
 
     # ── No JS errors ──

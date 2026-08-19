@@ -59,11 +59,13 @@ class TestDatetimeClickmode(unittest.TestCase):
     def _load(self, data, options=None):
         generate_html(data, options)
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         try: self.driver.execute_script("localStorage.clear();") 
         except: pass
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -99,7 +101,8 @@ class TestDatetimeClickmode(unittest.TestCase):
         date_th = [t for t in ths if t.text.strip().upper() == 'DATE']
         self.assertTrue(len(date_th) > 0, "Date column header not found")
         date_th[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         dates = self._get_cell_texts(1)
         non_empty = [d for d in dates if d]
@@ -111,7 +114,8 @@ class TestDatetimeClickmode(unittest.TestCase):
         ths2 = self.driver.find_elements(By.CSS_SELECTOR, 'th.sortable')
         date_th2 = [t for t in ths2 if t.text.strip().upper() == 'DATE']
         date_th2[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         dates_desc = self._get_cell_texts(1)
         non_empty_desc = [d for d in dates_desc if d]
         self.assertEqual(non_empty_desc, ['2026-02-01', '2026-2-1', '2026-01-15', '2025-12-01'],
@@ -130,7 +134,8 @@ class TestDatetimeClickmode(unittest.TestCase):
         # Open settings
         btn = self.driver.find_element(By.ID, 'colToggleBtn')
         btn.click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Check that split is the active click mode
         radios = self.driver.find_elements(By.NAME, 'clickMode')
@@ -155,7 +160,8 @@ class TestDatetimeClickmode(unittest.TestCase):
         # Open settings
         btn = self.driver.find_element(By.ID, 'colToggleBtn')
         btn.click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Modal should be visible, tab should NOT (plural overrides singular)
         radios = self.driver.find_elements(By.NAME, 'clickMode')

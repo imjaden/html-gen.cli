@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -30,10 +32,11 @@ class TestHermesSkills(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1280, 800)
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.driver.execute_script("localStorage.clear();")
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.8)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.data-table')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -52,7 +55,8 @@ class TestHermesSkills(unittest.TestCase):
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.tab-btn')
         if len(tabs) > 1:
             tabs[1].click()
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
             # Re-query after DOM update
             tabs = self.driver.find_elements(By.CSS_SELECTOR, '.tab-btn')
             self.assertIn('active', (tabs[1].get_attribute('class') or '').split())
@@ -66,7 +70,8 @@ class TestHermesSkills(unittest.TestCase):
         modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
         self.assertTrue(len(modal_btns) > 0, "No modal action buttons found")
         modal_btns[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         overlay = self.driver.find_element(By.ID, 'modalOverlay')
         self.assertIn('active', (overlay.get_attribute('class') or '').split(),
@@ -87,7 +92,8 @@ class TestHermesSkills(unittest.TestCase):
         split_btns = [b for b in btns if b.get_attribute('title') == '右侧展示详情']
         self.assertTrue(len(split_btns) > 0, "No split action buttons found")
         split_btns[0].click()
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
 
         wrapper = self.driver.find_element(By.CSS_SELECTOR, '.wrapper')
         self.assertIn('split-mode', (wrapper.get_attribute('class') or '').split(),
@@ -120,7 +126,8 @@ class TestHermesSkills(unittest.TestCase):
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.tab-btn')
         if len(tabs) > 1:
             tabs[1].click()
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
 
         # Click modal button
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
@@ -157,7 +164,8 @@ class TestHermesSkills(unittest.TestCase):
         modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
         self.assertTrue(len(modal_btns) > 0)
         modal_btns[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         panel = self.driver.find_element(By.ID, 'modalPanel')
         text = panel.text
@@ -176,7 +184,8 @@ class TestHermesSkills(unittest.TestCase):
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
         modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
         modal_btns[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Tag pills should be inline-block with border-radius
         pills = self.driver.find_elements(By.CSS_SELECTOR, '#modalPanel span[style*="border-radius:9999px"]')
@@ -190,7 +199,8 @@ class TestHermesSkills(unittest.TestCase):
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
         modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
         modal_btns[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Click the copy icon (📋 in the 路径 row)
         copy_btn = self.driver.execute_script("""
@@ -203,7 +213,8 @@ class TestHermesSkills(unittest.TestCase):
             "var s = document.querySelector('#modalPanel span[title=\"拷贝路径\"]');"
             "if (s) s.click();"
         )
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         errs = self._errors()
         self.assertEqual(len(errs), 0, f"Copy path should not throw JS error: {errs}")
@@ -216,7 +227,8 @@ class TestHermesSkills(unittest.TestCase):
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
         modal_btns = [b for b in btns if b.get_attribute('title') == '弹出框详情']
         modal_btns[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Version badge has fbbf24 (yellow) color
         badge = self.driver.execute_script("""
@@ -244,7 +256,8 @@ class TestHermesSkills(unittest.TestCase):
         split_btns = [b for b in btns if b.get_attribute('title') == '右侧展示详情']
         self.assertTrue(len(split_btns) > 0)
         split_btns[0].click()
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
 
         body = self.driver.find_element(By.ID, 'splitPreviewBody')
         self.assertTrue(len(body.text) > 0, "Split body should have content")
@@ -257,7 +270,8 @@ class TestHermesSkills(unittest.TestCase):
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.action-btn')
         split_btns = [b for b in btns if b.get_attribute('title') == '右侧展示详情']
         split_btns[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         nav_btns = self.driver.find_elements(By.CSS_SELECTOR, '.sp-nav')
         self.assertEqual(len(nav_btns), 2, "Should have ▲▼ nav buttons")
@@ -289,7 +303,8 @@ class TestHermesSkills(unittest.TestCase):
         split_btns = [b for b in btns2 if b.get_attribute('title') == '右侧展示详情']
         if split_btns:
             split_btns[0].click()
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
             self.driver.find_element(By.CSS_SELECTOR, '.sp-close').click()
             time.sleep(0.1)
 
@@ -304,7 +319,8 @@ class TestHermesSkills(unittest.TestCase):
         self.assertTrue(len(cells) > 0, "No clickable cells found")
         # Click the first name cell
         cells[0].click()
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
 
         wrapper = self.driver.find_element(By.CSS_SELECTOR, '.wrapper')
         self.assertIn('split-mode', (wrapper.get_attribute('class') or '').split(),

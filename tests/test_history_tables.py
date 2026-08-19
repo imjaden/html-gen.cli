@@ -37,7 +37,8 @@ class TestHistoryTables(unittest.TestCase):
 
     def _load(self, page):
         self.driver.get('file://' + str(PROJECT / 'demos/drama' / page))
-        time.sleep(0.9)
+        time.sleep(0.45)  # [speedup]
+
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -72,7 +73,8 @@ class TestHistoryTables(unittest.TestCase):
         pills = row.find_elements(By.CSS_SELECTOR, '.cell-pill')
         self.assertEqual([p.text for p in pills], ['胜战计'], f"分类 pills: {[p.text for p in pills]}")
         self.driver.execute_script("arguments[0].click();", pills[0])
-        time.sleep(0.6)
+        time.sleep(0.3)  # [speedup]
+
         n = len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr'))
         self.assertEqual(n, 6, f"胜战计应 6 行: {n}")
 
@@ -80,7 +82,8 @@ class TestHistoryTables(unittest.TestCase):
         self._load('history-strategy-table.html')
         row = self._row_by_text(1, '瞒天过海')
         self.driver.execute_script("arguments[0].click();", row.find_elements(By.TAG_NAME, 'td')[1])
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
         self.assertIn('【原文】', pv, "详情应含原文")
         self.assertIn('【白话】', pv, "详情应含白话")
@@ -104,7 +107,8 @@ class TestHistoryTables(unittest.TestCase):
         tang = self._row_by_text(2, '唐')
         self.assertIsNotNone(tang, "应找到唐行")
         self.driver.execute_script("arguments[0].click();", tang.find_elements(By.TAG_NAME, 'td')[2])
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
         self.assertIn('历任皇帝', pv, "详情应含历任皇帝")
         self.assertIn('唐太宗李世民', pv, "历任皇帝应含唐太宗")
@@ -129,7 +133,8 @@ class TestHistoryTables(unittest.TestCase):
         self.assertIn('治安疏', text, "嘉靖拆分应含治安疏")
         # 清筛选 24 行（16 年号 + 嘉靖 8）
         self.driver.execute_script("clearQuickFilter();")
-        time.sleep(0.6)
+        time.sleep(0.3)  # [speedup]
+
         self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 24,
                          "应 24 行（16 年号 + 嘉靖拆分 8）")
         # 嘉靖 split 详情（pills 格子整格点击）
@@ -138,7 +143,8 @@ class TestHistoryTables(unittest.TestCase):
         self.assertEqual(jtd[2].text, '朱厚熜', "嘉靖皇帝列应为姓名")
         self.assertEqual(jtd[3].text, '明世宗', "嘉靖庙号应为明世宗")
         self.driver.execute_script("arguments[0].click();", jtd[1])
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
         self.assertIn('严嵩专权', pv, "嘉靖详情应含主要事件")
         self.assertIn('本剧主线', pv, "嘉靖出处应标本剧主线")
@@ -169,7 +175,8 @@ class TestHistoryTables(unittest.TestCase):
         self.assertNotIn('【叠加计策】', ltd[7].text, "叠加计策不应有前缀")
         # 李代桃僵 split 详情
         self.driver.execute_script("arguments[0].click();", ltd[1])
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
         self.assertIn('保全严世蕃', pv, "详情应含计策视角事件描述")
         self.assertIn('马宁远', pv, "详情应含马宁远")

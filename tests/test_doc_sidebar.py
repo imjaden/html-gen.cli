@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
@@ -31,7 +33,7 @@ class TestDocSidebar(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1280, 800)
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.6)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -59,7 +61,8 @@ class TestDocSidebar(unittest.TestCase):
 
         inp = self.driver.find_element(By.ID, 'tocSearchInput')
         inp.send_keys('指南')
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         # Some items should be filtered out
         filtered = self.driver.execute_script(
@@ -124,7 +127,8 @@ class TestDocSidebar(unittest.TestCase):
         btn = self.driver.find_element(By.ID, 'collapseBtn')
         initial = btn.text
         btn.click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         sidebar = self.driver.find_element(By.ID, 'sidebar')
         self.assertIn('collapsed', (sidebar.get_attribute('class') or '').split())
@@ -132,7 +136,8 @@ class TestDocSidebar(unittest.TestCase):
 
         # Use JS to expand (the icon's onclick might not fire reliably in Selenium)
         self.driver.execute_script("toggleSidebar();")
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.assertNotIn('collapsed', (sidebar.get_attribute('class') or '').split())
 
     def test_07_no_js_errors(self):

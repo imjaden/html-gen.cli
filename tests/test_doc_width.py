@@ -3,6 +3,9 @@ import subprocess, sys, time, unittest
 from pathlib import Path
 
 from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -72,7 +75,7 @@ class TestDocWidthSelenium(unittest.TestCase):
 
     def _load(self, query=''):
         self.driver.get('file://' + str(DEMO) + query)
-        time.sleep(0.6)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
