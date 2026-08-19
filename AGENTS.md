@@ -216,7 +216,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 139 tests（测试文件：test_drama_knowledge 19 / test_history_tables 7 / test_demo_cmd 9 / test_countries 13 / test_doc_bare / test_doc_sidebar / test_hermes_skills / test_knowledge_sidebar / test_slide_h3_toggle / test_sticky_width / test_table_features / test_templates / test_quickfilter 等）
+- 当前 141 tests（测试文件：test_drama_knowledge 16 / test_history_tables 7 / test_demo_cmd 10 / test_countries_table 13 / test_hermes_skills 15 / test_table_features 11 / test_templates 11 / test_doc_width 8 / test_knowledge_sidebar 8 / test_doc_sidebar 7 / test_doc_bare 6 / test_heading_levels 6 / test_sticky_width 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)

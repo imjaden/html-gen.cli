@@ -252,7 +252,7 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | 数据文件 | 7 |
 | Demo 文件 | 40 (registry: 19 独立 + 21 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 139 (Selenium + CLI 回归) |
+| 测试用例 | 141 (Selenium + CLI 回归) |
 | CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
 | CLI 参数 | 15 |
 | localStorage keys | 17 |
