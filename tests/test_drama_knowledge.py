@@ -200,8 +200,16 @@ class TestDramaKnowledge(unittest.TestCase):
         self.assertIn('追缴国库', ' '.join(r.text for r in rows), "应含追缴欠款剧情")
         self.driver.execute_script("clearQuickFilter();")
         time.sleep(0.5)
-        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 11,
-                         "清筛选应 11 行（康熙2+雍正9）")
+        self.assertEqual(self.driver.execute_script(
+            "return document.getElementById('statTotal').textContent;"), '21',
+            "清筛选后总行数应 21（清朝 12 帝 + 本剧剧情 9）")
+        # 皇帝姓名 + 清庙号（第 1 页内康熙行）
+        kang = next(r for r in self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+                    if r.find_elements(By.TAG_NAME, 'td')[1].text == '康熙'
+                    and '1661' in r.find_elements(By.TAG_NAME, 'td')[4].text)
+        ktd = kang.find_elements(By.TAG_NAME, 'td')
+        self.assertEqual(ktd[2].text, '玄烨', "康熙皇帝列应为姓名")
+        self.assertEqual(ktd[3].text, '清圣祖', "康熙庙号应为清圣祖")
         self.driver.switch_to.default_content()
         # 36计策 8 行
         next(s for s in self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
