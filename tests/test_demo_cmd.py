@@ -59,7 +59,7 @@ class TestDemoCmd(unittest.TestCase):
     def test_06_registry_exists(self):
         """_registry.json 存在且条目与文件对应."""
         reg = json.loads((DEMOS / '_registry.json').read_text())
-        self.assertEqual(reg['version'], 1)
+        self.assertEqual(reg['version'], 2, "registry 版本应为 2（含 referenced/stale）")
         entries = {d['entry'] for d in reg['demos']}
         htmls = {str(f.relative_to(DEMOS)).replace('\\', '/')
                  for f in DEMOS.rglob('*.html') if f.name not in ('index.html', '_registry.json')}

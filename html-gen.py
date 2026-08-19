@@ -609,6 +609,7 @@ def main():
     dm = sub.add_parser('demo', help='demo 列表与详情 (html-gen demo list|<name>)')
     dm.add_argument('name', nargs='?', help='demo 名称 (可选; 缺省=list)')
     dm.add_argument('--json', action='store_true', help='JSON 输出')
+    dm.add_argument('--all', action='store_true', help='list 含被引用子页')
     dm.add_argument('--open', action='store_true', help='打开浏览器预览')
 
     args = p.parse_args()
@@ -703,15 +704,28 @@ def cmd_demo(args):
     reg = _json.loads(reg_file.read_text(encoding='utf-8'))
     demos = reg.get('demos', [])
 
-    # list（无参或缺省）
+    # list（无参或缺省）——按模板类型分组，过滤被引用子页
     if not args.name or args.name == 'list':
         if args.json:
             print(_json.dumps({'status': 'ok', 'data': demos}, ensure_ascii=False))
             return
-        print(f"共 {len(demos)} 个 demo（★=首页精选）")
-        for d in sorted(demos, key=lambda x: (not x.get('featured'), x['entry'])):
-            star = '★' if d.get('featured') else ' '
-            print(f"  {star}{d['name']:42s} {d['type']:10s} {d['entry']}")
+        groups = [('knowledge', '📚 知识库（C 型）'), ('table', '🗂 表格（A 型）'),
+                  ('doc', '📄 文档（B 型）'), ('html', '🌐 独立页')]
+        show_all = getattr(args, 'all', False)
+        indep = [d for d in demos if not d.get('referenced')]
+        total = len(demos) if show_all else len(indep)
+        hidden = len(demos) - len(indep)
+        print(f"共 {total} 个 demo（按模板分组{'；--all 查看引用子页 ' + str(hidden) + ' 个' if hidden else ''}）")
+        for key, label in groups:
+            items = [d for d in (demos if show_all else indep) if d['type'] == key]
+            if not items:
+                continue
+            print(f"\n  {label}（{len(items)}）")
+            for d in sorted(items, key=lambda x: (not x.get('featured'), x['entry'])):
+                star = '★' if d.get('featured') else ' '
+                stale = ' ⚠️过期' if d.get('stale') else ''
+                tag = f"  → {d['entry'].split('/')[0]}" if d.get('referenced') else ''
+                print(f"    {star}{d['name']:40s} {d['entry']}{stale}{tag}")
         return
 
     hit = next((d for d in demos if d['name'] == args.name), None)
