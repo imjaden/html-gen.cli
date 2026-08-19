@@ -40,5 +40,26 @@
     "section": "36计策",
     "url": "drama/daming-strategy-table.html",
     "section_icon": "🧮"
+  },
+  {
+    "title": "概述",
+    "group": "雍正王朝",
+    "section": "概述",
+    "section_icon": "📋",
+    "url": "drama/yongzheng-overview.html"
+  },
+  {
+    "title": "时间轴",
+    "group": "雍正王朝",
+    "section": "时间轴",
+    "section_icon": "📅",
+    "url": "drama/yongzheng-timeline-table.html"
+  },
+  {
+    "title": "36计策",
+    "group": "雍正王朝",
+    "section": "36计策",
+    "section_icon": "🧮",
+    "url": "drama/yongzheng-strategy-table.html"
   }
 ]
