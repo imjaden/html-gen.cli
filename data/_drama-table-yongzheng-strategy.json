@@ -2,7 +2,7 @@
   "columns": [
     {
       "key": "strategy",
-      "label": "计名",
+      "label": "计策名称",
       "sortable": true,
       "locale": "zh",
       "width": "90px",
@@ -25,7 +25,8 @@
       "sortable": true,
       "locale": "zh",
       "width": "90px",
-      "preview": true
+      "preview": true,
+      "initialHidden": true
     },
     {
       "key": "idiom",
@@ -64,6 +65,13 @@
       "splitFull": true
     },
     {
+      "key": "detail",
+      "label": "叠加计策",
+      "sortable": false,
+      "width": "280px",
+      "splitFull": true
+    },
+    {
       "key": "source",
       "label": "出处",
       "sortable": true,
@@ -77,81 +85,89 @@
       "strategy": "韬光养晦",
       "category": "—",
       "alias": "潜龙勿用",
-      "idiom": "韬光养晦",
+      "idiom": "",
       "event": "九子夺嫡：胤禛示弱不争，静待储位",
       "figures": "胤禛、邬思道",
       "outcome": "康熙传位胤禛",
-      "source": "剧中设定（史实夺嫡）"
+      "source": "剧中设定（史实夺嫡）",
+      "detail": "① 欲擒故纵：邬思道谏'不争之争'，静待储位\n② 瞒天过海：以'孤臣'形象示人，掩夺嫡之志"
     },
     {
       "strategy": "借刀杀人",
       "category": "—",
       "alias": "借力打力",
-      "idiom": "借刀杀人",
+      "idiom": "",
       "event": "以年羹尧平定青海制衡八爷党势力",
       "figures": "雍正、年羹尧、八爷党",
       "outcome": "年羹尧居功自傲终被除",
-      "source": "剧中设定"
+      "source": "剧中设定",
+      "detail": "① 李代桃僵：用年羹尧制衡八爷党\n② 过河拆桥：事成后弃年羹尧保大局"
     },
     {
       "strategy": "声东击西",
       "category": "—",
       "alias": "—",
-      "idiom": "声东击西",
+      "idiom": "",
       "event": "追缴欠款：明查账目、实查吏治",
       "figures": "田文镜、雍正",
       "outcome": "欠款追回，吏治整顿",
-      "source": "剧中设定"
+      "source": "剧中设定",
+      "detail": "① 借题发挥：以查账之名行肃贪之实"
     },
     {
       "strategy": "欲擒故纵",
       "category": "—",
       "alias": "欲取先予",
-      "idiom": "欲擒故纵",
+      "idiom": "",
       "event": "对待八爷党：先纵容骄纵，再一网打尽",
       "figures": "雍正、胤禩、胤禟",
       "outcome": "八爷党覆灭",
-      "source": "剧中设定"
+      "source": "剧中设定",
+      "detail": "① 笑里藏刀：表面安抚八爷党，暗收罪证"
     },
     {
       "strategy": "顺水推舟",
       "category": "—",
       "alias": "—",
-      "idiom": "顺水推舟",
+      "idiom": "",
       "event": "借科场案整顿科举积弊",
       "figures": "雍正、张廷玉",
       "outcome": "科场肃清，士林归心",
-      "source": "剧中设定"
+      "source": "剧中设定",
+      "detail": "① 趁火打劫：借科场案肃清士林异己"
     },
     {
       "strategy": "将计就计",
       "category": "—",
       "alias": "—",
-      "idiom": "将计就计",
+      "idiom": "",
       "event": "隆科多结党：将计就计引其暴露",
       "figures": "雍正、隆科多",
       "outcome": "隆科多被圈禁",
-      "source": "剧中设定（史实 1727）"
+      "source": "剧中设定（史实 1727）",
+      "detail": "① 反间计：纵容隆科多暴露结党，再一击致命"
     },
     {
       "strategy": "李代桃僵",
       "category": "—",
       "alias": "舍车保帅",
-      "idiom": "李代桃僵",
+      "idiom": "",
       "event": "年羹尧案：牺牲功臣保全新政大局",
       "figures": "雍正、年羹尧",
       "outcome": "年羹尧赐死，新政继续",
-      "source": "剧中设定"
+      "source": "剧中设定",
+      "detail": "① 借刀杀人：借年羹尧除八爷党后弃之\n② 兔死狗烹：牺牲功臣保全新政"
     },
     {
       "strategy": "笑里藏刀",
       "category": "—",
       "alias": "—",
-      "idiom": "笑里藏刀",
+      "idiom": "",
       "event": "八爷党表面恭顺、暗结党羽谋逆",
       "figures": "胤禩、胤禟、雍正",
       "outcome": "阴谋败露，党羽瓦解",
-      "source": "剧中设定"
+      "source": "剧中设定",
+      "detail": "① 暗渡陈仓：八爷党表面输诚，暗结党羽"
     }
   ],
   "tabs": [],
