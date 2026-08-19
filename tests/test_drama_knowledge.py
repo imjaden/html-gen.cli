@@ -56,7 +56,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_01_tabs_render_order(self):
         labels = self._tab_labels()
-        self.assertEqual(labels, ['中国历史', '大明王朝1566'],
+        self.assertEqual(labels, ['中国历史', '大明王朝1566', '雍正王朝'],
                          f"Tabs: {labels}")
 
     # ── T2: Section rendering (3 sections, no kw-item rows) ──
@@ -181,6 +181,37 @@ class TestDramaKnowledge(unittest.TestCase):
         frame = self.driver.find_element(By.ID, 'contentFrame')
         self.assertIn('history-strategy', frame.get_attribute('src') or '',
                       f"iframe 应为中国历史 36计策: {(frame.get_attribute('src') or '')[:70]}")
+
+    def test_18_yongzheng_group(self):
+        """新增雍正王朝 group：3 tab + 时间轴默认雍正 9 行 + 36计策 8 行."""
+        tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
+        self.assertEqual(len(tabs), 3, f"应有 3 个 tab: {[t.text for t in tabs]}")
+        tabs[2].click()
+        time.sleep(0.5)
+        secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        self.assertEqual(len(secs), 3, f"雍正应有 3 个 section: {[s.text for s in secs]}")
+        # 时间轴：默认筛选雍正 9 行（总览+8 剧情），清筛选 11 行（含康熙前史）
+        next(s for s in secs if '时间轴' in s.text).click()
+        time.sleep(0.8)
+        frame = self.driver.find_element(By.ID, 'contentFrame')
+        self.driver.switch_to.frame(frame)
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 9, f"默认应筛选雍正 9 行: {len(rows)}")
+        self.assertIn('追缴国库', ' '.join(r.text for r in rows), "应含追缴欠款剧情")
+        self.driver.execute_script("clearQuickFilter();")
+        time.sleep(0.5)
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 11,
+                         "清筛选应 11 行（康熙2+雍正9）")
+        self.driver.switch_to.default_content()
+        # 36计策 8 行
+        next(s for s in self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+             if '36计策' in s.text).click()
+        time.sleep(0.8)
+        self.driver.switch_to.frame(self.driver.find_element(By.ID, 'contentFrame'))
+        rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(len(rows), 8, f"雍正 36计策应 8 行: {len(rows)}")
+        self.assertIn('韬光养晦', rows[0].text, "首行应为韬光养晦")
+        self.driver.switch_to.default_content()
 
     def test_08b_iframe_doc_bare_mode(self):
         """iframe 内 doc 页默认隐藏 sidebar/toolbar (嵌入降级)."""

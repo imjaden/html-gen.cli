@@ -1,0 +1,180 @@
+{
+  "columns": [
+    {
+      "key": "era",
+      "label": "年号",
+      "type": "pills",
+      "sortable": true,
+      "locale": "zh",
+      "width": "80px",
+      "freeze": true,
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "emperor",
+      "label": "皇帝",
+      "sortable": true,
+      "locale": "zh",
+      "width": "130px",
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "temple",
+      "label": "庙号",
+      "type": "pills",
+      "sortable": true,
+      "locale": "zh",
+      "width": "70px",
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "period",
+      "label": "起止年份",
+      "sortable": true,
+      "locale": "zh",
+      "width": "100px",
+      "preview": true
+    },
+    {
+      "key": "figures",
+      "label": "关键人物",
+      "sortable": true,
+      "locale": "zh",
+      "width": "180px",
+      "preview": true,
+      "splitFull": true
+    },
+    {
+      "key": "events",
+      "label": "主要事件",
+      "sortable": true,
+      "locale": "zh",
+      "width": "280px",
+      "preview": true,
+      "splitFull": true
+    },
+    {
+      "key": "source",
+      "label": "出处",
+      "sortable": true,
+      "locale": "zh",
+      "width": "170px",
+      "preview": true
+    }
+  ],
+  "data": [
+    {
+      "era": "康熙",
+      "emperor": "清圣祖玄烨",
+      "temple": "圣祖",
+      "period": "1661—1722",
+      "figures": "康熙、胤禛、胤禩、胤禵",
+      "events": "九子夺嫡、西北用兵、储位之争",
+      "source": "《清史稿》·本剧前史"
+    },
+    {
+      "era": "康熙",
+      "emperor": "清圣祖玄烨",
+      "temple": "圣祖",
+      "period": "1708—1722",
+      "figures": "胤禛、胤禩、胤禵、胤祥",
+      "events": "九子夺嫡：太子两度被废，诸子结党争储",
+      "source": "剧中设定（史实 1708—1722）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1723—1735",
+      "figures": "胤禛、胤祥、年羹尧、隆科多",
+      "events": "整饬吏治、摊丁入亩、设立军机处",
+      "source": "《清史稿》·本剧主线"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1723",
+      "figures": "雍正、田文镜、李卫",
+      "events": "追缴国库欠款：整顿财政，查贪肃纪",
+      "source": "剧中设定（史实 1723 起）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1723",
+      "figures": "雍正、李卫、田文镜",
+      "events": "摊丁入亩、火耗归公：触动士绅利益",
+      "source": "史实（雍正元年起推行）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1724",
+      "figures": "年羹尧、雍正",
+      "events": "年羹尧平定青海罗卜藏丹津叛乱",
+      "source": "史实（1724）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1725",
+      "figures": "年羹尧、雍正",
+      "events": "年羹尧居功自傲，被赐死",
+      "source": "史实（1725）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1726",
+      "figures": "雍正、胤禩、胤禟",
+      "events": "八爷党覆灭：胤禩、胤禟被圈禁",
+      "source": "剧中设定（史实 1726）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1726",
+      "figures": "雍正、张廷玉、李绂",
+      "events": "科场案：整顿科举积弊",
+      "source": "剧中设定"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1727",
+      "figures": "隆科多、雍正",
+      "events": "隆科多结党营私，被圈禁",
+      "source": "史实（1727）"
+    },
+    {
+      "era": "雍正",
+      "emperor": "清世宗胤禛",
+      "temple": "世宗",
+      "period": "1735",
+      "figures": "雍正、弘历",
+      "events": "雍正驾崩：乾隆即位",
+      "source": "史实（1735）"
+    }
+  ],
+  "tabs": [],
+  "options": {
+    "pageSize": 15,
+    "exportCSV": true,
+    "search": true,
+    "showIndex": true,
+    "defaultFilter": {
+      "key": "era",
+      "value": "雍正"
+    }
+  }
+}
