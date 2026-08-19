@@ -71,7 +71,10 @@ def md_to_html(text):
                 if num >= fence_len and not rest:
                     lang = code_buf[0][fence_len:].strip()
                     content = '\n'.join(code_buf[1:])
-                    html.append(f'<pre><code class="language-{lang}">{content.replace("&","&amp;").replace("<","&lt;").replace(">","&gt;")}</code></pre>')
+                    html.append(
+                        f'<pre><code class="language-{lang}">'
+                        f'{content.replace("&", "&amp;").replace("<", "&lt;").replace(">", "&gt;")}'
+                        f'</code></pre>')
                     code_buf, in_code, fence_len = [], False, 0
                 else:
                     code_buf.append(line)
@@ -113,10 +116,14 @@ def md_to_html(text):
         elif line.startswith('> '):
             cm = re.match(r'>\s*\*\*(注意|Note|提示|Tip|警告|Warning|危险|Danger|Caution)[：:]?\*\*[：:]?\s*(.*)', line)
             if cm:
-                ct_map = {'注意':'note','Note':'note','提示':'tip','Tip':'tip','警告':'warning','Warning':'warning','Caution':'caution','危险':'danger','Danger':'danger'}
+                ct_map = {'注意': 'note', 'Note': 'note', '提示': 'tip', 'Tip': 'tip',
+                          '警告': 'warning', 'Warning': 'warning', 'Caution': 'caution',
+                          '危险': 'danger', 'Danger': 'danger'}
                 cls = 'callout ' + ct_map.get(cm.group(1), 'note')
                 label = cm.group(1).rstrip(':')
-                html.append(f'<blockquote class="{cls}"><strong>{label}:</strong>{inline_format(_md_escape(cm.group(2)))}</blockquote>')
+                html.append(
+                    f'<blockquote class="{cls}"><strong>{label}:</strong>'
+                    f'{inline_format(_md_escape(cm.group(2)))}</blockquote>')
             else:
                 html.append(f'<blockquote>{inline_format(_md_escape(line[2:]))}</blockquote>')
         elif line.strip() == '':
@@ -391,7 +398,7 @@ def cmd_knowledge(args):
 # ═══ Help System ═══
 
 HELP_OVERVIEW = """\
-html-gen — HTML 模板 CLI 生成器 v3.0
+html-gen — HTML 模板 CLI 生成器 v3.1(2026-07-23)
 
 四型模板:
   doc       Markdown → B 型文档 (侧边栏 TOC + 阅读)
@@ -442,7 +449,7 @@ Callout 提示框:
   > **Tip:** ...      > **提示**：...
   > **Warning:** ...  > **警告**：...
   > **Danger:** ...   > **危险**：...
-  > **Caution:** ...  
+  > **Caution:** ...
 
 不支持:
   ✗ 缩进子列表 (平铺即可)
@@ -618,6 +625,7 @@ def cmd_help(args):
 # ═══ CLI ═══
 def main():
     p = argparse.ArgumentParser(description='HTML 模板生成器')
+    p.add_argument('--version', action='version', version='html-gen 3.1(2026-07-23)')
     sub = p.add_subparsers(dest='command', required=True)
 
     h = sub.add_parser('help', help='显示帮助')
@@ -826,7 +834,8 @@ def cmd_demo(args):
             })
         reg = {'version': 2, 'count': len(demos), 'demos': demos}
         reg_file.write_text(_json.dumps(reg, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        print(f"✅ registry 重建: {len(demos)} demos (featured {len(featured)} / 引用子页 {len(refs)} / 过期 {sum(1 for d in demos if d['stale'])})")
+        print(f"✅ registry 重建: {len(demos)} demos (featured {len(featured)} / "
+              f"引用子页 {len(refs)} / 过期 {sum(1 for d in demos if d['stale'])})")
         return
 
     if not reg_file.exists():
@@ -862,7 +871,11 @@ def cmd_demo(args):
 
     hit = next((d for d in demos if d['name'] == args.name), None)
     if not hit:
-        print(f"❌ demo '{args.name}' 不存在（html-gen demo list 查看）", file=sys.stderr)
+        if args.json:
+            print(_json.dumps({'status': 'error', 'data': None,
+                               'error': f"demo '{args.name}' 不存在"}, ensure_ascii=False))
+        else:
+            print(f"❌ demo '{args.name}' 不存在（html-gen demo list 查看）", file=sys.stderr)
         sys.exit(1)
 
     if args.json:
