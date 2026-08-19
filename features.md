@@ -32,7 +32,7 @@ html-gen help — 显示帮助 ✅ — html-gen.py
 html-gen help <topic> — 按主题显示帮助 (doc/slide/table/knowledge) ✅ — html-gen.py
 
 ### 脚本工具
-company-report.py — 公司调研报告生成器 (schema → C 型知识库) ✅ — company-research-schema.json
+scripts/company-report.py — 公司调研报告生成器 (schema → C 型知识库) ✅ — scripts/company-research-schema.json
 
 ---
 
@@ -203,7 +203,7 @@ window.open noopener,noreferrer ✅ — layout-table.html
 textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-knowledge.html
 clipboard API try/catch fallback ✅ — layout-table.html
 localStorage try/catch + 类型校验 ✅ — layout-*.html
-path traversal 校验 (_safe_path) ✅ — company-report.py
+path traversal 校验 (_safe_path) ✅ — scripts/company-report.py
 script 上下文 </ 转义 (inject) ✅ — html-gen.py
 
 ### 测试

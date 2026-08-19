@@ -17,12 +17,12 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 | 文件 | 用途 |
 |:---|:---|
 | `html-gen.py` | 主 CLI，3 个子命令，569 行 |
-| `company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库 |
+| `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库 |
 | `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |
 | `layout-table.html` | A 型表格模板：搜索 + 排序 + 分页 |
 | `layout-knowledge.html` | C 型知识库模板：顶部标签栏 + 左侧章节 + iframe/内联内容 |
-| `company-research-schema.json` | 公司调研 schema 定义（company/groups/items/output） |
+| `scripts/company-research-schema.json` | 公司调研 schema 定义（company/groups/items/output） |
 
 ## CLI 子命令
 
@@ -233,12 +233,12 @@ Options（均可选）：
 ```
 html-gen/
 ├── html-gen.py                 # Layer 3 CLI 生成器
-├── company-report.py           # 公司报告生成器（高层封装）
+├── scripts/                     # 脚本与 schema（company-report 生成器）
 ├── style-guide.css             # Layer 1 样式基座
 ├── layout-doc.html             # Layer 2 B 型文档模板
 ├── layout-table.html           # Layer 2 A 型表格模板
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
-├── company-research-schema.json # 公司调研 schema
+
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
 ├── tests/                      # Selenium + 回归测试 (73 tests)
 ├── skills/                    # 项目 skills prompt
