@@ -232,7 +232,7 @@ class TestDramaKnowledge(unittest.TestCase):
         self.assertEqual(ktd[2].text, '玄烨', "康熙皇帝列应为姓名")
         self.assertEqual(ktd[3].text, '清圣祖', "康熙庙号应为清圣祖")
         self.driver.switch_to.default_content()
-        # 36计策 8 行
+        # 36计策 26 行（用户梳理表：典故+剧中事件）
         next(s for s in self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
              if '36计策' in s.text).click()
         time.sleep(0.4)  # [speedup]
@@ -240,15 +240,20 @@ class TestDramaKnowledge(unittest.TestCase):
         self.driver.switch_to.frame(self.driver.find_element(By.ID, 'contentFrame'))
         heads = [th.text for th in self.driver.find_elements(By.CSS_SELECTOR, 'thead th')]
         self.assertEqual(heads,
-                         ['序号', '计策名称', '分类', '衍生成语', '历史事件', '主要人物', '结局', '叠加计策', '出处'],
+                         ['序号', '计策名称', '分类', '衍生成语', '历史典故', '典故人物', '剧中事件', '剧中人物'],
                          f"雍正计策表头: {heads}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 8, f"雍正 36计策应 8 行: {len(rows)}")
-        self.assertIn('韬光养晦', rows[0].text, "首行应为韬光养晦")
-        self.assertEqual(rows[0].find_elements(By.TAG_NAME, 'td')[3].text, '',
-                         "衍生成语与计名相同应空")
-        self.assertIn('欲擒故纵', rows[0].find_elements(By.TAG_NAME, 'td')[7].text,
-                      "叠加计策应默认展示")
+        self.assertEqual(len(rows), 26, f"雍正 36计策应 26 行: {len(rows)}")
+        first = rows[0].find_elements(By.TAG_NAME, 'td')
+        self.assertEqual(first[1].text, '瞒天过海', "首行应为瞒天过海")
+        self.assertEqual(first[3].text, '', "衍生成语与计名相同应空")
+        self.assertIn('薛仁贵', first[4].text, "典故列应含典故人物")
+        self.assertIn('江夏镇', first[6].text, "剧中事件应含江夏镇")
+        # 非 36 计计名：分类用相近计策 + 成语保留
+        sj = next(r for r in rows if r.find_elements(By.TAG_NAME, 'td')[1].text == '杀鸡儆猴')
+        self.assertEqual(sj.find_elements(By.TAG_NAME, 'td')[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text,
+                         '并战计', "杀鸡儆猴应相近于指桑骂槐（并战计）")
+        self.assertEqual(sj.find_elements(By.TAG_NAME, 'td')[3].text, '杀鸡儆猴', "非 36 计成语应保留")
         self.driver.switch_to.default_content()
 
     def test_08b_iframe_doc_bare_mode(self):
