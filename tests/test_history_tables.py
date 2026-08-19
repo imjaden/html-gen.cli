@@ -152,36 +152,32 @@ class TestHistoryTables(unittest.TestCase):
     def test_07_daming_strategy(self):
         self._load('daming-strategy-table.html')
         self.assertEqual(self._headers(),
-                         ['序号', '计策名称', '分类', '衍生成语', '历史事件', '主要人物', '结局', '叠加计策', '出处'],
-                         f"大明计策表头（别名默认隐藏）: {self._headers()}")
+                         ['序号', '计策名称', '分类', '衍生成语', '剧中事件', '剧中人物', '历史典故', '典故人物'],
+                         f"大明计策表头: {self._headers()}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 10, f"应 10 行（10 大事件）: {len(rows)}")
+        self.assertEqual(len(rows), 22, f"应 22 行（用户梳理表）: {len(rows)}")
         first = rows[0].find_elements(By.TAG_NAME, 'td')
         self.assertEqual(first[0].text, '1', "序号应为 1")
-        self.assertEqual(first[1].text, '借刀杀人', "首行应为借刀杀人（周云逸直谏）")
-        self.assertIn('冯保廷杖', first[4].text, "首行历史事件应结合计名（冯保廷杖）")
-        self.assertEqual(first[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '敌战计',
-                         "借刀杀人分类应为敌战计")
-        self.assertEqual(first[3].text, '', "衍生成语与计名相同应空")
-        # 走为上：衍生成语保留（三十六计走为上计）
-        zs = self._row_by_text(1, '走为上')
-        self.assertEqual(zs.find_elements(By.TAG_NAME, 'td')[3].text, '三十六计，走为上计',
-                         "走为上衍生成语应保留")
-        # 叠加计策列默认展示且无前缀
-        lidao = self._row_by_text(1, '李代桃僵')
-        self.assertIsNotNone(lidao, "应找到李代桃僵行")
-        ltd = lidao.find_elements(By.TAG_NAME, 'td')
-        self.assertIn('趁火打劫', ltd[7].text, "叠加计策列应默认展示")
-        self.assertNotIn('【叠加计策】', ltd[7].text, "叠加计策不应有前缀")
-        # 李代桃僵 split 详情
-        self.driver.execute_script("arguments[0].click();", ltd[1])
+        self.assertEqual(first[1].text, '瞒天过海', "首行应为瞒天过海")
+        self.assertEqual(first[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '胜战计',
+                         "瞒天过海分类应为胜战计")
+        self.assertEqual(first[3].text, '掩人耳目、欺上瞒下', "衍生成语应保留用户内容")
+        self.assertIn('改稻为桑', first[4].text, "剧中事件应含改稻为桑")
+        self.assertIn('薛仁贵', first[6].text, "历史典故应含薛仁贵")
+        # 走为上计行（败战计 + 典故重耳）
+        zs = self._row_by_text(1, '走为上计')
+        self.assertIsNotNone(zs, "应找到走为上计行")
+        ztd = zs.find_elements(By.TAG_NAME, 'td')
+        self.assertEqual(ztd[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '败战计',
+                         "走为上计应为败战计")
+        self.assertIn('重耳', ztd[6].text, "走为上典故应含重耳")
+        # split 详情（计策名称点击 → 典故+事件）
+        self.driver.execute_script("arguments[0].click();", first[1])
         time.sleep(0.4)  # [speedup]
 
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
-        self.assertIn('保全严世蕃', pv, "详情应含计策视角事件描述")
-        self.assertIn('马宁远', pv, "详情应含马宁远")
-        self.assertIn('趁火打劫', pv, "详情应含叠加计策")
-        self.assertNotIn('【叠加计策】', pv, "详情不应有前缀")
+        self.assertIn('薛仁贵', pv, "详情应含典故人物")
+        self.assertIn('改稻为桑', pv, "详情应含剧中事件")
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
 
