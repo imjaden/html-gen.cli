@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -32,7 +34,7 @@ class TestDocBare(unittest.TestCase):
 
     def _load(self, query=''):
         self.driver.get('file://' + str(DEMO) + query)
-        time.sleep(0.6)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -90,7 +92,8 @@ class TestDocBare(unittest.TestCase):
     def test_06_collapsed_works(self):
         self._load()
         self.driver.find_element(By.TAG_NAME, 'body').send_keys('[')
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         sidebar = self.driver.find_element(By.ID, 'sidebar')
         classes = sidebar.get_attribute('class') or ''
         self.assertIn('collapsed', classes, "默认展示下侧边栏可折叠")

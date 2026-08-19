@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -30,7 +32,7 @@ class TestStickyAndWidth(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1024, 600)
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.8)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.data-table')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -59,7 +61,8 @@ class TestStickyAndWidth(unittest.TestCase):
         wrap = self.driver.find_element(By.CSS_SELECTOR, '.table-wrap')
         # Scroll right to verify sticky column stays visible
         self.driver.execute_script("arguments[0].scrollLeft = arguments[0].scrollWidth;", wrap)
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         info = self.driver.execute_script("""
         var td = document.querySelector('td.sticky-right');

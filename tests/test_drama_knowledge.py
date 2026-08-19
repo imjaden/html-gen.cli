@@ -86,7 +86,8 @@ class TestDramaKnowledge(unittest.TestCase):
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         # 时间轴 is the 2nd section
         sections[1].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         src = self._iframe_src()
         self.assertTrue(src.endswith('drama/history-timeline-table.html'),
                         f"Expected timeline, got: {src}")
@@ -94,10 +95,12 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_04_section_click_overview_daming(self):
         """Click 大明 概述 section → iframe src = daming-overview.html."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         sections[0].click()  # 概述
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         src = self._iframe_src()
         self.assertTrue(src.endswith('drama/daming-overview.html'),
                         f"Expected overview, got: {src}")
@@ -105,10 +108,12 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_05_section_click_strategy_daming(self):
         """Click 大明 36计策 section → iframe src = daming-strategy-table.html."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         sections[2].click()  # 36计策
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         src = self._iframe_src()
         self.assertTrue(src.endswith('drama/daming-strategy-table.html'),
                         f"Expected strategy, got: {src}")
@@ -120,14 +125,17 @@ class TestDramaKnowledge(unittest.TestCase):
         # Click 中国历史 概述
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         sections[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.assertTrue(self._iframe_src().endswith('drama/history-overview.html'))
         # Switch to 大明, click 概述
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         sections2 = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         sections2[0].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.assertTrue(self._iframe_src().endswith('drama/daming-overview.html'),
                         "Cross-group title should not collide")
 
@@ -136,11 +144,14 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_07_restore_state(self):
         """Refresh restores group + section."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()  # 时间轴
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.6)
+        time.sleep(0.3)  # [speedup]
+
         active = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab.active')
         self.assertEqual(len(active), 1)
         self.assertEqual(active[0].text.split('\n')[-1].strip(), '大明王朝1566',
@@ -153,9 +164,11 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_08_daming_timeline_single_table(self):
         """大明时间轴 table 应为单表 17 年号，默认筛选嘉靖（本剧年号）."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()
-        time.sleep(0.5)
+        time.sleep(0.25)  # [speedup]
+
         frame = self.driver.find_element(By.ID, 'contentFrame')
         self.driver.switch_to.frame(frame)
         heads = [th.text for th in self.driver.find_elements(By.CSS_SELECTOR, 'thead th')]
@@ -170,13 +183,16 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_17_section_follows_group_switch(self):
         """需求: 切顶部 tab 时左侧 section 跨组保持（大明 36计策 → 中国历史 36计策）."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()  # 大明
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
         secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         sec36 = next(s for s in secs if '36计策' in s.text)
         sec36.click()
-        time.sleep(0.5)
+        time.sleep(0.25)  # [speedup]
+
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[0].click()  # 中国历史
-        time.sleep(0.6)
+        time.sleep(0.3)  # [speedup]
+
         act = self.driver.execute_script(
             "return document.querySelector('.kw-section-title.active').textContent || '';")
         self.assertIn('36计策', act, f"跨组应保持 36计策: {act}")
@@ -189,19 +205,22 @@ class TestDramaKnowledge(unittest.TestCase):
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
         self.assertEqual(len(tabs), 3, f"应有 3 个 tab: {[t.text for t in tabs]}")
         tabs[2].click()
-        time.sleep(0.5)
+        time.sleep(0.25)  # [speedup]
+
         secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         self.assertEqual(len(secs), 3, f"雍正应有 3 个 section: {[s.text for s in secs]}")
         # 时间轴：默认筛选雍正 9 行（总览+8 剧情），清筛选 11 行（含康熙前史）
         next(s for s in secs if '时间轴' in s.text).click()
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         frame = self.driver.find_element(By.ID, 'contentFrame')
         self.driver.switch_to.frame(frame)
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
         self.assertEqual(len(rows), 9, f"默认应筛选雍正 9 行: {len(rows)}")
         self.assertIn('追缴国库', ' '.join(r.text for r in rows), "应含追缴欠款剧情")
         self.driver.execute_script("clearQuickFilter();")
-        time.sleep(0.5)
+        time.sleep(0.25)  # [speedup]
+
         self.assertEqual(self.driver.execute_script(
             "return document.getElementById('statTotal').textContent;"), '21',
             "清筛选后总行数应 21（清朝 12 帝 + 本剧剧情 9）")
@@ -216,7 +235,8 @@ class TestDramaKnowledge(unittest.TestCase):
         # 36计策 8 行
         next(s for s in self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
              if '36计策' in s.text).click()
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         self.driver.switch_to.frame(self.driver.find_element(By.ID, 'contentFrame'))
         heads = [th.text for th in self.driver.find_elements(By.CSS_SELECTOR, 'thead th')]
         self.assertEqual(heads,
@@ -235,7 +255,8 @@ class TestDramaKnowledge(unittest.TestCase):
         """iframe 内 doc 页默认隐藏 sidebar/toolbar (嵌入降级)."""
         # 中国历史 → 概述 (doc page, 非 table)
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[0].click()
-        time.sleep(0.6)
+        time.sleep(0.3)  # [speedup]
+
         frame = self.driver.find_element(By.ID, 'contentFrame')
         self.driver.switch_to.frame(frame)
         # doc page inside iframe: sidebar/toolbar hidden by default (no param)
@@ -255,9 +276,11 @@ class TestDramaKnowledge(unittest.TestCase):
         """需求 3: 切页签后刷新，恢复之前查看的页签（group 单独记忆）."""
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
         tabs[1].click()  # 大明王朝1566
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
         self.driver.refresh()
-        time.sleep(0.8)
+        time.sleep(0.4)  # [speedup]
+
         active = self.driver.execute_script(
             "var a=document.querySelector('.kw-tab.active'); return a ? a.textContent : 'NONE';")
         self.assertIn('大明', active, f"刷新后应恢复大明页签: {active}")
@@ -267,13 +290,15 @@ class TestDramaKnowledge(unittest.TestCase):
         # 中国历史 → 36计策 section
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         sections[2].click()  # 36计策
-        time.sleep(0.6)
+        time.sleep(0.3)  # [speedup]
+
         url = self.driver.execute_script("return location.href;")
         self.assertIn('group=', url, f"URL 应含 group: {url}")
         self.assertIn('item=', url, f"URL 应含 item: {url}")
         # 带 URL 重新打开 → 定位 36计策
         self.driver.get(url)
-        time.sleep(0.9)
+        time.sleep(0.45)  # [speedup]
+
         active_sec = self.driver.execute_script(
             "var a=document.querySelector('.kw-section-title.active'); return a ? a.textContent : 'NONE';")
         self.assertIn('36计策', active_sec, f"URL 打开应定位 36计策: {active_sec}")
@@ -284,7 +309,8 @@ class TestDramaKnowledge(unittest.TestCase):
         """Exercise all sections → no JS errors."""
         for tab_idx in [0, 1]:
             self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[tab_idx].click()
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
             sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
             for si in range(len(sections)):
                 sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')

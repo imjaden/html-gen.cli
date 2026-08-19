@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -55,10 +57,11 @@ class TestInitialHiddenAndSplit(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1400, 900)
         self.driver.get('file://' + self.demo)
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         self.driver.execute_script("localStorage.clear();")
         self.driver.get('file://' + self.demo)
-        time.sleep(0.8)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.data-table')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -76,7 +79,8 @@ class TestInitialHiddenAndSplit(unittest.TestCase):
         # 点击第 1 列 → 分栏详情含隐藏字段（全列渲染）
         row = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')[0]
         row.find_elements(By.TAG_NAME, 'td')[0].click()
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
         body = self.driver.find_element(By.ID, 'splitPreviewBody')
         text = body.text
         self.assertIn('隐藏字段', text, "分栏详情应显示 initialHidden 列")
@@ -93,7 +97,8 @@ class TestInitialHiddenAndSplit(unittest.TestCase):
         row = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')[0]
         pill = next(p for p in row.find_elements(By.CSS_SELECTOR, '.cell-pill') if p.text == '脂肪')
         self.driver.execute_script("arguments[0].click();", pill)
-        time.sleep(0.4)
+        time.sleep(0.2)  # [speedup]
+
         fp = self.driver.find_element(By.ID, 'quickFilterPill')
         self.assertIn('脂肪', fp.text, "filter pill 应显示脂肪")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')

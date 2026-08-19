@@ -205,7 +205,17 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 73 tests（7 回归 + 66 Selenium）
+- 当前 136 tests
+- **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
+  ```bash
+  python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
+  python3 -m pytest tests/ -q -n 0     # 单线程调试
+  ```
+- **等待机制约定**：
+  - setUp 页面加载 wait 用 `WebDriverWait`（主元素：table `.data-table` / knowledge `.kw-tab` / doc `.doc-body` / slide `.slide-sidebar`）
+  - 交互 wait 用调低后的固定 sleep（0.3/0.4/0.5/0.6/0.8/0.9 → 减半；0.08/0.1/0.15/0.2/0.25 不动）
+  - sleep 调低用 `skills/test-speed-optimization/scripts/speedup_sleeps.py`（--dry-run/--apply/--restore）
+- 依赖：`pytest-xdist>=3.8.0`（见 requirements-dev.txt）
 
 ## 目录结构
 

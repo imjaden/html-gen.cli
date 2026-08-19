@@ -35,3 +35,6 @@ logs/
 
 # pytest
 .pytest_cache/
+
+# speedup_sleeps.py 回滚备份
+*.bak

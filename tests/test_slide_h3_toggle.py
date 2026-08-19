@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -30,11 +32,12 @@ class TestH3Toggle(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1280, 800)
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         # Clear localStorage to prevent cross-test state
         self.driver.execute_script("localStorage.clear();")
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.5)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.slide-sidebar')))
 
     def test_01_h3_hidden_by_default(self):
         """toc-h3 items should be hidden on page load."""
@@ -66,10 +69,12 @@ class TestH3Toggle(unittest.TestCase):
         """Click H3 toggle twice → toc-h3 hidden again."""
         toggle = self.driver.find_element(By.ID, 'h3Toggle')
         toggle.click()  # show
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
         toggle = self.driver.find_element(By.ID, 'h3Toggle')  # re-query
         toggle.click()  # hide
-        time.sleep(0.3)
+        time.sleep(0.15)  # [speedup]
+
 
         self.assertEqual(toggle.text.strip(), 'H3')
 

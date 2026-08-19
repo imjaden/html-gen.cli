@@ -179,12 +179,14 @@ class TestDocSlideFrontmatter(unittest.TestCase):
             options=opts)
         try:
             driver.get(f'file://{out}')
-            time.sleep(0.5)
+            time.sleep(0.25)  # [speedup]
+
             driver.execute_script(
                 "window.__testErrors = [];"
                 "window.onerror = function(m) { window.__testErrors.push(String(m)); };")
             driver.execute_script("window.scrollTo(0, document.body.scrollHeight);")
-            time.sleep(0.3)
+            time.sleep(0.15)  # [speedup]
+
             sidebar_top = driver.execute_script(
                 "var s = document.querySelector('.doc-sidebar');"
                 "return s ? s.getBoundingClientRect().top : -1;")
