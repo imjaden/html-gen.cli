@@ -92,6 +92,21 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 | 显示 N/M 计数 | 工具栏显示 "显示 X / Y 条" | P0 |
 | 列自动宽度 | 表头固定，内容自适应 | P0 |
 | 零外部依赖 | 单文件 HTML，无需加载 CDN 脚本 | P0 |
+| 序号列 (showIndex) | OPTIONS.showIndex 渲染首列序号，Cinema 模型 42px 显式宽度 | P0 |
+| 整行详情字段 (splitFull) | 字段在分栏详情占整行宽，`\n`→`<br>` 段落渲染（原文/白话/历任皇帝） | P0 |
+| 默认筛选 (defaultFilter) | options.defaultFilter {key,value} 加载后自动筛选（大明时间轴默认嘉靖） | P0 |
+| pills 列整格 split | 标签列整格点击开分栏，pill 点击筛选 stopPropagation 共存 | P0 |
+| 行高统一 | td 7px 8px + cell-pill vertical-align:middle → 全类型表 34-35px | P0 |
+| 列隐藏 (initialHidden/hide) | 默认隐藏列（设置面板可开）；永不可见列 | P1 |
+| 列冻结 / 右侧固定 | col.freeze sticky 左列；col.stickyRight 视口右侧固定 | P1 |
+| 分栏模式列过滤 | col.preview 仅预览列显示于分栏；options.columnsSplit 指定列集 | P1 |
+| 视图预设 | 保存/加载/删除设置（密度/模式/排序/列可见性，≤2KB×10） | P1 |
+| 操作按钮列 | actions 列：copyKey/hrefKey/desc/handler 四种按钮 | P1 |
+| 多标签页 | TABS 定义标签切换 + count | P1 |
+| CSV 导出 / 批量操作 | exportCSV / rowSelect 工具栏（全选/取消/导出） | P2 |
+| 列宽拖拽记忆 | 拖拽 resize 直接操作 DOM，localStorage 持久化 (html-gen:table:col-widths) | P2 |
+| 快捷搜索 (Cmd+F) | Spotlight 弹窗搜索 (150ms debounce) | P2 |
+| 密度切换 / 设置面板 | 紧凑/标准/舒适 + ⚙️ 下拉（列可见性/视图预设） | P2 |
 
 ### 待实现 🔜
 
@@ -151,3 +166,6 @@ html-gen table -h
 |:---|:---:|:---|
 | v1.0 | 2026-07-01 | 初版：JSON 注入 + 搜索 + 排序 + 分页 |
 | v1.1 | 2026-07-06 | 列自动推导（移除 cols.json）、搜索无结果提示 |
+| v2.0 | 2026-07-22 | 结构化格式：columns/tabs/options；操作按钮列、多标签、CSV 导出、列可见性、列宽拖拽 |
+| v2.1 | 2026-08-18 | 行高统一 34-35px；showIndex 序号列；splitFull 整行字段；defaultFilter 默认筛选；pills 列整格 split |
+| v2.2 | 2026-08-19 | 36计/时间轴重构列模型；视图预设；设置面板；列冻结/右侧固定；分栏列过滤 |

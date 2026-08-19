@@ -103,6 +103,15 @@ JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
 | 可选 groups.json | 自定义类目顺序、图标、显示名称 | P0 |
 | 深色主题 | 与 style-guide.css 一致的 surface-950 深色主题 | P0 |
 | 零外部依赖 | 单文件 HTML，无需加载 CDN | P0 |
+| URL 参数同步 | 点击菜单/页签实时写 group/item 到 URL；带 URL 打开定位指定页（拷贝中文原文链接） | P0 |
+| 记忆恢复 | URL 参数优先 > localStorage（kw_group/kw_item）> 默认；group 单独恢复 | P0 |
+| iframe 加载 + 内联渲染 | 有 url → iframe 加载；有 desc → 内联渲染；空态欢迎面板 | P0 |
+| 概述页宽屏 | url 含 overview 时 iframe 自动附加 width=wide（doc 1280px） | P0 |
+| 跨组 section 保持 | 切顶部 tab 时左侧选中 section 跨组跟随（如 36计策 ↔ 36计策） | P0 |
+| section 图标 | 数据 section_icon 字段渲染图标前缀（📋/📅/🧮） | P1 |
+| 侧边栏折叠/搜索 | 折叠 48px（`[` 快捷键）；🔍 搜索 150ms debounce 过滤 | P1 |
+| 裸模式 (Bare) | 默认隐藏 sidebar/toolbar，?sidebar=1&toolbar=1 展示；嵌入 iframe 自动降级 | P1 |
+| 单条目 section 直开 | 单条目 section 点击标题直接加载 (K2) | P1 |
 
 ### 待实现 🔜
 
@@ -174,3 +183,6 @@ html-gen knowledge -h
 | 版本 | 日期 | 变更 |
 |:---|:---:|:---|
 | v1.0 | 2026-07-05 | 初版：顶部标签 + 左侧章节 + 右侧内容 |
+| v2.0 | 2026-08-11 | Bare 模式 + 折叠/搜索/记忆恢复 + 单条目直开 |
+| v2.1 | 2026-08-18 | URL 参数同步（group/item 实时写 URL + 恢复优先）+ section 图标 + 隐藏搜索/折叠按钮 |
+| v2.2 | 2026-08-19 | 跨组 section 保持；概述页 iframe 宽屏 width=wide；标题点击复制中文 URL |

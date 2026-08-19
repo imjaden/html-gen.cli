@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>A 型方案</title>
+<title>A 型 · 数据表格方案</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -401,7 +401,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
     <div class="doc-sidebar-resize" id="sbResize"></div>
     <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
     <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="A 型方案" id="sidebarTitle">📄 A 型方案</div>
+      <div class="sidebar-title" title="A 型 · 数据表格方案" id="sidebarTitle">📄 A 型 · 数据表格方案</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -420,8 +420,8 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   </aside>
   <div class="doc-main" id="docMain">
     <div class="doc-header">
-      <h1>A 型方案</h1>
-      <div class="meta">创建: 2026-08-19 15:09 · 编辑: 2026-07-11 11:57<br>字数: 614 · 阅读约 3 分钟</div>
+      <h1>A 型 · 数据表格方案</h1>
+      <div class="meta">创建: 2026-08-19 23:31 · 编辑: 2026-08-19 23:31<br>字数: 803 · 阅读约 4 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
@@ -641,6 +641,81 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 <td>单文件 HTML，无需加载 CDN 脚本</td>
 <td>P0</td>
 </tr>
+<tr>
+<td>序号列 (showIndex)</td>
+<td>OPTIONS.showIndex 渲染首列序号，Cinema 模型 42px 显式宽度</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>整行详情字段 (splitFull)</td>
+<td>字段在分栏详情占整行宽，<code>\n</code>→<code><br></code> 段落渲染（原文/白话/历任皇帝）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>默认筛选 (defaultFilter)</td>
+<td>options.defaultFilter {key,value} 加载后自动筛选（大明时间轴默认嘉靖）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>pills 列整格 split</td>
+<td>标签列整格点击开分栏，pill 点击筛选 stopPropagation 共存</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>行高统一</td>
+<td>td 7px 8px + cell-pill vertical-align:middle → 全类型表 34-35px</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>列隐藏 (initialHidden/hide)</td>
+<td>默认隐藏列（设置面板可开）；永不可见列</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>列冻结 / 右侧固定</td>
+<td>col.freeze sticky 左列；col.stickyRight 视口右侧固定</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>分栏模式列过滤</td>
+<td>col.preview 仅预览列显示于分栏；options.columnsSplit 指定列集</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>视图预设</td>
+<td>保存/加载/删除设置（密度/模式/排序/列可见性，≤2KB×10）</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>操作按钮列</td>
+<td>actions 列：copyKey/hrefKey/desc/handler 四种按钮</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>多标签页</td>
+<td>TABS 定义标签切换 + count</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>CSV 导出 / 批量操作</td>
+<td>exportCSV / rowSelect 工具栏（全选/取消/导出）</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>列宽拖拽记忆</td>
+<td>拖拽 resize 直接操作 DOM，localStorage 持久化 (html-gen:table:col-widths)</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>快捷搜索 (Cmd+F)</td>
+<td>Spotlight 弹窗搜索 (150ms debounce)</td>
+<td>P2</td>
+</tr>
+<tr>
+<td>密度切换 / 设置面板</td>
+<td>紧凑/标准/舒适 + ⚙️ 下拉（列可见性/视图预设）</td>
+<td>P2</td>
+</tr>
 </tbody></table>
 <h3 id="待实现">待实现 🔜</h3>
 <table><thead><tr>
@@ -729,6 +804,21 @@ open index.html</code></pre>
 <td>v1.1</td>
 <td>2026-07-06</td>
 <td>列自动推导（移除 cols.json）、搜索无结果提示</td>
+</tr>
+<tr>
+<td>v2.0</td>
+<td>2026-07-22</td>
+<td>结构化格式：columns/tabs/options；操作按钮列、多标签、CSV 导出、列可见性、列宽拖拽</td>
+</tr>
+<tr>
+<td>v2.1</td>
+<td>2026-08-18</td>
+<td>行高统一 34-35px；showIndex 序号列；splitFull 整行字段；defaultFilter 默认筛选；pills 列整格 split</td>
+</tr>
+<tr>
+<td>v2.2</td>
+<td>2026-08-19</td>
+<td>36计/时间轴重构列模型；视图预设；设置面板；列冻结/右侧固定；分栏列过滤</td>
 </tr>
 </tbody></table></div>
   </div>

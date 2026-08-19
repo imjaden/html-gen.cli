@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>B 型 · 文档阅读方案</title>
+<title>D 型 · 幻灯片方案</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -401,7 +401,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
     <div class="doc-sidebar-resize" id="sbResize"></div>
     <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
     <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="B 型 · 文档阅读方案" id="sidebarTitle">📄 B 型 · 文档阅读方案</div>
+      <div class="sidebar-title" title="D 型 · 幻灯片方案" id="sidebarTitle">📄 D 型 · 幻灯片方案</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -420,66 +420,54 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   </aside>
   <div class="doc-main" id="docMain">
     <div class="doc-header">
-      <h1>B 型 · 文档阅读方案</h1>
-      <div class="meta">创建: 2026-08-19 23:31 · 编辑: 2026-08-19 23:31<br>字数: 952 · 阅读约 5 分钟</div>
+      <h1>D 型 · 幻灯片方案</h1>
+      <div class="meta">创建: 2026-08-19 23:32 · 编辑: 2026-08-19 23:32<br>字数: 383 · 阅读约 2 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
-<p>文档阅读模板适合<strong>长文本内容的消费和知识沉淀</strong>场景，是三层模板中功能最丰富的一层。</p>
+<p>幻灯片模板适用于<strong>演示与分页展示</strong>场景，是三层模板中的演示层：每个 <code>## h2</code> 标题为一页，h1 为封面页。</p>
 <table><thead><tr>
 <th>场景</th>
 <th>说明</th>
 <th>典型篇幅</th>
 </tr></thead><tbody>
 <tr>
-<td><strong>分析报告</strong></td>
-<td>竞品分析、技术调研、市场研究的长篇报告</td>
-<td>500-5000 字</td>
+<td><strong>技术分享</strong></td>
+<td>架构讲解、方案评审、团队分享</td>
+<td>10-30 页</td>
 </tr>
 <tr>
-<td><strong>技术文档</strong></td>
-<td>API 手册、架构说明、最佳实践指南</td>
-<td>1000-10000 字</td>
+<td><strong>方案演示</strong></td>
+<td>产品演示、代码 walkthrough</td>
+<td>5-20 页</td>
 </tr>
 <tr>
-<td><strong>长文阅读</strong></td>
-<td>博客/Newsletter/论文的摘要整理</td>
-<td>200-3000 字</td>
+<td><strong>培训课件</strong></td>
+<td>教学课件、操作指南</td>
+<td>15-50 页</td>
 </tr>
 <tr>
-<td><strong>知识沉淀</strong></td>
-<td>个人笔记、学习总结、项目复盘</td>
-<td>500-5000 字</td>
-</tr>
-<tr>
-<td><strong>会议纪要</strong></td>
-<td>结构化会议记录，含待办、决策、讨论点</td>
-<td>200-2000 字</td>
+<td><strong>会议材料</strong></td>
+<td>周会/月会汇报、决策材料</td>
+<td>5-15 页</td>
 </tr>
 </tbody></table>
-<h3 id="不适合的场景">不适合的场景</h3>
+<h3 id="与-b-型文档的关系">与 B 型文档的关系</h3>
+<p>D 型与 B 型共用同一 Markdown 渲染器，区别在于排版与交互：</p>
 <ul>
-<li><strong>结构化数据浏览</strong>（搜索+排序+分页 → 用 A 型表格）</li>
-<li><strong>多类目知识浏览</strong>（顶部标签切换 → 用 C 型知识库）</li>
-<li><strong>协作编辑</strong>（B 型是只读展示，不是编辑器）</li>
+<li>B 型：长文滚动阅读（侧边栏 TOC）</li>
+<li>D 型：h2 分页演示（键盘翻页）</li>
 </ul>
 <hr>
 <h2 id="方案设计">方案设计</h2>
 <h3 id="架构">架构</h3>
 <pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
-Layer 2: layout-doc.html (骨架: 侧边栏TOC + 主内容区)
-Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
-<h3 id="数据流">数据流</h3>
-<pre><code class="language-">Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
-                 │                  ├── 自动 TOC
-                 │                  ├── 表格渲染
-                 │                  ├── 代码高亮
-                 │                  ├── 进度条
-                 │                  ├── callout 提示框
-                 │                  ├── 锚点链接
-                 │                  ├── 代码行号
-                 │                  └── 外链归档
-                 └── 元信息自动计算</code></pre>
+Layer 2: layout-slide.html (模板骨架)
+Layer 3: html-gen.py → slide 子命令 (Markdown 注入)</code></pre>
+<h3 id="分页规则">分页规则</h3>
+<pre><code class="language-"># 标题          → 封面页（h1，含 slide-cover + 页数统计）
+## 章节         → 每页一个 h2（分页单元）
+### 子标题       → 页内 H3 小节（默认隐藏，点击展开）</code></pre>
 <h3 id="关键设计决策">关键设计决策</h3>
 <table><thead><tr>
 <th>决策</th>
@@ -487,342 +475,109 @@ Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
 <th>理由</th>
 </tr></thead><tbody>
 <tr>
-<td><strong>Markdown 渲染</strong></td>
-<td>手写渲染器</td>
-<td>零外部依赖，精准控制输出。仅需覆盖我们使用的语法子集</td>
-</tr>
-<tr>
-<td><strong>CSS 框架</strong></td>
-<td>参考 Docsify dark.css</td>
-<td>经过了大量实际文档的检验，适合深色主题文档阅读</td>
-</tr>
-<tr>
-<td><strong>侧边栏 TOC</strong></td>
-<td>固定 260px + 粘性定位</td>
-<td>长文导航的黄金宽度，内容区 max-width 880px 保证阅读体验</td>
-</tr>
-<tr>
-<td><strong>滚动高亮</strong></td>
-<td>JS 根据 <code>getBoundingClientRect().top ≤ 100</code> 判断</td>
-<td>纯前端，无交叉观察者依赖</td>
-</tr>
-<tr>
-<td><strong>代码行号</strong></td>
-<td>CSS counter + JS 拆分 line 元素</td>
-<td>纯前端可选，单行跳过，不影响复制按钮</td>
-</tr>
-<tr>
-<td><strong>Callout</strong></td>
-<td>正则检测 <code>> <strong>Note:</strong></code> 模式</td>
-<td>利用原有 Markdown blockquote 语法，无需新语法</td>
-</tr>
-<tr>
-<td><strong>外链归档</strong></td>
-<td>服务端 <code>re.findall</code> 提取 + 追加</td>
-<td>文档生成时一次性完成，客户零开销</td>
-</tr>
-<tr>
-<td><strong>图片灯箱</strong></td>
-<td>纯 CSS overlay + JS</td>
-<td>无第三方库，支持 Escape / 点击外部关闭</td>
-</tr>
-</tbody></table>
-<h3 id="手写-markdown-渲染器支持语法">手写 Markdown 渲染器支持语法</h3>
-<pre><code class="language-"># h1  ## h2  ### h3                    — 标题
-**bold**  *italic*                      — 行内格式
-`code`                                 — 行内代码
-``` ```
- 代码块                              — 围栏代码块
-[link](url)                            — 链接 (target=_blank)
-| table | with | cells |               — 表格
-- list item                            — 无序列表
-1. list item                           — 有序列表
----                                    — 分隔线
-&gt; blockquote                           — 引用
-&gt; **Note:** text                       — Callout 提示框
-&gt; **Warning:** text                    — Callout 警告
-&gt; **Tip:** text                        — Callout 提示
-&gt; **Danger:** text                     — Callout 危险</code></pre>
-<hr>
-<h2 id="行业对标">行业对标</h2>
-<table><thead><tr>
-<th>维度</th>
-<th>B 型 · 文档阅读</th>
-<th>Docsify</th>
-<th>VuePress</th>
-<th>GitBook</th>
-</tr></thead><tbody>
-<tr>
-<td><strong>定位</strong></td>
-<td>单文件文档阅读</td>
-<td>SPA 文档站点</td>
-<td>SSG 文档站点</td>
-<td>托管文档平台</td>
-</tr>
-<tr>
-<td><strong>部署</strong></td>
-<td>单文件 HTML</td>
-<td>静态服务器</td>
-<td>构建后静态文件</td>
-<td>SaaS</td>
+<td><strong>分页粒度</strong></td>
+<td>h2 为页</td>
+<td>Markdown 天然语义，无需额外语法</td>
 </tr>
 <tr>
 <td><strong>渲染</strong></td>
-<td>服务端预渲染</td>
-<td>客户端 JS 渲染</td>
-<td>构建时 SSG</td>
-<td>服务端渲染</td>
+<td>与 B 型同源</td>
+<td>md_to_html 复用，特性一致（代码块/表格/Callout）</td>
 </tr>
 <tr>
-<td><strong>搜索</strong></td>
-<td>❌ 暂无</td>
-<td>✅ 全文搜索</td>
-<td>✅ algolia</td>
-<td>✅ 内置</td>
+<td><strong>交互</strong></td>
+<td>客户端 JS</td>
+<td>键盘翻页 + 全屏，零依赖</td>
 </tr>
 <tr>
-<td><strong>TOC</strong></td>
-<td>✅ 自动</td>
-<td>✅ 插件</td>
-<td>✅ 自动</td>
-<td>✅ 自动</td>
-</tr>
-<tr>
-<td><strong>代码高亮</strong></td>
-<td>✅ 行号 + 复制</td>
-<td>✅ prism.js</td>
-<td>✅ prism/shiki</td>
-<td>✅ prism</td>
-</tr>
-<tr>
-<td><strong>图片</strong></td>
-<td>✅ 灯箱</td>
-<td>✅ 缩放</td>
-<td>✅ 缩放</td>
-<td>✅ 缩放</td>
-</tr>
-<tr>
-<td><strong>Callout</strong></td>
-<td>✅ 原生</td>
-<td>✅ 插件</td>
-<td>✅ 插件</td>
-<td>✅ 内置</td>
-</tr>
-<tr>
-<td><strong>离线</strong></td>
-<td>✅ 单文件完整</td>
-<td>❌ 依赖 CDN</td>
-<td>✅ 全构建</td>
-<td>❌ 需网络</td>
-</tr>
-<tr>
-<td><strong>文件大小</strong></td>
-<td>~35KB（含内容）</td>
-<td>~100KB+CDN</td>
-<td>~50KB+构建产物</td>
-<td>N/A</td>
-</tr>
-<tr>
-<td><strong>外部依赖</strong></td>
-<td>零</td>
-<td>marked.js</td>
-<td>Vue/Webpack</td>
-<td>SaaS</td>
+<td><strong>样式</strong></td>
+<td>style-guide.css inline</td>
+<td>单文件嵌入</td>
 </tr>
 </tbody></table>
-<p><strong>核心差异</strong>：B 型不是文档站框架的替代品，而是「我需要把一个 Markdown 文件发给别人看」场景下的最优解。无需安装、无需构建、无需网络，生成即用。</p>
 <hr>
 <h2 id="功能清单">功能清单</h2>
 <h3 id="已实现">已实现 ✅</h3>
 <table><thead><tr>
 <th>功能</th>
 <th>说明</th>
-<th>优先级</th>
 </tr></thead><tbody>
 <tr>
-<td>Markdown → HTML 渲染</td>
-<td>手写渲染器，支持 h1-h3/表格/列表/代码块/链接/图片</td>
-<td>P0</td>
+<td>h2 分页</td>
+<td>每个 ## h2 为一页，h1 为封面页</td>
 </tr>
 <tr>
-<td>自动侧边栏 TOC</td>
-<td>从 h2/h3 生成目录树，点击平滑滚动</td>
-<td>P0</td>
+<td>键盘导航</td>
+<td>← → Space Home End 翻页</td>
 </tr>
 <tr>
-<td>滚动章节高亮</td>
-<td>滚动时自动标记当前阅读位置</td>
-<td>P0</td>
+<td>全屏</td>
+<td>F 键切换全屏</td>
 </tr>
 <tr>
-<td>代码复制按钮</td>
-<td>悬停显示，一键复制代码块内容</td>
-<td>P0</td>
+<td>进度指示</td>
+<td>底部圆点（已读/当前/未读）</td>
 </tr>
 <tr>
-<td>代码行号</td>
-<td>多行代码块左侧行号（CSS counter），单行跳过</td>
-<td>P1</td>
+<td>页码</td>
+<td>当前页 / 总页数</td>
 </tr>
 <tr>
-<td>Callout 提示框</td>
-<td><code>> <strong>Note/Tip/Warning/Danger</strong></code> → 蓝/绿/黄/红</td>
-<td>P1</td>
+<td>阅读记忆</td>
+<td>localStorage 恢复上次阅读位置</td>
 </tr>
 <tr>
-<td>锚点链接 ¶</td>
-<td>h2/h3 悬浮显示 ¶，点击复制 <code>#section-id</code> 到剪贴板</td>
-<td>P1</td>
+<td>H3 子标题</td>
+<td>默认隐藏，点击开关展开</td>
 </tr>
 <tr>
-<td>外链归档</td>
-<td>自动提取全文 https:// 链接，去重排序追加到底部</td>
-<td>P1</td>
-</tr>
-<tr>
-<td>阅读进度条</td>
-<td>顶部 2px 固定钴蓝色进度条</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>图片灯箱</td>
-<td>点击放大，overlay 展示，Escape 关闭</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>自动元信息</td>
-<td>路径/创建时间/编辑时间/字数/阅读时长</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>inline 全局格式化</td>
-<td>表格内 <code><strong>bold</strong></code> <code>code</code> <code>[link]</code> 正确渲染</td>
-<td>P0</td>
-</tr>
-<tr>
-<td>深色主题</td>
-<td>Docsify-inspired surface-950 深色主题</td>
-<td>P0</td>
+<td>性能警告</td>
+<td>>50 h2 时显示加载警告（perf-warning）</td>
 </tr>
 <tr>
 <td>零外部依赖</td>
-<td>单文件 HTML，无需加载 CDN</td>
-<td>P0</td>
+<td>单文件 HTML，样式内联</td>
 </tr>
 </tbody></table>
 <h3 id="待实现">待实现 🔜</h3>
 <table><thead><tr>
 <th>功能</th>
 <th>说明</th>
-<th>优先级</th>
 </tr></thead><tbody>
 <tr>
-<td>Back-to-top 按钮</td>
-<td>长文阅读中快速回到顶部</td>
-<td>P2</td>
+<td>演讲者备注</td>
+<td>每页备注区（仅演示者可见）</td>
 </tr>
 <tr>
-<td>浮动 TOC</td>
-<td>小屏设备上的悬浮目录按钮</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>正文宽度 65ch</td>
-<td>优化大屏阅读体验，限制行宽</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>面包屑导航</td>
-<td>显示文档层级路径</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>上/下一篇导航</td>
-<td>多文档间的顺序导航按钮</td>
-<td>P2</td>
-</tr>
-<tr>
-<td>键盘快捷键</td>
-<td>j/k 滚行、Enter 打开链接、? 帮助、t 回到顶部</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>交互式进度条</td>
-<td>显示剩余分钟数、章节标题</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>图片懒加载</td>
-<td>长文档首次加载优化</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>全文搜索</td>
-<td>多文档全文搜索（需要索引支撑）</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>Tags 系统</td>
-<td>文档标签筛选和分类浏览</td>
-<td>P3</td>
-</tr>
-<tr>
-<td>视频/音频嵌入</td>
-<td>支持 iframe/embed 标签</td>
-<td>P3</td>
+<td>目录页</td>
+<td>封面后自动生成可点击目录</td>
 </tr>
 </tbody></table>
 <hr>
 <h2 id="快速开始">快速开始</h2>
-<pre><code class="language-shell"># 从 Markdown 生成文档
-html-gen doc -i report.md -o report.html
+<pre><code class="language-shell"># 从 Markdown 生成幻灯片
+html-gen slide -i slides.md -o slides.html
 
 # 指定标题
-html-gen doc -i analysis.md --title "竞品分析报告" -o output.html
-
-# 直接打开
-open report.html</code></pre>
+html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 <h3 id="命令行参数">命令行参数</h3>
-<pre><code class="language-">html-gen doc -h
+<pre><code class="language-">html-gen slide -h
   -i, --input FILE   输入 Markdown 文件（必需）
   -o, --output FILE  输出 HTML 文件
-  --title TEXT       覆盖文档标题
-  --subtitle TEXT    副标题（显示在侧边栏和页头）</code></pre>
-<h3 id="url-入参控制展示设置">URL 入参控制展示设置</h3>
-<p>打开页面时可追加 URL 参数控制宽度、侧边栏、工具栏等展示设置（知识库 iframe 嵌入时自动附加）：</p>
-<table><thead><tr>
-<th>参数</th>
-<th>取值</th>
-<th>效果</th>
-</tr></thead><tbody>
-<tr>
-<td><code>width</code></td>
-<td><code>wide</code> / <code>narrow</code></td>
-<td>内容区宽度：wide=1280px 宽屏 / narrow=720px 窄栏（默认 960px）</td>
-</tr>
-<tr>
-<td><code>sidebar</code></td>
-<td><code>0</code> / <code>1</code></td>
-<td>侧边栏显示：<code>sidebar=0</code> 隐藏（默认显示）</td>
-</tr>
-<tr>
-<td><code>toolbar</code></td>
-<td><code>0</code> / <code>1</code></td>
-<td>工具栏显示：<code>toolbar=0</code> 隐藏（默认显示）</td>
-</tr>
-</tbody></table>
-<p>示例：</p>
-<pre><code class="language-"># 宽屏 + 隐藏侧边栏/工具栏（知识库嵌入模式）
-report.html?width=wide&amp;sidebar=0&amp;toolbar=0
+  --title TEXT       覆盖标题
+  --subtitle TEXT    副标题</code></pre>
+<h3 id="markdown-分页约定">Markdown 分页约定</h3>
+<pre><code class="language-markdown"># 方案标题          ← 封面页（h1）
 
-# 窄栏专注阅读
-report.html?width=narrow</code></pre>
-<p>说明：</p>
-<ul>
-<li>侧边栏/工具栏隐藏仅控制 <code>display</code>，功能保留（<code>[</code> 快捷键、搜索等仍可用）</li>
-<li>知识库（C 型）加载 doc 页时自动附加 <code>sidebar=0&amp;toolbar=0&amp;t=&lt;时间戳&gt;</code>；概述类页面（url 含 overview）额外附加 <code>width=wide</code></li>
-<li><code>?t=</code> 时间戳用于绕过浏览器缓存，与展示参数正交</li>
-</ul>
+## 背景与目标       ← 第 1 页
+
+正文内容...
+
+## 方案设计         ← 第 2 页
+
+### 架构             ← 页内 H3（默认隐藏）
+
+细分内容（点击 H3 展开）</code></pre>
 <hr>
 <h2 id="迭代记录">迭代记录</h2>
 <table><thead><tr>
@@ -832,28 +587,13 @@ report.html?width=narrow</code></pre>
 </tr></thead><tbody>
 <tr>
 <td>v1.0</td>
-<td>2026-07-05</td>
-<td>初版：Docsify 风格 TOC + 代码复制 + Markdown 渲染</td>
+<td>2026-07-14</td>
+<td>初版：h2 分页 + 键盘导航 + 全屏 + 进度圆点 + 页码 + 记忆</td>
 </tr>
 <tr>
 <td>v1.1</td>
-<td>2026-07-06</td>
-<td>进度条 + 灯箱 + 锚点链接 + 代码行号 + callout + 外链归档</td>
-</tr>
-<tr>
-<td>v2.0</td>
-<td>2026-08-11</td>
-<td>Bare 模式（默认隐藏 sidebar/toolbar，?sidebar=1&toolbar=1 展示）；折叠/拖拽/搜索/H3 开关/中英双语/主题切换</td>
-</tr>
-<tr>
-<td>v2.1</td>
-<td>2026-08-18</td>
-<td>meta 去路径行；标题点击复制 fallback 完整 URL</td>
-</tr>
-<tr>
-<td>v2.2</td>
-<td>2026-08-19</td>
-<td>URL 入参控制展示设置（width=wide/narrow、sidebar/toolbar 正交）</td>
+<td>2026-07-22</td>
+<td>H3 子标题开关 + 性能警告（>50 h2）+ slide-cover 封面页</td>
 </tr>
 </tbody></table></div>
   </div>
