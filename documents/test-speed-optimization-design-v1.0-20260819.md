@@ -44,6 +44,8 @@ v1.0 (2026-08-19)
 - 已验证: 136 tests 全过，test_templates 生成 demos 与并行 worker 无冲突（17 passed in 2.09s）
 - 可选: pytest.ini / pyproject.toml 加 `addopts = -n 4`（默认并行）或留命令行显式传
 
+**已确认**: pytest.ini 默认加 `addopts = -n 4`。日常 `python3 -m pytest tests/ -q` 即自动并行；单文件运行 `python3 -m pytest tests/test_xxx.py` 同样生效（xdist 对单文件无害）。定向调试可 `-n 0` 或 `-p no:xdist` 关闭并行。
+
 ### D. sleep 值调低（全项目）
 
 **保守映射**（最小验证已证实安全）：
@@ -130,7 +132,9 @@ python3 -m pytest tests/ -q -n 4 --tb=short   # 失败定位
 - 低: 脚本误改 → dry-run + .bak 备份
 - 不改变测试语义: 只改等待机制，不改断言/流程
 
-## 待确认
+## 待确认（已确认）
 
-- pytest.ini 是否默认加 `-n 4`（默认并行）还是命令行显式传（推荐显式，保持 CI/手动可控）
-- skill 命名: `test-speed-optimization` vs `pytest-speedup` vs 并入现有 devops 类
+| 项 | 确认 |
+|:--|:--|
+| pytest.ini addopts | A=默认加 `-n 4`（pytest.ini 配置，日常全量自动并行；单文件/定向跑不受影响） |
+| skill 命名 | `test-speed-optimization` |
