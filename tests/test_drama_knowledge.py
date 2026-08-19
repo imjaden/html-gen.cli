@@ -256,6 +256,27 @@ class TestDramaKnowledge(unittest.TestCase):
         self.assertEqual(sj.find_elements(By.TAG_NAME, 'td')[3].text, '杀鸡儆猴', "非 36 计成语应保留")
         self.driver.switch_to.default_content()
 
+    def test_19_overview_iframe_width_wide(self):
+        """概述页 iframe 加载使用宽屏模式 ?width=wide（doc-body 1280px）."""
+        secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        next(s for s in secs if '概述' in s.text).click()
+        time.sleep(0.8)
+        frame = self.driver.find_element(By.ID, 'contentFrame')
+        src = frame.get_attribute('src') or ''
+        self.assertIn('width=wide', src, f"概述 iframe 应含 width=wide: {src[:90]}")
+        # doc 页 body 应用 width-wide
+        self.driver.switch_to.frame(frame)
+        time.sleep(0.4)
+        self.assertIn('width-wide', self.driver.execute_script("return document.body.className;"),
+                      "doc body 应有 width-wide class")
+        self.driver.switch_to.default_content()
+        # 时间轴（table）iframe 不应有 width=wide
+        next(s for s in self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+             if '时间轴' in s.text).click()
+        time.sleep(0.8)
+        src2 = self.driver.find_element(By.ID, 'contentFrame').get_attribute('src') or ''
+        self.assertNotIn('width=wide', src2, f"表格 iframe 不应含 width=wide: {src2[:90]}")
+
     def test_08b_iframe_doc_bare_mode(self):
         """iframe 内 doc 页默认隐藏 sidebar/toolbar (嵌入降级)."""
         # 中国历史 → 概述 (doc page, 非 table)
