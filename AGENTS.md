@@ -35,6 +35,17 @@ html-gen table -d data.json [--title "标题"] [-o index.html]
 
 # knowledge — JSON 转 C 型知识库
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
+
+# demo — 案例清单与详情（按模板分组 / --json / --all / --open / --rebuild）
+html-gen demo list
+html-gen demo drama-knowledge
+html-gen demo --rebuild
+
+# prompt — 项目 skills 输出
+html-gen prompt <skill> [--brief] [--json]
+
+# help — 6 主题（doc/slide/table/knowledge/prompt/demo）
+html-gen help demo
 ```
 
 ## 模板注入机制
@@ -205,7 +216,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 136 tests
+- 当前 139 tests（测试文件：test_drama_knowledge 19 / test_history_tables 7 / test_demo_cmd 9 / test_countries 13 / test_doc_bare / test_doc_sidebar / test_hermes_skills / test_knowledge_sidebar / test_slide_h3_toggle / test_sticky_width / test_table_features / test_templates / test_quickfilter 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
