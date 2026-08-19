@@ -103,3 +103,14 @@ review_history:
     findings_open: 0
     tracking: "N/A (12/12 commit convention, 18 files naming, 100 tests)"
     report: documents/review/batch-12commits-review-v1.0-20260813.md
+  - date: 2026-08-19
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "doc-body-width-levels — 三级宽度 URL 入参"
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: "N/A (narrow/medium/wide, body class, 无持久化)"
+    report: documents/review/doc-body-width-levels-review-v1.0-20260819.md
