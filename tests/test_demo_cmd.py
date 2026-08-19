@@ -83,6 +83,23 @@ class TestDemoCmd(unittest.TestCase):
         self.assertEqual(json.loads((DEMOS / '_registry.json').read_text()), reg,
                          "重建应幂等")
 
+    def test_10_demo_error_json_envelope(self):
+        """demo <不存在> --json 应输出 checkpoint 错误信封（对齐 prompt）."""
+        r = run('no-such-demo', '--json')
+        self.assertEqual(r.returncode, 1)
+        d = json.loads(r.stdout)
+        self.assertEqual(d['status'], 'error')
+        self.assertIsNone(d['data'])
+        self.assertIn('no-such-demo', d['error'])
+        self.assertEqual(r.stderr, '', "错误应走信封，不污染 stderr")
+
+    def test_11_version_flag(self):
+        """--version 输出版本号."""
+        r = subprocess.run(['python3', str(GEN), '--version'],
+                           capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0)
+        self.assertIn('html-gen 3.1', r.stdout, f"版本号: {r.stdout}")
+
     def test_09_registry_exists(self):
         """_registry.json 存在且条目与文件对应."""
         reg = json.loads((DEMOS / '_registry.json').read_text())
