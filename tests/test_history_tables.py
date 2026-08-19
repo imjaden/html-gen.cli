@@ -134,7 +134,10 @@ class TestHistoryTables(unittest.TestCase):
                          "应 24 行（16 年号 + 嘉靖拆分 8）")
         # 嘉靖 split 详情（pills 格子整格点击）
         jia = self._row_by_text(1, '嘉靖')
-        self.driver.execute_script("arguments[0].click();", jia.find_elements(By.TAG_NAME, 'td')[1])
+        jtd = jia.find_elements(By.TAG_NAME, 'td')
+        self.assertEqual(jtd[2].text, '朱厚熜', "嘉靖皇帝列应为姓名")
+        self.assertEqual(jtd[3].text, '明世宗', "嘉靖庙号应为明世宗")
+        self.driver.execute_script("arguments[0].click();", jtd[1])
         time.sleep(0.8)
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
         self.assertIn('严嵩专权', pv, "嘉靖详情应含主要事件")
