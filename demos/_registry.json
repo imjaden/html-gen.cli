@@ -1,5 +1,5 @@
 {
-  "version": 1,
+  "version": 2,
   "count": 53,
   "demos": [
     {
@@ -7,371 +7,532 @@
       "title": "商业模式 · 长亭科技",
       "type": "html",
       "entry": "chaitin/business-model.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "chaitin-menu-design-v1.0-20260707",
       "title": "公司商业分析 · 纵/横菜单设计方案",
       "type": "doc",
       "entry": "chaitin/chaitin-menu-design-v1.0-20260707.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "community-placeholder",
       "title": "社区生态 · 长亭科技",
       "type": "html",
       "entry": "chaitin/community-placeholder.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "company-history",
       "title": "发展历程 · 长亭科技",
       "type": "html",
       "entry": "chaitin/company-history.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "company-profile",
       "title": "公司画像 · 长亭科技",
       "type": "html",
       "entry": "chaitin/company-profile.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "competitive-landscape",
       "title": "竞争格局 · 长亭科技",
       "type": "html",
       "entry": "chaitin/competitive-landscape.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "development-outlook",
       "title": "发展前景 · 长亭科技",
       "type": "html",
       "entry": "chaitin/development-outlook.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "market-valuation",
       "title": "市场估值 · 长亭科技",
       "type": "html",
       "entry": "chaitin/market-valuation.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "open-source-overview",
       "title": "长亭开源概览 · 长亭科技",
       "type": "html",
       "entry": "chaitin/open-source-overview.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "product-architecture",
       "title": "长亭科技 · 产品架构",
       "type": "html",
       "entry": "chaitin/product-architecture.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "product-list",
       "title": "产品清单 · 长亭科技",
       "type": "html",
       "entry": "chaitin/product-list.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "product-matrix",
       "title": "产品矩阵 · 长亭科技",
       "type": "html",
       "entry": "chaitin/product-matrix.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "top-projects",
       "title": "长亭开源项目清单 · 长亭科技",
       "type": "html",
       "entry": "chaitin/top-projects.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "chaitin-kb-data"
+      ]
     },
     {
       "name": "chaitin-business-analysis-v1.0-20260707",
       "title": "知识库",
       "type": "knowledge",
       "entry": "chaitin-business-analysis-v1.0-20260707.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "countries-table",
       "title": "全球国家速查表（195 国）",
       "type": "table",
       "entry": "countries/countries-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "demos-index",
       "title": "Demos Index",
       "type": "table",
       "entry": "demos-index.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "daming-overview",
       "title": "大明王朝1566 · 概述",
       "type": "doc",
       "entry": "drama/daming-overview.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "daming-strategy-01",
       "title": "大明王朝1566 · 李代桃僵·毁堤淹田",
       "type": "doc",
       "entry": "drama/daming-strategy-01.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-strategy-02",
       "title": "大明王朝1566 · 破釜沉舟·海瑞上疏",
       "type": "doc",
       "entry": "drama/daming-strategy-02.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-strategy-03",
       "title": "大明王朝1566 · 分而治之·嘉靖御下",
       "type": "doc",
       "entry": "drama/daming-strategy-03.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-strategy-04",
       "title": "大明王朝1566 · 顺水推舟·严嵩固宠",
       "type": "doc",
       "entry": "drama/daming-strategy-04.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-strategy-05",
       "title": "大明王朝1566 · 韬光养晦·徐阶倒严",
       "type": "doc",
       "entry": "drama/daming-strategy-05.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-strategy-06",
       "title": "大明王朝1566 · 将计就计·海瑞审案",
       "type": "doc",
       "entry": "drama/daming-strategy-06.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-strategy-table",
       "title": "大明王朝1566 · 36计策",
       "type": "table",
       "entry": "drama/daming-strategy-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "daming-timeline-01",
       "title": "大明王朝1566 · 改稻为桑国策出台",
       "type": "doc",
       "entry": "drama/daming-timeline-01.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-02",
       "title": "大明王朝1566 · 毁堤淹田九县",
       "type": "doc",
       "entry": "drama/daming-timeline-02.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-03",
       "title": "大明王朝1566 · 海瑞赴任淳安",
       "type": "doc",
       "entry": "drama/daming-timeline-03.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-04",
       "title": "大明王朝1566 · 审通倭案",
       "type": "doc",
       "entry": "drama/daming-timeline-04.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-05",
       "title": "大明王朝1566 · 严嵩倒台",
       "type": "doc",
       "entry": "drama/daming-timeline-05.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-06",
       "title": "大明王朝1566 · 海瑞上治安疏",
       "type": "doc",
       "entry": "drama/daming-timeline-06.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-07",
       "title": "大明王朝1566 · 嘉靖驾崩·海瑞出狱",
       "type": "doc",
       "entry": "drama/daming-timeline-07.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": true
     },
     {
       "name": "daming-timeline-table",
       "title": "大明王朝1566 · 时间轴",
       "type": "table",
       "entry": "drama/daming-timeline-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "history-overview",
       "title": "中国历史 · 概述",
       "type": "doc",
       "entry": "drama/history-overview.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "history-strategy-table",
       "title": "中国历史 · 三十六计",
       "type": "table",
       "entry": "drama/history-strategy-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "history-timeline-table",
       "title": "中国历史 · 朝代时间轴",
       "type": "table",
       "entry": "drama/history-timeline-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "yongzheng-overview",
       "title": "雍正王朝 · 概述",
       "type": "doc",
       "entry": "drama/yongzheng-overview.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "yongzheng-strategy-table",
       "title": "雍正王朝 · 36计策",
       "type": "table",
       "entry": "drama/yongzheng-strategy-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "yongzheng-timeline-table",
       "title": "雍正王朝 · 时间轴",
       "type": "table",
       "entry": "drama/yongzheng-timeline-table.html",
-      "featured": false
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "drama-kb-data"
+      ]
     },
     {
       "name": "drama-knowledge",
       "title": "以剧读史",
       "type": "knowledge",
       "entry": "drama-knowledge.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "ci-issues-demo",
       "title": "GitHub CI 问题分析报告",
       "type": "doc",
       "entry": "features/ci-issues-demo.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "git-cloner-demo",
       "title": "Git Project Stars",
       "type": "table",
       "entry": "features/git-cloner-demo.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "hermes-profile-skills-list",
       "title": "Hermes Skills 列表",
       "type": "table",
       "entry": "features/hermes-profile-skills-list.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "iris-output-index",
       "title": "IRIS-Output 文件索引",
       "type": "table",
       "entry": "features/iris-output-index.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "knowledge-demo",
       "title": "HTML 技能知识库",
       "type": "knowledge",
       "entry": "features/knowledge-demo.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "phase2-demo",
       "title": "Phase 2 Demo",
       "type": "table",
       "entry": "features/phase2-demo.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "table-actions-demo",
       "title": "Table Actions Demo",
       "type": "table",
       "entry": "features/table-actions-demo.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "tool-nav-demo",
       "title": "工具导航",
       "type": "table",
       "entry": "features/tool-nav-demo.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "html-gen-usage-guide-v1.0-20260707",
       "title": "html-gen · CLI 使用说明",
       "type": "doc",
       "entry": "html-gen-usage-guide-v1.0-20260707.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "template-A-guide-v1.0-20260707",
       "title": "A 型方案",
       "type": "doc",
       "entry": "templates/template-A-guide-v1.0-20260707.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "template-B-guide-v1.0-20260707",
       "title": "B 型方案",
       "type": "doc",
       "entry": "templates/template-B-guide-v1.0-20260707.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "template-B-markdown-spec-v1.0-20260707",
       "title": "B 型规范",
       "type": "doc",
       "entry": "templates/template-B-markdown-spec-v1.0-20260707.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "template-C-guide-v1.0-20260707",
       "title": "C 型方案",
       "type": "doc",
       "entry": "templates/template-C-guide-v1.0-20260707.html",
-      "featured": false
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "template-D-slide-demo",
       "title": "D 型 Slide",
       "type": "doc",
       "entry": "templates/template-D-slide-demo.html",
-      "featured": true
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     }
   ]
 }
