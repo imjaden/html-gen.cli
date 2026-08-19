@@ -146,27 +146,27 @@ class TestHistoryTables(unittest.TestCase):
     def test_07_daming_strategy(self):
         self._load('daming-strategy-table.html')
         self.assertEqual(self._headers(),
-                         ['序号', '计策名称', '分类', '别名', '衍生成语', '历史事件', '主要人物', '结局', '叠加计策', '出处'],
-                         f"大明计策表头: {self._headers()}")
+                         ['序号', '计策名称', '分类', '衍生成语', '历史事件', '主要人物', '结局', '叠加计策', '出处'],
+                         f"大明计策表头（别名默认隐藏）: {self._headers()}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
         self.assertEqual(len(rows), 10, f"应 10 行（10 大事件）: {len(rows)}")
         first = rows[0].find_elements(By.TAG_NAME, 'td')
         self.assertEqual(first[0].text, '1', "序号应为 1")
         self.assertEqual(first[1].text, '借刀杀人', "首行应为借刀杀人（周云逸直谏）")
-        self.assertIn('冯保廷杖', first[5].text, "首行历史事件应结合计名（冯保廷杖）")
+        self.assertIn('冯保廷杖', first[4].text, "首行历史事件应结合计名（冯保廷杖）")
         self.assertEqual(first[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '敌战计',
                          "借刀杀人分类应为敌战计")
-        self.assertEqual(first[4].text, '', "衍生成语与计名相同应空")
+        self.assertEqual(first[3].text, '', "衍生成语与计名相同应空")
         # 走为上：衍生成语保留（三十六计走为上计）
         zs = self._row_by_text(1, '走为上')
-        self.assertEqual(zs.find_elements(By.TAG_NAME, 'td')[4].text, '三十六计，走为上计',
+        self.assertEqual(zs.find_elements(By.TAG_NAME, 'td')[3].text, '三十六计，走为上计',
                          "走为上衍生成语应保留")
         # 叠加计策列默认展示且无前缀
         lidao = self._row_by_text(1, '李代桃僵')
         self.assertIsNotNone(lidao, "应找到李代桃僵行")
         ltd = lidao.find_elements(By.TAG_NAME, 'td')
-        self.assertIn('趁火打劫', ltd[8].text, "叠加计策列应默认展示")
-        self.assertNotIn('【叠加计策】', ltd[8].text, "叠加计策不应有前缀")
+        self.assertIn('趁火打劫', ltd[7].text, "叠加计策列应默认展示")
+        self.assertNotIn('【叠加计策】', ltd[7].text, "叠加计策不应有前缀")
         # 李代桃僵 split 详情
         self.driver.execute_script("arguments[0].click();", ltd[1])
         time.sleep(0.8)
