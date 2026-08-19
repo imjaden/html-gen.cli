@@ -4,6 +4,8 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.chrome.service import Service
 
@@ -33,7 +35,7 @@ class TestDramaKnowledge(unittest.TestCase):
         time.sleep(0.2)
         self.driver.execute_script("localStorage.clear();")
         self.driver.get('file://' + str(DEMO))
-        time.sleep(0.6)
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.kw-tab')))
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };"
@@ -216,9 +218,17 @@ class TestDramaKnowledge(unittest.TestCase):
              if '36计策' in s.text).click()
         time.sleep(0.8)
         self.driver.switch_to.frame(self.driver.find_element(By.ID, 'contentFrame'))
+        heads = [th.text for th in self.driver.find_elements(By.CSS_SELECTOR, 'thead th')]
+        self.assertEqual(heads,
+                         ['序号', '计策名称', '分类', '衍生成语', '历史事件', '主要人物', '结局', '叠加计策', '出处'],
+                         f"雍正计策表头: {heads}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
         self.assertEqual(len(rows), 8, f"雍正 36计策应 8 行: {len(rows)}")
         self.assertIn('韬光养晦', rows[0].text, "首行应为韬光养晦")
+        self.assertEqual(rows[0].find_elements(By.TAG_NAME, 'td')[3].text, '',
+                         "衍生成语与计名相同应空")
+        self.assertIn('欲擒故纵', rows[0].find_elements(By.TAG_NAME, 'td')[7].text,
+                      "叠加计策应默认展示")
         self.driver.switch_to.default_content()
 
     def test_08b_iframe_doc_bare_mode(self):
