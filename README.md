@@ -11,6 +11,20 @@
 | C 型知识库 | `html-gen knowledge` | JSON → 知识库 | 顶部标签栏/左侧章节/iframe 加载/记忆恢复 |
 | D 型幻灯片 | `html-gen slide` | Markdown → 幻灯片 | h2 分页/键盘翻页/全屏 |
 
+## 安装与注册
+
+```bash
+bash install.sh             # 显示帮助（无参默认 help）
+bash install.sh install     # 注册 html-gen 到 ~/.local/bin（wrapper 指向本项目 html-gen.py）
+bash install.sh status      # 查看注册状态（wrapper / PATH / 源码）
+bash install.sh uninstall   # 移除注册
+bash install.sh -p ~/bin install   # 自定义安装目录
+bash install.sh -n install  # 预览命令（dry-run，不实际执行）
+```
+
+需 `~/.local/bin` 在 PATH（zshrc: `export PATH="$HOME/.local/bin:$PATH"`）。
+运行仅需 Python 3 标准库，零外部依赖。
+
 ## 快速开始
 
 ```bash
