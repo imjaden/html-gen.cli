@@ -243,6 +243,8 @@ body.show-sidebar .doc-sidebar { display: flex; }
 .doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
 .doc-header .meta { font-size: 0.75rem; color: #6b7280; margin-top: 6px; }
 .doc-body { padding: 24px 32px 48px; max-width: 880px; }
+body.width-narrow .doc-body { max-width: 720px; }
+body.width-wide .doc-body { max-width: 1280px; }
 
 .doc-body h1 {
   font-size: 1.5rem; font-weight: 700; color: #f0f0f0;
@@ -806,6 +808,9 @@ for dim in ['providers','people','tools','llms','hotspots']:
 (function() {
   var params = new URLSearchParams(location.search);
   if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
+  var w = params.get('width');
+  if (w === 'narrow') document.body.classList.add('width-narrow');
+  else if (w === 'wide') document.body.classList.add('width-wide');
 
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');

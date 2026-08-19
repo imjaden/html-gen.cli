@@ -265,6 +265,9 @@ body.show-toolbar .top-toolbar { display: flex; }
 .doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
 .doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
 .doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; }
+/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
+body.width-narrow .doc-body { max-width: 720px; }
+body.width-wide .doc-body { max-width: 1280px; }
 
 .doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
 .doc-body h1:first-child { margin-top: 0; }
@@ -400,7 +403,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
     <div class="doc-sidebar-header">
       <div class="sidebar-title" title="大明王朝1566 · 韬光养晦·徐阶倒严" id="sidebarTitle">📄 大明王朝1566 · 韬光养晦·徐阶倒严</div>
       <div class="sub-row">
-        <div class="sub">以剧读史 · 剧中设定</div>
+        <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
       </div>
     </div>
@@ -445,6 +448,12 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
   if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
   if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
+
+  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
+  var w = params.get('width');
+  if (w === 'narrow') document.body.classList.add('width-narrow');
+  else if (w === 'wide') document.body.classList.add('width-wide');
+  // medium 或未指定: 不加 class, 用默认 960px
 
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');

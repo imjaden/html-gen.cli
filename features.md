@@ -43,6 +43,7 @@ company-report.py — 公司调研报告生成器 (schema → C 型知识库) �
 TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-doc.html
 侧边栏 sticky 修复 (桌面 sticky, mobile fixed) ✅ — layout-doc.html
 Bare 模式 (默认隐藏侧边栏/工具栏, ?sidebar=1&toolbar=1 展示, 知识库嵌入降级) ✅ — layout-doc.html
+正文宽度三级 (?width=narrow|medium|wide, 默认 960px) ✅ — layout-doc.html
 侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-doc.html
 侧边栏按键分离 (`[` 折叠 / `]` 展开, 输入框豁免) ✅ — layout-doc.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-doc.html
