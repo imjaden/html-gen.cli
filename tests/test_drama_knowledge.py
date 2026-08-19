@@ -165,6 +165,23 @@ class TestDramaKnowledge(unittest.TestCase):
         self.assertIn('嘉靖', rows[0].text, f"默认行应为嘉靖: {rows[0].text[:40]}")
         self.driver.switch_to.default_content()
 
+    def test_17_section_follows_group_switch(self):
+        """需求: 切顶部 tab 时左侧 section 跨组保持（大明 36计策 → 中国历史 36计策）."""
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()  # 大明
+        time.sleep(0.4)
+        secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
+        sec36 = next(s for s in secs if '36计策' in s.text)
+        sec36.click()
+        time.sleep(0.5)
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[0].click()  # 中国历史
+        time.sleep(0.6)
+        act = self.driver.execute_script(
+            "return document.querySelector('.kw-section-title.active').textContent || '';")
+        self.assertIn('36计策', act, f"跨组应保持 36计策: {act}")
+        frame = self.driver.find_element(By.ID, 'contentFrame')
+        self.assertIn('history-strategy', frame.get_attribute('src') or '',
+                      f"iframe 应为中国历史 36计策: {(frame.get_attribute('src') or '')[:70]}")
+
     def test_08b_iframe_doc_bare_mode(self):
         """iframe 内 doc 页默认隐藏 sidebar/toolbar (嵌入降级)."""
         # 中国历史 → 概述 (doc page, 非 table)

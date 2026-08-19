@@ -418,7 +418,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>B 型规范</h1>
-      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/template-B-markdown-spec-v1.0-20260707.md</code><br>创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 985 · 阅读约 5 分钟</div>
+      <div class="meta">创建: 2026-07-11 11:57 · 编辑: 2026-07-11 11:57<br>字数: 985 · 阅读约 5 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <blockquote>本文档规范了 <code>html-gen doc</code> 子命令支持的 Markdown 语法子集。</blockquote>
@@ -972,10 +972,10 @@ def hello():
   document.getElementById('sidebarTitle').addEventListener('click', function() {
     var metaEl = document.querySelector('.doc-header .meta');
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
-    if (m && /^(https?:|\/|~\/)/.test(m[1])) {
-      var path = m[1].trim();
-      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
-      showToast('已复制: ' + path);
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/)/.test(target)) {
+      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
+      showToast('已复制: ' + target);
     }
   });
 

@@ -483,7 +483,17 @@ pre code { background: none; padding: 0; }
     try { localStorage.setItem('html-gen:kw_group', key); } catch(e) {}
     document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
     renderSidebar();
-    var firstItem = ITEMS.find(function(i) { return i.group === key; });
+    // 跨组保持：优先选中当前 section 在同组同名 item（如 36计策 跨组跟随），否则第一个 item
+    var targetItem = null;
+    if (activeItem) {
+      var secName = (function(){ var it = ITEMS.find(function(i){ return i.group === key && i.title === activeItem; }); return it ? it.title : null; })();
+      targetItem = secName ? ITEMS.find(function(i) { return i.group === key && i.title === secName; }) : null;
+    }
+    if (!targetItem) {
+      var curItem = ITEMS.find(function(i) { return i.group !== key && i.title === activeItem; });
+      if (curItem) targetItem = ITEMS.find(function(i) { return i.group === key && i.title === curItem.title; });
+    }
+    var firstItem = targetItem || ITEMS.find(function(i) { return i.group === key; });
     if (firstItem) selectItem(activeGroup, firstItem.title);
   };
 
