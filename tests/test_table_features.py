@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.service import Service
 
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'phase2-demo.html'
+DEMO = PROJECT / 'demos' / 'features' / 'phase2-demo.html'
 
 
 def error_collector(driver):

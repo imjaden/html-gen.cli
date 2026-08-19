@@ -25,7 +25,8 @@ class TestDoc(unittest.TestCase):
             ('template-C-guide-v1.0-20260707.md', 'C 型'),
         ]:
             out = Path('/tmp') / f'test-doc-{md_name.replace(".md", ".html")}'
-            run_gen('doc', '-i', str(DEMOS / md_name), '--title', title, '-o', str(out))
+            src = DEMOS / 'templates' / md_name if (DEMOS / 'templates' / md_name).exists() else DEMOS / md_name
+            run_gen('doc', '-i', str(src), '--title', title, '-o', str(out))
             html = out.read_text()
             self.assertTrue(html.startswith('<!DOCTYPE html>'))
             self.assertTrue(html.strip().endswith('</html>'))
@@ -47,7 +48,7 @@ class TestSlide(unittest.TestCase):
 
     def test_gen_slide(self):
         out = Path('/tmp/test-slide-demo.html')
-        run_gen('slide', '-i', str(DEMOS / 'template-B-markdown-spec-v1.0-20260707.md'),
+        run_gen('slide', '-i', str(DEMOS / 'templates' / 'template-B-markdown-spec-v1.0-20260707.md'),
                 '--title', 'Slide Test', '-o', str(out))
         html = out.read_text()
         self.assertTrue(html.startswith('<!DOCTYPE html>'))
@@ -66,7 +67,7 @@ class TestSlide(unittest.TestCase):
 
     def test_cover_page(self):
         out = Path('/tmp/test-slide-cover.html')
-        run_gen('slide', '-i', str(DEMOS / 'template-B-guide-v1.0-20260707.md'),
+        run_gen('slide', '-i', str(DEMOS / 'templates' / 'template-B-guide-v1.0-20260707.md'),
                 '--title', 'Cover Test', '-o', str(out))
         html = out.read_text()
         self.assertIn('slide-cover', html)
@@ -74,7 +75,7 @@ class TestSlide(unittest.TestCase):
 
     def test_perf_warning(self):
         out = Path('/tmp/test-slide-perf.html')
-        src = DEMOS / 'template-B-guide-v1.0-20260707.md'
+        src = DEMOS / 'templates' / 'template-B-guide-v1.0-20260707.md'
         run_gen('slide', '-i', str(src), '--title', 'Perf', '-o', str(out))
         html = out.read_text()
         # Small doc should have empty perf warning

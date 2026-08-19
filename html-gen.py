@@ -606,9 +606,15 @@ def main():
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
     pr.add_argument('--brief', action='store_true', help='仅输出摘要')
 
+    dm = sub.add_parser('demo', help='demo 列表与详情 (html-gen demo list|<name>)')
+    dm.add_argument('name', nargs='?', help='demo 名称 (可选; 缺省=list)')
+    dm.add_argument('--json', action='store_true', help='JSON 输出')
+    dm.add_argument('--open', action='store_true', help='打开浏览器预览')
+
     args = p.parse_args()
     {'help': cmd_help, 'doc': cmd_doc, 'slide': cmd_slide,
-     'table': cmd_table, 'knowledge': cmd_knowledge, 'prompt': cmd_prompt}[args.command](args)
+     'table': cmd_table, 'knowledge': cmd_knowledge, 'prompt': cmd_prompt,
+     'demo': cmd_demo}[args.command](args)
 
 
 def cmd_prompt(args):
@@ -683,6 +689,77 @@ def cmd_prompt(args):
             print(f'## {r.stem}')
             print(r.read_text(encoding='utf-8'))
             print()
+
+
+def cmd_demo(args):
+    """demo 列表与详情：html-gen demo list|<name> [--json] [--open]."""
+    import json as _json
+    import urllib.request as _ur
+    DEMOS_DIR = Path(__file__).resolve().parent / 'demos'
+    reg_file = DEMOS_DIR / '_registry.json'
+    if not reg_file.exists():
+        print('❌ demos/_registry.json 不存在', file=sys.stderr)
+        sys.exit(1)
+    reg = _json.loads(reg_file.read_text(encoding='utf-8'))
+    demos = reg.get('demos', [])
+
+    # list（无参或缺省）
+    if not args.name or args.name == 'list':
+        if args.json:
+            print(_json.dumps({'status': 'ok', 'data': demos}, ensure_ascii=False))
+            return
+        print(f"共 {len(demos)} 个 demo（★=首页精选）")
+        for d in sorted(demos, key=lambda x: (not x.get('featured'), x['entry'])):
+            star = '★' if d.get('featured') else ' '
+            print(f"  {star}{d['name']:42s} {d['type']:10s} {d['entry']}")
+        return
+
+    hit = next((d for d in demos if d['name'] == args.name), None)
+    if not hit:
+        print(f"❌ demo '{args.name}' 不存在（html-gen demo list 查看）", file=sys.stderr)
+        sys.exit(1)
+
+    if args.json:
+        print(_json.dumps({'status': 'ok', 'data': hit}, ensure_ascii=False))
+        return
+
+    print(f"📌 {hit['title']}  [{hit['type']}]" + (' ★精选' if hit.get('featured') else ''))
+    print(f"   entry: demos/{hit['entry']}")
+    # 关联文件：同名 md/json（demos 内）+ data/ 下同名 json
+    src = DEMOS_DIR / hit['entry']
+    related = []
+    if src.exists():
+        for ext in ('.md', '.json'):
+            f = src.with_suffix(ext)
+            if f.exists():
+                related.append(f.relative_to(DEMOS_DIR.parent).as_posix())
+        data_f = Path(__file__).resolve().parent / 'data' / (src.stem + '.json')
+        if data_f.exists():
+            related.append(data_f.relative_to(Path(__file__).resolve().parent).as_posix())
+        for prefix in ('_drama-table-', '_drama-kb-', '_countries-', '_chaitin-'):
+            df2 = Path(__file__).resolve().parent / 'data' / (prefix + src.stem + '.json')
+            if df2.exists():
+                related.append(df2.relative_to(Path(__file__).resolve().parent).as_posix())
+        # 同目录同名但不同子目录（如 drama/history-overview.html ← demos/drama/history-overview.md）
+        if src.parent.name != 'demos':
+            parent_md = DEMOS_DIR / src.parent.name / (src.stem + '.md')
+            if parent_md.exists():
+                related.append(parent_md.relative_to(DEMOS_DIR.parent).as_posix())
+    if related:
+        print('   源文件:')
+        for r in sorted(set(related)):
+            print(f"     {r}")
+    url = f'http://localhost:8081/demos/{hit["entry"]}'
+    print(f"   预览: {url}")
+    if args.open:
+        try:
+            _ur.urlopen(url, timeout=2)
+            import subprocess as _sp
+            _sp.run(['open', url])
+            print('   已在浏览器打开')
+        except Exception:
+            print('   服务未就绪，请先启动: hs <html-gen/demos> --url', file=sys.stderr)
+            sys.exit(1)
 
 
 if __name__ == '__main__':
