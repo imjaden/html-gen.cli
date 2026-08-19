@@ -25,7 +25,8 @@
       "sortable": true,
       "locale": "zh",
       "width": "90px",
-      "preview": true
+      "preview": true,
+      "initialHidden": true
     },
     {
       "key": "idiom",
