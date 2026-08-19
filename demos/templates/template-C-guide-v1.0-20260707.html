@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>C 型方案</title>
+<title>C 型 · 知识库方案</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -401,7 +401,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
     <div class="doc-sidebar-resize" id="sbResize"></div>
     <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
     <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="C 型方案" id="sidebarTitle">📄 C 型方案</div>
+      <div class="sidebar-title" title="C 型 · 知识库方案" id="sidebarTitle">📄 C 型 · 知识库方案</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -420,8 +420,8 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   </aside>
   <div class="doc-main" id="docMain">
     <div class="doc-header">
-      <h1>C 型方案</h1>
-      <div class="meta">创建: 2026-08-19 15:09 · 编辑: 2026-07-11 11:57<br>字数: 713 · 阅读约 4 分钟</div>
+      <h1>C 型 · 知识库方案</h1>
+      <div class="meta">创建: 2026-08-19 23:31 · 编辑: 2026-08-19 23:31<br>字数: 873 · 阅读约 4 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
@@ -652,6 +652,51 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 <td>单文件 HTML，无需加载 CDN</td>
 <td>P0</td>
 </tr>
+<tr>
+<td>URL 参数同步</td>
+<td>点击菜单/页签实时写 group/item 到 URL；带 URL 打开定位指定页（拷贝中文原文链接）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>记忆恢复</td>
+<td>URL 参数优先 > localStorage（kw_group/kw_item）> 默认；group 单独恢复</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>iframe 加载 + 内联渲染</td>
+<td>有 url → iframe 加载；有 desc → 内联渲染；空态欢迎面板</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>概述页宽屏</td>
+<td>url 含 overview 时 iframe 自动附加 width=wide（doc 1280px）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>跨组 section 保持</td>
+<td>切顶部 tab 时左侧选中 section 跨组跟随（如 36计策 ↔ 36计策）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>section 图标</td>
+<td>数据 section_icon 字段渲染图标前缀（📋/📅/🧮）</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>侧边栏折叠/搜索</td>
+<td>折叠 48px（<code>[</code> 快捷键）；🔍 搜索 150ms debounce 过滤</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>裸模式 (Bare)</td>
+<td>默认隐藏 sidebar/toolbar，?sidebar=1&toolbar=1 展示；嵌入 iframe 自动降级</td>
+<td>P1</td>
+</tr>
+<tr>
+<td>单条目 section 直开</td>
+<td>单条目 section 点击标题直接加载 (K2)</td>
+<td>P1</td>
+</tr>
 </tbody></table>
 <h3 id="待实现">待实现 🔜</h3>
 <table><thead><tr>
@@ -744,6 +789,21 @@ html-gen knowledge \\
 <td>v1.0</td>
 <td>2026-07-05</td>
 <td>初版：顶部标签 + 左侧章节 + 右侧内容</td>
+</tr>
+<tr>
+<td>v2.0</td>
+<td>2026-08-11</td>
+<td>Bare 模式 + 折叠/搜索/记忆恢复 + 单条目直开</td>
+</tr>
+<tr>
+<td>v2.1</td>
+<td>2026-08-18</td>
+<td>URL 参数同步（group/item 实时写 URL + 恢复优先）+ section 图标 + 隐藏搜索/折叠按钮</td>
+</tr>
+<tr>
+<td>v2.2</td>
+<td>2026-08-19</td>
+<td>跨组 section 保持；概述页 iframe 宽屏 width=wide；标题点击复制中文 URL</td>
 </tr>
 </tbody></table></div>
   </div>

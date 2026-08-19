@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "count": 40,
+  "count": 41,
   "demos": [
     {
       "name": "business-model",
@@ -178,7 +178,7 @@
     },
     {
       "name": "demos-index",
-      "title": "Demos Index",
+      "title": "DEMO 案例索引",
       "type": "table",
       "entry": "demos-index.html",
       "featured": true,
@@ -396,7 +396,7 @@
     },
     {
       "name": "template-A-guide-v1.0-20260707",
-      "title": "A 型方案",
+      "title": "A 型 · 数据表格方案",
       "type": "doc",
       "entry": "templates/template-A-guide-v1.0-20260707.html",
       "featured": true,
@@ -406,7 +406,7 @@
     },
     {
       "name": "template-B-guide-v1.0-20260707",
-      "title": "B 型方案",
+      "title": "B 型 · 文档阅读方案",
       "type": "doc",
       "entry": "templates/template-B-guide-v1.0-20260707.html",
       "featured": true,
@@ -426,10 +426,20 @@
     },
     {
       "name": "template-C-guide-v1.0-20260707",
-      "title": "C 型方案",
+      "title": "C 型 · 知识库方案",
       "type": "doc",
       "entry": "templates/template-C-guide-v1.0-20260707.html",
-      "featured": false,
+      "featured": true,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": false
+    },
+    {
+      "name": "template-D-guide-v1.0-20260707",
+      "title": "D 型 · 幻灯片方案",
+      "type": "doc",
+      "entry": "templates/template-D-guide-v1.0-20260707.html",
+      "featured": true,
       "referenced": false,
       "referenced_by": [],
       "stale": false

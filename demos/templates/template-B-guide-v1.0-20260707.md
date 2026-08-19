@@ -164,6 +164,31 @@ html-gen doc -h
   --subtitle TEXT    副标题（显示在侧边栏和页头）
 ```
 
+### URL 入参控制展示设置
+
+打开页面时可追加 URL 参数控制宽度、侧边栏、工具栏等展示设置（知识库 iframe 嵌入时自动附加）：
+
+| 参数 | 取值 | 效果 |
+|:---|:---|:---|
+| `width` | `wide` / `narrow` | 内容区宽度：wide=1280px 宽屏 / narrow=720px 窄栏（默认 960px） |
+| `sidebar` | `0` / `1` | 侧边栏显示：`sidebar=0` 隐藏（默认显示） |
+| `toolbar` | `0` / `1` | 工具栏显示：`toolbar=0` 隐藏（默认显示） |
+
+示例：
+
+```
+# 宽屏 + 隐藏侧边栏/工具栏（知识库嵌入模式）
+report.html?width=wide&sidebar=0&toolbar=0
+
+# 窄栏专注阅读
+report.html?width=narrow
+```
+
+说明：
+- 侧边栏/工具栏隐藏仅控制 `display`，功能保留（`[` 快捷键、搜索等仍可用）
+- 知识库（C 型）加载 doc 页时自动附加 `sidebar=0&toolbar=0&t=<时间戳>`；概述类页面（url 含 overview）额外附加 `width=wide`
+- `?t=` 时间戳用于绕过浏览器缓存，与展示参数正交
+
 ---
 
 ## 迭代记录
@@ -172,3 +197,6 @@ html-gen doc -h
 |:---|:---:|:---|
 | v1.0 | 2026-07-05 | 初版：Docsify 风格 TOC + 代码复制 + Markdown 渲染 |
 | v1.1 | 2026-07-06 | 进度条 + 灯箱 + 锚点链接 + 代码行号 + callout + 外链归档 |
+| v2.0 | 2026-08-11 | Bare 模式（默认隐藏 sidebar/toolbar，?sidebar=1&toolbar=1 展示）；折叠/拖拽/搜索/H3 开关/中英双语/主题切换 |
+| v2.1 | 2026-08-18 | meta 去路径行；标题点击复制 fallback 完整 URL |
+| v2.2 | 2026-08-19 | URL 入参控制展示设置（width=wide/narrow、sidebar/toolbar 正交） |

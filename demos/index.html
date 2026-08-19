@@ -40,6 +40,9 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
 .layer-divider::before { content: ''; position: absolute; top: 50%; left: 10%; right: 10%; border-top: 1px dashed #2a2a3e; }
 .layer-divider span { position: relative; display: inline-block; background: var(--surface-950); padding: 0 16px; font-size: 0.75rem; color: #6b7280; }
 @media (max-width: 1100px) { .template-grid { grid-template-columns: 1fr; } }
+.tpl-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
+.tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
 </style>
 </head>
 <body>
@@ -51,7 +54,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon ia">📊</div>
       <div>
-        <div class="tpl-name">A 型 · 数据表格</div>
+        <div class="tpl-name">A 型 · 数据表格 <a class="tpl-guide" href="templates/template-A-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-table.html (1110 行)</div>
       </div>
     </div>
@@ -67,19 +70,16 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
         <li>🖱️ 四种点击模式 (新标签/弹出面板/分栏预览/行内展开)</li>
         <li>📌 快速过滤 (点击单元格值) + 列冻结</li>
         <li>⌨️ 键盘导航 ↑↓ + F 全屏 + 批量操作</li>
-        <li>💾 视图预设 + localStorage 状态记忆</li>
       </ul>
       <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span></div>
       <div class="demos">
         <div class="demos-title">案例演示</div>
+        <a class="demo-item" href="demos-index.html" target="_blank">
+          <span class="demo-icon">📋</span><span class="demo-info"><span class="demo-name">DEMO 案例索引</span><span class="demo-desc">全站文件清单 · 模板/大小/更新时间</span></span><span class="demo-arrow">→</span></a>
         <a class="demo-item" href="features/hermes-profile-skills-list.html" target="_blank">
           <span class="demo-icon">🧠</span><span class="demo-info"><span class="demo-name">Hermes Skills 清单</span><span class="demo-desc">98 个 Skill · 15 个分类 · 全 Profile</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="features/table-actions-demo.html" target="_blank">
-          <span class="demo-icon">🔧</span><span class="demo-info"><span class="demo-name">操作按钮列演示</span><span class="demo-desc">copyKey / hrefKey / desc 模式</span></span><span class="demo-arrow">→</span></a>
         <a class="demo-item" href="features/phase2-demo.html" target="_blank">
           <span class="demo-icon">🧪</span><span class="demo-info"><span class="demo-name">Phase 2-4 全功能演示</span><span class="demo-desc">8 条项目 · 密度/模态/分栏/展开/过滤/冻结/预设</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="demos-index.html" target="_blank">
-          <span class="demo-icon">📋</span><span class="demo-info"><span class="demo-name">html-demos 文档索引</span><span class="demo-desc">15 条记录 · 全站文件清单</span></span><span class="demo-arrow">→</span></a>
         </div>
     </div>
   </div>
@@ -89,7 +89,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon ib">📄</div>
       <div>
-        <div class="tpl-name">B 型 · 文档阅读</div>
+        <div class="tpl-name">B 型 · 文档阅读 <a class="tpl-guide" href="templates/template-B-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-doc.html (436 行)</div>
       </div>
     </div>
@@ -112,9 +112,9 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
         <a class="demo-item" href="templates/template-B-markdown-spec-v1.0-20260707.html" target="_blank">
           <span class="demo-icon">📐</span><span class="demo-info"><span class="demo-name">Markdown 语法规范</span><span class="demo-desc">支持的语法子集 · 规则 · 常见错误</span></span><span class="demo-arrow">→</span></a>
         <a class="demo-item" href="templates/template-B-guide-v1.0-20260707.html" target="_blank">
-          <span class="demo-icon">📄</span><span class="demo-info"><span class="demo-name">B 型 · 文档方案说明</span><span class="demo-desc">使用场景 · 方案设计 · 功能清单</span></span><span class="demo-arrow">→</span></a>
+          <span class="demo-icon">📄</span><span class="demo-info"><span class="demo-name">B 型 · 文档模板说明</span><span class="demo-desc">使用场景 · 方案设计 · URL 入参控制</span></span><span class="demo-arrow">→</span></a>
         <a class="demo-item" href="templates/template-A-guide-v1.0-20260707.html" target="_blank">
-          <span class="demo-icon">📊</span><span class="demo-info"><span class="demo-name">A 型 · 表格方案说明</span><span class="demo-desc">使用场景 · 方案设计 · 功能清单</span></span><span class="demo-arrow">→</span></a>
+          <span class="demo-icon">📊</span><span class="demo-info"><span class="demo-name">A 型 · 表格模板说明</span><span class="demo-desc">使用场景 · 方案设计 · 功能清单</span></span><span class="demo-arrow">→</span></a>
       </div>
     </div>
   </div>
@@ -124,7 +124,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon ic">📚</div>
       <div>
-        <div class="tpl-name">C 型 · 知识库</div>
+        <div class="tpl-name">C 型 · 知识库 <a class="tpl-guide" href="templates/template-C-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-knowledge.html (342 行)</div>
       </div>
     </div>
@@ -144,6 +144,8 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
       <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span></div>
       <div class="demos">
         <div class="demos-title">案例演示</div>
+        <a class="demo-item" href="drama-knowledge.html" target="_blank">
+          <span class="demo-icon">🎬</span><span class="demo-info"><span class="demo-name">以剧读史 · 影视历史知识库</span><span class="demo-desc">中国历史 / 大明王朝1566 / 雍正王朝 3 组 · 概述/时间轴/36计策</span></span><span class="demo-arrow">→</span></a>
         <a class="demo-item" href="chaitin-business-analysis-v1.0-20260707.html" target="_blank">
           <span class="demo-icon">🏢</span><span class="demo-info"><span class="demo-name">长亭科技 · 商业分析知识库</span><span class="demo-desc">4 个大类 · 14 个条目 · 售前架构师视角</span></span><span class="demo-arrow">→</span></a>
       </div>
@@ -155,7 +157,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon id">🖼️</div>
       <div>
-        <div class="tpl-name">D 型 · 幻灯片</div>
+        <div class="tpl-name">D 型 · 幻灯片 <a class="tpl-guide" href="templates/template-D-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-slide.html (673 行)</div>
       </div>
     </div>

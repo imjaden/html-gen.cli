@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
-<title>Demos Index</title>
+<title>DEMO 案例索引</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -220,7 +220,9 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
-.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px; }
+.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
+.data-table .cell-pill.pill-clickable { cursor:pointer; }
+.data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -278,7 +280,7 @@ pre code { background: none; padding: 0; }
   position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
-.data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+.data-table td { padding:7px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
   vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
@@ -289,8 +291,8 @@ pre code { background: none; padding: 0; }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
 
 /* ── Actions ── */
-.action-btn { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
-  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.65rem; color:#6b7280;
+.action-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.62rem; color:#6b7280;
   background:transparent; transition:all 0.15s; margin:0 1px; }
 .action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
 
@@ -359,6 +361,8 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.split-preview .kv-item-full { grid-column: 1 / -1; }
+.split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -426,7 +430,7 @@ pre code { background: none; padding: 0; }
 
 <div class="table-main" id="tableMain">
 <div class="table-header">
-  <h1>Demos Index</h1>
+  <h1>DEMO 案例索引</h1>
   <span class="stat-pill"><span class="num" id="statTotal">0</span> 条</span>
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
@@ -497,10 +501,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "类型", "label": "类型", "sortable": true}, {"key": "文件", "label": "文件", "sortable": true}, {"key": "说明", "label": "说明", "sortable": true}, {"key": "大小", "label": "大小", "sortable": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
-  const DATA    = [{"类型": "🏠 首页", "文件": "<a href=\"index.html\" target=\"_blank\" rel=\"noopener\">index.html ↗<\/a>", "说明": "模板展示首页 · 三层架构演示", "大小": "16KB"}, {"类型": "📄 A 型方案", "文件": "<a href=\"template-A-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗<\/a>", "说明": "数据表格 · 方案说明文档", "大小": "25KB"}, {"类型": "📄 B 型方案", "文件": "<a href=\"template-B-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗<\/a>", "说明": "文档阅读 · 方案说明文档", "大小": "27KB"}, {"类型": "📐 B 型规范", "文件": "<a href=\"template-B-markdown-spec-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗<\/a>", "说明": "Markdown 语法子集规范", "大小": "27KB"}, {"类型": "📄 C 型方案", "文件": "<a href=\"template-C-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗<\/a>", "说明": "知识库 · 方案说明文档", "大小": "25KB"}, {"类型": "📊 A 型案例", "文件": "<a href=\"iris-output-index.html\" target=\"_blank\" rel=\"noopener\">iris-output-index ↗<\/a>", "说明": "IRIS-Output 文件索引 (9条)", "大小": "13KB"}, {"类型": "📊 A 型案例", "文件": "<a href=\"git-cloner-demo.html\" target=\"_blank\" rel=\"noopener\">git-cloner-demo ↗<\/a>", "说明": "Git 项目列表 (5个)", "大小": "12KB"}, {"类型": "📄 B 型案例", "文件": "<a href=\"ci-issues-demo.html\" target=\"_blank\" rel=\"noopener\">ci-issues-demo ↗<\/a>", "说明": "GitHub CI 问题分析报告", "大小": "25KB"}, {"类型": "🏢 C 型案例", "文件": "<a href=\"chaitin-business-analysis-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-business ↗<\/a>", "说明": "长亭科技商业分析知识库 (4类14条)", "大小": "30KB"}, {"类型": "📄 其他", "文件": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗<\/a>", "说明": "公司商业分析纵/横菜单设计方案", "大小": "27KB"}, {"类型": "📚 C 型案例", "文件": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗<\/a>", "说明": "HTML 技能知识库 (3类15条)", "大小": "22KB"}, {"类型": "🔧 其他", "文件": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗<\/a>", "说明": "tool-nav 前端工具导航", "大小": "14KB"}, {"类型": "🎬 A 型演示", "文件": "<a href=\"table-actions-demo.html\" target=\"_blank\" rel=\"noopener\">table-actions-demo ↗<\/a>", "说明": "操作列功能演示 · 6 种按钮 + desc 模式 (8条)", "大小": "18KB"}, {"类型": "📊 A 型案例", "文件": "<a href=\"hermes-profile-skills-list.html\" target=\"_blank\" rel=\"noopener\">hermes-profile-skills-list ↗<\/a>", "说明": "Hermes Skills 清单 · 全 Profile (98条/15类)", "大小": "45KB"}, {"类型": "🌍 A 型案例", "文件": "<a href=\"demos/countries/countries-table.html\" target=\"_blank\" rel=\"noopener\">countries-table ↗<\/a>", "说明": "全球 195 国速查：中英名/首都坐标/大洲/面积/人口/GDP/Google Earth 定位", "大小": "138KB"}];
+  const COLUMNS = [{"key": "标题", "label": "标题", "sortable": true, "locale": "zh", "width": "200px", "freeze": true, "preview": true}, {"key": "模板", "label": "模板", "type": "pills", "sortable": true, "locale": "zh", "width": "120px", "preview": true}, {"key": "文档链接", "label": "文档链接", "sortable": true, "locale": "zh", "width": "260px", "preview": true}, {"key": "大小", "label": "大小", "sortable": true, "locale": "zh", "width": "90px", "preview": true}, {"key": "更新时间", "label": "更新时间", "sortable": true, "locale": "zh", "width": "110px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"标题": "index.html", "模板": "🏠 首页", "文档链接": "<a href=\"index.html\" target=\"_blank\" rel=\"noopener\">index.html ↗<\/a>", "大小": "16KB", "更新时间": "2026-08-19"}, {"标题": "template-A-guide", "模板": "📄 A 型方案", "文档链接": "<a href=\"template-A-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗<\/a>", "大小": "25KB", "更新时间": "2026-07"}, {"标题": "template-B-guide", "模板": "📄 B 型方案", "文档链接": "<a href=\"template-B-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗<\/a>", "大小": "27KB", "更新时间": "2026-07"}, {"标题": "template-B-spec", "模板": "📐 B 型规范", "文档链接": "<a href=\"template-B-markdown-spec-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗<\/a>", "大小": "27KB", "更新时间": "2026-07"}, {"标题": "template-C-guide", "模板": "📄 C 型方案", "文档链接": "<a href=\"template-C-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗<\/a>", "大小": "25KB", "更新时间": "2026-07"}, {"标题": "iris-output-index", "模板": "📊 A 型案例", "文档链接": "<a href=\"iris-output-index.html\" target=\"_blank\" rel=\"noopener\">iris-output-index ↗<\/a>", "大小": "13KB", "更新时间": "2026-07"}, {"标题": "git-cloner-demo", "模板": "📊 A 型案例", "文档链接": "<a href=\"git-cloner-demo.html\" target=\"_blank\" rel=\"noopener\">git-cloner-demo ↗<\/a>", "大小": "12KB", "更新时间": "2026-07"}, {"标题": "ci-issues-demo", "模板": "📄 B 型案例", "文档链接": "<a href=\"ci-issues-demo.html\" target=\"_blank\" rel=\"noopener\">ci-issues-demo ↗<\/a>", "大小": "25KB", "更新时间": "2026-07"}, {"标题": "chaitin-business", "模板": "🏢 C 型案例", "文档链接": "<a href=\"chaitin-business-analysis-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-business ↗<\/a>", "大小": "30KB", "更新时间": "2026-08-19"}, {"标题": "chaitin-menu-design", "模板": "📄 其他", "文档链接": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗<\/a>", "大小": "27KB", "更新时间": "2026-07"}, {"标题": "knowledge-demo", "模板": "📚 C 型案例", "文档链接": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗<\/a>", "大小": "22KB", "更新时间": "2026-07"}, {"标题": "tool-nav-demo", "模板": "🔧 其他", "文档链接": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗<\/a>", "大小": "14KB", "更新时间": "2026-07"}, {"标题": "table-actions-demo", "模板": "🎬 A 型演示", "文档链接": "<a href=\"table-actions-demo.html\" target=\"_blank\" rel=\"noopener\">table-actions-demo ↗<\/a>", "大小": "18KB", "更新时间": "2026-07"}, {"标题": "hermes-profile-skills-list", "模板": "📊 A 型案例", "文档链接": "<a href=\"hermes-profile-skills-list.html\" target=\"_blank\" rel=\"noopener\">hermes-profile-skills-list ↗<\/a>", "大小": "45KB", "更新时间": "2026-07"}, {"标题": "countries-table", "模板": "🌍 A 型案例", "文档链接": "<a href=\"demos/countries/countries-table.html\" target=\"_blank\" rel=\"noopener\">countries-table ↗<\/a>", "大小": "138KB", "更新时间": "2026-07"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
@@ -509,6 +513,7 @@ pre code { background: none; padding: 0; }
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
   const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const showIndex = OPTIONS && OPTIONS.showIndex;
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
@@ -516,6 +521,8 @@ pre code { background: none; padding: 0; }
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
+  // initialHidden: 表格默认隐藏列（⚙️ 可开启；分栏详情全列渲染不受影响）；用户切换过则尊重用户
+  COLUMNS.forEach(function(c) { if (c.initialHidden && colVisibility[c.key] === undefined) colVisibility[c.key] = false; });
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -571,7 +578,8 @@ pre code { background: none; padding: 0; }
     if (tab.match) return row[tab.match] === tab.key;
     if (tab.contains) {
       var val = row[tab.field || 'profiles'] || '';
-      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+      var target = tab.value || tab.key;
+      return val.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
     }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
@@ -586,19 +594,25 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
     if (q) {
+      var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
-        return COLUMNS.some(function(col) {
-          if (col.type === 'actions') return false;
-          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        return searchKeys.some(function(k) {
+          return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
         });
       });
     }
-    // Quick filter (cell click)
+    // Quick filter (cell click / pill click)
     if (quickFilter) {
       filtered = filtered.filter(function(row) {
-        return String(row[quickFilter.key] || '') === quickFilter.value;
+        var v = String(row[quickFilter.key] || '');
+        if (quickFilter.mode === 'contains') {
+          // 标签筛选：顿号/逗号切分后包含匹配
+          return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
+        }
+        return v === quickFilter.value;
       });
     }
     // Sort (primary + secondary combined for stable ordering)
@@ -657,6 +671,8 @@ pre code { background: none; padding: 0; }
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
     var cols = visibleCols();
+    // 第 1 个可见非 actions 列 (用于默认分栏)
+    var firstKeyCol = cols.find(function(c) { return c.type !== 'actions'; });
     var frozenOffsets = [];
     var fo = 0;
     cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
@@ -670,6 +686,9 @@ pre code { background: none; padding: 0; }
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
+      if (showIndex) {
+        rowHtml += '<td class="col-index-num">' + (rowIdx + 1) + '</td>';
+      }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
           var stickyCls2 = col.stickyRight ? ' sticky-right' : '';
@@ -677,15 +696,23 @@ pre code { background: none; padding: 0; }
         } else {
           var val = row[col.key];
           if (col.type === 'pills') {
-              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
-              var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
+              var items = (val || '').toString().split(/[,，、/]+/).map(function(s){return s.trim();}).filter(Boolean);
+              // pillFilter 默认开: 标签点击筛选, pillFilter: false 可关闭
+              var pillsHtml = items.map(function(s){
+                return '<span class="cell-pill'+(col.pillFilter !== false ? ' pill-clickable' : '')+'"'+
+                  (col.pillFilter !== false ? ' onclick="event.stopPropagation();quickFilterBy(\''+escapeAttr(col.key)+'\',\''+escapeAttr(s)+'\',\'contains\')"' : '')+
+                  '>'+escapeHtml(s)+'</span>';
+              }).join('');
               var freezeCls = col.freeze ? ' frozen-col' : '';
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
             if (col.render) val = col.render(val, row);
+          else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
@@ -696,8 +723,12 @@ pre code { background: none; padding: 0; }
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
             tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
-          } else if (col.quickFilter !== false) {
+          } else if (col.quickFilter === true) {
+            // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          } else if (col === firstKeyCol) {
+            // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
@@ -782,11 +813,12 @@ pre code { background: none; padding: 0; }
     }
   }
 
-  window.quickFilterBy = function(key, value) {
-    if (quickFilter && quickFilter.key === key && quickFilter.value === value) {
+  window.quickFilterBy = function(key, value, mode) {
+    mode = mode || 'exact';
+    if (quickFilter && quickFilter.key === key && quickFilter.value === value && (quickFilter.mode || 'exact') === mode) {
       quickFilter = null;  // toggle off
     } else {
-      quickFilter = {key: key, value: value};
+      quickFilter = {key: key, value: value, mode: mode};
     }
     expandedIdx = -1;
     currentPage = 1;
@@ -834,6 +866,7 @@ pre code { background: none; padding: 0; }
       else { frozenStyles.push(''); }
     });
     thead.innerHTML = '<tr>' +
+      (showIndex ? '<th class="col-index-num" style="width:42px">序号</th>' : '') +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
@@ -1117,10 +1150,13 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = visibleCols({requireKey: true, excludeActions: true});
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
+      var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
-        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
+        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
   }
@@ -1455,6 +1491,11 @@ pre code { background: none; padding: 0; }
     applyDensity();
     render();
     initSplitDrag();
+    // 默认筛选：options.defaultFilter {key, value, mode} 加载后自动筛选（如大明时间轴默认选中嘉靖）
+    var _df = OPTIONS && OPTIONS.defaultFilter;
+    if (_df && _df.key && _df.value) {
+      quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
   }
   init();
 
