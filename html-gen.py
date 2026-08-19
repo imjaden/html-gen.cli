@@ -399,6 +399,10 @@ html-gen — HTML 模板 CLI 生成器 v3.0
   table     JSON     → A 型数据表格 (搜索/排序/分页)
   knowledge JSON     → C 型知识库 (标签栏 + 章节)
 
+工具指令:
+  prompt    skills/ 项目 skill 摘要与全文 (html-gen prompt <skill>)
+  demo      demo 清单与详情 (html-gen demo list|<name>)
+
 快速开始:
   html-gen doc   -i report.md  -o report.html
   html-gen slide -i slides.md  -o slides.html
@@ -410,6 +414,8 @@ html-gen — HTML 模板 CLI 生成器 v3.0
   html-gen help table      JSON 数据格式 (A 型)
   html-gen help knowledge  JSON 数据格式 (C 型)
   html-gen help slide      slide 特有功能说明
+  html-gen help prompt     prompt 指令说明
+  html-gen help demo       demo 指令与 demo 规范
 
 零外部依赖，输出自包含单文件 HTML。"""
 
@@ -552,11 +558,53 @@ D 型 · 幻灯片功能说明
 用法:
   html-gen slide -i slides.md -o slides.html --title "标题\""""
 
+HELP_PROMPT = """\
+prompt — 输出项目 skills 内容
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+用途:
+  展示 skills/ 目录下项目 skill 的摘要或全文 (供 agent 参考)
+
+用法:
+  html-gen prompt                列出全部 skill (名称 + 摘要)
+  html-gen prompt <skill>        输出该 skill 摘要 + 章节
+  html-gen prompt <skill> --brief  仅输出摘要 (不打印章节/全文)
+  html-gen prompt <skill> --json  JSON 输出 {"status","data"}
+
+说明:
+  skills/ 每子目录一个 skill (含 SKILL.md), 支持 references/*.md 拼接。"""
+
+HELP_DEMO = """\
+demo — demo 清单与详情
+━━━━━━━━━━━━━━━━━━━━━━━━━━
+
+用途:
+  按模板类型列出 demos/ 目录的 demo, 或查看单个 demo 的文件结构与预览地址
+
+用法:
+  html-gen demo list             按类型分组列出独立 demo (过滤被引用子页)
+  html-gen demo list --all       含被引用子页 (knowledge 主库引用的内容页)
+  html-gen demo list --json      JSON 输出
+  html-gen demo <name>           查看详情: entry / 源文件 / 预览 URL
+  html-gen demo <name> --open    浏览器打开预览 (需 hs 服务)
+  html-gen demo --rebuild        重新扫描 demos/ 生成 _registry.json
+
+demo 规范:
+  demos/_registry.json           清单数据源 {version,count,demos[]}
+  demos[] 字段: name/title/type/entry/featured/referenced/referenced_by/stale
+  type: knowledge(C) / table(A) / doc(B) / html(独立页) —— 按模板特征自动识别
+  featured: 首页精选 (index.html 链接项)
+  referenced: 被 knowledge 主库引用 → 默认 list 不单列 (--all 查看)
+  目录约定: 根级=入口/主产物; templates/(模板指南) features/(功能 demo)
+            drama/ chaitin/ countries/ (主题内容)"""
+
 HELP_MAP = {
     'doc': HELP_DOC,
     'slide': HELP_SLIDE,
     'table': HELP_TABLE,
     'knowledge': HELP_KNOWLEDGE,
+    'prompt': HELP_PROMPT,
+    'demo': HELP_DEMO,
 }
 
 
@@ -573,8 +621,8 @@ def main():
     sub = p.add_subparsers(dest='command', required=True)
 
     h = sub.add_parser('help', help='显示帮助')
-    h.add_argument('topic', nargs='?', choices=['doc', 'slide', 'table', 'knowledge'],
-                   help='帮助主题 (doc/slide/table/knowledge)')
+    h.add_argument('topic', nargs='?', choices=['doc', 'slide', 'table', 'knowledge', 'prompt', 'demo'],
+                   help='帮助主题 (doc/slide/table/knowledge/prompt/demo)')
 
     d = sub.add_parser('doc', help='Markdown → B 型文档')
     d.add_argument('-i', '--input', required=True)
@@ -611,6 +659,7 @@ def main():
     dm.add_argument('--json', action='store_true', help='JSON 输出')
     dm.add_argument('--all', action='store_true', help='list 含被引用子页')
     dm.add_argument('--open', action='store_true', help='打开浏览器预览')
+    dm.add_argument('--rebuild', action='store_true', help='重新扫描 demos/ 生成 _registry.json')
 
     args = p.parse_args()
     {'help': cmd_help, 'doc': cmd_doc, 'slide': cmd_slide,
@@ -693,13 +742,62 @@ def cmd_prompt(args):
 
 
 def cmd_demo(args):
-    """demo 列表与详情：html-gen demo list|<name> [--json] [--open]."""
+    """demo 列表与详情：html-gen demo list|<name> [--json] [--all] [--open] [--rebuild]."""
     import json as _json
     import urllib.request as _ur
     DEMOS_DIR = Path(__file__).resolve().parent / 'demos'
+    DATA_DIR = Path(__file__).resolve().parent / 'data'
     reg_file = DEMOS_DIR / '_registry.json'
+
+    # --rebuild: 重新扫描 demos/ 生成 registry
+    if getattr(args, 'rebuild', False):
+        import re as _re
+        refs = {}
+        for kb in DATA_DIR.glob('*kb-data.json'):
+            try:
+                items = _json.loads(kb.read_text(encoding='utf-8'))
+            except Exception:
+                continue
+            for it in items:
+                u = it.get('url')
+                if u:
+                    refs.setdefault(u, []).append(kb.stem)
+        featured = set()
+        try:
+            idx = (DEMOS_DIR / 'index.html').read_text(encoding='utf-8')
+            featured = {m for m in _re.findall(r'href="([^"#]+\.html)"', idx)}
+        except Exception:
+            pass
+
+        def detect_type(h):
+            if 'doc-header' in h:
+                return 'doc'
+            if 'kw-tab' in h or 'kwSidebar' in h:
+                return 'knowledge'
+            if 'data-table' in h or 'kv-list' in h:
+                return 'table'
+            return 'html'
+
+        demos = []
+        for f in sorted(DEMOS_DIR.rglob('*.html')):
+            if f.name in ('index.html', '_registry.json'):
+                continue
+            rel = f.relative_to(DEMOS_DIR).as_posix()
+            h = f.read_text(encoding='utf-8', errors='ignore')
+            t = _re.search(r'<title>(.*?)</title>', h, _re.S)
+            demos.append({
+                'name': f.stem, 'title': t.group(1).strip() if t else f.stem,
+                'type': detect_type(h), 'entry': rel, 'featured': rel in featured,
+                'referenced': rel in refs, 'referenced_by': refs.get(rel, []),
+                'stale': bool(_re.match(r'daming-(strategy|timeline)-\d', f.stem)),
+            })
+        reg = {'version': 2, 'count': len(demos), 'demos': demos}
+        reg_file.write_text(_json.dumps(reg, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        print(f"✅ registry 重建: {len(demos)} demos (featured {len(featured)} / 引用子页 {len(refs)} / 过期 {sum(1 for d in demos if d['stale'])})")
+        return
+
     if not reg_file.exists():
-        print('❌ demos/_registry.json 不存在', file=sys.stderr)
+        print('❌ demos/_registry.json 不存在（html-gen demo --rebuild 生成）', file=sys.stderr)
         sys.exit(1)
     reg = _json.loads(reg_file.read_text(encoding='utf-8'))
     demos = reg.get('demos', [])

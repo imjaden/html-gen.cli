@@ -56,7 +56,34 @@ class TestDemoCmd(unittest.TestCase):
         self.assertNotEqual(r.returncode, 0, "不存在 demo 应非零退出")
         self.assertIn('不存在', r.stderr)
 
-    def test_06_registry_exists(self):
+    def test_07_help_covers_prompt_demo(self):
+        """help 总览与主题应覆盖 prompt/demo 指令."""
+        r = subprocess.run(['python3', str(GEN), 'help'], capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0)
+        self.assertIn('prompt', r.stdout, "help 总览应含 prompt")
+        self.assertIn('demo', r.stdout, "help 总览应含 demo")
+        for topic in ('prompt', 'demo'):
+            r2 = subprocess.run(['python3', str(GEN), 'help', topic],
+                                capture_output=True, text=True, timeout=60)
+            self.assertEqual(r2.returncode, 0, f"help {topic} 失败")
+            self.assertIn('用法', r2.stdout, f"help {topic} 应含用法")
+        r3 = subprocess.run(['python3', str(GEN), 'help', 'nope'], capture_output=True, text=True, timeout=60)
+        self.assertNotEqual(r3.returncode, 0, "不存在的主题应报错")
+
+    def test_08_rebuild_idempotent(self):
+        """demo --rebuild 幂等重建 registry（featured 来自 index.html 链接）."""
+        r = run('--rebuild')
+        self.assertEqual(r.returncode, 0, r.stderr)
+        self.assertIn('registry 重建', r.stdout)
+        reg = json.loads((DEMOS / '_registry.json').read_text())
+        self.assertEqual(reg['version'], 2)
+        self.assertGreaterEqual(sum(1 for d in reg['demos'] if d['featured']), 9, "featured ≥9")
+        # 幂等
+        r2 = run('--rebuild')
+        self.assertEqual(json.loads((DEMOS / '_registry.json').read_text()), reg,
+                         "重建应幂等")
+
+    def test_09_registry_exists(self):
         """_registry.json 存在且条目与文件对应."""
         reg = json.loads((DEMOS / '_registry.json').read_text())
         self.assertEqual(reg['version'], 2, "registry 版本应为 2（含 referenced/stale）")
