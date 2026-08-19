@@ -19,7 +19,7 @@ HAS_ARGS=0
 
 while [[ $# -gt 0 ]]; do
     case "$1" in
-        -i|--install)
+        -i|--install|install)
             DO_INSTALL=1; HAS_ARGS=1; shift ;;
         -u|--uninstall)
             DO_UNINSTALL=1; HAS_ARGS=1; shift ;;
@@ -117,7 +117,11 @@ WRAPPER"
     run chmod +x "$LINK_PATH"
 
     if [[ $VERBOSE -eq 1 || $DRY_RUN -eq 1 ]]; then
-        echo "✅ 已安装: $LINK_PATH → $GEN_PY"
+        if [[ $DRY_RUN -eq 1 ]]; then
+            echo "🔍 已预览（dry-run，未实际安装）: $LINK_PATH → $GEN_PY"
+        else
+            echo "✅ 已安装: $LINK_PATH → $GEN_PY"
+        fi
         if echo "$PATH" | grep -q "$BIN_DIR"; then
             echo "  ✅ $BIN_DIR 已在 PATH 中"
         else
