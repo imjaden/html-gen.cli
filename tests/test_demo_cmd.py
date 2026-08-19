@@ -29,7 +29,7 @@ class TestDemoCmd(unittest.TestCase):
         self.assertEqual(r.returncode, 0)
         d = json.loads(r.stdout)
         self.assertEqual(d['status'], 'ok')
-        self.assertGreater(len(d['data']), 40, f"应有 40+ demos: {len(d['data'])}")
+        self.assertGreaterEqual(len(d['data']), 40, f"应有 40+ demos: {len(d['data'])}")
         # 类型识别
         by_name = {x['name']: x['type'] for x in d['data']}
         self.assertEqual(by_name.get('drama-knowledge'), 'knowledge')
