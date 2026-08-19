@@ -418,7 +418,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>大明王朝1566 · 海瑞上治安疏</h1>
-      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/drama/daming-timeline-06.md</code><br>创建: 2026-08-06 19:29 · 编辑: 2026-08-06 19:29<br>字数: 22 · 阅读约 1 分钟</div>
+      <div class="meta">创建: 2026-08-06 19:29 · 编辑: 2026-08-06 19:29<br>字数: 22 · 阅读约 1 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><blockquote class="callout note"><strong>注意:</strong>本条目基于电视剧《大明王朝1566》剧情（剧中设定）。《治安疏》史有其事（嘉靖四十四年，1565）。</blockquote>
 <h2 id="时间点">时间点</h2>
@@ -482,10 +482,10 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   document.getElementById('sidebarTitle').addEventListener('click', function() {
     var metaEl = document.querySelector('.doc-header .meta');
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
-    if (m && /^(https?:|\/|~\/)/.test(m[1])) {
-      var path = m[1].trim();
-      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
-      showToast('已复制: ' + path);
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/)/.test(target)) {
+      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
+      showToast('已复制: ' + target);
     }
   });
 

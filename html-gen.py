@@ -239,8 +239,7 @@ def cmd_doc(args):
     rt = max(1, round(wc / 200))
     ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
     et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
-    meta = (f"路径: <code>{rel}</code><br>"
-            f"创建: {ct} · 编辑: {et}<br>"
+    meta = (f"创建: {ct} · 编辑: {et}<br>"
             f"字数: {wc:,} · 阅读约 {rt} 分钟")
 
     # External link archive at document bottom
@@ -299,8 +298,7 @@ def cmd_slide(args):
     rt = max(1, round(wc / 200))
     ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
     et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
-    meta = (f"路径: <code>{rel}</code><br>"
-            f"创建: {ct} · 编辑: {et}<br>"
+    meta = (f"创建: {ct} · 编辑: {et}<br>"
             f"字数: {wc:,} · 阅读约 {rt} 分钟")
 
     # External link archive

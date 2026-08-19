@@ -418,7 +418,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>中国历史 · 概述</h1>
-      <div class="meta">路径: <code>~/CodeSpace/html-gen/demos/drama/history-overview.md</code><br>创建: 2026-08-18 22:27 · 编辑: 2026-08-18 22:27<br>字数: 28 · 阅读约 1 分钟</div>
+      <div class="meta">创建: 2026-08-18 22:27 · 编辑: 2026-08-18 22:27<br>字数: 28 · 阅读约 1 分钟</div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="五千年脉络">五千年脉络</h2>
 <p><strong>史前时期（约前3000 前）</strong>：元谋人、北京人留下最早的人类足迹；河姆渡、半坡遗址标志原始农耕兴起；炎黄二帝传说、尧舜禹禅让，华夏文明由此奠基。</p>
@@ -484,10 +484,10 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   document.getElementById('sidebarTitle').addEventListener('click', function() {
     var metaEl = document.querySelector('.doc-header .meta');
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
-    if (m && /^(https?:|\/|~\/)/.test(m[1])) {
-      var path = m[1].trim();
-      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
-      showToast('已复制: ' + path);
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/)/.test(target)) {
+      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
+      showToast('已复制: ' + target);
     }
   });
 

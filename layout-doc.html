@@ -283,10 +283,10 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
   document.getElementById('sidebarTitle').addEventListener('click', function() {
     var metaEl = document.querySelector('.doc-header .meta');
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
-    if (m && /^(https?:|\/|~\/)/.test(m[1])) {
-      var path = m[1].trim();
-      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
-      showToast('已复制: ' + path);
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/)/.test(target)) {
+      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
+      showToast('已复制: ' + target);
     }
   });
 
