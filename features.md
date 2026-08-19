@@ -250,10 +250,10 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | 模板文件 | 4 (doc 444行 / slide 681行 / table 1143行 / knowledge 342行) |
 | CSS 基座 | 1 (style-guide.css) |
 | 数据文件 | 7 |
-| Demo 文件 | 18 |
+| Demo 文件 | 40 (registry: 19 独立 + 21 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 42 (7 回归 + 35 Selenium) |
-| CLI 子命令 | 5 (doc/slide/table/knowledge/help) |
+| 测试用例 | 139 (Selenium + CLI 回归) |
+| CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
 | CLI 参数 | 15 |
 | localStorage keys | 17 |
 | 零外部依赖 | ✅ (Python stdlib only) |
