@@ -449,13 +449,13 @@ pre code { background: none; padding: 0; }
   }
   updateSub();
 
-  // Title click → copy path
+  // Title click → copy full URL（中文参数解码为原文，如 ?group=大明王朝1566）
   document.querySelector('.kw-sidebar-header .sidebar-title').addEventListener('click', function() {
     var m = this.title.match(/路径:\s*(.+)/);
-    var path = m ? m[1].trim() : window.location.href.split('?')[0];
-    if (/^(https?:|\/|~\/)/.test(path)) {
-      try { navigator.clipboard.writeText(path).catch(function(){}); } catch(e) {}
-      showKwToast('已复制: ' + path);
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/)/.test(target)) {
+      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
+      showKwToast('已复制: ' + target);
     }
   });
 
