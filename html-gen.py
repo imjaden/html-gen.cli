@@ -569,7 +569,7 @@ prompt — 输出项目 skills 内容
   html-gen prompt                列出全部 skill (名称 + 摘要)
   html-gen prompt <skill>        输出该 skill 摘要 + 章节
   html-gen prompt <skill> --brief  仅输出摘要 (不打印章节/全文)
-  html-gen prompt <skill> --json  JSON 输出 {"status","data"}
+  html-gen prompt <skill> --json  JSON 输出 (checkpoint 信封 {status,data,error})
 
 说明:
   skills/ 每子目录一个 skill (含 SKILL.md), 支持 references/*.md 拼接。"""
@@ -653,6 +653,7 @@ def main():
     pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>)')
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
     pr.add_argument('--brief', action='store_true', help='仅输出摘要')
+    pr.add_argument('--json', action='store_true', help='JSON 输出 (checkpoint 信封 {status,data,error})')
 
     dm = sub.add_parser('demo', help='demo 列表与详情 (html-gen demo list|<name>)')
     dm.add_argument('name', nargs='?', help='demo 名称 (可选; 缺省=list)')
@@ -670,9 +671,20 @@ def main():
 def cmd_prompt(args):
     """输出项目 skills prompt 内容."""
     import subprocess as _sp
+    import json as _json
     SKILLS_DIR = Path(__file__).resolve().parent / 'skills'
     if not SKILLS_DIR.is_dir():
         print("❌ skills/ 目录不存在", file=sys.stderr); sys.exit(1)
+
+    def _skill_desc(skill_path):
+        try:
+            with open(skill_path) as _f:
+                for _line in _f:
+                    if _line.startswith('description:'):
+                        return _line.split(':', 1)[1].strip()
+        except Exception:
+            pass
+        return ''
 
     # 收集所有 skill
     skills = []
@@ -687,6 +699,13 @@ def cmd_prompt(args):
 
     # 无参: 列出所有
     if not args.skill:
+        if getattr(args, 'json', False):
+            print(_json.dumps({'status': 'ok', 'error': '', 'data': [
+                {'name': s['name'],
+                 'description': _skill_desc(s['path']),
+                 'references': [r.name for r in s['dir'].glob('references/*.md')]}
+                for s in skills]}, ensure_ascii=False, indent=2))
+            return
         print("可用 skills:\n")
         for s in skills:
             desc = ''
@@ -707,12 +726,26 @@ def cmd_prompt(args):
     # 带参: 查找 skill
     target = next((s for s in skills if s['name'] == args.skill), None)
     if not target:
+        if getattr(args, 'json', False):
+            print(_json.dumps({'status': 'error', 'data': None,
+                               'error': f"skill '{args.skill}' 不存在"},
+                              ensure_ascii=False, indent=2))
+            sys.exit(1)
         print(f"❌ skill '{args.skill}' 不存在", file=sys.stderr)
         print(f"可用: {', '.join(s['name'] for s in skills)}")
         sys.exit(1)
 
     # 输出 SKILL.md 全文
     content_text = Path(target['path']).read_text(encoding='utf-8')
+
+    if getattr(args, 'json', False):
+        refs = sorted(target['dir'].glob('references/*.md'))
+        print(_json.dumps({'status': 'ok', 'error': '', 'data': {
+            'name': target['name'],
+            'content': content_text,
+            'references': {r.stem: r.read_text(encoding='utf-8') for r in refs},
+        }}, ensure_ascii=False, indent=2))
+        return
 
     if args.brief:
         # 仅摘要: description + 章节标题 + references
@@ -805,7 +838,8 @@ def cmd_demo(args):
     # list（无参或缺省）——按模板类型分组，过滤被引用子页
     if not args.name or args.name == 'list':
         if args.json:
-            print(_json.dumps({'status': 'ok', 'data': demos}, ensure_ascii=False))
+            print(_json.dumps({'status': 'ok', 'data': demos, 'error': ''},
+                              ensure_ascii=False))
             return
         groups = [('knowledge', '📚 知识库（C 型）'), ('table', '🗂 表格（A 型）'),
                   ('doc', '📄 文档（B 型）'), ('html', '🌐 独立页')]
@@ -832,7 +866,8 @@ def cmd_demo(args):
         sys.exit(1)
 
     if args.json:
-        print(_json.dumps({'status': 'ok', 'data': hit}, ensure_ascii=False))
+        print(_json.dumps({'status': 'ok', 'data': hit, 'error': ''},
+                          ensure_ascii=False))
         return
 
     print(f"📌 {hit['title']}  [{hit['type']}]" + (' ★精选' if hit.get('featured') else ''))
