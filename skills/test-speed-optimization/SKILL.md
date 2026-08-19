@@ -92,7 +92,7 @@ WebDriverWait(self.driver, 5).until(
 2. **stale element**：split 面板/详情加载类交互需较慢 wait，sleep 减半可能触发 `StaleElementReferenceException`，该文件回退。
 3. **WebDriverWait 注入需补 import**：若原文件未 `from selenium.webdriver.common.by import By`，注入 WebDriverWait 时必须一并补 By/WebDriverWait/EC 三个 import，否则 `NameError`。
 4. **并行共享路径**：所有测试写 /tmp 须文件名唯一（不跨文件冲突），不得写 demos/ 或项目目录；xdist 下各 worker 独立进程。
-5. **幂等**：speedup_sleeps.py 用 `# [speedup]` 标记已改行，二次 --apply 不重复改。
+5. **幂等**：speedup_sleeps.py 用 `# [speedup]` 标记已改行，二次 --apply 不重复改。注意：被回退的文件（cp .bak 还原）无标记，--dry-run 会再次列出该文件——属预期，勿二次 --apply（否则重新引入 flaky）。
 
 ## 验证清单
 
