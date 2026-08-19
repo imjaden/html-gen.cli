@@ -50,7 +50,7 @@
       "label": "主要人物",
       "sortable": true,
       "locale": "zh",
-      "width": "160px",
+      "width": "200px",
       "preview": true,
       "splitFull": true
     },
@@ -59,8 +59,16 @@
       "label": "结局",
       "sortable": true,
       "locale": "zh",
-      "width": "180px",
+      "width": "220px",
       "preview": true,
+      "splitFull": true
+    },
+    {
+      "key": "detail",
+      "label": "叠加计策",
+      "sortable": false,
+      "width": "280px",
+      "initialHidden": true,
       "splitFull": true
     },
     {
@@ -68,75 +76,125 @@
       "label": "出处",
       "sortable": true,
       "locale": "zh",
-      "width": "220px",
+      "width": "110px",
       "preview": true
     }
   ],
   "data": [
     {
+      "strategy": "借刀杀人",
+      "category": "敌战计",
+      "alias": "—",
+      "idiom": "借刀杀人",
+      "event": "周云逸御前直谏，廷杖致死（开篇）",
+      "figures": "周云逸、冯保、嘉靖",
+      "outcome": "周云逸杖毙；冯保被发配裕王府；埋下清流怨气",
+      "detail": "【叠加计策】\n① 苦肉计（反向）：冯保讨好皇帝弄巧成拙，自己被外放",
+      "source": "剧中设定"
+    },
+    {
+      "strategy": "瞒天过海",
+      "category": "胜战计",
+      "alias": "—",
+      "idiom": "瞒天过海",
+      "event": "御前财政会议，抛出改稻为桑国策",
+      "figures": "严嵩、严世蕃、徐阶、高拱、张居正、嘉靖",
+      "outcome": "国策下发浙江；严党获敛财工具；清流得倒严突破口",
+      "detail": "【叠加计策】\n① 隔岸观火：嘉靖坐看严党清流互斗\n② 浑水摸鱼：各方借财政困局谋利",
+      "source": "剧中设定"
+    },
+    {
       "strategy": "李代桃僵",
       "category": "敌战计",
       "alias": "—",
       "idiom": "李代桃僵",
-      "event": "毁堤淹田：严党借改稻为桑之名毁堤淹田，逼农民贱卖田地",
-      "figures": "严世蕃、郑泌昌、何茂才",
-      "outcome": "郑泌昌、何茂才被清算，严党受挫",
-      "source": "剧中设定（《三十六计》第十一计）"
-    },
-    {
-      "strategy": "破釜沉舟",
-      "category": "—",
-      "alias": "—",
-      "idiom": "破釜沉舟",
-      "event": "海瑞呈《治安疏》直言进谏，嘉靖震怒下狱",
-      "figures": "海瑞、嘉靖",
-      "outcome": "海瑞下狱，嘉靖临终前悔悟释疑",
-      "source": "史实+剧中演绎（成语典故）"
-    },
-    {
-      "strategy": "分而治之",
-      "category": "—",
-      "alias": "—",
-      "idiom": "分而治之",
-      "event": "嘉靖'长江黄河论'：以严嵩制清流、以清流制严嵩",
-      "figures": "嘉靖、严嵩、徐阶",
-      "outcome": "朝局维持平衡，国库空虚日甚",
-      "source": "剧中设定（嘉靖御下之道）"
-    },
-    {
-      "strategy": "顺水推舟",
-      "category": "—",
-      "alias": "—",
-      "idiom": "顺水推舟",
-      "event": "严嵩借杨继盛弹劾案顺水推舟除掉政敌",
-      "figures": "严嵩、杨继盛、徐阶",
-      "outcome": "杨继盛被杀，清流受挫",
+      "event": "浙江毁堤淹田（本剧核心事件）",
+      "figures": "马宁远、郑泌昌、何茂才、杨金水、胡宗宪",
+      "outcome": "马宁远自尽背锅；两知县被杀；胡宗宪被迫结案",
+      "detail": "【叠加计策】\n① 趁火打劫：借水灾贱价收购灾民土地\n② 借刀杀人：严世蕃借地方官之手制造水灾",
       "source": "剧中设定"
     },
     {
-      "strategy": "韬光养晦",
-      "category": "—",
+      "strategy": "美人计",
+      "category": "败战计",
       "alias": "—",
-      "idiom": "韬光养晦",
-      "event": "徐阶隐忍多年，暗结言官与裕王，静待时机",
-      "figures": "徐阶、严嵩、张居正",
-      "outcome": "严嵩倒台，徐阶拜首辅",
-      "source": "剧中设定（以史实为蓝本）"
+      "idiom": "美人计",
+      "event": "高翰文赴浙，被沈一石美人计套牢",
+      "figures": "高翰文、沈一石、芸娘、郑泌昌、何茂才",
+      "outcome": "高翰文被拿捏妥协；沈一石继续敛财",
+      "detail": "【叠加计策】\n① 笑里藏刀：表面礼贤下士，暗中收集黑料",
+      "source": "剧中设定"
     },
     {
-      "strategy": "将计就计",
-      "category": "—",
+      "strategy": "打草惊蛇",
+      "category": "攻战计",
       "alias": "—",
-      "idiom": "将计就计",
-      "event": "海瑞审通倭案，将计就计诱出真凶",
-      "figures": "海瑞、何茂才、倭寇",
-      "outcome": "冤案昭雪，倭患线索浮出水面",
+      "idiom": "打草惊蛇",
+      "event": "海瑞、王用汲赴淳安、建德，浙江大案博弈",
+      "figures": "海瑞、王用汲、郑泌昌、何茂才、赵贞吉、谭纶",
+      "outcome": "郑泌昌何茂才定罪处死；杨金水装疯；供状未扳倒严世蕃",
+      "detail": "【叠加计策】\n① 上屋抽梯：郑何把海瑞架上位置再罗织罪名\n② 苦肉计：杨金水装疯自保\n③ 借刀杀人：郑何借千户灭口",
+      "source": "剧中设定"
+    },
+    {
+      "strategy": "走为上",
+      "category": "败战计",
+      "alias": "—",
+      "idiom": "走为上",
+      "event": "沈一石之死",
+      "figures": "沈一石、杨金水、郑泌昌、何茂才",
+      "outcome": "沈一石焚烧家产自尽；巨额财富早已被层层分走",
+      "detail": "【叠加计策】\n① 金蝉脱壳（集体）：上层权贵提前分光好处，沈一石承担罪责",
+      "source": "剧中设定"
+    },
+    {
+      "strategy": "连环计",
+      "category": "败战计",
+      "alias": "—",
+      "idiom": "连环计",
+      "event": "吕芳'思危、思退、思变'，私会徐阶严嵩",
+      "figures": "吕芳、严嵩、徐阶、冯保、嘉靖",
+      "outcome": "吕芳被勒令修陵；陈洪上位；嘉靖收紧皇权",
+      "detail": "【叠加计策】\n① 反客为主（失误）：臣子私下串联越位\n② 隔岸观火：嘉靖看穿一切再出手",
+      "source": "剧中设定"
+    },
+    {
+      "strategy": "釜底抽薪",
+      "category": "混战计",
+      "alias": "—",
+      "idiom": "釜底抽薪",
+      "event": "严党最终倒台",
+      "figures": "严嵩、严世蕃、徐阶、嘉靖",
+      "outcome": "严世蕃斩立决；严嵩抄家乞讨；徐阶继任首辅",
+      "detail": "【叠加计策】\n① 欲擒故纵：嘉靖容忍严党到无价值再清算\n② 抛砖引玉：借浙江旧案引出盐税通倭重罪",
+      "source": "剧中设定"
+    },
+    {
+      "strategy": "借尸还魂",
+      "category": "攻战计",
+      "alias": "—",
+      "idiom": "借尸还魂",
+      "event": "海瑞上《治安疏》（直言天下第一事疏）",
+      "figures": "海瑞、嘉靖、黄锦、王用汲、裕王",
+      "outcome": "海瑞下狱论死；嘉靖不勾决；隆庆即位释放海瑞",
+      "detail": "【叠加计策】\n① 打草惊蛇：以死上疏震动官僚体系",
+      "source": "剧中设定（史实 1565）"
+    },
+    {
+      "strategy": "借刀杀人",
+      "category": "敌战计",
+      "alias": "—",
+      "idiom": "借刀杀人",
+      "event": "陈洪的崛起与落幕",
+      "figures": "陈洪、嘉靖、黄锦",
+      "outcome": "嘉靖驾崩后陈洪失靠山，结局凄惨",
+      "detail": "【叠加计策】\n① 用毕即弃：嘉靖借陈洪压制文官后疏远",
       "source": "剧中设定"
     }
   ],
   "tabs": [],
   "options": {
-    "pageSize": 10,
+    "pageSize": 12,
     "exportCSV": true,
     "search": true,
     "showIndex": true

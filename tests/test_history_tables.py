@@ -149,17 +149,22 @@ class TestHistoryTables(unittest.TestCase):
                          ['序号', '计名', '分类', '别名', '衍生成语', '历史事件', '主要人物', '结局', '出处'],
                          f"大明计策表头: {self._headers()}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 6, f"应 6 行: {len(rows)}")
+        self.assertEqual(len(rows), 10, f"应 10 行（10 大事件）: {len(rows)}")
         first = rows[0].find_elements(By.TAG_NAME, 'td')
         self.assertEqual(first[0].text, '1', "序号应为 1")
+        self.assertEqual(first[1].text, '借刀杀人', "首行应为借刀杀人（周云逸直谏）")
+        self.assertIn('周云逸', first[5].text, "首行历史事件应含周云逸")
         self.assertEqual(first[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '敌战计',
-                         "李代桃僵分类应为敌战计")
-        self.driver.execute_script("arguments[0].click();", first[1])
+                         "借刀杀人分类应为敌战计")
+        # 李代桃僵行（毁堤淹田事件）split 详情
+        lidao = self._row_by_text(1, '李代桃僵')
+        self.assertIsNotNone(lidao, "应找到李代桃僵行")
+        self.driver.execute_script("arguments[0].click();", lidao.find_elements(By.TAG_NAME, 'td')[1])
         time.sleep(0.8)
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
-        self.assertIn('毁堤淹田', pv, "详情应含历史事件")
-        self.assertIn('严世蕃', pv, "详情应含主要人物")
-        self.assertIn('被清算', pv, "详情应含结局")
+        self.assertIn('毁堤淹田', pv, "详情应含毁堤淹田")
+        self.assertIn('马宁远', pv, "详情应含马宁远")
+        self.assertIn('叠加计策', pv, "详情应含叠加计策（趁火打劫/借刀杀人）")
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
 
