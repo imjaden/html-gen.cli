@@ -450,7 +450,7 @@
     },
     {
       "name": "drama-knowledge",
-      "title": "以剧读史",
+      "title": "以剧读史 · 影视历史知识库",
       "type": "knowledge",
       "entry": "drama-knowledge.html",
       "featured": true,
@@ -500,7 +500,7 @@
     },
     {
       "name": "knowledge-demo",
-      "title": "HTML 技能知识库",
+      "title": "知识库",
       "type": "knowledge",
       "entry": "features/knowledge-demo.html",
       "featured": true,
@@ -570,7 +570,7 @@
     },
     {
       "name": "template-B-markdown-spec-v1.0-20260707",
-      "title": "B 型规范",
+      "title": "方案B · Markdown 规范说明",
       "type": "doc",
       "entry": "templates/template-B-markdown-spec-v1.0-20260707.html",
       "featured": true,
