@@ -1,0 +1,77 @@
+[
+  {
+    "key": "autonomous-ai-agents",
+    "label": "autonomous-ai-agents",
+    "icon": "🧩"
+  },
+  {
+    "key": "creative",
+    "label": "creative",
+    "icon": "🧩"
+  },
+  {
+    "key": "data-science",
+    "label": "data-science",
+    "icon": "🧩"
+  },
+  {
+    "key": "devops",
+    "label": "devops",
+    "icon": "🧩"
+  },
+  {
+    "key": "dogfood",
+    "label": "dogfood",
+    "icon": "🧩"
+  },
+  {
+    "key": "github",
+    "label": "github",
+    "icon": "🧩"
+  },
+  {
+    "key": "mcp",
+    "label": "mcp",
+    "icon": "🧩"
+  },
+  {
+    "key": "media",
+    "label": "media",
+    "icon": "🧩"
+  },
+  {
+    "key": "mlops",
+    "label": "mlops",
+    "icon": "🧩"
+  },
+  {
+    "key": "news-summary",
+    "label": "news-summary",
+    "icon": "🧩"
+  },
+  {
+    "key": "note-taking",
+    "label": "note-taking",
+    "icon": "🧩"
+  },
+  {
+    "key": "productivity",
+    "label": "productivity",
+    "icon": "🧩"
+  },
+  {
+    "key": "projects",
+    "label": "projects",
+    "icon": "🧩"
+  },
+  {
+    "key": "research",
+    "label": "research",
+    "icon": "🧩"
+  },
+  {
+    "key": "software-development",
+    "label": "software-development",
+    "icon": "🧩"
+  }
+]

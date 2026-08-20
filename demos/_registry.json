@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "count": 41,
+  "count": 54,
   "demos": [
     {
       "name": "business-model",
@@ -158,10 +158,164 @@
     },
     {
       "name": "chaitin-business-analysis-v1.0-20260707",
-      "title": "长亭科技 · 商业分析知识库",
+      "title": "长亭科技 · 商业分析",
       "type": "knowledge",
       "entry": "chaitin-business-analysis-v1.0-20260707.html",
       "featured": true,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": false
+    },
+    {
+      "name": "awards",
+      "title": "云智慧 · 荣誉认证",
+      "type": "doc",
+      "entry": "cloudwise/awards.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "business-model",
+      "title": "云智慧 · 商业模式",
+      "type": "doc",
+      "entry": "cloudwise/business-model.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "company-history",
+      "title": "云智慧 · 发展历程",
+      "type": "doc",
+      "entry": "cloudwise/company-history.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "company-profile",
+      "title": "云智慧 · 公司画像",
+      "type": "doc",
+      "entry": "cloudwise/company-profile.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "competitive-landscape",
+      "title": "云智慧 · 竞争格局",
+      "type": "doc",
+      "entry": "cloudwise/competitive-landscape.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "core-products",
+      "title": "云智慧 · 核心产品",
+      "type": "doc",
+      "entry": "cloudwise/core-products.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "customers-market",
+      "title": "云智慧 · 客户与市场",
+      "type": "doc",
+      "entry": "cloudwise/customers-market.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "funding-valuation",
+      "title": "云智慧 · 融资估值",
+      "type": "doc",
+      "entry": "cloudwise/funding-valuation.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "management-team",
+      "title": "云智慧 · 管理团队",
+      "type": "doc",
+      "entry": "cloudwise/management-team.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "partners",
+      "title": "云智慧 · 合作伙伴",
+      "type": "doc",
+      "entry": "cloudwise/partners.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "product-matrix",
+      "title": "云智慧 · 产品矩阵",
+      "type": "doc",
+      "entry": "cloudwise/product-matrix.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "solutions",
+      "title": "云智慧 · 解决方案",
+      "type": "doc",
+      "entry": "cloudwise/solutions.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "cloudwise-business-analysis",
+      "title": "云智慧 · 商业分析",
+      "type": "knowledge",
+      "entry": "cloudwise-business-analysis.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": [],
       "stale": false
