@@ -220,7 +220,9 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
-.data-table .cell-pill { display:inline-block; padding:1px 6px; border-radius:9999px; font-size:0.62rem; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px; }
+.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
+.data-table .cell-pill.pill-clickable { cursor:pointer; }
+.data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -278,7 +280,7 @@ pre code { background: none; padding: 0; }
   position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
-.data-table td { padding:5px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+.data-table td { padding:7px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
   vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
@@ -289,8 +291,8 @@ pre code { background: none; padding: 0; }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
 
 /* ── Actions ── */
-.action-btn { display:inline-flex; align-items:center; justify-content:center; width:26px; height:26px;
-  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.65rem; color:#6b7280;
+.action-btn { display:inline-flex; align-items:center; justify-content:center; width:20px; height:20px;
+  border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.62rem; color:#6b7280;
   background:transparent; transition:all 0.15s; margin:0 1px; }
 .action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
 
@@ -359,6 +361,8 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item { padding:4px 8px; border:1px solid #1a1a2e; border-radius:6px; }
 .split-preview .kv-item .kv-label { font-size:0.62rem; color:#6b7280; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
+.split-preview .kv-item-full { grid-column: 1 / -1; }
+.split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -410,9 +414,23 @@ pre code { background: none; padding: 0; }
 }
 .qs-close-btn:hover { background:#2a2a3e; color:#e0e0e0; }
 .qs-hint { display:flex; justify-content:space-between; padding:4px 18px 12px; font-size:0.62rem; color:#6b7280; }
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner svg { pointer-events: none; }
+.github-corner .octo-arm, .github-corner .octo-body { pointer-events: visiblePainted; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+
 </style>
 </head>
 <body>
+<a href="https://github.com/imjaden/html-gen" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
+  <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
 <div class="wrapper">
 
 <div class="table-tabs" id="tabsBar"></div>
@@ -509,6 +527,7 @@ pre code { background: none; padding: 0; }
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
   const showRowSelect = OPTIONS && OPTIONS.rowSelect;
+  const showIndex = OPTIONS && OPTIONS.showIndex;
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
@@ -516,6 +535,8 @@ pre code { background: none; padding: 0; }
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
+  // initialHidden: 表格默认隐藏列（⚙️ 可开启；分栏详情全列渲染不受影响）；用户切换过则尊重用户
+  COLUMNS.forEach(function(c) { if (c.initialHidden && colVisibility[c.key] === undefined) colVisibility[c.key] = false; });
   let density = 'default', clickMode = 'tab', splitRatio = 40, splitActive = false;
   let expandedIdx = -1;
   let quickFilter = null;  // {key, value}
@@ -571,7 +592,8 @@ pre code { background: none; padding: 0; }
     if (tab.match) return row[tab.match] === tab.key;
     if (tab.contains) {
       var val = row[tab.field || 'profiles'] || '';
-      return val.split(',').map(function(s){return s.trim();}).indexOf(tab.key) !== -1;
+      var target = tab.value || tab.key;
+      return val.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(target) !== -1;
     }
     if (tab.field) return row[tab.field] === tab.key;
     return (row.group || row.category || '') === tab.key;
@@ -586,28 +608,36 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
     if (q) {
+      var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
-        return COLUMNS.some(function(col) {
-          if (col.type === 'actions') return false;
-          return String(row[col.key] || '').toLowerCase().indexOf(q) !== -1;
+        return searchKeys.some(function(k) {
+          return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
         });
       });
     }
-    // Quick filter (cell click)
+    // Quick filter (cell click / pill click)
     if (quickFilter) {
       filtered = filtered.filter(function(row) {
-        return String(row[quickFilter.key] || '') === quickFilter.value;
+        var v = String(row[quickFilter.key] || '');
+        if (quickFilter.mode === 'contains') {
+          // 标签筛选：顿号/逗号切分后包含匹配
+          return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
+        }
+        return v === quickFilter.value;
       });
     }
     // Sort (primary + secondary combined for stable ordering)
     if (sortKey) {
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
+      var isDate = col && col.type === 'datetime';
       var loc = col && col.locale;
       var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
+      var isDate2 = col2 && col2.type === 'datetime';
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
         // Primary key
@@ -616,6 +646,7 @@ pre code { background: none; padding: 0; }
         if (vb === undefined || vb === null) vb = '';
         var cmp;
         if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
+        else if (isDate) { va = Date.parse(va) || 0; vb = Date.parse(vb) || 0; cmp = va - vb; }
         else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
         if (cmp !== 0) return sortAsc ? cmp : -cmp;
         // Secondary key (only when primary equal)
@@ -625,6 +656,7 @@ pre code { background: none; padding: 0; }
           if (vb2 === undefined || vb2 === null) vb2 = '';
           var cmp2;
           if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
+          else if (isDate2) { va2 = Date.parse(va2) || 0; vb2 = Date.parse(vb2) || 0; cmp2 = va2 - vb2; }
           else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
           return sortAsc2 ? cmp2 : -cmp2;
         }
@@ -653,6 +685,8 @@ pre code { background: none; padding: 0; }
     if (!pageData.length) { tbody.innerHTML = ''; renderPager(totalPages); return; }
 
     var cols = visibleCols();
+    // 第 1 个可见非 actions 列 (用于默认分栏)
+    var firstKeyCol = cols.find(function(c) { return c.type !== 'actions'; });
     var frozenOffsets = [];
     var fo = 0;
     cols.forEach(function(c) { frozenOffsets.push(c.freeze ? ' style="left:' + fo + 'px"' : ''); if (c.freeze) fo += 120; });
@@ -666,6 +700,9 @@ pre code { background: none; padding: 0; }
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
+      if (showIndex) {
+        rowHtml += '<td class="col-index-num">' + (rowIdx + 1) + '</td>';
+      }
       cols.forEach(function(col) {
         if (col.type === 'actions') {
           var stickyCls2 = col.stickyRight ? ' sticky-right' : '';
@@ -673,15 +710,23 @@ pre code { background: none; padding: 0; }
         } else {
           var val = row[col.key];
           if (col.type === 'pills') {
-              var items = (val || '').toString().split(/,\s*/).filter(Boolean);
-              var pillsHtml = items.map(function(s){return '<span class="cell-pill">'+escapeHtml(s)+'</span>';}).join('');
+              var items = (val || '').toString().split(/[,，、/]+/).map(function(s){return s.trim();}).filter(Boolean);
+              // pillFilter 默认开: 标签点击筛选, pillFilter: false 可关闭
+              var pillsHtml = items.map(function(s){
+                return '<span class="cell-pill'+(col.pillFilter !== false ? ' pill-clickable' : '')+'"'+
+                  (col.pillFilter !== false ? ' onclick="event.stopPropagation();quickFilterBy(\''+escapeAttr(col.key)+'\',\''+escapeAttr(s)+'\',\'contains\')"' : '')+
+                  '>'+escapeHtml(s)+'</span>';
+              }).join('');
               var freezeCls = col.freeze ? ' frozen-col' : '';
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
-              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+freezeStyle+'>'+pillsHtml+'</td>';
+              // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
             if (col.render) val = col.render(val, row);
+          else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
           else if (col.escape) val = escapeHtml(String(val));
           else if (val === undefined || val === null) val = '';
           var freezeCls = col.freeze ? ' frozen-col' : '';
@@ -692,8 +737,12 @@ pre code { background: none; padding: 0; }
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
             tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
-          } else if (col.quickFilter !== false) {
+          } else if (col.quickFilter === true) {
+            // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
+          } else if (col === firstKeyCol) {
+            // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
@@ -778,11 +827,12 @@ pre code { background: none; padding: 0; }
     }
   }
 
-  window.quickFilterBy = function(key, value) {
-    if (quickFilter && quickFilter.key === key && quickFilter.value === value) {
+  window.quickFilterBy = function(key, value, mode) {
+    mode = mode || 'exact';
+    if (quickFilter && quickFilter.key === key && quickFilter.value === value && (quickFilter.mode || 'exact') === mode) {
       quickFilter = null;  // toggle off
     } else {
-      quickFilter = {key: key, value: value};
+      quickFilter = {key: key, value: value, mode: mode};
     }
     expandedIdx = -1;
     currentPage = 1;
@@ -830,6 +880,7 @@ pre code { background: none; padding: 0; }
       else { frozenStyles.push(''); }
     });
     thead.innerHTML = '<tr>' +
+      (showIndex ? '<th class="col-index-num" style="width:42px">序号</th>' : '') +
       (showRowSelect ? '<th class="col-checkbox"><input type="checkbox" id="selectAll" onchange="toggleAll(event)"></th>' : '') +
       cols.map(function(c, ci) {
         var sortCls = '';
@@ -1113,10 +1164,13 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      var cols = visibleCols({requireKey: true, excludeActions: true});
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
+      var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
-        return '<div class="kv-item"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+escapeHtml(String(v))+'</div></div>';
+        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
+        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
   }
@@ -1234,7 +1288,15 @@ pre code { background: none; padding: 0; }
     var html = '';
 
     // density section — visible when split/modal available
-    var validModes = (OPTIONS && OPTIONS.clickModes) || ['tab'];
+    var clickModes = (OPTIONS && OPTIONS.clickModes) ||
+                     (OPTIONS && OPTIONS.clickMode ? [OPTIONS.clickMode] : null) ||
+                     ['tab'];
+    var validModes = clickModes;
+    // Also set default clickMode from singular if no plural
+    if (OPTIONS && OPTIONS.clickMode && !OPTIONS.clickModes) {
+      clickMode = OPTIONS.clickMode;
+      try { localStorage.setItem('html-gen:table:click-mode', OPTIONS.clickMode); } catch(e) {}
+    }
     var hasSplit = validModes.indexOf('split') !== -1;
     var hasModal = validModes.indexOf('modal') !== -1;
     var hasExpand = validModes.indexOf('expand') !== -1;
@@ -1443,6 +1505,11 @@ pre code { background: none; padding: 0; }
     applyDensity();
     render();
     initSplitDrag();
+    // 默认筛选：options.defaultFilter {key, value, mode} 加载后自动筛选（如大明时间轴默认选中嘉靖）
+    var _df = OPTIONS && OPTIONS.defaultFilter;
+    if (_df && _df.key && _df.value) {
+      quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
   }
   init();
 
