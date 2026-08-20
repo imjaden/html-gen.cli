@@ -1,0 +1,44 @@
+{
+  "schema_version": 2,
+  "description": "云智慧（博云 CloudWise）商业分析知识库 schema",
+  "usage": "python scripts/company-report.py scripts/company-research-cloudwise-schema.json",
+  "company": {
+    "name": "云智慧",
+    "title_prefix": "云智慧 · 商业分析",
+    "subtitle": "售前视角",
+    "welcome": "从上方类目选择，浏览公司概况、产品体系、经营分析与生态合作。"
+  },
+  "output": {
+    "content_dir": "cloudwise",
+    "groups_file": "data/_cloudwise-groups.json",
+    "data_file": "data/_cloudwise-kb-data.json",
+    "html_file": "demos/cloudwise-business-analysis.html"
+  },
+  "groups": [
+    {"key": "公司概况", "label": "公司概况", "icon": "🏢"},
+    {"key": "产品体系", "label": "产品体系", "icon": "🧩"},
+    {"key": "经营分析", "label": "经营分析", "icon": "📊"},
+    {"key": "生态合作", "label": "生态合作", "icon": "🔧"}
+  ],
+  "items": [
+    {"title": "公司画像", "group": "公司概况", "section": "画像", "badge": "核心", "url": "cloudwise/company-profile.html"},
+    {"title": "发展历程", "group": "公司概况", "section": "历程", "badge": "", "url": "cloudwise/company-history.html"},
+    {"title": "融资估值", "group": "公司概况", "section": "融资", "badge": "D3", "url": "cloudwise/funding-valuation.html"},
+    {"title": "管理团队", "group": "公司概况", "section": "团队", "badge": "", "url": "cloudwise/management-team.html"},
+    {"title": "产品矩阵", "group": "产品体系", "section": "矩阵", "badge": "12 系列", "url": "cloudwise/product-matrix.html"},
+    {"title": "核心产品", "group": "产品体系", "section": "产品", "badge": "监控宝/透视宝/压测宝", "url": "cloudwise/core-products.html"},
+    {"title": "解决方案", "group": "产品体系", "section": "方案", "badge": "", "url": "cloudwise/solutions.html"},
+    {"title": "商业模式", "group": "经营分析", "section": "模式", "badge": "", "url": "cloudwise/business-model.html"},
+    {"title": "客户与市场", "group": "经营分析", "section": "市场", "badge": "TOP2000", "url": "cloudwise/customers-market.html"},
+    {"title": "竞争格局", "group": "经营分析", "section": "竞争", "badge": "", "url": "cloudwise/competitive-landscape.html"},
+    {"title": "合作伙伴", "group": "生态合作", "section": "生态", "badge": "", "url": "cloudwise/partners.html"},
+    {"title": "荣誉认证", "group": "生态合作", "section": "荣誉", "badge": "Gartner", "url": "cloudwise/awards.html"}
+  ],
+  "item_schema": {
+    "title": "条目名称（必填）",
+    "group": "所属类目（必填，对应顶部 Tab）",
+    "section": "子分类（可选，侧栏分组）",
+    "badge": "标记（可选，如熟练度/阶段）",
+    "url": "内容页路径（与 desc 二选一）"
+  }
+}

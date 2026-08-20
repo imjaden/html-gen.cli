@@ -1,0 +1,688 @@
+[
+  {
+    "title": "hermes-agent",
+    "group": "autonomous-ai-agents",
+    "section": "hermes, setup, confi",
+    "badge": "skill",
+    "desc": "<p>Configure, extend, or contribute to Hermes Agent.</p><p>标签: hermes, setup, configuration, multi-agent</p>"
+  },
+  {
+    "title": "hermes-memory-management",
+    "group": "autonomous-ai-agents",
+    "section": "hermes, memory, cli,",
+    "badge": "skill",
+    "desc": "<p>Hermes Agent 持久化记忆管理：跨会话记忆的读写、优化、维护。Memory 容量默认 2200 字符（可配置），支持 add/replace/remove 操作。</p><p>标签: hermes, memory, cli, productivity</p>"
+  },
+  {
+    "title": "hermes-session-management",
+    "group": "autonomous-ai-agents",
+    "section": "hermes, session, cli",
+    "badge": "skill",
+    "desc": "<p>Hermes Agent session 管理：新建、命名、恢复、列表、删除、导出、清理等操作的场景和命令速查。</p><p>标签: hermes, session, cli, productivity</p>"
+  },
+  {
+    "title": "hermes-skill-installation",
+    "group": "autonomous-ai-agents",
+    "section": "hermes, skills, inst",
+    "badge": "skill",
+    "desc": "<p>Install, configure, and invoke third-party skills in Hermes Agent. Covers hub install, symlink fallback, /reload-skills registration, and correct slash-command invocation syntax.</p><p>标签: hermes, skills, installation, configuration</p>"
+  },
+  {
+    "title": "opencode",
+    "group": "autonomous-ai-agents",
+    "section": "Coding-Agent, OpenCo",
+    "badge": "skill",
+    "desc": "<p>Delegate coding to OpenCode CLI (features, PR review).</p><p>标签: Coding-Agent, OpenCode, Autonomous, Refactoring</p>"
+  },
+  {
+    "title": "baoyu-image-generation",
+    "group": "creative",
+    "section": "image-generation, cr",
+    "badge": "skill",
+    "desc": "<p>>-</p><p>标签: image-generation, creative, article-illustration, comics</p>"
+  },
+  {
+    "title": "creative-ideation",
+    "group": "creative",
+    "section": "Creative, Ideation, ",
+    "badge": "skill",
+    "desc": "<p>Generate project ideas via creative constraints.</p><p>标签: Creative, Ideation, Projects, Brainstorming</p>"
+  },
+  {
+    "title": "data-display-html-patterns",
+    "group": "creative",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Classify HTML data displays into 3 types (data table / knowledge doc / tool cards) with a 3-layer architecture (style guide + layout + data). For building personal/internal tool UIs that share a unified design language and CLI generator.</p>"
+  },
+  {
+    "title": "html-template-system",
+    "group": "creative",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>3-layer reusable HTML template system for personal tool data display (list tables / knowledge docs / card navigation). Covers style-guide extraction, layout templates, CLI generator, and the workflow of generating demo files without touching originals.</p>"
+  },
+  {
+    "title": "html-ui-refinement",
+    "group": "creative",
+    "section": "html, css, ui, refin",
+    "badge": "skill",
+    "desc": "<p>Iterative UI refinement on existing HTML pages — CSS density optimization, interaction model changes, navigation restructuring, protocol compatibility fixes.</p><p>标签: html, css, ui, refinement</p>"
+  },
+  {
+    "title": "personal-showcase-html",
+    "group": "creative",
+    "section": "html, showcase, port",
+    "badge": "skill",
+    "desc": "<p>Create professional single-page HTML to showcase personal/professional achievements, honors, portfolios. Covers multi-source data extraction, corporate brand alignment, responsive dark-theme design, and iterative visual refinement.</p><p>标签: html, showcase, portfolio, honors</p>"
+  },
+  {
+    "title": "svg-dataflow-diagram",
+    "group": "creative",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Create inline SVG data flow / workflow / career path diagrams for dark-themed static sites. U-shaped arrows, counterclockwise loops, tree branches, horizontal pipelines. Use when user asks for flow diagrams, process diagrams, agent collaboration diagrams, or career path visualizations as SVG embedded in HTML.</p>"
+  },
+  {
+    "title": "llm-industry-dashboard",
+    "group": "data-science",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Build LLM industry intelligence dashboards: multi-dimension entity system (vendors/people/tools/models/hotspots), table-layout frontend with cross-tab linking, dual data pipeline (Selenium Agent Loop + Hermes MCP), data retention with sliding window. Use when the task involves monitoring dashboards, LLM industry tracking, or entity-based intelligence displays.</p>"
+  },
+  {
+    "title": "agent-loop-workflow",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>>-</p>"
+  },
+  {
+    "title": "api-interception-scraping",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>API 拦截式爬虫——通过 Selenium 注入 JS 拦截器捕获 SPA 的后端 API 响应，替代 DOM 点击式采集</p>"
+  },
+  {
+    "title": "cron-management",
+    "group": "devops",
+    "section": "hermes, cron, schedu",
+    "badge": "skill",
+    "desc": "<p>Hermes cron job lifecycle: create, migrate between profiles, troubleshoot failures, and manage cross-profile guards.</p><p>标签: hermes, cron, scheduler, profiles</p>"
+  },
+  {
+    "title": "cross-profile-workflow",
+    "group": "devops",
+    "section": "workflow, state-mach",
+    "badge": "skill",
+    "desc": "<p>Design and implement multi-profile Hermes agent workflows with file-based handoff, manifest-driven state machines, and cron orchestration.</p><p>标签: workflow, state-machine, cron, orchestration</p>"
+  },
+  {
+    "title": "daily-tracker",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>DailyTracker — 身体健康/习惯追踪工作流。三同步规则、dt CLI、碎片化输入、站点同步、HTML 指南。</p>"
+  },
+  {
+    "title": "domain-migration",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Domain migration and HTTPS troubleshooting: bulk URL replacement, GitHub Pages HSTS behavior, DNS/cert/redirect verification workflow</p>"
+  },
+  {
+    "title": "git-cloner",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>GitHub 项目克隆工具：12 个指令（clone/check/update/repair/diff/log/search/status/list/info/browser/help）、分支隔离分析、.miner/ 项目分析、自动更新检查、代理检测。Python 版本功能完整，Shell 版本为基础版。</p>"
+  },
+  {
+    "title": "git-commit",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Git 代码评审与 Commit 助理：扫描工作区变更，按 type@scope: subject 规范生成 commit 并执行。</p>"
+  },
+  {
+    "title": "hermes-manager",
+    "group": "devops",
+    "section": "hermes, config, migr",
+    "badge": "skill",
+    "desc": "<p>Hermes 配置管理工具：多台 MacBook 之间快速迁移、复用 Hermes Agent 配置。支持 backup/restore/status/skills/sessions/cron/logs/memory 指令。</p><p>标签: hermes, config, migration, backup</p>"
+  },
+  {
+    "title": "hermes-profile-ops",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Hermes profile health audit and maintenance — session cleanup, config validation, log analysis, storage management, and cross-profile model recommendation. Keep your Hermes profiles running clean.</p>"
+  },
+  {
+    "title": "kanban-workflow",
+    "group": "devops",
+    "section": "kanban, multi-agent,",
+    "badge": "skill",
+    "desc": "<p>>-</p><p>标签: kanban, multi-agent, orchestration, workflow</p>"
+  },
+  {
+    "title": "kuaishou-api-collect",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>快手点赞视频 API 拦截采集方案。通过 Selenium CDP 拦截 rest/v/feed/liked 响应，直接提取结构化数据（video_url/author_link/tags），无需 DOM 点击。</p>"
+  },
+  {
+    "title": "local-domain-dev",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Configure local domain names for development servers on macOS — hosts, dnsmasq, pf port forwarding, RFC 6761 reserved suffixes.</p>"
+  },
+  {
+    "title": "macos-system-diagnostics",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Diagnose macOS system issues — high CPU/memory, abnormal processes, kernel panics, startup items, launch agents, system proxy interference. Covers process profiling, stack trace reading, and post-reboot health checks.</p>"
+  },
+  {
+    "title": "ops-health",
+    "group": "devops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Profile session health monitoring — DB size / WAL / stale sessions / log errors / cron health. Daily quick-check + weekly deep audit.</p>"
+  },
+  {
+    "title": "platform-scraping-manager",
+    "group": "devops",
+    "section": "scraping, selenium, ",
+    "badge": "skill",
+    "desc": "<p>>-</p><p>标签: scraping, selenium, multi-platform, daemon</p>"
+  },
+  {
+    "title": "script-miner-conventions",
+    "group": "devops",
+    "section": "python, script-miner",
+    "badge": "skill",
+    "desc": "<p>script-miner 项目 Python 脚本开发规范：SKILL.md 头部模板、必需辅助工具方法、代码风格约定。当在 ~/CodeSpace/script-miner/ 下新建或重构 Python 脚本时使用。</p><p>标签: python, script-miner, template, conventions</p>"
+  },
+  {
+    "title": "selenium-scraping",
+    "group": "devops",
+    "section": "selenium, chrome, sc",
+    "badge": "skill",
+    "desc": "<p>Selenium 浏览器自动化抓取综合技能。涵盖 ChromeDriver 版本管理、浏览器初始化与反检测、CSS 选择器集中管理、环境诊断。从 llm-radar-collector 及 favorite-manager 等项目实战中提取。</p><p>标签: selenium, chrome, scraping, browser-automation</p>"
+  },
+  {
+    "title": "spec-review",
+    "group": "devops",
+    "section": "requirements, review",
+    "badge": "skill",
+    "desc": "<p>Structured requirements document review → decision capture → final specification consolidation. Use when user asks to review a .md spec, get closure on open items, and produce a locked spec.</p><p>标签: requirements, review, specification, consolidation</p>"
+  },
+  {
+    "title": "references",
+    "group": "dogfood",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "templates",
+    "group": "dogfood",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "github-workflow",
+    "group": "github",
+    "section": "github, pr, issues, ",
+    "badge": "skill",
+    "desc": "<p>>-</p><p>标签: github, pr, issues, code-review</p>"
+  },
+  {
+    "title": "mcp-server-building",
+    "group": "mcp",
+    "section": "MCP, Server, JSONRPC",
+    "badge": "skill",
+    "desc": "<p>Build MCP (Model Context Protocol) servers that Hermes Agent can connect to. Covers JSON-RPC 2.0 over stdio, tool registration, auth, error handling, and testing.</p><p>标签: MCP, Server, JSONRPC, Integration</p>"
+  },
+  {
+    "title": "local-media-library",
+    "group": "media",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Build and maintain a browsable local media library with Chinese metadata, scenario-based classification, per-movie directories, and a static HTML frontend</p>"
+  },
+  {
+    "title": "torrent-analysis",
+    "group": "media",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Analyze BitTorrent magnet links and .torrent files — parse bencode metadata, extract full file listings, compare with local downloads, generate organized reports with Japanese→Chinese filename translation.</p>"
+  },
+  {
+    "title": "video-subtitle-generation",
+    "group": "media",
+    "section": "subtitle, srt, whisp",
+    "badge": "skill",
+    "desc": "<p>从视频文件生成中文字幕：ffmpeg 提音轨 → Whisper 转写 → Google Translate 翻译 → SRT 输出。支持 AVI/MP4/MKV 等常见格式。</p><p>标签: subtitle, srt, whisper, translation</p>"
+  },
+  {
+    "title": "evaluation",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "inference",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "models",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "research",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "structured-llm-output",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Patterns for reliably extracting structured JSON from LLM responses — handling truncation, code-block wrapping, and incomplete output.</p>"
+  },
+  {
+    "title": "training",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "vector-databases",
+    "group": "mlops",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "references",
+    "group": "news-summary",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p></p>"
+  },
+  {
+    "title": "evernote",
+    "group": "note-taking",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>印象笔记（Evernote/Yinxiang）API 操作 — 笔记增删改查、笔记本管理、Token 管理、ENML 内容清理。</p>"
+  },
+  {
+    "title": "batch-content-analysis",
+    "group": "productivity",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>批量内容采集、分类、智能分析工作流。适用于大规模文章/内容的批量处理：分类→抓取→标签→分析→报告。支持断点续传、增量迭代、进度跟踪。触发条件：用户提供大量URL要求批量分析，或要求对已有收藏/书签进行分类整理和智能分析。</p>"
+  },
+  {
+    "title": "daily-tracker",
+    "group": "productivity",
+    "section": "daily-tracker, habit",
+    "badge": "skill",
+    "desc": "<p>个人日跟踪系统：Notion + Markdown + HTML 三同步 · 减重/运动/习惯跟踪</p><p>标签: daily-tracker, habit-tracking, weight-loss, notion</p>"
+  },
+  {
+    "title": "daily-tracker-workflow",
+    "group": "productivity",
+    "section": "daily-tracker, notio",
+    "badge": "skill",
+    "desc": "<p>Notion + Markdown + HTML 三同步日跟踪系统：数据录入、快照生成、Git 管理、HTML 布局规则</p><p>标签: daily-tracker, notion, habit-tracking, weight-loss</p>"
+  },
+  {
+    "title": "feishu-cli-format",
+    "group": "productivity",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>feishu-cli 文件命名规范：统一格式 v{主版本}.{次版本}-{日期}，小写 v，无 Agent 后缀约定</p>"
+  },
+  {
+    "title": "financial-ocr-cli",
+    "group": "productivity",
+    "section": "ocr, tesseract, fina",
+    "badge": "skill",
+    "desc": "<p>Build CLI tools that use tesseract OCR to extract structured financial data from app screenshots — persist as date-keyed JSON records, track positions over time, and provide analysis. Covers the full pipeline: tesseract setup, Chinese financial OCR parsing strategies, command dispatch patterns, and market research synthesis.</p><p>标签: ocr, tesseract, finance, cli-tool</p>"
+  },
+  {
+    "title": "github-profile-review",
+    "group": "productivity",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Review and maintain GitHub Profile README — structured evaluation, iterative optimization, multi-project sync via loop.md workflow.</p>"
+  },
+  {
+    "title": "jaden-tech-dashboard",
+    "group": "productivity",
+    "section": "dashboard, static-si",
+    "badge": "skill",
+    "desc": "<p>Build and maintain dark-themed data dashboard sites under *.jaden.tech domains: Vanilla JS + Tailwind CSS CDN, tab-table layout, JSON data from local or fetched sources, GitHub Pages deployment. Use when creating or updating any jaden.tech static dashboard project.</p><p>标签: dashboard, static-site, tailwind, vanilla-js</p>"
+  },
+  {
+    "title": "multi-source-report",
+    "group": "productivity",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>多源文档合并 + 交互式HTML报告生成。适用于将多份过程文档整合为一份完整版（Markdown + HTML），支持横向页签与纵向菜单布局。</p>"
+  },
+  {
+    "title": "notion-tracking-system",
+    "group": "productivity",
+    "section": "notion, tracking, qu",
+    "badge": "skill",
+    "desc": "<p>Design personal tracking / quantified-self databases in Notion using the dual-table pattern (MetricDef + DailyTracker), multi-type indicator evaluation (numeric/text/checkbox), fragmented input protocol, expert evaluation prompts, and cron-based data completeness checks.</p><p>标签: notion, tracking, quantified-self, database-design</p>"
+  },
+  {
+    "title": "resume-writing",
+    "group": "productivity",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>简历编写工作流 — 从项目档案/工作记录中提取素材，生成结构化简历（Markdown + HTML）。适用于基于多年工作经历重写简历、更新简历、补写项目经历等场景。</p>"
+  },
+  {
+    "title": "running-weather-advisor",
+    "group": "productivity",
+    "section": "weather, running, fi",
+    "badge": "skill",
+    "desc": "<p>实时查天气 + 推荐跑步时间段。输入位置，返回气温、降水、风速分析，推荐最佳跑步窗口（5km/30min）</p><p>标签: weather, running, fitness, daily</p>"
+  },
+  {
+    "title": "spec-iterative-refinement",
+    "group": "productivity",
+    "section": "writing, specificati",
+    "badge": "skill",
+    "desc": "<p>Iterative write-review-fix cycle for technical specifications, system prompts, PRDs, and data schema documents. Use when user asks to write a prompt.md, spec, PRD, or any structured technical document that needs multiple review rounds to converge.</p><p>标签: writing, specification, prompt-engineering, review</p>"
+  },
+  {
+    "title": "test-design-conventions",
+    "group": "productivity",
+    "section": "testing, openspec, p",
+    "badge": "skill",
+    "desc": "<p>测试用例设计规范：OpenSpec 编码体系、spec 场景 vs Python 测试边界判断、文件结构模板、夹具与断言约定。适用于设计/评审测试方案时。</p><p>标签: testing, openspec, pytest, conventions</p>"
+  },
+  {
+    "title": "web-project-audit-and-readme",
+    "group": "productivity",
+    "section": "documentation, audit",
+    "badge": "skill",
+    "desc": "<p>Analyze web project source code, identify optimization issues, and generate structured README.md following a reference template.</p><p>标签: documentation, audit, readme, web</p>"
+  },
+  {
+    "title": "llm-radar",
+    "group": "projects",
+    "section": "python, cli, data-pi",
+    "badge": "skill",
+    "desc": "<p>LLM Radar — Python collector + Vanilla JS frontend for LLM industry intelligence. Data pipeline (merge/dedup/decay/filter), security (MCP auth, CSP), test infrastructure.</p><p>标签: python, cli, data-pipeline, entity-merge</p>"
+  },
+  {
+    "title": "article-smart-reader",
+    "group": "research",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>文章智读 Skill — 在线文章智能分析与知识管理。触发条件：用户提供文章URL要求分析/智读/解读，或要求查询/搜索/管理已分析文章，或要求对本地文件做智读分析。</p>"
+  },
+  {
+    "title": "awesome-collector",
+    "group": "research",
+    "section": "research, technology",
+    "badge": "skill",
+    "desc": "<p>给定任意技术/工具，自动产出 Awesome-* 风格的最佳实践/最佳案例/最佳方案研究清单。多源搜索（GitHub/Twitter/Web/YouTube）、多维评分、自检交付。</p><p>标签: research, technology-ecosystem, github-research, awesome-list</p>"
+  },
+  {
+    "title": "comparative-matrix-analysis",
+    "group": "research",
+    "section": "analysis, research, ",
+    "badge": "skill",
+    "desc": "<p>Structured comparative analysis with matrix framework: define dimensions → multi-source research → data synthesis → markdown report + interactive HTML matrix</p><p>标签: analysis, research, matrix, html-report</p>"
+  },
+  {
+    "title": "last30days",
+    "group": "research",
+    "section": "research, llm, indus",
+    "badge": "skill",
+    "desc": "<p>Weekly LLM/AI industry intelligence scan: gather hot topics from the last 30 days, organize into 5-dimension entity data (providers/people/tools/llms/hotspots), and submit to structured storage. Canonical skill for the llm-radar cron job.</p><p>标签: research, llm, industry, intelligence</p>"
+  },
+  {
+    "title": "long-form-content-extraction",
+    "group": "research",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Extract full content from long-form, JS-heavy, or anti-bot web pages when standard tools (web_extract, browser) return truncated or empty results. Covers detection, fallback ladder, and platform-specific techniques (Substack, WeChat, etc.).</p>"
+  },
+  {
+    "title": "research-doc-publish",
+    "group": "research",
+    "section": "research, markdown, ",
+    "badge": "skill",
+    "desc": "<p>将结构化 Markdown 研究文档（中文内容）发布为带 TOC 侧边栏和阅读进度条的暗色主题 HTML 页面。</p><p>标签: research, markdown, html, document-publishing</p>"
+  },
+  {
+    "title": "video-library-research",
+    "group": "research",
+    "section": "research, av, jav, v",
+    "badge": "skill",
+    "desc": "<p>Use when researching actors, studios, film series, or industry trends for a local video library. Covers JAV,欧美,国产三大类目的人物/公司/作品资讯检索与知识整合以及文件命名规范。</p><p>标签: research, av, jav, video-library</p>"
+  },
+  {
+    "title": "web-research-synthesis",
+    "group": "research",
+    "section": "research, web, cross",
+    "badge": "skill",
+    "desc": "<p>获取网页内容 → 多来源交叉验证（HN / X / Reddit / 新闻）→ 结构化中文分析输出，区分事实与观点，附来源链接。</p><p>标签: research, web, cross-verify, synthesis</p>"
+  },
+  {
+    "title": "agent-loop-engineering",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Agent loop framework design: Think→Act→Observe→Verify closed loop. LLM-driven iteration, tool abstraction, quality verification, budget control, state persistence. For building custom AI Agent runtimes from scratch.</p>"
+  },
+  {
+    "title": "content-readme-audit",
+    "group": "software-development",
+    "section": "readme, audit, conte",
+    "badge": "skill",
+    "desc": "<p>对 README.md（GitHub Profile / 项目文档）做内容级审计：链接验证、数据交叉校验、一致性扫描、结构化严重性分级。</p><p>标签: readme, audit, content-review, profile</p>"
+  },
+  {
+    "title": "debugging-hermes-tui-commands",
+    "group": "software-development",
+    "section": "debugging, hermes-ag",
+    "badge": "skill",
+    "desc": "<p>Debug Hermes TUI slash commands: Python, gateway, Ink UI.</p><p>标签: debugging, hermes-agent, tui, slash-commands</p>"
+  },
+  {
+    "title": "frontend-review-workflow",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>前端代码设计评审工作流。用于使用 design-taste-frontend 等设计 skill 评审 HTML/CSS/React 页面时的标准输出格式。核心原则：不修改源码，给出代码修改前后对比说明。</p>"
+  },
+  {
+    "title": "html-gen-table",
+    "group": "software-development",
+    "section": "html-gen, data-table",
+    "badge": "skill",
+    "desc": "<p>Use when building interactive data table HTML pages with the html-gen CLI tool. Covers column config (string/number/actions), action buttons (copy/href/desc demo mode), tab filtering, CSV export, row selection, and troubleshooting.</p><p>标签: html-gen, data-table, json-to-html, template</p>"
+  },
+  {
+    "title": "local-media-browser",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Build HTML+JSON local media browsers with metadata, search/filter/sort, modal details, and protocol-aware playback</p>"
+  },
+  {
+    "title": "local-tool-launcher",
+    "group": "software-development",
+    "section": "html, launcher, scan",
+    "badge": "skill",
+    "desc": "<p>Build local tool/HTML launcher dashboards with dual-mode support: (A) file:// protocol with localStorage, zero server; (B) Python HTTP server with REST API + server-side user-data.json. Auto-detects mode at runtime. Use when building personal tool navigation pages, local file browsers, or launcher UIs for scattered HTML files.</p><p>标签: html, launcher, scanner, localStorage</p>"
+  },
+  {
+    "title": "loop-workflow",
+    "group": "software-development",
+    "section": "workflow, iteration,",
+    "badge": "skill",
+    "desc": "<p>Use when the user provides structured requirements in a loop.md file or asks to follow an iterative workflow. Implements read-confirm-test-commit cycle for each requirement.</p><p>标签: workflow, iteration, requirements, testing</p>"
+  },
+  {
+    "title": "openspec-generate",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>从现有源码生成 OpenSpec 规范的测试规格文件（spec.yaml）。分析代码功能、提取指令/能力、编写 Given/When/Then 场景。</p>"
+  },
+  {
+    "title": "pre-publish-audit",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>></p>"
+  },
+  {
+    "title": "profile-maintenance-loop",
+    "group": "software-development",
+    "section": "loop, implementation",
+    "badge": "skill",
+    "desc": "<p>Spec-driven implementation loop: read loop.md, create agent-todo.md, implement features, verify against source, git commit, final audit. Also supports GitHub Profile README maintenance via multi-project scan.</p><p>标签: loop, implementation, verification, audit</p>"
+  },
+  {
+    "title": "project-onboarding-docs",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Generate AGENTS.md (or similar project-level docs like CONTRIBUTING.md, README) by reading and synthesizing the project's source code, templates, data files, and git history. Use when the user asks to \"write AGENTS.md\", \"document this project for agents\", or \"understand the project and create onboarding docs\".</p>"
+  },
+  {
+    "title": "project-security-review",
+    "group": "software-development",
+    "section": "security, audit, rev",
+    "badge": "skill",
+    "desc": "<p>Full-project audit: security review or documentation structure review. Classify, score, log findings with tracking IDs. Not pre-commit — entire repo.</p><p>标签: security, audit, review, classification</p>"
+  },
+  {
+    "title": "project-spec-prompt-design",
+    "group": "software-development",
+    "section": "prompt-design, proje",
+    "badge": "skill",
+    "desc": "<p>设计项目开发 Prompt（README.md）的技术规范模板和一致性审查流程。适用于从零设计项目架构、编写可执行的开发蓝图。</p><p>标签: prompt-design, project-architecture, readme, spec</p>"
+  },
+  {
+    "title": "prompt-engineering-design",
+    "group": "software-development",
+    "section": "prompt-engineering, ",
+    "badge": "skill",
+    "desc": "<p>Design system prompts with executable instructions, structured data schemas, and scoring models for LLM-driven pipelines. Covers the full lifecycle: requirements → prompt architecture → schema design → scoring model → execution model → iterative review.</p><p>标签: prompt-engineering, system-prompt, schema-design, llm-pipeline</p>"
+  },
+  {
+    "title": "python-cli-patterns",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Reusable patterns for building Python CLI tools: daemon management (PID file + subprocess + start/stop/status/restart), port diagnostics, argparse subcommand design.</p>"
+  },
+  {
+    "title": "requesting-code-review",
+    "group": "software-development",
+    "section": "code-review, securit",
+    "badge": "skill",
+    "desc": "<p>Pre-commit review: security scan, quality gates, auto-fix.</p><p>标签: code-review, security, verification, quality</p>"
+  },
+  {
+    "title": "safeline-waf-lab",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>SafeLine (雷池) WAF 本地部署、攻击模拟、产品认知提升。适用于面试准备、产品测评、技术验证等场景。</p>"
+  },
+  {
+    "title": "security-audit",
+    "group": "software-development",
+    "section": "security, audit, cod",
+    "badge": "skill",
+    "desc": "<p>Full-project security audit: multi-repo scan, source code, deps, Git history, PII, architecture, and prioritised remediation.</p><p>标签: security, audit, code-review, pii</p>"
+  },
+  {
+    "title": "security-remediation",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Remediate hardcoded credentials and other security audit findings in Python projects. Covers the .env centralization pattern, .env.example templating, git history cleanup decisions, and audit tracking. Load when the user asks to fix security issues, remediate audit findings, or clean up credentials in git.</p>"
+  },
+  {
+    "title": "security-review-policy",
+    "group": "software-development",
+    "section": "code-review, securit",
+    "badge": "skill",
+    "desc": "<p>Review governance: L1/L2/L3 classification, scoring, report format, audit trail, and cross-profile workflow.</p><p>标签: code-review, security, governance, audit</p>"
+  },
+  {
+    "title": "static-site-portfolio",
+    "group": "software-development",
+    "section": "—",
+    "badge": "skill",
+    "desc": "<p>Static HTML portfolio/landing site development: dark theme, SVG data-flow diagrams, i18n language switch, WebP optimization, ARIA accessibility, GitHub Pages deployment.</p>"
+  },
+  {
+    "title": "static-site-refactoring",
+    "group": "software-development",
+    "section": "static-site, refacto",
+    "badge": "skill",
+    "desc": "<p>Analyze and refactor multi-page static websites: audit shared resources, consolidate inline scripts/styles, identify DRY violations, and implement site-wide features via common files.</p><p>标签: static-site, refactoring, html, javascript</p>"
+  },
+  {
+    "title": "structured-web-scraping",
+    "group": "software-development",
+    "section": "selenium, web-scrapi",
+    "badge": "skill",
+    "desc": "<p>Extract structured data from web pages using Selenium headless browser with per-source CSS selector configuration, retry with driver restart, and ChromeDriver version management.</p><p>标签: selenium, web-scraping, headless-browser, data-extraction</p>"
+  },
+  {
+    "title": "systematic-debugging",
+    "group": "software-development",
+    "section": "debugging, troublesh",
+    "badge": "skill",
+    "desc": "<p>4-phase root cause debugging: understand bugs before fixing.</p><p>标签: debugging, troubleshooting, problem-solving, root-cause</p>"
+  },
+  {
+    "title": "tool-nav-frontend",
+    "group": "software-development",
+    "section": "tool-nav, frontend, ",
+    "badge": "skill",
+    "desc": "<p>修改 tool-nav 单页应用前端：弹框、工具卡片、数据存储、可达性检测。当用户要求修改 ~/CodeSpace/script-miner/tool-nav/index.html 的 UI 功能时使用。</p><p>标签: tool-nav, frontend, html, single-page-app</p>"
+  },
+  {
+    "title": "writing-plans",
+    "group": "software-development",
+    "section": "planning, design, im",
+    "badge": "skill",
+    "desc": "<p>Write implementation plans: bite-sized tasks, paths, code.</p><p>标签: planning, design, implementation, workflow</p>"
+  }
+]

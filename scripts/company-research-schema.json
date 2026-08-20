@@ -2,28 +2,40 @@
   "schema_version": "1.0",
   "description": "公司调研报告 · 知识库模板",
   "usage": "修改此文件中的 company / groups / items，运行 python generate.py 即可生成完整的 C 型知识库",
-
   "company": {
     "name": "长亭科技",
-    "title_prefix": "长亭科技 · 商业分析知识库",
-    "subtitle": "以售前架构师视角看一家公司",
+    "title_prefix": "长亭科技 · 商业分析",
+    "subtitle": "售前视角",
     "welcome": "从上方类目选择，浏览公司概况、产品体系、经营分析与开源生态。"
   },
-
   "output": {
     "content_dir": "chaitin",
     "groups_file": "data/_chaitin-groups.json",
     "data_file": "data/_chaitin-kb-data.json",
     "html_file": "demos/chaitin-business-analysis-v1.0-20260707.html"
   },
-
   "groups": [
-    { "key": "公司概况", "label": "公司概况", "icon": "🏢" },
-    { "key": "产品体系", "label": "产品体系", "icon": "🧩" },
-    { "key": "经营分析", "label": "经营分析", "icon": "📊" },
-    { "key": "开源生态", "label": "开源生态", "icon": "🔧" }
+    {
+      "key": "公司概况",
+      "label": "公司概况",
+      "icon": "🏢"
+    },
+    {
+      "key": "产品体系",
+      "label": "产品体系",
+      "icon": "🧩"
+    },
+    {
+      "key": "经营分析",
+      "label": "经营分析",
+      "icon": "📊"
+    },
+    {
+      "key": "开源生态",
+      "label": "开源生态",
+      "icon": "🔧"
+    }
   ],
-
   "items": [
     {
       "title": "公司画像",
@@ -110,7 +122,6 @@
       "url": "chaitin/community-placeholder.html"
     }
   ],
-
   "item_schema": {
     "title": "菜单项名称（必填）",
     "group": "所属类目（对应 groups 的 key，必填）",
