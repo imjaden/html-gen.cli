@@ -93,6 +93,7 @@ WebDriverWait(self.driver, 5).until(
 3. **WebDriverWait 注入需补 import**：若原文件未 `from selenium.webdriver.common.by import By`，注入 WebDriverWait 时必须一并补 By/WebDriverWait/EC 三个 import，否则 `NameError`。
 4. **并行共享路径**：所有测试写 /tmp 须文件名唯一（不跨文件冲突），不得写 demos/ 或项目目录；xdist 下各 worker 独立进程。
 5. **幂等**：speedup_sleeps.py 用 `# [speedup]` 标记已改行，二次 --apply 不重复改。注意：被回退的文件（cp .bak 还原）无标记，--dry-run 会再次列出该文件——属预期，勿二次 --apply（否则重新引入 flaky）。
+6. **测试收集边界**（2026-08-19 实测核实）：pytest.ini `testpaths = tests` 已限定收集范围——根目录直接 `python -m pytest`（无参数）只收集 tests/ 的 141 用例，正常无崩溃；scripts/ 下辅助脚本（company-report.py 等）不被收集。约定：① 全量/定向统一显式 `pytest tests/`（意图明确）；② scripts/ 下脚本避免 `test_` 前缀命名（若移除 testpaths 或 `pytest scripts/` 会按文件名误收集）；③ 早前"scripts/test_profile.py 顶层 sys.exit(1) 导致 xdist 崩溃"的 pitfall 已不适用（该文件不存在、pytest.ini 为 `-n 4` 非 `-n auto`、testpaths 已防）。
 
 ## 验证清单
 
