@@ -1,6 +1,6 @@
 {
   "schema_version": 2,
-  "description": "云智慧（博云 CloudWise）商业分析知识库 schema",
+  "description": "云智慧（博云 CloudWise）商业分析知识库 schema — 对齐 chaitin 案例（section 聚合 + badge 分级）",
   "usage": "python scripts/company-report.py scripts/company-research-cloudwise-schema.json",
   "company": {
     "name": "云智慧",
@@ -21,24 +21,26 @@
     {"key": "生态合作", "label": "生态合作", "icon": "🔧"}
   ],
   "items": [
-    {"title": "公司画像", "group": "公司概况", "section": "画像", "badge": "核心", "url": "cloudwise/company-profile.html"},
-    {"title": "发展历程", "group": "公司概况", "section": "历程", "badge": "", "url": "cloudwise/company-history.html"},
-    {"title": "融资估值", "group": "公司概况", "section": "融资", "badge": "D3", "url": "cloudwise/funding-valuation.html"},
-    {"title": "管理团队", "group": "公司概况", "section": "团队", "badge": "", "url": "cloudwise/management-team.html"},
-    {"title": "产品矩阵", "group": "产品体系", "section": "矩阵", "badge": "12 系列", "url": "cloudwise/product-matrix.html"},
-    {"title": "核心产品", "group": "产品体系", "section": "产品", "badge": "监控宝/透视宝/压测宝", "url": "cloudwise/core-products.html"},
-    {"title": "解决方案", "group": "产品体系", "section": "方案", "badge": "", "url": "cloudwise/solutions.html"},
-    {"title": "商业模式", "group": "经营分析", "section": "模式", "badge": "", "url": "cloudwise/business-model.html"},
-    {"title": "客户与市场", "group": "经营分析", "section": "市场", "badge": "TOP2000", "url": "cloudwise/customers-market.html"},
-    {"title": "竞争格局", "group": "经营分析", "section": "竞争", "badge": "", "url": "cloudwise/competitive-landscape.html"},
-    {"title": "合作伙伴", "group": "生态合作", "section": "生态", "badge": "", "url": "cloudwise/partners.html"},
-    {"title": "荣誉认证", "group": "生态合作", "section": "荣誉", "badge": "Gartner", "url": "cloudwise/awards.html"}
+    {"title": "公司画像", "group": "公司概况", "section": "公司概况", "badge": "概览", "url": "cloudwise/company-profile.html"},
+    {"title": "发展历程", "group": "公司概况", "section": "公司概况", "badge": "深度", "url": "cloudwise/company-history.html"},
+    {"title": "融资估值", "group": "公司概况", "section": "公司概况", "badge": "数据", "url": "cloudwise/funding-valuation.html"},
+    {"title": "管理团队", "group": "公司概况", "section": "公司概况", "badge": "概览", "url": "cloudwise/management-team.html"},
+    {"title": "产品矩阵", "group": "产品体系", "section": "产品体系", "badge": "概览", "url": "cloudwise/product-matrix.html"},
+    {"title": "核心产品", "group": "产品体系", "section": "产品体系", "badge": "深度", "url": "cloudwise/core-products.html"},
+    {"title": "解决方案", "group": "产品体系", "section": "产品体系", "badge": "数据", "url": "cloudwise/solutions.html"},
+    {"title": "商业模式", "group": "经营分析", "section": "经营分析", "badge": "深度", "url": "cloudwise/business-model.html"},
+    {"title": "客户与市场", "group": "经营分析", "section": "经营分析", "badge": "数据", "url": "cloudwise/customers-market.html"},
+    {"title": "竞争格局", "group": "经营分析", "section": "经营分析", "badge": "对比", "url": "cloudwise/competitive-landscape.html"},
+    {"title": "发展前景", "group": "经营分析", "section": "经营分析", "badge": "深度", "url": "cloudwise/growth-outlook.html"},
+    {"title": "合作伙伴", "group": "生态合作", "section": "生态合作", "badge": "概览", "url": "cloudwise/partners.html"},
+    {"title": "荣誉认证", "group": "生态合作", "section": "生态合作", "badge": "概览", "url": "cloudwise/awards.html"},
+    {"title": "开源项目", "group": "生态合作", "section": "生态合作", "badge": "数据", "url": "cloudwise/open-source.html"}
   ],
   "item_schema": {
     "title": "条目名称（必填）",
     "group": "所属类目（必填，对应顶部 Tab）",
-    "section": "子分类（可选，侧栏分组）",
-    "badge": "标记（可选，如熟练度/阶段）",
+    "section": "子分类（聚合 section，同组条目共享）",
+    "badge": "标记（统一分级：概览/深度/数据/对比）",
     "url": "内容页路径（与 desc 二选一）"
   }
 }

@@ -12,7 +12,7 @@
     "content_dir": "chaitin",
     "groups_file": "data/_chaitin-groups.json",
     "data_file": "data/_chaitin-kb-data.json",
-    "html_file": "demos/chaitin-business-analysis-v1.0-20260707.html"
+    "html_file": "demos/chaitin-business-analysis.html"
   },
   "groups": [
     {
