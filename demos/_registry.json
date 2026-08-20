@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "count": 54,
+  "count": 56,
   "demos": [
     {
       "name": "business-model",
@@ -157,10 +157,10 @@
       "stale": false
     },
     {
-      "name": "chaitin-business-analysis-v1.0-20260707",
+      "name": "chaitin-business-analysis",
       "title": "长亭科技 · 商业分析",
       "type": "knowledge",
-      "entry": "chaitin-business-analysis-v1.0-20260707.html",
+      "entry": "chaitin-business-analysis.html",
       "featured": true,
       "referenced": false,
       "referenced_by": [],
@@ -263,10 +263,34 @@
       "stale": false
     },
     {
+      "name": "growth-outlook",
+      "title": "云智慧 · 发展前景",
+      "type": "doc",
+      "entry": "cloudwise/growth-outlook.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
       "name": "management-team",
       "title": "云智慧 · 管理团队",
       "type": "doc",
       "entry": "cloudwise/management-team.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_cloudwise-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "open-source",
+      "title": "云智慧 · 开源项目",
+      "type": "doc",
+      "entry": "cloudwise/open-source.html",
       "featured": false,
       "referenced": true,
       "referenced_by": [
