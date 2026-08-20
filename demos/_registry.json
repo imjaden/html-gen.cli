@@ -315,7 +315,7 @@
       "title": "云智慧 · 商业分析",
       "type": "knowledge",
       "entry": "cloudwise-business-analysis.html",
-      "featured": false,
+      "featured": true,
       "referenced": false,
       "referenced_by": [],
       "stale": false
