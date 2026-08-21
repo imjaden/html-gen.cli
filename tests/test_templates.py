@@ -297,7 +297,10 @@ class TestDocShowMd(unittest.TestCase):
         self._load()
         el = self.driver.find_element(By.ID, 'sidebarTitle')
         self.driver.execute_script("arguments[0].click();", el)
-        time.sleep(0.2)  # [speedup]
+        # 等 toast 出现并含"已复制"文本 (异步动画, 固定 sleep 会偶发 flaky)
+        WebDriverWait(self.driver, 5).until(
+            EC.text_to_be_present_in_element(
+                (By.ID, 'docToast'), '已复制: test-show-md.md'))
         toast = self.driver.execute_script(
             "var t = document.getElementById('docToast'); return t ? t.textContent : '';")
         self.assertIn('已复制: test-show-md.md', toast, f"应复制脱敏文件名, got: {toast}")
