@@ -44,6 +44,7 @@ TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符过滤) ✅ — layout-doc.h
 侧边栏 sticky 修复 (桌面 sticky, mobile fixed) ✅ — layout-doc.html
 Bare 模式 (默认隐藏侧边栏/工具栏, ?sidebar=1&toolbar=1 展示, 知识库嵌入降级) ✅ — layout-doc.html
 正文宽度三级 (?width=narrow|medium|wide, 默认 960px) ✅ — layout-doc.html
+md 源路径行 (?show-md=1 显示, 默认隐藏, basename 脱敏) ✅ — layout-doc.html
 侧边栏折叠/展开 (48px 收起态, `[` 快捷键) ✅ — layout-doc.html
 侧边栏按键分离 (`[` 折叠 / `]` 展开, 输入框豁免) ✅ — layout-doc.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-doc.html
@@ -252,7 +253,7 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | 数据文件 | 7 |
 | Demo 文件 | 40 (registry: 19 独立 + 21 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 141 (Selenium + CLI 回归) |
+| 测试用例 | 146 (Selenium + CLI 回归) |
 | CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
 | CLI 参数 | 15 |
 | localStorage keys | 17 |

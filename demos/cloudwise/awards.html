@@ -264,6 +264,9 @@ body.show-toolbar .top-toolbar { display: flex; }
 .doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
 .doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
 .doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+/* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
+.meta-path { display: none; }
+body.show-md .meta-path { display: inline; }
 .doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; }
 /* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
 body.width-narrow .doc-body { max-width: 720px; }
@@ -436,7 +439,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>云智慧 · 荣誉认证</h1>
-      <div class="meta">创建: 2026-08-20 18:36 · 编辑: 2026-08-20 18:36<br>字数: 68 · 阅读约 1 分钟</div>
+      <div class="meta">创建: 2026-08-20 18:36 · 编辑: 2026-08-20 18:36<br>字数: 68 · 阅读约 1 分钟<span class="meta-path"> · 路径: <code>awards.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="权威认可">权威认可</h2>
 <table><thead><tr>
@@ -493,6 +496,9 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   else if (w === 'wide') document.body.classList.add('width-wide');
   // medium 或未指定: 不加 class, 用默认 960px
 
+  // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──
+  if (params.get('show-md') === '1') document.body.classList.add('show-md');
+
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');
@@ -532,7 +538,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
     var metaEl = document.querySelector('.doc-header .meta');
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
     var target = m ? m[1].trim() : decodeURI(window.location.href);
-    if (/^(https?:|\/|~\/)/.test(target)) {
+    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
       try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
       showToast('已复制: ' + target);
     }

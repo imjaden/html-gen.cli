@@ -1,10 +1,18 @@
 """Tests for html-gen: doc, slide, table, knowledge templates."""
-import json, os, re, sys, unittest
+import json, os, re, sys, time, unittest
 from pathlib import Path
+
+from selenium import webdriver
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+from selenium.webdriver.chrome.service import Service
 
 PROJECT = Path(__file__).resolve().parent.parent
 DEMOS = PROJECT / 'demos'
 GEN = PROJECT / 'html-gen.py'
+CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 
 
 def run_gen(*args):
@@ -41,6 +49,29 @@ class TestDoc(unittest.TestCase):
             self.assertIn('doc-main', html)
             self.assertIn('doc-body', html)
             self.assertIn('doc-toc', html)
+
+    def test_doc_meta_has_path(self):
+        """meta 含 路径: 行, 且为脱敏文件名 (不含 /)."""
+        tmp_md = Path('/tmp/test-meta-path.md')
+        tmp_md.write_text('# 标题\n## S1\n内容')
+        out = Path('/tmp/test-meta-path.html')
+        run_gen('doc', '-i', str(tmp_md), '-o', str(out))
+        html = out.read_text()
+        self.assertIn('路径:', html)
+        m = re.search(r'路径:\s*<code>([^<]+)</code>', html)
+        self.assertIsNotNone(m, "meta 应含 路径: <code>文件名</code>")
+        if m:
+            self.assertEqual(m.group(1), 'test-meta-path.md')
+            self.assertNotIn('/', m.group(1), "路径应脱敏为纯文件名")
+        tmp_md.unlink(missing_ok=True)
+        out.unlink(missing_ok=True)
+
+    def test_doc_meta_path_hidden_by_default(self):
+        """默认 CSS 隐藏 .meta-path, ?show-md=1 才显示."""
+        tmpl = (PROJECT / 'layout-doc.html').read_text()
+        self.assertIn('.meta-path { display: none; }', tmpl)
+        self.assertIn('body.show-md .meta-path { display: inline; }', tmpl)
+        self.assertIn("params.get('show-md') === '1'", tmpl)
 
 
 class TestSlide(unittest.TestCase):
@@ -92,6 +123,23 @@ class TestSlide(unittest.TestCase):
         self.assertNotIn('mode-toggle', tmpl)
         self.assertNotIn('slide-main', tmpl)
         self.assertNotIn('slide-nav', tmpl)
+
+    def test_slide_meta_has_path(self):
+        """slide meta 同样含脱敏路径, 默认 CSS 隐藏 .meta-path."""
+        tmp_md = Path('/tmp/test-meta-slide.md')
+        tmp_md.write_text('# 标题\n## S1\n内容')
+        out = Path('/tmp/test-meta-slide.html')
+        run_gen('slide', '-i', str(tmp_md), '-o', str(out))
+        html = out.read_text()
+        self.assertIn('路径:', html)
+        m = re.search(r'路径:\s*<code>([^<]+)</code>', html)
+        self.assertIsNotNone(m, "slide meta 应含 路径: <code>文件名</code>")
+        if m:
+            self.assertEqual(m.group(1), 'test-meta-slide.md')
+        # slide 无 show-md 机制, 默认 CSS 隐藏
+        self.assertIn('.meta-path { display: none; }', html)
+        tmp_md.unlink(missing_ok=True)
+        out.unlink(missing_ok=True)
 
 
 class TestBackwardCompat(unittest.TestCase):
@@ -197,6 +245,64 @@ class TestDocSlideFrontmatter(unittest.TestCase):
             driver.quit()
             tmp_md.unlink(missing_ok=True)
             out.unlink(missing_ok=True)
+
+
+class TestDocShowMd(unittest.TestCase):
+    """Selenium: ?show-md=1 显隐 + 标题点击复制脱敏文件名."""
+
+    @classmethod
+    def setUpClass(cls):
+        cls.tmp_md = Path('/tmp/test-show-md.md')
+        cls.tmp_md.write_text('# ShowMD 测试\n## 章节\n正文内容。\n')
+        cls.out = Path('/tmp/test-show-md.html')
+        run_gen('doc', '-i', str(cls.tmp_md), '-o', str(cls.out))
+
+        opts = Options()
+        opts.add_argument('--headless')
+        opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-dev-shm-usage')
+        cls.driver = webdriver.Chrome(
+            service=Service(CHROMEDRIVER), options=opts)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()
+        cls.tmp_md.unlink(missing_ok=True)
+        cls.out.unlink(missing_ok=True)
+
+    def _load(self, query=''):
+        self.driver.get('file://' + str(self.out) + query)
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
+        self.driver.execute_script(
+            "window.__testErrors = [];"
+            "window.onerror = function(m) { window.__testErrors.push(String(m)); };")
+
+    def _errors(self):
+        return self.driver.execute_script("return window.__testErrors;")
+
+    def _meta_path_display(self):
+        return self.driver.execute_script(
+            "var el = document.querySelector('.doc-header .meta .meta-path');"
+            "return el ? getComputedStyle(el).display : 'missing';")
+
+    def test_doc_show_md_param(self):
+        """?show-md=1 → .meta-path display:inline, 0 JS errors."""
+        self._load('?show-md=1')
+        self.assertEqual(self._meta_path_display(), 'inline', "show-md=1 应显示路径行")
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
+
+    def test_doc_title_click_copy_path(self):
+        """点击侧边栏标题 → toast 复制内容 = 脱敏文件名 (非 URL)."""
+        self._load()
+        el = self.driver.find_element(By.ID, 'sidebarTitle')
+        self.driver.execute_script("arguments[0].click();", el)
+        time.sleep(0.2)  # [speedup]
+        toast = self.driver.execute_script(
+            "var t = document.getElementById('docToast'); return t ? t.textContent : '';")
+        self.assertIn('已复制: test-show-md.md', toast, f"应复制脱敏文件名, got: {toast}")
+        self.assertNotIn('file://', toast, "不应复制完整 URL")
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
 
 if __name__ == '__main__':

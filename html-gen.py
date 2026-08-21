@@ -246,8 +246,10 @@ def cmd_doc(args):
     rt = max(1, round(wc / 200))
     ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
     et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+    md_name = os.path.basename(str(md))
     meta = (f"创建: {ct} · 编辑: {et}<br>"
-            f"字数: {wc:,} · 阅读约 {rt} 分钟")
+            f"字数: {wc:,} · 阅读约 {rt} 分钟"
+            f"<span class=\"meta-path\"> · 路径: <code>{md_name}</code></span>")
 
     # External link archive at document bottom
     ext_links = sorted(set(re.findall(r'href="(https?://[^"]+)"', content)))
@@ -305,8 +307,10 @@ def cmd_slide(args):
     rt = max(1, round(wc / 200))
     ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
     et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+    md_name = os.path.basename(str(md))
     meta = (f"创建: {ct} · 编辑: {et}<br>"
-            f"字数: {wc:,} · 阅读约 {rt} 分钟")
+            f"字数: {wc:,} · 阅读约 {rt} 分钟"
+            f"<span class=\"meta-path\"> · 路径: <code>{md_name}</code></span>")
 
     # External link archive
     ext_links = sorted(set(re.findall(r'href="(https?://[^\"]+)"', content)))
