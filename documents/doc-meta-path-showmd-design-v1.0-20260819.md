@@ -91,7 +91,7 @@ if (params.get('show-md') === '1') document.body.classList.add('show-md');
 
 ## 测试
 
-### 回归测试（tests/test_templates.py 或 test_doc_md_path.py）
+### 回归测试（并入 tests/test_templates.py）
 
 - test_doc_meta_has_path: 生成 doc 的 meta 含 `路径:` 且为文件名（不含 `/`）
 - test_doc_meta_path_hidden_by_default: meta-path span 存在但默认 CSS display:none（无 show-md 时）
@@ -121,7 +121,9 @@ if (params.get('show-md') === '1') document.body.classList.add('show-md');
 - 标题点击复制行为变化：从复制 URL fallback 变为复制脱敏文件名——需确认符合预期（用户已知悉，合理）
 - 与知识库嵌入联动：layout-knowledge 的 iframe 不自动追加 show-md（默认隐私），用户手动 ?show-md=1 才显示
 
-## 待确认
+## 待确认（已确认）
 
-- slide 是否需要 show-md 运行时显隐（当前建议：生成端统一输出，slide 不做运行时控制）
-- 测试文件命名：并入 test_templates.py vs 新建 test_doc_md_path.py
+| 项 | 确认 |
+|:--|:--|
+| slide show-md 运行时显隐 | 不需要（slide 无 URL 解析机制，生成端统一输出路径行 + 默认隐藏即可） |
+| 测试文件命名 | 并入 tests/test_templates.py（不新建独立文件） |
