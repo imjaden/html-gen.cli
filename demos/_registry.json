@@ -168,7 +168,7 @@
     },
     {
       "name": "awards",
-      "title": "云智慧 · 荣誉认证",
+      "title": "荣誉认证",
       "type": "doc",
       "entry": "cloudwise/awards.html",
       "featured": false,
@@ -180,7 +180,7 @@
     },
     {
       "name": "business-model",
-      "title": "云智慧 · 商业模式",
+      "title": "商业模式",
       "type": "doc",
       "entry": "cloudwise/business-model.html",
       "featured": false,
@@ -192,7 +192,7 @@
     },
     {
       "name": "company-history",
-      "title": "云智慧 · 发展历程",
+      "title": "发展历程",
       "type": "doc",
       "entry": "cloudwise/company-history.html",
       "featured": false,
@@ -204,7 +204,7 @@
     },
     {
       "name": "company-profile",
-      "title": "云智慧 · 公司画像",
+      "title": "公司画像",
       "type": "doc",
       "entry": "cloudwise/company-profile.html",
       "featured": false,
@@ -216,7 +216,7 @@
     },
     {
       "name": "competitive-landscape",
-      "title": "云智慧 · 竞争格局",
+      "title": "竞争格局",
       "type": "doc",
       "entry": "cloudwise/competitive-landscape.html",
       "featured": false,
@@ -228,7 +228,7 @@
     },
     {
       "name": "core-products",
-      "title": "云智慧 · 核心产品",
+      "title": "核心产品",
       "type": "doc",
       "entry": "cloudwise/core-products.html",
       "featured": false,
@@ -240,7 +240,7 @@
     },
     {
       "name": "customers-market",
-      "title": "云智慧 · 客户与市场",
+      "title": "客户与市场",
       "type": "doc",
       "entry": "cloudwise/customers-market.html",
       "featured": false,
@@ -252,7 +252,7 @@
     },
     {
       "name": "funding-valuation",
-      "title": "云智慧 · 融资估值",
+      "title": "融资估值",
       "type": "doc",
       "entry": "cloudwise/funding-valuation.html",
       "featured": false,
@@ -264,7 +264,7 @@
     },
     {
       "name": "growth-outlook",
-      "title": "云智慧 · 发展前景",
+      "title": "发展前景",
       "type": "doc",
       "entry": "cloudwise/growth-outlook.html",
       "featured": false,
@@ -276,7 +276,7 @@
     },
     {
       "name": "management-team",
-      "title": "云智慧 · 管理团队",
+      "title": "管理团队",
       "type": "doc",
       "entry": "cloudwise/management-team.html",
       "featured": false,
@@ -288,7 +288,7 @@
     },
     {
       "name": "open-source",
-      "title": "云智慧 · 开源项目",
+      "title": "开源项目",
       "type": "doc",
       "entry": "cloudwise/open-source.html",
       "featured": false,
@@ -300,7 +300,7 @@
     },
     {
       "name": "partners",
-      "title": "云智慧 · 合作伙伴",
+      "title": "合作伙伴",
       "type": "doc",
       "entry": "cloudwise/partners.html",
       "featured": false,
@@ -312,7 +312,7 @@
     },
     {
       "name": "product-matrix",
-      "title": "云智慧 · 产品矩阵",
+      "title": "产品矩阵",
       "type": "doc",
       "entry": "cloudwise/product-matrix.html",
       "featured": false,
@@ -324,7 +324,7 @@
     },
     {
       "name": "solutions",
-      "title": "云智慧 · 解决方案",
+      "title": "解决方案",
       "type": "doc",
       "entry": "cloudwise/solutions.html",
       "featured": false,

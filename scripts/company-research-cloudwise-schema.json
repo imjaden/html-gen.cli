@@ -15,26 +15,166 @@
     "html_file": "demos/cloudwise-business-analysis.html"
   },
   "groups": [
-    {"key": "公司概况", "label": "公司概况", "icon": "🏢"},
-    {"key": "产品体系", "label": "产品体系", "icon": "🧩"},
-    {"key": "经营分析", "label": "经营分析", "icon": "📊"},
-    {"key": "生态合作", "label": "生态合作", "icon": "🔧"}
+    {
+      "key": "公司概况",
+      "label": "公司概况",
+      "icon": "🏢"
+    },
+    {
+      "key": "产品体系",
+      "label": "产品体系",
+      "icon": "🧩"
+    },
+    {
+      "key": "经营分析",
+      "label": "经营分析",
+      "icon": "📊"
+    },
+    {
+      "key": "生态合作",
+      "label": "生态合作",
+      "icon": "🔧"
+    }
   ],
   "items": [
-    {"title": "公司画像", "group": "公司概况", "section": "公司概况", "badge": "概览", "url": "cloudwise/company-profile.html"},
-    {"title": "发展历程", "group": "公司概况", "section": "公司概况", "badge": "深度", "url": "cloudwise/company-history.html"},
-    {"title": "融资估值", "group": "公司概况", "section": "公司概况", "badge": "数据", "url": "cloudwise/funding-valuation.html"},
-    {"title": "管理团队", "group": "公司概况", "section": "公司概况", "badge": "概览", "url": "cloudwise/management-team.html"},
-    {"title": "产品矩阵", "group": "产品体系", "section": "产品体系", "badge": "概览", "url": "cloudwise/product-matrix.html"},
-    {"title": "核心产品", "group": "产品体系", "section": "产品体系", "badge": "深度", "url": "cloudwise/core-products.html"},
-    {"title": "解决方案", "group": "产品体系", "section": "产品体系", "badge": "数据", "url": "cloudwise/solutions.html"},
-    {"title": "商业模式", "group": "经营分析", "section": "经营分析", "badge": "深度", "url": "cloudwise/business-model.html"},
-    {"title": "客户与市场", "group": "经营分析", "section": "经营分析", "badge": "数据", "url": "cloudwise/customers-market.html"},
-    {"title": "竞争格局", "group": "经营分析", "section": "经营分析", "badge": "对比", "url": "cloudwise/competitive-landscape.html"},
-    {"title": "发展前景", "group": "经营分析", "section": "经营分析", "badge": "深度", "url": "cloudwise/growth-outlook.html"},
-    {"title": "合作伙伴", "group": "生态合作", "section": "生态合作", "badge": "概览", "url": "cloudwise/partners.html"},
-    {"title": "荣誉认证", "group": "生态合作", "section": "生态合作", "badge": "概览", "url": "cloudwise/awards.html"},
-    {"title": "开源项目", "group": "生态合作", "section": "生态合作", "badge": "数据", "url": "cloudwise/open-source.html"}
+    {
+      "title": "公司画像",
+      "group": "公司概况",
+      "section": "公司概况",
+      "badge": "概览",
+      "url": "cloudwise/company-profile.html",
+      "content": "## 一句话定位\n\n云智慧（博云 CloudWise）是中国领先的**智能运维（AIOps）全栈解决方案**提供商，以「监控宝」网站监控 SaaS 起家，逐步扩展到 APM、压测、事件管理、基础设施监控等 12 大智能运维产品系列，率先发布商用运维大语言模型 CloudwiseGPT，智能运维平台已升级至 6.0 版本。\n\n## 基本信息\n\n- **公司全称**：云智慧（北京）科技有限公司\n- **成立时间**：2009 年 6 月（北京市）\n- **企业类型**：有限责任公司（外商投资企业法人独资，2026-06 股权重组后由北京云智互动信息技术有限公司 100% 持股）\n- **统一社会信用代码**：91110108690011590J\n- **官网**：[cloudwise.com](https://www.cloudwise.com/) · AI 主题站 [cloudwise.ai](https://cloudwise.ai/)\n- **定位**：以售前架构师视角看一家公司——从工具到平台到 AIOps\n\n## 核心标签\n\n| 标签 | 说明 |\n|:---|:---|\n| 赛道 | 智能运维 AIOps / 应用性能管理 APM |\n| 里程碑 | 2025 入选独角兽企业；连续 3 年入选 Gartner AIOps 研究报告 |\n| 规模 | 12 大产品系列 · 80+ 专利 · TOP2000 客户 |\n| 业务覆盖 | ITOM / ITOA / ITSM / DevOps / IoT |\n| 产学研 | 与清华大学共建「智能运维研究中心」 |",
+      "metrics": [
+        {
+          "label": "成立年份",
+          "value": "2009"
+        },
+        {
+          "label": "客户规模",
+          "value": "TOP2000（金融/能源/航空/运营商/政企）"
+        },
+        {
+          "label": "产品系列",
+          "value": "12 大智能运维产品"
+        },
+        {
+          "label": "专利数量",
+          "value": "80+"
+        },
+        {
+          "label": "融资规模",
+          "value": "累计超 1.3 亿美元（D3 轮 6000 万美元）"
+        },
+        {
+          "label": "企业标签",
+          "value": "2025 独角兽 · Gartner AIOps 连续 3 年"
+        }
+      ]
+    },
+    {
+      "title": "发展历程",
+      "group": "公司概况",
+      "section": "公司概况",
+      "badge": "深度",
+      "url": "cloudwise/company-history.html",
+      "content": "## 关键节点\n\n| 年份 | 事件 |\n|:---|:---|\n| 2009 | 公司成立，云智慧（北京）科技有限公司 |\n| 2010 | 监控宝问世（IT 性能监控工具）；获戈壁 A 轮数百万美元 |\n| 2014 | 透视宝上线（端到端 APM）；红杉领投 1500 万美元 B 轮 |\n| 2015 | 建成大规模主动监测网络；红杉领投 1230 万美元 B+ 轮 |\n| 2016 | 业务运维平台发布；压测宝上线（分布式压测）；C 轮 2600 万美元；入选微软加速器北京 |\n| 2018 | 可信云认证；Gartner AIOps Sample Vendor；D 轮 2500 万美元 |\n| 2019 | 全栈智能化 IT 解决方案发布 |\n| 2020 | D+ 轮 2400 万美元；D3 轮 6000 万美元（AIOps 延伸到 ITSM） |\n| 2022+ | E 轮；专精特新 / 瞪羚企业 |"
+    },
+    {
+      "title": "融资估值",
+      "group": "公司概况",
+      "section": "公司概况",
+      "badge": "数据",
+      "url": "cloudwise/funding-valuation.html",
+      "content": "## 融资历史（累计超 1.3 亿美元）\n\n| 轮次 | 时间 | 金额 | 领投 |\n|:---|:---|:---|:---|\n| A | 2010 | 数百万美元 | 戈壁创投 |\n| B | 2014 | 1500 万美元 | 红杉中国 |\n| B+ | 2015 | 1230 万美元 | 红杉中国 |\n| C | 2016 | 2600 万美元 | — |\n| D | 2019 | 2500 万美元 | 华山资本 |\n| D+ | 2020-03 | 2400 万美元 | — |\n| D3 | 2020-12 | 6000 万美元 | — |\n| E | 2022 起 | — | — |\n\n## 资本信号\n\n- 连续大额融资验证 AIOps 赛道景气度\n- 2020 年业务和团队增长约 80%，营收连续 3 年增长超 100%\n- 企业资质：专精特新 / 瞪羚企业 / 高新技术企业\n- **股权结构（2026-06 重组）**：北京云智互动信息技术有限公司 100% 持股（外商投资企业法人独资）；原殷晋直接持股 92.45% 已调整至云智互动控股\n- **2025 入选独角兽企业**（估值里程碑）"
+    },
+    {
+      "title": "管理团队",
+      "group": "公司概况",
+      "section": "公司概况",
+      "badge": "概览",
+      "url": "cloudwise/management-team.html",
+      "content": "## CEO / 董事长 殷晋\n\n- 监控宝联合创始人、董事长（受益所有人）\n- 清华大学毕业，超过 10 年资深管理经验\n- 长期关注 SaaS、云计算、应用性能管理（APM）领域\n- 曾在 Compuware-Gomez、Everbridge 从事产品研发与技术管理工作\n\n## 法定代表人 夏婧雯\n\n- 法定代表人、经理、董事（关联企业 30）\n- 负责公司经营与对外事务\n\n## 董事会与高管（企查查）\n\n| 姓名 | 职务 |\n|:---|:---|\n| 殷晋 | 董事长 |\n| 夏婧雯 | 经理 / 董事 / 法定代表人 |\n| 马红 | 董事 |\n| 张克琛 | 监事 |\n| 曾佩霞 | 财务负责人 |\n\n## 组织特点\n\n- 技术出身创始团队（监控/APM 产品基因）\n- 产学研结合：与清华大学软件学院共建「智能运维研究中心」"
+    },
+    {
+      "title": "产品矩阵",
+      "group": "产品体系",
+      "section": "产品体系",
+      "badge": "概览",
+      "url": "cloudwise/product-matrix.html",
+      "content": "## 12 大智能运维产品系列\n\n| 类别 | 产品 | 说明 |\n|:---|:---|:---|\n| 监控 | 监控宝 | 网站/IT 性能监控 SaaS（起家产品） |\n| 监控 | 透视宝 | 端到端 APM 应用性能管理 |\n| 监控 | 压测宝 | 分布式云端压力测试 |\n| 监控 | DOIM | 新一代数字化基础设施监控（监/管/控一体） |\n| 监控 | DOMC | 数字化运维监控中心 |\n| 管理 | CMDB | 业务驱动的新一代配置管理数据库 |\n| 管理 | DOEM | 数字化运维事件管理（告警接入/处置/分析） |\n| 管理 | DOSM | 数字化运营服务管理 |\n| 智能 | DOIA | 智能分析平台（根因分析/异常检测） |\n| 智能 | DOMM | 数字化运维指标体系 |\n| 自动化 | Automation | 运维自动化作业（脚本/分发/编排） |\n| 数据 | DODB | 数字化运维数据库 |\n\n## 技术底座\n\n- 80+ 专利技术，大数据 + 机器学习算法\n- 动态基线预测、智能异常检测、根因分析、智能告警合并"
+    },
+    {
+      "title": "核心产品",
+      "group": "产品体系",
+      "section": "产品体系",
+      "badge": "深度",
+      "url": "cloudwise/core-products.html",
+      "content": "## 监控宝（SaaS 监控）\n\n- 网站可用率 / 响应时间 / 服务性能 / 服务器 / API 监控\n- 18 万+ 企业用户；中立第三方监控\n- 移动端 App 实时推送告警\n- 官网：[jiankongbao.com](https://www.jiankongbao.com/)\n\n## 透视宝（APM）\n\n- 面向业务的一体化应用性能管理平台\n- 端到端追踪：移动 / 浏览器 / Web 应用 / 主机\n- 四模块：应用（Server）、移动（Mobile）、浏览器（Browser）、主机（Host）\n- 支持私有化部署（on-premises），物理层隔离\n- 官网：[toushibao.com](https://www.toushibao.com/)\n\n## 压测宝（压测）\n\n- 分布式云端压力测试，覆盖容量规划与性能预测\n- 官网：[yacebao.com](http://www.yacebao.com/)\n\n## 相关链接\n\n- 官网：[cloudwise.com](https://www.cloudwise.com/)\n- AI 主题站：[cloudwise.ai](https://cloudwise.ai/)"
+    },
+    {
+      "title": "解决方案",
+      "group": "产品体系",
+      "section": "产品体系",
+      "badge": "数据",
+      "url": "cloudwise/solutions.html",
+      "content": "## 通用解决方案\n\n| 方案 | 说明 |\n|:---|:---|\n| 一体化运维监控 | 统一监控 + 运维数据平台化 + 可视化 + 智能告警 |\n| AIOps 智能运维 | 智能容量规划 / 异常检测 / 根因分析 |\n| 业务运维 | 业务流程健康评估 / 业务运营分析 / 监控可视化 |\n| 统一运维服务管理 | 服务台 / 流程化服务管理 |\n\n## 场景化解决方案\n\n- IT 分层监控（基础/应用/业务）\n- 指标管理体系建设 · 运维数据治理\n- 问题发现与处理（DOEM 事件闭环）\n- 业务与 IT 集中管控 · 服务管理体系建设 · 运维自动化 · 配置管理\n\n## 客户价值（DOEM 实测数据）\n\n- 人均每天接收消息数量降低 86%\n- 告警抑制率 90%+；MTTA 25 分 23 秒 → 4 分 16 秒\n- MTTR 78 分 39 秒 → 27 分 52 秒；错报率降至 8.5%，漏报率降至 3.8%"
+    },
+    {
+      "title": "商业模式",
+      "group": "经营分析",
+      "section": "经营分析",
+      "badge": "深度",
+      "url": "cloudwise/business-model.html",
+      "content": "## 模式演进：工具 → 平台 → AIOps\n\n1. **工具时代（2009-2014）**：监控宝 SaaS 订阅（中小企业网站监控）\n2. **平台时代（2014-2016）**：透视宝 APM 企业级订阅 + 私有化\n3. **AIOps 时代（2016 至今）**：全栈智能运维解决方案（平台 + 咨询 + 服务）\n\n## 收入结构特征\n\n- SaaS 订阅 + 私有化部署双模式（大客户私有化，SMB SaaS）\n- 行业纵深：金融、能源、航空、运营商等高客单价行业\n- 2020 年营收连续 3 年增长超 100%，业务与团队增长约 80%\n\n## 商业化路径\n\n- 从单一监控工具切入 → 绑定大客户 → 扩展为全栈平台\n- 与云计算厂商生态合作（渠道/集成）"
+    },
+    {
+      "title": "客户与市场",
+      "group": "经营分析",
+      "section": "经营分析",
+      "badge": "数据",
+      "url": "cloudwise/customers-market.html",
+      "content": "## 客户覆盖（TOP2000）\n\n| 行业 | 典型客户 |\n|:---|:---|\n| 银行/保险/证券 | 中信集团等金融客户 |\n| 能源/航空 | 能源央企、航空公司 |\n| 地产/运营商/物流 | 地产集团、电信运营商、物流企业 |\n| 政企 | 政府与大型企业 |\n| 海外 | CHANEL、NISSAN、CITIC、SONY、L'OREAL、HTC、SAP、Suntory 等 |\n\n## 市场数据\n\n- 18 万+ 企业用户（监控宝）\n- TOP2000 全栈智能运维客户\n- 专精特新 / 瞪羚企业（政策认可）"
+    },
+    {
+      "title": "竞争格局",
+      "group": "经营分析",
+      "section": "经营分析",
+      "badge": "对比",
+      "url": "cloudwise/competitive-landscape.html",
+      "content": "## AIOps 赛道玩家\n\n| 厂商 | 定位 |\n|:---|:---|\n| 云智慧（博云） | 全栈智能运维（监控/APM/压测/事件/AIOps） |\n| 听云 | 应用性能监控（APM） |\n| 博睿数据 | 应用性能管理 + 智能运维 |\n| 基调网络 | 网站/移动性能监测 |\n\n## 云智慧的差异化\n\n1. **产品广度**：12 大产品系列覆盖监控→管理→智能全链路（对比 APM 单点厂商）\n2. **Gartner 认可**：连续 3 年入选 Gartner AIOps 研究报告（中国区代表）\n3. **产学研**：清华大学智能运维研究中心\n4. **先发**：2009 年起步的国内最早监控 SaaS 之一\n\n## 风险\n\n- 赛道竞争激烈（APM 厂商 + 云厂商自带监控 + 开源 Prometheus 生态）\n- 大客户定制化成本高"
+    },
+    {
+      "title": "发展前景",
+      "group": "经营分析",
+      "section": "经营分析",
+      "badge": "深度",
+      "url": "cloudwise/growth-outlook.html",
+      "content": "## 赛道空间\n\n- **AIOps 市场**：企业 IT 运维从人工/脚本走向智能化，AIOps 成为数字化转型标配；Gartner 连续多年将 AIOps 列为中国区重点方向\n- **信创/国产化**：云智慧作为国内最早的一体化智能运维厂商，在信创大潮下受益（替代海外 APM/监控工具）\n- **云原生与容器化**：微服务/容器/Serverless 普及带来更深的应用性能管理需求（可观测性）\n- **AI 重塑运维**：大语言模型落地运维场景——云智慧率先发布商用运维大语言模型 **CloudwiseGPT**，平台升级 6.0\n\n## 云智慧的卡位\n\n1. **全栈产品广度**：监控→管理→智能 AIOps 全链路（对比单点 APM 厂商）\n2. **行业纵深**：金融/能源/航空/运营商 TOP2000 客户，营收连续 3 年增长超 100%\n3. **Gartner 背书**：连续 3 年入选 Gartner AIOps 研究报告\n4. **资本弹药**：D3 轮 6000 万美元后持续投入产品与市场\n\n## 增长逻辑\n\n| 驱动 | 说明 |\n|:---|:---|\n| 存量客户扩容 | 从监控工具升级为全栈平台（客单价提升） |\n| 行业复制 | 金融/政企标杆 → 同行业复制 |\n| 智能化溢价 | AIOps 模块（CloudwiseGPT/根因分析/容量预测）高附加值 |\n| 信创替代 | 国产化替代窗口期 |\n| 第二曲线 | 人形机器人（2026-08 投资合肥鼎云科盛 45%，与中鼎股份等合资，已具备规模化量产能力） |\n\n## 风险与挑战\n\n- 竞争激烈：APM 厂商（听云/博睿）+ 云厂商自带监控 + 开源 Prometheus 生态\n- 大客户定制化成本高，交付效率是关键\n- AIOps 概念兑现度需持续验证\n- 增值电信业务调整（申请终止北京地区经营，许可证注销公示中）需关注对 SaaS 业务的影响"
+    },
+    {
+      "title": "合作伙伴",
+      "group": "生态合作",
+      "section": "生态合作",
+      "badge": "概览",
+      "url": "cloudwise/partners.html",
+      "content": "## 生态合作\n\n- **云计算厂商**：与主流云厂商生态合作（渠道/集成/联合方案）\n- **微软加速器**：2016 年入选微软加速器北京\n- **产学研**：清华大学软件学院智能运维研究中心\n\n## 客户伙伴\n\n- 金融、能源、航空、运营商等 TOP2000 标杆客户\n- 海外客户：CHANEL、NISSAN、CITIC、SONY 等"
+    },
+    {
+      "title": "荣誉认证",
+      "group": "生态合作",
+      "section": "生态合作",
+      "badge": "概览",
+      "url": "cloudwise/awards.html",
+      "content": "## 权威认可\n\n| 荣誉 | 年份 |\n|:---|:---|\n| 入选独角兽企业 | 2025 |\n| 国家级金融科技发展奖 | 2024 |\n| 省级知识产权试点单位 | 2024 |\n| Gartner AIOps Sample Vendor | 2018 |\n| 入选 Gartner 中国 AIOps 市场指南 | 2020 |\n| 连续 3 年入选 Gartner AIOps 研究报告 | 2018-2020 |\n| 可信云认证 | 2018 |\n| 微软加速器北京 | 2016 |\n| 高新技术企业 | — |\n\n## 专利与技术\n\n- 80+ 项专利技术\n- 与清华大学共建智能运维研究中心\n- 率先发布商用运维大语言模型 CloudwiseGPT"
+    },
+    {
+      "title": "开源项目",
+      "group": "生态合作",
+      "section": "生态合作",
+      "badge": "数据",
+      "url": "cloudwise/open-source.html",
+      "content": "## GitHub 组织\n\n- **CloudWise-OpenSource**：[github.com/orgs/CloudWise-OpenSource](https://github.com/orgs/CloudWise-OpenSource/repositories)\n- 云智慧开源运维工具集：监控、巡检、故障诊断等场景的工程化组件\n- 通过开源建立技术影响力，反哺商业产品（社区 → 商业转化）\n\n## 开源与商业关系\n\n| 层 | 内容 |\n|:---|:---|\n| 开源 | 通用运维组件/工具（GitHub 组织） |\n| 商业 | 全栈智能运维平台（监控宝/透视宝/压测宝/DOEM 等 12 系列） |\n| 策略 | 开源建立生态与口碑，商业产品变现 |\n\n## 相关链接\n\n- 官网：[cloudwise.com](https://www.cloudwise.com/)\n- AI 主题站：[cloudwise.ai](https://cloudwise.ai/)\n- 透视宝：[toushibao.com](https://www.toushibao.com/)\n- 监控宝：[jiankongbao.com](https://www.jiankongbao.com/)\n- 压测宝：[yacebao.com](http://www.yacebao.com/)"
+    }
   ],
   "item_schema": {
     "title": "条目名称（必填）",

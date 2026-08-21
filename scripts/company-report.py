@@ -35,11 +35,48 @@ def load_schema(path):
         return json.load(f)
 
 
+def generate_content_pages(out, items):
+    """items 含 content/metrics → 自动生成内容页（doc 产物，数据卡表格置顶）."""
+    content_dir = _safe_path(HTML_DEMOS / 'demos', out['content_dir'])
+    content_dir.mkdir(parents=True, exist_ok=True)
+    count = 0
+    for item in items:
+        content = item.get('content')
+        if not content:
+            continue
+        name = Path(item['url']).stem
+        md = f"# {item['title']}\n\n"
+        metrics = item.get('metrics')
+        if metrics:
+            md += '## 核心数据\n\n| 指标 | 数据 |\n|:---|:---|\n'
+            for m in metrics:
+                md += f"| {m.get('label', '')} | {m.get('value', '')} |\n"
+            md += '\n'
+        md += content.rstrip() + '\n'
+        md_path = content_dir / f'{name}.md'
+        html_path = content_dir / f'{name}.html'
+        md_path.write_text(md, encoding='utf-8')
+        r = subprocess.run([sys.executable, str(HTML_GEN), 'doc', '-i', str(md_path),
+                            '-o', str(html_path), '--title', item['title']],
+                           capture_output=True, text=True)
+        if r.returncode == 0:
+            count += 1
+            print(f"  ✅ {out['content_dir']}/{name}.html")
+        else:
+            print(f"  ❌ {out['content_dir']}/{name}.html: {r.stderr[:100]}")
+    return count
+
+
 def generate(schema):
     company = schema['company']
     out     = schema['output']
     groups  = schema['groups']
     items   = schema['items']
+
+    # 0. Generate content pages from schema (metrics + content)
+    n_content = generate_content_pages(out, items)
+    if n_content:
+        print(f"  ✅ 内容页 {n_content} 个（schema 自动生成）")
 
     # 1. Write groups JSON (path-validated)
     groups_path = _safe_path(HTML_DEMOS, out['groups_file'])
