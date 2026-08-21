@@ -125,3 +125,14 @@ review_history:
     findings_open: 0
     tracking: "N/A (3 非阻塞建议: 依赖固化/并行复核/事实源单一)"
     report: documents/review/test-speed-optimization-review-v1.0-20260819.md
+  - date: 2026-08-19
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "doc-meta-path-showmd — meta 显示 md 路径 (show-md 入参 + 脱敏)"
+    verdict: REJECT
+    score: 85
+    findings_total: 1
+    findings_open: 1
+    tracking: "M4-1 (L311 闸门不匹配脱敏文件名, 标题复制静默失效)"
+    report: documents/review/doc-meta-path-showmd-review-v1.0-20260819.md
