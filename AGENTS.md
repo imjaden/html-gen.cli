@@ -17,7 +17,7 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 | 文件 | 用途 |
 |:---|:---|
 | `html-gen.py` | 主 CLI，3 个子命令，569 行 |
-| `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库 |
+| `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库（groups/data/html + content/metrics 内容页自动生成） |
 | `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |
 | `layout-table.html` | A 型表格模板：搜索 + 排序 + 分页 |
@@ -265,5 +265,7 @@ html-gen/
 本项目完全自包含，零外部依赖：
 - 所有 Python import 仅使用标准库（json, re, sys, os, argparse, subprocess, pathlib, datetime）
 - 模板和 CSS 通过 `Path(__file__).resolve().parent` 自定位，无需外部配置
-- `company-report.py` 调用同目录的 `html-gen.py knowledge`，通过 subprocess 运行
+- `company-report.py` 调用同目录的 `html-gen.py knowledge`，通过 subprocess 运行；items 含 `content`（正文 md）+ `metrics`（数据卡表格）时自动生成内容页（doc 产物）
+- 内容页数据卡模式：schema items.metrics → 内容页顶部"核心数据"表格（6 卡对齐：成立/客户/产品/专利/融资/荣誉）
+- 数据采集：`scripts/qcc-cloudwise.py`（企查查 selenium 采集，登录态 30s 手工窗口）
 - 输出均为自包含单文件 HTML，无外部资源引用
