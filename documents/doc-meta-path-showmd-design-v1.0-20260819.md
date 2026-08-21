@@ -73,11 +73,20 @@ if (params.get('show-md') === '1') document.body.classList.add('show-md');
 
 与 sidebar/toolbar/width 同一解析处，body class 驱动 CSS。
 
-### 4. 标题点击复制逻辑（L306-311）确认
+### 4. 标题点击复制逻辑（L306-311）确认 — review M4-1 修订
 
-现状：`match(/路径:\s*(.+)/)` → 找到则复制路径，否则 fallback URL。
-路径行恢复后此逻辑自动命中，复制的是脱敏文件名（`history-overview.md`）。
-- 决策：保持模板逻辑不变（复制脱敏文件名合理）；若希望复制完整路径需另议（违背脱敏意图，不采用）
+现状：`match(/路径:\s*(.+)/)` → target = 文件名 → **但 L311 闸门 `/^(https?:|\/|~\/)/` 不匹配纯文件名**，复制与 toast 静默失效。
+
+修复（方案 1：扩展 L311 正则允许纯文件名）：
+```js
+// 原: if (/^(https?:|\/|~\/)/.test(target)) {
+// 新: 允许 URL / 绝对路径 / ~/ 路径 / 纯文件名
+if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
+```
+
+- 路径行恢复后 target = 脱敏文件名（如 `history-overview.md`），匹配扩展后正则 → 复制文件名 + toast
+- 无路径行时 target = URL，行为不变（向后兼容）
+- 测试 test_doc_title_click_copy_path 断言复制内容 = 文件名
 
 ### 5. layout-slide.html
 
@@ -109,7 +118,7 @@ if (params.get('show-md') === '1') document.body.classList.add('show-md');
 | 文件 | 改动 |
 |:--|:--|
 | html-gen.py | cmd_doc + cmd_slide meta 加脱敏路径行（各 2-3 行） |
-| layout-doc.html | CSS 2 条 + JS 3 行（show-md body class） |
+| layout-doc.html | CSS 2 条 + JS 3 行（show-md body class）+ L311 复制闸门正则扩展（M4-1） |
 | demos/*.html | 重新生成 B 型文档 |
 | features.md | B 型 URL 入参节补 show-md |
 | AGENTS.md | 可选：B 型功能清单补充 |
@@ -118,7 +127,7 @@ if (params.get('show-md') === '1') document.body.classList.add('show-md');
 
 - 低：纯增量，默认行为不变（路径行默认隐藏）
 - 隐私：HTML 源码仍含文件名（非完整路径）——脱敏后不泄露目录结构；完整路径不出现在产物中
-- 标题点击复制行为变化：从复制 URL fallback 变为复制脱敏文件名——需确认符合预期（用户已知悉，合理）
+- 标题点击复制行为变化：从复制 URL fallback 变为复制脱敏文件名——L311 闸门正则需扩展允许纯文件名（review M4-1，已修订）；向后兼容（无路径行时仍复制 URL）
 - 与知识库嵌入联动：layout-knowledge 的 iframe 不自动追加 show-md（默认隐私），用户手动 ?show-md=1 才显示
 
 ## 待确认（已确认）
