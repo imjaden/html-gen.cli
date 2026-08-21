@@ -39,9 +39,10 @@ M4 · 标题点击复制逻辑
 
 M5 · slide 处理
   □ slide meta 同步输出路径行 (生成端统一)
-  □ slide 无 URL 解析机制, 不做运行时显隐的决策合理
+  □ 已确认: slide 不需要 show-md 运行时显隐 (无 URL 解析机制, 默认隐藏即可)
 
 M6 · 测试设计
+  □ 已确认: 并入 tests/test_templates.py (不新建独立文件)
   □ 回归: meta 含 路径: 且为文件名 (无 /)
   □ Selenium: show-md=1 → inline / 无参 → none / 标题点击复制文件名
   □ 0 JS errors
