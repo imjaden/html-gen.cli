@@ -61,10 +61,12 @@ html-gen help demo
 - 自动生成 TOC（h2/h3），实时高亮当前章节
 - TOC 搜索（🔍 按钮，150ms debounce，≥2 字符触发过滤）
 - **Bare 模式**：默认隐藏侧边栏/工具栏，`?sidebar=1&toolbar=1` 展示；知识库嵌入自动降级
+- **正文宽度三级**：`?width=narrow|medium|wide`（默认 960px，不持久化）
+- **md 路径行**：meta 区显示源文件名（`basename` 脱敏），默认 CSS 隐藏，`?show-md=1` 显示
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 侧边栏宽度拖拽（200-400px，localStorage 持久化）
 - H3 子项开关，中/英双语，🌙/☀️ 主题切换
-- 标题点击复制路径（textContent 安全获取）
+- 标题点击复制路径（textContent 获取 meta 路径，脱敏文件名）
 - 代码复制（剪贴板 + fallback）、行号、Callout 提示框、阅读进度条、图片灯箱
 
 ### layout-table.html（A 型表格）
@@ -216,7 +218,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 141 tests（测试文件：test_drama_knowledge 16 / test_history_tables 7 / test_demo_cmd 10 / test_countries_table 13 / test_hermes_skills 15 / test_table_features 11 / test_templates 11 / test_doc_width 8 / test_knowledge_sidebar 8 / test_doc_sidebar 7 / test_doc_bare 6 / test_heading_levels 6 / test_sticky_width 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 146 tests（测试文件：test_drama_knowledge 16 / test_history_tables 7 / test_demo_cmd 10 / test_countries_table 13 / test_hermes_skills 15 / test_table_features 11 / test_templates 16 / test_doc_width 8 / test_knowledge_sidebar 8 / test_doc_sidebar 7 / test_doc_bare 6 / test_heading_levels 6 / test_sticky_width 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
