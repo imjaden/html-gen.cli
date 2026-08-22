@@ -13,3 +13,10 @@ sessions:
 - role: dev
   profile: dev
   title: html-gen-dev
+- role: demo
+  profile: ops
+  title: html-gen-demo
+handoff:
+  enabled: true
+  doc: documents/handoff/handoff-html-gen-ops.md
+  updated_at: '2026-08-22'
