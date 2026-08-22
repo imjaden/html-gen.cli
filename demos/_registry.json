@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "count": 56,
+  "count": 59,
   "demos": [
     {
       "name": "business-model",
@@ -473,8 +473,44 @@
       "stale": false
     },
     {
+      "name": "zhuyuanzhang-overview",
+      "title": "朱元璋（2006） · 概述",
+      "type": "doc",
+      "entry": "drama/zhuyuanzhang-overview.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_drama-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "zhuyuanzhang-strategy-table",
+      "title": "朱元璋（2006） · 36计策",
+      "type": "table",
+      "entry": "drama/zhuyuanzhang-strategy-table.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_drama-kb-data"
+      ],
+      "stale": false
+    },
+    {
+      "name": "zhuyuanzhang-timeline-table",
+      "title": "朱元璋（2006） · 时间轴",
+      "type": "table",
+      "entry": "drama/zhuyuanzhang-timeline-table.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_drama-kb-data"
+      ],
+      "stale": false
+    },
+    {
       "name": "drama-knowledge",
-      "title": "以剧读史 · 影视历史知识库",
+      "title": "以剧读史 · 以史明智",
       "type": "knowledge",
       "entry": "drama-knowledge.html",
       "featured": true,

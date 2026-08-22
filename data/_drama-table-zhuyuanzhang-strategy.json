@@ -1,0 +1,229 @@
+{
+  "columns": [
+    {
+      "key": "strategy",
+      "label": "计策名称",
+      "sortable": true,
+      "locale": "zh",
+      "width": "90px",
+      "freeze": true,
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "category",
+      "label": "分类",
+      "type": "pills",
+      "sortable": true,
+      "locale": "zh",
+      "width": "80px",
+      "preview": true
+    },
+    {
+      "key": "idiom",
+      "label": "衍生成语",
+      "sortable": true,
+      "locale": "zh",
+      "width": "110px",
+      "preview": true
+    },
+    {
+      "key": "origin",
+      "label": "历史典故",
+      "sortable": true,
+      "locale": "zh",
+      "width": "240px",
+      "preview": true,
+      "splitFull": true
+    },
+    {
+      "key": "origin_figures",
+      "label": "典故人物",
+      "sortable": true,
+      "locale": "zh",
+      "width": "120px",
+      "preview": true
+    },
+    {
+      "key": "event",
+      "label": "剧中事件",
+      "sortable": true,
+      "locale": "zh",
+      "width": "280px",
+      "preview": true,
+      "onCellClick": "split",
+      "splitFull": true
+    },
+    {
+      "key": "figures",
+      "label": "剧中人物",
+      "sortable": true,
+      "locale": "zh",
+      "width": "140px",
+      "preview": true,
+      "splitFull": true
+    }
+  ],
+  "data": [
+    {
+      "strategy": "瞒天过海",
+      "category": "胜战计",
+      "idiom": "瞒天过海",
+      "origin": "唐太宗御驾亲征，薛仁贵设计瞒过太宗渡过渤海",
+      "origin_figures": "唐太宗、薛仁贵",
+      "event": "朱元璋采纳朱升 “高筑墙、广积粮、缓称王”，表面拥戴小明王韩林儿，不急于称帝，暗中扩充兵马地盘，隐藏争夺天下的野心。",
+      "figures": "朱元璋、朱升"
+    },
+    {
+      "strategy": "借刀杀人",
+      "category": "胜战计",
+      "idiom": "借刀杀人",
+      "origin": "敌已明，友未定，引友杀敌，不自出力，以《损》推演。春秋子贡、曹操相关典故",
+      "origin_figures": "子贡、曹操",
+      "event": "1. 朝堂上朱元璋借胡惟庸之手打压浙西文官集团；事后再清算胡惟庸，借谋反之名清除淮西勋贵势力。2. 刘伯温遭朝中同僚构陷，朱元璋不直接动手，借朝堂倾轧、地方势力打压刘伯温。",
+      "figures": "朱元璋、胡惟庸、刘伯温"
+    },
+    {
+      "strategy": "以逸待劳",
+      "category": "胜战计",
+      "idiom": "以逸待劳",
+      "origin": "困敌之势，不以战。损刚益柔。源自《孙子兵法》",
+      "origin_figures": "孙子",
+      "event": "鄱阳湖大战，朱元璋兵力舰船弱于陈友谅，不急于决战，扼守湖口险要，消耗陈友谅大军粮草士气，待敌军疲惫再发动火攻总攻。",
+      "figures": "朱元璋、刘伯温、陈友谅"
+    },
+    {
+      "strategy": "声东击西",
+      "category": "胜战计",
+      "idiom": "声东击西",
+      "origin": "敌志乱萃，不虞。坤下兑上之象，利其不自主而取之。战国孙膑战例",
+      "origin_figures": "孙膑",
+      "event": "鄱阳湖之战，陈友谅佯攻泾江口，意图吸引朱元璋主力，真实目标是南湖嘴突围；朱元璋识破此计，布下圈套等候陈友谅。",
+      "figures": "陈友谅、朱元璋"
+    },
+    {
+      "strategy": "暗度陈仓",
+      "category": "敌战计",
+      "idiom": "明修栈道，暗度陈仓",
+      "origin": "示之以动，利其静而有主，益动而巽。韩信还定三秦",
+      "origin_figures": "韩信",
+      "event": "陈友谅表面在泾江口布置重兵，做出要从泾江突围姿态，暗中准备从防守薄弱南湖嘴突围，属于明处造势、暗处行动。",
+      "figures": "陈友谅"
+    },
+    {
+      "strategy": "隔岸观火",
+      "category": "敌战计",
+      "idiom": "隔岸观火",
+      "origin": "阳乖序乱，阴以待逆。暴戾恣睢，其势自毙。战国秦赵相争典故",
+      "origin_figures": "秦国、赵国",
+      "event": "元廷、各股义军混战厮杀，朱元璋早期坐视元军和其他义军互相攻伐，保存自身实力，待各方实力损耗再出兵攻取地盘。",
+      "figures": "朱元璋"
+    },
+    {
+      "strategy": "笑里藏刀",
+      "category": "敌战计",
+      "idiom": "笑里藏刀",
+      "origin": "信而安之，阴以图之。备而后动，勿使有变。刚中柔外也。典出李义府",
+      "origin_figures": "李义府",
+      "event": "朱元璋对待开国功臣，表面礼遇厚待、封官赐爵，内心猜忌，步步布局罗织罪名，最后大肆屠戮勋贵；对待胡惟庸，前期充分信任纵容，助长其骄横，后一举清算。",
+      "figures": "朱元璋、胡惟庸"
+    },
+    {
+      "strategy": "打草惊蛇",
+      "category": "攻战计",
+      "idiom": "打草惊蛇",
+      "origin": "疑以叩实，察而后动。复者，阴之媒也。南唐王鲁判案典故",
+      "origin_figures": "王鲁",
+      "event": "朱元璋设立检校（锦衣卫前身）监视文武百官，借处理小的贪腐案件敲打朝堂群臣，试探大臣的忠心与私下动向。",
+      "figures": "朱元璋、检校（吴风）"
+    },
+    {
+      "strategy": "调虎离山",
+      "category": "攻战计",
+      "idiom": "调虎离山",
+      "origin": "待天以困之，用人以诱之，往蹇来返。东汉孙策战例",
+      "origin_figures": "孙策",
+      "event": "朱元璋逼迫刘伯温告老还乡，把他调离权力中枢应天，解除其朝堂影响力；同时派检校一路监视，防止他在京中串联势力。",
+      "figures": "朱元璋、刘伯温"
+    },
+    {
+      "strategy": "欲擒故纵",
+      "category": "攻战计",
+      "idiom": "欲擒故纵",
+      "origin": "逼则反兵，走则减势。紧随勿迫，累其气力，消其斗志。演义诸葛亮七擒孟获",
+      "origin_figures": "诸葛亮、孟获",
+      "event": "朱元璋纵容胡惟庸专权擅政，对他诸多越界行为暂时不予惩治，任由其结党坐大，等其罪证积累充分，再一次性彻底铲除胡党势力。",
+      "figures": "朱元璋、胡惟庸"
+    },
+    {
+      "strategy": "擒贼擒王",
+      "category": "攻战计",
+      "idiom": "擒贼擒王",
+      "origin": "摧其坚，夺其魁，以解其体。龙战于野，其道穷也。唐代张巡战例",
+      "origin_figures": "张巡",
+      "event": "鄱阳湖水战，火攻之时目标直指陈友谅主力大船，击杀敌军主帅，瓦解数十万大军斗志。",
+      "figures": "朱元璋、刘伯温、陈友谅"
+    },
+    {
+      "strategy": "釜底抽薪",
+      "category": "混战计",
+      "idiom": "釜底抽薪",
+      "origin": "不敌其力，而消其势，兑下乾上之象。东汉官渡之战",
+      "origin_figures": "曹操、袁绍",
+      "event": "胡惟庸案后朱元璋直接废除丞相制度，从制度根源上消除相权威胁皇权的基础，而非只诛杀一个丞相。",
+      "figures": "朱元璋"
+    },
+    {
+      "strategy": "上屋抽梯",
+      "category": "并战计",
+      "idiom": "上屋抽梯",
+      "origin": "假之以便，唆之使前，断其援应，陷之死地。刘表刘琦典故",
+      "origin_figures": "刘表、刘琦",
+      "event": "先给大臣、勋贵高位与权力，引诱他们踏入权力漩涡；一旦他们形成势力，再断绝退路，罗织罪案株连清洗。",
+      "figures": "朱元璋、李善长、胡惟庸"
+    },
+    {
+      "strategy": "指桑骂槐",
+      "category": "并战计",
+      "idiom": "指桑骂槐",
+      "origin": "大凌小者，警以诱之。刚中而应，行险而顺。春秋司马穰苴治军",
+      "origin_figures": "司马穰苴",
+      "event": "朱元璋借处置小贪官，当众训诫警告一众开国勋贵，敲打勋贵侵占田地、骄纵不法的行为，不直接点名，却威慑全体功臣。",
+      "figures": "朱元璋"
+    },
+    {
+      "strategy": "反间计",
+      "category": "败战计",
+      "idiom": "反间计",
+      "origin": "疑中之疑。比之自内，不自失也。周瑜利用蒋干离间曹操",
+      "origin_figures": "周瑜、曹操",
+      "event": "剧中战场、朝堂使用情报离间，散播流言，挑拨陈友谅手下将领互相猜忌；朝堂中利用情报挑拨淮西集团与浙东文官集团互相争斗。",
+      "figures": "朱元璋、刘伯温"
+    },
+    {
+      "strategy": "连环计",
+      "category": "败战计",
+      "idiom": "连环计",
+      "origin": "将多兵众，不可以敌，使其自累，以杀其势。王允貂蝉离间董卓吕布",
+      "origin_figures": "王允、貂蝉",
+      "event": "朱元璋对付功臣集团整套策略：欲擒故纵纵容权臣→检校监视收集把柄→借谋反大案株连清洗，多计叠加连环实施；鄱阳湖之战 “扼守 + 火攻 + 心理战” 连环破敌。",
+      "figures": "朱元璋、刘伯温"
+    },
+    {
+      "strategy": "走为上计",
+      "category": "败战计",
+      "idiom": "走为上计",
+      "origin": "全师避敌。左次无咎，未失常也。源自孙子兵法",
+      "origin_figures": "孙子",
+      "event": "汤和看透朱元璋猜忌，主动请求解除兵权，告老还乡、装疯自保，保全性命，是剧中少数善终功臣。",
+      "figures": "汤和"
+    }
+  ],
+  "tabs": [],
+  "options": {
+    "pageSize": 30,
+    "exportCSV": true,
+    "search": true,
+    "showIndex": true
+  }
+}
