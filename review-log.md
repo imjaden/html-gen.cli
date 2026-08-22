@@ -165,8 +165,8 @@
 
 | # | Severity | Title | File | Status |
 |:--:|:---:|:---|:---|:---:|
-| HG-SEC-005 | 🟡 | daming-strategy-table.html 列宽与 data JSON 不同步（bddfc4f 压缩生成物未回填 JSON） | demos/drama/daming-strategy-table.html ↔ data/_drama-table-daming-strategy.json | Open |
-| HG-SEC-006 | 🟢 | review-log.md 历史 13 次 review 未追加条目（审计追踪缺口，本次已补） | review-log.md | Open |
+| HG-SEC-005 | 🟡 | daming-strategy-table.html 列宽与 data JSON 不同步（bddfc4f 压缩生成物未回填 JSON） | demos/drama/daming-strategy-table.html ↔ data/_drama-table-daming-strategy.json | ✅ Resolved |
+| HG-SEC-006 | 🟢 | review-log.md 历史 13 次 review 未追加条目（审计追踪缺口，本次已补） | review-log.md | ✅ Resolved |
 
 ### Positives
 
@@ -179,6 +179,40 @@
 
 | Issue | Title | Severity | Priority | Status |
 |:---|:---|:---:|:---:|:---:|
-| HG-SEC-005 | daming 列宽不同步 | 🟡 | P2 | Open |
-| HG-SEC-006 | review-log 历史缺口 | 🟢 | P2 | Open |
+| HG-SEC-005 | daming 列宽不同步 | 🟡 | P2 | ✅ Closed (aeadf85) |
+| HG-SEC-006 | review-log 历史缺口 | 🟢 | P2 | ✅ Closed (923a47e) |
+
+---
+
+## 2026-08-22 — 尾项复核：HG-SEC-005/006 关闭
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (Implementation Audit 尾项复核)
+- **Scope**: 未 push 2 commits（aeadf85 fix@html-gen / 923a47e docs@html-gen），ops 修复复核
+- **Verdict**: PASS
+- **Score**: 100 / 100 (Rating: A)
+
+### Summary
+
+2026-08-22 朱元璋实现审计遗留的 2 个非阻断 findings 已全部关闭：HG-SEC-005（🟡 daming-strategy 列宽不同步）由 aeadf85 回填 JSON 6 列宽至生成物压缩值并重新生成 html，JSON 与 COLUMNS 逐字段 MATCH（strategy 60 / category 60 / idiom 90 / event 160 / figures 90 / origin 160 / origin_figures 140）；HG-SEC-006（🟢 review-log 历史缺口）由 923a47e 从 .review-level.yaml review_history 补录 14 条（2026-07-12 ~ 2026-08-21），现共 16 条与 review_history 对齐。两 commit 改动范围干净（aeadf85 仅 data JSON + daming html；923a47e 仅 review-log.md）。全量 146 tests 复跑通过（24.97s）。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-005 | 🟡 | daming-strategy 列宽不同步 | data/_drama-table-daming-strategy.json ↔ demos/drama/daming-strategy-table.html | ✅ Resolved |
+| HG-SEC-006 | 🟢 | review-log 历史缺口 | review-log.md | ✅ Resolved |
+
+### Positives
+
+- 修复范围精确：aeadf85 仅动 data JSON 6 列宽 + 重新生成对应 html，无夹杂其他改动
+- 923a47e 补录条目按日期排序、跳过已有 2 条（2026-07-17 Pilot / 2026-08-22 本次审计），无重复
+- 全量回归 146 passed 无回归
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-005 | daming 列宽不同步 | 🟡 | P2 | ✅ Closed (aeadf85) |
+| HG-SEC-006 | review-log 历史缺口 | 🟢 | P2 | ✅ Closed (923a47e) |
 
