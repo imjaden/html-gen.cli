@@ -155,6 +155,17 @@ review_history:
     verdict: PASS
     score: 95
     findings_total: 2
-    findings_open: 2
+    findings_open: 0
     tracking: HG-SEC-005..HG-SEC-006
+    report: documents/review/drama-zhuyuanzhang-implementation-review-v1.0-20260822.md
+  - date: 2026-08-22
+    reviewer: Security Reviewer
+    review_type: implementation-audit-recheck
+    review_level: L2
+    scope: "尾项复核 — 未 push 2 commits (aeadf85 fix HG-SEC-005 / 923a47e docs HG-SEC-006)"
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: HG-SEC-005..HG-SEC-006 (recheck closed)
     report: documents/review/drama-zhuyuanzhang-implementation-review-v1.0-20260822.md

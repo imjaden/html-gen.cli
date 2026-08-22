@@ -52,8 +52,8 @@
 
 | 编号 | 严重度 | 问题 | 状态 |
 |:---|:---:|:---|:---:|
-| HG-SEC-005 | 🟡 | daming-strategy-table.html 列宽与 `data/_drama-table-daming-strategy.json` 不同步：bddfc4f 压缩生成物列宽（strategy 60px / event 160px 等）但未回填 JSON（仍 90px / 280px），05feb12 修复列序时漏掉 daming。重新生成该表会回退压缩宽度。 | Open |
-| HG-SEC-006 | 🟢 | review-log.md 审计追踪缺口：历史 13 次 review 均只更新 .review-level.yaml + 报告，未追加 review-log.md（git 历史仅 1 次创建提交）。本次已按规范追加。 | Open |
+| HG-SEC-005 | 🟡 | daming-strategy-table.html 列宽与 `data/_drama-table-daming-strategy.json` 不同步：bddfc4f 压缩生成物列宽（strategy 60px / event 160px 等）但未回填 JSON（仍 90px / 280px），05feb12 修复列序时漏掉 daming。重新生成该表会回退压缩宽度。 | ✅ Resolved |
+| HG-SEC-006 | 🟢 | review-log.md 审计追踪缺口：历史 13 次 review 均只更新 .review-level.yaml + 报告，未追加 review-log.md（git 历史仅 1 次创建提交）。本次已按规范追加。 | ✅ Resolved |
 
 **说明**: 无 🔴 高危项；无凭证泄露/注入/XSS 面（纯静态数据内容型变更，未动模板 JS）。
 
@@ -72,6 +72,24 @@ Base: 100   扣分: 🟡 -5 (HG-SEC-005)   🟢 -0 (HG-SEC-006)
 **遗留建议**:
 - HG-SEC-005（🟡）: 回填 daming-strategy JSON 列宽至压缩值，或按需重新生成对齐——非阻塞，可随下次数据更新一并处理。
 - HG-SEC-006（🟢）: 可回填历史 review-log 条目，保持追踪链完整。
+
+---
+
+## 六、尾项复核（2026-08-22 同日）
+
+**审查对象**: 未 push 2 commits（aeadf85 / 923a47e，ops 修复）
+**结论**: ✅ 全部关闭 — HG-SEC-005/006 由 Open → Resolved
+
+| # | 检查项 | 预期 | 实测 | 结果 |
+|:--:|:---|:---|:---|:--:|
+| 1 | aeadf85 改动范围 | 仅 data JSON + daming-strategy html | 2 files（JSON 6 列宽回填 + html 重新生成） | ✅ |
+| 2 | JSON 列宽 vs 生成物 COLUMNS | 逐字段一致 | strategy 60 / category 60 / idiom 90 / event 160 / figures 90 / origin 160 / origin_figures 140，全部 MATCH | ✅ |
+| 3 | 923a47e 改动范围 | 仅 review-log.md | 1 file（+135 行，14 条补录） | ✅ |
+| 4 | review-log 条目数 | 16 条 = 14 补录 + 2 已有 | 16 条，日期 2026-07-12 ~ 2026-08-22 | ✅ |
+| 5 | 全量回归 | 146 passed | 146 passed (24.97s) | ✅ |
+| 6 | 追踪状态 | .review-level.yaml findings_open 2 → 0 | 已更新 | ✅ |
+
+**复核评分**: Base 100 - 0 = **100 (A)** — 原扣分项已全部关闭，无新增发现。
 
 ---
 
