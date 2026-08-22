@@ -414,9 +414,23 @@ pre code { background: none; padding: 0; }
 }
 .qs-close-btn:hover { background:#2a2a3e; color:#e0e0e0; }
 .qs-hint { display:flex; justify-content:space-between; padding:4px 18px 12px; font-size:0.62rem; color:#6b7280; }
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+
 </style>
 </head>
 <body>
+<a href="https://github.com/imjaden/html-gen" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
+  <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+<a class="github-corner-hit" href="https://github.com/imjaden/html-gen" target="_blank" rel="noopener" aria-label="GitHub"></a>
 <div class="wrapper">
 
 <div class="table-tabs" id="tabsBar"></div>
@@ -501,243 +515,8 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "strategy", "label": "计策名称", "sortable": true, "locale": "zh", "width": "60px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "category", "label": "分类", "type": "pills", "sortable": true, "locale": "zh", "width": "60px", "preview": true}, {"key": "idiom", "label": "衍生成语", "sortable": true, "locale": "zh", "width": "60px", "preview": true}, {"key": "event", "label": "剧中事件", "sortable": true, "locale": "zh", "width": "140px", "preview": true, "onCellClick": "split", "splitFull": true}, {"key": "figures", "label": "剧中人物", "sortable": true, "locale": "zh", "width": "140px", "preview": true, "splitFull": true}, {"key": "origin", "label": "历史典故", "sortable": true, "locale": "zh", "width": "140px", "preview": true, "splitFull": true}, {"key": "origin_figures", "label": "典故人物", "sortable": true, "locale": "zh", "width": "140px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
-  const DATA = [
-    {
-      "strategy": "瞒天过海",
-      "category": "胜战计",
-      "idiom": "瞒天过海",
-      "event": "年羹尧秘密带兵突袭江夏镇",
-      "figures": "胤禛、年羹尧",
-      "origin": "唐太宗御驾亲征，薛仁贵设计瞒过太宗渡过渤海",
-      "origin_figures": "唐太宗、薛仁贵"
-    },
-    {
-      "strategy": "围魏救赵",
-      "category": "胜战计",
-      "idiom": "围魏救赵",
-      "event": "争大将军王不争虚名，抢夺陕甘总督扼粮草",
-      "figures": "胤禛、邬思道、胤禵",
-      "origin": "战国齐军攻魏都，解赵国邯郸之围",
-      "origin_figures": "孙膑、庞涓"
-    },
-    {
-      "strategy": "借刀杀人",
-      "category": "胜战计",
-      "idiom": "借刀杀人",
-      "event": "江南赈灾借灾民压乡绅；借年羹尧除掉江夏镇任伯安",
-      "figures": "胤禛、年羹尧、任伯安",
-      "origin": "春秋子贡借吴国伐齐保全鲁国；袁绍借曹操之手除祢衡",
-      "origin_figures": "子贡、袁绍"
-    },
-    {
-      "strategy": "以逸待劳",
-      "category": "胜战计",
-      "idiom": "以逸待劳",
-      "event": "刑部张五哥冤案，胤禛称病不蹚太子浑水",
-      "figures": "胤禛、邬思道、胤禩",
-      "origin": "战国李牧守匈奴，养精蓄锐待敌疲再出战",
-      "origin_figures": "李牧"
-    },
-    {
-      "strategy": "趁火打劫",
-      "category": "胜战计",
-      "idiom": "趁火打劫",
-      "event": "年羹尧血洗江夏镇，趁机劫掠金银财富",
-      "figures": "年羹尧",
-      "origin": "春秋越国趁吴国战乱攻灭吴国",
-      "origin_figures": "勾践"
-    },
-    {
-      "strategy": "声东击西",
-      "category": "胜战计",
-      "idiom": "声东击西",
-      "event": "表面举荐十四做大将军王，实则拿陕甘总督控制权",
-      "figures": "胤禛、胤禵、邬思道",
-      "origin": "楚汉韩信明修栈道暗度陈仓",
-      "origin_figures": "韩信"
-    },
-    {
-      "strategy": "无中生有",
-      "category": "敌战计",
-      "idiom": "无中生有",
-      "event": "八爷党伪造太子调兵手谕，制造兵变假象",
-      "figures": "胤禩、胤禵、胤禔",
-      "origin": "战国张仪凭空捏造说辞欺骗楚王",
-      "origin_figures": "张仪"
-    },
-    {
-      "strategy": "隔岸观火",
-      "category": "敌战计",
-      "idiom": "隔岸观火",
-      "event": "追比欠款太子拆台，胤禛上交矛盾；推举新太子不站队，坐看八爷党碰壁",
-      "figures": "胤禛、太子胤礽、胤禩",
-      "origin": "三国郭嘉劝曹操坐观袁氏二子内斗",
-      "origin_figures": "郭嘉"
-    },
-    {
-      "strategy": "反间计",
-      "category": "败战计",
-      "idiom": "反间计",
-      "event": "伪造太子手谕，离间康熙与太子父子",
-      "figures": "八爷党",
-      "origin": "周瑜利用蒋干盗书，离间曹操与蔡瑁张允",
-      "origin_figures": "周瑜、曹操"
-    },
-    {
-      "strategy": "苦肉计",
-      "category": "败战计",
-      "idiom": "苦肉计",
-      "event": "装伤寒躲避刑部冤案；江南赈灾自己扛骂名；八王议政十三爷抱病逼宫；杀子固储位",
-      "figures": "胤禛、胤祥、雍正、弘时",
-      "origin": "周瑜打黄盖，诈降曹操",
-      "origin_figures": "周瑜、黄盖"
-    },
-    {
-      "strategy": "金蝉脱壳",
-      "category": "混战计",
-      "idiom": "金蝉脱壳",
-      "event": "推举新太子佟国维牺牲自己保全佟家；邬思道半隐抽身远离皇权",
-      "figures": "佟国维、邬思道",
-      "origin": "三国诸葛亮五丈原身死，木雕偶像吓退司马懿",
-      "origin_figures": "诸葛亮"
-    },
-    {
-      "strategy": "远交近攻",
-      "category": "混战计",
-      "idiom": "远交近攻",
-      "event": "处理年羹尧，分化拉拢西北旧部，孤立年羹尧",
-      "figures": "雍正",
-      "origin": "战国范雎为秦国定国策，远交齐楚近攻三晋",
-      "origin_figures": "范雎"
-    },
-    {
-      "strategy": "调虎离山",
-      "category": "攻战计",
-      "idiom": "调虎离山",
-      "event": "逐步剥夺年羹尧西北兵权，调离根基之地",
-      "figures": "雍正、年羹尧",
-      "origin": "东汉孙策调离刘勋，攻取庐江",
-      "origin_figures": "孙策"
-    },
-    {
-      "strategy": "抛砖引玉",
-      "category": "攻战计",
-      "idiom": "抛砖引玉",
-      "event": "当众烧毁百官行述，舍弃档案换取朝堂人心与圣心",
-      "figures": "胤禛、马齐、胤禩",
-      "origin": "唐代赵嘏以小诗引出对方佳作",
-      "origin_figures": "常建"
-    },
-    {
-      "strategy": "擒贼擒王",
-      "category": "攻战计",
-      "idiom": "擒贼擒王",
-      "event": "八王议政之后处置隆科多，拿掉京城兵权核心人物",
-      "figures": "雍正、隆科多",
-      "origin": "唐代张巡守城，射杀敌酋",
-      "origin_figures": "张巡"
-    },
-    {
-      "strategy": "釜底抽薪",
-      "category": "混战计",
-      "idiom": "釜底抽薪",
-      "event": "烧毁百官行述，彻底摧毁各方拿捏百官的把柄",
-      "figures": "胤禛",
-      "origin": "东汉董卓之乱，抽薪止沸",
-      "origin_figures": "董卓"
-    },
-    {
-      "strategy": "关门捉贼",
-      "category": "混战计",
-      "idiom": "关门捉贼",
-      "event": "康熙驾崩当夜控制皇城，围困众皇子于宫内",
-      "figures": "邬思道、胤祥、隆科多",
-      "origin": "战国齐军围歼魏国军队",
-      "origin_figures": "孙膑"
-    },
-    {
-      "strategy": "上屋抽梯",
-      "category": "并战计",
-      "idiom": "上屋抽梯",
-      "event": "对年羹尧先厚恩封赏，再一层层剥夺权力，断其反抗条件",
-      "figures": "雍正、年羹尧",
-      "origin": "三国刘表之子刘琦，上楼抽梯求计诸葛亮",
-      "origin_figures": "刘琦、诸葛亮"
-    },
-    {
-      "strategy": "假痴不癫",
-      "category": "并战计",
-      "idiom": "假痴不癫",
-      "event": "邬思道故意索要银两装贪财，降低雍正猜忌",
-      "figures": "邬思道",
-      "origin": "司马懿装病装傻欺骗曹爽",
-      "origin_figures": "司马懿"
-    },
-    {
-      "strategy": "反客为主",
-      "category": "并战计",
-      "idiom": "反客为主",
-      "event": "八爷党借八王议政，试图架空雍正皇权",
-      "figures": "胤禩、隆科多",
-      "origin": "三国袁绍鸠占鹊巢夺取冀州",
-      "origin_figures": "袁绍"
-    },
-    {
-      "strategy": "美人计",
-      "category": "败战计",
-      "idiom": "美人计",
-      "event": "反向美人计：抬旗纳年秋月为侧福晋，笼络制衡年羹尧",
-      "figures": "胤禛、年秋月、邬思道",
-      "origin": "王允献貂蝉离间董卓吕布",
-      "origin_figures": "王允、貂蝉"
-    },
-    {
-      "strategy": "离间计",
-      "category": "败战计",
-      "idiom": "离间计",
-      "event": "抬旗纳秋月，切断邬思道与年家情感联结，防文武私相勾结",
-      "figures": "胤禛、邬思道、年秋月",
-      "origin": "陈平离间项羽范增",
-      "origin_figures": "陈平"
-    },
-    {
-      "strategy": "欲擒故纵",
-      "category": "攻战计",
-      "idiom": "欲擒故纵",
-      "event": "康熙令百官举荐新太子，故意放纵诱八爷党全部冒头",
-      "figures": "康熙、佟国维、胤禩",
-      "origin": "诸葛亮七擒孟获",
-      "origin_figures": "诸葛亮"
-    },
-    {
-      "strategy": "将计就计",
-      "category": "败战计",
-      "idiom": "将计就计",
-      "event": "雍正明知弘时勾结八爷，引关外王爷进京，诱对手全部暴露一网打尽",
-      "figures": "雍正、胤禩、弘时",
-      "origin": "周瑜利用蔡中蔡和诈降，将计就计",
-      "origin_figures": "周瑜"
-    },
-    {
-      "strategy": "杀鸡儆猴",
-      "category": "并战计",
-      "idiom": "杀鸡儆猴",
-      "event": "赐死弘时，震慑宗室，稳固弘历储位",
-      "figures": "雍正、弘时、弘历",
-      "origin": "春秋齐景公杀一人警示群臣",
-      "origin_figures": "齐景公"
-    },
-    {
-      "strategy": "走为上计",
-      "category": "败战计",
-      "idiom": "走为上计",
-      "event": "邬思道半隐之后逃离河南，彻底远离权力中心",
-      "figures": "邬思道",
-      "origin": "楚成王见形势不利主动撤兵",
-      "origin_figures": "楚成王"
-    }
-  ];
+  const COLUMNS = [{"key": "strategy", "label": "计策名称", "sortable": true, "locale": "zh", "width": "90px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "category", "label": "分类", "type": "pills", "sortable": true, "locale": "zh", "width": "80px", "preview": true}, {"key": "idiom", "label": "衍生成语", "sortable": true, "locale": "zh", "width": "110px", "preview": true}, {"key": "origin", "label": "历史典故", "sortable": true, "locale": "zh", "width": "240px", "preview": true, "splitFull": true}, {"key": "origin_figures", "label": "典故人物", "sortable": true, "locale": "zh", "width": "120px", "preview": true}, {"key": "event", "label": "剧中事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "onCellClick": "split", "splitFull": true}, {"key": "figures", "label": "剧中人物", "sortable": true, "locale": "zh", "width": "140px", "preview": true, "splitFull": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"strategy": "瞒天过海", "category": "胜战计", "idiom": "", "origin": "唐太宗御驾亲征，薛仁贵设计瞒过太宗渡过渤海", "origin_figures": "唐太宗、薛仁贵", "event": "年羹尧秘密带兵突袭江夏镇", "figures": "胤禛、年羹尧"}, {"strategy": "围魏救赵", "category": "胜战计", "idiom": "", "origin": "战国齐军攻魏都，解赵国邯郸之围", "origin_figures": "孙膑、庞涓", "event": "争大将军王不争虚名，抢夺陕甘总督扼粮草", "figures": "胤禛、邬思道、胤禵"}, {"strategy": "借刀杀人", "category": "胜战计", "idiom": "", "origin": "春秋子贡借吴国伐齐保全鲁国；袁绍借曹操之手除祢衡", "origin_figures": "子贡、袁绍", "event": "江南赈灾借灾民压乡绅；借年羹尧除掉江夏镇任伯安", "figures": "胤禛、年羹尧、任伯安"}, {"strategy": "以逸待劳", "category": "胜战计", "idiom": "", "origin": "战国李牧守匈奴，养精蓄锐待敌疲再出战", "origin_figures": "李牧", "event": "刑部张五哥冤案，胤禛称病不蹚太子浑水", "figures": "胤禛、邬思道、胤禩"}, {"strategy": "趁火打劫", "category": "胜战计", "idiom": "", "origin": "春秋越国趁吴国战乱攻灭吴国", "origin_figures": "勾践", "event": "年羹尧血洗江夏镇，趁机劫掠金银财富", "figures": "年羹尧"}, {"strategy": "声东击西", "category": "胜战计", "idiom": "", "origin": "楚汉韩信明修栈道暗度陈仓", "origin_figures": "韩信", "event": "表面举荐十四做大将军王，实则拿陕甘总督控制权", "figures": "胤禛、胤禵、邬思道"}, {"strategy": "无中生有", "category": "敌战计", "idiom": "", "origin": "战国张仪凭空捏造说辞欺骗楚王", "origin_figures": "张仪", "event": "八爷党伪造太子调兵手谕，制造兵变假象", "figures": "胤禩、胤禵、胤禔"}, {"strategy": "隔岸观火", "category": "敌战计", "idiom": "", "origin": "三国郭嘉劝曹操坐观袁氏二子内斗", "origin_figures": "郭嘉", "event": "追比欠款太子拆台，胤禛上交矛盾；推举新太子不站队，坐看八爷党碰壁", "figures": "胤禛、太子胤礽、胤禩"}, {"strategy": "反间计", "category": "败战计", "idiom": "", "origin": "周瑜利用蒋干盗书，离间曹操与蔡瑁张允", "origin_figures": "周瑜、曹操", "event": "伪造太子手谕，离间康熙与太子父子", "figures": "八爷党"}, {"strategy": "苦肉计", "category": "败战计", "idiom": "", "origin": "周瑜打黄盖，诈降曹操", "origin_figures": "周瑜、黄盖", "event": "装伤寒躲避刑部冤案；江南赈灾自己扛骂名；八王议政十三爷抱病逼宫；杀子固储位", "figures": "胤禛、胤祥、雍正、弘时"}, {"strategy": "金蝉脱壳", "category": "混战计", "idiom": "", "origin": "三国诸葛亮五丈原身死，木雕偶像吓退司马懿", "origin_figures": "诸葛亮", "event": "推举新太子佟国维牺牲自己保全佟家；邬思道半隐抽身远离皇权", "figures": "佟国维、邬思道"}, {"strategy": "远交近攻", "category": "混战计", "idiom": "", "origin": "战国范雎为秦国定国策，远交齐楚近攻三晋", "origin_figures": "范雎", "event": "处理年羹尧，分化拉拢西北旧部，孤立年羹尧", "figures": "雍正"}, {"strategy": "调虎离山", "category": "攻战计", "idiom": "", "origin": "东汉孙策调离刘勋，攻取庐江", "origin_figures": "孙策", "event": "逐步剥夺年羹尧西北兵权，调离根基之地", "figures": "雍正、年羹尧"}, {"strategy": "抛砖引玉", "category": "攻战计", "idiom": "", "origin": "唐代赵嘏以小诗引出对方佳作", "origin_figures": "常建", "event": "当众烧毁百官行述，舍弃档案换取朝堂人心与圣心", "figures": "胤禛、马齐、胤禩"}, {"strategy": "擒贼擒王", "category": "攻战计", "idiom": "", "origin": "唐代张巡守城，射杀敌酋", "origin_figures": "张巡", "event": "八王议政之后处置隆科多，拿掉京城兵权核心人物", "figures": "雍正、隆科多"}, {"strategy": "釜底抽薪", "category": "混战计", "idiom": "", "origin": "东汉董卓之乱，抽薪止沸", "origin_figures": "董卓", "event": "烧毁百官行述，彻底摧毁各方拿捏百官的把柄", "figures": "胤禛"}, {"strategy": "关门捉贼", "category": "混战计", "idiom": "", "origin": "战国齐军围歼魏国军队", "origin_figures": "孙膑", "event": "康熙驾崩当夜控制皇城，围困众皇子于宫内", "figures": "邬思道、胤祥、隆科多"}, {"strategy": "上屋抽梯", "category": "并战计", "idiom": "", "origin": "三国刘表之子刘琦，上楼抽梯求计诸葛亮", "origin_figures": "刘琦、诸葛亮", "event": "对年羹尧先厚恩封赏，再一层层剥夺权力，断其反抗条件", "figures": "雍正、年羹尧"}, {"strategy": "假痴不癫", "category": "并战计", "idiom": "", "origin": "司马懿装病装傻欺骗曹爽", "origin_figures": "司马懿", "event": "邬思道故意索要银两装贪财，降低雍正猜忌", "figures": "邬思道"}, {"strategy": "反客为主", "category": "并战计", "idiom": "", "origin": "三国袁绍鸠占鹊巢夺取冀州", "origin_figures": "袁绍", "event": "八爷党借八王议政，试图架空雍正皇权", "figures": "胤禩、隆科多"}, {"strategy": "美人计", "category": "败战计", "idiom": "", "origin": "王允献貂蝉离间董卓吕布", "origin_figures": "王允、貂蝉", "event": "反向美人计：抬旗纳年秋月为侧福晋，笼络制衡年羹尧", "figures": "胤禛、年秋月、邬思道"}, {"strategy": "离间计", "category": "败战计", "idiom": "离间计", "origin": "陈平离间项羽范增", "origin_figures": "陈平", "event": "抬旗纳秋月，切断邬思道与年家情感联结，防文武私相勾结", "figures": "胤禛、邬思道、年秋月"}, {"strategy": "欲擒故纵", "category": "攻战计", "idiom": "", "origin": "诸葛亮七擒孟获", "origin_figures": "诸葛亮", "event": "康熙令百官举荐新太子，故意放纵诱八爷党全部冒头", "figures": "康熙、佟国维、胤禩"}, {"strategy": "将计就计", "category": "败战计", "idiom": "将计就计", "origin": "周瑜利用蔡中蔡和诈降，将计就计", "origin_figures": "周瑜", "event": "雍正明知弘时勾结八爷，引关外王爷进京，诱对手全部暴露一网打尽", "figures": "雍正、胤禩、弘时"}, {"strategy": "杀鸡儆猴", "category": "并战计", "idiom": "杀鸡儆猴", "origin": "春秋齐景公杀一人警示群臣", "origin_figures": "齐景公", "event": "赐死弘时，震慑宗室，稳固弘历储位", "figures": "雍正、弘时、弘历"}, {"strategy": "走为上计", "category": "败战计", "idiom": "", "origin": "楚成王见形势不利主动撤兵", "origin_figures": "楚成王", "event": "邬思道半隐之后逃离河南，彻底远离权力中心", "figures": "邬思道"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
   const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
