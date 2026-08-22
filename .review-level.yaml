@@ -147,3 +147,14 @@ review_history:
     findings_open: 0
     tracking: "N/A (T1-T7 全落地, 并行 25.17s, 146 tests 无回归)"
     report: documents/review/test-speed-optimization-implementation-review-v1.0-20260821.md
+  - date: 2026-08-22
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "朱元璋（2006）知识库 — 未 push 9 commits (a2cec02/1fd5e8d/05feb12 + handoff 4 + chore 2)"
+    verdict: PASS
+    score: 95
+    findings_total: 2
+    findings_open: 2
+    tracking: HG-SEC-005..HG-SEC-006
+    report: documents/review/drama-zhuyuanzhang-implementation-review-v1.0-20260822.md
