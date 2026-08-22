@@ -5,7 +5,7 @@
       "label": "计策名称",
       "sortable": true,
       "locale": "zh",
-      "width": "90px",
+      "width": "60px",
       "freeze": true,
       "preview": true,
       "onCellClick": "split"
@@ -16,7 +16,7 @@
       "type": "pills",
       "sortable": true,
       "locale": "zh",
-      "width": "80px",
+      "width": "60px",
       "preview": true
     },
     {
@@ -24,7 +24,7 @@
       "label": "衍生成语",
       "sortable": true,
       "locale": "zh",
-      "width": "130px",
+      "width": "90px",
       "preview": true
     },
     {
@@ -32,7 +32,7 @@
       "label": "剧中事件",
       "sortable": true,
       "locale": "zh",
-      "width": "280px",
+      "width": "160px",
       "preview": true,
       "onCellClick": "split",
       "splitFull": true
@@ -42,7 +42,7 @@
       "label": "剧中人物",
       "sortable": true,
       "locale": "zh",
-      "width": "140px",
+      "width": "90px",
       "preview": true,
       "splitFull": true
     },
@@ -51,7 +51,7 @@
       "label": "历史典故",
       "sortable": true,
       "locale": "zh",
-      "width": "240px",
+      "width": "160px",
       "preview": true,
       "splitFull": true
     },
