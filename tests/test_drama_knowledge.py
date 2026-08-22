@@ -58,7 +58,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_01_tabs_render_order(self):
         labels = self._tab_labels()
-        self.assertEqual(labels, ['中国历史', '大明王朝1566', '雍正王朝'],
+        self.assertEqual(labels, ['中国历史', '朱元璋（2006）', '大明王朝1566（2007）', '雍正王朝（1999）'],
                          f"Tabs: {labels}")
 
     # ── T2: Section rendering (3 sections, no kw-item rows) ──
@@ -94,7 +94,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_04_section_click_overview_daming(self):
         """Click 大明 概述 section → iframe src = daming-overview.html."""
-        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()
         time.sleep(0.15)  # [speedup]
 
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
@@ -107,7 +107,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_05_section_click_strategy_daming(self):
         """Click 大明 36计策 section → iframe src = daming-strategy-table.html."""
-        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()
         time.sleep(0.15)  # [speedup]
 
         sections = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
@@ -129,7 +129,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
         self.assertTrue(self._iframe_src().endswith('drama/history-overview.html'))
         # Switch to 大明, click 概述
-        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()
         time.sleep(0.15)  # [speedup]
 
         sections2 = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
@@ -143,7 +143,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_07_restore_state(self):
         """Refresh restores group + section."""
-        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()
         time.sleep(0.15)  # [speedup]
 
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()  # 时间轴
@@ -154,7 +154,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
         active = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab.active')
         self.assertEqual(len(active), 1)
-        self.assertEqual(active[0].text.split('\n')[-1].strip(), '大明王朝1566',
+        self.assertEqual(active[0].text.split('\n')[-1].strip(), '大明王朝1566（2007）',
                          "Should restore group")
         self.assertTrue(self._iframe_src().endswith('drama/daming-timeline-table.html'),
                         "Should restore section URL")
@@ -163,7 +163,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_08_daming_timeline_single_table(self):
         """大明时间轴 table 应为单表 17 年号，默认筛选嘉靖（本剧年号）."""
-        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()
         time.sleep(0.15)  # [speedup]
 
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')[1].click()
@@ -182,7 +182,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_17_section_follows_group_switch(self):
         """需求: 切顶部 tab 时左侧 section 跨组保持（大明 36计策 → 中国历史 36计策）."""
-        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[1].click()  # 大明
+        self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()  # 大明
         time.sleep(0.2)  # [speedup]
 
         secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
@@ -203,8 +203,8 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_18_yongzheng_group(self):
         """新增雍正王朝 group：3 tab + 时间轴默认雍正 9 行 + 36计策 8 行."""
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
-        self.assertEqual(len(tabs), 3, f"应有 3 个 tab: {[t.text for t in tabs]}")
-        tabs[2].click()
+        self.assertEqual(len(tabs), 4, f"应有 4 个 tab: {[t.text for t in tabs]}")
+        tabs[3].click()
         time.sleep(0.25)  # [speedup]
 
         secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
@@ -301,7 +301,7 @@ class TestDramaKnowledge(unittest.TestCase):
     def test_15_tab_memory_restore(self):
         """需求 3: 切页签后刷新，恢复之前查看的页签（group 单独记忆）."""
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
-        tabs[1].click()  # 大明王朝1566
+        tabs[2].click()  # 大明王朝1566
         time.sleep(0.2)  # [speedup]
 
         self.driver.refresh()
@@ -333,7 +333,7 @@ class TestDramaKnowledge(unittest.TestCase):
 
     def test_09_no_js_errors(self):
         """Exercise all sections → no JS errors."""
-        for tab_idx in [0, 1]:
+        for tab_idx in [0, 1, 2, 3]:
             self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[tab_idx].click()
             time.sleep(0.15)  # [speedup]
 

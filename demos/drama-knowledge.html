@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260706" type="image/png">
-<title>以剧读史 · 影视历史知识库</title>
+<title>以剧读史 · 以史明智</title>
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -342,7 +342,7 @@ pre code { background: none; padding: 0; }
 }
 
 @media print {
-  .kw-sidebar, .kw-tab-bar, .kw-toolbar, .github-corner { display: none !important; }
+  .kw-sidebar, .kw-tab-bar, .kw-toolbar, .github-corner, .github-corner-hit { display: none !important; }
   .kw-body { color: #000; }
   .kw-welcome { display: none !important; }
   body { background: #fff; }
@@ -350,8 +350,7 @@ pre code { background: none; padding: 0; }
 
 /* ── GitHub Corner ── */
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
-.github-corner svg { pointer-events: none; }
-.github-corner .octo-arm, .github-corner .octo-body { pointer-events: visiblePainted; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
 .kw-sidebar::-webkit-scrollbar { width: 4px; }
@@ -373,6 +372,7 @@ pre code { background: none; padding: 0; }
     <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
   </svg>
 </a>
+<a class="github-corner-hit" href="https://github.com/imjaden/html-gen" target="_blank" rel="noopener" aria-label="GitHub"></a>
 
 <div class="kw-wrapper">
 
@@ -380,7 +380,7 @@ pre code { background: none; padding: 0; }
     <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
-      <div class="sidebar-title" title="以剧读史 · 影视历史知识库">📚 以剧读史 · 影视历史知识库</div>
+      <div class="sidebar-title" title="以剧读史 · 以史明智">📚 以剧读史 · 以史明智</div>
       <div class="sub"></div>
     </div>
     <div id="kwSectionsContainer"></div>
@@ -399,7 +399,7 @@ pre code { background: none; padding: 0; }
     <div class="kw-tab-bar" id="kwTabBar"></div>
     <div class="kw-content">
       <div class="kw-welcome active" id="welcomePanel">
-        <div class="w-title">📚 以剧读史 · 影视历史知识库</div>
+        <div class="w-title">📚 以剧读史 · 以史明智</div>
         <div class="w-sub">从上方类目选择，浏览整理的知识内容。</div>
         <div class="w-legend" id="wLegend"></div>
       </div>
@@ -414,8 +414,8 @@ pre code { background: none; padding: 0; }
 
 <script>
 (function() {
-  const GROUPS = [{"key": "中国历史", "label": "中国历史", "icon": "🏛️"}, {"key": "大明王朝1566", "label": "大明王朝1566", "icon": "📜"}, {"key": "雍正王朝", "label": "雍正王朝", "icon": "👑"}];  // [{key, label, icon}]
-  const ITEMS  = [{"title": "概述", "group": "中国历史", "section": "概述", "url": "drama/history-overview.html", "section_icon": "📋"}, {"title": "时间轴", "group": "中国历史", "section": "时间轴", "url": "drama/history-timeline-table.html", "section_icon": "📅"}, {"title": "36计策", "group": "中国历史", "section": "36计策", "url": "drama/history-strategy-table.html", "section_icon": "🧮"}, {"title": "概述", "group": "大明王朝1566", "section": "概述", "url": "drama/daming-overview.html", "section_icon": "📋"}, {"title": "时间轴", "group": "大明王朝1566", "section": "时间轴", "url": "drama/daming-timeline-table.html", "section_icon": "📅"}, {"title": "36计策", "group": "大明王朝1566", "section": "36计策", "url": "drama/daming-strategy-table.html", "section_icon": "🧮"}, {"title": "概述", "group": "雍正王朝", "section": "概述", "section_icon": "📋", "url": "drama/yongzheng-overview.html"}, {"title": "时间轴", "group": "雍正王朝", "section": "时间轴", "section_icon": "📅", "url": "drama/yongzheng-timeline-table.html"}, {"title": "36计策", "group": "雍正王朝", "section": "36计策", "section_icon": "🧮", "url": "drama/yongzheng-strategy-table.html"}];   // [{title, group, section?, badge?, url?, desc?}]
+  const GROUPS = [{"key": "中国历史", "label": "中国历史", "icon": "🏛️"}, {"key": "朱元璋（2006）", "label": "朱元璋（2006）", "icon": "⚔️"}, {"key": "大明王朝1566（2007）", "label": "大明王朝1566（2007）", "icon": "📜"}, {"key": "雍正王朝（1999）", "label": "雍正王朝（1999）", "icon": "👑"}];  // [{key, label, icon}]
+  const ITEMS  = [{"title": "概述", "group": "中国历史", "section": "概述", "url": "drama/history-overview.html", "section_icon": "📋"}, {"title": "时间轴", "group": "中国历史", "section": "时间轴", "url": "drama/history-timeline-table.html", "section_icon": "📅"}, {"title": "36计策", "group": "中国历史", "section": "36计策", "url": "drama/history-strategy-table.html", "section_icon": "🧮"}, {"title": "概述", "group": "朱元璋（2006）", "section": "概述", "url": "drama/zhuyuanzhang-overview.html", "section_icon": "📋"}, {"title": "时间轴", "group": "朱元璋（2006）", "section": "时间轴", "url": "drama/zhuyuanzhang-timeline-table.html", "section_icon": "📅"}, {"title": "36计策", "group": "朱元璋（2006）", "section": "36计策", "url": "drama/zhuyuanzhang-strategy-table.html", "section_icon": "🧮"}, {"title": "概述", "group": "大明王朝1566（2007）", "section": "概述", "url": "drama/daming-overview.html", "section_icon": "📋"}, {"title": "时间轴", "group": "大明王朝1566（2007）", "section": "时间轴", "url": "drama/daming-timeline-table.html", "section_icon": "📅"}, {"title": "36计策", "group": "大明王朝1566（2007）", "section": "36计策", "url": "drama/daming-strategy-table.html", "section_icon": "🧮"}, {"title": "概述", "group": "雍正王朝（1999）", "section": "概述", "section_icon": "📋", "url": "drama/yongzheng-overview.html"}, {"title": "时间轴", "group": "雍正王朝（1999）", "section": "时间轴", "section_icon": "📅", "url": "drama/yongzheng-timeline-table.html"}, {"title": "36计策", "group": "雍正王朝（1999）", "section": "36计策", "section_icon": "🧮", "url": "drama/yongzheng-strategy-table.html"}];   // [{title, group, section?, badge?, url?, desc?}]
 
   let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
   let activeItem = null;

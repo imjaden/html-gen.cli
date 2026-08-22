@@ -1,0 +1,144 @@
+{
+  "columns": [
+    {
+      "key": "era",
+      "label": "年号",
+      "type": "pills",
+      "sortable": true,
+      "locale": "zh",
+      "width": "80px",
+      "freeze": true,
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "emperor",
+      "label": "皇帝",
+      "sortable": true,
+      "locale": "zh",
+      "width": "130px",
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "temple",
+      "label": "庙号",
+      "type": "pills",
+      "sortable": true,
+      "locale": "zh",
+      "width": "70px",
+      "preview": true,
+      "onCellClick": "split"
+    },
+    {
+      "key": "period",
+      "label": "起止年份",
+      "sortable": true,
+      "locale": "zh",
+      "width": "100px",
+      "preview": true
+    },
+    {
+      "key": "figures",
+      "label": "关键人物",
+      "sortable": true,
+      "locale": "zh",
+      "width": "180px",
+      "preview": true,
+      "splitFull": true
+    },
+    {
+      "key": "events",
+      "label": "主要事件",
+      "sortable": true,
+      "locale": "zh",
+      "width": "280px",
+      "preview": true,
+      "splitFull": true
+    },
+    {
+      "key": "source",
+      "label": "出处",
+      "sortable": true,
+      "locale": "zh",
+      "width": "170px",
+      "preview": true
+    }
+  ],
+  "data": [
+    {
+      "era": "至正",
+      "emperor": "元顺帝",
+      "temple": "元惠宗",
+      "period": "1328—1368",
+      "figures": "朱元璋、郭子兴、刘福通",
+      "events": "红巾军起义，朱元璋投濠州义军",
+      "source": "《明史》·本剧前史"
+    },
+    {
+      "era": "至正",
+      "emperor": "元顺帝",
+      "temple": "元惠宗",
+      "period": "1352—1356",
+      "figures": "朱元璋、马皇后、常遇春",
+      "events": "投郭子兴，克集庆（应天府）",
+      "source": "剧中设定（史实 1356 克集庆）"
+    },
+    {
+      "era": "至正",
+      "emperor": "元顺帝",
+      "temple": "元惠宗",
+      "period": "1363—1368",
+      "figures": "朱元璋、徐达、陈友谅、张士诚",
+      "events": "鄱阳湖大败陈友谅，灭张士诚，北伐灭元",
+      "source": "史实·本剧主线"
+    },
+    {
+      "era": "洪武",
+      "emperor": "朱元璋",
+      "temple": "明太祖",
+      "period": "1368—1398",
+      "figures": "朱元璋、马皇后、刘基、李善长",
+      "events": "开国建明，废丞相，设锦衣卫，八股取士",
+      "source": "《明史》·本剧主线"
+    },
+    {
+      "era": "洪武",
+      "emperor": "朱元璋",
+      "temple": "明太祖",
+      "period": "1376—1393",
+      "figures": "胡惟庸、蓝玉、空印案涉案官员",
+      "events": "四大案：空印案、胡惟庸案、郭桓案、蓝玉案",
+      "source": "史实"
+    },
+    {
+      "era": "洪武",
+      "emperor": "朱元璋",
+      "temple": "明太祖",
+      "period": "1392—1398",
+      "figures": "朱标、朱允炆、朱棣",
+      "events": "太子朱标早逝，立皇太孙允炆，朱元璋驾崩",
+      "source": "《明史》·本剧余波"
+    },
+    {
+      "era": "建文",
+      "emperor": "朱允炆",
+      "temple": "明惠帝",
+      "period": "1399—1402",
+      "figures": "朱允炆、方孝孺、朱棣",
+      "events": "削藩引发靖难之役，成祖夺位",
+      "source": "《明史》·剧后"
+    }
+  ],
+  "tabs": [],
+  "options": {
+    "pageSize": 30,
+    "exportCSV": true,
+    "search": true,
+    "showIndex": true,
+    "defaultFilter": {
+      "key": "era",
+      "value": "洪武"
+    }
+  }
+}
