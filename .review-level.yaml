@@ -169,3 +169,14 @@ review_history:
     findings_open: 0
     tracking: HG-SEC-005..HG-SEC-006 (recheck closed)
     report: documents/review/drama-zhuyuanzhang-implementation-review-v1.0-20260822.md
+  - date: 2026-08-23
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "index-landing-design v1.0 — 根 index.html 落地页 (hero 100vh + 模板网格) + README 精简 + commit 87834ef"
+    verdict: PASS
+    score: 95
+    findings_total: 5
+    findings_open: 1
+    tracking: HG-SEC-007 (路径迁移清单通配符漏 2 个 templates 文件) + 🟢 SEC-008..011
+    report: documents/review/index-landing-design-review-v1.0-20260823.md
