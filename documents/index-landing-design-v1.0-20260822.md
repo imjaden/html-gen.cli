@@ -2,6 +2,7 @@
 
 ## 版本
 
+v1.1 (2026-08-22) — 修订 HG-SEC-007：路径迁移清单补全（16 目标文件 + 1 CSS，实测 demos/index.html 全部 href）
 v1.0 (2026-08-22)
 
 ## 背景与问题来源
@@ -76,18 +77,31 @@ GitHub Pages（html-gen.lab.jaden.tech，CNAME 已配置）当前站点首页为
 
 ### 2. 相对路径迁移清单（demos/index.html → 根 index.html）
 
-| 原路径 (demos 下) | 新路径 (根) |
-|:---|:---|
-| `../style-guide.css` | `style-guide.css` |
-| `templates/template-*-guide-v1.0-20260707.html` | `demos/templates/template-*-guide-v1.0-20260707.html` |
-| `demos-index.html` | `demos/demos-index.html` |
-| `features/hermes-profile-skills-list.html` | `demos/features/hermes-profile-skills-list.html` |
-| `features/phase2-demo.html` | `demos/features/phase2-demo.html` |
-| `drama-knowledge.html` | `demos/drama-knowledge.html` |
-| `cloudwise-business-analysis.html` | `demos/cloudwise-business-analysis.html` |
-| `chaitin-business-analysis.html` | `demos/chaitin-business-analysis.html` |
+实测 demos/index.html 全部 17 处本地引用（`grep -oE '(href|src)="[^"]*"' | grep -v https`），逐条迁移：
 
-共 8 处引用点（7 个目标文件 + 1 个 CSS）。根目录已有 style-guide.css（6361 字节），复用不复制。
+| # | 原路径 (demos 下) | 新路径 (根) |
+|:--:|:---|:---|
+| 1 | `../style-guide.css?=20260705` | `style-guide.css?=20260705` |
+| 2 | `chaitin-business-analysis.html` | `demos/chaitin-business-analysis.html` |
+| 3 | `cloudwise-business-analysis.html` | `demos/cloudwise-business-analysis.html` |
+| 4 | `countries/countries-table.html` | `demos/countries/countries-table.html` |
+| 5 | `demos-index.html` | `demos/demos-index.html` |
+| 6 | `drama-knowledge.html` | `demos/drama-knowledge.html` |
+| 7 | `features/hermes-profile-skills-list.html` | `demos/features/hermes-profile-skills-list.html` |
+| 8 | `features/knowledge-demo.html` | `demos/features/knowledge-demo.html` |
+| 9 | `features/phase2-demo.html` | `demos/features/phase2-demo.html` |
+| 10 | `features/table-actions-demo.html` | `demos/features/table-actions-demo.html` |
+| 11 | `html-gen-usage-guide-v1.0-20260707.html` | `demos/html-gen-usage-guide-v1.0-20260707.html` |
+| 12 | `templates/template-A-guide-v1.0-20260707.html` | `demos/templates/template-A-guide-v1.0-20260707.html` |
+| 13 | `templates/template-B-guide-v1.0-20260707.html` | `demos/templates/template-B-guide-v1.0-20260707.html` |
+| 14 | `templates/template-B-markdown-spec-v1.0-20260707.html` | `demos/templates/template-B-markdown-spec-v1.0-20260707.html` |
+| 15 | `templates/template-C-guide-v1.0-20260707.html` | `demos/templates/template-C-guide-v1.0-20260707.html` |
+| 16 | `templates/template-D-guide-v1.0-20260707.html` | `demos/templates/template-D-guide-v1.0-20260707.html` |
+| 17 | `templates/template-D-slide-demo.html` | `demos/templates/template-D-slide-demo.html` |
+
+共 **17 处引用（16 个目标 HTML 文件 + 1 个 CSS）**。根目录已有 style-guide.css（6361 字节），复用不复制。
+
+> 修订说明（v1.1，HG-SEC-007）：v1.0 清单以 `template-*-guide-*` 通配符概括 templates/ 组，漏掉非 guide 模板 `template-B-markdown-spec` 与 `template-D-slide-demo`（review 发现），且漏掉 `countries/countries-table.html`、`features/knowledge-demo.html`、`features/table-actions-demo.html`、`html-gen-usage-guide-v1.0-20260707.html` 4 个非 templates 目标文件（ops 独立 grep 发现）。v1.1 改为完整逐条清单。
 
 ### 3. README.md 精简（4B）
 
