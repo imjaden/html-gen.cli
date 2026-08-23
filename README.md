@@ -2,7 +2,7 @@
 
 零依赖 Python CLI 工具：将 Markdown/JSON 注入 HTML 模板，输出自包含单文件 HTML。深色主题，中文优先。
 
-- 站点首页（四型模板展示 + 安装使用）: https://html-gen.lab.jaden.tech/
+- 站点首页（四型模板展示 + 安装使用）: https://html-gen.cli.jaden.tech/
 - 模板源码: `layout-table.html` (A 型表格) / `layout-doc.html` (B 型文档) / `layout-knowledge.html` (C 型知识库) / `layout-slide.html` (D 型幻灯片)
 - 生成器: `html-gen.py`（仅 Python 3 标准库，零外部依赖）
 - 主题基座: `style-guide.css`（--cobalt-* 深色变量）
