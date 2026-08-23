@@ -113,9 +113,20 @@ html-gen slide -h
 
 ---
 
+## 模板案例
+
+该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：
+
+| 案例 | 说明 | 文件 |
+|:---|:---|:---|
+| [Slide 幻灯片版](template-D-slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | templates/template-D-slide-demo.html |
+
+---
+
 ## 迭代记录
 
 | 版本 | 日期 | 变更 |
 |:---|:---:|:---|
 | v1.0 | 2026-07-14 | 初版：h2 分页 + 键盘导航 + 全屏 + 进度圆点 + 页码 + 记忆 |
 | v1.1 | 2026-07-22 | H3 子标题开关 + 性能警告（>50 h2）+ slide-cover 封面页 |
+| v1.2 | 2026-08-23 | 新增「模板案例」章节（★ featured 精选） |

@@ -191,6 +191,22 @@ report.html?width=narrow
 
 ---
 
+## 模板案例
+
+该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：
+
+| 案例 | 说明 | 文件 |
+|:---|:---|:---|
+| [使用指南](../html-gen-usage-guide-v1.0-20260707.html) | html-gen 完整使用说明 | html-gen-usage-guide-v1.0-20260707.html |
+| [A 型 · 表格模板说明](template-A-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · 功能清单 | templates/template-A-guide-v1.0-20260707.html |
+| [B 型 · 文档模板说明](template-B-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · URL 入参控制 | templates/template-B-guide-v1.0-20260707.html |
+| [Markdown 语法规范](template-B-markdown-spec-v1.0-20260707.html) | 支持的语法子集 · 规则 · 常见错误 | templates/template-B-markdown-spec-v1.0-20260707.html |
+| [C 型 · 知识库模板说明](template-C-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · 数据格式 | templates/template-C-guide-v1.0-20260707.html |
+| [D 型 · 幻灯片模板说明](template-D-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · 演示模式 | templates/template-D-guide-v1.0-20260707.html |
+| [Slide 幻灯片版](template-D-slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | templates/template-D-slide-demo.html |
+
+---
+
 ## 迭代记录
 
 | 版本 | 日期 | 变更 |
@@ -200,3 +216,4 @@ report.html?width=narrow
 | v2.0 | 2026-08-11 | Bare 模式（默认隐藏 sidebar/toolbar，?sidebar=1&toolbar=1 展示）；折叠/拖拽/搜索/H3 开关/中英双语/主题切换 |
 | v2.1 | 2026-08-18 | meta 去路径行；标题点击复制 fallback 完整 URL |
 | v2.2 | 2026-08-19 | URL 入参控制展示设置（width=wide/narrow、sidebar/toolbar 正交） |
+| v2.3 | 2026-08-23 | 新增「模板案例」章节（★ featured 精选） |
