@@ -199,6 +199,17 @@ review_history:
     verdict: PASS
     score: 100
     findings_total: 1
-    findings_open: 1
-    tracking: HG-SEC-014 (🟢 record; 前置 HG-SEC-012/013 closed)
+    findings_open: 0
+    tracking: HG-SEC-014 (🟢 record; closed 2026-08-23 ops 尾项处置 20ed1a9; 前置 HG-SEC-012/013 closed)
     report: documents/review/index-landing-ui-polish-implementation-review-v1.0-20260823.md
+  - date: 2026-08-23
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "html-gen→html-gen.cli 改名 — 未 push 1 commit (020ac34; 982a818 CNAME 已含于 github/main), R1-R5 (46 html github 链接替换 + README/CNAME 域名 + A/B 上箭头 + 手工微调 4 项 + gitee remote 配置)"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 1
+    tracking: HG-SEC-015 (🟢 record; href=\"#\" 空锚点细节)
+    report: documents/review/html-gen-cli-rename-implementation-review-v1.0-20260823.md

@@ -362,3 +362,39 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 - review-log 三 🟢 全部关闭（HG-SEC-012/013/014），无新增 findings
 - 待推 4 commits 由 review 授权（实现审计 PASS 100/A）
+
+---
+
+## 2026-08-23 — html-gen → html-gen.cli 改名实现审计（github/pages links 批量更新 + 上箭头返回首页 + 手工微调）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (Implementation Audit)
+- **Scope**: 未 push commits（github/main..HEAD 1 个：020ac34；982a818 CNAME 已含于 github/main，gitee 尚缺 2 个），改名 R1-R5（46 html github 链接替换 + README/CNAME 域名 + A/B 上箭头 + 手工微调 4 项 + gitee remote 配置）
+- **Verdict**: PASS
+- **Score**: 100 / 100 (Rating: A)
+
+### Summary
+
+实现与用户确认清单 R1-R5 逐条一致：① github 链接 46 文件批量替换完整（`git grep html-gen.cli` = 46；旧链接排除历史文档 0 残留；双后缀 html-gen.cli.cli 0；knowledge-demo 单链接无 hit 层正确）；② README 站点链接 + CNAME 双更新为 html-gen.cli.jaden.tech，产品名 D1A 严格保持（README h1/index title/hero 均为 "html-gen" 未误改）；③ 上箭头 A 形式（h2 标题行可见文本链接 + 全局 smooth）与 B 形式（固定按钮初始 opacity/visibility 隐藏、scrollY > innerHeight 显示、回顶隐藏、aria-label）双实现符合 D5C；④ 手工微调 4 项全部纳入（hero-blocks 1024px / demo-name display:block / '↓ 模板说明' / 四卡「模板」措辞 8 处）；⑤ R5 gitee origin remote set-url 正确（origin→gitee html-gen.cli.git、github→github html-gen.cli.git，无 commit）。历史文档边界清晰：documents/ review-log .review-level.yaml cache/ diff 0 文件，旧链接仅保留于设计评审报告（预期）；demos/index.html featured 清单零误改。全量 pytest 独立复核 146 passed（25.28s，无 flaky 复现）。无凭证、无 XSS、无新增外部资源。1 个 🟢 记录（HG-SEC-015 href="#" 空锚点实现细节，不阻断）。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-015 | 🟢 | A/B 上箭头均用 `href="#"` 空锚点（会替换 URL hash、依赖全局 smooth），建议改 `href="#top"` + 显式 scrollTo；行为已验证正确，无安全影响 | index.html:216,360 | ⏳ Open（待确认：接受或后续优化） |
+
+### Positives
+
+- 链接替换干净彻底：46/46 覆盖、0 残留、0 双后缀，sed 边界控制（历史文档/cache 保留旧链接）严格
+- D1A 产品名约束被严格遵守：仅链接与域名变更，README h1 / index title / hero 产品名零误改
+- commit 单一性符合 D6B：R1-R4 合成 1 个 commit，R5 为 git 配置无 commit；CNAME 用户提交独立清晰
+- A/B 上箭头可访问性达标：A 可见文本、B aria-label，均非纯图标裸链接
+- ops 证据链完整且与独立复核一致（grep 残留 0、Selenium 8094 四断言、pytest 146 passed 复核无 flaky）
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-015 | A/B 上箭头 href="#" 空锚点细节 | 🟢 | P3 | ⏳ Open（待确认：接受或后续优化） |
+
+---
