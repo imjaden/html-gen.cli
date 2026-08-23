@@ -289,3 +289,22 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 | HG-SEC-013 | 内链缺 rel="noopener" | 🟢 | P3 | ⏳ Open（待确认：建议批量补） |
 
 
+
+---
+
+## 2026-08-23 — index-landing 实现审计尾项处置（HG-SEC-012/013）
+
+- **处置方**: ops（实现审计 PASS 100/A 后尾项）
+- **Scope**: HG-SEC-012（README 快速开始与设计 §3 偏差）、HG-SEC-013（内链缺 rel="noopener"）
+
+### 处置决定
+
+| # | Severity | 决定 | 依据 |
+|:--:|:---:|:---|:---|
+| HG-SEC-012 | 🟢 | 接受现状（README 保留简短快速开始） | README 是 GitHub 仓库主页，保留 4 条可执行命令对访客直接可用；27 行已满足"精简为仓库说明"（4B）；设计 §3 移除清单为草稿口径，实现保留更符合用户意图 |
+| HG-SEC-013 | 🟢 | 已补（ops 批量修复） | index.html 14 个内链 target="_blank" 补 rel="noopener"，headless Chrome 复测无 JS 错误、hero 100vh、4 卡正常 |
+
+### 复核
+
+- HG-SEC-013 修复 commit 后全量 pytest 146 passed 无回归（前一轮已验，本轮仅属性级修改）
+- review-log 两 🟢 关闭，无新增 findings
