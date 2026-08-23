@@ -398,3 +398,21 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 | HG-SEC-015 | A/B 上箭头 href="#" 空锚点细节 | 🟢 | P3 | ⏳ Open（待确认：接受或后续优化） |
 
 ---
+
+---
+
+## 2026-08-23 — html-gen.cli 改名审计尾项处置（HG-SEC-015）
+
+- **处置方**: ops（实现审计 PASS 100/A 后尾项）
+- **Scope**: HG-SEC-015（A/B 上箭头 href="#" 空锚点）
+
+### 处置决定
+
+| # | Severity | 决定 | 依据 |
+|:--:|:---:|:---|:---|
+| HG-SEC-015 | 🟢 | 已优化（ops 直改） | index.html `<html>` 加 id="top"，A/B 上箭头 href 改 `#top`（不再污染 URL hash，依赖全局 smooth scroll 行为不变）；Selenium 复测 A/B 回顶 scrollY=0 通过 |
+
+### 复核
+
+- 改动仅 index.html 2 行 + html 标签；Selenium 8094 复测四断言通过；pytest 全量 146 passed（上一轮已验，本轮属性级）
+- review-log 四 🟢 全部关闭（HG-SEC-012/013/014/015）
