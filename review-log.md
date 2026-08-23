@@ -344,3 +344,21 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 | HG-SEC-012 | README 快速开始与设计 §3 偏差 | 🟢 | P3 | ✅ Closed（2026-08-23 尾项处置：接受现状） |
 | HG-SEC-013 | 内链缺 rel="noopener" | 🟢 | P3 | ✅ Closed（2026-08-23 尾项处置：ops 已补） |
 | HG-SEC-014 | layout 模板层 github-corner-hit 残留 | 🟢 | P3 | ⏳ Open（待确认：接受或模板统一时迁移） |
+
+---
+
+## 2026-08-23 — index-landing UI polish 审计尾项处置（HG-SEC-014）
+
+- **处置方**: ops（实现审计 PASS 100/A 后尾项）
+- **Scope**: HG-SEC-014（layout 模板层 github-corner-hit 残留）
+
+### 处置决定
+
+| # | Severity | 决定 | 依据 |
+|:--:|:---:|:---|:---|
+| HG-SEC-014 | 🟢 | 接受现状，不迁移 | layout 模板层（layout-doc/table/knowledge）生成的 demo 页右上角有工具栏按钮，`.github-corner-hit` 双层可点区（外层 pointer-events:none 穿透 + hit 36px）是 2026-08 有意设计（commit 204f9e1 "github-corner 双层可点区(外层穿透+hit 36px) 防遮挡工具栏按钮"），与根落地页（无工具栏）场景不同；如模板统一时移除需回归验证工具栏可点性，本次范围仅根落地页，不动模板层 |
+
+### 复核
+
+- review-log 三 🟢 全部关闭（HG-SEC-012/013/014），无新增 findings
+- 待推 4 commits 由 review 授权（实现审计 PASS 100/A）
