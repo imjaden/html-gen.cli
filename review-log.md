@@ -433,3 +433,39 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 ### 复核
 
 - AGENTS.md 已记录两模式差异；review-log 五 🟢 全部关闭（HG-SEC-012/013/014/015）
+
+---
+
+## 2026-08-23 — 落地页回归测试 + 文档同步实现审计（P1-P4）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (Implementation Audit)
+- **Scope**: 未 push 3 commits（221be4a test@ / 402fe29 docs@ / 68d2734 docs@），P1-P4：test_index_landing 落地页回归测试 8 用例 + AGENTS/features 同步（双源漂移备注 + 测试数 154 + github-corner 差异文档化）+ review-log HG-SEC-014 文档化关闭
+- **Verdict**: PASS
+- **Score**: 100 / 100 (Rating: A)
+
+### Summary
+
+3 commits 与 P1-P6 逐条一致。P1 回归测试 8 用例断言真实行为（hero 100vh 比例 >0.95、github-corner pointer-events auto + hover octocat-wave + 链接 html-gen.cli + 无 hit 区、scroll-hint 滑屏到位 <60px、back-top A/B href=#top 回顶 scrollY==0 与显隐、四卡标题「案例演示」+ demo-item 结构、无 JS 错误、无旧链接旧域名），独立复跑 8 passed in 6.83s；pytest --collect-only 154 与 AGENTS.md 18 文件逐文件计数完全一致。P2 双源漂移备注（根 index.html 与 demos/index.html 独立副本 + featured 数据源 + github-corner 两模式）准确；P3 AGENTS/features 同步仅覆盖需求 4 主题（测试数/目录/备注/GitHub Corner 行），无额外漂移；P4 模板层「穿透+hit 36px」vs 根落地页「全可点+hover」差异文档化，HG-SEC-014 关闭记录合规。P5 线上 7 URL 全 200、drama 页 github-corner 指向 html-gen.cli、demos/ 旧链接 0 残留。P6 ops profile html-gen-workflow skill 已含 test_index_landing 信息（跨 profile 只读核查）。commit 分组 test@/docs@ 职责分离。HG-SEC-015 关闭属实（b940b3b 已在 github/main：index.html html id=top + href=#top），本次同步 .review-level.yaml 前置条目 findings_open 1→0。2 个 🟢 记录（HG-SEC-016 review-log「五 🟢」计数与 4 个 ID 不符 + 与前置尾项处置条目重复；HG-SEC-017 _errors() 覆盖 1/8），均不阻断，由 ops 尾项处置。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-016 | 🟢 | review-log 68d2734「五 🟢 全部关闭」与所列 4 个 ID（012/013/014/015）不符，应为「四」；且与前置「HG-SEC-014 尾项处置」条目（L350）重复关闭同一 finding | review-log.md:435 | ⏳ Open（待确认：修正计数或合并条目） |
+| HG-SEC-017 | 🟢 | test_index_landing 仅 test_01 调用 _errors()（1/8 覆盖），后续测试方法若触发 console 错误将漏检；项目约定「每个测试方法独立加载页面，_errors() 检查 JS 错误」 | tests/test_index_landing.py | ⏳ Open（待确认：补断言或文档化豁免） |
+
+### Positives
+
+- 断言全部指向真实行为（几何/计算样式/动画/滚动位置），无脆弱属性快照；hero 用比例而非硬编码像素
+- 等待机制稳健：主元素 WebDriverWait + 交互固定 sleep（1.2s 有 skill 文档依据，smooth scroll 完成），file:// 下 hash 规范化坑（split('#')[-1]）已处理
+- 测试数 154 逐文件核对一致（collect-only 18 文件求和），AGENTS/features 同步零漂移
+- HG-SEC-015 修复链完整（review 记录 → b940b3b 修复 → 本次验证 #top 在线上文件 + YAML findings_open 同步）
+- commit 分组干净：test@（测试文件）/ docs@（文档）/ docs@（review-log）三 commit 单一职责
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-016 | review-log「五 🟢」计数不符 + 重复关闭条目 | 🟢 | P3 | ⏳ Open |
+| HG-SEC-017 | test_index_landing _errors() 覆盖不足 | 🟢 | P3 | ⏳ Open |
