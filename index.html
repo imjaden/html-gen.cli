@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png?=20260705" type="image/png">
+<title>html-gen · 零依赖 HTML 模板生成器</title>
+<link rel="stylesheet" href="style-guide.css?=20260705">
+<style>
+/* ═══════ 落地页自定义样式（基于 style-guide.css --surface-*/--cobalt-* 变量）═══════ */
+
+/* ── Hero 第一屏：100vh 整屏 ── */
+.hero {
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  padding: 80px 24px 120px;
+  position: relative;
+}
+.hero-title {
+  font-size: clamp(2.6rem, 7vw, 4.6rem);
+  font-weight: 800;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  background: linear-gradient(180deg, #ffffff 20%, var(--cobalt-400) 100%);
+  -webkit-background-clip: text;
+  background-clip: text;
+  color: transparent;
+}
+.hero-tagline {
+  font-size: 1.05rem;
+  color: #9ca3af;
+  max-width: 760px;
+  margin: 20px auto 44px;
+  line-height: 1.8;
+}
+.hero-blocks {
+  display: flex;
+  gap: 20px;
+  width: 100%;
+  max-width: 880px;
+  flex-wrap: wrap;
+  justify-content: center;
+}
+.hero-block {
+  flex: 1 1 340px;
+  background: var(--surface-900);
+  border: 1px solid #1a1a2e;
+  border-radius: 14px;
+  padding: 20px;
+  text-align: left;
+}
+.hero-block .block-title {
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #f0f0f0;
+  margin-bottom: 12px;
+}
+.code-block {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: 8px;
+  padding: 12px 14px;
+  font-family: var(--font-mono);
+  font-size: 0.78rem;
+  line-height: 1.7;
+  color: #b0b0c0;
+  overflow-x: auto;
+}
+.code-block + .code-block { margin-top: 8px; }
+.code-block .prompt { color: #6b7280; }
+.code-block .cmd { color: #e0e0e0; }
+.scroll-hint {
+  position: absolute;
+  bottom: 30px;
+  left: 50%;
+  transform: translateX(-50%);
+  color: #6b7280;
+  font-size: 0.85rem;
+  letter-spacing: 0.12em;
+  animation: scroll-bounce 2s ease-in-out infinite;
+}
+@keyframes scroll-bounce {
+  0%, 100% { transform: translateX(-50%) translateY(0); }
+  50% { transform: translateX(-50%) translateY(6px); }
+}
+
+/* ── 第二屏：模板展示网格（样式复制自 demos/index.html）── */
+.templates {
+  padding: 56px 32px 80px;
+  max-width: 1800px;
+  margin: 0 auto;
+}
+.templates-title {
+  font-size: 1.5rem;
+  font-weight: 700;
+  color: #f0f0f0;
+  text-align: center;
+  margin-bottom: 6px;
+}
+.templates-sub {
+  font-size: 0.85rem;
+  color: #6b7280;
+  text-align: center;
+  margin-bottom: 40px;
+}
+.template-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
+.tpl { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+.tpl-head { padding: 18px 20px 14px; border-bottom: 1px solid #2a2a3e; display: flex; align-items: center; gap: 10px; }
+.tpl-head .tpl-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
+.tpl-head .tpl-icon.ia { background: rgba(79,70,229,0.15); }
+.tpl-head .tpl-icon.ib { background: rgba(52,211,153,0.15); }
+.tpl-head .tpl-icon.ic { background: rgba(251,146,60,0.15); }
+.tpl-head .tpl-icon.id { background: rgba(236,72,153,0.15); }
+.tpl-head .tpl-name { font-size: 1.05rem; font-weight: 600; color: #f0f0f0; }
+.tpl-head .tpl-file { font-size: 0.7rem; color: #6b7280; font-family: var(--font-mono); }
+.tpl-body { padding: 16px 20px 20px; flex: 1; }
+.scenarios { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
+.scenario-pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; border: 1px solid #2a2a3e; color: #9ca3af; }
+.features { margin-bottom: 14px; }
+.features li { font-size: 0.78rem; color: #c0c0c0; line-height: 1.7; padding-left: 18px; position: relative; }
+.features li::before { content: '▸'; position: absolute; left: 0; color: #555; }
+.cli-box { background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.6; color: #b0b0c0; margin-bottom: 14px; overflow-x: auto; }
+.cli-box .prompt { color: #6b7280; }
+.cli-box .cmd { color: #e0e0e0; }
+.demos { }
+.demos-title { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.demo-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid #1a1a2e; border-radius: 8px; margin-bottom: 6px; transition: all 0.15s; text-decoration: none; }
+.demo-item:hover { border-color: var(--cobalt-700); background: rgba(79,70,229,0.04); }
+.demo-item .demo-icon { font-size: 1rem; flex-shrink: 0; }
+.demo-item .demo-info { flex: 1; min-width: 0; }
+.demo-item .demo-info .demo-name { font-size: 0.8rem; font-weight: 500; color: #e0e0e0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-item .demo-info .demo-desc { font-size: 0.7rem; color: #6b7280; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-item .demo-arrow { color: #555; font-size: 0.8rem; }
+@media (max-width: 1100px) { .template-grid { grid-template-columns: 1fr; } }
+@media (max-width: 760px) { .hero-blocks { flex-direction: column; } }
+.tpl-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
+.tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
+.tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+</style>
+</head>
+<body>
+<a href="https://github.com/imjaden/html-gen" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
+  <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+<a class="github-corner-hit" href="https://github.com/imjaden/html-gen" target="_blank" rel="noopener" aria-label="GitHub"></a>
+
+<section class="hero">
+  <h1 class="hero-title">html-gen</h1>
+  <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML · 深色主题 · 中文优先</p>
+  <div class="hero-blocks">
+    <div class="hero-block">
+      <div class="block-title">⚡ 安装</div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">bash install.sh install</span></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">export PATH="$HOME/.local/bin:$PATH"</span></div>
+    </div>
+    <div class="hero-block">
+      <div class="block-title">🚀 快速开始</div>
+      <div class="code-block">
+        <div><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html --title "标题"</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span></div>
+        <div><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span></div>
+      </div>
+    </div>
+  </div>
+  <div class="scroll-hint">↓ 模板展示</div>
+</section>
+
+<section class="templates">
+  <h2 class="templates-title">四型模板 · 一套深色主题</h2>
+  <p class="templates-sub">从 Markdown / JSON 一键生成自包含单文件 HTML</p>
+
+  <div class="template-grid">
+
+    <!-- ════ A 型 · 数据表格 ════ -->
+    <div class="tpl">
+      <div class="tpl-head">
+        <div class="tpl-icon ia">📊</div>
+        <div>
+          <div class="tpl-name">A 型 · 数据表格 <a class="tpl-guide" href="demos/templates/template-A-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
+          <div class="tpl-file">layout-table.html (1110 行)</div>
+        </div>
+      </div>
+      <div class="tpl-body">
+        <div class="scenarios">
+          <span class="scenario-pill">文件索引</span><span class="scenario-pill">项目管理</span>
+          <span class="scenario-pill">数据浏览</span><span class="scenario-pill">技能清单</span>
+        </div>
+        <ul class="features">
+          <li>🔍 实时搜索 + Cmd+F Spotlight 弹窗</li>
+          <li>🔽 多字段排序 + Shift 二级排序 + 中文 locale</li>
+          <li>📏 密度切换 (紧凑/标准/舒适)</li>
+          <li>🖱️ 四种点击模式 (新标签/弹出面板/分栏预览/行内展开)</li>
+          <li>📌 快速过滤 (点击单元格值) + 列冻结</li>
+          <li>⌨️ 键盘导航 ↑↓ + F 全屏 + 批量操作</li>
+        </ul>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span></div>
+        <div class="demos">
+          <div class="demos-title">案例演示</div>
+          <a class="demo-item" href="demos/demos-index.html" target="_blank">
+            <span class="demo-icon">📋</span><span class="demo-info"><span class="demo-name">DEMO 案例索引</span><span class="demo-desc">全站文件清单 · 模板/大小/更新时间</span></span><span class="demo-arrow">→</span></a>
+          <a class="demo-item" href="demos/features/hermes-profile-skills-list.html" target="_blank">
+            <span class="demo-icon">🧠</span><span class="demo-info"><span class="demo-name">Hermes Skills 清单</span><span class="demo-desc">98 个 Skill · 15 个分类 · 全 Profile</span></span><span class="demo-arrow">→</span></a>
+          <a class="demo-item" href="demos/features/phase2-demo.html" target="_blank">
+            <span class="demo-icon">🧪</span><span class="demo-info"><span class="demo-name">Phase 2-4 全功能演示</span><span class="demo-desc">8 条项目 · 密度/模态/分栏/展开/过滤/冻结/预设</span></span><span class="demo-arrow">→</span></a>
+          </div>
+      </div>
+    </div>
+
+    <!-- ════ B 型 · 文档阅读 ════ -->
+    <div class="tpl">
+      <div class="tpl-head">
+        <div class="tpl-icon ib">📄</div>
+        <div>
+          <div class="tpl-name">B 型 · 文档阅读 <a class="tpl-guide" href="demos/templates/template-B-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
+          <div class="tpl-file">layout-doc.html (436 行)</div>
+        </div>
+      </div>
+      <div class="tpl-body">
+        <div class="scenarios">
+          <span class="scenario-pill">分析报告</span><span class="scenario-pill">知识库</span>
+          <span class="scenario-pill">长文阅读</span><span class="scenario-pill">技术文档</span>
+        </div>
+        <ul class="features">
+          <li>📑 自动 TOC + 🔍 TOC 搜索 (150ms debounce)</li>
+          <li>◀▶ 侧边栏折叠/展开 (48px 收起, [ 快捷键)</li>
+          <li>↔ 侧边栏宽度拖拽 (200-400px)</li>
+          <li>🌙☀️ 深色/浅色主题 + 🇨🇳🇺🇸 中英双语</li>
+          <li>📋 代码复制 + 行号 + Callout + 阅读进度条</li>
+          <li>🖼️ 图片灯箱 + 📌 锚点链接 + 🔗 外链归档</li>
+        </ul>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span></div>
+        <div class="demos">
+          <div class="demos-title">方案说明 & 案例</div>
+          <a class="demo-item" href="demos/templates/template-B-markdown-spec-v1.0-20260707.html" target="_blank">
+            <span class="demo-icon">📐</span><span class="demo-info"><span class="demo-name">Markdown 语法规范</span><span class="demo-desc">支持的语法子集 · 规则 · 常见错误</span></span><span class="demo-arrow">→</span></a>
+          <a class="demo-item" href="demos/templates/template-B-guide-v1.0-20260707.html" target="_blank">
+            <span class="demo-icon">📄</span><span class="demo-info"><span class="demo-name">B 型 · 文档模板说明</span><span class="demo-desc">使用场景 · 方案设计 · URL 入参控制</span></span><span class="demo-arrow">→</span></a>
+          <a class="demo-item" href="demos/templates/template-A-guide-v1.0-20260707.html" target="_blank">
+            <span class="demo-icon">📊</span><span class="demo-info"><span class="demo-name">A 型 · 表格模板说明</span><span class="demo-desc">使用场景 · 方案设计 · 功能清单</span></span><span class="demo-arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ C 型 · 知识库 ════ -->
+    <div class="tpl">
+      <div class="tpl-head">
+        <div class="tpl-icon ic">📚</div>
+        <div>
+          <div class="tpl-name">C 型 · 知识库 <a class="tpl-guide" href="demos/templates/template-C-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
+          <div class="tpl-file">layout-knowledge.html (342 行)</div>
+        </div>
+      </div>
+      <div class="tpl-body">
+        <div class="scenarios">
+          <span class="scenario-pill">知识库</span><span class="scenario-pill">面试准备</span>
+          <span class="scenario-pill">技术文档</span><span class="scenario-pill">项目 Wiki</span>
+        </div>
+        <ul class="features">
+          <li>📑 顶部标签栏 + 左侧章节列表 (badge 标记)</li>
+          <li>🔍 侧边栏搜索 (150ms debounce, section 自动隐藏)</li>
+          <li>◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)</li>
+          <li>🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏</li>
+          <li>📖 iframe / 内联 desc 双内容模式 + 欢迎面板</li>
+          <li>💾 localStorage 状态记忆 (group + item)</li>
+        </ul>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span></div>
+        <div class="demos">
+          <div class="demos-title">案例演示</div>
+          <a class="demo-item" href="demos/drama-knowledge.html" target="_blank">
+            <span class="demo-icon">🎬</span><span class="demo-info"><span class="demo-name">以剧读史 · 影视历史知识库</span><span class="demo-desc">中国历史 / 大明王朝1566 / 雍正王朝 3 组 · 概述/时间轴/36计策</span></span><span class="demo-arrow">→</span></a>
+          <a class="demo-item" href="demos/cloudwise-business-analysis.html" target="_blank">
+            <span class="demo-icon">☁️</span><span class="demo-info"><span class="demo-name">云智慧 · 商业分析知识库</span><span class="demo-desc">智能运维 AIOps · 监控宝/透视宝/压测宝 · 12 条目</span></span><span class="demo-arrow">→</span></a>
+          <a class="demo-item" href="demos/chaitin-business-analysis.html" target="_blank">
+            <span class="demo-icon">🏢</span><span class="demo-info"><span class="demo-name">长亭科技 · 商业分析知识库</span><span class="demo-desc">4 个大类 · 14 个条目 · 售前架构师视角</span></span><span class="demo-arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+
+    <!-- ════ D 型 · 幻灯片 ════ -->
+    <div class="tpl">
+      <div class="tpl-head">
+        <div class="tpl-icon id">🖼️</div>
+        <div>
+          <div class="tpl-name">D 型 · 幻灯片 <a class="tpl-guide" href="demos/templates/template-D-guide-v1.0-20260707.html" target="_blank">模板使用说明 ↗</a></div>
+          <div class="tpl-file">layout-slide.html (673 行)</div>
+        </div>
+      </div>
+      <div class="tpl-body">
+        <div class="scenarios">
+          <span class="scenario-pill">课件演示</span><span class="scenario-pill">会议分享</span>
+          <span class="scenario-pill">分段阅读</span><span class="scenario-pill">演讲投屏</span>
+        </div>
+        <ul class="features">
+          <li>📄 h2 自动分页 + 🖼️ 封面页 + H3 双列模式</li>
+          <li>🔍 TOC 搜索 + 章节高亮 (翻页联动)</li>
+          <li>◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)</li>
+          <li>🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏</li>
+          <li>⌨️ 键盘翻页 (←→ Space Home End) + ● 圆点导航</li>
+          <li>💾 localStorage 进度保存 + 页码实时更新 (i18n)</li>
+        </ul>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span></div>
+        <div class="demos">
+          <div class="demos-title">案例演示</div>
+          <a class="demo-item" href="demos/templates/template-D-slide-demo.html" target="_blank">
+            <span class="demo-icon">🖼️</span><span class="demo-info"><span class="demo-name">B 型方案 · Slide 幻灯片版</span><span class="demo-desc">h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示</span></span><span class="demo-arrow">→</span></a>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- ═══ 案例演示清单（结合 html-gen demo list，手工维护精选项）═══ -->
+  <div class="section" id="demos" style="margin-top:8px;">
+    <h2 style="font-size:1.05rem;font-weight:600;color:#e0e0e0;margin:0 0 6px;">案例演示清单</h2>
+    <p style="font-size:0.75rem;color:#9ca3af;margin:0 0 12px;">
+      完整清单（40 个 demo，含类型分组/引用子页/过期标记）用命令行查看：
+      <code style="background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-size:0.7rem;color:#a5b4fc;">html-gen demo list</code>
+    </p>
+    <div style="display:flex;gap:12px;flex-wrap:wrap;">
+      <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
+        <div style="font-size:0.72rem;color:#a5b4fc;margin-bottom:6px;">📚 知识库（C 型）</div>
+        <div style="font-size:0.78rem;line-height:1.9;">
+          <a href="demos/drama-knowledge.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">以剧读史 · 影视历史知识库</a> ★<br>
+          <a href="demos/chaitin-business-analysis.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">长亭科技商业分析</a> ★<br>
+          <a href="demos/features/knowledge-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">knowledge 模板 demo</a>
+        </div>
+      </div>
+      <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
+        <div style="font-size:0.72rem;color:#6ee7b7;margin-bottom:6px;">🗂 表格（A 型）</div>
+        <div style="font-size:0.78rem;line-height:1.9;">
+          <a href="demos/demos-index.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">A 型索引</a> ★<br>
+          <a href="demos/features/hermes-profile-skills-list.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">Hermes Skills 列表</a> ★<br>
+          <a href="demos/features/phase2-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">phase2 功能 demo</a> ★<br>
+          <a href="demos/features/table-actions-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">操作按钮 demo</a> ★<br>
+          <a href="demos/countries/countries-table.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">全球国家速查表</a>
+        </div>
+      </div>
+      <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
+        <div style="font-size:0.72rem;color:#fbbf24;margin-bottom:6px;">📄 文档（B 型）</div>
+        <div style="font-size:0.78rem;line-height:1.9;">
+          <a href="demos/html-gen-usage-guide-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">使用指南</a><br>
+          <a href="demos/templates/template-A-guide-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">A 型指南</a> ★<br>
+          <a href="demos/templates/template-B-guide-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">B 型指南</a> ★<br>
+          <a href="demos/templates/template-B-markdown-spec-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">Markdown 规范</a> ★<br>
+          <a href="demos/templates/template-D-slide-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">D 型幻灯片</a> ★
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+</body>
+</html>
