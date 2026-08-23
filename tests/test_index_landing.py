@@ -38,6 +38,9 @@ class TestIndexLanding(unittest.TestCase):
         self.driver.get('file://' + str(INDEX))
         WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.hero')))
         self.driver.execute_script("window.scrollTo(0, 0);")
+        # 每个测试方法加载后统一检查 JS 错误（HG-SEC-017: 覆盖全部用例，不止 test_01）
+        errs = self._errors()
+        self.assertEqual([], [e['message'][:120] for e in errs], "加载后出现 JS 错误")
 
     def _errors(self):
         """浏览器 console 中的 SEVERE/ERROR."""
