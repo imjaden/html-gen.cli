@@ -216,3 +216,37 @@
 | HG-SEC-005 | daming 列宽不同步 | 🟡 | P2 | ✅ Closed (aeadf85) |
 | HG-SEC-006 | review-log 历史缺口 | 🟢 | P2 | ✅ Closed (923a47e) |
 
+---
+
+## 2026-08-23 — index-landing-design v1.0（GitHub Pages 落地页）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: documents/index-landing-design-v1.0-20260822.md — 根 index.html 落地页（hero 100vh + 模板网格）+ README 精简 + commit 87834ef
+- **Verdict**: PASS
+- **Score**: 95 / 100 (Rating: A)
+
+### Summary
+
+GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（首屏 100vh hero：价值定位+安装+4 条快速开始命令；第二屏 4 模板网格复用 demos/index.html 内容）、README 精简为仓库说明，与用户确认清单 1C/2A+B+C/3A/4B/5A/6A 全部一致。数据验证核实：根目录确实无 index.html、style-guide.css 6361 字节（复用不复制）、install.sh 支持 install 子命令、CNAME=html-gen.lab.jaden.tech、README 现状 85 行/3338 字节。唯一 🟡 SEC-007：路径迁移清单通配符 `template-*-guide-*` 漏掉 grid 内实际引用的 2 个非 guide 模板文件（template-B-markdown-spec、template-D-slide-demo，L124/L194 演示链接），清单"8 处引用点"数字与实测 12 目标文件+CSS 不符；§4 验证步骤的 404 检查可兜底，非阻塞。4 个 🟢 记录（CSS query 参数、hero 命令文本来源、README 章节去留、AGENTS.md 漂移备注）。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-007 | 🟡 | 路径迁移清单不完整：通配符漏 template-B-markdown-spec + template-D-slide-demo（grid 内 B/D 卡演示链接），"8 处"数字不准确 | documents/index-landing-design-v1.0-20260822.md §2 | ⏳ Open |
+
+### Positives
+
+- 待确认清单 6 项全部定稿且与本次 prompt 一致，需求追溯清晰（REA-5 1:1 对应）
+- 漂移风险（1C）在设计 §风险显式接受并给出治理建议，符合用户"两份独立维护"决策
+- 现状评估准确：demos/index.html 被 README/usage-guide/hermes-profile-skills-list 多处引用，设计明确不移动不删除
+- 验证步骤覆盖关键坑（相对路径无 404 + 无 JS 错误 + 100vh 检查），能兜底清单遗漏
+- 复用而非重建：CSS 复用根 style-guide.css（6361 字节确认）、github-corner 复制自 demos
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-007 | 路径迁移清单不完整 | 🟡 | P2 | ⏳ Open（ops 修订设计或实现时全量迁移 templates/） |
+
