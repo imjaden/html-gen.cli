@@ -432,7 +432,7 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 ### 复核
 
-- AGENTS.md 已记录两模式差异；review-log 五 🟢 全部关闭（HG-SEC-012/013/014/015）
+- AGENTS.md 已记录两模式差异；review-log 四 🟢 全部关闭（HG-SEC-012/013/014/015，计数修正 2026-08-23 HG-SEC-016）
 
 ---
 
@@ -469,3 +469,21 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 |:---|:---|:---:|:---:|:---:|
 | HG-SEC-016 | review-log「五 🟢」计数不符 + 重复关闭条目 | 🟢 | P3 | ⏳ Open |
 | HG-SEC-017 | test_index_landing _errors() 覆盖不足 | 🟢 | P3 | ⏳ Open |
+
+---
+
+## 2026-08-23 — P1-P6 审计尾项处置（HG-SEC-016/017）
+
+- **处置方**: ops（P1-P6 实现审计 PASS 100/A 后尾项）
+- **Scope**: HG-SEC-016（review-log 计数）、HG-SEC-017（_errors 覆盖）
+
+### 处置决定
+
+| # | Severity | 决定 | 依据 |
+|:--:|:---:|:---|:---|
+| HG-SEC-016 | 🟢 | 已修正 | review-log 68d2734「五 🟢」→「四 🟢」（HG-SEC-012/013/014/015 恰 4 项），修正处标注 HG-SEC-016 处置痕迹 |
+| HG-SEC-017 | 🟢 | 已补强 | tests/test_index_landing.py setUp 加载后统一 _errors() 断言（覆盖全部 8 用例，不再仅 test_01）；8 passed + 全量 154 passed 复跑确认（首轮 2 errors 为并行瞬态，单跑 test_table_features 11 passed、重跑全量通过） |
+
+### 复核
+
+- review-log 七 🟢 全部关闭（HG-SEC-012/013/014/015/016/017）；无新增 findings
