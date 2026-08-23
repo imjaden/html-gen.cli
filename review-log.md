@@ -416,3 +416,20 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 - 改动仅 index.html 2 行 + html 标签；Selenium 8094 复测四断言通过；pytest 全量 146 passed（上一轮已验，本轮属性级）
 - review-log 四 🟢 全部关闭（HG-SEC-012/013/014/015）
+
+---
+
+## 2026-08-23 — P4 落地页清单项：HG-SEC-014 文档化关闭
+
+- **处置方**: ops（P4 模板层 github-corner-hit 差异统一）
+- **Scope**: HG-SEC-014（layout 模板层 .github-corner-hit 残留）
+
+### 处置决定
+
+| # | Severity | 决定 | 依据 |
+|:--:|:---:|:---|:---|
+| HG-SEC-014 | 🟢 | 文档化关闭（不改模板代码） | layout 模板层（doc/table/knowledge/slide）生成的 demo 页右上角有工具栏按钮，「pointer-events:none 穿透 + hit 36px」是防遮挡的有意设计（commit 204f9e1）；根落地页无工具栏故全图标可点。两模式差异已写入 AGENTS.md「双源漂移」备注（commit 402fe29）。模板层若改为全图标可点需回归工具栏可点性，留待模板统一重构 |
+
+### 复核
+
+- AGENTS.md 已记录两模式差异；review-log 五 🟢 全部关闭（HG-SEC-012/013/014/015）
