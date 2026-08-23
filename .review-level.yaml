@@ -188,6 +188,17 @@ review_history:
     verdict: PASS
     score: 100
     findings_total: 2
-    findings_open: 2
-    tracking: HG-SEC-012..HG-SEC-013 (🟢 records; HG-SEC-007 closed)
+    findings_open: 0
+    tracking: HG-SEC-012..HG-SEC-013 (🟢 records; closed 2026-08-23 ops 尾项处置; HG-SEC-007 closed)
     report: documents/review/index-landing-implementation-review-v1.0-20260823.md
+  - date: 2026-08-23
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "index-landing UI polish 实现 — 未 push 3 commits (78e6c0c/c59d657/1221110), 落地页 UI 增量 (github-corner/scroll-hint/移除案例清单/四卡统一) + 4 guide 模板案例章节 + 版本 v2.3/v1.2 + 重新生成 html"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 1
+    tracking: HG-SEC-014 (🟢 record; 前置 HG-SEC-012/013 closed)
+    report: documents/review/index-landing-ui-polish-implementation-review-v1.0-20260823.md

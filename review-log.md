@@ -308,3 +308,39 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 - HG-SEC-013 修复 commit 后全量 pytest 146 passed 无回归（前一轮已验，本轮仅属性级修改）
 - review-log 两 🟢 关闭，无新增 findings
+
+---
+
+## 2026-08-23 — index-landing UI polish 实现审计（github-corner/scroll-hint/guide 案例章节）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (Implementation Audit)
+- **Scope**: 未 push 3 commits（78e6c0c/c59d657/1221110），根 index.html 落地页 UI 增量（github-corner 可点+hover、scroll-hint 滑屏、移除底部案例清单、四卡标题统一）+ 4 guide「模板案例」章节 + 版本 v2.3/v1.2 + 重新生成 html
+- **Verdict**: PASS
+- **Score**: 100 / 100 (Rating: A)
+
+### Summary
+
+实现与用户确认清单 4 项逐条一致：① github-corner 去 pointer-events:none、删 .github-corner-hit 隐藏区（落地页 0 残留），hover octocat-wave 动画保留且实际可触发；② scroll-hint 纯 CSS 平滑滑屏（html scroll-behavior smooth + a href="#templates" + section id），ops Selenium 点击后 top=0px；③ 底部「案例演示清单」37 行区块移除，4 guide md 补「模板案例」章节（A 5/B 7/C 4/D 1，顺序与用户口径一致：A 按 demos-index→hermes-skills→countries→phase2→table-actions，C 按 drama→chaitin→cloudwise→knowledge-demo），A/B/C→v2.3、D→v1.2 日期 2026-08-23，html-gen doc 重新生成 diff 干净（仅 meta 时间 + 字数 + 案例章节 + 迭代行）；④ 四卡标题全「案例演示」（4/4），demo-item icon+name+desc+arrow 结构齐全，案例内容不变（A 3/B 3/C 3/D 1）。demos/index.html（featured 数据源）零误改；16 个案例链接目标全部实测存在；新增 target=_blank 全带 rel="noopener"（17 个 0 缺失）；commit 3/3 type@scope 且 feat/docs/chore 源与产物分离；无凭证/无新增外部资源。ops 核查记录（Selenium 8093 / curl 200 / pytest 146 passed）复核无遗漏。1 个 🟢 记录（HG-SEC-014 layout 模板层 github-corner-hit 残留，范围外），不阻断。前置 HG-SEC-012/013 尾项已关闭，同步 YAML findings_open 2→0。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-014 | 🟢 | layout 模板层（layout-doc/table/knowledge.html）仍保留 .github-corner-hit 隐藏区模式，据此生成的 demo（chaitin/cloudwise 等）仍含该元素；本次范围仅为根落地页 | layout-doc.html:201,229 / layout-table.html:233,247 / layout-knowledge.html:167,189 | ⏳ Open（待确认：接受或后续模板统一时迁移） |
+
+### Positives
+
+- 确认清单 4 项全部精确落地，无遗漏无过度（案例内容保持不变的约束被严格遵守）
+- guide 案例章节与用户指定口径/顺序逐行一致（A/C 型顺序、B 型 7 项、D 型手工 1 项均精确匹配）
+- 源 md 与生成 html 分 commit（docs/chore），再生成 diff 干净无漂移，便于事后审查
+- 链接安全一致：新增 target=_blank 全部带 rel="noopener"；16 案例链接目标全存在，无死链
+- ops 证据链完整且与独立复核一致（grep 残留 0、链接目标 ls 全 OK、secret scan 干净）
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-012 | README 快速开始与设计 §3 偏差 | 🟢 | P3 | ✅ Closed（2026-08-23 尾项处置：接受现状） |
+| HG-SEC-013 | 内链缺 rel="noopener" | 🟢 | P3 | ✅ Closed（2026-08-23 尾项处置：ops 已补） |
+| HG-SEC-014 | layout 模板层 github-corner-hit 残留 | 🟢 | P3 | ⏳ Open（待确认：接受或模板统一时迁移） |
