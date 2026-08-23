@@ -234,7 +234,7 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 | # | Severity | Title | File | Status |
 |:--:|:---:|:---|:---|:---:|
-| HG-SEC-007 | 🟡 | 路径迁移清单不完整：通配符漏 template-B-markdown-spec + template-D-slide-demo（grid 内 B/D 卡演示链接），"8 处"数字不准确 | documents/index-landing-design-v1.0-20260822.md §2 | ⏳ Open |
+| HG-SEC-007 | 🟡 | 路径迁移清单不完整：通配符漏 template-B-markdown-spec + template-D-slide-demo（grid 内 B/D 卡演示链接），"8 处"数字不准确 | documents/index-landing-design-v1.0-20260822.md §2 | ✅ Closed (543c9bf v1.1) |
 
 ### Positives
 
@@ -248,5 +248,44 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 | Issue | Title | Severity | Priority | Status |
 |:---|:---|:---:|:---:|:---:|
-| HG-SEC-007 | 路径迁移清单不完整 | 🟡 | P2 | ⏳ Open（ops 修订设计或实现时全量迁移 templates/） |
+| HG-SEC-007 | 路径迁移清单不完整 | 🟡 | P2 | ✅ Closed (543c9bf v1.1 + 实现审计验证 17/17) |
+
+---
+
+## 2026-08-23 — index-landing 实现审计（GitHub Pages 落地页）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (Implementation Audit)
+- **Scope**: 未 push 6 commits（87834ef/c4340b7/543c9bf/47a3a84/2472152/87d678f），根 index.html 落地页（hero 100vh + 4 模板网格）+ README 精简 + hero 100vh 修复（87d678f）
+- **Verdict**: PASS
+- **Score**: 100 / 100 (Rating: A)
+
+### Summary
+
+实现与已评审设计 v1.1 高度一致：17 处路径迁移逐条匹配（grep 17 唯一本地引用，无 `../` 残留，CSS 根级），HG-SEC-007 经 543c9bf v1.1 补全清单后关闭；Hero 满足确认清单 2A+B+C（价值定位/安装/4 命令 doc-table-knowledge-slide，无导航锚点）与 3A（100vh）；87d678f 修复经独立 headless Chrome 复测正确（style 块 3 开 3 闭注释无 stray `*/`，.hero 在 cssRules，heroHeight=viewport=614px ratio 1.0）；README 保留定位/目录/站点链接/本地开发 4 项，85→27 行（-68%）；commit 6/6 type@scope 且 feat/docs/fix/review 职责分离；demos/ 零误改；18 URL 全 200；全量 pytest 146 passed (25.47s) 无回归。2 个 🟢 记录（HG-SEC-012 README 快速开始保留与设计 §3 偏差；HG-SEC-013 内链 target=_blank 缺 rel="noopener"，外链已带），均不阻断。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-007 | 🟡 | 路径迁移清单不完整（设计 v1.0，前置评审遗留） | documents/index-landing-design-v1.0-20260822.md §2 | ✅ Closed (543c9bf v1.1 + 实现验证 17/17) |
+| HG-SEC-012 | 🟢 | README 保留「快速开始」与设计 §3 移除清单不一致（案例演示/测试/零依赖 3 节亦被移除，前置 SEC-010 建议保留） | README.md ↔ 设计文档 §3 | ⏳ Open（待确认） |
+| HG-SEC-013 | 🟢 | 根 index.html 内链 target=_blank 缺 rel="noopener"（tpl-guide ×4 / demo-item ×9 等，均 demos/ 同源；外链 github-corner 已带） | index.html | ⏳ Open（待确认） |
+
+### Positives
+
+- 17 处路径迁移与 v1.1 清单逐条一致，v1.0 通配符遗漏的 4 个非 templates 文件（countries/knowledge-demo/table-actions-demo/usage-guide）全部覆盖，验证兜底到位
+- 修复链完整闭环：ops 发现（HG-SEC-008 渲染 386px vs 757px）→ 根因定位（注释 `*/` 提前闭合）→ fix 独立提交（87d678f 仅 1 行）→ 复测 ratio 1.0
+- 独立复跑证据链齐：18 URL 全 200、headless Chrome hero 100vh、146 tests 无回归，与 ops 核查记录一致
+- commit 粒度规范：design/review/feat/docs/fix 六 commit 职责单一，消息均符合 type@scope
+- 外链安全处理正确：github-corner 均带 rel="noopener" + target=_blank
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-007 | 路径迁移清单不完整 | 🟡 | P2 | ✅ Closed (543c9bf v1.1 + 实现验证 17/17) |
+| HG-SEC-012 | README 快速开始与设计 §3 偏差 | 🟢 | P3 | ⏳ Open（待确认：接受现状或按设计移除） |
+| HG-SEC-013 | 内链缺 rel="noopener" | 🟢 | P3 | ⏳ Open（待确认：建议批量补） |
+
 

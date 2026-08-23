@@ -177,6 +177,17 @@ review_history:
     verdict: PASS
     score: 95
     findings_total: 5
-    findings_open: 1
-    tracking: HG-SEC-007 (路径迁移清单通配符漏 2 个 templates 文件) + 🟢 SEC-008..011
+    findings_open: 0
+    tracking: HG-SEC-007 (closed 543c9bf v1.1 + 实现审计 17/17) + 🟢 SEC-008..011
     report: documents/review/index-landing-design-review-v1.0-20260823.md
+  - date: 2026-08-23
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "index-landing 实现 — 未 push 6 commits (87834ef/c4340b7/543c9bf/47a3a84/2472152/87d678f), 根 index.html 落地页 + README 精简 + hero 100vh 修复"
+    verdict: PASS
+    score: 100
+    findings_total: 2
+    findings_open: 2
+    tracking: HG-SEC-012..HG-SEC-013 (🟢 records; HG-SEC-007 closed)
+    report: documents/review/index-landing-implementation-review-v1.0-20260823.md
