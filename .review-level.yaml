@@ -210,6 +210,17 @@ review_history:
     verdict: PASS
     score: 100
     findings_total: 1
-    findings_open: 1
-    tracking: HG-SEC-015 (🟢 record; href=\"#\" 空锚点细节)
+    findings_open: 0
+    tracking: HG-SEC-015 (🟢 record; href=\"#\" 空锚点细节; closed 2026-08-23 b940b3b #top 修复已入 github/main)
     report: documents/review/html-gen-cli-rename-implementation-review-v1.0-20260823.md
+  - date: 2026-08-23
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "落地页回归测试 + 文档同步 — 未 push 3 commits (221be4a test@ test_index_landing 8 tests / 402fe29 docs@ AGENTS+features 同步 / 68d2734 docs@ review-log HG-SEC-014 文档化关闭), P1-P6"
+    verdict: PASS
+    score: 100
+    findings_total: 2
+    findings_open: 2
+    tracking: HG-SEC-016..HG-SEC-017 (🟢 records; HG-SEC-015 closed sync)
+    report: documents/review/index-landing-regression-implementation-review-v1.0-20260823.md
