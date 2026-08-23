@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="style-guide.css?=20260705">
 <style>
 /* ═══════ 落地页自定义样式（基于 style-guide.css 变量）═══════ */
+html { scroll-behavior: smooth; }
 
 /* ── Hero 第一屏：100vh 整屏 ── */
 .hero {
@@ -81,6 +82,8 @@
   color: #6b7280;
   font-size: 0.85rem;
   letter-spacing: 0.12em;
+  text-decoration: none;
+  cursor: pointer;
   animation: scroll-bounce 2s ease-in-out infinite;
 }
 @keyframes scroll-bounce {
@@ -140,8 +143,7 @@
 .tpl-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
 .tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
-.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
-.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
 </style>
@@ -154,8 +156,6 @@
     <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
   </svg>
 </a>
-<a class="github-corner-hit" href="https://github.com/imjaden/html-gen" target="_blank" rel="noopener" aria-label="GitHub"></a>
-
 <section class="hero">
   <h1 class="hero-title">html-gen</h1>
   <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML · 深色主题 · 中文优先</p>
@@ -175,10 +175,10 @@
       </div>
     </div>
   </div>
-  <div class="scroll-hint">↓ 模板展示</div>
+  <a href="#templates" class="scroll-hint">↓ 模板展示</a>
 </section>
 
-<section class="templates">
+<section class="templates" id="templates">
   <h2 class="templates-title">四型模板 · 一套深色主题</h2>
   <p class="templates-sub">从 Markdown / JSON 一键生成自包含单文件 HTML</p>
 
@@ -243,7 +243,7 @@
         </ul>
         <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span></div>
         <div class="demos">
-          <div class="demos-title">方案说明 & 案例</div>
+          <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/templates/template-B-markdown-spec-v1.0-20260707.html" target="_blank" rel="noopener">
             <span class="demo-icon">📐</span><span class="demo-info"><span class="demo-name">Markdown 语法规范</span><span class="demo-desc">支持的语法子集 · 规则 · 常见错误</span></span><span class="demo-arrow">→</span></a>
           <a class="demo-item" href="demos/templates/template-B-guide-v1.0-20260707.html" target="_blank" rel="noopener">
@@ -320,45 +320,6 @@
       </div>
     </div>
 
-  </div>
-
-  <!-- ═══ 案例演示清单（结合 html-gen demo list，手工维护精选项）═══ -->
-  <div class="section" id="demos" style="margin-top:8px;">
-    <h2 style="font-size:1.05rem;font-weight:600;color:#e0e0e0;margin:0 0 6px;">案例演示清单</h2>
-    <p style="font-size:0.75rem;color:#9ca3af;margin:0 0 12px;">
-      完整清单（40 个 demo，含类型分组/引用子页/过期标记）用命令行查看：
-      <code style="background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-size:0.7rem;color:#a5b4fc;">html-gen demo list</code>
-    </p>
-    <div style="display:flex;gap:12px;flex-wrap:wrap;">
-      <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
-        <div style="font-size:0.72rem;color:#a5b4fc;margin-bottom:6px;">📚 知识库（C 型）</div>
-        <div style="font-size:0.78rem;line-height:1.9;">
-          <a href="demos/drama-knowledge.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">以剧读史 · 影视历史知识库</a> ★<br>
-          <a href="demos/chaitin-business-analysis.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">长亭科技商业分析</a> ★<br>
-          <a href="demos/features/knowledge-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">knowledge 模板 demo</a>
-        </div>
-      </div>
-      <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
-        <div style="font-size:0.72rem;color:#6ee7b7;margin-bottom:6px;">🗂 表格（A 型）</div>
-        <div style="font-size:0.78rem;line-height:1.9;">
-          <a href="demos/demos-index.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">A 型索引</a> ★<br>
-          <a href="demos/features/hermes-profile-skills-list.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">Hermes Skills 列表</a> ★<br>
-          <a href="demos/features/phase2-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">phase2 功能 demo</a> ★<br>
-          <a href="demos/features/table-actions-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">操作按钮 demo</a> ★<br>
-          <a href="demos/countries/countries-table.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">全球国家速查表</a>
-        </div>
-      </div>
-      <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
-        <div style="font-size:0.72rem;color:#fbbf24;margin-bottom:6px;">📄 文档（B 型）</div>
-        <div style="font-size:0.78rem;line-height:1.9;">
-          <a href="demos/html-gen-usage-guide-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">使用指南</a><br>
-          <a href="demos/templates/template-A-guide-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">A 型指南</a> ★<br>
-          <a href="demos/templates/template-B-guide-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">B 型指南</a> ★<br>
-          <a href="demos/templates/template-B-markdown-spec-v1.0-20260707.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">Markdown 规范</a> ★<br>
-          <a href="demos/templates/template-D-slide-demo.html" style="color:#e0e0e0;text-decoration:none;border-bottom:1px dotted #4b4b66;">D 型幻灯片</a> ★
-        </div>
-      </div>
-    </div>
   </div>
 </section>
 
