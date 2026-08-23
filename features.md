@@ -253,10 +253,10 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | 数据文件 | 7 |
 | Demo 文件 | 56 (registry: 21 独立 + 35 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 146 (Selenium + CLI 回归) |
+| 测试用例 | 154 (Selenium + CLI 回归，含落地页 8) |
 | CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
 | CLI 参数 | 15 |
 | localStorage keys | 17 |
 | 数据卡 metrics | company-report content 页自动生成（6 卡模式） |
-| GitHub Corner | 全页面右上角 github 图标（双层可点区防遮挡） |
+| GitHub Corner | demo 页右上角双层可点区防遮挡；根落地页全图标可点 + hover 波浪动画 |
 | 零外部依赖 | ✅ (Python stdlib only) |
