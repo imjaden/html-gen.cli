@@ -160,6 +160,20 @@ html-gen table -h
 
 ---
 
+## 模板案例
+
+该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：
+
+| 案例 | 说明 | 文件 |
+|:---|:---|:---|
+| [DEMO 案例索引](../demos-index.html) | 全站文件清单 · 模板/大小/更新时间 | demos-index.html |
+| [Hermes Skills 清单](../features/hermes-profile-skills-list.html) | 98 个 Skill · 15 个分类 · 全 Profile | features/hermes-profile-skills-list.html |
+| [全球国家速查表](../countries/countries-table.html) | 国家速查 · 地区/首都/货币 | countries/countries-table.html |
+| [Phase 2-4 全功能演示](../features/phase2-demo.html) | 密度/模态/分栏/展开/过滤/冻结/预设 | features/phase2-demo.html |
+| [操作按钮 demo](../features/table-actions-demo.html) | copyKey/hrefKey/handler 操作列 | features/table-actions-demo.html |
+
+---
+
 ## 迭代记录
 
 | 版本 | 日期 | 变更 |
@@ -169,3 +183,4 @@ html-gen table -h
 | v2.0 | 2026-07-22 | 结构化格式：columns/tabs/options；操作按钮列、多标签、CSV 导出、列可见性、列宽拖拽 |
 | v2.1 | 2026-08-18 | 行高统一 34-35px；showIndex 序号列；splitFull 整行字段；defaultFilter 默认筛选；pills 列整格 split |
 | v2.2 | 2026-08-19 | 36计/时间轴重构列模型；视图预设；设置面板；列冻结/右侧固定；分栏列过滤 |
+| v2.3 | 2026-08-23 | 新增「模板案例」章节（★ featured 精选） |

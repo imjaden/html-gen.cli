@@ -178,6 +178,19 @@ html-gen knowledge -h
 
 ---
 
+## 模板案例
+
+该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：
+
+| 案例 | 说明 | 文件 |
+|:---|:---|:---|
+| [以剧读史 · 影视历史知识库](../drama-knowledge.html) | 中国历史 / 大明王朝1566 / 雍正王朝 3 组 · 概述/时间轴/36计策 | drama-knowledge.html |
+| [长亭科技 · 商业分析知识库](../chaitin-business-analysis.html) | 4 个大类 · 14 个条目 · 售前架构师视角 | chaitin-business-analysis.html |
+| [云智慧 · 商业分析知识库](../cloudwise-business-analysis.html) | 智能运维 AIOps · 监控宝/透视宝/压测宝 · 12 条目 | cloudwise-business-analysis.html |
+| [knowledge 模板 demo](../features/knowledge-demo.html) | 模板基础功能演示 | features/knowledge-demo.html |
+
+---
+
 ## 迭代记录
 
 | 版本 | 日期 | 变更 |
@@ -186,3 +199,4 @@ html-gen knowledge -h
 | v2.0 | 2026-08-11 | Bare 模式 + 折叠/搜索/记忆恢复 + 单条目直开 |
 | v2.1 | 2026-08-18 | URL 参数同步（group/item 实时写 URL + 恢复优先）+ section 图标 + 隐藏搜索/折叠按钮 |
 | v2.2 | 2026-08-19 | 跨组 section 保持；概述页 iframe 宽屏 width=wide；标题点击复制中文 URL |
+| v2.3 | 2026-08-23 | 新增「模板案例」章节（★ featured 精选） |
