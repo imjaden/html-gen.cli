@@ -176,6 +176,43 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
             "return document.documentElement.classList.contains('light');"), "刷新后浅色未恢复")
         self.driver.execute_script("localStorage.removeItem('html-gen:index_theme');")
 
+    def test_13_hero_dynamic_height(self):
+        """动态两屏: hero 高度 = 视口高 − 110px (JS 计算)."""
+        hero_h = self.driver.execute_script("return document.querySelector('.hero').offsetHeight;")
+        vh = self.driver.execute_script("return window.innerHeight;")
+        self.assertLessEqual(abs(hero_h - (vh - 110)), 6,
+                             f"hero 高度应为 vh−110: hero={hero_h} vh={vh}")
+
+    def test_14_scroll_hint_fixed_and_fade(self):
+        """'↓ 模板说明' fixed 定位居首屏底部, 滚动后淡出, 回顶恢复."""
+        hint = self.driver.find_element(By.CSS_SELECTOR, 'a.scroll-hint')
+        self.assertEqual('fixed', self.driver.execute_script(
+            "return getComputedStyle(document.querySelector('.scroll-hint')).position;"), "应 fixed 定位")
+        # 首屏可见
+        self.assertFalse(self.driver.execute_script(
+            "return document.querySelector('.scroll-hint').classList.contains('hide');"), "初始应可见")
+        # 滚动后淡出
+        self.driver.execute_script("window.scrollTo(0, 300);")
+        time.sleep(0.3)
+        self.assertTrue(self.driver.execute_script(
+            "return document.querySelector('.scroll-hint').classList.contains('hide');"), "滚动后应隐藏")
+        # 回顶恢复
+        self.driver.execute_script("window.scrollTo(0, 0);")
+        time.sleep(0.3)
+        self.assertFalse(self.driver.execute_script(
+            "return document.querySelector('.scroll-hint').classList.contains('hide');"), "回顶应恢复显示")
+
+    def test_15_github_corner_light_white(self):
+        """light 模式 github-corner octocat 为白色 (深三角 + 白猫)."""
+        btn = self.driver.find_element(By.CSS_SELECTOR, '#themeBtn')
+        btn.click()
+        time.sleep(0.2)
+        color = self.driver.execute_script(
+            "return getComputedStyle(document.querySelector('.github-corner')).color;")
+        self.assertEqual('rgb(255, 255, 255)', color, f"light 下 octocat 应为白色: {color}")
+        btn.click()
+        time.sleep(0.2)
+
 
 if __name__ == '__main__':
     unittest.main()
