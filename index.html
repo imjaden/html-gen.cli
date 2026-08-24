@@ -10,9 +10,9 @@
 /* ═══════ 落地页自定义样式（基于 style-guide.css 变量）═══════ */
 html { scroll-behavior: smooth; }
 
-/* ── Hero 第一屏：100vh 整屏 ── */
+/* ── Hero 第一屏：80vh 整屏 ── */
 .hero {
-  min-height: 100vh;
+  min-height: 80vh;
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -26,14 +26,14 @@ html { scroll-behavior: smooth; }
   font-weight: 800;
   letter-spacing: -0.02em;
   line-height: 1.1;
-  background: linear-gradient(180deg, #ffffff 20%, var(--cobalt-400) 100%);
+  background: linear-gradient(180deg, var(--hero-title-from) 20%, var(--cobalt-400) 100%);
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
 }
 .hero-tagline {
   font-size: 1.05rem;
-  color: #9ca3af;
+  color: var(--text-secondary);
   max-width: 760px;
   margin: 20px auto 44px;
   line-height: 1.8;
@@ -49,37 +49,38 @@ html { scroll-behavior: smooth; }
 .hero-block {
   flex: 1 1 340px;
   background: var(--surface-900);
-  border: 1px solid #1a1a2e;
+  border: 1px solid var(--border-soft);
   border-radius: 14px;
   padding: 20px;
   text-align: left;
+  position: relative;
 }
 .hero-block .block-title {
   font-size: 0.95rem;
   font-weight: 600;
-  color: #f0f0f0;
+  color: var(--text-primary);
   margin-bottom: 12px;
 }
 .code-block {
-  background: #0d0d1a;
-  border: 1px solid #2a2a3e;
+  background: var(--code-bg);
+  border: 1px solid var(--border-strong);
   border-radius: 8px;
   padding: 12px 14px;
   font-family: var(--font-mono);
   font-size: 0.78rem;
   line-height: 1.7;
-  color: #b0b0c0;
+  color: var(--code-text);
   overflow-x: auto;
 }
 .code-block + .code-block { margin-top: 8px; }
-.code-block .prompt { color: #6b7280; }
-.code-block .cmd { color: #e0e0e0; }
+.code-block .prompt { color: var(--text-muted); }
+.code-block .cmd { color: var(--code-cmd); }
 .scroll-hint {
   position: absolute;
   bottom: 30px;
   left: 50%;
   transform: translateX(-50%);
-  color: #6b7280;
+  color: var(--text-muted);
   font-size: 0.85rem;
   letter-spacing: 0.12em;
   text-decoration: none;
@@ -100,7 +101,7 @@ html { scroll-behavior: smooth; }
 .templates-title {
   font-size: 1.5rem;
   font-weight: 700;
-  color: #f0f0f0;
+  color: var(--text-primary);
   text-align: center;
   margin-bottom: 6px;
 }
@@ -124,8 +125,8 @@ html { scroll-behavior: smooth; }
   height: 40px;
   border-radius: 10px;
   background: var(--surface-900);
-  border: 1px solid #2a2a3e;
-  color: #9ca3af;
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
   display: flex;
   align-items: center;
   justify-content: center;
@@ -140,49 +141,89 @@ html { scroll-behavior: smooth; }
 .back-to-top:hover { border-color: var(--cobalt-700); color: var(--cobalt-300); }
 .templates-sub {
   font-size: 0.85rem;
-  color: #6b7280;
+  color: var(--text-muted);
   text-align: center;
   margin-bottom: 40px;
 }
 .template-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-bottom: 32px; }
-.tpl { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
-.tpl-head { padding: 18px 20px 14px; border-bottom: 1px solid #2a2a3e; display: flex; align-items: center; gap: 10px; }
+.tpl { background: var(--surface-900); border: 1px solid var(--border-soft); border-radius: 14px; overflow: hidden; display: flex; flex-direction: column; }
+.tpl-head { padding: 18px 20px 14px; border-bottom: 1px solid var(--border-strong); display: flex; align-items: center; gap: 10px; }
 .tpl-head .tpl-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 1.2rem; flex-shrink: 0; }
 .tpl-head .tpl-icon.ia { background: rgba(79,70,229,0.15); }
 .tpl-head .tpl-icon.ib { background: rgba(52,211,153,0.15); }
 .tpl-head .tpl-icon.ic { background: rgba(251,146,60,0.15); }
 .tpl-head .tpl-icon.id { background: rgba(236,72,153,0.15); }
-.tpl-head .tpl-name { font-size: 1.05rem; font-weight: 600; color: #f0f0f0; }
-.tpl-head .tpl-file { font-size: 0.7rem; color: #6b7280; font-family: var(--font-mono); }
+.tpl-head .tpl-name { font-size: 1.05rem; font-weight: 600; color: var(--text-primary); }
+.tpl-head .tpl-file { font-size: 0.7rem; color: var(--text-muted); font-family: var(--font-mono); }
 .tpl-body { padding: 16px 20px 20px; flex: 1; }
 .scenarios { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
-.scenario-pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; border: 1px solid #2a2a3e; color: #9ca3af; }
+.scenario-pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; border: 1px solid var(--border-strong); color: var(--text-secondary); }
 .features { margin-bottom: 14px; }
-.features li { font-size: 0.78rem; color: #c0c0c0; line-height: 1.7; padding-left: 18px; position: relative; }
-.features li::before { content: '▸'; position: absolute; left: 0; color: #555; }
-.cli-box { background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.6; color: #b0b0c0; margin-bottom: 14px; overflow-x: auto; }
-.cli-box .prompt { color: #6b7280; }
-.cli-box .cmd { color: #e0e0e0; }
+.features li { font-size: 0.78rem; color: var(--text-body); line-height: 1.7; padding-left: 18px; position: relative; }
+.features li::before { content: '▸'; position: absolute; left: 0; color: var(--text-faint); }
+.cli-box { background: var(--code-bg); border: 1px solid var(--border-strong); border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.6; color: var(--code-text); margin-bottom: 14px; overflow-x: auto; }
+.cli-box .prompt { color: var(--text-muted); }
+.cli-box .cmd { color: var(--code-cmd); }
 .demos { }
-.demos-title { font-size: 0.7rem; color: #6b7280; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
-.demo-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid #1a1a2e; border-radius: 8px; margin-bottom: 6px; transition: all 0.15s; text-decoration: none; }
+.demos-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
+.demo-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border-soft); border-radius: 8px; margin-bottom: 6px; transition: all 0.15s; text-decoration: none; }
 .demo-item:hover { border-color: var(--cobalt-700); background: rgba(79,70,229,0.04); }
 .demo-item .demo-icon { font-size: 1rem; flex-shrink: 0; }
 .demo-item .demo-info { flex: 1; min-width: 0; }
-.demo-item .demo-info .demo-name { font-size: 0.8rem; font-weight: 500; color: #e0e0e0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
-.demo-item .demo-info .demo-desc { font-size: 0.7rem; color: #6b7280; margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.demo-item .demo-arrow { color: #555; font-size: 0.8rem; }
+.demo-item .demo-info .demo-name { font-size: 0.8rem; font-weight: 500; color: var(--text-body); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; display: block; }
+.demo-item .demo-info .demo-desc { font-size: 0.7rem; color: var(--text-muted); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.demo-item .demo-arrow { color: var(--text-faint); font-size: 0.8rem; }
+@media (max-width: 1500px) { .template-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 1100px) { .template-grid { grid-template-columns: 1fr; } }
 @media (max-width: 760px) { .hero-blocks { flex-direction: column; } }
 .tpl-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
 .tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
-.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; }
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: var(--text-secondary); }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+
+/* ── 主题切换按钮（固定右上角，避让 github-corner 72px） ── */
+.theme-btn {
+  position: fixed; top: 16px; right: 88px; z-index: 951;
+  width: 36px; height: 36px; border-radius: 50%;
+  background: var(--surface-900);
+  border: 1px solid var(--border-strong);
+  color: var(--text-secondary);
+  font-size: 15px; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, color 0.2s;
+}
+.theme-btn:hover { border-color: var(--cobalt-700); color: var(--text-primary); }
+
+/* ── 复制按钮 ── */
+.copy-btn {
+  background: transparent; border: 1px solid var(--border-strong);
+  color: var(--text-muted); border-radius: 6px;
+  font-size: 0.7rem; cursor: pointer; padding: 2px 8px;
+  font-family: var(--font-sans); line-height: 1.5;
+  transition: all 0.15s; white-space: nowrap;
+}
+.copy-btn:hover { border-color: var(--cobalt-700); color: var(--text-primary); }
+.copy-btn.ok { border-color: var(--cobalt-600); color: var(--cobalt-400); }
+.hero-block .copy-btn { position: absolute; top: 18px; right: 18px; }
+.cli-box { position: relative; padding-right: 52px; }
+.cli-box .copy-btn { position: absolute; top: 8px; right: 8px; }
+
+/* ── Footer ── */
+.site-footer {
+  text-align: center; padding: 26px 20px 34px;
+  font-size: 0.8rem; color: var(--text-muted);
+  border-top: 1px solid var(--border-soft);
+}
+.site-footer a { color: var(--cobalt-400); text-decoration: none; margin: 0 8px; }
+.site-footer a:hover { color: var(--cobalt-300); text-decoration: underline; }
+.site-footer .sep { margin: 0 2px; color: var(--text-faint); }
+@media (max-width: 760px) { .theme-btn { top: 12px; right: 76px; width: 32px; height: 32px; } }
 </style>
 </head>
 <body>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换主题">🌙</button>
 <a href="https://github.com/imjaden/html-gen.cli" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
   <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
     <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
@@ -195,7 +236,7 @@ html { scroll-behavior: smooth; }
   <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML · 深色主题 · 中文优先</p>
   <div class="hero-blocks">
     <div class="hero-block">
-      <div class="block-title">⚡ 安装</div>
+      <div class="block-title">⚡ 安装 <button class="copy-btn" data-copy="bash install.sh install&#10;export PATH=&quot;$HOME/.local/bin:$PATH&quot;" aria-label="复制安装命令">📋 复制</button></div>
       <div class="code-block"><span class="prompt">$</span> <span class="cmd">bash install.sh install</span></div>
       <div class="code-block"><span class="prompt">$</span> <span class="cmd">export PATH="$HOME/.local/bin:$PATH"</span></div>
     </div>
@@ -240,7 +281,7 @@ html { scroll-behavior: smooth; }
           <li>📌 快速过滤 (点击单元格值) + 列冻结</li>
           <li>⌨️ 键盘导航 ↑↓ + F 全屏 + 批量操作</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span></div>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span><button class="copy-btn" data-copy="html-gen table -d data.json -o index.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/demos-index.html" target="_blank" rel="noopener">
@@ -275,7 +316,7 @@ html { scroll-behavior: smooth; }
           <li>📋 代码复制 + 行号 + Callout + 阅读进度条</li>
           <li>🖼️ 图片灯箱 + 📌 锚点链接 + 🔗 外链归档</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span></div>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span><button class="copy-btn" data-copy="html-gen doc -i report.md -o report.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/markdown-spec.html" target="_blank" rel="noopener">
@@ -310,7 +351,7 @@ html { scroll-behavior: smooth; }
           <li>📖 iframe / 内联 desc 双内容模式 + 欢迎面板</li>
           <li>💾 localStorage 状态记忆 (group + item)</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span></div>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span><button class="copy-btn" data-copy="html-gen knowledge -d data.json -o kb.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/drama-knowledge.html" target="_blank" rel="noopener">
@@ -345,7 +386,7 @@ html { scroll-behavior: smooth; }
           <li>⌨️ 键盘翻页 (←→ Space Home End) + ● 圆点导航</li>
           <li>💾 localStorage 进度保存 + 页码实时更新 (i18n)</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span></div>
+        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span><button class="copy-btn" data-copy="html-gen slide -i slides.md -o slides.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/slide-demo.html" target="_blank" rel="noopener">
@@ -358,11 +399,60 @@ html { scroll-behavior: smooth; }
 </section>
 
 <a href="#top" class="back-to-top" aria-label="返回首页">↑</a>
+
+<footer class="site-footer">
+  <a href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener">GitHub</a><span class="sep">·</span>
+  <a href="https://gitee.com/imjaden/html-gen.cli" target="_blank" rel="noopener">Gitee</a><span class="sep">·</span>
+  MIT License
+</footer>
+
 <script>
 // 固定右下角返回首页按钮：滚动超过一屏后显示
 window.addEventListener('scroll', function () {
   var btn = document.querySelector('.back-to-top');
   if (btn) btn.classList.toggle('show', window.scrollY > window.innerHeight);
+});
+
+// ── 主题切换（:root.light 类，与模板页同机制；独立 key 避免串扰） ──
+function updateThemeBtn() {
+  var b = document.getElementById('themeBtn');
+  if (b) b.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
+}
+function toggleTheme() {
+  var r = document.documentElement;
+  r.classList.toggle('light', !r.classList.contains('light'));
+  try { localStorage.setItem('html-gen:index_theme', r.classList.contains('light') ? 'light' : 'dark'); } catch(e) {}
+  updateThemeBtn();
+}
+(function initTheme() {
+  var t = 'dark';
+  try { t = localStorage.getItem('html-gen:index_theme') || 'dark'; } catch(e) {}
+  if (t === 'light') document.documentElement.classList.add('light');
+  updateThemeBtn();
+})();
+
+// ── 复制按钮（clipboard API + execCommand fallback，headless Chrome 兼容） ──
+function copyText(text, btn) {
+  var done = function() {
+    if (btn) { btn.classList.add('ok'); btn.textContent = '✅'; setTimeout(function() { btn.classList.remove('ok'); btn.textContent = '📋'; }, 1500); }
+  };
+  var fallback = function() {
+    var ta = document.createElement('textarea');
+    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
+    document.body.appendChild(ta); ta.select();
+    try { document.execCommand('copy'); } catch(e) {}
+    document.body.removeChild(ta);
+    done();
+  };
+  if (navigator.clipboard && navigator.clipboard.writeText) {
+    navigator.clipboard.writeText(text).then(done).catch(fallback);
+  } else {
+    fallback();
+  }
+}
+document.addEventListener('click', function (e) {
+  var btn = e.target.closest('.copy-btn');
+  if (btn) copyText(btn.getAttribute('data-copy') || '', btn);
 });
 </script>
 
