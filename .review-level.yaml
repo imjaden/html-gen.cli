@@ -246,3 +246,14 @@ review_history:
     findings_open: 0
     tracking: HG-SEC-018..HG-SEC-021 (closed v1.1) + HG-SEC-022..025 (OBS, closed v1.1) + HG-SEC-026 (🟢 record, 人口示例数字口径偏差)
     report: documents/review/provinces-table-design-review-v1.1-20260824.md
+  - date: 2026-08-24
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "provinces-table 实现 — 未 push 5 commits (73bc988/f6a3e7c/323771a/7dd1c18/31c8c60), 省份表 34 行 11 列 + 国家表 3 列回填 (195 国) + 测试 26 + 全量 166 passed (1 环境性 WIP 失败不扣分)"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 1
+    tracking: HG-SEC-027 (🟢 record; 人工复核后未重跑 backfill → 4 格不对称, 互证率 89.1%)
+    report: documents/review/provinces-table-implementation-review-v1.0-20260824.md
