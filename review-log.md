@@ -570,3 +570,39 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 - 报告: `documents/review/provinces-table-design-review-v1.1-20260824.md`
 - 实现 prompt: ✅ 已生成（cache/review-prep/prompt-provinces-dev-20260824.md，转 dev）
 - 处理: PASS → 审计交付物 commit + push（连同设计文档 51bf5b5 + 93009fd 共 3 commits）
+
+---
+
+## 2026-08-24 — 省份表 + 国家双向关联实现审计（provinces-table implementation）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: 未 push 5 commits（`73bc988` chore@ provinces-match 脚本 / `f6a3e7c` feat@ 省份表 data+demos / `323771a` feat@ 国家表回填 3 列 / `7dd1c18` test@ 省份表测试 / `31c8c60` fix@ backfill 同对规则）；设计 `documents/solutions/provinces-table-design-v1.1-20260824.md`（复审 PASS 100/A）
+- **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 1）
+
+### Summary
+
+5 commits 与设计 v1.1 逐项一致，TC-01~10 全部成立：省份表 34 行 11 列（width 110/60/100/90/110/110/110/170/170/170/200 与 §二 A 一致）+ tabs 全部/7 区域 + options pageSize30/exportCSV/searchFields；港澳台 region_tags=华南 + note 口径说明；国家表 195 行 17 列（新 3 列 15/16/17 pills 170px），中国行 3 列留空（设计允许）。单位归一化独立复算：304 个省份侧 pills 阈值违规 0，广东 GDP↔韩国/西班牙/墨西哥、面积↔柬埔寨/乌拉圭/叙利亚在表内，杜绝 0-命中；`31c8c60` 修复后国家表 backfill 与脚本重跑输出 0 差异（同对回填规则成立）；None 防护恰 6 国缺 gdp_yi + 梵蒂冈全缺不参与匹配。双向互证 271/304=89.1%（与 ops 报告一致，TC-05 抽查 12 对 10 命中）。生成物 provinces-table.html COLUMNS/DATA/TABS/OPTIONS 与 JSON 零差异；registry count 59→60 可见（featured=false 符合设计）。测试 26 passed（13+13，含韩国 gdp_province 含广东、柬埔寨 area_province 含广东断言）；全量 166 passed + 1 环境性失败（test_history_tables::test_01 系其他会话重生成 demos/drama/history-strategy-table.html 9 列 schema 导致，与本次零交集，不代修不扣分）。commit 5/5 type@scope 小写英文 subject、无 WIP 混入；命名 provinces-*/countries-* 一致；凭证扫描 0 命中。1 个 🟢 记录（HG-SEC-027 人工复核 3 处省份侧单元格在 backfill 生成后修改 → 4 个不对称格：德国/西班牙回填空 + 土库曼斯坦/澳大利亚保留过期项，互证率 89.1% 而非 100%，建议后续复核后以最终省份表为事实源重跑回填）。授权 push 5 commits 至 github/main。
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-027 | 🟢 | 人工复核 3 处省份侧单元格（黑龙江 area 土库曼斯坦→德国 / 上海 pop 布基纳法索→斯里兰卡 / 广东 gdp 澳大利亚→西班牙）在 backfill 生成后修改，导致 4 格不对称（德国/西班牙 area/gdp_province 空，土库曼斯坦/澳大利亚保留过期省份）；互证率 89.1%；脚本以硬编码 PROVINCES 为事实源不读最终省份表 | data/_countries-data.json ↔ data/_provinces-data.json + scripts/provinces-match.py | ⏳ Open（🟢 记录，不阻断） |
+
+### Positives
+
+- 数据质量高：304 个省份侧关联 pills 全部落在阈值内（0 违规），"归一化先行"设计修复闭环在实现层得到验证
+- 双向机制修复链完整：ops 发现 323771a 独立重算偏差 → 31c8c60 改同对回填 → 复验脚本输出与 JSON 0 差异，互证率 88.5%→89.1%
+- 测试超出设计要求：T1-T10 全落地 + 国家表 3 条反向回填断言（设计仅要求 1-2 条），并含"杜绝 0-命中"的归一化对照断言
+- 生成物一致性验证充分：HTML 注入 const 与 JSON 逐字段比对零差异（含 width）
+- None 防护语义精确（6 国仅 GDP 维度跳过，面积/人口维度仍参与），与设计 TC-04 一致
+- commit 粒度与命名规范：chore/feat/test/fix 职责分离，provinces-* 与 countries-* 模式一致
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-027 | 复核后未重跑 backfill（4 格不对称） | 🟢 | P3 | ⏳ Open（待确认：接受现状或重跑回填） |
+
+- 报告: `documents/review/provinces-table-implementation-review-v1.0-20260824.md`
+- 处理: PASS → 授权 push 5 commits（73bc988/f6a3e7c/323771a/7dd1c18/31c8c60）至 github/main
