@@ -51,11 +51,11 @@ class TestIndexLanding(unittest.TestCase):
         errs = self._errors()
         self.assertEqual([], [e['message'][:120] for e in errs], "应有 JS 错误")
 
-    def test_02_hero_100vh(self):
-        """hero 撑满首屏 (100vh)."""
+    def test_02_hero_height(self):
+        """hero 首屏高度 ≥0.75vh (80vh 设计, 容差)."""
         ratio = self.driver.execute_script(
             "var h = document.querySelector('.hero'); return h.offsetHeight / window.innerHeight;")
-        self.assertGreater(ratio, 0.95, f"hero 未撑满视口: {ratio:.2f}")
+        self.assertGreaterEqual(ratio, 0.75, f"hero 高度不足: {ratio:.2f}")
 
     def test_03_github_corner_clickable(self):
         """github 图标本体可点 + hover 波浪动画 + 链接指向 html-gen.cli + 无 hit 区."""
@@ -135,6 +135,46 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         self.assertNotIn('github.com/imjaden/html-gen.cli.cli', html, "存在双后缀链接")
         self.assertNotIn('html-gen.lab.jaden.tech', html, "存在旧域名引用")
         self.assertIn('github.com/imjaden/html-gen.cli', html, "缺少新 github 链接")
+
+    def test_09_theme_toggle(self):
+        """主题按钮存在, 点击切换 :root.light 类并写入 localStorage, 再点恢复."""
+        btn = self.driver.find_element(By.CSS_SELECTOR, '#themeBtn')
+        self.assertFalse(self.driver.execute_script(
+            "return document.documentElement.classList.contains('light');"), "初始应为深色")
+        btn.click()
+        time.sleep(0.2)
+        self.assertTrue(self.driver.execute_script(
+            "return document.documentElement.classList.contains('light');"), "点击后未切浅色")
+        self.assertEqual('light', self.driver.execute_script(
+            "return localStorage.getItem('html-gen:index_theme');"), "localStorage 未写入 light")
+        btn.click()
+        time.sleep(0.2)
+        self.assertFalse(self.driver.execute_script(
+            "return document.documentElement.classList.contains('light');"), "再点未恢复深色")
+
+    def test_10_copy_buttons(self):
+        """复制按钮: hero 安装块 1 + 四卡 cli-box 4 = 5 处, data-copy 非空."""
+        btns = self.driver.find_elements(By.CSS_SELECTOR, '.copy-btn')
+        self.assertEqual(5, len(btns), f"复制按钮数量应为 5: {len(btns)}")
+        for b in btns:
+            self.assertTrue(b.get_attribute('data-copy'), "data-copy 为空")
+
+    def test_11_footer_links(self):
+        """footer 存在且含 GitHub / Gitee 链接."""
+        footer = self.driver.find_element(By.CSS_SELECTOR, 'footer.site-footer')
+        hrefs = [a.get_attribute('href') or '' for a in footer.find_elements(By.TAG_NAME, 'a')]
+        self.assertTrue(any('github.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 GitHub 链接")
+        self.assertTrue(any('gitee.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 Gitee 链接")
+
+    def test_12_theme_persist(self):
+        """浅色偏好 localStorage 持久化: 预置 light 后刷新仍为浅色."""
+        self.driver.execute_script("localStorage.setItem('html-gen:index_theme', 'light');")
+        self.driver.refresh()
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.hero')))
+        time.sleep(0.2)
+        self.assertTrue(self.driver.execute_script(
+            "return document.documentElement.classList.contains('light');"), "刷新后浅色未恢复")
+        self.driver.execute_script("localStorage.removeItem('html-gen:index_theme');")
 
 
 if __name__ == '__main__':

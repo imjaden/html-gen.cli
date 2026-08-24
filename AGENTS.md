@@ -218,7 +218,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 154 tests（测试文件：test_drama_knowledge 16 / test_history_tables 7 / test_demo_cmd 10 / test_countries_table 13 / test_hermes_skills 15 / test_table_features 11 / test_templates 16 / test_index_landing 8 / test_doc_width 8 / test_knowledge_sidebar 8 / test_doc_sidebar 7 / test_doc_bare 6 / test_heading_levels 6 / test_sticky_width 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 176 tests（20 文件；测试文件：test_drama_knowledge 16 / test_templates 16 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 12 / test_table_features 11 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -234,7 +234,7 @@ Options（均可选）：
 
 ```
 html-gen.cli/
-├── index.html                 # 落地页（hero 100vh + 四模板网格 + 上箭头 A/B 返回首页）
+├── index.html                 # 落地页（hero 80vh + 四模板网格 + 上箭头 A/B 返回首页 + 🌙☀️ 主题切换 + 📋 复制按钮 + footer）
 ├── html-gen.py                 # Layer 3 CLI 生成器
 ├── scripts/                     # 脚本与 schema（company-report 生成器）
 ├── style-guide.css             # Layer 1 样式基座
@@ -243,7 +243,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (154 tests)
+├── tests/                      # Selenium + 回归测试 (176 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md
@@ -273,7 +273,7 @@ html-gen.cli/
     ├── cloudwise/              # 云智慧内容子页（知识库引用）
     └── drama/                  # 以剧读史内容子页（知识库引用；时间轴 + 36计策，md 源 + html）
 
-> **双源漂移（1C 决策，2026-08-23）**：根 `index.html`（落地页）与 `demos/index.html`（模板展示首页）为**两份独立副本**，非同一文件。改动落地页结构时需同步两处；`demos/index.html` 是 `html-gen demo --rebuild` 的 featured 数据源，根 index.html 不参与。github-corner 模式亦不同：layout 模板层（demo 页）用「pointer-events:none 穿透 + hit 36px」防遮挡右上角工具栏；根落地页无工具栏，用全图标可点 + hover 波浪动画（HG-SEC-014 文档化，2026-08-23）。
+> **双源漂移（1C 决策，2026-08-23）**：根 `index.html`（落地页）与 `demos/index.html`（模板展示首页）为**两份独立副本**，非同一文件。改动落地页结构时需同步两处；`demos/index.html` 是 `html-gen demo --rebuild` 的 featured 数据源，根 index.html 不参与。github-corner 模式亦不同：layout 模板层（demo 页）用「pointer-events:none 穿透 + hit 36px」防遮挡右上角工具栏；根落地页无工具栏，用全图标可点 + hover 波浪动画（HG-SEC-014 文档化，2026-08-23）。两页共用主题按钮（right:88px 避让 corner，`html-gen:index_theme` localStorage key）与复制按钮/断点/footer；**防漂移测试**：`tests/test_demos_index.py::test_05_dual_source_consistency` 断言双源关键功能特征一致（2026-08-24）。
 ```
 
 ## 项目独立性
