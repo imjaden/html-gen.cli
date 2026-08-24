@@ -648,3 +648,77 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 
 - 报告: `documents/review/provinces-table-design-v1.2-change-review-20260824.md`
 - 处理: PASS → 授权 push 2 commits（a148b8d / db4d818）至 github/main
+
+
+## 2026-08-24 — index 落地页同步 6-commit 审计（CONDITIONAL PASS）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: 未 push 6 commits（e1add13/0b015a4/25f299a/5e9508a/775d27f/28000b2）— index 主题切换+复制按钮+footer+动态两屏+github-corner light、demos 双源同步、drama 测试同步 11 列
+- **Verdict**: ⚠️ CONDITIONAL PASS 75/100（B）（🔴 1 / 🟡 2 / 🟢 5）
+
+### Summary
+
+6-commit 变更集审查：落地页主题切换（:root.light + `html-gen:index_theme`，try/catch + 白名单）、5 处复制按钮（clipboard+execCommand fallback）、footer、1500px 2 列断点、动态两屏 hero（innerHeight−110 + resize 重算）、github-corner light 深三角+白猫均实现正确；demos/index.html 双源同步到位。**数据验证**：专项 21 passed（10.32s）、全量 180 collect 与 AGENTS.md 逐文件计数一致、drama 23 passed；AGENTS.md 双源漂移段与实现一致。**主要问题**：① HG-SEC-029（🔴 提交完整性）——28000b2 测试断言 11 列结构，但 4 个 drama strategy-table 的 11 列数据文件（+1719 行）仍在工作区未提交，单独 checkout 本 6-commit 单元全量会失败 3+ 用例；② HG-SEC-030（🟡 可访问性）——demos 页浅色模式"案例演示清单"/Layer 卡硬编码深色色值，h2 #e0e0e0 on #f5f5f5 ≈1.25:1 近乎不可见；③ HG-SEC-031（🟡 CSS 特异性）——root 页深色模式 `.github-corner` (0,1,0) 被全局 `a:hover` (0,1,1) 击败，实测 hover 时 octocat 变 indigo（浅色模式有保护、深色缺失）。无安全漏洞（无注入面/无凭证/无外部脚本），🔴 属非安全类提交完整性问题故按 B 条件通过。
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-029 | 28000b2 测试断言依赖未提交 11 列数据（提交单元不自洽） | 🔴 | P1 | Open |
+| HG-SEC-030 | demos 页浅色模式案例清单/Layer 卡对比度不达标（h2 ≈1.25:1） | 🟡 | P1 | Open |
+| HG-SEC-031 | root github-corner 深色 hover octocat 变 indigo（a:hover 特异性压制） | 🟡 | P2 | Open |
+| HG-SEC-032 | demos 页内部 target=_blank 缺 rel="noopener"（与根页不一致） | 🟢 | P2 | Open |
+| HG-SEC-033 | hero 复制按钮"📋 复制"点击后重置为"📋"（标签丢失） | 🟢 | P3 | Open |
+| HG-SEC-034 | execCommand fallback 假成功反馈（抛异常/返回 false 仍 ✅） | 🟢 | P3 | Open |
+| HG-SEC-035 | 主题按钮无 aria-pressed/状态语义 | 🟢 | P3 | Open |
+| HG-SEC-036 | html-gen.py 行数漂移：AGENTS.md 569 / demos 546 / 实际 958 | 🟢 | P3 | Open |
+
+- 报告: `documents/review/index-landing-sync-review-v1.0-20260824.md`
+- 处理: CONDITIONAL PASS → 不 push；修完 P1（HG-SEC-029/030）后通知复查
+
+---
+
+## 2026-08-24 — index 落地页同步 6-commit 审计复查（HG-SEC-029..036 修复验证）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: 未 push 修复 commits（`30add19` data@drama 11 列 strategy-table ×4 + `c7a5bf0` fix@index HG-SEC-030..036）；上轮 CONDITIONAL PASS 75/B 的 8 项 findings 逐一验证
+- **Verdict**: ✅ **PASS 100/100（A）**（7 项完整修复 + 1 项主体修复降 🟢）
+
+### Fix Verification
+
+| # | 原严重度 | 修复 commit | 验证 | 结论 |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-029 | 🔴 P1 | 30add19 | 4 个 strategy-table 随测试断言一并提交（+1668 行），11 列结构（derivative/homology/synonym/antonym）确认；提交单元自洽 | ✅ 已修复 |
+| HG-SEC-030 | 🟡 P1 | c7a5bf0 | 浅色对比度实测：h2 #1f2328 = **14.49:1**、p #57606a = **5.86:1**、Layer 卡 p ≈**6.35:1** 全部达标；code #6366f1 = **3.43:1** ⚠️ 残余（0.7rem 小字仍略低 AA 4.5:1） | ⚠️ 主体修复 → 🟢 residual |
+| HG-SEC-031 | 🟡 P2 | c7a5bf0 | 双页 `.github-corner:hover { color: var(--gh-octocat); }` 补齐，深色 hover 不再变 indigo（特异性 0,1,1 vs 0,1,0 已保护） | ✅ 已修复 |
+| HG-SEC-032 | 🟢 P2 | c7a5bf0 | demos 18/18、根页 17/17 target=_blank 全带 rel="noopener"（0 缺失）；test_05 features 增断言 | ✅ 已修复 |
+| HG-SEC-033 | 🟢 P3 | c7a5bf0 | copyText orig 保存原标签，恢复不丢「📋 复制」文案 | ✅ 已修复 |
+| HG-SEC-034 | 🟢 P3 | c7a5bf0 | fallback 检查 execCommand 返回值，false/异常不标记 ✅ | ✅ 已修复 |
+| HG-SEC-035 | 🟢 P3 | c7a5bf0 | themeBtn 初始 + updateThemeBtn 均同步 aria-pressed（false/true） | ✅ 已修复 |
+| HG-SEC-036 | 🟢 P3 | c7a5bf0 | wc -l html-gen.py = 958，AGENTS.md + demos 页同步 958 | ✅ 已修复 |
+
+### Summary
+
+8 项 findings 全部处置完毕：HG-SEC-029 提交完整性由 30add19 关闭（4 个 11 列 strategy-table 数据文件随测试断言一并入仓，单独 checkout 单元全量不再失败）；HG-SEC-030 主体达标（案例清单 h2/p + Layer1/3 卡 p 改语义变量后 5.86:1~14.49:1，远超原 1.25:1~2.3:1），仅 code 元素 3.43:1 残余降 🟢；HG-SEC-031/032/033/034/035/036 逐一核实代码级修复真实落位（非仅 commit 消息）。**数据验证**：全量 pytest `-n 4`（py3.12 env）**180 passed in 34.08s**（20 文件，无回归）；rel="noopener" 双页 0 缺失；html-gen.py 958 行三处一致。无安全漏洞（无注入面/无凭证/无外部脚本），8 项无 🔴/🟡 剩余，评分 75 → 100。
+
+### Residual
+
+- **HG-SEC-030-residual** 🟢：`html-gen demo list` code（0.7rem）对比度 3.43:1 仍略低于 AA 4.5:1，可改 var(--cobalt-700) 或加粗进一步达标（不阻断）
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-029 | 28000b2 测试断言依赖未提交 11 列数据（提交单元不自洽） | 🔴 | P1 | ✅ Closed (30add19) |
+| HG-SEC-030 | demos 页浅色模式案例清单/Layer 卡对比度不达标 | 🟡 | P1 | ⚠️ Closed (c7a5bf0, code residual → 🟢) |
+| HG-SEC-031 | root github-corner 深色 hover octocat 变 indigo | 🟡 | P2 | ✅ Closed (c7a5bf0) |
+| HG-SEC-032 | demos 页内部 target=_blank 缺 rel="noopener" | 🟢 | P2 | ✅ Closed (c7a5bf0) |
+| HG-SEC-033 | hero 复制按钮点击后标签丢失 | 🟢 | P3 | ✅ Closed (c7a5bf0) |
+| HG-SEC-034 | execCommand fallback 假成功反馈 | 🟢 | P3 | ✅ Closed (c7a5bf0) |
+| HG-SEC-035 | 主题按钮无 aria-pressed 状态语义 | 🟢 | P3 | ✅ Closed (c7a5bf0) |
+| HG-SEC-036 | html-gen.py 行数文档漂移 | 🟢 | P3 | ✅ Closed (c7a5bf0) |
+
+- 报告: `documents/review/index-landing-sync-review-v1.0-20260824.md`（§八 复查章节）
+- 处理: PASS → 授权 push（13 commits 本地 + 本轮审计交付物）至 github/main
+
+---
