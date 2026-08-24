@@ -1,9 +1,9 @@
 {
-  "version": 2,
-  "count": 60,
+  "version": 3,
+  "count": 56,
   "demos": [
     {
-      "name": "business-model",
+      "name": "chaitin-business-model",
       "title": "商业模式 · 长亭科技",
       "type": "html",
       "entry": "chaitin/business-model.html",
@@ -11,21 +11,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "chaitin-menu-design-v1.0-20260707",
-      "title": "公司商业分析 · 纵/横菜单设计方案",
-      "type": "doc",
-      "entry": "chaitin/chaitin-menu-design-v1.0-20260707.html",
-      "featured": false,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "community-placeholder",
+      "name": "chaitin-community-placeholder",
       "title": "社区生态 · 长亭科技",
       "type": "html",
       "entry": "chaitin/community-placeholder.html",
@@ -33,11 +22,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "company-history",
+      "name": "chaitin-company-history",
       "title": "发展历程 · 长亭科技",
       "type": "html",
       "entry": "chaitin/company-history.html",
@@ -45,11 +33,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "company-profile",
+      "name": "chaitin-company-profile",
       "title": "公司画像 · 长亭科技",
       "type": "html",
       "entry": "chaitin/company-profile.html",
@@ -57,11 +44,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "competitive-landscape",
+      "name": "chaitin-competitive-landscape",
       "title": "竞争格局 · 长亭科技",
       "type": "html",
       "entry": "chaitin/competitive-landscape.html",
@@ -69,11 +55,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "development-outlook",
+      "name": "chaitin-development-outlook",
       "title": "发展前景 · 长亭科技",
       "type": "html",
       "entry": "chaitin/development-outlook.html",
@@ -81,11 +66,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "market-valuation",
+      "name": "chaitin-market-valuation",
       "title": "市场估值 · 长亭科技",
       "type": "html",
       "entry": "chaitin/market-valuation.html",
@@ -93,11 +77,19 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "open-source-overview",
+      "name": "chaitin-menu-design",
+      "title": "公司商业分析 · 纵/横菜单设计方案",
+      "type": "doc",
+      "entry": "chaitin/menu-design.html",
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "chaitin-open-source-overview",
       "title": "长亭开源概览 · 长亭科技",
       "type": "html",
       "entry": "chaitin/open-source-overview.html",
@@ -105,11 +97,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "product-architecture",
+      "name": "chaitin-product-architecture",
       "title": "长亭科技 · 产品架构",
       "type": "html",
       "entry": "chaitin/product-architecture.html",
@@ -117,11 +108,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "product-list",
+      "name": "chaitin-product-list",
       "title": "产品清单 · 长亭科技",
       "type": "html",
       "entry": "chaitin/product-list.html",
@@ -129,11 +119,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "product-matrix",
+      "name": "chaitin-product-matrix",
       "title": "产品矩阵 · 长亭科技",
       "type": "html",
       "entry": "chaitin/product-matrix.html",
@@ -141,11 +130,10 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "top-projects",
+      "name": "chaitin-top-projects",
       "title": "长亭开源项目清单 · 长亭科技",
       "type": "html",
       "entry": "chaitin/top-projects.html",
@@ -153,8 +141,7 @@
       "referenced": true,
       "referenced_by": [
         "_chaitin-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
       "name": "chaitin-business-analysis",
@@ -163,11 +150,10 @@
       "entry": "chaitin-business-analysis.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
-      "name": "awards",
+      "name": "cloudwise-awards",
       "title": "荣誉认证",
       "type": "doc",
       "entry": "cloudwise/awards.html",
@@ -175,11 +161,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "business-model",
+      "name": "cloudwise-business-model",
       "title": "商业模式",
       "type": "doc",
       "entry": "cloudwise/business-model.html",
@@ -187,11 +172,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "company-history",
+      "name": "cloudwise-company-history",
       "title": "发展历程",
       "type": "doc",
       "entry": "cloudwise/company-history.html",
@@ -199,11 +183,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "company-profile",
+      "name": "cloudwise-company-profile",
       "title": "公司画像",
       "type": "doc",
       "entry": "cloudwise/company-profile.html",
@@ -211,11 +194,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "competitive-landscape",
+      "name": "cloudwise-competitive-landscape",
       "title": "竞争格局",
       "type": "doc",
       "entry": "cloudwise/competitive-landscape.html",
@@ -223,11 +205,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "core-products",
+      "name": "cloudwise-core-products",
       "title": "核心产品",
       "type": "doc",
       "entry": "cloudwise/core-products.html",
@@ -235,11 +216,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "customers-market",
+      "name": "cloudwise-customers-market",
       "title": "客户与市场",
       "type": "doc",
       "entry": "cloudwise/customers-market.html",
@@ -247,11 +227,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "funding-valuation",
+      "name": "cloudwise-funding-valuation",
       "title": "融资估值",
       "type": "doc",
       "entry": "cloudwise/funding-valuation.html",
@@ -259,11 +238,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "growth-outlook",
+      "name": "cloudwise-growth-outlook",
       "title": "发展前景",
       "type": "doc",
       "entry": "cloudwise/growth-outlook.html",
@@ -271,11 +249,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "management-team",
+      "name": "cloudwise-management-team",
       "title": "管理团队",
       "type": "doc",
       "entry": "cloudwise/management-team.html",
@@ -283,11 +260,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "open-source",
+      "name": "cloudwise-open-source",
       "title": "开源项目",
       "type": "doc",
       "entry": "cloudwise/open-source.html",
@@ -295,11 +271,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "partners",
+      "name": "cloudwise-partners",
       "title": "合作伙伴",
       "type": "doc",
       "entry": "cloudwise/partners.html",
@@ -307,11 +282,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "product-matrix",
+      "name": "cloudwise-product-matrix",
       "title": "产品矩阵",
       "type": "doc",
       "entry": "cloudwise/product-matrix.html",
@@ -319,11 +293,10 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "solutions",
+      "name": "cloudwise-solutions",
       "title": "解决方案",
       "type": "doc",
       "entry": "cloudwise/solutions.html",
@@ -331,8 +304,7 @@
       "referenced": true,
       "referenced_by": [
         "_cloudwise-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
       "name": "cloudwise-business-analysis",
@@ -341,18 +313,16 @@
       "entry": "cloudwise-business-analysis.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
       "name": "countries-table",
       "title": "全球国家速查表（195 国）",
       "type": "table",
-      "entry": "countries/countries-table.html",
+      "entry": "countries-table.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
       "name": "demos-index",
@@ -361,11 +331,19 @@
       "entry": "demos-index.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
-      "name": "daming-overview",
+      "name": "doc-guide",
+      "title": "B 型 · 文档阅读方案",
+      "type": "doc",
+      "entry": "doc-guide.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "drama-daming-overview",
       "title": "大明王朝1566 · 概述",
       "type": "doc",
       "entry": "drama/daming-overview.html",
@@ -373,11 +351,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "daming-strategy-table",
+      "name": "drama-daming-strategy-table",
       "title": "大明王朝1566 · 36计策",
       "type": "table",
       "entry": "drama/daming-strategy-table.html",
@@ -385,11 +362,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "daming-timeline-table",
+      "name": "drama-daming-timeline-table",
       "title": "大明王朝1566 · 时间轴",
       "type": "table",
       "entry": "drama/daming-timeline-table.html",
@@ -397,11 +373,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "history-overview",
+      "name": "drama-history-overview",
       "title": "中国历史 · 概述",
       "type": "doc",
       "entry": "drama/history-overview.html",
@@ -409,11 +384,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "history-strategy-table",
+      "name": "drama-history-strategy-table",
       "title": "中国历史 · 三十六计",
       "type": "table",
       "entry": "drama/history-strategy-table.html",
@@ -421,11 +395,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "history-timeline-table",
+      "name": "drama-history-timeline-table",
       "title": "中国历史 · 朝代时间轴",
       "type": "table",
       "entry": "drama/history-timeline-table.html",
@@ -433,11 +406,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "yongzheng-overview",
+      "name": "drama-yongzheng-overview",
       "title": "雍正王朝 · 概述",
       "type": "doc",
       "entry": "drama/yongzheng-overview.html",
@@ -445,11 +417,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "yongzheng-strategy-table",
+      "name": "drama-yongzheng-strategy-table",
       "title": "雍正王朝 · 36计策",
       "type": "table",
       "entry": "drama/yongzheng-strategy-table.html",
@@ -457,11 +428,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "yongzheng-timeline-table",
+      "name": "drama-yongzheng-timeline-table",
       "title": "雍正王朝 · 时间轴",
       "type": "table",
       "entry": "drama/yongzheng-timeline-table.html",
@@ -469,11 +439,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "zhuyuanzhang-overview",
+      "name": "drama-zhuyuanzhang-overview",
       "title": "朱元璋（2006） · 概述",
       "type": "doc",
       "entry": "drama/zhuyuanzhang-overview.html",
@@ -481,11 +450,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "zhuyuanzhang-strategy-table",
+      "name": "drama-zhuyuanzhang-strategy-table",
       "title": "朱元璋（2006） · 36计策",
       "type": "table",
       "entry": "drama/zhuyuanzhang-strategy-table.html",
@@ -493,11 +461,10 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
-      "name": "zhuyuanzhang-timeline-table",
+      "name": "drama-zhuyuanzhang-timeline-table",
       "title": "朱元璋（2006） · 时间轴",
       "type": "table",
       "entry": "drama/zhuyuanzhang-timeline-table.html",
@@ -505,8 +472,7 @@
       "referenced": true,
       "referenced_by": [
         "_drama-kb-data"
-      ],
-      "stale": false
+      ]
     },
     {
       "name": "drama-knowledge",
@@ -515,168 +481,106 @@
       "entry": "drama-knowledge.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "ci-issues-demo",
-      "title": "GitHub CI 问题分析报告",
-      "type": "doc",
-      "entry": "features/ci-issues-demo.html",
-      "featured": false,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "git-cloner-demo",
-      "title": "Git Project Stars",
-      "type": "table",
-      "entry": "features/git-cloner-demo.html",
-      "featured": false,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
       "name": "hermes-profile-skills-list",
       "title": "Hermes Skills 列表",
       "type": "table",
-      "entry": "features/hermes-profile-skills-list.html",
+      "entry": "hermes-profile-skills-list.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "iris-output-index",
-      "title": "IRIS-Output 文件索引",
-      "type": "table",
-      "entry": "features/iris-output-index.html",
-      "featured": false,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
       "name": "knowledge-demo",
       "title": "知识库",
       "type": "knowledge",
-      "entry": "features/knowledge-demo.html",
+      "entry": "knowledge-demo.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
-      "name": "phase2-demo",
-      "title": "Phase 2 Demo",
-      "type": "table",
-      "entry": "features/phase2-demo.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "table-actions-demo",
-      "title": "Table Actions Demo",
-      "type": "table",
-      "entry": "features/table-actions-demo.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "tool-nav-demo",
-      "title": "工具导航",
-      "type": "table",
-      "entry": "features/tool-nav-demo.html",
-      "featured": false,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "html-gen-usage-guide-v1.0-20260707",
-      "title": "html-gen · CLI 使用说明",
+      "name": "knowledge-guide",
+      "title": "C 型 · 知识库方案",
       "type": "doc",
-      "entry": "html-gen-usage-guide-v1.0-20260707.html",
+      "entry": "knowledge-guide.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
+    },
+    {
+      "name": "markdown-spec",
+      "title": "方案B · Markdown 规范说明",
+      "type": "doc",
+      "entry": "markdown-spec.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     },
     {
       "name": "provinces-table",
       "title": "中国省份速查表",
       "type": "table",
-      "entry": "provinces/provinces-table.html",
+      "entry": "provinces-table.html",
       "featured": false,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
     },
     {
-      "name": "template-A-guide-v1.0-20260707",
-      "title": "A 型 · 数据表格方案",
-      "type": "doc",
-      "entry": "templates/template-A-guide-v1.0-20260707.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "template-B-guide-v1.0-20260707",
-      "title": "B 型 · 文档阅读方案",
-      "type": "doc",
-      "entry": "templates/template-B-guide-v1.0-20260707.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "template-B-markdown-spec-v1.0-20260707",
-      "title": "方案B · Markdown 规范说明",
-      "type": "doc",
-      "entry": "templates/template-B-markdown-spec-v1.0-20260707.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "template-C-guide-v1.0-20260707",
-      "title": "C 型 · 知识库方案",
-      "type": "doc",
-      "entry": "templates/template-C-guide-v1.0-20260707.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "template-D-guide-v1.0-20260707",
-      "title": "D 型 · 幻灯片方案",
-      "type": "doc",
-      "entry": "templates/template-D-guide-v1.0-20260707.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": [],
-      "stale": false
-    },
-    {
-      "name": "template-D-slide-demo",
+      "name": "slide-demo",
       "title": "D 型 Slide",
       "type": "doc",
-      "entry": "templates/template-D-slide-demo.html",
+      "entry": "slide-demo.html",
       "featured": true,
       "referenced": false,
-      "referenced_by": [],
-      "stale": false
+      "referenced_by": []
+    },
+    {
+      "name": "slide-guide",
+      "title": "D 型 · 幻灯片方案",
+      "type": "doc",
+      "entry": "slide-guide.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "table-actions-demo",
+      "title": "Table Actions Demo",
+      "type": "table",
+      "entry": "table-actions-demo.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "table-features-demo",
+      "title": "Phase 2 Demo",
+      "type": "table",
+      "entry": "table-features-demo.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "table-guide",
+      "title": "A 型 · 数据表格方案",
+      "type": "doc",
+      "entry": "table-guide.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "usage-guide",
+      "title": "html-gen · CLI 使用说明",
+      "type": "doc",
+      "entry": "usage-guide.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
     }
   ]
 }

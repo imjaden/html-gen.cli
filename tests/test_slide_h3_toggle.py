@@ -11,7 +11,7 @@ from selenium.webdriver.chrome.service import Service
 
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'templates' / 'template-D-slide-demo.html'
+DEMO = PROJECT / 'demos' / 'slide-demo.html'
 
 
 class TestH3Toggle(unittest.TestCase):

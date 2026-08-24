@@ -119,7 +119,7 @@ html-gen slide -h
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [Slide 幻灯片版](template-D-slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | templates/template-D-slide-demo.html |
+| [Slide 幻灯片版](slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-demo.html |
 
 ---
 

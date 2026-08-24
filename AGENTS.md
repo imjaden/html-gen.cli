@@ -250,15 +250,28 @@ html-gen.cli/
     │   │   └── references/table-demo-prompt.md
     │   ├── html-gen-doc/SKILL.md
     │   └── html-gen-knowledge/SKILL.md
-    └── demos/                      # 生成的 HTML 示例
+    └── demos/                      # 生成的 HTML 示例（独立案例根级扁平，URL=/demos/{name}.html）
     ├── index.html              # 模板展示首页
-    ├── demos-index.html        # A 型文档索引
+    ├── demos-index.html        # A 型文档索引（数据源 data/_demos-data.json）
+    ├── usage-guide.html        # CLI 使用说明
+    ├── table-guide.html        # A 型 · 数据表格方案
+    ├── doc-guide.html          # B 型 · 文档阅读方案
+    ├── markdown-spec.html      # Markdown 语法规范
+    ├── knowledge-guide.html    # C 型 · 知识库方案
+    ├── slide-guide.html        # D 型 · 幻灯片方案
+    ├── slide-demo.html         # D 型 Slide 演示
     ├── hermes-profile-skills-list.html  # 主力 demo: Hermes Skills 列表
-    ├── phase2-demo.html        # 功能测试 demo
+    ├── table-features-demo.html # 表格功能全演示（数据源 data/_table-features-demo.json）
     ├── table-actions-demo.html # 操作按钮 demo
+    ├── knowledge-demo.html     # 知识库功能 demo
+    ├── countries-table.html    # 全球 195 国速查表（数据源说明 countries-table.md）
+    ├── provinces-table.html    # 中国 34 省速查表（数据源说明 provinces-table.md）
     ├── drama-knowledge.html    # 以剧读史影视历史知识库（中国历史 + 大明王朝1566）
-    ├── chaitin/                # 长亭科技商业分析案例
-    └── drama/                  # 以剧读史独立页（时间轴 + 36计策，md 源 + html）
+    ├── chaitin-business-analysis.html  # 长亭科技商业分析知识库
+    ├── cloudwise-business-analysis.html # 云智慧商业分析知识库
+    ├── chaitin/                # 长亭内容子页（知识库引用）+ menu-design 菜单方案
+    ├── cloudwise/              # 云智慧内容子页（知识库引用）
+    └── drama/                  # 以剧读史内容子页（知识库引用；时间轴 + 36计策，md 源 + html）
 
 > **双源漂移（1C 决策，2026-08-23）**：根 `index.html`（落地页）与 `demos/index.html`（模板展示首页）为**两份独立副本**，非同一文件。改动落地页结构时需同步两处；`demos/index.html` 是 `html-gen demo --rebuild` 的 featured 数据源，根 index.html 不参与。github-corner 模式亦不同：layout 模板层（demo 页）用「pointer-events:none 穿透 + hit 36px」防遮挡右上角工具栏；根落地页无工具栏，用全图标可点 + hover 波浪动画（HG-SEC-014 文档化，2026-08-23）。
 ```

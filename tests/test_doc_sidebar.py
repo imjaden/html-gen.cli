@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.service import Service
 
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'templates' / 'template-B-guide-v1.0-20260707.html'
+DEMO = PROJECT / 'demos' / 'doc-guide.html'
 
 
 class TestDocSidebar(unittest.TestCase):

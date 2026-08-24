@@ -184,10 +184,10 @@ html-gen knowledge -h
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [以剧读史 · 影视历史知识库](../drama-knowledge.html) | 中国历史 / 大明王朝1566 / 雍正王朝 3 组 · 概述/时间轴/36计策 | drama-knowledge.html |
-| [长亭科技 · 商业分析知识库](../chaitin-business-analysis.html) | 4 个大类 · 14 个条目 · 售前架构师视角 | chaitin-business-analysis.html |
-| [云智慧 · 商业分析知识库](../cloudwise-business-analysis.html) | 智能运维 AIOps · 监控宝/透视宝/压测宝 · 12 条目 | cloudwise-business-analysis.html |
-| [knowledge 模板 demo](../features/knowledge-demo.html) | 模板基础功能演示 | features/knowledge-demo.html |
+| [以剧读史 · 影视历史知识库](drama-knowledge.html) | 中国历史 / 大明王朝1566 / 雍正王朝 3 组 · 概述/时间轴/36计策 | drama-knowledge.html |
+| [长亭科技 · 商业分析知识库](chaitin-business-analysis.html) | 4 个大类 · 14 个条目 · 售前架构师视角 | chaitin-business-analysis.html |
+| [云智慧 · 商业分析知识库](cloudwise-business-analysis.html) | 智能运维 AIOps · 监控宝/透视宝/压测宝 · 12 条目 | cloudwise-business-analysis.html |
+| [knowledge 模板 demo](knowledge-demo.html) | 模板基础功能演示 | knowledge-demo.html |
 
 ---
 

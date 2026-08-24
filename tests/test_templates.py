@@ -26,11 +26,11 @@ class TestDoc(unittest.TestCase):
 
     def test_gen_all_demos(self):
         for md_name, title in [
-            ('html-gen-usage-guide-v1.0-20260707.md', '使用指南'),
-            ('template-A-guide-v1.0-20260707.md', 'A 型'),
-            ('template-B-guide-v1.0-20260707.md', 'B 型'),
-            ('template-B-markdown-spec-v1.0-20260707.md', 'B 型规范'),
-            ('template-C-guide-v1.0-20260707.md', 'C 型'),
+            ('usage-guide.md', '使用指南'),
+            ('table-guide.md', 'A 型'),
+            ('doc-guide.md', 'B 型'),
+            ('markdown-spec.md', 'B 型规范'),
+            ('knowledge-guide.md', 'C 型'),
         ]:
             out = Path('/tmp') / f'test-doc-{md_name.replace(".md", ".html")}'
             src = DEMOS / 'templates' / md_name if (DEMOS / 'templates' / md_name).exists() else DEMOS / md_name
@@ -79,7 +79,7 @@ class TestSlide(unittest.TestCase):
 
     def test_gen_slide(self):
         out = Path('/tmp/test-slide-demo.html')
-        run_gen('slide', '-i', str(DEMOS / 'templates' / 'template-B-markdown-spec-v1.0-20260707.md'),
+        run_gen('slide', '-i', str(DEMOS / 'markdown-spec.md'),
                 '--title', 'Slide Test', '-o', str(out))
         html = out.read_text()
         self.assertTrue(html.startswith('<!DOCTYPE html>'))
@@ -98,7 +98,7 @@ class TestSlide(unittest.TestCase):
 
     def test_cover_page(self):
         out = Path('/tmp/test-slide-cover.html')
-        run_gen('slide', '-i', str(DEMOS / 'templates' / 'template-B-guide-v1.0-20260707.md'),
+        run_gen('slide', '-i', str(DEMOS / 'doc-guide.md'),
                 '--title', 'Cover Test', '-o', str(out))
         html = out.read_text()
         self.assertIn('slide-cover', html)
@@ -106,7 +106,7 @@ class TestSlide(unittest.TestCase):
 
     def test_perf_warning(self):
         out = Path('/tmp/test-slide-perf.html')
-        src = DEMOS / 'templates' / 'template-B-guide-v1.0-20260707.md'
+        src = DEMOS / 'doc-guide.md'
         run_gen('slide', '-i', str(src), '--title', 'Perf', '-o', str(out))
         html = out.read_text()
         # Small doc should have empty perf warning

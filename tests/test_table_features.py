@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.service import Service
 
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'features' / 'phase2-demo.html'
+DEMO = PROJECT / 'demos' / 'table-features-demo.html'
 
 
 def error_collector(driver):
@@ -152,7 +152,7 @@ class TestTableFeatures(unittest.TestCase):
         cells = self.driver.find_elements(By.CSS_SELECTOR, '.clickable-cell')
         self.assertTrue(len(cells) > 0, "No clickable cells")
 
-        # stars column (index 1) has quickFilter:true in _phase2-demo.json
+        # stars column (index 1) has quickFilter:true in _table-features-demo.json
         stars_idx = 1
         self.assertGreater(len(cells), stars_idx, "Not enough cells")
         cells[stars_idx].click()

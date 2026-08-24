@@ -21,8 +21,8 @@ class TestDemoCmd(unittest.TestCase):
         self.assertIn('共', out)
         self.assertIn('★', out, "应有精选标记")
         self.assertIn('drama-knowledge', out)
-        self.assertIn('features/hermes-profile-skills-list.html', out, "归位后路径")
-        self.assertIn('templates/template-A-guide-v1.0-20260707.html', out)
+        self.assertIn('hermes-profile-skills-list.html', out, "归位后路径")
+        self.assertIn('table-guide.html', out)
 
     def test_02_list_json(self):
         r = run('list', '--json')
@@ -33,8 +33,8 @@ class TestDemoCmd(unittest.TestCase):
         # 类型识别
         by_name = {x['name']: x['type'] for x in d['data']}
         self.assertEqual(by_name.get('drama-knowledge'), 'knowledge')
-        self.assertEqual(by_name.get('history-timeline-table'), 'table')
-        self.assertEqual(by_name.get('template-A-guide-v1.0-20260707'), 'doc')
+        self.assertEqual(by_name.get('drama-history-timeline-table'), 'table')
+        self.assertEqual(by_name.get('table-guide'), 'doc')
         self.assertGreaterEqual(sum(1 for x in d['data'] if x.get('featured')), 9, "精选 ≥9")
 
     def test_03_detail(self):
@@ -45,10 +45,10 @@ class TestDemoCmd(unittest.TestCase):
         self.assertIn('预览:', r.stdout)
 
     def test_04_detail_json(self):
-        r = run('history-timeline-table', '--json')
+        r = run('drama-history-timeline-table', '--json')
         d = json.loads(r.stdout)
         self.assertEqual(d['status'], 'ok')
-        self.assertEqual(d['data']['name'], 'history-timeline-table')
+        self.assertEqual(d['data']['name'], 'drama-history-timeline-table')
         self.assertEqual(d['data']['type'], 'table')
 
     def test_05_not_found(self):
@@ -76,7 +76,7 @@ class TestDemoCmd(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         self.assertIn('registry 重建', r.stdout)
         reg = json.loads((DEMOS / '_registry.json').read_text())
-        self.assertEqual(reg['version'], 2)
+        self.assertEqual(reg['version'], 3)
         self.assertGreaterEqual(sum(1 for d in reg['demos'] if d['featured']), 9, "featured ≥9")
         # 幂等
         r2 = run('--rebuild')
@@ -103,7 +103,7 @@ class TestDemoCmd(unittest.TestCase):
     def test_09_registry_exists(self):
         """_registry.json 存在且条目与文件对应."""
         reg = json.loads((DEMOS / '_registry.json').read_text())
-        self.assertEqual(reg['version'], 2, "registry 版本应为 2（含 referenced/stale）")
+        self.assertEqual(reg['version'], 3, "registry 版本应为 3（name 唯一化）")
         entries = {d['entry'] for d in reg['demos']}
         htmls = {str(f.relative_to(DEMOS)).replace('\\', '/')
                  for f in DEMOS.rglob('*.html') if f.name not in ('index.html', '_registry.json')}

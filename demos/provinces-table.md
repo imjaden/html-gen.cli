@@ -5,7 +5,7 @@
 - 来源：国家统计局 / 各省统计公报（面积、GDP 2023）/ 第七次全国人口普查 2020（人口）；关联国家数据复用 data/_countries-data.json（World Bank + UN M49）
 - 模板类型：A 型表格（html-gen table）
 - 数据文件：data/_provinces-data.json（columns + data + tabs + options）
-- 页面：demos/provinces/provinces-table.html
+- 页面：demos/provinces-table.html
 - 特性：七大区域 Tab 分组、面积/人口/GDP 数值排序、千位符、CSV 导出、与全球国家速查表双向关联（面积/人口/GDP 相近国家 ↔ 相近省份）
 
 字段：省份名称/简称/省会（首府）/区域/面积(万km²)/人口(万)/GDP(亿元)/面积相近国家/人口相近国家/GDP相近国家/备注
