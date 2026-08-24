@@ -59,13 +59,13 @@ class TestHistoryTables(unittest.TestCase):
     def test_01_strategy_headers_and_index(self):
         self._load('history-strategy-table.html')
         self.assertEqual(self._headers(),
-                         ['序号', '计名', '分类', '别名', '衍生成语', '人物', '兵法'],
+                         ['序号', '计策名称', '分类', '衍生词', '同源意象', '近义词', '反义词', '兵法', '人物'],
                          f"36计表头: {self._headers()}")
         first = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')[0]
         tds = first.find_elements(By.TAG_NAME, 'td')
         self.assertEqual(tds[0].text, '1', "序号应为 1")
         self.assertEqual(tds[1].text, '瞒天过海')
-        self.assertIn('备周则意怠', tds[6].text, "兵法列应展示原文")
+        self.assertIn('备周则意怠', tds[7].text, "兵法列应展示原文")
 
     def test_02_strategy_pill_filter(self):
         self._load('history-strategy-table.html')
@@ -152,7 +152,8 @@ class TestHistoryTables(unittest.TestCase):
     def test_07_daming_strategy(self):
         self._load('daming-strategy-table.html')
         self.assertEqual(self._headers(),
-                         ['序号', '计策名称', '分类', '衍生成语', '剧中事件', '剧中人物', '历史典故', '典故人物'],
+                         ['序号', '计策名称', '分类', '衍生词', '同源意象', '近义词', '反义词',
+                          '历史典故', '典故人物', '剧中事件', '剧中人物'],
                          f"大明计策表头: {self._headers()}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
         self.assertEqual(len(rows), 22, f"应 22 行（用户梳理表）: {len(rows)}")
@@ -161,16 +162,16 @@ class TestHistoryTables(unittest.TestCase):
         self.assertEqual(first[1].text, '瞒天过海', "首行应为瞒天过海")
         self.assertEqual(first[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '胜战计',
                          "瞒天过海分类应为胜战计")
-        self.assertEqual(first[3].text, '掩人耳目、欺上瞒下', "衍生成语应保留用户内容")
-        self.assertIn('改稻为桑', first[4].text, "剧中事件应含改稻为桑")
-        self.assertIn('薛仁贵', first[6].text, "历史典故应含薛仁贵")
-        # 走为上计行（败战计 + 典故重耳）
-        zs = self._row_by_text(1, '走为上计')
+        self.assertEqual(first[3].text, '掩人耳目', "衍生词应保留用户内容")
+        self.assertIn('改稻为桑', first[9].text, "剧中事件应含改稻为桑")
+        self.assertIn('薛仁贵', first[7].text, "历史典故应含薛仁贵")
+        # 走为上行（败战计 + 典故重耳）
+        zs = self._row_by_text(1, '走为上')
         self.assertIsNotNone(zs, "应找到走为上计行")
         ztd = zs.find_elements(By.TAG_NAME, 'td')
         self.assertEqual(ztd[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text, '败战计',
                          "走为上计应为败战计")
-        self.assertIn('重耳', ztd[6].text, "走为上典故应含重耳")
+        self.assertIn('重耳', ztd[7].text, "走为上典故应含重耳")
         # split 详情（计策名称点击 → 典故+事件）
         self.driver.execute_script("arguments[0].click();", first[1])
         time.sleep(0.4)  # [speedup]
