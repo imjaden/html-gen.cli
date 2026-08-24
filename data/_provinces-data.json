@@ -1,0 +1,594 @@
+{
+  "columns": [
+    {
+      "key": "province",
+      "label": "省份名称",
+      "sortable": true,
+      "locale": "zh",
+      "freeze": true,
+      "width": "110px",
+      "onCellClick": "split"
+    },
+    {
+      "key": "abbr",
+      "label": "简称",
+      "sortable": true,
+      "locale": "zh",
+      "width": "60px"
+    },
+    {
+      "key": "capital",
+      "label": "省会/首府",
+      "sortable": true,
+      "locale": "zh",
+      "width": "100px"
+    },
+    {
+      "key": "region_tags",
+      "label": "区域",
+      "type": "pills",
+      "sortable": true,
+      "width": "90px"
+    },
+    {
+      "key": "area_wan",
+      "label": "面积(万km²)",
+      "type": "number",
+      "sortable": true,
+      "width": "110px",
+      "format": "thousands"
+    },
+    {
+      "key": "pop_wan",
+      "label": "人口(万)",
+      "type": "number",
+      "sortable": true,
+      "width": "110px",
+      "format": "thousands"
+    },
+    {
+      "key": "gdp_yi",
+      "label": "GDP(亿元)",
+      "type": "number",
+      "sortable": true,
+      "width": "110px",
+      "format": "thousands"
+    },
+    {
+      "key": "area_country",
+      "label": "面积相近国家",
+      "type": "pills",
+      "sortable": true,
+      "width": "170px"
+    },
+    {
+      "key": "pop_country",
+      "label": "人口相近国家",
+      "type": "pills",
+      "sortable": true,
+      "width": "170px"
+    },
+    {
+      "key": "gdp_country",
+      "label": "GDP相近国家",
+      "type": "pills",
+      "sortable": true,
+      "width": "170px"
+    },
+    {
+      "key": "note",
+      "label": "备注",
+      "sortable": true,
+      "width": "200px"
+    }
+  ],
+  "data": [
+    {
+      "province": "北京",
+      "abbr": "京",
+      "capital": "北京",
+      "region_tags": "华北",
+      "area_wan": 1.64,
+      "pop_wan": 2189,
+      "gdp_yi": 43761,
+      "area_country": "斯威士兰、科威特、东帝汶",
+      "pop_country": "斯里兰卡、马拉维、赞比亚",
+      "gdp_country": "爱尔兰、瑞典、阿根廷",
+      "note": ""
+    },
+    {
+      "province": "天津",
+      "abbr": "津",
+      "capital": "天津",
+      "region_tags": "华北",
+      "area_wan": 1.19,
+      "pop_wan": 1387,
+      "gdp_yi": 16737,
+      "area_country": "瓦努阿图、卡塔尔、冈比亚",
+      "pop_country": "布隆迪、卢旺达、贝宁",
+      "gdp_country": "匈牙利、尼日利亚、希腊",
+      "note": ""
+    },
+    {
+      "province": "河北",
+      "abbr": "冀",
+      "capital": "石家庄",
+      "region_tags": "华北",
+      "area_wan": 18.88,
+      "pop_wan": 7461,
+      "gdp_yi": 43944,
+      "area_country": "叙利亚、柬埔寨、塞内加尔",
+      "pop_country": "泰国、英国、坦桑尼亚",
+      "gdp_country": "爱尔兰、瑞典、阿根廷",
+      "note": ""
+    },
+    {
+      "province": "山西",
+      "abbr": "晋",
+      "capital": "太原",
+      "region_tags": "华北",
+      "area_wan": 15.67,
+      "pop_wan": 3480,
+      "gdp_yi": 25698,
+      "area_country": "突尼斯、苏里南、孟加拉国",
+      "pop_country": "莫桑比克、加纳、沙特阿拉伯",
+      "gdp_country": "巴基斯坦、捷克、罗马尼亚",
+      "note": ""
+    },
+    {
+      "province": "内蒙古",
+      "abbr": "蒙",
+      "capital": "呼和浩特",
+      "region_tags": "华北",
+      "area_wan": 118.3,
+      "pop_wan": 2405,
+      "gdp_yi": 24627,
+      "area_country": "南非、哥伦比亚、埃塞俄比亚",
+      "pop_country": "马里、布基纳法索、叙利亚",
+      "gdp_country": "捷克、智利、巴基斯坦",
+      "note": ""
+    },
+    {
+      "province": "辽宁",
+      "abbr": "辽",
+      "capital": "沈阳",
+      "region_tags": "东北",
+      "area_wan": 14.8,
+      "pop_wan": 4259,
+      "gdp_yi": 30209,
+      "area_country": "孟加拉国、尼泊尔、多米尼加",
+      "pop_country": "阿富汗、加拿大、也门",
+      "gdp_country": "丹麦、马来西亚、哥伦比亚",
+      "note": ""
+    },
+    {
+      "province": "吉林",
+      "abbr": "吉",
+      "capital": "长春",
+      "region_tags": "东北",
+      "area_wan": 18.74,
+      "pop_wan": 2407,
+      "gdp_yi": 13531,
+      "area_country": "叙利亚、柬埔寨、塞内加尔",
+      "pop_country": "马里、布基纳法索、叙利亚",
+      "gdp_country": "乌克兰、卡塔尔、科威特",
+      "note": ""
+    },
+    {
+      "province": "黑龙江",
+      "abbr": "黑",
+      "capital": "哈尔滨",
+      "region_tags": "东北",
+      "area_wan": 47.3,
+      "pop_wan": 3185,
+      "gdp_yi": 15884,
+      "area_country": "德国、喀麦隆、巴布亚新几内亚",
+      "pop_country": "科特迪瓦、马达加斯加、尼泊尔",
+      "gdp_country": "匈牙利、卡塔尔、尼日利亚",
+      "note": ""
+    },
+    {
+      "province": "上海",
+      "abbr": "沪",
+      "capital": "上海",
+      "region_tags": "华东",
+      "area_wan": 0.63,
+      "pop_wan": 2487,
+      "gdp_yi": 47219,
+      "area_country": "巴勒斯坦、文莱、特立尼达和多巴哥",
+      "pop_country": "斯里兰卡、叙利亚、马里",
+      "gdp_country": "比利时、阿根廷、爱尔兰",
+      "note": ""
+    },
+    {
+      "province": "江苏",
+      "abbr": "苏",
+      "capital": "南京",
+      "region_tags": "华东",
+      "area_wan": 10.72,
+      "pop_wan": 8475,
+      "gdp_yi": 128222,
+      "area_country": "危地马拉、古巴、保加利亚",
+      "pop_country": "土耳其、德国、伊朗",
+      "gdp_country": "墨西哥、澳大利亚、韩国",
+      "note": ""
+    },
+    {
+      "province": "浙江",
+      "abbr": "浙",
+      "capital": "杭州",
+      "region_tags": "华东",
+      "area_wan": 10.55,
+      "pop_wan": 6457,
+      "gdp_yi": 82553,
+      "area_country": "冰岛、危地马拉、古巴",
+      "pop_country": "南非、法国、坦桑尼亚",
+      "gdp_country": "荷兰、沙特阿拉伯、土耳其",
+      "note": ""
+    },
+    {
+      "province": "安徽",
+      "abbr": "皖",
+      "capital": "合肥",
+      "region_tags": "华东",
+      "area_wan": 14.01,
+      "pop_wan": 6103,
+      "gdp_yi": 47051,
+      "area_country": "塔吉克斯坦、多米尼加、尼泊尔",
+      "pop_country": "意大利、南非、肯尼亚",
+      "gdp_country": "比利时、阿根廷、爱尔兰",
+      "note": ""
+    },
+    {
+      "province": "福建",
+      "abbr": "闽",
+      "capital": "福州",
+      "region_tags": "华东",
+      "area_wan": 12.4,
+      "pop_wan": 4154,
+      "gdp_yi": 54355,
+      "area_country": "厄立特里亚、朝鲜、马拉维",
+      "pop_country": "加拿大、也门、阿富汗",
+      "gdp_country": "比利时、阿根廷、波兰",
+      "note": ""
+    },
+    {
+      "province": "江西",
+      "abbr": "赣",
+      "capital": "南昌",
+      "region_tags": "华东",
+      "area_wan": 16.69,
+      "pop_wan": 4519,
+      "gdp_yi": 32200,
+      "area_country": "苏里南、突尼斯、乌拉圭",
+      "pop_country": "阿根廷、伊拉克、阿尔及利亚",
+      "gdp_country": "孟加拉国、菲律宾、伊朗",
+      "note": ""
+    },
+    {
+      "province": "山东",
+      "abbr": "鲁",
+      "capital": "济南",
+      "region_tags": "华东",
+      "area_wan": 15.58,
+      "pop_wan": 10153,
+      "gdp_yi": 92069,
+      "area_country": "突尼斯、苏里南、孟加拉国",
+      "pop_country": "越南、刚果（金）、伊朗",
+      "gdp_country": "沙特阿拉伯、土耳其、荷兰",
+      "note": ""
+    },
+    {
+      "province": "河南",
+      "abbr": "豫",
+      "capital": "郑州",
+      "region_tags": "华中",
+      "area_wan": 16.7,
+      "pop_wan": 9937,
+      "gdp_yi": 59132,
+      "area_country": "苏里南、突尼斯、乌拉圭",
+      "pop_country": "越南、伊朗、刚果（金）",
+      "gdp_country": "波兰、瑞士、比利时",
+      "note": ""
+    },
+    {
+      "province": "湖北",
+      "abbr": "鄂",
+      "capital": "武汉",
+      "region_tags": "华中",
+      "area_wan": 18.59,
+      "pop_wan": 5775,
+      "gdp_yi": 55804,
+      "area_country": "叙利亚、柬埔寨、乌拉圭",
+      "pop_country": "意大利、肯尼亚、缅甸",
+      "gdp_country": "比利时、波兰、阿根廷",
+      "note": ""
+    },
+    {
+      "province": "湖南",
+      "abbr": "湘",
+      "capital": "长沙",
+      "region_tags": "华中",
+      "area_wan": 21.18,
+      "pop_wan": 6644,
+      "gdp_yi": 50013,
+      "area_country": "圭亚那、白俄罗斯、吉尔吉斯斯坦",
+      "pop_country": "法国、坦桑尼亚、南非",
+      "gdp_country": "比利时、阿根廷、爱尔兰",
+      "note": ""
+    },
+    {
+      "province": "广东",
+      "abbr": "粤",
+      "capital": "广州",
+      "region_tags": "华南",
+      "area_wan": 17.97,
+      "pop_wan": 12601,
+      "gdp_yi": 135673,
+      "area_country": "柬埔寨、乌拉圭、叙利亚",
+      "pop_country": "日本、墨西哥、埃塞俄比亚",
+      "gdp_country": "韩国、西班牙、墨西哥",
+      "note": ""
+    },
+    {
+      "province": "广西",
+      "abbr": "桂",
+      "capital": "南宁",
+      "region_tags": "华南",
+      "area_wan": 23.76,
+      "pop_wan": 5013,
+      "gdp_yi": 27202,
+      "area_country": "罗马尼亚、老挝、加纳",
+      "pop_country": "乌干达、苏丹、西班牙",
+      "gdp_country": "罗马尼亚、埃及、巴基斯坦",
+      "note": ""
+    },
+    {
+      "province": "海南",
+      "abbr": "琼",
+      "capital": "海口",
+      "region_tags": "华南",
+      "area_wan": 3.54,
+      "pop_wan": 1008,
+      "gdp_yi": 7551,
+      "area_country": "几内亚比绍、摩尔多瓦、不丹",
+      "pop_country": "以色列、阿塞拜疆、希腊",
+      "gdp_country": "阿曼、安哥拉、危地马拉",
+      "note": ""
+    },
+    {
+      "province": "香港",
+      "abbr": "港",
+      "capital": "—",
+      "region_tags": "华南",
+      "area_wan": 0.11,
+      "pop_wan": 748,
+      "gdp_yi": 27200,
+      "area_country": "圣多美和普林西比、基里巴斯、巴林",
+      "pop_country": "土库曼斯坦、利比亚、吉尔吉斯斯坦",
+      "gdp_country": "罗马尼亚、埃及、巴基斯坦",
+      "note": "特别行政区/地区，口径与内地有差异"
+    },
+    {
+      "province": "澳门",
+      "abbr": "澳",
+      "capital": "—",
+      "region_tags": "华南",
+      "area_wan": 0.0033,
+      "pop_wan": 68,
+      "gdp_yi": 3340,
+      "area_country": "图瓦卢",
+      "pop_country": "卢森堡、苏里南、黑山",
+      "gdp_country": "巴林、柬埔寨、利比亚",
+      "note": "特别行政区/地区，口径与内地有差异"
+    },
+    {
+      "province": "台湾",
+      "abbr": "台",
+      "capital": "台北",
+      "region_tags": "华南",
+      "area_wan": 3.6,
+      "pop_wan": 2357,
+      "gdp_yi": 54200,
+      "area_country": "几内亚比绍、摩尔多瓦、不丹",
+      "pop_country": "布基纳法索、马里、叙利亚",
+      "gdp_country": "比利时、阿根廷、波兰",
+      "note": "特别行政区/地区，口径与内地有差异"
+    },
+    {
+      "province": "重庆",
+      "abbr": "渝",
+      "capital": "重庆",
+      "region_tags": "西南",
+      "area_wan": 8.24,
+      "pop_wan": 3205,
+      "gdp_yi": 30146,
+      "area_country": "奥地利、塞尔维亚、捷克",
+      "pop_country": "马达加斯加、科特迪瓦、秘鲁",
+      "gdp_country": "丹麦、马来西亚、哥伦比亚",
+      "note": ""
+    },
+    {
+      "province": "四川",
+      "abbr": "川",
+      "capital": "成都",
+      "region_tags": "西南",
+      "area_wan": 48.6,
+      "pop_wan": 8367,
+      "gdp_yi": 60133,
+      "area_country": "土库曼斯坦、喀麦隆、西班牙",
+      "pop_country": "德国、土耳其、伊朗",
+      "gdp_country": "波兰、瑞士、比利时",
+      "note": ""
+    },
+    {
+      "province": "贵州",
+      "abbr": "黔",
+      "capital": "贵阳",
+      "region_tags": "西南",
+      "area_wan": 17.62,
+      "pop_wan": 3856,
+      "gdp_yi": 20913,
+      "area_country": "乌拉圭、柬埔寨、叙利亚",
+      "pop_country": "摩洛哥、安哥拉、乌克兰",
+      "gdp_country": "芬兰、秘鲁、哈萨克斯坦",
+      "note": ""
+    },
+    {
+      "province": "云南",
+      "abbr": "滇",
+      "capital": "昆明",
+      "region_tags": "西南",
+      "area_wan": 39.4,
+      "pop_wan": 4720,
+      "gdp_yi": 30021,
+      "area_country": "津巴布韦、巴拉圭、日本",
+      "pop_country": "阿尔及利亚、伊拉克、阿根廷",
+      "gdp_country": "丹麦、马来西亚、哥伦比亚",
+      "note": ""
+    },
+    {
+      "province": "西藏",
+      "abbr": "藏",
+      "capital": "拉萨",
+      "region_tags": "西南",
+      "area_wan": 122.84,
+      "pop_wan": 365,
+      "gdp_yi": 2393,
+      "area_country": "南非、马里、安哥拉",
+      "pop_country": "厄立特里亚、蒙古、格鲁吉亚",
+      "gdp_country": "格鲁吉亚、冰岛、萨尔瓦多",
+      "note": ""
+    },
+    {
+      "province": "陕西",
+      "abbr": "陕",
+      "capital": "西安",
+      "region_tags": "西北",
+      "area_wan": 20.56,
+      "pop_wan": 3953,
+      "gdp_yi": 33786,
+      "area_country": "白俄罗斯、吉尔吉斯斯坦、塞内加尔",
+      "pop_country": "也门、摩洛哥、安哥拉",
+      "gdp_country": "越南、伊朗、菲律宾",
+      "note": ""
+    },
+    {
+      "province": "甘肃",
+      "abbr": "甘",
+      "capital": "兰州",
+      "region_tags": "西北",
+      "area_wan": 45.37,
+      "pop_wan": 2502,
+      "gdp_yi": 11864,
+      "area_country": "乌兹别克斯坦、摩洛哥、巴布亚新几内亚",
+      "pop_country": "叙利亚、马里、布基纳法索",
+      "gdp_country": "科威特、摩洛哥、埃塞俄比亚",
+      "note": ""
+    },
+    {
+      "province": "青海",
+      "abbr": "青",
+      "capital": "西宁",
+      "region_tags": "西北",
+      "area_wan": 72.23,
+      "pop_wan": 592,
+      "gdp_yi": 3799,
+      "area_country": "赞比亚、智利、缅甸",
+      "pop_country": "丹麦、黎巴嫩、新加坡",
+      "gdp_country": "乌干达、喀麦隆、玻利维亚",
+      "note": ""
+    },
+    {
+      "province": "宁夏",
+      "abbr": "宁",
+      "capital": "银川",
+      "region_tags": "西北",
+      "area_wan": 6.64,
+      "pop_wan": 720,
+      "gdp_yi": 5315,
+      "area_country": "斯里兰卡、立陶宛、拉脱维亚",
+      "pop_country": "吉尔吉斯斯坦、利比亚、巴拉圭",
+      "gdp_country": "阿塞拜疆、刚果（金）、缅甸",
+      "note": ""
+    },
+    {
+      "province": "新疆",
+      "abbr": "新",
+      "capital": "乌鲁木齐",
+      "region_tags": "西北",
+      "area_wan": 166.49,
+      "pop_wan": 2585,
+      "gdp_yi": 19125,
+      "area_country": "伊朗、利比亚、蒙古",
+      "pop_country": "朝鲜、叙利亚、尼日尔",
+      "gdp_country": "阿尔及利亚、新西兰、伊拉克",
+      "note": ""
+    }
+  ],
+  "tabs": [
+    {
+      "key": "all",
+      "label": "全部"
+    },
+    {
+      "key": "north",
+      "label": "华北",
+      "field": "region_tags",
+      "contains": true,
+      "value": "华北"
+    },
+    {
+      "key": "northeast",
+      "label": "东北",
+      "field": "region_tags",
+      "contains": true,
+      "value": "东北"
+    },
+    {
+      "key": "east",
+      "label": "华东",
+      "field": "region_tags",
+      "contains": true,
+      "value": "华东"
+    },
+    {
+      "key": "central",
+      "label": "华中",
+      "field": "region_tags",
+      "contains": true,
+      "value": "华中"
+    },
+    {
+      "key": "south",
+      "label": "华南",
+      "field": "region_tags",
+      "contains": true,
+      "value": "华南"
+    },
+    {
+      "key": "southwest",
+      "label": "西南",
+      "field": "region_tags",
+      "contains": true,
+      "value": "西南"
+    },
+    {
+      "key": "northwest",
+      "label": "西北",
+      "field": "region_tags",
+      "contains": true,
+      "value": "西北"
+    }
+  ],
+  "options": {
+    "pageSize": 30,
+    "exportCSV": true,
+    "searchFields": [
+      "province",
+      "abbr",
+      "capital"
+    ],
+    "showIndex": true
+  }
+}

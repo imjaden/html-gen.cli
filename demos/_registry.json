@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "count": 59,
+  "count": 60,
   "demos": [
     {
       "name": "business-model",
@@ -604,6 +604,16 @@
       "type": "doc",
       "entry": "html-gen-usage-guide-v1.0-20260707.html",
       "featured": true,
+      "referenced": false,
+      "referenced_by": [],
+      "stale": false
+    },
+    {
+      "name": "provinces-table",
+      "title": "中国省份速查表",
+      "type": "table",
+      "entry": "provinces/provinces-table.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": [],
       "stale": false
