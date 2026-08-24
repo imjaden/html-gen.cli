@@ -488,13 +488,13 @@
       "title": "Hermes Skills 列表",
       "type": "table",
       "entry": "hermes-profile-skills-list.html",
-      "featured": true,
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
     {
       "name": "knowledge-demo",
-      "title": "知识库",
+      "title": "知识库功能演示",
       "type": "knowledge",
       "entry": "knowledge-demo.html",
       "featured": true,
@@ -524,13 +524,13 @@
       "title": "中国省份速查表",
       "type": "table",
       "entry": "provinces-table.html",
-      "featured": false,
+      "featured": true,
       "referenced": false,
       "referenced_by": []
     },
     {
       "name": "slide-demo",
-      "title": "D 型 Slide",
+      "title": "D 型幻灯片演示",
       "type": "doc",
       "entry": "slide-demo.html",
       "featured": true,
@@ -548,7 +548,7 @@
     },
     {
       "name": "table-actions-demo",
-      "title": "Table Actions Demo",
+      "title": "表格操作按钮演示",
       "type": "table",
       "entry": "table-actions-demo.html",
       "featured": true,
@@ -557,10 +557,10 @@
     },
     {
       "name": "table-features-demo",
-      "title": "Phase 2 Demo",
+      "title": "表格功能全演示",
       "type": "table",
       "entry": "table-features-demo.html",
-      "featured": true,
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },

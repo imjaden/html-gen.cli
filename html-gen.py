@@ -11,7 +11,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 
 版本: 3.1(2026-07-23)
 """
-import json, re, sys, os, argparse
+import json, re, sys, os, argparse, types
 from pathlib import Path
 
 SKILLS_DIR = Path(__file__).resolve().parent
@@ -841,6 +841,33 @@ def cmd_demo(args):
         reg_file.write_text(_json.dumps(reg, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         print(f"✅ registry 重建: {len(demos)} demos (featured {len(featured)} / "
               f"引用子页 {len(refs)})")
+
+        # 顺带重建独立案例索引 (data/_demos-data.json + demos-index.html)
+        type_icons = {'knowledge': '📚 C 型', 'table': '🗂 A 型', 'doc': '📄 B 型', 'html': '🌐 独立页'}
+        indep = [d for d in demos if not d.get('referenced')]
+        indep.sort(key=lambda d: (not d.get('featured'), d['entry']))
+        idx_columns = [
+            {'key': '标题', 'label': '标题', 'sortable': True, 'locale': 'zh', 'width': '200px', 'freeze': True, 'preview': True},
+            {'key': '模板', 'label': '模板', 'type': 'pills', 'sortable': True, 'locale': 'zh', 'width': '120px', 'preview': True},
+            {'key': '文档链接', 'label': '文档链接', 'sortable': True, 'locale': 'zh', 'width': '260px', 'preview': True},
+        ]
+        idx_rows = []
+        for d in indep:
+            title_txt = ('★ ' if d.get('featured') else '') + d['title']
+            fname = d['entry'].rsplit('/', 1)[-1]
+            idx_rows.append({
+                '标题': title_txt,
+                '模板': type_icons.get(d['type'], '🌐 独立页'),
+                '文档链接': f'<a href="{d["entry"]}" target="_blank" rel="noopener">{fname} ↗</a>',
+            })
+        idx_data = {'columns': idx_columns, 'data': idx_rows, 'tabs': [],
+                    'options': {'pageSize': 30, 'exportCSV': True, 'search': True, 'showIndex': True}}
+        idx_file = DATA_DIR / '_demos-data.json'
+        idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
+        a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',
+                                  output=str(DEMOS_DIR / 'demos-index.html'))
+        cmd_table(a)
+        print(f"📇 索引重建: {len(idx_rows)} 独立案例 → demos-index.html")
         return
 
     if not reg_file.exists():
