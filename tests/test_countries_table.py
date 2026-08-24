@@ -70,7 +70,9 @@ class TestCountriesTable(unittest.TestCase):
     def test_01_region_pills_dundun_split(self):
         row = self._row_for_country('塞尔维亚')
         self.assertIsNotNone(row, "应能找到塞尔维亚行")
-        pills = row.find_elements(By.CSS_SELECTOR, '.cell-pill')
+        # 限定大洲列（tds[6]）内的 pills——新加的省份关联列同为 pills 类型
+        tds = row.find_elements(By.TAG_NAME, 'td')
+        pills = tds[6].find_elements(By.CSS_SELECTOR, '.cell-pill')
         self.assertEqual([p.text for p in pills], ['欧洲', '南欧'],
                          "大洲列应按顿号切分为 欧洲/南欧 两个标签")
 
@@ -210,11 +212,12 @@ class TestCountriesTable(unittest.TestCase):
         self._clear_search()
 
     def test_13_iran_afghanistan_west_asia(self):
-        # 伊朗/阿富汗 → 亚洲、西亚
+        # 伊朗/阿富汗 → 亚洲、西亚（限定大洲列 pills，新省份关联列同属 pills 类型）
         for name, expected in [('伊朗', ['亚洲', '西亚']), ('阿富汗', ['亚洲', '西亚'])]:
             row = self._row_for_country(name)
             self.assertIsNotNone(row)
-            pills = row.find_elements(By.CSS_SELECTOR, '.cell-pill')
+            tds = row.find_elements(By.TAG_NAME, 'td')
+            pills = tds[6].find_elements(By.CSS_SELECTOR, '.cell-pill')
             self.assertEqual([p.text for p in pills], expected, f"{name} 标签应为 {expected}")
 
     def test_14_no_js_errors(self):
