@@ -722,3 +722,36 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 授权 push（13 commits 本地 + 本轮审计交付物）至 github/main
 
 ---
+## 2026-08-24 — pages-index skill + demos-index sync 3-commit 审计（PASS）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (commit-range-audit)
+- **Scope**: 7a0f591 docs@skills pages-index SKILL.md（117 行新文档 + AGENTS.md 树同步）/ a75733f chore@project handoff updated_at 2026-08-22→2026-08-24 / 4b06b8d sync@demos-index demos/demos-index.html 重建（内联 style-guide.css --text-*/--gh-* + :root.light 浅色组，+50/-3）
+- **Verdict**: ✅ **PASS 100/100（A）**
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-037（🟢 记录性）
+- **Findings**: 0 🔴 / 0 🟡 / 1 🟢
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| 全量测试 | `python3 -m pytest tests/ -q -n 4` → **180 passed in 33.12s**（基线一致，无回归） |
+| prompt 输出 | `python3 html-gen.py prompt pages-index --brief` → exit 0，description + 9 章节正常 |
+| skill 注册 | prompt --json 含 pages-index |
+| SKILL.md vs index.html 一致性 | 6/6 落位: themeBtn right:88px (index.html:196)、html-gen:index_theme (447,452)、innerHeight-110 (430)、copyText orig 恢复 + execCommand 返回值检查 (458-468)、--gh-corner-fill/--gh-octocat 深浅两组 (187-190,237)、:root.light 组 (style-guide.css 9 处) |
+| 模板页 theme key 声称 | doc_theme (layout-doc.html:300) / kw_theme (layout-knowledge.html:258) / layoutslide_theme (slide-demo.html:1003) 三处全实 |
+| 双源防漂移测试 | test_demos_index.py:83-104 features 与 SKILL.md 声称一致 |
+| demos-index 无 JS 错误 | selenium 直接加载 → JS errors NONE、18 行表格渲染、排序点击 OK、themeBtn=0、light 未激活 |
+| 生成器回归 | 重新生成 diff 已提交产物 → 仅 title 参数差异（预期），0 实质差异 |
+| 提交格式 | 3/3 `type@scope: subject`（docs@skills / chore@project / sync@demos-index） |
+| git 状态 | clean（无未跟踪文件）；main 领先 github/main 恰好 3 = 评审范围 |
+
+### Findings
+
+- 🟢 SEC-037 — demos/demos-index.html 页面本身无直接 Selenium 测试覆盖（test_demos_index.py 加载的是 demos/index.html 模板展示首页）。本次手动验证通过，建议后续将 demos-index 页面纳入测试 URL 列表兜底重建回归。记录性，不阻断。
+
+- 报告: `documents/review/pages-index-skill-demos-index-sync-review-v1.0-20260824.md`
+- 处理: PASS → 授权 push 至 github/main
+
+---
