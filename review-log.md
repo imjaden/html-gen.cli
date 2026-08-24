@@ -487,3 +487,86 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 ### 复核
 
 - review-log 七 🟢 全部关闭（HG-SEC-012/013/014/015/016/017）；无新增 findings
+
+---
+
+## 2026-08-24 — 省份表 + 国家双向关联设计评审（provinces-table-design v1.0）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: commit `51bf5b5`（docs@html-gen: provinces table + countries cross-link design v1.0，未 push）；设计文档 `documents/solutions/provinces-table-design-v1.0-20260824.md`；探讨确认清单 1A-6A 全选
+- **Verdict**: ⏳ CONDITIONAL PASS 70/B（🔴 1 / 🟡 3 / 🟢 6）— 非 PASS，不生成 dev 实施 prompt
+
+### Findings
+
+| # | Severity | Title | File | Status |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-018 | 🔴 | RIG-1 单位换算缺失：国家表 gdp_yi 为亿美元、area_km2 为 km²，与省份亿元/万km² 直接比较 → 实测 0 命中（归一化后 10/15 命中）；§三"GDP 统一亿元"与国家表实际单位自相矛盾 | provinces-table-design-v1.0 §三/§四 | ⏳ Open |
+| HG-SEC-019 | 🟡 | RIG-2 列宽未指定：影院模型 11+3 列默认 120px，备注/3 标签 pills 列截断 | §二 A/B | ⏳ Open |
+| HG-SEC-020 | 🟡 | RIG-3 测试基线过时：§七/TC-09"146"应为 154；T 清单 10 条 vs "~13 tests"表述不一 | §七/§九 | ⏳ Open |
+| HG-SEC-021 | 🟡 | RIG-4 双向一致性示例错误：荷兰 vs 广东面积 Δ76.9%（阈值 30%），示例与规则矛盾 | §四 4 | ⏳ Open |
+| HG-SEC-022 | 🟢 | OBS-1 匹配脚本未命名 + `_provinces-source.json` 不入 git 但无 .gitignore 防护 | §五 | ⏳ Open（随 v1.1 处理） |
+| HG-SEC-023 | 🟢 | OBS-2 台湾归华南 vs 主流华东惯例（决策已确认）；港澳人口非七普口径；README 需补数据源行 | §三 | ⏳ Open（随 v1.1 处理） |
+| HG-SEC-024 | 🟢 | OBS-3 国家表新列编号 12/13/14 为省份表延续，实际插入 15/16/17，建议标注"追加列" | §二 B | ⏳ Open（随 v1.1 处理） |
+| HG-SEC-025 | 🟢 | OBS-4 双向匹配阈值方向不对称（相对省份 vs 相对国家），建议单方向匹配 + 反向回填 | §四 | ⏳ Open（随 v1.1 处理） |
+
+### Positives
+
+- 六要素闭环（字段表/口径/关联规则/数据源策略/测试/生成命令），§八 扩展 11 项不入表显式声明"非缺口"
+- 模板能力全部实测可用：searchFields / format thousands / freeze / 序号列 / tabs contains / demo --rebuild 自动扫描
+- 广东 135673 亿 / 12601 万 / 17.97 万km² 数据事实与官方口径一致
+- commit `docs@html-gen:` + 文件名 Style A 均符合项目规范
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-018 | 单位换算缺失（面积/GDP 双维度 0 命中） | 🔴 | P0 | ⏳ Open |
+| HG-SEC-019 | 列宽未指定 | 🟡 | P1 | ⏳ Open |
+| HG-SEC-020 | 测试基线 146→154 | 🟡 | P2 | ⏳ Open |
+| HG-SEC-021 | 荷兰示例与规则矛盾 | 🟡 | P2 | ⏳ Open |
+| HG-SEC-022~025 | OBS-1~4（随 v1.1 处理） | 🟢 | P3 | ⏳ Open |
+
+- 报告: `documents/review/provinces-table-design-review-v1.0-20260824.md`
+- 待处理: ops 修 v1.1 后复审；未 push（CONDITIONAL 不 push）
+
+---
+
+## 2026-08-24 — 省份表 + 国家双向关联设计复审（provinces-table-design v1.1）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: commit `93009fd`（docs@html-gen: provinces design v1.1 — fix review RIG-1~4 + OBS-1~4，rename v1.0→v1.1 + .gitignore）；设计文档 `documents/solutions/provinces-table-design-v1.1-20260824.md`
+- **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 1）— v1.0 扣分项全部修复，生成 dev 实施 prompt
+
+### Fix Verification
+
+| # | v1.0 问题 | v1.1 修复 | 验证 |
+|:--:|:---|:---|:---:|
+| HG-SEC-018 | 🔴 RIG-1 单位换算缺失（0 命中） | §三 归一化（面积 ÷10000、GDP ×7.08 2023 年均国家统计局口径）+ None 防护（6 国缺 GDP/梵蒂冈全缺）+ TC-06 换算断言 | ✅ 实测命中对成立，归一化后 15/8/10 命中 |
+| HG-SEC-019 | 🟡 RIG-2 列宽未指定 | §二 A 11 列 + §二 B 3 列全部显式 width（pills 170px、note 200px） | ✅ |
+| HG-SEC-020 | 🟡 RIG-3 基线 146 过时 | §七/§九 基线 154 → 预计 +11~12，10 条 + 1-2 条表述统一 | ✅ 实测 154 |
+| HG-SEC-021 | 🟡 RIG-4 荷兰示例矛盾 | §四 6 替换真实命中对（广东↔柬埔寨/乌拉圭/叙利亚/墨西哥/日本/韩国/西班牙） | ✅ 实测 Δ≤10% |
+| HG-SEC-022~025 | 🟢 OBS-1~4 | 脚本命名+gitignore / 港澳台归因+README 来源行 / 追加列 15/16/17 标注 / 单方向匹配+反向回填 | ✅ 全部落位 |
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-026 | 🟢 | OBS：§四 6 人口示例数字（墨西哥 12846/日本 12452）与表内实际值（13086/12398）口径年份偏差——命中对仍成立（Δ≤4%），实施时以匹配脚本计算为准 | ⏳ 记录（不阻断） |
+
+### Positives
+
+- 换算闭环三层一致：口径（§三）→ 规则（§四:1 归一化先行）→ 测试（TC-06），杜绝 naive 0-命中错误模式
+- None 防护语义精确（"该维度不参与匹配"而非"该国全部跳过"），与 TC-04 衔接无歧义
+- v1.0 8 项发现全部实质修复（非声明式修复），正文与修订记录一致
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-018~021 | RIG-1~4 | 🔴/🟡 | P0-P2 | ✅ Closed（v1.1） |
+| HG-SEC-022~025 | OBS-1~4 | 🟢 | P3 | ✅ Closed（v1.1） |
+| HG-SEC-026 | 人口示例数字口径偏差 | 🟢 | P3 | ⏳ 记录 |
+
+- 报告: `documents/review/provinces-table-design-review-v1.1-20260824.md`
+- 实现 prompt: ✅ 已生成（cache/review-prep/prompt-provinces-dev-20260824.md，转 dev）
+- 处理: PASS → 审计交付物 commit + push（连同设计文档 51bf5b5 + 93009fd 共 3 commits）

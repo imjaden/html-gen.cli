@@ -224,3 +224,25 @@ review_history:
     findings_open: 2
     tracking: HG-SEC-016..HG-SEC-017 (🟢 records; HG-SEC-015 closed sync)
     report: documents/review/index-landing-regression-implementation-review-v1.0-20260823.md
+  - date: 2026-08-24
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "provinces-table-design v1.0 — 中国省份速查表 (34 省级行政区, 11 列) + 国家表 (195 国) 关联 3 列, 双向关联 pills; commit 51bf5b5"
+    verdict: CONDITIONAL_PASS
+    score: 70
+    findings_total: 8
+    findings_open: 4
+    tracking: HG-SEC-018..HG-SEC-021 (🔴1+🟡3, open) + 🟢 HG-SEC-022..025 (OBS, 随 v1.1)
+    report: documents/review/provinces-table-design-review-v1.0-20260824.md
+  - date: 2026-08-24
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "provinces-table-design v1.1 复审 — fix RIG-1~4 + OBS-1~4, rename v1.0→v1.1 + .gitignore; commit 93009fd"
+    verdict: PASS
+    score: 100
+    findings_total: 9
+    findings_open: 0
+    tracking: HG-SEC-018..HG-SEC-021 (closed v1.1) + HG-SEC-022..025 (OBS, closed v1.1) + HG-SEC-026 (🟢 record, 人口示例数字口径偏差)
+    report: documents/review/provinces-table-design-review-v1.1-20260824.md
