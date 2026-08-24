@@ -108,19 +108,27 @@ def main():
             "area_country": area_hits, "pop_country": pop_hits, "gdp_country": gdp_hits,
         })
 
-    # 反向回填: 国家表 3 列 (以国家值为基准找省份, 阈值同)
-    prov_rows = [{
-        "name": p[0], "area_wan": p[4], "pop_wan": p[5], "gdp_yi": p[6],
-    } for p in PROVINCES]
-    for c in countries:
-        if c["area_wan"] is None and c["pop_wan"] is None and c["gdp_yi"] is None:
-            continue
-        a = pick_hits(c["area_wan"], prov_rows, "area_wan", THRESHOLDS["area"]) if c["area_wan"] is not None else []
-        p = pick_hits(c["pop_wan"], prov_rows, "pop_wan", THRESHOLDS["pop"]) if c["pop_wan"] is not None else []
-        g = pick_hits(c["gdp_yi"], prov_rows, "gdp_yi", THRESHOLDS["gdp"]) if c["gdp_yi"] is not None else []
-        src["countries_backfill"][c["name"]] = {
-            "area_province": a, "pop_province": p, "gdp_province": g,
-        }
+    # 反向回填: 国家表 3 列 = 省份表同对回填 (设计 §四 5: 单方向匹配一次 + 反向回填同对)
+    # 收集省份表中引用每个国家的省份, 按 |Δ|(国家视角, 以国家值为基准) 排序取前 3
+    country_map = {c["name"]: c for c in countries}
+    backfill = {c["name"]: {"area_province": [], "pop_province": [], "gdp_province": []}
+                for c in countries}
+    for p in src["provinces"]:
+        pv = {"area": p["area_wan"], "pop": p["pop_wan"], "gdp": p["gdp_yi"]}
+        for dim, pc, cp in [("area", "area_country", "area_province"),
+                            ("pop", "pop_country", "pop_province"),
+                            ("gdp", "gdp_country", "gdp_province")]:
+            for cname in p[pc]:
+                cv = country_map.get(cname, {}).get("area_wan" if dim == "area" else ("pop_wan" if dim == "pop" else "gdp_yi"))
+                if cv is None or pv[dim] is None or cv == 0:
+                    continue
+                delta = abs(cv - pv[dim]) / cv  # 国家视角差值
+                backfill[cname][cp].append((delta, p["province"]))
+    for cname, cols in backfill.items():
+        for cp in ("area_province", "pop_province", "gdp_province"):
+            cols[cp].sort(key=lambda x: x[0])
+            cols[cp] = [name for _, name in cols[cp][:MAX_HITS]]
+    src["countries_backfill"] = backfill
 
     out = ROOT / "data/_provinces-source.json"
     out.write_text(json.dumps(src, ensure_ascii=False, indent=2))
