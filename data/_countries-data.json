@@ -1197,7 +1197,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "四川、黑龙江",
+      "area_province": "四川",
       "pop_province": "香港",
       "gdp_province": ""
     },
@@ -2071,7 +2071,7 @@
       "note": "",
       "ethnic_groups": "德意志族 ~80%、土耳其裔 ~3%",
       "religions": "基督教 57%（天主教/新教）、无宗教 ~35%、伊斯兰教 ~5%",
-      "area_province": "",
+      "area_province": "黑龙江",
       "pop_province": "四川、江苏",
       "gdp_province": ""
     },
@@ -2338,7 +2338,7 @@
       "ethnic_groups": "僧伽罗族 74.9%、泰米尔族 15.3%",
       "religions": "佛教 70%、印度教 13%、伊斯兰教 10%、基督教 7%",
       "area_province": "宁夏",
-      "pop_province": "北京",
+      "pop_province": "北京、上海",
       "gdp_province": ""
     },
     {
@@ -2757,7 +2757,7 @@
       "religions": "无宗教 38%、基督教 44%（天主教/圣公会）",
       "area_province": "",
       "pop_province": "",
-      "gdp_province": "江苏、广东"
+      "gdp_province": "江苏"
     },
     {
       "country_zh": "爱尔兰",
@@ -3460,7 +3460,7 @@
       "religions": "天主教 60%、无宗教 36%、伊斯兰教 4%",
       "area_province": "四川",
       "pop_province": "广西",
-      "gdp_province": ""
+      "gdp_province": "广东"
     },
     {
       "country_zh": "贝宁",
