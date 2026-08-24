@@ -95,7 +95,7 @@ def pick_hits(prov_value, countries, key, threshold):
 
 def main():
     countries = load_countries()
-    src = {"provinces": [], "countries_backfill": {}}
+    src = {"provinces": [], "countries_backfill": {}, "countries_notes": {}}
 
     for p in PROVINCES:
         name, abbr, capital, region, area, pop, gdp = p
@@ -108,32 +108,37 @@ def main():
             "area_country": area_hits, "pop_country": pop_hits, "gdp_country": gdp_hits,
         })
 
-    # 反向回填: 国家表 3 列 = 省份表同对回填 (设计 §四 5: 单方向匹配一次 + 反向回填同对)
-    # 事实源 = 最终 data/_provinces-data.json (含人工复核编辑, HG-SEC-027 修复)
-    # 收集省份表中引用每个国家的省份, 按 |Δ|(国家视角, 以国家值为基准) 排序取前 3
+    # 反向匹配 (v1.2, 用户决策 1A/3A): 国家为基准独立 pick_hits (非回填同对)
+    # 无命中维度生成超限说明 (决策 2A): 大于最大省份/小于最小省份, 含省份名称+数值
     prov_final = json.loads((ROOT / "data/_provinces-data.json").read_text())
-    country_map = {c["name"]: c for c in countries}
-    backfill = {c["name"]: {"area_province": [], "pop_province": [], "gdp_province": []}
-                for c in countries}
-    for p in prov_final["data"]:
-        pv = {"area": p.get("area_wan"), "pop": p.get("pop_wan"), "gdp": p.get("gdp_yi")}
-        for dim, pc, cp in [("area", "area_country", "area_province"),
-                            ("pop", "pop_country", "pop_province"),
-                            ("gdp", "gdp_country", "gdp_province")]:
-            for cname in str(p.get(pc, "")).split("、"):
-                cname = cname.strip()
-                if not cname:
-                    continue
-                cv = country_map.get(cname, {}).get("area_wan" if dim == "area" else ("pop_wan" if dim == "pop" else "gdp_yi"))
-                if cv is None or pv[dim] is None or cv == 0:
-                    continue
-                delta = abs(cv - pv[dim]) / cv  # 国家视角差值
-                backfill[cname][cp].append((delta, p["province"]))
-    for cname, cols in backfill.items():
-        for cp in ("area_province", "pop_province", "gdp_province"):
-            cols[cp].sort(key=lambda x: x[0])
-            cols[cp] = [name for _, name in cols[cp][:MAX_HITS]]
-    src["countries_backfill"] = backfill
+    prov_rows = [{"name": p["province"], "area_wan": p["area_wan"],
+                  "pop_wan": p["pop_wan"], "gdp_yi": p["gdp_yi"]}
+                 for p in prov_final["data"]]
+    extremes = {dim: (max(prov_rows, key=lambda x: x[key]), min(prov_rows, key=lambda x: x[key]))
+                for dim, key in [("area", "area_wan"), ("pop", "pop_wan"), ("gdp", "gdp_yi")]}
+    units = {"area": "万km²", "pop": "万", "gdp": "亿元"}
+    dim_lbl = {"area": "面积", "pop": "人口", "gdp": "GDP"}
+
+    for c in countries:
+        entry = {"area_province": [], "pop_province": [], "gdp_province": []}
+        notes = []
+        for dim, key, cp in [("area", "area_wan", "area_province"),
+                             ("pop", "pop_wan", "pop_province"),
+                             ("gdp", "gdp_yi", "gdp_province")]:
+            cv = c.get(key)
+            if cv is None:
+                continue
+            hits = pick_hits(cv, prov_rows, key, THRESHOLDS[dim])
+            entry[cp] = hits
+            if not hits:
+                mx, mn = extremes[dim]
+                if cv > mx[key]:
+                    notes.append(f"{dim_lbl[dim]}: 无相近(大于最大省份{mx['name']}{mx[key]}{units[dim]})")
+                elif cv < mn[key]:
+                    notes.append(f"{dim_lbl[dim]}: 无相近(小于最小省份{mn['name']}{mn[key]}{units[dim]})")
+        src["countries_backfill"][c["name"]] = entry
+        if notes:
+            src["countries_notes"][c["name"]] = "; ".join(notes)
 
     out = ROOT / "data/_provinces-source.json"
     out.write_text(json.dumps(src, ensure_ascii=False, indent=2))
