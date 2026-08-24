@@ -90,6 +90,7 @@ class TestDemosIndex(unittest.TestCase):
             'class="site-footer"',      # footer 元素
             'class="copy-btn"',         # 复制按钮
             'max-width: 1500px',        # 2 列断点
+            '--gh-octocat',             # github-corner 浅色变量
             'html-gen table -d data.json',   # A 卡 cli 命令
             'html-gen doc -i report.md',     # B 卡 cli 命令
             'html-gen knowledge -d data.json',  # C 卡 cli 命令
@@ -100,6 +101,17 @@ class TestDemosIndex(unittest.TestCase):
         missing_demos = [f for f in features if f not in demos]
         self.assertEqual([], missing_root, f"根 index.html 缺少: {missing_root}")
         self.assertEqual([], missing_demos, f"demos/index.html 缺少: {missing_demos}")
+
+    def test_06_github_corner_light(self):
+        """light 模式 demos 页 github-corner octocat 为白色 (双源同步)."""
+        btn = self.driver.find_element(By.CSS_SELECTOR, '#themeBtn')
+        btn.click()
+        time.sleep(0.2)
+        color = self.driver.execute_script(
+            "return getComputedStyle(document.querySelector('.github-corner')).color;")
+        self.assertEqual('rgb(255, 255, 255)', color, f"light 下 octocat 应为白色: {color}")
+        btn.click()
+        time.sleep(0.2)
 
 
 if __name__ == '__main__':
