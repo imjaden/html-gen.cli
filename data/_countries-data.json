@@ -172,7 +172,7 @@
       "ethnic_groups": "不丹族 ~50%、尼泊尔裔 ~35%",
       "religions": "佛教 75%（藏传）、印度教 22%",
       "area_province": "台湾、海南",
-      "pop_province": "澳门",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -190,7 +190,7 @@
       "note": "",
       "ethnic_groups": "东帝汶人（德顿 31%、曼布艾 11%）",
       "religions": "天主教 97%、新教 2%",
-      "area_province": "北京、天津",
+      "area_province": "北京",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -228,8 +228,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "青海、四川、黑龙江",
-      "pop_province": "青海",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -247,7 +247,7 @@
       "note": "",
       "ethnic_groups": "丹麦人 90%",
       "religions": "路德宗 74%、无宗教 15%",
-      "area_province": "台湾、海南",
+      "area_province": "",
       "pop_province": "青海",
       "gdp_province": "云南、重庆、辽宁"
     },
@@ -266,9 +266,9 @@
       "note": "",
       "ethnic_groups": "乌克兰族 77.8%、俄罗斯族 17.3%",
       "religions": "东正教 ~70%、希腊礼天主教 10%",
-      "area_province": "四川、青海、黑龙江",
-      "pop_province": "贵州、陕西、山西",
-      "gdp_province": "吉林、甘肃、黑龙江"
+      "area_province": "",
+      "pop_province": "贵州",
+      "gdp_province": "吉林"
     },
     {
       "country_zh": "乌兹别克斯坦",
@@ -285,9 +285,9 @@
       "note": "",
       "ethnic_groups": "乌兹别克族 84%、塔吉克族 5%",
       "religions": "伊斯兰教 96%（逊尼）",
-      "area_province": "甘肃、黑龙江、四川",
-      "pop_province": "山西、贵州、陕西",
-      "gdp_province": "海南"
+      "area_province": "甘肃",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "乌干达",
@@ -304,9 +304,9 @@
       "note": "",
       "ethnic_groups": "干达 16.5%、尼扬科莱 9.6%",
       "religions": "基督教 ~85%（天主教/新教）、伊斯兰教 12%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "广西、云南、江西",
-      "gdp_province": "青海、澳门"
+      "area_province": "",
+      "pop_province": "广西",
+      "gdp_province": "青海"
     },
     {
       "country_zh": "乌拉圭",
@@ -324,8 +324,8 @@
       "ethnic_groups": "",
       "religions": "",
       "area_province": "贵州、广东、河南",
-      "pop_province": "西藏",
-      "gdp_province": "宁夏、海南"
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "乍得",
@@ -342,8 +342,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "西藏、内蒙古、新疆",
-      "pop_province": "北京、台湾、内蒙古",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -361,7 +361,7 @@
       "note": "",
       "ethnic_groups": "阿拉伯人 ~99%",
       "religions": "伊斯兰教 100%（逊尼 ~65%、什叶/宰德 ~35%）",
-      "area_province": "四川、黑龙江、甘肃",
+      "area_province": "",
       "pop_province": "福建、陕西、辽宁",
       "gdp_province": ""
     },
@@ -380,7 +380,7 @@
       "note": "",
       "ethnic_groups": "亚美尼亚族 98%",
       "religions": "基督教（亚美尼亚使徒教会）96%",
-      "area_province": "海南、台湾",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -399,9 +399,9 @@
       "note": "国际争议；实际行政特拉维夫",
       "ethnic_groups": "犹太人 74%、阿拉伯人 21%",
       "religions": "犹太教 74%、伊斯兰教 18%、基督教 2%",
-      "area_province": "北京",
+      "area_province": "",
       "pop_province": "海南",
-      "gdp_province": "陕西、北京、河北"
+      "gdp_province": ""
     },
     {
       "country_zh": "伊拉克",
@@ -418,9 +418,9 @@
       "note": "",
       "ethnic_groups": "阿拉伯人 75-80%、库尔德人 15-20%",
       "religions": "伊斯兰教什叶 60%、逊尼 35%、基督教 1%",
-      "area_province": "甘肃、黑龙江、云南",
-      "pop_province": "江西、云南、辽宁",
-      "gdp_province": "新疆、贵州、天津"
+      "area_province": "",
+      "pop_province": "江西、云南",
+      "gdp_province": "新疆"
     },
     {
       "country_zh": "伊朗",
@@ -437,9 +437,9 @@
       "note": "",
       "ethnic_groups": "波斯人 61%、阿塞拜疆族 16%、库尔德族 10%",
       "religions": "伊斯兰教什叶派 90%、逊尼派 9%",
-      "area_province": "新疆、西藏",
+      "area_province": "新疆",
       "pop_province": "江苏、河南、四川",
-      "gdp_province": "陕西、江西、辽宁"
+      "gdp_province": "陕西、江西"
     },
     {
       "country_zh": "伯利兹",
@@ -456,7 +456,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "北京",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -495,8 +495,8 @@
       "ethnic_groups": "俄罗斯族 81%、鞑靼族 3.9%、乌克兰族 1.4%",
       "religions": "东正教 61%、无宗教 25%、伊斯兰教 6%",
       "area_province": "",
-      "pop_province": "广东",
-      "gdp_province": "广东、江苏"
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "保加利亚",
@@ -513,9 +513,9 @@
       "note": "",
       "ethnic_groups": "保加利亚族 85%、土耳其族 9%",
       "religions": "东正教 76%、无宗教 11%、伊斯兰教 10%",
-      "area_province": "江苏、浙江、福建",
-      "pop_province": "青海、宁夏、香港",
-      "gdp_province": "海南"
+      "area_province": "江苏",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "克罗地亚",
@@ -532,9 +532,9 @@
       "note": "",
       "ethnic_groups": "克罗地亚族 91.6%、塞尔维亚族 3.2%",
       "religions": "天主教 86%、东正教 4%",
-      "area_province": "重庆、浙江、江苏",
-      "pop_province": "西藏",
-      "gdp_province": "海南、宁夏"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "冈比亚",
@@ -570,7 +570,7 @@
       "note": "",
       "ethnic_groups": "冰岛人 92%",
       "religions": "路德宗 63%、无宗教 11%",
-      "area_province": "浙江、江苏、重庆",
+      "area_province": "浙江",
       "pop_province": "",
       "gdp_province": "西藏"
     },
@@ -589,8 +589,8 @@
       "note": "",
       "ethnic_groups": "富拉尼 40%、马林克 30%、苏苏 18%",
       "religions": "伊斯兰教 89%、基督教 7%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "天津",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -646,8 +646,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "云南",
-      "pop_province": "青海、宁夏、香港",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -665,9 +665,9 @@
       "note": "",
       "ethnic_groups": "刚果族 45%（200+ 民族）",
       "religions": "基督教 ~90%（天主教 40%、新教 40%）",
-      "area_province": "新疆",
-      "pop_province": "山东、河南、广东",
-      "gdp_province": "宁夏、青海"
+      "area_province": "",
+      "pop_province": "山东、河南",
+      "gdp_province": "宁夏"
     },
     {
       "country_zh": "利比亚",
@@ -685,8 +685,8 @@
       "ethnic_groups": "",
       "religions": "",
       "area_province": "新疆",
-      "pop_province": "香港、宁夏、青海",
-      "gdp_province": "澳门、青海"
+      "pop_province": "香港、宁夏",
+      "gdp_province": "澳门"
     },
     {
       "country_zh": "利比里亚",
@@ -703,8 +703,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "江苏、浙江、福建",
-      "pop_province": "青海",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -723,8 +723,8 @@
       "ethnic_groups": "白人 69.8%、亚裔 15%、原住民 5%",
       "religions": "基督教 53%、无宗教 34%、伊斯兰教 5%",
       "area_province": "",
-      "pop_province": "福建、辽宁、陕西",
-      "gdp_province": "广东、江苏"
+      "pop_province": "福建、辽宁",
+      "gdp_province": ""
     },
     {
       "country_zh": "加纳",
@@ -741,9 +741,9 @@
       "note": "",
       "ethnic_groups": "阿肯 47%、莫西-达贡巴 16%、埃维 13%",
       "religions": "基督教 71%、伊斯兰教 18%、传统信仰 5%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "山西、重庆、黑龙江",
-      "gdp_province": "宁夏、海南"
+      "area_province": "广西",
+      "pop_province": "山西",
+      "gdp_province": ""
     },
     {
       "country_zh": "加蓬",
@@ -760,7 +760,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "广西、湖南、陕西",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -779,9 +779,9 @@
       "note": "",
       "ethnic_groups": "匈牙利族 84%、罗姆族 3%",
       "religions": "天主教 39%、新教 11%、无宗教 21%",
-      "area_province": "重庆、浙江、江苏",
-      "pop_province": "海南",
-      "gdp_province": "黑龙江、天津、吉林"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "黑龙江、天津"
     },
     {
       "country_zh": "北马其顿",
@@ -817,8 +817,8 @@
       "note": "",
       "ethnic_groups": "丁卡 35%、努尔 15%、希卢克 6%",
       "religions": "基督教 ~60%、传统信仰 ~33%、伊斯兰教 6%",
-      "area_province": "青海、四川、黑龙江",
-      "pop_province": "海南、天津",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -838,7 +838,7 @@
       "religions": "新教 ~70%（锡安/卫理/归正）、无宗教 16%",
       "area_province": "西藏、内蒙古",
       "pop_province": "浙江、湖南、安徽",
-      "gdp_province": "广西、香港、云南"
+      "gdp_province": ""
     },
     {
       "country_zh": "博茨瓦纳",
@@ -855,7 +855,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "四川、黑龙江、甘肃",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -876,7 +876,7 @@
       "religions": "",
       "area_province": "天津",
       "pop_province": "",
-      "gdp_province": "黑龙江、天津、吉林"
+      "gdp_province": "黑龙江、吉林"
     },
     {
       "country_zh": "卢旺达",
@@ -914,7 +914,7 @@
       "religions": "天主教 70%、无宗教 20%",
       "area_province": "",
       "pop_province": "澳门",
-      "gdp_province": "海南、宁夏"
+      "gdp_province": ""
     },
     {
       "country_zh": "印度",
@@ -950,9 +950,9 @@
       "note": "",
       "ethnic_groups": "爪哇族 40%、巽他族 15%、马来族 4%",
       "religions": "伊斯兰教 87%、基督教 10%、印度教 2%",
-      "area_province": "新疆",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "山东、浙江、江苏"
+      "gdp_province": ""
     },
     {
       "country_zh": "危地马拉",
@@ -969,8 +969,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "江苏、浙江、福建",
-      "pop_province": "北京",
+      "area_province": "江苏、浙江",
+      "pop_province": "",
       "gdp_province": "海南"
     },
     {
@@ -988,9 +988,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "广西、湖南、陕西",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "海南"
+      "gdp_province": ""
     },
     {
       "country_zh": "厄立特里亚",
@@ -1007,7 +1007,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "福建、江苏、浙江",
+      "area_province": "福建",
       "pop_province": "西藏",
       "gdp_province": ""
     },
@@ -1045,8 +1045,8 @@
       "note": "",
       "ethnic_groups": "白人 64%、混血 27%、非裔 9%",
       "religions": "无宗教 65%、天主教 20%、新教 5%",
-      "area_province": "江苏、浙江、福建",
-      "pop_province": "海南",
+      "area_province": "江苏、浙江",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1064,8 +1064,8 @@
       "note": "",
       "ethnic_groups": "吉尔吉斯族 73%、俄罗斯族 6%",
       "religions": "伊斯兰教 90%（逊尼）",
-      "area_province": "陕西、河北、湖南",
-      "pop_province": "宁夏、香港、青海",
+      "area_province": "陕西、湖南",
+      "pop_province": "宁夏、香港",
       "gdp_province": ""
     },
     {
@@ -1083,7 +1083,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "北京",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -1103,8 +1103,8 @@
       "ethnic_groups": "哈萨克族 70%、俄罗斯族 15%",
       "religions": "伊斯兰教 70%、基督教 26%（东正教为主）",
       "area_province": "",
-      "pop_province": "北京、台湾、内蒙古",
-      "gdp_province": "贵州、新疆、天津"
+      "pop_province": "",
+      "gdp_province": "贵州"
     },
     {
       "country_zh": "哥伦比亚",
@@ -1121,8 +1121,8 @@
       "note": "",
       "ethnic_groups": "混血 87%、白人 7%、非裔 2%",
       "religions": "天主教 79%、新教 9%",
-      "area_province": "内蒙古、西藏",
-      "pop_province": "广西、湖北、云南",
+      "area_province": "内蒙古",
+      "pop_province": "",
       "gdp_province": "云南、重庆、辽宁"
     },
     {
@@ -1140,9 +1140,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "台湾、宁夏",
-      "pop_province": "青海",
-      "gdp_province": "海南、宁夏"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "喀麦隆",
@@ -1159,9 +1159,9 @@
       "note": "",
       "ethnic_groups": "巴米累克 24%、富尔贝 14%",
       "religions": "基督教 70%、伊斯兰教 20%、传统信仰 6%",
-      "area_province": "黑龙江、四川、甘肃",
-      "pop_province": "黑龙江、重庆、新疆",
-      "gdp_province": "青海、澳门"
+      "area_province": "黑龙江、四川",
+      "pop_province": "",
+      "gdp_province": "青海"
     },
     {
       "country_zh": "图瓦卢",
@@ -1197,9 +1197,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "四川、黑龙江、甘肃",
-      "pop_province": "香港、宁夏",
-      "gdp_province": "澳门、青海、西藏"
+      "area_province": "四川、黑龙江",
+      "pop_province": "香港",
+      "gdp_province": ""
     },
     {
       "country_zh": "土耳其",
@@ -1216,8 +1216,8 @@
       "note": "",
       "ethnic_groups": "土耳其族 70-75%、库尔德族 19%",
       "religions": "伊斯兰教 99%（逊尼 ~85%、阿列维 ~15%）",
-      "area_province": "青海",
-      "pop_province": "江苏、四川、河北",
+      "area_province": "",
+      "pop_province": "江苏、四川",
       "gdp_province": "山东、浙江"
     },
     {
@@ -1330,8 +1330,8 @@
       "note": "",
       "ethnic_groups": "印度裔 40%、非裔 30%、混血 17%",
       "religions": "基督教 62%、印度教 25%、伊斯兰教 7%",
-      "area_province": "湖南、陕西、广西",
-      "pop_province": "澳门",
+      "area_province": "湖南",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1349,9 +1349,9 @@
       "note": "",
       "ethnic_groups": "班图系各族（苏库马 16%、尼亚姆韦齐 8%）",
       "religions": "基督教 63%、伊斯兰教 34%",
-      "area_province": "青海、内蒙古、西藏",
+      "area_province": "",
       "pop_province": "湖南、浙江、河北",
-      "gdp_province": "宁夏"
+      "gdp_province": ""
     },
     {
       "country_zh": "埃及",
@@ -1368,9 +1368,9 @@
       "note": "",
       "ethnic_groups": "埃及阿拉伯人 90%+、科普特 3%",
       "religions": "伊斯兰教 90%（逊尼）、科普特正教 10%",
-      "area_province": "内蒙古、西藏、青海",
-      "pop_province": "广东、山东、河南",
-      "gdp_province": "广西、香港、山西"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "广西、香港"
     },
     {
       "country_zh": "埃塞俄比亚",
@@ -1387,9 +1387,9 @@
       "note": "",
       "ethnic_groups": "奥罗莫 35%、阿姆哈拉 27%、索马里族 6%",
       "religions": "东正教 44%、伊斯兰教 31%、新教 23%",
-      "area_province": "内蒙古、西藏",
+      "area_province": "内蒙古",
       "pop_province": "广东",
-      "gdp_province": "甘肃、吉林、海南"
+      "gdp_province": "甘肃"
     },
     {
       "country_zh": "基里巴斯",
@@ -1406,7 +1406,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "",
+      "area_province": "香港",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -1425,8 +1425,8 @@
       "note": "",
       "ethnic_groups": "塔吉克族 84%、乌兹别克族 12%",
       "religions": "伊斯兰教 98%（逊尼）",
-      "area_province": "安徽、辽宁、山东",
-      "pop_province": "海南",
+      "area_province": "安徽",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1445,8 +1445,8 @@
       "ethnic_groups": "沃洛夫 39%、富拉尼 28%、塞雷尔 15%",
       "religions": "伊斯兰教 97%（逊尼）",
       "area_province": "河北、陕西、吉林",
-      "pop_province": "北京",
-      "gdp_province": "西藏"
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "塞尔维亚",
@@ -1463,9 +1463,9 @@
       "note": "",
       "ethnic_groups": "塞尔维亚族 83.3%、匈牙利族 3.5%、罗姆族 2%",
       "religions": "东正教 84.6%、天主教 5%、伊斯兰教 3%",
-      "area_province": "重庆、宁夏、浙江",
-      "pop_province": "宁夏、青海、香港",
-      "gdp_province": "宁夏、海南"
+      "area_province": "重庆",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "塞拉利昂",
@@ -1482,8 +1482,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "宁夏、重庆",
-      "pop_province": "香港、海南、宁夏",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1501,9 +1501,9 @@
       "note": "",
       "ethnic_groups": "希腊裔 77%、土耳其裔 18%",
       "religions": "东正教 78%、伊斯兰教 18%",
-      "area_province": "天津",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "西藏、澳门"
+      "gdp_province": ""
     },
     {
       "country_zh": "塞舌尔",
@@ -1539,9 +1539,9 @@
       "note": "",
       "ethnic_groups": "混血 62%、原住民 21%（纳瓦/玛雅等）",
       "religions": "天主教 78%、新教 10%、无宗教 8%",
-      "area_province": "新疆",
+      "area_province": "",
       "pop_province": "广东",
-      "gdp_province": "江苏、广东、山东"
+      "gdp_province": "江苏、广东"
     },
     {
       "country_zh": "多哥",
@@ -1558,8 +1558,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "宁夏",
-      "pop_province": "香港、宁夏、海南",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1596,9 +1596,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "辽宁、安徽、山东",
-      "pop_province": "海南",
-      "gdp_province": "海南"
+      "area_province": "辽宁、安徽",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "奥地利",
@@ -1615,9 +1615,9 @@
       "note": "",
       "ethnic_groups": "奥地利人 81%、前南/土耳其裔 4%",
       "religions": "天主教 57%、无宗教 27%、伊斯兰教 8%",
-      "area_province": "重庆、宁夏、浙江",
-      "pop_province": "海南、香港",
-      "gdp_province": "陕西、江西、北京"
+      "area_province": "重庆",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "委内瑞拉",
@@ -1634,9 +1634,9 @@
       "note": "",
       "ethnic_groups": "混血 51.6%、白人 43%、非裔 3.6%",
       "religions": "天主教 73%、新教 15%、无宗教 8%",
-      "area_province": "青海、内蒙古",
-      "pop_province": "新疆、甘肃、黑龙江",
-      "gdp_province": "海南"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "孟加拉国",
@@ -1653,9 +1653,9 @@
       "note": "",
       "ethnic_groups": "孟加拉族 98%",
       "religions": "伊斯兰教 91%、印度教 8%",
-      "area_province": "辽宁、安徽、山东",
+      "area_province": "辽宁、山东、山西",
       "pop_province": "",
-      "gdp_province": "江西、辽宁、重庆"
+      "gdp_province": "江西"
     },
     {
       "country_zh": "安哥拉",
@@ -1672,9 +1672,9 @@
       "note": "",
       "ethnic_groups": "奥文本杜 37%、金本杜 25%、巴孔果 13%",
       "religions": "基督教 ~90%（天主教 40%、新教 40%）",
-      "area_province": "西藏、内蒙古",
-      "pop_province": "贵州、陕西、山西",
-      "gdp_province": "海南、宁夏"
+      "area_province": "西藏",
+      "pop_province": "贵州、陕西",
+      "gdp_province": "海南"
     },
     {
       "country_zh": "安提瓜和巴布达",
@@ -1748,8 +1748,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "福建、安徽、辽宁",
-      "pop_province": "宁夏、香港、青海",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1767,9 +1767,9 @@
       "note": "",
       "ethnic_groups": "豪萨-富拉尼 30%、约鲁巴 15.5%、伊博 15.2%",
       "religions": "伊斯兰教 ~50%、基督教 ~40%（新教为主）",
-      "area_province": "青海、内蒙古",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "天津、新疆、黑龙江"
+      "gdp_province": "天津、黑龙江"
     },
     {
       "country_zh": "尼日尔",
@@ -1786,8 +1786,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "西藏、内蒙古",
-      "pop_province": "新疆、甘肃、上海",
+      "area_province": "",
+      "pop_province": "新疆",
       "gdp_province": ""
     },
     {
@@ -1805,9 +1805,9 @@
       "note": "",
       "ethnic_groups": "廓尔喀族（刹帝利 16.6%、婆罗门 12.2%）",
       "religions": "印度教 81%、佛教 9%、伊斯兰教 4%",
-      "area_province": "辽宁、安徽、山东",
-      "pop_province": "黑龙江、重庆、新疆",
-      "gdp_province": "澳门、西藏、青海"
+      "area_province": "辽宁、安徽",
+      "pop_province": "黑龙江",
+      "gdp_province": ""
     },
     {
       "country_zh": "巴勒斯坦",
@@ -1825,7 +1825,7 @@
       "ethnic_groups": "阿拉伯人 99%",
       "religions": "伊斯兰教 93%、基督教 6%",
       "area_province": "上海",
-      "pop_province": "青海",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -1843,7 +1843,7 @@
       "note": "",
       "ethnic_groups": "非裔 91%",
       "religions": "新教 68%、天主教 12%",
-      "area_province": "天津、北京",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -1862,7 +1862,7 @@
       "note": "",
       "ethnic_groups": "旁遮普族 44.7%、普什图族 15.4%、信德族 14.1%",
       "religions": "伊斯兰教 96%（逊尼 ~85%、什叶 ~15%）",
-      "area_province": "青海",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": "山西、香港、广西"
     },
@@ -1900,9 +1900,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "甘肃、黑龙江、四川",
-      "pop_province": "海南",
-      "gdp_province": "西藏"
+      "area_province": "甘肃、黑龙江",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "巴拉圭",
@@ -1919,9 +1919,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "云南、甘肃、黑龙江",
-      "pop_province": "宁夏、香港、青海",
-      "gdp_province": "澳门、青海、西藏"
+      "area_province": "云南",
+      "pop_province": "宁夏",
+      "gdp_province": ""
     },
     {
       "country_zh": "巴拿马",
@@ -1938,9 +1938,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "重庆、宁夏",
-      "pop_province": "西藏",
-      "gdp_province": "宁夏、海南"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "巴林",
@@ -1957,9 +1957,9 @@
       "note": "",
       "ethnic_groups": "巴林人 46%（外籍 54%）",
       "religions": "伊斯兰教 70%",
-      "area_province": "",
+      "area_province": "香港",
       "pop_province": "",
-      "gdp_province": "澳门、青海、西藏"
+      "gdp_province": "澳门"
     },
     {
       "country_zh": "巴西",
@@ -1978,7 +1978,7 @@
       "religions": "天主教 65%、新教 22%、无宗教 8%",
       "area_province": "",
       "pop_province": "",
-      "gdp_province": "广东、江苏"
+      "gdp_province": ""
     },
     {
       "country_zh": "布基纳法索",
@@ -1995,7 +1995,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "广西、湖南、陕西",
+      "area_province": "",
       "pop_province": "台湾、内蒙古、吉林",
       "gdp_province": ""
     },
@@ -2014,7 +2014,7 @@
       "note": "",
       "ethnic_groups": "胡图 85%、图西 14%",
       "religions": "基督教 91%（天主教 62%）",
-      "area_province": "海南、台湾",
+      "area_province": "",
       "pop_province": "天津",
       "gdp_province": ""
     },
@@ -2033,9 +2033,9 @@
       "note": "",
       "ethnic_groups": "希腊族 93%、马其顿族 2%",
       "religions": "东正教 90%、无宗教 4%、伊斯兰教 3%",
-      "area_province": "福建、安徽、辽宁",
+      "area_province": "",
       "pop_province": "海南",
-      "gdp_province": "新疆、天津、黑龙江"
+      "gdp_province": "天津"
     },
     {
       "country_zh": "帕劳",
@@ -2071,8 +2071,8 @@
       "note": "",
       "ethnic_groups": "德意志族 ~80%、土耳其裔 ~3%",
       "religions": "基督教 57%（天主教/新教）、无宗教 ~35%、伊斯兰教 ~5%",
-      "area_province": "云南、甘肃",
-      "pop_province": "四川、江苏、河北",
+      "area_province": "",
+      "pop_province": "四川、江苏",
       "gdp_province": ""
     },
     {
@@ -2090,9 +2090,9 @@
       "note": "",
       "ethnic_groups": "意大利族 ~92%、罗马尼亚裔 1%",
       "religions": "天主教 74%、无宗教 16%、伊斯兰教 2%",
-      "area_province": "广西、湖南",
-      "pop_province": "湖北、安徽、浙江",
-      "gdp_province": "广东、江苏"
+      "area_province": "",
+      "pop_province": "湖北、安徽",
+      "gdp_province": ""
     },
     {
       "country_zh": "所罗门群岛",
@@ -2109,8 +2109,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "海南、台湾",
-      "pop_province": "澳门",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -2128,9 +2128,9 @@
       "note": "",
       "ethnic_groups": "拉脱维亚族 62%、俄罗斯族 26%",
       "religions": "无宗教 36%、路德宗 19%、东正教 18%",
-      "area_province": "宁夏、重庆",
+      "area_province": "宁夏",
       "pop_province": "",
-      "gdp_province": "澳门、青海、西藏"
+      "gdp_province": ""
     },
     {
       "country_zh": "挪威",
@@ -2147,9 +2147,9 @@
       "note": "",
       "ethnic_groups": "挪威人 ~88%",
       "religions": "路德宗 68%、无宗教 25%",
-      "area_province": "青海、四川、黑龙江",
-      "pop_province": "青海",
-      "gdp_province": "陕西、江西、辽宁"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "捷克",
@@ -2166,9 +2166,9 @@
       "note": "",
       "ethnic_groups": "捷克族 95%、斯洛伐克族 1%",
       "religions": "无宗教 47%、天主教 21%",
-      "area_province": "重庆、宁夏",
-      "pop_province": "海南",
-      "gdp_province": "内蒙古、山西、香港"
+      "area_province": "重庆",
+      "pop_province": "",
+      "gdp_province": "内蒙古、山西"
     },
     {
       "country_zh": "摩尔多瓦",
@@ -2204,9 +2204,9 @@
       "note": "",
       "ethnic_groups": "阿拉伯-柏柏尔 ~99%",
       "religions": "伊斯兰教 99%（逊尼）",
-      "area_province": "甘肃、黑龙江、四川",
-      "pop_province": "贵州、陕西、山西",
-      "gdp_province": "甘肃、吉林"
+      "area_province": "甘肃",
+      "pop_province": "贵州、陕西",
+      "gdp_province": "甘肃"
     },
     {
       "country_zh": "摩纳哥",
@@ -2261,7 +2261,7 @@
       "note": "",
       "ethnic_groups": "斐济原住民（美拉尼西亚）57%、印度裔 37%",
       "religions": "基督教 64%、印度教 28%、伊斯兰教 6%",
-      "area_province": "北京",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -2299,9 +2299,9 @@
       "note": "",
       "ethnic_groups": "斯洛伐克族 83.8%、匈牙利族 7.8%",
       "religions": "天主教 69%、无宗教 13%",
-      "area_province": "台湾、海南",
-      "pop_province": "青海",
-      "gdp_province": "甘肃、海南"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "斯洛文尼亚",
@@ -2318,9 +2318,9 @@
       "note": "",
       "ethnic_groups": "斯洛文尼亚族 83%、塞尔维亚族 2%",
       "religions": "天主教 58%、无宗教 21%",
-      "area_province": "北京",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "宁夏、青海"
+      "gdp_province": ""
     },
     {
       "country_zh": "斯里兰卡",
@@ -2337,9 +2337,9 @@
       "note": "行政首都斯里贾亚瓦德纳普拉科特",
       "ethnic_groups": "僧伽罗族 74.9%、泰米尔族 15.3%",
       "religions": "佛教 70%、印度教 13%、伊斯兰教 10%、基督教 7%",
-      "area_province": "宁夏、重庆",
-      "pop_province": "北京、台湾、内蒙古",
-      "gdp_province": "海南、宁夏"
+      "area_province": "宁夏",
+      "pop_province": "北京",
+      "gdp_province": ""
     },
     {
       "country_zh": "新加坡",
@@ -2357,8 +2357,8 @@
       "ethnic_groups": "华人 74%、马来族 13%、印度族 9%",
       "religions": "佛教 31%、无宗教 20%、基督教 19%、伊斯兰教 15%",
       "area_province": "",
-      "pop_province": "青海、宁夏",
-      "gdp_province": "北京、河北、安徽"
+      "pop_province": "青海",
+      "gdp_province": ""
     },
     {
       "country_zh": "新西兰",
@@ -2375,9 +2375,9 @@
       "note": "",
       "ethnic_groups": "欧洲裔 67%、毛利 17%、太平洋裔 9%",
       "religions": "无宗教 49%、基督教 37%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "青海",
-      "gdp_province": "新疆、天津、贵州"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "新疆"
     },
     {
       "country_zh": "日本",
@@ -2394,8 +2394,8 @@
       "note": "",
       "ethnic_groups": "大和族 98%、其他 2%",
       "religions": "神道教/佛教（多数同时信奉）~84%、无宗教 ~10%",
-      "area_province": "云南、甘肃、黑龙江",
-      "pop_province": "广东、山东、河南",
+      "area_province": "云南",
+      "pop_province": "广东",
       "gdp_province": ""
     },
     {
@@ -2414,8 +2414,8 @@
       "ethnic_groups": "混血 ~60%、白人 ~30%、马普切 9%",
       "religions": "天主教 60%、新教 16%、无宗教 13%",
       "area_province": "青海",
-      "pop_province": "北京、台湾",
-      "gdp_province": "内蒙古、山西、贵州"
+      "pop_province": "",
+      "gdp_province": "内蒙古"
     },
     {
       "country_zh": "朝鲜",
@@ -2432,8 +2432,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "福建、江苏、浙江",
-      "pop_province": "新疆、甘肃、上海",
+      "area_province": "福建",
+      "pop_province": "新疆",
       "gdp_province": ""
     },
     {
@@ -2453,7 +2453,7 @@
       "religions": "佛教 97%、伊斯兰教 2%",
       "area_province": "广东、贵州、湖北",
       "pop_province": "",
-      "gdp_province": "澳门、青海、西藏"
+      "gdp_province": "澳门"
     },
     {
       "country_zh": "格林纳达",
@@ -2489,7 +2489,7 @@
       "note": "",
       "ethnic_groups": "格鲁吉亚族 86.8%、阿塞拜疆族 6.3%",
       "religions": "东正教 83%、伊斯兰教 10%",
-      "area_province": "宁夏、重庆",
+      "area_province": "",
       "pop_province": "西藏",
       "gdp_province": "西藏"
     },
@@ -2527,8 +2527,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "海南、台湾",
-      "pop_province": "海南、天津",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": "上海、安徽、湖南"
     },
     {
@@ -2546,8 +2546,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "内蒙古、西藏、青海",
-      "pop_province": "青海",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -2603,8 +2603,8 @@
       "note": "",
       "ethnic_groups": "沙特阿拉伯人 ~62%（外籍 38%）",
       "religions": "伊斯兰教 100%（逊尼 ~90%、什叶 ~10%）",
-      "area_province": "新疆",
-      "pop_province": "山西、重庆、贵州",
+      "area_province": "",
+      "pop_province": "山西",
       "gdp_province": "山东、浙江"
     },
     {
@@ -2622,8 +2622,8 @@
       "note": "",
       "ethnic_groups": "法兰西人 ~84%（含移民背景 10%）",
       "religions": "天主教 47%、无宗教 33%、伊斯兰教 5%",
-      "area_province": "青海、四川、黑龙江",
-      "pop_province": "湖南、浙江、河北",
+      "area_province": "",
+      "pop_province": "湖南、浙江",
       "gdp_province": ""
     },
     {
@@ -2641,8 +2641,8 @@
       "note": "",
       "ethnic_groups": "波兰族 97%、西里西亚族 2%",
       "religions": "天主教 87%、无宗教 8%",
-      "area_province": "广西、云南",
-      "pop_province": "山西、贵州、陕西",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": "四川、河南、湖北"
     },
     {
@@ -2660,9 +2660,9 @@
       "note": "",
       "ethnic_groups": "波斯尼亚克族 50%、塞尔维亚族 31%、克罗地亚族 15%",
       "religions": "伊斯兰教 51%、东正教 31%、天主教 15%",
-      "area_province": "宁夏、台湾",
-      "pop_province": "西藏",
-      "gdp_province": "西藏"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "泰国",
@@ -2679,9 +2679,9 @@
       "note": "",
       "ethnic_groups": "泰族 75%、华族 14%、马来族 3%",
       "religions": "佛教 93%、伊斯兰教 5%",
-      "area_province": "四川、黑龙江、甘肃",
-      "pop_province": "河北、湖南、浙江",
-      "gdp_province": "陕西、江西、北京"
+      "area_province": "",
+      "pop_province": "河北",
+      "gdp_province": ""
     },
     {
       "country_zh": "津巴布韦",
@@ -2698,9 +2698,9 @@
       "note": "",
       "ethnic_groups": "绍纳 70%、恩德贝莱 16%",
       "religions": "新教 74%、无宗教 7%",
-      "area_province": "云南、甘肃、黑龙江",
-      "pop_province": "天津",
-      "gdp_province": "澳门、西藏、青海"
+      "area_province": "云南",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "洪都拉斯",
@@ -2717,9 +2717,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "江苏、浙江、福建",
-      "pop_province": "海南",
-      "gdp_province": "西藏、澳门"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "海地",
@@ -2736,8 +2736,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "海南、台湾",
-      "pop_province": "海南、天津",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -2756,8 +2756,8 @@
       "ethnic_groups": "白人 ~76%、亚裔 ~12%、原住民 3%",
       "religions": "无宗教 38%、基督教 44%（天主教/圣公会）",
       "area_province": "",
-      "pop_province": "新疆、甘肃、上海",
-      "gdp_province": "江苏、广东、山东"
+      "pop_province": "",
+      "gdp_province": "江苏、广东"
     },
     {
       "country_zh": "爱尔兰",
@@ -2774,8 +2774,8 @@
       "note": "",
       "ethnic_groups": "爱尔兰人 ~90%",
       "religions": "天主教 78%、无宗教 14%",
-      "area_province": "宁夏、重庆",
-      "pop_province": "青海",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": "北京、河北、安徽"
     },
     {
@@ -2793,9 +2793,9 @@
       "note": "",
       "ethnic_groups": "爱沙尼亚族 69%、俄罗斯族 25%",
       "religions": "无宗教 58%、东正教 16%、路德宗 10%",
-      "area_province": "台湾、海南",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "澳门、西藏、青海"
+      "gdp_province": ""
     },
     {
       "country_zh": "牙买加",
@@ -2812,7 +2812,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "天津",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -2850,9 +2850,9 @@
       "note": "法定首都苏克雷",
       "ethnic_groups": "混血 68%、克丘亚 17%、艾马拉 11%",
       "religions": "天主教 77%、新教 14%、传统信仰 4%",
-      "area_province": "内蒙古、西藏",
-      "pop_province": "天津、海南",
-      "gdp_province": "青海、澳门"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "青海"
     },
     {
       "country_zh": "瑙鲁",
@@ -2888,9 +2888,9 @@
       "note": "",
       "ethnic_groups": "瑞典人 ~88%（外籍 20%）",
       "religions": "路德宗 60%、无宗教 30%、伊斯兰教 8%",
-      "area_province": "四川、黑龙江、甘肃",
-      "pop_province": "海南",
-      "gdp_province": "北京、河北、安徽"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "北京、河北"
     },
     {
       "country_zh": "瑞士",
@@ -2907,9 +2907,9 @@
       "note": "",
       "ethnic_groups": "瑞士人 70%（德 62%、法 23%、意 8%）、外籍 30%",
       "religions": "天主教 34%、新教 22%、无宗教 30%、伊斯兰教 6%",
-      "area_province": "台湾、海南",
-      "pop_province": "海南、香港",
-      "gdp_province": "四川、河南、湖北"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "四川、河南"
     },
     {
       "country_zh": "瓦努阿图",
@@ -2945,9 +2945,9 @@
       "note": "",
       "ethnic_groups": "白俄罗斯族 83.7%、俄罗斯族 8.3%",
       "religions": "东正教 80%、无宗教 10%",
-      "area_province": "陕西、湖南、河北",
-      "pop_province": "海南、香港",
-      "gdp_province": "宁夏"
+      "area_province": "陕西、湖南",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "科威特",
@@ -3002,9 +3002,9 @@
       "note": "实际行政阿比让",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "云南、广西",
-      "pop_province": "黑龙江、重庆、山西",
-      "gdp_province": "宁夏、海南"
+      "area_province": "",
+      "pop_province": "黑龙江、重庆",
+      "gdp_province": ""
     },
     {
       "country_zh": "秘鲁",
@@ -3021,9 +3021,9 @@
       "note": "",
       "ethnic_groups": "混血 60%、原住民 25%（克丘亚/艾马拉）",
       "religions": "天主教 76%、新教 14%、无宗教 5%",
-      "area_province": "西藏、内蒙古、新疆",
-      "pop_province": "山西、重庆、黑龙江",
-      "gdp_province": "贵州、新疆、天津"
+      "area_province": "",
+      "pop_province": "重庆",
+      "gdp_province": "贵州"
     },
     {
       "country_zh": "突尼斯",
@@ -3041,8 +3041,8 @@
       "ethnic_groups": "突尼斯阿拉伯人 98%",
       "religions": "伊斯兰教 99%（逊尼）",
       "area_province": "江西、河南、山西",
-      "pop_province": "天津、海南",
-      "gdp_province": "青海、澳门"
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "立陶宛",
@@ -3059,9 +3059,9 @@
       "note": "",
       "ethnic_groups": "立陶宛族 84%、波兰族 7%",
       "religions": "天主教 74%、无宗教 12%",
-      "area_province": "宁夏、重庆",
+      "area_province": "宁夏",
       "pop_province": "",
-      "gdp_province": "宁夏、海南"
+      "gdp_province": ""
     },
     {
       "country_zh": "索马里",
@@ -3078,8 +3078,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "青海、四川、黑龙江",
-      "pop_province": "北京",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -3097,9 +3097,9 @@
       "note": "",
       "ethnic_groups": "阿拉伯人 98%",
       "religions": "伊斯兰教 95%（逊尼）、基督教 4%",
-      "area_province": "重庆、浙江、江苏",
-      "pop_province": "海南",
-      "gdp_province": "青海、澳门、宁夏"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "纳米比亚",
@@ -3116,7 +3116,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "青海",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -3135,9 +3135,9 @@
       "note": "",
       "ethnic_groups": "缅族 68%、掸族 9%、克伦族 7%",
       "religions": "佛教 88%、基督教 6%、伊斯兰教 4%",
-      "area_province": "青海、四川",
-      "pop_province": "湖北、广西、安徽",
-      "gdp_province": "宁夏、青海"
+      "area_province": "青海",
+      "pop_province": "湖北",
+      "gdp_province": "宁夏"
     },
     {
       "country_zh": "罗马尼亚",
@@ -3154,8 +3154,8 @@
       "note": "",
       "ethnic_groups": "罗马尼亚族 89.3%、匈牙利族 6%",
       "religions": "东正教 81%、无宗教 7%、天主教 4%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "北京",
+      "area_province": "广西",
+      "pop_province": "",
       "gdp_province": "香港、广西、山西"
     },
     {
@@ -3192,8 +3192,8 @@
       "note": "",
       "ethnic_groups": "老龙族 55%、老听族 30%",
       "religions": "佛教 66%、传统信仰 31%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "香港、宁夏",
+      "area_province": "广西",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -3211,9 +3211,9 @@
       "note": "",
       "ethnic_groups": "基库尤 17%、卢希亚 14%、卡伦金 13%",
       "religions": "基督教 85%（新教/天主教）、伊斯兰教 11%",
-      "area_province": "四川、黑龙江、青海",
-      "pop_province": "湖北、安徽、广西",
-      "gdp_province": "海南"
+      "area_province": "",
+      "pop_province": "湖北、安徽",
+      "gdp_province": ""
     },
     {
       "country_zh": "芬兰",
@@ -3230,9 +3230,9 @@
       "note": "",
       "ethnic_groups": "芬兰族 93%、瑞典族 5%",
       "religions": "路德宗 67%、无宗教 30%",
-      "area_province": "云南、广西",
-      "pop_province": "青海",
-      "gdp_province": "贵州、新疆、内蒙古"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "贵州"
     },
     {
       "country_zh": "苏丹",
@@ -3249,9 +3249,9 @@
       "note": "",
       "ethnic_groups": "苏丹阿拉伯人 ~70%、富尔族 6%",
       "religions": "伊斯兰教 ~97%（逊尼）",
-      "area_province": "新疆",
-      "pop_province": "广西、云南、江西",
-      "gdp_province": "澳门、青海"
+      "area_province": "",
+      "pop_province": "广西",
+      "gdp_province": ""
     },
     {
       "country_zh": "苏里南",
@@ -3287,8 +3287,8 @@
       "note": "",
       "ethnic_groups": "白人 82%、亚裔 9%、非裔 3%",
       "religions": "基督教 46%、无宗教 37%、伊斯兰教 6%",
-      "area_province": "广西、湖南、陕西",
-      "pop_province": "湖南、浙江、河北",
+      "area_province": "",
+      "pop_province": "河北",
       "gdp_province": ""
     },
     {
@@ -3306,7 +3306,7 @@
       "note": "行政首都海牙",
       "ethnic_groups": "荷兰族 ~78%、印尼裔/土耳其裔 4%",
       "religions": "无宗教 58%、基督教 33%（天主教/新教）、伊斯兰教 5%",
-      "area_province": "台湾、海南",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": "浙江、山东"
     },
@@ -3325,8 +3325,8 @@
       "note": "",
       "ethnic_groups": "马库阿 47%、聪加 24%",
       "religions": "基督教 ~50%、伊斯兰教 ~18%、传统信仰 ~20%",
-      "area_province": "青海",
-      "pop_province": "山西、重庆、黑龙江",
+      "area_province": "",
+      "pop_province": "山西",
       "gdp_province": ""
     },
     {
@@ -3344,7 +3344,7 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "海南、台湾",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -3363,9 +3363,9 @@
       "note": "",
       "ethnic_groups": "比萨扬 28%、他加禄 25%、伊洛卡诺 8%",
       "religions": "天主教 79%、伊斯兰教 6%、新教 3%",
-      "area_province": "广西、湖南",
-      "pop_province": "广东、山东、河南",
-      "gdp_province": "江西、陕西、辽宁"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "江西、陕西"
     },
     {
       "country_zh": "萨尔瓦多",
@@ -3382,8 +3382,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "北京",
-      "pop_province": "青海、宁夏、香港",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": "西藏"
     },
     {
@@ -3420,9 +3420,9 @@
       "note": "",
       "ethnic_groups": "葡萄牙人 ~95%",
       "religions": "天主教 79%、无宗教 15%",
-      "area_province": "重庆、浙江、江苏",
-      "pop_province": "海南",
-      "gdp_province": "贵州、内蒙古、新疆"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "蒙古",
@@ -3439,7 +3439,7 @@
       "note": "",
       "ethnic_groups": "喀尔喀蒙古族 82%、哈萨克族 4%",
       "religions": "佛教 51%、无宗教 40%、伊斯兰教 3%",
-      "area_province": "新疆、西藏、内蒙古",
+      "area_province": "新疆",
       "pop_province": "西藏",
       "gdp_province": ""
     },
@@ -3458,9 +3458,9 @@
       "note": "",
       "ethnic_groups": "西班牙人 ~88%（卡斯蒂利亚 74%、加泰 17%）",
       "religions": "天主教 60%、无宗教 36%、伊斯兰教 4%",
-      "area_province": "四川、黑龙江、甘肃",
-      "pop_province": "广西、云南、江西",
-      "gdp_province": "江苏、广东、山东"
+      "area_province": "四川",
+      "pop_province": "广西",
+      "gdp_province": ""
     },
     {
       "country_zh": "贝宁",
@@ -3477,7 +3477,7 @@
       "note": "实际行政科托努",
       "ethnic_groups": "丰族 39%、约鲁巴 15%、阿贾 8%",
       "religions": "基督教 52%、伊斯兰教 24%、传统信仰 18%",
-      "area_province": "江苏、福建、浙江",
+      "area_province": "",
       "pop_province": "天津",
       "gdp_province": ""
     },
@@ -3497,7 +3497,7 @@
       "ethnic_groups": "",
       "religions": "",
       "area_province": "青海",
-      "pop_province": "北京、台湾、内蒙古",
+      "pop_province": "北京",
       "gdp_province": ""
     },
     {
@@ -3515,7 +3515,7 @@
       "note": "新行政首都蒙戈莫",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "海南、台湾",
+      "area_province": "",
       "pop_province": "",
       "gdp_province": ""
     },
@@ -3534,9 +3534,9 @@
       "note": "",
       "ethnic_groups": "京族 85.3%、岱依族 1.9%、泰族 1.8%",
       "religions": "无宗教 ~70%、佛教 ~12%、天主教 ~7%、高台教 ~4%",
-      "area_province": "云南、广西",
-      "pop_province": "山东、河南、江苏",
-      "gdp_province": "陕西、江西、辽宁"
+      "area_province": "",
+      "pop_province": "山东、河南",
+      "gdp_province": "陕西"
     },
     {
       "country_zh": "阿塞拜疆",
@@ -3553,9 +3553,9 @@
       "note": "",
       "ethnic_groups": "阿塞拜疆族 91.6%、列兹金 2%",
       "religions": "伊斯兰教 97%（什叶 ~65%）",
-      "area_province": "重庆、浙江、宁夏",
+      "area_province": "",
       "pop_province": "海南",
-      "gdp_province": "宁夏、青海"
+      "gdp_province": "宁夏"
     },
     {
       "country_zh": "阿富汗",
@@ -3572,8 +3572,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "青海、四川、黑龙江",
-      "pop_province": "辽宁、福建、江西",
+      "area_province": "",
+      "pop_province": "辽宁、福建",
       "gdp_province": ""
     },
     {
@@ -3592,8 +3592,8 @@
       "ethnic_groups": "阿拉伯-柏柏尔 ~99%",
       "religions": "伊斯兰教 99%（逊尼）",
       "area_province": "",
-      "pop_province": "云南、江西、广西",
-      "gdp_province": "新疆、贵州、天津"
+      "pop_province": "云南、江西",
+      "gdp_province": "新疆"
     },
     {
       "country_zh": "阿尔巴尼亚",
@@ -3610,9 +3610,9 @@
       "note": "",
       "ethnic_groups": "阿尔巴尼亚族 82%、希腊族 1%",
       "religions": "伊斯兰教 56%、无宗教 13%、东正教 7%、天主教 10%",
-      "area_province": "海南、台湾",
+      "area_province": "",
       "pop_province": "",
-      "gdp_province": "西藏"
+      "gdp_province": ""
     },
     {
       "country_zh": "阿曼",
@@ -3629,9 +3629,9 @@
       "note": "",
       "ethnic_groups": "阿曼阿拉伯人 ~55%（外籍 45%）",
       "religions": "伊斯兰教 88%（伊巴德派 ~75%）",
-      "area_province": "广西、云南",
-      "pop_province": "青海",
-      "gdp_province": "海南、宁夏"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": "海南"
     },
     {
       "country_zh": "阿根廷",
@@ -3649,7 +3649,7 @@
       "ethnic_groups": "白人/混血 ~97%、原住民 2%",
       "religions": "天主教 62%、无宗教 20%、新教 9%",
       "area_province": "",
-      "pop_province": "江西、云南、辽宁",
+      "pop_province": "江西、云南",
       "gdp_province": "河北、北京、安徽"
     },
     {
@@ -3667,9 +3667,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "浙江、江苏、重庆",
-      "pop_province": "海南",
-      "gdp_province": "北京、河北、陕西"
+      "area_province": "",
+      "pop_province": "",
+      "gdp_province": ""
     },
     {
       "country_zh": "韩国",
@@ -3686,8 +3686,8 @@
       "note": "",
       "ethnic_groups": "朝鲜族 ~96%",
       "religions": "无宗教 56%、基督教 27%、佛教 16%",
-      "area_province": "浙江、江苏、重庆",
-      "pop_province": "广西、云南、湖北",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": "广东、江苏"
     },
     {
@@ -3724,8 +3724,8 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "福建、江苏、浙江",
-      "pop_province": "北京、台湾、内蒙古",
+      "area_province": "福建",
+      "pop_province": "北京",
       "gdp_province": ""
     },
     {
@@ -3743,8 +3743,8 @@
       "note": "行政首都布城",
       "ethnic_groups": "马来族 70%、华族 23%、印度族 7%",
       "religions": "伊斯兰教 61%、佛教 20%、基督教 9%、印度教 6%",
-      "area_province": "云南、广西",
-      "pop_province": "山西、贵州、重庆",
+      "area_province": "",
+      "pop_province": "",
       "gdp_province": "云南、重庆、辽宁"
     },
     {
@@ -3782,7 +3782,7 @@
       "ethnic_groups": "马耳他人 95%",
       "religions": "天主教 90%",
       "area_province": "",
-      "pop_province": "澳门",
+      "pop_province": "",
       "gdp_province": ""
     },
     {
@@ -3800,8 +3800,8 @@
       "note": "",
       "ethnic_groups": "马达加斯加人（梅里纳 26%、贝齐米萨拉卡 15%）",
       "religions": "传统信仰 52%、基督教 41%、伊斯兰教 7%",
-      "area_province": "四川、黑龙江、甘肃",
-      "pop_province": "重庆、黑龙江、山西",
+      "area_province": "",
+      "pop_province": "重庆、黑龙江",
       "gdp_province": ""
     },
     {
@@ -3819,9 +3819,9 @@
       "note": "",
       "ethnic_groups": "",
       "religions": "",
-      "area_province": "西藏、内蒙古",
+      "area_province": "西藏",
       "pop_province": "上海、吉林、内蒙古",
-      "gdp_province": "西藏"
+      "gdp_province": ""
     },
     {
       "country_zh": "黎巴嫩",
@@ -3838,7 +3838,7 @@
       "note": "",
       "ethnic_groups": "阿拉伯人 95%",
       "religions": "伊斯兰教 61%（逊尼/什叶）、基督教 34%（马龙派等）",
-      "area_province": "天津",
+      "area_province": "",
       "pop_province": "青海",
       "gdp_province": ""
     },
@@ -3857,7 +3857,7 @@
       "note": "",
       "ethnic_groups": "黑山族 45%、塞尔维亚族 29%",
       "religions": "东正教 72%、伊斯兰教 19%",
-      "area_province": "天津、北京",
+      "area_province": "",
       "pop_province": "澳门",
       "gdp_province": ""
     }
