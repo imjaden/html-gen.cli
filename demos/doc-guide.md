@@ -197,13 +197,13 @@ report.html?width=narrow
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [使用指南](../html-gen-usage-guide-v1.0-20260707.html) | html-gen 完整使用说明 | html-gen-usage-guide-v1.0-20260707.html |
-| [A 型 · 表格模板说明](template-A-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · 功能清单 | templates/template-A-guide-v1.0-20260707.html |
-| [B 型 · 文档模板说明](template-B-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · URL 入参控制 | templates/template-B-guide-v1.0-20260707.html |
-| [Markdown 语法规范](template-B-markdown-spec-v1.0-20260707.html) | 支持的语法子集 · 规则 · 常见错误 | templates/template-B-markdown-spec-v1.0-20260707.html |
-| [C 型 · 知识库模板说明](template-C-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · 数据格式 | templates/template-C-guide-v1.0-20260707.html |
-| [D 型 · 幻灯片模板说明](template-D-guide-v1.0-20260707.html) | 使用场景 · 方案设计 · 演示模式 | templates/template-D-guide-v1.0-20260707.html |
-| [Slide 幻灯片版](template-D-slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | templates/template-D-slide-demo.html |
+| [使用指南](usage-guide.html) | html-gen 完整使用说明 | usage-guide.html |
+| [A 型 · 表格模板说明](table-guide.html) | 使用场景 · 方案设计 · 功能清单 | table-guide.html |
+| [B 型 · 文档模板说明](doc-guide.html) | 使用场景 · 方案设计 · URL 入参控制 | doc-guide.html |
+| [Markdown 语法规范](markdown-spec.html) | 支持的语法子集 · 规则 · 常见错误 | markdown-spec.html |
+| [C 型 · 知识库模板说明](knowledge-guide.html) | 使用场景 · 方案设计 · 数据格式 | knowledge-guide.html |
+| [D 型 · 幻灯片模板说明](slide-guide.html) | 使用场景 · 方案设计 · 演示模式 | slide-guide.html |
+| [Slide 幻灯片版](slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-demo.html |
 
 ---
 

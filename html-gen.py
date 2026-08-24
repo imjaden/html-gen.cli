@@ -602,12 +602,12 @@ demo — demo 清单与详情
 
 demo 规范:
   demos/_registry.json           清单数据源 {version,count,demos[]}
-  demos[] 字段: name/title/type/entry/featured/referenced/referenced_by/stale
+  demos[] 字段: name/title/type/entry/featured/referenced/referenced_by
   type: knowledge(C) / table(A) / doc(B) / html(独立页) —— 按模板特征自动识别
   featured: 首页精选 (index.html 链接项)
   referenced: 被 knowledge 主库引用 → 默认 list 不单列 (--all 查看)
-  目录约定: 根级=入口/主产物; templates/(模板指南) features/(功能 demo)
-            drama/ chaitin/ countries/ (主题内容)"""
+  name 唯一: 根级=文件名; 子目录页={子目录}-{文件名} (避免跨主题撞名)
+  目录约定: 根级=独立案例 (URL 扁平 /demos/{name}.html); 子目录=知识库引用子页/主题分组"""
 
 HELP_MAP = {
     'doc': HELP_DOC,
@@ -828,18 +828,19 @@ def cmd_demo(args):
             if f.name in ('index.html', '_registry.json'):
                 continue
             rel = f.relative_to(DEMOS_DIR).as_posix()
+            # name 唯一化: 根级=stem; 子目录页={topic}-{stem} (防 chaitin/cloudwise 等跨主题撞名)
+            name = f.stem if f.parent == DEMOS_DIR else f.parent.name + '-' + f.stem
             h = f.read_text(encoding='utf-8', errors='ignore')
             t = _re.search(r'<title>(.*?)</title>', h, _re.S)
             demos.append({
-                'name': f.stem, 'title': t.group(1).strip() if t else f.stem,
+                'name': name, 'title': t.group(1).strip() if t else f.stem,
                 'type': detect_type(h), 'entry': rel, 'featured': rel in featured,
                 'referenced': rel in refs, 'referenced_by': refs.get(rel, []),
-                'stale': bool(_re.match(r'daming-(strategy|timeline)-\d', f.stem)),
             })
-        reg = {'version': 2, 'count': len(demos), 'demos': demos}
+        reg = {'version': 3, 'count': len(demos), 'demos': demos}
         reg_file.write_text(_json.dumps(reg, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         print(f"✅ registry 重建: {len(demos)} demos (featured {len(featured)} / "
-              f"引用子页 {len(refs)} / 过期 {sum(1 for d in demos if d['stale'])})")
+              f"引用子页 {len(refs)})")
         return
 
     if not reg_file.exists():

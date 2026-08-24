@@ -54,49 +54,28 @@
     {
       "标题": "template-A-guide",
       "模板": "📄 A 型方案",
-      "文档链接": "<a href=\"template-A-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗</a>",
+      "文档链接": "<a href=\"table-guide.html\" target=\"_blank\" rel=\"noopener\">template-A-guide ↗</a>",
       "大小": "25KB",
       "更新时间": "2026-07"
     },
     {
       "标题": "template-B-guide",
       "模板": "📄 B 型方案",
-      "文档链接": "<a href=\"template-B-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗</a>",
+      "文档链接": "<a href=\"doc-guide.html\" target=\"_blank\" rel=\"noopener\">template-B-guide ↗</a>",
       "大小": "27KB",
       "更新时间": "2026-07"
     },
     {
       "标题": "template-B-spec",
       "模板": "📐 B 型规范",
-      "文档链接": "<a href=\"template-B-markdown-spec-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗</a>",
+      "文档链接": "<a href=\"markdown-spec.html\" target=\"_blank\" rel=\"noopener\">template-B-spec ↗</a>",
       "大小": "27KB",
       "更新时间": "2026-07"
     },
     {
       "标题": "template-C-guide",
       "模板": "📄 C 型方案",
-      "文档链接": "<a href=\"template-C-guide-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗</a>",
-      "大小": "25KB",
-      "更新时间": "2026-07"
-    },
-    {
-      "标题": "iris-output-index",
-      "模板": "📊 A 型案例",
-      "文档链接": "<a href=\"iris-output-index.html\" target=\"_blank\" rel=\"noopener\">iris-output-index ↗</a>",
-      "大小": "13KB",
-      "更新时间": "2026-07"
-    },
-    {
-      "标题": "git-cloner-demo",
-      "模板": "📊 A 型案例",
-      "文档链接": "<a href=\"git-cloner-demo.html\" target=\"_blank\" rel=\"noopener\">git-cloner-demo ↗</a>",
-      "大小": "12KB",
-      "更新时间": "2026-07"
-    },
-    {
-      "标题": "ci-issues-demo",
-      "模板": "📄 B 型案例",
-      "文档链接": "<a href=\"ci-issues-demo.html\" target=\"_blank\" rel=\"noopener\">ci-issues-demo ↗</a>",
+      "文档链接": "<a href=\"knowledge-guide.html\" target=\"_blank\" rel=\"noopener\">template-C-guide ↗</a>",
       "大小": "25KB",
       "更新时间": "2026-07"
     },
@@ -110,7 +89,7 @@
     {
       "标题": "chaitin-menu-design",
       "模板": "📄 其他",
-      "文档链接": "<a href=\"chaitin-menu-design-v1.0-20260707.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗</a>",
+      "文档链接": "<a href=\"chaitin/menu-design.html\" target=\"_blank\" rel=\"noopener\">chaitin-menu-design ↗</a>",
       "大小": "27KB",
       "更新时间": "2026-07"
     },
@@ -119,13 +98,6 @@
       "模板": "📚 C 型案例",
       "文档链接": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo ↗</a>",
       "大小": "22KB",
-      "更新时间": "2026-07"
-    },
-    {
-      "标题": "tool-nav-demo",
-      "模板": "🔧 其他",
-      "文档链接": "<a href=\"tool-nav-demo.html\" target=\"_blank\" rel=\"noopener\">tool-nav-demo ↗</a>",
-      "大小": "14KB",
       "更新时间": "2026-07"
     },
     {
@@ -145,7 +117,7 @@
     {
       "标题": "countries-table",
       "模板": "🌍 A 型案例",
-      "文档链接": "<a href=\"demos/countries/countries-table.html\" target=\"_blank\" rel=\"noopener\">countries-table ↗</a>",
+      "文档链接": "<a href=\"countries-table.html\" target=\"_blank\" rel=\"noopener\">countries-table ↗</a>",
       "大小": "138KB",
       "更新时间": "2026-07"
     }

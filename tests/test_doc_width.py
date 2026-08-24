@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.service import Service
 PROJECT = Path(__file__).resolve().parent.parent
 GEN = PROJECT / 'html-gen.py'
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
-DEMO = PROJECT / 'demos' / 'templates' / 'template-B-guide-v1.0-20260707.html'
+DEMO = PROJECT / 'demos' / 'doc-guide.html'
 
 TMP_MD = Path('/tmp/test-doc-width.md')
 TMP_HTML = Path('/tmp/test-doc-width.html')

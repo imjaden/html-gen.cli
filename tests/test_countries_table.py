@@ -12,7 +12,7 @@ from selenium.webdriver.chrome.service import Service
 
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'countries' / 'countries-table.html'
+DEMO = PROJECT / 'demos' / 'countries-table.html'
 
 
 class TestCountriesTable(unittest.TestCase):

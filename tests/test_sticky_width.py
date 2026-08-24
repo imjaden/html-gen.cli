@@ -11,7 +11,7 @@ from selenium.webdriver.chrome.service import Service
 
 CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'features' / 'hermes-profile-skills-list.html'
+DEMO = PROJECT / 'demos' / 'hermes-profile-skills-list.html'
 
 
 class TestStickyAndWidth(unittest.TestCase):

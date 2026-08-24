@@ -166,11 +166,11 @@ html-gen table -h
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [DEMO 案例索引](../demos-index.html) | 全站文件清单 · 模板/大小/更新时间 | demos-index.html |
-| [Hermes Skills 清单](../features/hermes-profile-skills-list.html) | 98 个 Skill · 15 个分类 · 全 Profile | features/hermes-profile-skills-list.html |
-| [全球国家速查表](../countries/countries-table.html) | 国家速查 · 地区/首都/货币 | countries/countries-table.html |
-| [Phase 2-4 全功能演示](../features/phase2-demo.html) | 密度/模态/分栏/展开/过滤/冻结/预设 | features/phase2-demo.html |
-| [操作按钮 demo](../features/table-actions-demo.html) | copyKey/hrefKey/handler 操作列 | features/table-actions-demo.html |
+| [DEMO 案例索引](demos-index.html) | 全站文件清单 · 模板/大小/更新时间 | demos-index.html |
+| [Hermes Skills 清单](hermes-profile-skills-list.html) | 98 个 Skill · 15 个分类 · 全 Profile | hermes-profile-skills-list.html |
+| [全球国家速查表](countries-table.html) | 国家速查 · 地区/首都/货币 | countries-table.html |
+| [Phase 2-4 全功能演示](table-features-demo.html) | 密度/模态/分栏/展开/过滤/冻结/预设 | table-features-demo.html |
+| [操作按钮 demo](table-actions-demo.html) | copyKey/hrefKey/handler 操作列 | table-actions-demo.html |
 
 ---
 
