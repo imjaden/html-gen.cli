@@ -99,3 +99,51 @@
 | □ | 项 | 类别 |
 |:-:|:---|:-----|
 | □ | HG-SEC-027：是否要求后续对 4 个不对称格重跑 backfill（德国/西班牙补回填、土库曼斯坦/澳大利亚清过期），或接受现状（89.1% 互证，demo 数据语义可读） | 数据一致性 🟢 |
+
+
+---
+
+## 尾项复核 — HG-SEC-027 关闭（2026-08-24）
+
+> 聚焦: 未 push 1 commit `a331ac1`（fix@html-gen: backfill countries provinces columns from final provinces data）
+> 触发: 上轮 🟢 P3 记录（人工复核 3 处省份侧单元格在 backfill 生成后修改 → 4 格不对称）；用户决策 1B 修复，ops 已实施
+> review维度: L2 尾项复核（数据 5 格状态 + 互证率 + miss 分类 + 生成物一致性 + 回归）
+
+### 数据验证
+
+| 验证项 | 方法 | 结果 |
+|:-------|:-----|:-----|
+| 未 push 范围 | `git log @{u}..HEAD --oneline` | ✅ 恰 1 commit（a331ac1），无 WIP 混入 |
+| commit 文件面 | `git show a331ac1 --stat` | ✅ 仅 3 文件（scripts/provinces-match.py +11/-3、data/_countries-data.json 5 字段、demos/countries/countries-table.html 1 行） |
+| 脚本事实源修复 | 代码审查 | ✅ 反向回填事实源由脚本内硬编码 PROVINCES 常量改为读最终 `data/_provinces-data.json`（含人工复核编辑）；关联列按「、」split + strip + 空值跳过 |
+| 德国 area_province | JSON + HTML 双查 | ✅ `黑龙江`（原空，补全） |
+| 西班牙 gdp_province | JSON + HTML 双查 | ✅ `广东`（原空，补全） |
+| 斯里兰卡 pop_province | JSON + HTML 双查 | ✅ `北京、上海`（原仅北京，补上海） |
+| 土库曼斯坦 area_province | JSON + HTML 双查 | ✅ `四川`（过期黑龙江已清除） |
+| 澳大利亚 gdp_province | JSON + HTML 双查 | ✅ `江苏`（过期广东已清除） |
+| 省份表零改动 | `git show a331ac1 -- data/_provinces-data.json` | ✅ 未触及（人工复核编辑保持） |
+| backfill 全量复算 | 独立脚本重跑（复刻新逻辑）vs 提交态 | ✅ 195 国 × 3 列 = 585 格 0 差异 |
+| 双向互证率 | 程序全量比对 | ✅ 274/304 = 90.1%（原 89.1%，+3 对：德国↔黑龙江/西班牙↔广东/斯里兰卡↔上海） |
+| miss 分类 | 逐 miss 计算截断 rank | ✅ 30 个 miss 全部为双侧 top-3 截断（rank 4-8），0 个非截断/不对称格 |
+| 生成物一致性 | HTML DATA const 提取 vs JSON | ✅ 195 行逐字段 0 差异（5 国 3 列含） |
+| 专项测试 | `pytest tests/test_provinces_table.py tests/test_countries_table.py -q -n 0` | ✅ 26 passed |
+| 全量回归 | `pytest tests/ -q -n 4` | ✅ 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy-table 系其他会话重生成 9 列 schema，与本次零交集，不代修不扣分） |
+
+### 安全事项
+
+🟢 **HG-SEC-027（closed）** — 4 个不对称格全部修复：3 处补全（德国/西班牙/斯里兰卡）+ 2 处过期残留清除（土库曼斯坦/澳大利亚）；脚本不再以硬编码常量为事实源，未来人工复核后重跑 backfill 即可同步，同类不对称不再产生。互证率 89.1% → 90.1%，剩余 miss 全部为双侧 top-3 截断（设计允许），无人工复核不对称格。
+
+### 评分
+
+| 项目 | 扣分 |
+|:-----|:-----|
+| 本轮新增 🔴 | 0 × -15 = 0 |
+| 本轮新增 🟡 | 0 × -5 = 0 |
+| 本轮新增 🟢 | 0 × 0 = 0 |
+| 前置 HG-SEC-027（关闭） | 0 |
+
+得分: **100 / 100 → Rating: A**
+
+### 结论
+
+**PASS（A, 100）** — a331ac1 修复成立：事实源切换为最终省份表后，backfill 重算与提交态 585 格 0 差异；5 格状态全部符合预期（3 补全 + 2 清除）；互证率升至 90.1% 且剩余 miss 均为 top-3 截断；生成物与 JSON 逐字段一致；省份表零改动；专项 26 passed。全量 3 个失败均为并发会话 WIP 文件重生成（daming/yongzheng/history strategy-table），与本次零交集，不代修。**HG-SEC-027 ✅ Closed。推送权限执行：git push 1 commit（a331ac1）→ github/main。**
