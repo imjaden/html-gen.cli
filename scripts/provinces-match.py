@@ -109,16 +109,21 @@ def main():
         })
 
     # 反向回填: 国家表 3 列 = 省份表同对回填 (设计 §四 5: 单方向匹配一次 + 反向回填同对)
+    # 事实源 = 最终 data/_provinces-data.json (含人工复核编辑, HG-SEC-027 修复)
     # 收集省份表中引用每个国家的省份, 按 |Δ|(国家视角, 以国家值为基准) 排序取前 3
+    prov_final = json.loads((ROOT / "data/_provinces-data.json").read_text())
     country_map = {c["name"]: c for c in countries}
     backfill = {c["name"]: {"area_province": [], "pop_province": [], "gdp_province": []}
                 for c in countries}
-    for p in src["provinces"]:
-        pv = {"area": p["area_wan"], "pop": p["pop_wan"], "gdp": p["gdp_yi"]}
+    for p in prov_final["data"]:
+        pv = {"area": p.get("area_wan"), "pop": p.get("pop_wan"), "gdp": p.get("gdp_yi")}
         for dim, pc, cp in [("area", "area_country", "area_province"),
                             ("pop", "pop_country", "pop_province"),
                             ("gdp", "gdp_country", "gdp_province")]:
-            for cname in p[pc]:
+            for cname in str(p.get(pc, "")).split("、"):
+                cname = cname.strip()
+                if not cname:
+                    continue
                 cv = country_map.get(cname, {}).get("area_wan" if dim == "area" else ("pop_wan" if dim == "pop" else "gdp_yi"))
                 if cv is None or pv[dim] is None or cv == 0:
                     continue
