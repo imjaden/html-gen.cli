@@ -268,3 +268,14 @@ review_history:
     findings_open: 0
     tracking: HG-SEC-027 (closed a331ac1; 互证率 89.1%→90.1%, 30 miss 全为 top-3 截断, 585 格 0 差异)
     report: documents/review/provinces-table-implementation-review-v1.0-20260824.md
+  - date: 2026-08-24
+    reviewer: Security Reviewer
+    review_type: implementation-audit-recheck
+    review_level: L2
+    scope: "provinces 匹配规则 v1.2 变更复核 — 未 push 2 commits (a148b8d docs rename v1.1→v1.2 / db4d818 fix 国家侧独立匹配+超限 note), 用户决策 1A/2A/3A/4B ops 直改"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 0
+    tracking: HG-SEC-028 (🟢 record; 856 组合对/386 维度对 0 阈值违规, 独立 top-3 无损镜像, 28 空国可解释, 超限 note 0 缺失, 26 tests, 3 环境性 WIP 失败不扣分)
+    report: documents/review/provinces-table-design-v1.2-change-review-20260824.md

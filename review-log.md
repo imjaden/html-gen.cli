@@ -627,3 +627,24 @@ a331ac1 将反向回填事实源从脚本内硬编码 PROVINCES 常量改为读�
 
 - 报告: `documents/review/provinces-table-implementation-review-v1.0-20260824.md`（追加「尾项复核 — HG-SEC-027 关闭」章节）
 - 处理: PASS → 授权 push 1 commit（a331ac1）至 github/main
+
+---
+
+## 2026-08-24 — provinces 匹配规则 v1.2 变更复核（用户决策 1A/2A/3A/4B）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: 未 push 2 commits（`a148b8d` docs rename provinces-table-design v1.1→v1.2 / `db4d818` fix@html-gen: countries provinces columns as country-basis independent match + overflow notes）；ops 直改 + review 尾项复核（不走设计评审）
+- **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 1 record：HG-SEC-028）
+
+### Summary
+
+v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078 仅 1 文件），db4d818 恰 3 文件（provinces-match.py / _countries-data.json / countries-table.html），无 WIP 混入。**匹配语义**（决策 1A/3A）国家侧由"同对回填"改为"国家为基准独立 pick_hits"（Δ 以国家值为基准，阈值 30/20/30%），独立复算 JSON 856 组合对 / 386 维度对 **0 阈值违规**（用户"506 对"为口径差异，0 违规一致）；独立 top-3 与 JSON 无损镜像（0 遗漏/0 多余）。抽查全对：亚美尼亚 面积=海南/台湾（Δ19.2% 不再被省份侧 top-3 挤掉，v1.1 缺陷修复）、加拿大 人口=福建/辽宁/陕西（陕西 Δ4.2%）、俄罗斯 人口=广东 + GDP=广东/江苏、韩国 GDP=广东/江苏、柬埔寨 面积=广东/贵州/湖北。**超限 note**（决策 2A）与设计 §四 6 逐字一致（动态极值新疆/澳门/广东/西藏，`; ` 连接，既有前缀保留如"无世界银行数据"/"实际行政科托努; GDP: 无相近..."），超限但 note 缺失 0、陈旧 note 0；范围内无命中仅留空符合设计语义。**空国家** 3 列全空 28 国全部可解释（中国/印度/美国大国超限 note 完整、梵蒂冈数据缺口、其余微国家）。**测试** 专项 26 passed；全量 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy 表被另一会话 13:15-13:35 重生成，工作区表头 ≠ HEAD，与 db4d818 零交集，不代修不扣分）。**生成物** countries-table.html 195 行与 JSON 逐字段 0 差异；`_provinces-data.json` 零改动。唯一 🟢 HG-SEC-028 为脚本 pick_hits 命名/docstring 仍为省份侧语义（国家侧复用），纯注释陈旧不影响产物。授权 push 2 commits 至 github/main。
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-028 | pick_hits 命名/docstring 仍为省份侧语义（v1.2 国家侧复用），注释陈旧 | 🟢 | P3 | 📌 Record（下轮整理脚本时泛化命名） |
+
+- 报告: `documents/review/provinces-table-design-v1.2-change-review-20260824.md`
+- 处理: PASS → 授权 push 2 commits（a148b8d / db4d818）至 github/main
