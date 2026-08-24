@@ -249,7 +249,8 @@ html-gen.cli/
     │   ├── html-gen-table/SKILL.md
     │   │   └── references/table-demo-prompt.md
     │   ├── html-gen-doc/SKILL.md
-    │   └── html-gen-knowledge/SKILL.md
+    │   ├── html-gen-knowledge/SKILL.md
+    │   └── pages-index/SKILL.md   # pages index 落地页规范（hero+矩阵/主题/复制/两屏/corner/双源）
     └── demos/                      # 生成的 HTML 示例（独立案例根级扁平，URL=/demos/{name}.html）
     ├── index.html              # 模板展示首页
     ├── demos-index.html        # A 型文档索引（数据源 data/_demos-data.json）
