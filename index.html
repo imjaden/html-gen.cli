@@ -185,6 +185,7 @@ html { scroll-behavior: smooth; }
 .tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
 .tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: var(--gh-octocat); }
+.github-corner:hover { color: var(--gh-octocat); }
 :root.light .github-corner { color: var(--gh-octocat); }
 :root.light .github-corner:hover { color: var(--gh-octocat); }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
@@ -230,7 +231,7 @@ html { scroll-behavior: smooth; }
 </style>
 </head>
 <body>
-<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换主题">🌙</button>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换主题" aria-pressed="false">🌙</button>
 <a href="https://github.com/imjaden/html-gen.cli" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
   <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
     <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="var(--gh-corner-fill)"></path>
@@ -434,7 +435,11 @@ window.addEventListener('resize', updateHeroHeight);
 // ── 主题切换（:root.light 类，与模板页同机制；独立 key 避免串扰） ──
 function updateThemeBtn() {
   var b = document.getElementById('themeBtn');
-  if (b) b.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
+  if (b) {
+    var light = document.documentElement.classList.contains('light');
+    b.textContent = light ? '☀️' : '🌙';
+    b.setAttribute('aria-pressed', light ? 'true' : 'false');
+  }
 }
 function toggleTheme() {
   var r = document.documentElement;
@@ -451,16 +456,18 @@ function toggleTheme() {
 
 // ── 复制按钮（clipboard API + execCommand fallback，headless Chrome 兼容） ──
 function copyText(text, btn) {
+  var orig = btn ? btn.textContent : '';
   var done = function() {
-    if (btn) { btn.classList.add('ok'); btn.textContent = '✅'; setTimeout(function() { btn.classList.remove('ok'); btn.textContent = '📋'; }, 1500); }
+    if (btn) { btn.classList.add('ok'); btn.textContent = '✅'; setTimeout(function() { btn.classList.remove('ok'); btn.textContent = orig; }, 1500); }
   };
   var fallback = function() {
     var ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
     document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
     document.body.removeChild(ta);
-    done();
+    if (ok) done();
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(done).catch(fallback);

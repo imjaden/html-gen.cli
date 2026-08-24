@@ -45,6 +45,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
 .tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
 .tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: var(--gh-octocat); pointer-events: none; }
+.github-corner:hover { color: var(--gh-octocat); }
 :root.light .github-corner { color: var(--gh-octocat); }
 :root.light .github-corner:hover { color: var(--gh-octocat); }
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
@@ -89,7 +90,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
 </style>
 </head>
 <body>
-<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换主题">🌙</button>
+<button class="theme-btn" id="themeBtn" onclick="toggleTheme()" aria-label="切换主题" aria-pressed="false">🌙</button>
 <a href="https://github.com/imjaden/html-gen.cli" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
   <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
     <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="var(--gh-corner-fill)"></path>
@@ -106,7 +107,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon ia">📊</div>
       <div>
-        <div class="tpl-name">A 型 · 数据表格 <a class="tpl-guide" href="table-guide.html" target="_blank">模板使用说明 ↗</a></div>
+        <div class="tpl-name">A 型 · 数据表格 <a class="tpl-guide" href="table-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-table.html (1110 行)</div>
       </div>
     </div>
@@ -126,11 +127,11 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
       <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span><button class="copy-btn" data-copy="html-gen table -d data.json -o index.html" aria-label="复制命令">📋</button></div>
       <div class="demos">
         <div class="demos-title">案例演示</div>
-        <a class="demo-item" href="demos-index.html" target="_blank">
+        <a class="demo-item" href="demos-index.html" target="_blank" rel="noopener">
           <span class="demo-icon">📋</span><span class="demo-info"><span class="demo-name">DEMO 案例索引</span><span class="demo-desc">全量案例索引 · 标题/模板/链接</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="countries-table.html" target="_blank">
+        <a class="demo-item" href="countries-table.html" target="_blank" rel="noopener">
           <span class="demo-icon">🌍</span><span class="demo-info"><span class="demo-name">全球国家速查表</span><span class="demo-desc">195 国 · 地区/首都/货币</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="provinces-table.html" target="_blank">
+        <a class="demo-item" href="provinces-table.html" target="_blank" rel="noopener">
           <span class="demo-icon">🗺</span><span class="demo-info"><span class="demo-name">中国省份速查表</span><span class="demo-desc">34 省 · 面积/GDP/人口</span></span><span class="demo-arrow">→</span></a>
         </div>
     </div>
@@ -141,7 +142,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon ib">📄</div>
       <div>
-        <div class="tpl-name">B 型 · 文档阅读 <a class="tpl-guide" href="doc-guide.html" target="_blank">模板使用说明 ↗</a></div>
+        <div class="tpl-name">B 型 · 文档阅读 <a class="tpl-guide" href="doc-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-doc.html (436 行)</div>
       </div>
     </div>
@@ -161,11 +162,11 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
       <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span><button class="copy-btn" data-copy="html-gen doc -i report.md -o report.html" aria-label="复制命令">📋</button></div>
       <div class="demos">
         <div class="demos-title">方案说明 & 案例</div>
-        <a class="demo-item" href="markdown-spec.html" target="_blank">
+        <a class="demo-item" href="markdown-spec.html" target="_blank" rel="noopener">
           <span class="demo-icon">📐</span><span class="demo-info"><span class="demo-name">Markdown 语法规范</span><span class="demo-desc">支持的语法子集 · 规则 · 常见错误</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="table-guide.html" target="_blank">
+        <a class="demo-item" href="table-guide.html" target="_blank" rel="noopener">
           <span class="demo-icon">📊</span><span class="demo-info"><span class="demo-name">A 型 · 表格模板说明</span><span class="demo-desc">使用场景 · 方案设计 · 功能清单</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="doc-guide.html" target="_blank">
+        <a class="demo-item" href="doc-guide.html" target="_blank" rel="noopener">
           <span class="demo-icon">📄</span><span class="demo-info"><span class="demo-name">B 型 · 文档模板说明</span><span class="demo-desc">使用场景 · 方案设计 · URL 入参控制</span></span><span class="demo-arrow">→</span></a>
       </div>
     </div>
@@ -176,7 +177,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon ic">📚</div>
       <div>
-        <div class="tpl-name">C 型 · 知识库 <a class="tpl-guide" href="knowledge-guide.html" target="_blank">模板使用说明 ↗</a></div>
+        <div class="tpl-name">C 型 · 知识库 <a class="tpl-guide" href="knowledge-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-knowledge.html (342 行)</div>
       </div>
     </div>
@@ -196,11 +197,11 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
       <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span><button class="copy-btn" data-copy="html-gen knowledge -d data.json -o kb.html" aria-label="复制命令">📋</button></div>
       <div class="demos">
         <div class="demos-title">案例演示</div>
-        <a class="demo-item" href="drama-knowledge.html" target="_blank">
+        <a class="demo-item" href="drama-knowledge.html" target="_blank" rel="noopener">
           <span class="demo-icon">🎬</span><span class="demo-info"><span class="demo-name">以剧读史 · 影视历史知识库</span><span class="demo-desc">中国历史 / 大明王朝1566 / 雍正王朝 3 组 · 概述/时间轴/36计策</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="cloudwise-business-analysis.html" target="_blank">
+        <a class="demo-item" href="cloudwise-business-analysis.html" target="_blank" rel="noopener">
           <span class="demo-icon">☁️</span><span class="demo-info"><span class="demo-name">云智慧 · 商业分析知识库</span><span class="demo-desc">智能运维 AIOps · 监控宝/透视宝/压测宝 · 12 条目</span></span><span class="demo-arrow">→</span></a>
-        <a class="demo-item" href="chaitin-business-analysis.html" target="_blank">
+        <a class="demo-item" href="chaitin-business-analysis.html" target="_blank" rel="noopener">
           <span class="demo-icon">🏢</span><span class="demo-info"><span class="demo-name">长亭科技 · 商业分析知识库</span><span class="demo-desc">4 个大类 · 14 个条目 · 售前架构师视角</span></span><span class="demo-arrow">→</span></a>
       </div>
     </div>
@@ -211,7 +212,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
     <div class="tpl-head">
       <div class="tpl-icon id">🖼️</div>
       <div>
-        <div class="tpl-name">D 型 · 幻灯片 <a class="tpl-guide" href="slide-guide.html" target="_blank">模板使用说明 ↗</a></div>
+        <div class="tpl-name">D 型 · 幻灯片 <a class="tpl-guide" href="slide-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
         <div class="tpl-file">layout-slide.html (673 行)</div>
       </div>
     </div>
@@ -231,7 +232,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
       <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span><button class="copy-btn" data-copy="html-gen slide -i slides.md -o slides.html" aria-label="复制命令">📋</button></div>
       <div class="demos">
         <div class="demos-title">案例演示</div>
-        <a class="demo-item" href="slide-demo.html" target="_blank">
+        <a class="demo-item" href="slide-demo.html" target="_blank" rel="noopener">
           <span class="demo-icon">🖼️</span><span class="demo-info"><span class="demo-name">B 型方案 · Slide 幻灯片版</span><span class="demo-desc">h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示</span></span><span class="demo-arrow">→</span></a>
       </div>
     </div>
@@ -260,7 +261,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
         <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">Badge</span>
         <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(79,70,229,0.1);color:var(--cobalt-400);">表单</span>
       </div>
-      <p style="font-size:0.78rem;color:#9ca3af;line-height:1.6;">
+      <p style="font-size:0.78rem;color: var(--text-secondary);line-height:1.6;">
         --cobalt-* 色系深色主题，CSS 变量驱动。:root.light 浅色覆盖。
         所有模板通过生成器 inline 方式引入，输出自包含单文件。
       </p>
@@ -271,7 +272,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
       <div class="tpl-icon" style="background:rgba(251,146,60,0.1);width:36px;height:36px;border-radius:8px;display:flex;align-items:center;justify-content:center;font-size:1rem;flex-shrink:0;">⚡</div>
       <div>
         <div class="tpl-name">Layer 3 · html-gen.py</div>
-        <div class="tpl-file">CLI 生成器 · 546 行 · 零依赖</div>
+        <div class="tpl-file">CLI 生成器 · 958 行 · 零依赖</div>
       </div>
     </div>
     <div class="tpl-body">
@@ -285,7 +286,7 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
         <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;">inject()</span>
         <span style="display:inline-block;padding:1px 8px;border-radius:4px;font-size:0.65rem;background:rgba(251,146,60,0.1);color:#fb923c;">company-report</span>
       </div>
-      <p style="font-size:0.78rem;color:#9ca3af;line-height:1.6;">
+      <p style="font-size:0.78rem;color: var(--text-secondary);line-height:1.6;">
         读取模板 → inline CSS → 注入数据 → 输出自包含单文件 HTML。
         纯 Python stdlib，零外部依赖。company-report.py 高层封装。
       </p>
@@ -295,10 +296,10 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
 
 <!-- ═══ 案例演示清单（结合 html-gen demo list，手工维护精选项）═══ -->
 <div class="section" id="demos">
-  <h2 style="font-size:1.05rem;font-weight:600;color:#e0e0e0;margin:0 0 6px;">案例演示清单</h2>
-  <p style="font-size:0.75rem;color:#9ca3af;margin:0 0 12px;">
+  <h2 style="font-size:1.05rem;font-weight:600;color:var(--text-primary);margin:0 0 6px;">案例演示清单</h2>
+  <p style="font-size:0.75rem;color:var(--text-secondary);margin:0 0 12px;">
     完整清单（40 个 demo，含类型分组/引用子页/过期标记）用命令行查看：
-    <code style="background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-size:0.7rem;color:#a5b4fc;">html-gen demo list</code>
+    <code style="background:rgba(99,102,241,0.15);padding:1px 6px;border-radius:4px;font-size:0.7rem;color:var(--cobalt-600);">html-gen demo list</code>
   </p>
   <div style="display:flex;gap:12px;flex-wrap:wrap;">
     <div style="flex:1;min-width:220px;background:#16161f;border:1px solid #26263a;border-radius:8px;padding:10px 12px;">
@@ -340,7 +341,11 @@ body { padding: 32px; max-width: 1800px; margin: 0 auto; }
 // ── 主题切换（:root.light 类，与根 index 共用 html-gen:index_theme） ──
 function updateThemeBtn() {
   var b = document.getElementById('themeBtn');
-  if (b) b.textContent = document.documentElement.classList.contains('light') ? '☀️' : '🌙';
+  if (b) {
+    var light = document.documentElement.classList.contains('light');
+    b.textContent = light ? '☀️' : '🌙';
+    b.setAttribute('aria-pressed', light ? 'true' : 'false');
+  }
 }
 function toggleTheme() {
   var r = document.documentElement;
@@ -357,16 +362,18 @@ function toggleTheme() {
 
 // ── 复制按钮（clipboard API + execCommand fallback） ──
 function copyText(text, btn) {
+  var orig = btn ? btn.textContent : '';
   var done = function() {
-    if (btn) { btn.classList.add('ok'); btn.textContent = '✅'; setTimeout(function() { btn.classList.remove('ok'); btn.textContent = '📋'; }, 1500); }
+    if (btn) { btn.classList.add('ok'); btn.textContent = '✅'; setTimeout(function() { btn.classList.remove('ok'); btn.textContent = orig; }, 1500); }
   };
   var fallback = function() {
     var ta = document.createElement('textarea');
     ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
     document.body.appendChild(ta); ta.select();
-    try { document.execCommand('copy'); } catch(e) {}
+    var ok = false;
+    try { ok = document.execCommand('copy'); } catch(e) {}
     document.body.removeChild(ta);
-    done();
+    if (ok) done();
   };
   if (navigator.clipboard && navigator.clipboard.writeText) {
     navigator.clipboard.writeText(text).then(done).catch(fallback);

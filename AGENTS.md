@@ -16,7 +16,7 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 
 | 文件 | 用途 |
 |:---|:---|
-| `html-gen.py` | 主 CLI，3 个子命令，569 行 |
+| `html-gen.py` | 主 CLI，3 个子命令，958 行 |
 | `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库（groups/data/html + content/metrics 内容页自动生成） |
 | `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |

@@ -91,6 +91,7 @@ class TestDemosIndex(unittest.TestCase):
             'class="copy-btn"',         # 复制按钮
             'max-width: 1500px',        # 2 列断点
             '--gh-octocat',             # github-corner 浅色变量
+            'rel="noopener"',           # 外链安全属性
             'html-gen table -d data.json',   # A 卡 cli 命令
             'html-gen doc -i report.md',     # B 卡 cli 命令
             'html-gen knowledge -d data.json',  # C 卡 cli 命令
