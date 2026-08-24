@@ -587,7 +587,7 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 | # | Severity | Title | File | Status |
 |:--:|:---:|:---|:---|:---:|
-| HG-SEC-027 | 🟢 | 人工复核 3 处省份侧单元格（黑龙江 area 土库曼斯坦→德国 / 上海 pop 布基纳法索→斯里兰卡 / 广东 gdp 澳大利亚→西班牙）在 backfill 生成后修改，导致 4 格不对称（德国/西班牙 area/gdp_province 空，土库曼斯坦/澳大利亚保留过期省份）；互证率 89.1%；脚本以硬编码 PROVINCES 为事实源不读最终省份表 | data/_countries-data.json ↔ data/_provinces-data.json + scripts/provinces-match.py | ⏳ Open（🟢 记录，不阻断） |
+| HG-SEC-027 | 🟢 | 人工复核 3 处省份侧单元格（黑龙江 area 土库曼斯坦→德国 / 上海 pop 布基纳法索→斯里兰卡 / 广东 gdp 澳大利亚→西班牙）在 backfill 生成后修改，导致 4 格不对称（德国/西班牙 area/gdp_province 空，土库曼斯坦/澳大利亚保留过期省份）；互证率 89.1%；脚本以硬编码 PROVINCES 为事实源不读最终省份表 | data/_countries-data.json ↔ data/_provinces-data.json + scripts/provinces-match.py | ✅ Closed（a331ac1，2026-08-24 尾项复核） |
 
 ### Positives
 
@@ -602,7 +602,28 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 | Issue | Title | Severity | Priority | Status |
 |:---|:---|:---:|:---:|:---:|
-| HG-SEC-027 | 复核后未重跑 backfill（4 格不对称） | 🟢 | P3 | ⏳ Open（待确认：接受现状或重跑回填） |
+| HG-SEC-027 | 复核后未重跑 backfill（4 格不对称） | 🟢 | P3 | ✅ Closed（a331ac1 fix backfill 事实源，2026-08-24 尾项复核） |
 
 - 报告: `documents/review/provinces-table-implementation-review-v1.0-20260824.md`
 - 处理: PASS → 授权 push 5 commits（73bc988/f6a3e7c/323771a/7dd1c18/31c8c60）至 github/main
+
+---
+
+## 2026-08-24 — 省份 backfill 尾项复核（HG-SEC-027 关闭）
+
+- **review 者**: Security Reviewer（L2）
+- **Scope**: 未 push 1 commit（`a331ac1` fix@html-gen: backfill countries provinces columns from final provinces data）；用户决策 1B 修复
+- **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 0，HG-SEC-027 关闭）
+
+### Summary
+
+a331ac1 将反向回填事实源从脚本内硬编码 PROVINCES 常量改为读取最终 `data/_provinces-data.json`（含人工复核编辑），关联列按「、」split；独立重跑 backfill vs 提交态 195 国 × 3 列 585 格 **0 差异**。5 字段变化全部符合预期：3 处补全（德国 area_province=黑龙江 / 西班牙 gdp_province=广东 / 斯里兰卡 pop_province=北京、上海）+ 2 处过期残留清除（土库曼斯坦 area_province=四川 / 澳大利亚 gdp_province=江苏）。双向互证率 271/304=89.1% → **274/304=90.1%**，30 个剩余 miss 全部为双侧 top-3 截断（rank 4-8），**0 个非截断/不对称格**，原 4 格不对称全部修复。省份表 `_provinces-data.json` 零改动；生成物 countries-table.html 195 行与 JSON 逐字段 0 差异。专项 26 passed（test_provinces_table 13 + test_countries_table 13）；全量 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy-table 系并发会话重生成 9 列 schema，与本次零交集，不代修不扣分）。commit 仅 3 文件（脚本 +11/-3 / 国家表 JSON / 生成物 1 行），无 WIP 混入。授权 push 1 commit 至 github/main。
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-027 | 复核后未重跑 backfill（4 格不对称） | 🟢 | P3 | ✅ Closed（a331ac1，2026-08-24 尾项复核） |
+
+- 报告: `documents/review/provinces-table-implementation-review-v1.0-20260824.md`（追加「尾项复核 — HG-SEC-027 关闭」章节）
+- 处理: PASS → 授权 push 1 commit（a331ac1）至 github/main

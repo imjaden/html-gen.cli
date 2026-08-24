@@ -254,6 +254,17 @@ review_history:
     verdict: PASS
     score: 100
     findings_total: 1
-    findings_open: 1
-    tracking: HG-SEC-027 (🟢 record; 人工复核后未重跑 backfill → 4 格不对称, 互证率 89.1%)
+    findings_open: 0
+    tracking: HG-SEC-027 (🟢 record; closed 2026-08-24 a331ac1 尾项复核, 互证率 89.1%→90.1%)
+    report: documents/review/provinces-table-implementation-review-v1.0-20260824.md
+  - date: 2026-08-24
+    reviewer: Security Reviewer
+    review_type: implementation-audit-recheck
+    review_level: L2
+    scope: "省份 backfill 尾项复核 — 未 push 1 commit (a331ac1 fix backfill 事实源读最终省份表), HG-SEC-027 close; 用户决策 1B 修复"
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: HG-SEC-027 (closed a331ac1; 互证率 89.1%→90.1%, 30 miss 全为 top-3 截断, 585 格 0 差异)
     report: documents/review/provinces-table-implementation-review-v1.0-20260824.md
