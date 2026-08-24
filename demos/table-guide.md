@@ -166,10 +166,11 @@ html-gen table -h
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [DEMO 案例索引](demos-index.html) | 全站文件清单 · 模板/大小/更新时间 | demos-index.html |
+| [DEMO 案例索引](demos-index.html) | 全量案例索引 · 标题/模板/链接 | demos-index.html |
 | [Hermes Skills 清单](hermes-profile-skills-list.html) | 98 个 Skill · 15 个分类 · 全 Profile | hermes-profile-skills-list.html |
 | [全球国家速查表](countries-table.html) | 国家速查 · 地区/首都/货币 | countries-table.html |
-| [Phase 2-4 全功能演示](table-features-demo.html) | 密度/模态/分栏/展开/过滤/冻结/预设 | table-features-demo.html |
+| [中国省份速查表](provinces-table.html) | 34 省 · 面积/GDP/人口 | provinces-table.html |
+| [表格功能全演示](table-features-demo.html) | 密度/模态/分栏/展开/过滤/冻结/预设 | table-features-demo.html |
 | [操作按钮 demo](table-actions-demo.html) | copyKey/hrefKey/handler 操作列 | table-actions-demo.html |
 
 ---
