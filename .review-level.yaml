@@ -302,3 +302,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-029..036 (closed: 30add19 + c7a5bf0; HG-SEC-030-residual 🟢 record 不阻断)"
     report: documents/review/index-landing-sync-review-v1.0-20260824.md
+  - date: 2026-08-24
+    reviewer: Security Reviewer
+    review_type: commit-range-audit
+    review_level: L2
+    scope: "pages-index skill + demos-index sync 3 commits (7a0f591 docs@skills / a75733f chore@project / 4b06b8d sync@demos-index) — SKILL.md 与 index.html 行为 6/6 一致, demos-index 重建无 JS 错误, 全量 180 passed"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 0
+    tracking: HG-SEC-037 (🟢 record; demos-index 页面无直接测试覆盖, 建议后续纳入)
+    report: documents/review/pages-index-skill-demos-index-sync-review-v1.0-20260824.md
