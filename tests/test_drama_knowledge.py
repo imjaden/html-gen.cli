@@ -240,20 +240,21 @@ class TestDramaKnowledge(unittest.TestCase):
         self.driver.switch_to.frame(self.driver.find_element(By.ID, 'contentFrame'))
         heads = [th.text for th in self.driver.find_elements(By.CSS_SELECTOR, 'thead th')]
         self.assertEqual(heads,
-                         ['序号', '计策名称', '分类', '衍生成语', '历史典故', '典故人物', '剧中事件', '剧中人物'],
+                         ['序号', '计策名称', '分类', '衍生词', '同源意象', '近义词', '反义词',
+                          '历史典故', '典故人物', '剧中事件', '剧中人物'],
                          f"雍正计策表头: {heads}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
         self.assertEqual(len(rows), 26, f"雍正 36计策应 26 行: {len(rows)}")
         first = rows[0].find_elements(By.TAG_NAME, 'td')
         self.assertEqual(first[1].text, '瞒天过海', "首行应为瞒天过海")
-        self.assertEqual(first[3].text, '', "衍生成语与计名相同应空")
-        self.assertIn('薛仁贵', first[4].text, "典故列应含典故人物")
-        self.assertIn('江夏镇', first[6].text, "剧中事件应含江夏镇")
-        # 非 36 计计名：分类用相近计策 + 成语保留
-        sj = next(r for r in rows if r.find_elements(By.TAG_NAME, 'td')[1].text == '杀鸡儆猴')
-        self.assertEqual(sj.find_elements(By.TAG_NAME, 'td')[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text,
-                         '并战计', "杀鸡儆猴应相近于指桑骂槐（并战计）")
-        self.assertEqual(sj.find_elements(By.TAG_NAME, 'td')[3].text, '杀鸡儆猴', "非 36 计成语应保留")
+        self.assertEqual(first[3].text, '掩人耳目', "衍生词应为掩人耳目")
+        self.assertIn('薛仁贵', first[7].text, "历史典故应含薛仁贵")
+        self.assertIn('江夏镇', first[9].text, "剧中事件应含江夏镇")
+        # 指桑骂槐行（并战计 + 同源意象=杀鸡儆猴）
+        zsj = next(r for r in rows if r.find_elements(By.TAG_NAME, 'td')[1].text == '指桑骂槐')
+        self.assertEqual(zsj.find_elements(By.TAG_NAME, 'td')[2].find_elements(By.CSS_SELECTOR, '.cell-pill')[0].text,
+                         '并战计', "指桑骂槐应属并战计")
+        self.assertEqual(zsj.find_elements(By.TAG_NAME, 'td')[4].text, '杀鸡儆猴', "同源意象应含杀鸡儆猴")
         self.driver.switch_to.default_content()
 
     def test_19_overview_iframe_width_wide(self):
