@@ -763,7 +763,7 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - **Scope**: 2c299ce feat@index（hero badges + 安装&快速开始合并行内复制 + 竞品对比卡 + hero-logo + footer favicon + hero 减留白 −55px）/ 8260291 test@index（+3 用例: badges/对比卡/logo, 计数 5→11, hero min-height 语义化）/ aa5bf38 docs@skills（SKILL.md 骨架 + AGENTS.md 双源段 −55）
 - **Verdict**: ✅ **PASS 95/100（A）**
 - **Score**: 95 / 100
-- **Tracking**: HG-SEC-038（🟡 open）/ HG-SEC-039..040（🟢 记录）
+- **Tracking**: HG-SEC-038（🟡 → closed 93993cb）/ HG-SEC-039..040（🟢 → closed 93993cb）
 - **Findings**: 0 🔴 / 1 🟡 / 2 🟢
 
 ### 验证明细
@@ -784,9 +784,9 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 
 | # | Severity | Title | File:Line | Status |
 |:---|:---:|:---|:---|:---:|
-| HG-SEC-038 | 🟡 | PATH 行内复制 `data-copy` 内引号未转义，live DOM 截断为 `export PATH=`（复制得无效命令） | index.html:283 | Open（建议 1 行 `&quot;` 修复 + test_10 补精确值断言） |
-| HG-SEC-039 | 🟢 | test_10 仅断言 data-copy 非空，未覆盖值完整性（截断缺陷未被测试暴露） | tests/test_index_landing.py | 记录 |
-| HG-SEC-040 | 🟢 | SKILL.md badge 示例 3 项 vs 实现 4 项（「3-4」范围可涵盖，非漂移） | skills/pages-index/SKILL.md | 记录 |
+| HG-SEC-038 | 🟡 | PATH 行内复制 `data-copy` 内引号未转义，live DOM 截断为 `export PATH=`（复制得无效命令） | index.html:289 | ✅ RESOLVED（93993cb `&quot;` 转义 + test_10 精确值断言） |
+| HG-SEC-039 | 🟢 | test_10 仅断言 data-copy 非空，未覆盖值完整性（截断缺陷未被测试暴露） | tests/test_index_landing.py | ✅ 已同步（test_10 精确值断言） |
+| HG-SEC-040 | 🟢 | SKILL.md badge 示例 3 项 vs 实现 4 项（「3-4」范围可涵盖，非漂移） | skills/pages-index/SKILL.md | ✅ 已同步（badge 4 项一致） |
 
 ### Positives
 
@@ -797,5 +797,36 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 
 - 报告: `documents/review/html-gen-index-optimize-review-v1.0-20260825.md`
 - 处理: PASS → 授权 push 至 github/main（3 commits + 本轮审计交付物）
+
+---
+
+## 2026-08-25 — HG-SEC-038 修复复查（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (commit-range-audit recheck)
+- **Scope**: 93993cb fix@index（HG-SEC-038 PATH data-copy `&quot;` 转义 + test_10 精确值断言 + SKILL.md badge 4 项同步）
+- **Verdict**: ✅ **PASS 100/100（A）**
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-038..040（closed 93993cb）
+- **Findings**: 0 🔴 / 0 🟡 / 0 🟢
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| 全量测试 | `python3 -m pytest tests/ -q -n 4` → **183 passed in 35.44s**（基线 183，无回归） |
+| PATH data-copy | index.html:289 `data-copy="export PATH=&quot;$HOME/.local/bin:$PATH&quot;"` 转义完整；live DOM `getAttribute('data-copy')` == `export PATH="$HOME/.local/bin:$PATH"`（test_10 精确值断言，截断不再发生） |
+| 类级扫描 | 全页 11 处 data-copy 正则扫描 0 未转义内引号（修复类级，非单点） |
+| 复制全部 | data-copy 6 行含安装 + slide 命令，test_10 断言 `bash install.sh install` 与 `html-gen slide` 均含 |
+| SKILL.md | badge 示例 ⚡ 零依赖 · 🌙 深色主题 · 🇨🇳 中文优先 · 📦 单文件 = 实现 4 项一致 |
+| 提交格式 | `fix@index: subject` ✓ |
+| git 状态 | clean；main 领先 github/main 1（93993cb）+ 本轮审计交付物 |
+
+### Findings
+
+无剩余问题。HG-SEC-038（🟡）/ HG-SEC-039..040（🟢）全部关闭，评分 95 → 100。
+
+- 报告: `documents/review/html-gen-index-optimize-review-v1.0-20260825.md`（§五 复查记录）
+- 处理: PASS → 授权 push（93993cb + 审计交付物）至 github/main
 
 ---
