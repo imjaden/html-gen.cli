@@ -313,3 +313,14 @@ review_history:
     findings_open: 0
     tracking: HG-SEC-037 (🟢 record; demos-index 页面无直接测试覆盖, 建议后续纳入)
     report: documents/review/pages-index-skill-demos-index-sync-review-v1.0-20260824.md
+  - date: 2026-08-25
+    reviewer: Security Reviewer
+    review_type: commit-range-audit
+    review_level: L2
+    scope: "index 落地页优化 3 commits (2c299ce/8260291/aa5bf38) — badges+对比卡+行内复制+favicon+双源 footer; 决策 1A/2自定义/3A/4A/5A/6A; 183 passed (35.85s)"
+    verdict: PASS
+    score: 95
+    findings_total: 3
+    findings_open: 1
+    tracking: HG-SEC-038 (🟡 open) + HG-SEC-039..040 (🟢 records)
+    report: documents/review/html-gen-index-optimize-review-v1.0-20260825.md
