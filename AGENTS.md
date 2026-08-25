@@ -274,7 +274,7 @@ html-gen.cli/
     ├── cloudwise/              # 云智慧内容子页（知识库引用）
     └── drama/                  # 以剧读史内容子页（知识库引用；时间轴 + 36计策，md 源 + html）
 
-> **双源漂移（1C 决策，2026-08-23）**：根 `index.html`（落地页）与 `demos/index.html`（模板展示首页）为**两份独立副本**，非同一文件。改动落地页结构时需同步两处；`demos/index.html` 是 `html-gen demo --rebuild` 的 featured 数据源，根 index.html 不参与。github-corner 模式亦不同：layout 模板层（demo 页）用「pointer-events:none 穿透 + hit 36px」防遮挡右上角工具栏；根落地页无工具栏，用全图标可点 + hover 波浪动画（HG-SEC-014 文档化，2026-08-23）。两页共用主题按钮（right:88px 避让 corner，`html-gen:index_theme` localStorage key）与复制按钮/断点/footer；github-corner 浅色模式用深三角+白 octocat（`--gh-corner-fill`/`--gh-octocat` 变量，`:root.light .github-corner` 覆盖全局 a 链接色）；根页 hero 为**动态两屏**（JS: hero 高 = 视口高−110px，第二屏标题露出首屏底部；scroll-hint fixed 底部、滚动淡出），demos 页无 hero。**防漂移测试**：`tests/test_demos_index.py::test_05_dual_source_consistency` 断言双源关键功能特征一致（2026-08-24）。
+> **双源漂移（1C 决策，2026-08-23）**：根 `index.html`（落地页）与 `demos/index.html`（模板展示首页）为**两份独立副本**，非同一文件。改动落地页结构时需同步两处；`demos/index.html` 是 `html-gen demo --rebuild` 的 featured 数据源，根 index.html 不参与。github-corner 模式亦不同：layout 模板层（demo 页）用「pointer-events:none 穿透 + hit 36px」防遮挡右上角工具栏；根落地页无工具栏，用全图标可点 + hover 波浪动画（HG-SEC-014 文档化，2026-08-23）。两页共用主题按钮（right:88px 避让 corner，`html-gen:index_theme` localStorage key）与复制按钮/断点/footer；github-corner 浅色模式用深三角+白 octocat（`--gh-corner-fill`/`--gh-octocat` 变量，`:root.light .github-corner` 覆盖全局 a 链接色）；根页 hero 为**动态两屏**（JS: hero 高 = 视口高−55px，第二屏标题露出首屏底部；scroll-hint fixed 底部、滚动淡出），demos 页无 hero。**防漂移测试**：`tests/test_demos_index.py::test_05_dual_source_consistency` 断言双源关键功能特征一致（2026-08-24）。
 ```
 
 ## 项目独立性

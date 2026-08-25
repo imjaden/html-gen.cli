@@ -23,17 +23,24 @@ metadata:
   <button class="theme-btn" id="themeBtn" aria-pressed="false">🌙</button>   ← 固定右上角 right:88px 避让 corner
   <a class="github-corner">…SVG…</a>
   <section class="hero">       ← 动态两屏（见下）
-    h1 渐变标题 + tagline + 安装/快速开始 code block + scroll-hint
+    h1 渐变标题(前置品牌圆标 img.hero-logo) + tagline + badges 徽章行 + scroll-hint
+    hero-blocks 2 卡:
+      卡1: ⚡ 安装 & 快速开始（合并, 每条 code-block 行内复制 + block-title "复制全部"）
+      卡2: 🆚 竞品对比（转置表格: 行=维度, 列=工具, 自家列全 ✓ 高亮 .win）
   </section>
   <section class="templates">  ← 产物矩阵: 每产物一张卡
     tpl-head: icon(四色 ia/ib/ic/id) + 名称 + guide 链接 + 文件行数
     tpl-body: scenarios pills + features 列表 + cli-box(带复制) + demos 列表
   </section>
-  <footer class="site-footer">GitHub · Gitee · MIT</footer>
+  <footer class="site-footer">GitHub(favicon) · Gitee(favicon) · MIT</footer>
 </body>
 ```
 
 断点: 4 列 → `@media (max-width:1500px)` 2 列 → `@media (max-width:1100px)` 1 列。
+
+hero 卖点分层: title(品牌) → tagline(一句话定位) → badges(3-4 短徽章: ⚡ 零依赖 · 🌙 深色主题 · 📦 单文件) → blocks(安装/对比)。tagline 已承载卖点时可跳过 badges（避免重复）。
+
+竞品对比卡（转置模式）: 340px 卡片内放不下"工具×维度"正排表，转置为"维度×工具"（6 行维度 × 4 列工具），自家列 `th.hl` + `td.win` 高亮，✓/— 符号，11px 紧凑样式。对比是"为什么选我"最直接说服工具（http-server 实证）。
 
 ## 主题系统
 
@@ -57,7 +64,7 @@ metadata:
 ```js
 function updateHeroHeight() {
   var hero = document.querySelector('.hero');
-  if (hero) hero.style.minHeight = (window.innerHeight - 110) + 'px';  // 110 ≈ 第二屏标题区
+  if (hero) hero.style.minHeight = (window.innerHeight - 55) + 'px';  // 55≈第二屏标题露出高度，按需微调（-55~-110）
 }
 updateHeroHeight();
 window.addEventListener('resize', updateHeroHeight);
@@ -90,6 +97,7 @@ function copyText(text, btn) {
 
 - 按钮 `data-copy` 存原文（不含 `$` prompt），恢复用保存的 orig（勿硬编码 📋，会丢"复制"标签）
 - headless Chrome 兼容: clipboard API 不可用时走 execCommand
+- **行内复制模式**（首屏快速开始区价值最高）: `.code-block` 改 flex + `margin-left:auto` 的 copy-btn；block-title 可留"复制全部"（data-copy 用 `&#10;` 连接多条命令）。层级: 块级"复制全部" + 行级精准复制
 
 ## 双源同步 + 防漂移测试
 
@@ -101,6 +109,10 @@ features = ['id="themeBtn"', 'html-gen:index_theme', 'class="site-footer"',
             'html-gen table -d data.json', ...]
 missing_root = [f for f in features if f not in root]   # 同样查 demos
 ```
+
+## Footer favicon 图标化
+
+平台链接前置 14px favicon: `<img class="favicon" src="https://github.com/favicon.ico" alt="">` + 文本。样式 `.favicon { width:14px; height:14px; vertical-align:-2px; margin-right:5px; }`。前提: 逐个 `curl -sL -o /dev/null -w "%{http_code}" <url>` 验证 200（部分平台 favicon 带 hash 易 404，如 PyPI）。
 
 ## 测试规范
 
