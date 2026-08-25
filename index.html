@@ -18,7 +18,7 @@ html { scroll-behavior: smooth; }
   align-items: center;
   justify-content: center;
   text-align: center;
-  padding: 80px 24px 120px;
+  padding: 80px 24px 70px;
   position: relative;
 }
 .hero-title {
@@ -30,14 +30,31 @@ html { scroll-behavior: smooth; }
   -webkit-background-clip: text;
   background-clip: text;
   color: transparent;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+}
+.hero-logo {
+  height: 0.72em;
+  width: auto;
+  border-radius: 8px;
+  flex-shrink: 0;
 }
 .hero-tagline {
   font-size: 1.05rem;
   color: var(--text-secondary);
   max-width: 760px;
-  margin: 20px auto 44px;
+  margin: 20px auto 18px;
   line-height: 1.8;
 }
+.hero-badges {
+  text-align: center;
+  font-size: 0.82rem;
+  color: var(--text-muted);
+  margin: 0 auto 30px;
+}
+.hero-badges span { margin: 0 7px; white-space: nowrap; }
 .hero-blocks {
   display: flex;
   gap: 20px;
@@ -71,10 +88,14 @@ html { scroll-behavior: smooth; }
   line-height: 1.7;
   color: var(--code-text);
   overflow-x: auto;
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 .code-block + .code-block { margin-top: 8px; }
-.code-block .prompt { color: var(--text-muted); }
+.code-block .prompt { color: var(--text-muted); flex-shrink: 0; }
 .code-block .cmd { color: var(--code-cmd); }
+.code-block .copy-btn { margin-left: auto; flex-shrink: 0; }
 .scroll-hint {
   position: fixed;
   bottom: 24px;
@@ -227,6 +248,24 @@ html { scroll-behavior: smooth; }
 .site-footer a { color: var(--cobalt-400); text-decoration: none; margin: 0 8px; }
 .site-footer a:hover { color: var(--cobalt-300); text-decoration: underline; }
 .site-footer .sep { margin: 0 2px; color: var(--text-faint); }
+.site-footer .favicon { width: 14px; height: 14px; vertical-align: -2px; margin-right: 5px; }
+
+/* ── 竞品对比表（hero 卡 2 内，转置: 行=维度, 列=工具） ── */
+.compare-table {
+  width: 100%; border-collapse: collapse;
+  font-size: 0.72rem; line-height: 1.5;
+}
+.compare-table th, .compare-table td {
+  padding: 3px 4px; text-align: center;
+  border-bottom: 1px solid var(--border-soft);
+  color: var(--text-secondary);
+}
+.compare-table th { font-size: 0.66rem; font-weight: 600; color: var(--text-muted); }
+.compare-table th:first-child, .compare-table td:first-child {
+  text-align: left; color: var(--text-muted); white-space: nowrap;
+}
+.compare-table th.hl, .compare-table td.win { color: var(--cobalt-400); font-weight: 600; }
+.compare-table tr:last-child td { border-bottom: none; }
 @media (max-width: 760px) { .theme-btn { top: 12px; right: 76px; width: 32px; height: 32px; } }
 </style>
 </head>
@@ -240,22 +279,32 @@ html { scroll-behavior: smooth; }
   </svg>
 </a>
 <section class="hero">
-  <h1 class="hero-title">html-gen</h1>
+  <h1 class="hero-title"><img class="hero-logo" src="https://www.jaden.tech/static/img/favicon.png?=20260705" alt="">html-gen</h1>
   <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML · 深色主题 · 中文优先</p>
+  <p class="hero-badges"><span>⚡ 零依赖</span><span>🌙 深色主题</span><span>🇨🇳 中文优先</span><span>📦 单文件输出</span></p>
   <div class="hero-blocks">
     <div class="hero-block">
-      <div class="block-title">⚡ 安装 <button class="copy-btn" data-copy="bash install.sh install&#10;export PATH=&quot;$HOME/.local/bin:$PATH&quot;" aria-label="复制安装命令">📋 复制</button></div>
-      <div class="code-block"><span class="prompt">$</span> <span class="cmd">bash install.sh install</span></div>
-      <div class="code-block"><span class="prompt">$</span> <span class="cmd">export PATH="$HOME/.local/bin:$PATH"</span></div>
+      <div class="block-title">⚡ 安装 & 快速开始 <button class="copy-btn" data-copy="bash install.sh install&#10;export PATH=&quot;$HOME/.local/bin:$PATH&quot;&#10;html-gen doc -i report.md -o report.html --title &quot;标题&quot;&#10;html-gen table -d data.json -o index.html&#10;html-gen knowledge -d data.json -o kb.html&#10;html-gen slide -i slides.md -o slides.html" aria-label="复制全部命令">📋 复制全部</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">bash install.sh install</span><button class="copy-btn" data-copy="bash install.sh install" aria-label="复制命令">📋</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">export PATH="$HOME/.local/bin:$PATH"</span><button class="copy-btn" data-copy="export PATH="$HOME/.local/bin:$PATH"" aria-label="复制命令">📋</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html --title "标题"</span><button class="copy-btn" data-copy="html-gen doc -i report.md -o report.html --title &quot;标题&quot;" aria-label="复制命令">📋</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span><button class="copy-btn" data-copy="html-gen table -d data.json -o index.html" aria-label="复制命令">📋</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span><button class="copy-btn" data-copy="html-gen knowledge -d data.json -o kb.html" aria-label="复制命令">📋</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span><button class="copy-btn" data-copy="html-gen slide -i slides.md -o slides.html" aria-label="复制命令">📋</button></div>
     </div>
     <div class="hero-block">
-      <div class="block-title">🚀 快速开始</div>
-      <div class="code-block">
-        <div><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html --title "标题"</span></div>
-        <div><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span></div>
-        <div><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span></div>
-        <div><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span></div>
-      </div>
+      <div class="block-title">🆚 竞品对比</div>
+      <table class="compare-table">
+        <thead><tr><th></th><th>手写 HTML</th><th>pandoc</th><th>mdbook</th><th class="hl">html-gen</th></tr></thead>
+        <tbody>
+          <tr><td>起始成本</td><td>—</td><td>✓</td><td>✓</td><td class="win">✓</td></tr>
+          <tr><td>模板体系</td><td>—</td><td>—</td><td>—</td><td class="win">✓</td></tr>
+          <tr><td>深色主题</td><td>—</td><td>—</td><td>—</td><td class="win">✓</td></tr>
+          <tr><td>单文件输出</td><td>—</td><td>—</td><td>—</td><td class="win">✓</td></tr>
+          <tr><td>零依赖</td><td>✓</td><td>—</td><td>—</td><td class="win">✓</td></tr>
+          <tr><td>上手速度</td><td>—</td><td>✓</td><td>✓</td><td class="win">✓</td></tr>
+        </tbody>
+      </table>
     </div>
   </div>
   <a href="#templates" class="scroll-hint">↓ 模板说明</a>
@@ -409,8 +458,8 @@ html { scroll-behavior: smooth; }
 <a href="#top" class="back-to-top" aria-label="返回首页">↑</a>
 
 <footer class="site-footer">
-  <a href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener">GitHub</a><span class="sep">·</span>
-  <a href="https://gitee.com/imjaden/html-gen.cli" target="_blank" rel="noopener">Gitee</a><span class="sep">·</span>
+  <a href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener"><img class="favicon" src="https://github.com/favicon.ico" alt="">GitHub</a><span class="sep">·</span>
+  <a href="https://gitee.com/imjaden/html-gen.cli" target="_blank" rel="noopener"><img class="favicon" src="https://gitee.com/favicon.ico" alt="">Gitee</a><span class="sep">·</span>
   MIT License
 </footer>
 
@@ -427,7 +476,7 @@ window.addEventListener('scroll', function () {
 // ── 动态两屏：hero 高度 = 视口高 − 110px（第二屏标题露出首屏底部），resize 时重算 ──
 function updateHeroHeight() {
   var hero = document.querySelector('.hero');
-  if (hero) hero.style.minHeight = (window.innerHeight - 110) + 'px';
+  if (hero) hero.style.minHeight = (window.innerHeight - 55) + 'px';
 }
 updateHeroHeight();
 window.addEventListener('resize', updateHeroHeight);
