@@ -38,7 +38,7 @@ metadata:
 
 断点: 4 列 → `@media (max-width:1500px)` 2 列 → `@media (max-width:1100px)` 1 列。
 
-hero 卖点分层: title(品牌) → tagline(一句话定位) → badges(3-4 短徽章: ⚡ 零依赖 · 🌙 深色主题 · 📦 单文件) → blocks(安装/对比)。tagline 已承载卖点时可跳过 badges（避免重复）。
+hero 卖点分层: title(品牌) → tagline(一句话定位) → badges(3-4 短徽章: ⚡ 零依赖 · 🌙 深色主题 · 🇨🇳 中文优先 · 📦 单文件) → blocks(安装/对比)。tagline 已承载卖点时可跳过 badges（避免重复）。
 
 竞品对比卡（转置模式）: 340px 卡片内放不下"工具×维度"正排表，转置为"维度×工具"（6 行维度 × 4 列工具），自家列 `th.hl` + `td.win` 高亮，✓/— 符号，11px 紧凑样式。对比是"为什么选我"最直接说服工具（http-server 实证）。
 

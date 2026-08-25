@@ -153,11 +153,19 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
             "return document.documentElement.classList.contains('light');"), "再点未恢复深色")
 
     def test_10_copy_buttons(self):
-        """复制按钮: hero 安装&快速开始块(复制全部 1 + 行内 6) + 四卡 cli-box 4 = 11 处, data-copy 非空."""
+        """复制按钮: hero 安装&快速开始块(复制全部 1 + 行内 6) + 四卡 cli-box 4 = 11 处, data-copy 非空且关键命令完整."""
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.copy-btn')
         self.assertEqual(11, len(btns), f"复制按钮数量应为 11: {len(btns)}")
         for b in btns:
             self.assertTrue(b.get_attribute('data-copy'), "data-copy 为空")
+        # HG-SEC-038: 含引号命令必须完整转义（此前 PATH 行被截断为 'export PATH='）
+        path_btn = next(b for b in btns if (b.get_attribute('data-copy') or '').startswith('export PATH'))
+        self.assertEqual('export PATH="$HOME/.local/bin:$PATH"', path_btn.get_attribute('data-copy'),
+                         "PATH 行 data-copy 应完整含引号")
+        all_btn = next(b for b in btns if '复制全部' in (b.text or ''))
+        all_copy = all_btn.get_attribute('data-copy') or ''
+        self.assertIn('bash install.sh install', all_copy, "复制全部缺安装命令")
+        self.assertIn('html-gen slide', all_copy, "复制全部缺 slide 命令")
 
     def test_11_footer_links(self):
         """footer 存在且含 GitHub / Gitee 链接 + favicon 图标."""
