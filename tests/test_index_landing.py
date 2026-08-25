@@ -153,18 +153,21 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
             "return document.documentElement.classList.contains('light');"), "再点未恢复深色")
 
     def test_10_copy_buttons(self):
-        """复制按钮: hero 安装块 1 + 四卡 cli-box 4 = 5 处, data-copy 非空."""
+        """复制按钮: hero 安装&快速开始块(复制全部 1 + 行内 6) + 四卡 cli-box 4 = 11 处, data-copy 非空."""
         btns = self.driver.find_elements(By.CSS_SELECTOR, '.copy-btn')
-        self.assertEqual(5, len(btns), f"复制按钮数量应为 5: {len(btns)}")
+        self.assertEqual(11, len(btns), f"复制按钮数量应为 11: {len(btns)}")
         for b in btns:
             self.assertTrue(b.get_attribute('data-copy'), "data-copy 为空")
 
     def test_11_footer_links(self):
-        """footer 存在且含 GitHub / Gitee 链接."""
+        """footer 存在且含 GitHub / Gitee 链接 + favicon 图标."""
         footer = self.driver.find_element(By.CSS_SELECTOR, 'footer.site-footer')
         hrefs = [a.get_attribute('href') or '' for a in footer.find_elements(By.TAG_NAME, 'a')]
         self.assertTrue(any('github.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 GitHub 链接")
         self.assertTrue(any('gitee.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 Gitee 链接")
+        imgs = [i.get_attribute('src') or '' for i in footer.find_elements(By.CSS_SELECTOR, 'img.favicon')]
+        self.assertEqual(2, len(imgs), f"应有 2 个 favicon 图标: {imgs}")
+        self.assertTrue(all('favicon' in s for s in imgs), f"favicon src 异常: {imgs}")
 
     def test_12_theme_persist(self):
         """浅色偏好 localStorage 持久化: 预置 light 后刷新仍为浅色."""
@@ -177,11 +180,11 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         self.driver.execute_script("localStorage.removeItem('html-gen:index_theme');")
 
     def test_13_hero_dynamic_height(self):
-        """动态两屏: hero 高度 = 视口高 − 110px (JS 计算)."""
+        """动态两屏: hero 高度 ≥ 视口高 − 55px (JS min-height, 内容可更高)."""
         hero_h = self.driver.execute_script("return document.querySelector('.hero').offsetHeight;")
         vh = self.driver.execute_script("return window.innerHeight;")
-        self.assertLessEqual(abs(hero_h - (vh - 110)), 6,
-                             f"hero 高度应为 vh−110: hero={hero_h} vh={vh}")
+        self.assertGreaterEqual(hero_h, vh - 55,
+                                f"hero 高度应 ≥ vh−55: hero={hero_h} vh={vh}")
 
     def test_14_scroll_hint_fixed_and_fade(self):
         """'↓ 模板说明' fixed 定位居首屏底部, 滚动后淡出, 回顶恢复."""
@@ -212,6 +215,33 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         self.assertEqual('rgb(255, 255, 255)', color, f"light 下 octocat 应为白色: {color}")
         btn.click()
         time.sleep(0.2)
+
+    def test_16_hero_badges(self):
+        """hero 特性徽章行存在, 4 项核心卖点."""
+        badges = self.driver.find_elements(By.CSS_SELECTOR, '.hero-badges span')
+        self.assertEqual(4, len(badges), f"badges 应为 4 项: {[b.text for b in badges]}")
+        text = ' '.join(b.text for b in badges)
+        for kw in ['零依赖', '深色主题', '中文优先', '单文件']:
+            self.assertIn(kw, text, f"badges 缺 {kw}")
+
+    def test_17_compare_table(self):
+        """竞品对比卡: 6 维度行, html-gen 列全 ✓ 高亮."""
+        table = self.driver.find_element(By.CSS_SELECTOR, '.compare-table')
+        rows = table.find_elements(By.CSS_SELECTOR, 'tbody tr')
+        self.assertEqual(6, len(rows), f"对比表应 6 行: {len(rows)}")
+        heads = [th.text for th in table.find_elements(By.CSS_SELECTOR, 'thead th')]
+        self.assertEqual(['', '手写 HTML', 'pandoc', 'mdbook', 'html-gen'], heads,
+                         f"对比表头: {heads}")
+        wins = table.find_elements(By.CSS_SELECTOR, 'td.win')
+        self.assertEqual(6, len(wins), f"html-gen 列应全 ✓: {len(wins)}")
+        for w in wins:
+            self.assertEqual('✓', w.text, f"win 单元格应为 ✓: {w.text}")
+
+    def test_18_hero_logo(self):
+        """hero-title 前置品牌图标 (favicon)."""
+        logo = self.driver.find_element(By.CSS_SELECTOR, '.hero-title img.hero-logo')
+        src = logo.get_attribute('src') or ''
+        self.assertIn('favicon', src, f"hero 图标应为 favicon: {src}")
 
 
 if __name__ == '__main__':
