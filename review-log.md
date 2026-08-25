@@ -755,3 +755,47 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 授权 push 至 github/main
 
 ---
+
+## 2026-08-25 — index 落地页优化 3-commit 审计（PASS）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (commit-range-audit)
+- **Scope**: 2c299ce feat@index（hero badges + 安装&快速开始合并行内复制 + 竞品对比卡 + hero-logo + footer favicon + hero 减留白 −55px）/ 8260291 test@index（+3 用例: badges/对比卡/logo, 计数 5→11, hero min-height 语义化）/ aa5bf38 docs@skills（SKILL.md 骨架 + AGENTS.md 双源段 −55）
+- **Verdict**: ✅ **PASS 95/100（A）**
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-038（🟡 open）/ HG-SEC-039..040（🟢 记录）
+- **Findings**: 0 🔴 / 1 🟡 / 2 🟢
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| 全量测试 | `python3 -m pytest tests/ -q -n 4` → **183 passed in 35.85s**（基线 180 + test_16/17/18，无回归） |
+| prompt 输出 | `prompt pages-index --brief` → exit 0，10 章节含新增「Footer favicon 图标化」 |
+| favicon 外链 | jaden.tech / github / gitee 三 URL 全 **200** |
+| 对比卡溢出 | 5 视口实测 scrollWidth==clientWidth，340px 级卡内无溢出/截断（460px 表于 500px 卡 / 404px 于 444px 卡） |
+| hero 动态两屏 | 1400×900 hero 764 ≥ vh−55 ✓；390 宽内容撑高 1140，min-height 语义正确 |
+| hero-logo | 实载 naturalWidth 344，无 JS 错误（全视口 0 SEVERE/ERROR） |
+| 双源同步 | demos footer favicon 已同步，test_05 12 特征双源一致 |
+| 提交格式 | 3/3 `type@scope: subject` |
+| git 状态 | clean |
+
+### Findings
+
+| # | Severity | Title | File:Line | Status |
+|:---|:---:|:---|:---|:---:|
+| HG-SEC-038 | 🟡 | PATH 行内复制 `data-copy` 内引号未转义，live DOM 截断为 `export PATH=`（复制得无效命令） | index.html:283 | Open（建议 1 行 `&quot;` 修复 + test_10 补精确值断言） |
+| HG-SEC-039 | 🟢 | test_10 仅断言 data-copy 非空，未覆盖值完整性（截断缺陷未被测试暴露） | tests/test_index_landing.py | 记录 |
+| HG-SEC-040 | 🟢 | SKILL.md badge 示例 3 项 vs 实现 4 项（「3-4」范围可涵盖，非漂移） | skills/pages-index/SKILL.md | 记录 |
+
+### Positives
+
+- 「复制全部」data-copy 用 `&#10;`/`&quot;` 正确转义，live DOM 实测 6 行命令完整（含换行与引号）
+- 对比卡转置方案（6 维度 × 4 工具）340px 级卡内实测无溢出，http-server 实证成功回哺
+- hero-logo/favicon 外链 3/3 验证 200；img 非可执行资源，无 SRI 需求
+- 新增测试覆盖 badges/对比卡/logo/favicon 四特性，183 全绿
+
+- 报告: `documents/review/html-gen-index-optimize-review-v1.0-20260825.md`
+- 处理: PASS → 授权 push 至 github/main（3 commits + 本轮审计交付物）
+
+---
