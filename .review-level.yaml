@@ -321,6 +321,18 @@ review_history:
     verdict: PASS
     score: 95
     findings_total: 3
-    findings_open: 1
-    tracking: HG-SEC-038 (🟡 open) + HG-SEC-039..040 (🟢 records)
+    findings_open: 0
+    tracking: HG-SEC-038 (🟡 closed 93993cb) + HG-SEC-039..040 (🟢 closed 93993cb)
+    report: documents/review/html-gen-index-optimize-review-v1.0-20260825.md
+    resolved_by: re-review (2026-08-25) — PASS 100/100 (93993cb)
+  - date: 2026-08-25
+    reviewer: Security Reviewer
+    review_type: implementation-audit-recheck
+    review_level: L2
+    scope: "HG-SEC-038 修复复查 — 93993cb fix@index (PATH data-copy &quot; 转义 + test_10 精确值断言 + SKILL.md badge 4 项); 全页 11 处 data-copy 0 未转义内引号; 183 passed (35.44s)"
+    verdict: PASS
+    score: 100
+    findings_total: 3
+    findings_open: 0
+    tracking: HG-SEC-038..040 (closed 93993cb)
     report: documents/review/html-gen-index-optimize-review-v1.0-20260825.md

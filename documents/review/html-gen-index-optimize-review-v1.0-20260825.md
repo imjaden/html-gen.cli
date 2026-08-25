@@ -51,9 +51,9 @@
 
 | ID | Severity | 问题 | 位置 | 状态 |
 |:---|:---:|:---|:---|:---:|
-| HG-SEC-038 | 🟡 | PATH 行内复制按钮 `data-copy` 内引号未转义，live DOM 截断为 `export PATH=` | index.html:283 | Open |
-| HG-SEC-039 | 🟢 | test_10 仅断言 data-copy 非空，未覆盖值完整性（本次截断缺陷未被测试暴露） | tests/test_index_landing.py | 记录 |
-| HG-SEC-040 | 🟢 | SKILL.md badge 示例 3 项 vs 实现 4 项（「3-4」范围可涵盖） | skills/pages-index/SKILL.md | 记录 |
+| HG-SEC-038 | 🟡 | PATH 行内复制按钮 `data-copy` 内引号未转义，live DOM 截断为 `export PATH=` | index.html:289 | ✅ 已修复（93993cb） |
+| HG-SEC-039 | 🟢 | test_10 仅断言 data-copy 非空，未覆盖值完整性（本次截断缺陷未被测试暴露） | tests/test_index_landing.py | ✅ 已同步（test_10 精确值断言） |
+| HG-SEC-040 | 🟢 | SKILL.md badge 示例 3 项 vs 实现 4 项（「3-4」范围可涵盖） | skills/pages-index/SKILL.md | ✅ 已同步（badge 4 项一致） |
 
 ### HG-SEC-038 详情
 
@@ -61,15 +61,26 @@
 - 实测：`button.getAttribute('data-copy')` 返回 `export PATH=`；点击复制得到无效命令
 - 影响：6 个行内复制按钮中 1 个失效（其余 5 个正确转义）；「复制全部」按钮数据完整，可作 workaround；不影响页面其余功能
 - 修复（1 行）：`data-copy="export PATH=&quot;$HOME/.local/bin:$PATH&quot;"`，并建议 test_10 增加精确值断言（HG-SEC-039）
+- ✅ **复查 2026-08-25（93993cb）已修复**：index.html:289 现为 `data-copy="export PATH=&quot;$HOME/.local/bin:$PATH&quot;"`；live DOM 断言 `getAttribute('data-copy')` == `export PATH="$HOME/.local/bin:$PATH"`（test_10 精确值）；「复制全部」含安装 + slide 命令断言齐全；全页 11 处 data-copy 无未转义内引号（正则扫描 0 命中）；SKILL.md badge 示例 4 项与实现一致；全量 183 passed
 
 ## 四、评分
 
 ```
 Base: 100
-🟡 HG-SEC-038 × -5  →  95
+🟡 HG-SEC-038 × -5  →  95（原始审计）
+复查 93993cb 后 🟡 关闭 → 100
 Rating: A（≥85）→ PASS
 ```
 
 ## 五、结论
 
 ✅ **PASS 95/100（A）** — 3 commits 实现完整、测试 183 全绿、双源一致、无安全风险。唯一 🟡 为 PATH 行内复制截断（功能缺陷非安全），建议下次迭代优先修复（1 行 + 补测试断言）。按 1A 协议授权 push 至 github/main。
+
+### 复查记录（2026-08-25 二次）
+
+- 修复 commit: `93993cb fix@index: HG-SEC-038 PATH copy data-copy quote escape + exact value test + skill badge sync`（3 文件，+11/−3）
+- HG-SEC-038 ✅ 关闭：index.html:289 `&quot;` 转义完整，live DOM 精确值断言通过（截断不再发生）
+- HG-SEC-039 ✅ 关闭：test_10 新增 PATH 精确值断言 + 复制全部含安装/slide 命令断言
+- HG-SEC-040 ✅ 关闭：SKILL.md badge 示例 ⚡/🌙/🇨🇳/📦 4 项与实现一致
+- 全量验证：`python3 -m pytest tests/ -q -n 4` → **183 passed in 35.44s**
+- 复查结论：✅ **PASS 100/100（A）** — 0 剩余问题
