@@ -1,4 +1,5 @@
 project: html-gen
+website: https://html-gen.cli.jaden.tech
 profiles:
 - ops
 - review
