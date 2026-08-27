@@ -336,3 +336,26 @@ review_history:
     findings_open: 0
     tracking: HG-SEC-038..040 (closed 93993cb)
     report: documents/review/html-gen-index-optimize-review-v1.0-20260825.md
+  - date: 2026-08-27
+    reviewer: Security Reviewer
+    review_type: commit-range-audit
+    review_level: L2
+    scope: "四模板字体倒挂修复 3 commits (8079a28 feat@templates / 107affc sync@demos / 151a929 test@templates) — 决策 1A/2A/3A/4A/5A; 2 模板 + 25 doc 产物正确; slide-demo.html 变量基座丢失 + 重复 style 块 (SEC-041/042); 185 passed (32.66s)"
+    verdict: CONDITIONAL_PASS
+    score: 80
+    findings_total: 2
+    findings_open: 0
+    tracking: HG-SEC-041 (🔴 closed 8347dd8) + HG-SEC-042 (🟡 closed 8347dd8)
+    report: documents/review/html-gen-typography-review-v1.0-20260827.md
+    resolved_by: re-review (2026-08-27) — PASS 100/100 (8347dd8)
+  - date: 2026-08-27
+    reviewer: Security Reviewer
+    review_type: commit-range-audit-recheck
+    review_level: L2
+    scope: "slide-demo.html 修复复查 — 8347dd8 fix@demos (单 style 块 + style-guide 变量基座恢复); 上轮 HG-SEC-041/042 关闭; 185 passed (33.03s)"
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: HG-SEC-041..042 (closed 8347dd8)
+    report: documents/review/html-gen-typography-review-v1.0-20260827.md

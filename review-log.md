@@ -830,3 +830,91 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 授权 push（93993cb + 审计交付物）至 github/main
 
 ---
+
+## 2026-08-27 — 四模板字体倒挂修复 3-commit 审计（CONDITIONAL PASS 80/B）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (commit-range-audit)
+- **Scope**: 8079a28 feat@templates（doc/slide 容器 font-size 0.88rem + blockquote 紧凑）/ 107affc sync@demos（25 doc 产物重生成 + slide-demo 样式同步）/ 151a929 test@templates（TestDocTypography 2 用例 + AGENTS 185）— 决策 1A/2A/3A/4A/5A
+- **Verdict**: ⚠️ **CONDITIONAL PASS 80/100（B）** — 不 push
+- **Score**: 80 / 100
+- **Tracking**: HG-SEC-041（🔴 未修）/ HG-SEC-042（🟡 未修）
+- **Findings**: 1 🔴 / 1 🟡 / 0 🟢
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| 全量测试 | `python3 -m pytest tests/ -q -n 4` → **185 passed in 32.66s**（基线 183 + 2 新用例） |
+| 模板 | layout-doc/slide 均含 font-size 0.88rem + blockquote 紧凑；callout 特异性覆盖保持 ✓ |
+| doc 产物抽查 | core-products.html 含 0.88rem + 紧凑 blockquote + callout 保留，变量基座完整 ✓ |
+| slide-demo.html | ❌ 变量基座丢失（SEC-041）+ 重复 style 块（SEC-042）— headless Chrome 实测 body bg 透明/text 黑 |
+
+### Findings
+
+| # | Severity | Title | File:Line | Status |
+|:---|:---:|:---|:---|:---:|
+| HG-SEC-041 | 🔴 | slide-demo.html 丢失 `:root { --cobalt-* }` 变量基座，深色主题失效 | demos/slide-demo.html:8-216 | ⏳ OPEN |
+| HG-SEC-042 | 🟡 | 重复 `<style>` 块，旧副本 blockquote 0.75rem/8px 覆盖新紧凑值 | demos/slide-demo.html:330 vs 122 | ⏳ OPEN |
+
+### Positives
+
+- 1A 容器基座方案合理，li 继承统一；h/table/code 显式 rem 不受影响
+- 3A callout 保持正确（高特异性选择器覆盖）
+- 25 doc 产物重生成正确，变量基座完整，无正文意外变化
+- 新测试精确断言 14.08px + blockquote 紧凑
+
+### 根因
+
+107affc 对 slide-demo.html 的「从 layout-slide 提取替换」错误替换了第一个 `<style>` 块的 `:root` 变量基座（应更新第二个 slide 样式块），导致变量丢失 + 重复样式块。
+
+- 报告: `documents/review/html-gen-typography-review-v1.0-20260827.md`
+- 处理: CONDITIONAL PASS → 不 push，修完后通知复查
+
+---
+
+## 2026-08-27 — 四模板字体倒挂修复复查（HG-SEC-041/042 关闭，PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (commit-range-audit recheck)
+- **Scope**: 8347dd8 fix@demos（slide-demo 单 style 块 + style-guide 变量基座恢复）；上轮 CONDITIONAL PASS 80/B 的 2 项 findings 逐一验证
+- **Verdict**: ✅ **PASS 100/100（A）**（2 项完整修复）
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-041..042（closed 8347dd8）
+- **Findings**: 0 🔴 / 0 🟡 / 0 🟢
+
+### Fix Verification
+
+| # | 原严重度 | 修复 | 验证 | 结论 |
+|:--:|:---:|:---|:---|:---:|
+| HG-SEC-041 | 🔴 | 8347dd8 恢复 `:root { --cobalt-* }` 变量基座（style-guide.css 全文 + :root.light + layout-slide 样式合并为单 `<style>` 块） | headless Chrome 实测 --cobalt-500=#6366f1 / --cobalt-400=#818cf8 / --surface-900=#11111b / --font-mono='JetBrains Mono' / body bg=rgb(10,10,20) 深色 / text=rgb(224,224,224) 浅色 | ✅ 已修复 |
+| HG-SEC-042 | 🟡 | 8347dd8 删除重复 `<style>` 块（2→1），blockquote 紧凑值 0.1rem/2px 16px 生效 | `<style>`=1 / `</style>`=1；`.slide-page blockquote { margin: 0.1rem 0; padding: 2px 16px }`（无旧 0.75rem/8px 副本） | ✅ 已修复 |
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| 全量测试 | `python3 -m pytest tests/ -q -n 4` → **185 passed in 33.03s**（无回归） |
+| style 块 | slide-demo.html 恰 1 个 `<style>`（grep 计数 1 开 1 闭） |
+| 变量基座 | --cobalt-50..950 / surface / text / border / code / hero / gh / font / radius 全套 37 定义恢复；:root.light 浅色组完整 |
+| --cobalt-500 | getComputedStyle 计算值 #6366f1 生效 |
+| body | background rgb(10,10,20) 深色（原透明）、color rgb(224,224,224) 浅色（原黑） |
+| slide-page 排版 | font-size 0.88rem + blockquote 紧凑 0.1rem/2px 16px + callout 特异性覆盖保留 |
+| JS 错误 | window.__testErrors = []（加载 + refresh 两轮） |
+| git status | 仅 2 个非范围文件（countries-table.html / history-strategy-table.html，其他 session） |
+
+### Summary
+
+8347dd8 将 slide-demo.html 重建为单 `<style>` 块（style-guide.css 变量基座全文 + :root.light 浅色组 + layout-slide 样式），HG-SEC-041（变量基座丢失）与 HG-SEC-042（重复块覆盖）两项完整修复。headless Chrome 实测变量基座全套生效（--cobalt-500=#6366f1 等），深色主题恢复（body 深底浅字），无 JS 错误；185 tests 全绿无回归。评分 80 → 100。
+
+### Tracking
+
+| Issue | Title | Severity | Priority | Status |
+|:---|:---|:---:|:---:|:---:|
+| HG-SEC-041 | slide-demo.html 丢失 :root 变量基座 | 🔴 | P0 | ✅ Closed (8347dd8) |
+| HG-SEC-042 | 重复 style 块覆盖 blockquote 紧凑值 | 🟡 | P2 | ✅ Closed (8347dd8) |
+
+- 报告: `documents/review/html-gen-typography-review-v1.0-20260827.md`（§六 复查记录）
+- 处理: PASS → 授权 push（8347dd8 + 审计交付物）至 github/main
+
+---
