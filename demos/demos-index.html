@@ -257,6 +257,8 @@ pre code { background: none; padding: 0; }
 /* ── Header bar ── */
 .table-header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
 .table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
+.table-desc { margin:-4px 0 10px; font-size:0.78rem; line-height:1.7; color:#9ca3af; word-break:break-word; }
+.table-desc:empty { display:none; }
 .stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
   background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
 .stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
@@ -293,7 +295,7 @@ pre code { background: none; padding: 0; }
 .ratio-wrap { position:relative; display:inline-block; }
 
 @media print {
-  .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
+  .table-tabs, .table-header, .table-desc, .pager, .toast, .modal-overlay, .qs-overlay,
   .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
   .data-table th, .data-table td { color: #000; border-color: #ccc; }
   .data-table th { background: #f5f5f5; }
@@ -510,6 +512,7 @@ pre code { background: none; padding: 0; }
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
   </div>
 </div>
+<div class="table-desc"></div>
 
 <div class="table-wrap">
   <table class="data-table">

@@ -1,5 +1,5 @@
 """Selenium test: layout-table Phase 2-4 features."""
-import os, sys, time, unittest
+import json, os, subprocess, sys, time, unittest
 from pathlib import Path
 
 from selenium import webdriver
@@ -253,6 +253,85 @@ class TestTableFeatures(unittest.TestCase):
 
         errs = get_errors(self.driver)
         self.assertEqual(len(errs), 0, f"JS errors: {errs}")
+
+    # ── Description (subtitle) ──
+
+    def _gen_table_page(self, data_path, out_path, extra=None):
+        """用 html-gen.py table 生成临时页面并加载到 driver."""
+        cmd = [sys.executable, str(PROJECT / 'html-gen.py'), 'table',
+               '-d', str(data_path), '-o', str(out_path)]
+        if extra:
+            cmd += extra
+        subprocess.run(cmd, check=True, capture_output=True, text=True)
+        self.driver.get('file://' + str(out_path))
+        WebDriverWait(self.driver, 5).until(EC.presence_of_element_located((By.CSS_SELECTOR, '.data-table')))
+        error_collector(self.driver)
+
+    def test_11_description_cli_subtitle(self):
+        """CLI --subtitle → h1 下段落渲染, \n→<br>, HTML 转义."""
+        src = PROJECT / 'data' / '_drama-table-history-strategy.json'
+        tmp = PROJECT / 'tests' / '_tmp_desc_cli.html'
+        try:
+            self._gen_table_page(src, tmp,
+                                 extra=['--subtitle', '第一行\n第二行 <script>x</script>'])
+            desc = self.driver.find_element(By.CSS_SELECTOR, '.table-desc')
+            self.assertIn('第一行', desc.text)
+            self.assertIn('第二行', desc.text)
+            # \n → <br>
+            self.assertEqual(len(desc.find_elements(By.TAG_NAME, 'br')), 1)
+            # script 被转义未执行
+            self.assertEqual(len(desc.find_elements(By.TAG_NAME, 'script')), 0)
+            self.assertEqual(get_errors(self.driver), [])
+        finally:
+            tmp.unlink(missing_ok=True)
+
+    def test_12_description_empty_hidden(self):
+        """无 subtitle → .table-desc 空且 display:none."""
+        src = PROJECT / 'data' / '_drama-table-history-strategy.json'
+        tmp = PROJECT / 'tests' / '_tmp_desc_empty.html'
+        try:
+            self._gen_table_page(src, tmp)
+            desc = self.driver.find_element(By.CSS_SELECTOR, '.table-desc')
+            self.assertEqual(desc.text, '')
+            self.assertFalse(desc.is_displayed())
+            self.assertEqual(get_errors(self.driver), [])
+        finally:
+            tmp.unlink(missing_ok=True)
+
+    def test_13_description_json_meta_and_override(self):
+        """JSON 顶层 title/subtitle 兜底; CLI 显式入参覆盖; --subtitle "" 清空."""
+        src = PROJECT / 'data' / '_drama-table-history-strategy.json'
+        meta = PROJECT / 'tests' / '_tmp_desc_meta.json'
+        tmp = PROJECT / 'tests' / '_tmp_desc_meta.html'
+        try:
+            with open(src, encoding='utf-8') as f:
+                d = json.load(f)
+            d['title'] = 'JSON标题'
+            d['subtitle'] = 'JSON副标题\n第二行'
+            with open(meta, 'w', encoding='utf-8') as f:
+                json.dump(d, f, ensure_ascii=False)
+            # 无 CLI 参数 → 用 JSON 值
+            self._gen_table_page(meta, tmp)
+            h1 = self.driver.find_element(By.CSS_SELECTOR, '.table-header h1')
+            self.assertEqual(h1.text, 'JSON标题')
+            desc = self.driver.find_element(By.CSS_SELECTOR, '.table-desc')
+            self.assertIn('JSON副标题', desc.text)
+            self.assertEqual(len(desc.find_elements(By.TAG_NAME, 'br')), 1)
+            # CLI 覆盖 JSON
+            self._gen_table_page(meta, tmp,
+                                 extra=['--title', 'CLI标题', '--subtitle', 'CLI覆盖'])
+            h1 = self.driver.find_element(By.CSS_SELECTOR, '.table-header h1')
+            self.assertEqual(h1.text, 'CLI标题')
+            desc = self.driver.find_element(By.CSS_SELECTOR, '.table-desc')
+            self.assertEqual(desc.text, 'CLI覆盖')
+            # CLI 空串清空
+            self._gen_table_page(meta, tmp, extra=['--subtitle', ''])
+            desc = self.driver.find_element(By.CSS_SELECTOR, '.table-desc')
+            self.assertEqual(desc.text, '')
+            self.assertFalse(desc.is_displayed())
+        finally:
+            meta.unlink(missing_ok=True)
+            tmp.unlink(missing_ok=True)
 
 
 if __name__ == '__main__':
