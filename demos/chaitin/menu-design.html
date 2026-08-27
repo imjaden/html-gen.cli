@@ -30,6 +30,19 @@
   --surface-850: #181825;
   --surface-900: #11111b;
   --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius-sm: 4px;
@@ -39,17 +52,51 @@
   --radius-full: 9999px;
 }
 
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-sans);
   background: var(--surface-950);
-  color: #e0e0e0;
+  color: var(--text-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
-h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
 h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
 p  { margin-bottom: 0.6rem; }
 a { color: var(--cobalt-400); text-decoration: none; }
@@ -267,7 +314,7 @@ body.show-toolbar .top-toolbar { display: flex; }
 /* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
 .meta-path { display: none; }
 body.show-md .meta-path { display: inline; }
-.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; }
+.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
 /* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
 body.width-narrow .doc-body { max-width: 720px; }
 body.width-wide .doc-body { max-width: 1280px; }
@@ -293,7 +340,7 @@ body.width-wide .doc-body { max-width: 1280px; }
 .copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }
 pre:hover .copy-btn { opacity: 1; }
 .copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
-.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.75rem 0; padding: 8px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
 .doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
 .doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
 .doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
@@ -439,7 +486,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>公司商业分析 · 纵/横菜单设计方案</h1>
-      <div class="meta">创建: 2026-08-19 15:09 · 编辑: 2026-07-11 11:57<br>字数: 641 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>chaitin/menu-design.md</code></span></div>
+      <div class="meta">创建: 2026-08-24 16:03 · 编辑: 2026-07-11 11:57<br>字数: 641 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>menu-design.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><blockquote>基于长亭科技（Chaitin Tech）的数据梳理，设计适用于公司业务分析的 C 型知识库导航体系。</blockquote>
 <hr>
