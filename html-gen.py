@@ -11,7 +11,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 
 版本: 3.1(2026-07-23)
 """
-import json, re, sys, os, argparse, types
+import html, json, re, sys, os, argparse, types
 from pathlib import Path
 
 SKILLS_DIR = Path(__file__).resolve().parent
@@ -343,8 +343,10 @@ def cmd_table(args):
         columns = [{'key': k, 'label': k, 'sortable': True} for k in (data[0] if data else {}).keys()]
         tabs = []
         options = {}
+        json_title = None
+        json_subtitle = None
     else:
-        # Structured object: {columns?, data?, rows?, tabs?, options?}
+        # Structured object: {columns?, data?, rows?, tabs?, options?, title?, subtitle?}
         data = raw.get('data') or raw.get('rows') or []
         if 'columns' in raw:
             columns = raw['columns']
@@ -352,9 +354,20 @@ def cmd_table(args):
             columns = [{'key': k, 'label': k, 'sortable': True} for k in (data[0] if data else {}).keys()]
         tabs = raw.get('tabs', [])
         options = raw.get('options', {})
+        json_title = raw.get('title')
+        json_subtitle = raw.get('subtitle')
+
+    # title/subtitle 优先级: CLI 显式入参 > JSON 顶层字段 > 默认值
+    title = args.title if args.title is not None else (json_title or '数据表格')
+    if args.subtitle is not None:
+        subtitle = args.subtitle  # 显式传入（含空串）→ 覆盖 JSON
+    else:
+        subtitle = json_subtitle or ''
+    # 段落描述: 纯文本安全转义, \n → <br> 换行
+    description = html.escape(subtitle, quote=False).replace('\n', '<br>')
 
     tmpl = inline_style(read_template(TEMPLATE_TABLE))
-    result = inject(tmpl, title=args.title or '数据表格',
+    result = inject(tmpl, title=title, description=description,
                     columns=json.dumps(columns, ensure_ascii=False),
                     data=json.dumps(data, ensure_ascii=False),
                     tabs=json.dumps(tabs, ensure_ascii=False),
@@ -651,7 +664,8 @@ def main():
 
     t = sub.add_parser('table', help='JSON → A 型数据表格')
     t.add_argument('-d', '--data', required=True)
-    t.add_argument('--title', default='数据表格')
+    t.add_argument('--title')  # 优先级: CLI > JSON 顶层 title > '数据表格'
+    t.add_argument('--subtitle', help='页面级段落描述(纯文本, \\n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空')
     t.add_argument('-o', '--output', default='index.html')
 
     k = sub.add_parser('knowledge', help='JSON → C 型知识库')
@@ -865,6 +879,7 @@ def cmd_demo(args):
         idx_file = DATA_DIR / '_demos-data.json'
         idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',
+                                  subtitle=None,
                                   output=str(DEMOS_DIR / 'demos-index.html'))
         cmd_table(a)
         print(f"📇 索引重建: {len(idx_rows)} 独立案例 → demos-index.html")
