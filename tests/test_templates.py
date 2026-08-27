@@ -308,5 +308,51 @@ class TestDocShowMd(unittest.TestCase):
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
 
+class TestDocTypography(unittest.TestCase):
+    """Selenium: doc 正文排版 — li 字体与 p 一致 (容器基座 0.88rem) + blockquote 紧凑."""
+
+    @classmethod
+    def setUpClass(cls):
+        opts = Options()
+        opts.add_argument('--headless')
+        opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-dev-shm-usage')
+        cls.driver = webdriver.Chrome(
+            service=Service(CHROMEDRIVER), options=opts)
+        cls.page = DEMOS / 'markdown-spec.html'  # 含 p/li/blockquote 的真实产物
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()
+
+    def setUp(self):
+        self.driver.set_window_size(1400, 900)
+        self.driver.get('file://' + str(self.page))
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
+        errs = [e for e in self.driver.get_log('browser') if e['level'] in ('SEVERE', 'ERROR')]
+        self.assertEqual([], [e['message'][:120] for e in errs], "加载后出现 JS 错误")
+
+    def test_01_li_font_matches_p(self):
+        """li 与 p 计算字体一致 (容器 font-size: 0.88rem 基座)."""
+        p_size = self.driver.execute_script(
+            "return getComputedStyle(document.querySelector('.doc-body p')).fontSize;")
+        li_size = self.driver.execute_script(
+            "return getComputedStyle(document.querySelector('.doc-body li')).fontSize;")
+        self.assertEqual(p_size, li_size,
+                         f"li 字体应等于 p ({p_size}): li={li_size}")
+        self.assertEqual('14.08px', p_size, f"p 字体应为 0.88rem: {p_size}")
+
+    def test_02_blockquote_compact(self):
+        """普通 blockquote 上下间距紧凑 (margin 0.1rem / padding 2px)."""
+        mt = self.driver.execute_script(
+            "var b = document.querySelector('.doc-body blockquote'); return b ? parseFloat(getComputedStyle(b).marginTop) : null;")
+        self.assertIsNotNone(mt, "应有 blockquote")
+        self.assertLess(mt, 5, f"blockquote margin-top 应紧凑: {mt}")
+        pt = self.driver.execute_script(
+            "var b = document.querySelector('.doc-body blockquote'); return b ? parseFloat(getComputedStyle(b).paddingTop) : null;")
+        self.assertLess(pt, 4, f"blockquote padding-top 应小: {pt}")
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

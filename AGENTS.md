@@ -218,7 +218,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 180 tests（20 文件；测试文件：test_drama_knowledge 16 / test_templates 16 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 15 / test_table_features 11 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 185 tests（20 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 11 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -243,7 +243,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (180 tests)
+├── tests/                      # Selenium + 回归测试 (185 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md
