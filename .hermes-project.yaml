@@ -19,5 +19,5 @@ sessions:
   title: html-gen-demo
 handoff:
   enabled: true
-  doc: documents/handoff/handoff-html-gen-ops.md
-  updated_at: '2026-08-24'
+  doc: documents/handoff/handoff-html-gen.cli-ops.md
+  updated_at: '2026-08-27'
