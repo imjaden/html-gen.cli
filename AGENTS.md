@@ -31,7 +31,9 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]
 
 # table — JSON 转 A 型数据表格
-html-gen table -d data.json [--title "标题"] [-o index.html]
+html-gen table -d data.json [--title "标题"] [--subtitle "段落描述"] [-o index.html]
+#   --title    优先级: CLI > JSON 顶层 title > "数据表格"
+#   --subtitle 页面级段落描述(纯文本, \n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空
 
 # knowledge — JSON 转 C 型知识库
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
@@ -70,6 +72,7 @@ html-gen help demo
 - 代码复制（剪贴板 + fallback）、行号、Callout 提示框、阅读进度条、图片灯箱
 
 ### layout-table.html（A 型表格）
+- **页面级段落描述**：`--subtitle` / JSON 顶层 `subtitle`（优先级 CLI > JSON），h1 下方段落区，纯文本安全转义 + `\n` → `<br>`，显式传空串清空；无 subtitle 不渲染
 - **Cinema 纪律化宽度模型**：`table-layout:fixed`，每列强制显式 width（默认 120px，actions 100px），无 colgroup，td `max-width:0` 强制截断
 - 实时搜索（300ms debounce）+ Cmd+F Spotlight 弹窗搜索
 - 多字段排序（Shift+点击二级排序），数字/中文 locale 排序
@@ -135,6 +138,8 @@ html-gen help demo
 **结构化格式**（v2.0 新增）：
 ```json
 {
+  "title": "项目速查表",          // 可选，页面标题（默认 "数据表格"，CLI --title 覆盖）
+  "subtitle": "共 N 条记录\n按需换行", // 可选，h1 下方段落描述（CLI --subtitle 覆盖，显式传空串清空）
   "columns": [
     {"key": "name", "label": "项目", "sortable": true, "locale": "zh"},
     {"key": "stars", "label": "Stars", "type": "number"},
@@ -218,7 +223,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 185 tests（20 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 11 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 188 tests（20 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -243,7 +248,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (185 tests)
+├── tests/                      # Selenium + 回归测试 (188 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md

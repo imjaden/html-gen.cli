@@ -149,12 +149,120 @@ open index.html
 ]
 ```
 
+### 数据源维护指南
+
+#### 数据源与产物的关系
+
+**数据 JSON 是唯一事实源，生成的 HTML 是产物**：
+
+- 源：`data/_drama-table-*.json`（结构化格式：`columns` + `data` + 可选 `tabs`/`options`/`title`/`subtitle`）
+- 产物：`demos/drama/*.html`（`html-gen table` 生成）
+- **永不手改产物 HTML**：直接改 `const COLUMNS` / `const DATA` 会在下次重新生成时被静默覆盖，且源 JSON 保持旧值 → 双源漂移
+
+映射链：`layout-table.html` 的 `<!--COLUMNS-->` 占位符 ← `html-gen.py` 注入 `json.dumps(columns)` ← 数据 JSON 的 `columns` 数组。
+
+#### const COLUMNS 如何修改
+
+HTML 里的 `const COLUMNS` 与数据 JSON 的 `columns` 数组一一对应，每个对象是一个列定义。**改列 = 改 JSON 的 columns 数组 + 重新生成**：
+
+```json
+{
+  "columns": [
+    { "key": "strategy", "label": "计名", "sortable": true, "locale": "zh",
+      "width": "90px", "freeze": true, "preview": true, "onCellClick": "split" }
+  ],
+  "data": [
+    { "strategy": "瞒天过海", "category": "胜战计" }
+  ]
+}
+```
+
+列属性速查（对应 COLUMNS 元素属性）：
+
+| 字段 | 说明 |
+|:---|:---|
+| `key` | 必填，列标识，与 `data` 行内字段名一致 |
+| `label` | 表头显示名 |
+| `type` | `string`（默认）/ `number` / `pills` / `actions` |
+| `sortable` | 是否可排序（默认 true） |
+| `locale` | 排序 locale，如 `"zh"` 中文排序 |
+| `width` | 必填（影院宽度模型，默认 fallback 120px） |
+| `freeze` | sticky 冻结列 |
+| `stickyRight` | 右侧固定列 |
+| `preview` | 分栏模式是否显示 |
+| `hide` | 永远隐藏（数据保留） |
+| `initialHidden` | 表格默认隐藏，仅预览可见 |
+| `splitFull` | 分栏预览整行宽 + `\n` 转 `<br>`（多行文本用这个） |
+| `onCellClick` | `"split"` 点击单元格直接开分栏 |
+| `quickFilter` / `pillFilter` | 点击筛选相关 |
+
+#### 字段操作三路径
+
+**修改字段内容**：改 `data` 数组 → 目标行对象 → 对应 key 的值 → 重新生成。
+
+**添加字段（新增一列）**：
+1. `columns` 数组 push 一个对象（必给 `key`/`label`/`width`，按需 `preview`/`initialHidden`/`splitFull`）
+2. `data` 数组**每一行**都要补该 key（缺失渲染空单元格）
+3. 重新生成
+
+**添加字段（新增一行）**：`data` 数组 push 一个包含所有 columns key 的对象。
+
+**删除字段（删一列）**：
+- 彻底删：`columns` 移除定义 + 所有行删除该 key → 重新生成
+- 保留数据仅隐藏：列上加 `"hide": true`，可逆
+
+**删除字段（删一行）**：`data` 数组移除该对象。
+
+#### 页面级描述（title / subtitle）
+
+table 模板支持 h1 下方段落式描述（`--subtitle`，纯文本安全转义，`\n` → `<br>` 换行）。取值优先级：**CLI 显式入参 > JSON 顶层字段 > 默认值**。
+
+```json
+{
+  "title": "中国历史 · 三十六计",
+  "subtitle": "第一行\n第二行",
+  "columns": [],
+  "data": []
+}
+```
+
+- CLI 传 `--subtitle` 覆盖 JSON；传 `--subtitle ""` 清空描述
+- 简单数组格式（纯数组）无法内嵌元数据，仅 CLI 可传
+- 无 subtitle 时描述区不渲染，输出与旧版一致
+
+#### 生成 / 验证 / 提交纪律
+
+```shell
+# 重新生成（title 必须与现 <title> 一致，否则标题漂移）
+html-gen table -d data/_drama-table-history-strategy.json \
+  --title "中国历史 · 三十六计" --subtitle "..." \
+  -o demos/drama/history-strategy-table.html
+
+# 验证（定向或全量）
+python3 -m pytest tests/test_history_tables.py -q -n 0
+python3 -m pytest tests/ -q -n 4
+
+# 提交（数据 + 产物成对）
+git add data/_drama-table-history-strategy.json demos/drama/history-strategy-table.html
+git commit -m "data@drama: ..."
+```
+
+#### 案例：多行字段内容（借刀杀人 event）
+
+历史教训：某次直接修改了产物 `demos/drama/history-strategy-table.html` 里 `const DATA` 的 `event` 字段（借刀杀人 → "计策演变 + 经典案例"多行长文本），源 JSON 未同步。后果：下次重新生成会覆盖手改内容；源 JSON 保持旧值 → 双源漂移。
+
+正确路径：
+1. 把长文本写入 `data/_drama-table-history-strategy.json` 借刀杀人行的 `"event"`（JSON 内换行用 `\n` 转义）
+2. 该列加 `"splitFull": true`（分栏预览才把 `\n` 转 `<br>`，否则多行文本折叠成一行）
+3. 重新生成 + 跑测试 + 成对提交
+
 ### 命令行参数
 
 ```
 html-gen table -h
   -d, --data PATH    JSON 数据文件（必需）
-  --title TEXT       页面标题（默认: "数据表格"）
+  --title TEXT       页面标题（优先级: CLI > JSON 顶层 title > "数据表格"）
+  --subtitle TEXT    页面级段落描述（纯文本, \n 换行; JSON 顶层 subtitle 兜底, 显式传空串清空）
   -o, --output FILE  输出 HTML 路径（默认: index.html）
 ```
 

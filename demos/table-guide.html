@@ -486,7 +486,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>A 型 · 数据表格方案</h1>
-      <div class="meta">创建: 2026-08-24 16:36 · 编辑: 2026-08-24 16:36<br>字数: 891 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>table-guide.md</code></span></div>
+      <div class="meta">创建: 2026-08-27 22:36 · 编辑: 2026-08-27 22:36<br>字数: 1,305 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>table-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
@@ -848,10 +848,142 @@ open index.html</code></pre>
     "最后提交": "2026-07-06"
   }
 ]</code></pre>
+<h3 id="数据源维护指南">数据源维护指南</h3>
+<h4 id="数据源与产物的关系">数据源与产物的关系</h4>
+<p><strong>数据 JSON 是唯一事实源，生成的 HTML 是产物</strong>：</p>
+<ul>
+<li>源：<code>data/_drama-table-*.json</code>（结构化格式：<code>columns</code> + <code>data</code> + 可选 <code>tabs</code>/<code>options</code>/<code>title</code>/<code>subtitle</code>）</li>
+<li>产物：<code>demos/drama/*.html</code>（<code>html-gen table</code> 生成）</li>
+<li><strong>永不手改产物 HTML</strong>：直接改 <code>const COLUMNS</code> / <code>const DATA</code> 会在下次重新生成时被静默覆盖，且源 JSON 保持旧值 → 双源漂移</li>
+</ul>
+<p>映射链：<code>layout-table.html</code> 的 <code>&lt;!--COLUMNS--&gt;</code> 占位符 ← <code>html-gen.py</code> 注入 <code>json.dumps(columns)</code> ← 数据 JSON 的 <code>columns</code> 数组。</p>
+<h4 id="const-columns-如何修改">const COLUMNS 如何修改</h4>
+<p>HTML 里的 <code>const COLUMNS</code> 与数据 JSON 的 <code>columns</code> 数组一一对应，每个对象是一个列定义。<strong>改列 = 改 JSON 的 columns 数组 + 重新生成</strong>：</p>
+<pre><code class="language-json">{
+  "columns": [
+    { "key": "strategy", "label": "计名", "sortable": true, "locale": "zh",
+      "width": "90px", "freeze": true, "preview": true, "onCellClick": "split" }
+  ],
+  "data": [
+    { "strategy": "瞒天过海", "category": "胜战计" }
+  ]
+}</code></pre>
+<p>列属性速查（对应 COLUMNS 元素属性）：</p>
+<table><thead><tr>
+<th>字段</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>key</code></td>
+<td>必填，列标识，与 <code>data</code> 行内字段名一致</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>表头显示名</td>
+</tr>
+<tr>
+<td><code>type</code></td>
+<td><code>string</code>（默认）/ <code>number</code> / <code>pills</code> / <code>actions</code></td>
+</tr>
+<tr>
+<td><code>sortable</code></td>
+<td>是否可排序（默认 true）</td>
+</tr>
+<tr>
+<td><code>locale</code></td>
+<td>排序 locale，如 <code>"zh"</code> 中文排序</td>
+</tr>
+<tr>
+<td><code>width</code></td>
+<td>必填（影院宽度模型，默认 fallback 120px）</td>
+</tr>
+<tr>
+<td><code>freeze</code></td>
+<td>sticky 冻结列</td>
+</tr>
+<tr>
+<td><code>stickyRight</code></td>
+<td>右侧固定列</td>
+</tr>
+<tr>
+<td><code>preview</code></td>
+<td>分栏模式是否显示</td>
+</tr>
+<tr>
+<td><code>hide</code></td>
+<td>永远隐藏（数据保留）</td>
+</tr>
+<tr>
+<td><code>initialHidden</code></td>
+<td>表格默认隐藏，仅预览可见</td>
+</tr>
+<tr>
+<td><code>splitFull</code></td>
+<td>分栏预览整行宽 + <code>\n</code> 转 <code><br></code>（多行文本用这个）</td>
+</tr>
+<tr>
+<td><code>onCellClick</code></td>
+<td><code>"split"</code> 点击单元格直接开分栏</td>
+</tr>
+<tr>
+<td><code>quickFilter</code> / <code>pillFilter</code></td>
+<td>点击筛选相关</td>
+</tr>
+</tbody></table>
+<h4 id="字段操作三路径">字段操作三路径</h4>
+<p><strong>修改字段内容</strong>：改 <code>data</code> 数组 → 目标行对象 → 对应 key 的值 → 重新生成。</p>
+<p><strong>添加字段（新增一列）</strong>：</p>
+<ul>
+<li><code>columns</code> 数组 push 一个对象（必给 <code>key</code>/<code>label</code>/<code>width</code>，按需 <code>preview</code>/<code>initialHidden</code>/<code>splitFull</code>）</li>
+<li><code>data</code> 数组<strong>每一行</strong>都要补该 key（缺失渲染空单元格）</li>
+<li>重新生成</li>
+</ul>
+<p><strong>添加字段（新增一行）</strong>：<code>data</code> 数组 push 一个包含所有 columns key 的对象。</p>
+<p><strong>删除字段（删一列）</strong>：</p>
+<ul>
+<li>彻底删：<code>columns</code> 移除定义 + 所有行删除该 key → 重新生成</li>
+<li>保留数据仅隐藏：列上加 <code>"hide": true</code>，可逆</li>
+</ul>
+<p><strong>删除字段（删一行）</strong>：<code>data</code> 数组移除该对象。</p>
+<h4 id="页面级描述-title-subtitle">页面级描述（title / subtitle）</h4>
+<p>table 模板支持 h1 下方段落式描述（<code>--subtitle</code>，纯文本安全转义，<code>\n</code> → <code>&lt;br&gt;</code> 换行）。取值优先级：<strong>CLI 显式入参 &gt; JSON 顶层字段 &gt; 默认值</strong>。</p>
+<pre><code class="language-json">{
+  "title": "中国历史 · 三十六计",
+  "subtitle": "第一行\n第二行",
+  "columns": [],
+  "data": []
+}</code></pre>
+<ul>
+<li>CLI 传 <code>--subtitle</code> 覆盖 JSON；传 <code>--subtitle ""</code> 清空描述</li>
+<li>简单数组格式（纯数组）无法内嵌元数据，仅 CLI 可传</li>
+<li>无 subtitle 时描述区不渲染，输出与旧版一致</li>
+</ul>
+<h4 id="生成-验证-提交纪律">生成 / 验证 / 提交纪律</h4>
+<pre><code class="language-shell"># 重新生成（title 必须与现 &lt;title&gt; 一致，否则标题漂移）
+html-gen table -d data/_drama-table-history-strategy.json \
+  --title "中国历史 · 三十六计" --subtitle "..." \
+  -o demos/drama/history-strategy-table.html
+
+# 验证（定向或全量）
+python3 -m pytest tests/test_history_tables.py -q -n 0
+python3 -m pytest tests/ -q -n 4
+
+# 提交（数据 + 产物成对）
+git add data/_drama-table-history-strategy.json demos/drama/history-strategy-table.html
+git commit -m "data@drama: ..."</code></pre>
+<h4 id="案例-多行字段内容-借刀杀人-event">案例：多行字段内容（借刀杀人 event）</h4>
+<p>历史教训：某次直接修改了产物 <code>demos/drama/history-strategy-table.html</code> 里 <code>const DATA</code> 的 <code>event</code> 字段（借刀杀人 → "计策演变 + 经典案例"多行长文本），源 JSON 未同步。后果：下次重新生成会覆盖手改内容；源 JSON 保持旧值 → 双源漂移。</p>
+<p>正确路径：</p>
+<ul>
+<li>把长文本写入 <code>data/_drama-table-history-strategy.json</code> 借刀杀人行的 <code>"event"</code>（JSON 内换行用 <code>\n</code> 转义）</li>
+<li>该列加 <code>"splitFull": true</code>（分栏预览才把 <code>\n</code> 转 <code>&lt;br&gt;</code>，否则多行文本折叠成一行）</li>
+<li>重新生成 + 跑测试 + 成对提交</li>
+</ul>
 <h3 id="命令行参数">命令行参数</h3>
 <pre><code class="language-">html-gen table -h
   -d, --data PATH    JSON 数据文件（必需）
-  --title TEXT       页面标题（默认: "数据表格"）
+  --title TEXT       页面标题（优先级: CLI &gt; JSON 顶层 title &gt; "数据表格"）
+  --subtitle TEXT    页面级段落描述（纯文本, \n 换行; JSON 顶层 subtitle 兜底, 显式传空串清空）
   -o, --output FILE  输出 HTML 路径（默认: index.html）</code></pre>
 <hr>
 <h2 id="模板案例">模板案例</h2>
