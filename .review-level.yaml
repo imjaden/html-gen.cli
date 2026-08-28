@@ -381,3 +381,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-043..045 (closed v1.1) + HG-SEC-046..052 (OBS, closed v1.1) + N1 (🟡 §8.7 用例数 6→8, closed v1.1 dev prompt)"
     report: documents/review/table-videos-design-rereview-v1.1-20260828.md
+  - date: 2026-08-28
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "HTML-GEN-CL001 table videos 实施审计 — 7 commits (45bf232 feat@table / a42331e sync@demos / a9e30fa test@table / 18199be fix@tests / 2b3c997+a3f783e docs@table / 6b8a4c1 fix@data); 验收 §8 7/7 + 设计合规 4/4 + 安全 + 治理; 196 passed"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 0
+    tracking: "HG-SEC-053 (🟢 record; countries 巴西行 videos 无提交级回归断言, 建议后续补 test_15)"
+    report: documents/review/table-videos-impl-audit-v1.1-20260828.md
