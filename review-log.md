@@ -1007,3 +1007,58 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 生成 dev 实施 prompt（`cache/review-prep/prompt-table-videos-dev-20260828.md`）转 dev；实施完成后 ops 核查 → review 实施审计 → push
 
 ---
+
+## 2026-08-28 — table videos 字段实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: HTML-GEN-CL001 实施链 7 commits（45bf232 feat@table videos column type / a42331e sync@demos countries videos + 巴西 douyin / a9e30fa test@table 8 selenium cases / 18199be fix@tests 漂移断言同步 / 2b3c997 docs@table features+AGENTS / a3f783e docs@table §8.7 N1 fix / 6b8a4c1 fix@data 巴西长标题 + 重生成）— 设计 v1.1（99cede3）+ 评审 PASS 95/A（2a49d6e）
+- **Verdict**: ✅ **PASS 100/100（A）** — 闭环，转 push
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-053（🟢 record；countries 巴西行 videos 无提交级回归断言，建议后续补 test_15）
+- **Findings**: 0 🔴 / 0 🟡 / 1 🟢
+
+### 验收清单 §8 核对（7/7）
+
+| # | 验收项 | 证据 | 结果 |
+|:-:|:---|:---|:---:|
+| 1 | pill 渲染（图标+标题+时长） | test_01 `🎵 巴西建国史 (8:37)`；countries 实载 `🎵 每天了解一个国家，巴西 (3:22)` | ✅ |
+| 2 | maxShow 折叠 +N 展开（不折叠回/re-render 重置/stopPropagation） | test_02：+1 点击 → 3 pill 全显、+N 消失；搜索重渲染回折叠态；expandVideos onclick 带 stopPropagation | ✅ |
+| 3 | 点击新标签页 noopener,noreferrer + onclick 转义 | test_03 拦截 window.open 断言 (url,_blank,noopener,noreferrer)；JSON.stringify+&quot; 转义两处沿用 | ✅ |
+| 4 | 平台图标映射 + 归一化 trim().toLowerCase() | test_04 douyin→🎵/其他→📹/抖音→🎵/YouTube→▶️/bilibili→📺 | ✅ |
+| 5 | 空/缺失 videos → 空单元格 | test_05 无字段 + [] 均空 | ✅ |
+| 6 | countries 巴西行 2 douyin 可见（长标题完整） | Selenium 实载：2 pill `🎵 巴西建国史——巴西如何从创业成功走向贫穷漩涡 (8:37)` 可见；grep 生成 HTML 双 title/双 url 命中 | ✅ |
+| 7 | test_videos 8 用例 + 回归全绿 | 定向 21 passed（8+13）；全量 **196 passed in 35.33s** | ✅ |
+
+### 设计合规（v1.1 规格 4/4）
+
+- searchKeys 排除 videos（无 searchFields 表）✅ layout-table.html:432-433 + test_08
+- split/expand Array.isArray 特判（勿 [object Object]）✅ :1071-1075/:600-606 + test_07
+- .video-pill 独立类 max-width:180px + white-space:normal + word-break:break-all ✅ :42-44
+- CLI 零改动 ✅ 7 commits 无一触碰 html-gen.py
+
+### 安全与治理
+
+- 安全 ✅ noopener,noreferrer + escapeHtml + onclick 转义（:591 先例）；无新执行面
+- 治理 ✅ 7/7 commit 规范 type@scope；features.md L120/156 注册；AGENTS.md 196 tests（21 文件实测一致）；漂移 3 断言 18199be 实修（另含 provinces backfill 列索引 −2/−4）；git clean
+
+### 发现项
+
+- HG-SEC-053 🟢：test_countries_table.py 无巴西行 videos 断言 —— countries 页面巴西行 videos 渲染无提交级回归护栏（本次审计运行时抽查验证通过，建议后续补 test_15）
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| commit 链 | `git log --oneline -8` → 6b8a4c1 HEAD，7 实施 commits 齐全 ✓ |
+| 定向测试 | `python3 -m pytest tests/test_videos.py tests/test_countries_table.py -q -n 0` → 21 passed ✓ |
+| 全量测试 | `python3 -m pytest tests/ -q -n 4` → 196 passed in 35.33s ✓ |
+| 运行时抽查 | hermes-verify-countries-brazil.py → 8/8 PASS（巴西行 2 pill/长标题/🎵/noopener/无 JS 错误）✓ |
+| 数据 | _countries-data.json 18 列/195 行；巴西 2 视频四项完整；第 2 条为 ops 修正长标题 ✓ |
+| 生成 HTML | 双 title/双 url/maxShow/type=videos 均命中；title 与 JSON 一致 ✓ |
+| 治理文件 | .review-level.yaml yaml.safe_load ✓（35 条历史，末条 open=0 → 本条 open=0）|
+
+- 报告: `documents/review/table-videos-impl-audit-v1.1-20260828.md`
+- 处理: PASS → 完成闭环信号，复盘 md 由 ops 生成；push 授权由 review profile 执行（github/main）
+
+---
