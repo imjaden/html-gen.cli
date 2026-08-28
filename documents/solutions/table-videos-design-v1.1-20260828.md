@@ -116,7 +116,7 @@ python3 html-gen.py table -d data/_countries-data.json --title "<现有 title>" 
 4. [ ] 平台图标映射（douyin/bilibili/youtube/默认📹）
 5. [ ] 空/缺失 videos 渲染空单元格
 6. [ ] countries-table 巴西行 2 条 douyin 视频可见
-7. [ ] test_videos.py 6 用例 + 回归全绿
+7. [ ] test_videos.py 8 用例 + 回归全绿（test_01..08，见 §7）
 
 ## 9. 风险与边界
 
@@ -129,3 +129,4 @@ python3 html-gen.py table -d data/_countries-data.json --title "<现有 title>" 
 
 - v1.0 (2026-08-28)：初始设计，评审 CONDITIONAL 85/B（d02cfc5）
 - v1.1 (2026-08-28)：RIG-001（split/expand Array.isArray 特判 + test_07）、RIG-002（platform 归一化 + 别名表）、RIG-003（.video-pill 截断类）；🟢 规格落地（+N 状态机/onclick 转义/键名说明/title 必填约定/搜索排除/跑法）；同步 3 个数据漂移断言（134e3c6）
+- v1.1 (dev 实施，2026-08-28)：N1 修复 §8.7 用例数 6→8（随 §7 test_01..08）
