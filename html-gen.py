@@ -73,6 +73,32 @@ def print_summary(out, src_path, src_size, out_size, elapsed, stats):
     print(f"   ⏱ 耗时: {elapsed:.2f}s")
 
 
+# ═══ Opt-in GitHub Corner & Home Link (隐私: 默认不带, 显式入参才注入) ═══
+GITHUB_CORNER_TMPL = """<a href="{url}" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
+  <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
+    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
+    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
+    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
+  </svg>
+</a>
+<a class="github-corner-hit" href="{url}" target="_blank" rel="noopener" aria-label="GitHub"></a>"""
+
+
+def github_corner_html(url):
+    return GITHUB_CORNER_TMPL.format(url=url)
+
+
+def home_link_html(url):
+    return f'<a class="home-link" href="{url}" aria-label="Demo 首页">🏠</a>'
+
+
+def corner_args(args):
+    """--github-url/--home-url 入参 + env 兜底 (CLI 优先; 默认空 = 隐私不带)."""
+    gh = getattr(args, 'github_url', None) or os.environ.get('HTML_GEN_GITHUB_URL', '')
+    home = getattr(args, 'home_url', None) or os.environ.get('HTML_GEN_HOME_URL', '')
+    return (github_corner_html(gh) if gh else ''), (home_link_html(home) if home else '')
+
+
 # ═══ Markdown → HTML (minimal, no deps) ═══
 def md_to_html(text):
     lines = text.split('\n')
@@ -281,7 +307,9 @@ def cmd_doc(args):
         content += ref_html
 
     tmpl = inline_style(read_template(TEMPLATE_DOC))
-    result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content)
+    gc, hl = corner_args(args)
+    result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content,
+                    github_corner=gc, home_link=hl)
     out = args.output or md.with_suffix('.html')
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
@@ -349,8 +377,10 @@ def cmd_slide(args):
         content += ref_html
 
     tmpl = inline_style(read_template(TEMPLATE_SLIDE))
+    gc, hl = corner_args(args)
     result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content,
-                    cover=h1_html, h2_count=str(h2_count), perf_warning=perf_warning)
+                    cover=h1_html, h2_count=str(h2_count), perf_warning=perf_warning,
+                    github_corner=gc, home_link=hl)
     out = args.output or md.with_suffix('.slide.html')
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
@@ -400,12 +430,14 @@ def cmd_table(args):
     description = html.escape(subtitle, quote=False).replace('\n', '<br>')
 
     tmpl = inline_style(read_template(TEMPLATE_TABLE))
+    gc, hl = corner_args(args)
     result = inject(tmpl, title=title, description=description,
                     columns=json.dumps(columns, ensure_ascii=False),
                     data=json.dumps(data, ensure_ascii=False),
                     tabs=json.dumps(tabs, ensure_ascii=False),
                     options=json.dumps(options, ensure_ascii=False),
-                    filters='', search_placeholder='搜索...')
+                    filters='', search_placeholder='搜索...',
+                    github_corner=gc, home_link=hl)
     out = args.output or 'index.html'
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
@@ -442,11 +474,13 @@ def cmd_knowledge(args):
         raw = json.load(f)
     items = raw if isinstance(raw, list) else (raw.get('items') or raw.get('data') or raw)
     tmpl = inline_style(read_template(TEMPLATE_KNOWLEDGE))
+    gc, hl = corner_args(args)
     result = inject(tmpl, title=args.title or '知识库',
                     subtitle=args.subtitle or '',
                     welcome_text=args.welcome or '从上方类目选择，浏览整理的知识内容。',
                     groups=json.dumps(groups, ensure_ascii=False),
-                    items=json.dumps(items, ensure_ascii=False))
+                    items=json.dumps(items, ensure_ascii=False),
+                    github_corner=gc, home_link=hl)
     out = args.output or 'kb.html'
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
@@ -714,6 +748,8 @@ def main():
     d.add_argument('--title')
     d.add_argument('--subtitle')
     d.add_argument('--metadata')
+    d.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
+    d.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
 
     s = sub.add_parser('slide', help='Markdown → 幻灯片')
     s.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -721,6 +757,8 @@ def main():
     s.add_argument('-o', '--output')
     s.add_argument('--title')
     s.add_argument('--subtitle')
+    s.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
+    s.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
 
     t = sub.add_parser('table', help='JSON → A 型数据表格')
     t.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -728,6 +766,8 @@ def main():
     t.add_argument('--title')  # 优先级: CLI > JSON 顶层 title > '数据表格'
     t.add_argument('--subtitle', help='页面级段落描述(纯文本, \\n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空')
     t.add_argument('-o', '--output', default='index.html')
+    t.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
+    t.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
 
     k = sub.add_parser('knowledge', help='JSON → C 型知识库')
     k.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -737,6 +777,8 @@ def main():
     k.add_argument('--subtitle', default='')
     k.add_argument('--welcome', default='')
     k.add_argument('-o', '--output', default='kb.html')
+    k.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
+    k.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
 
     pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>)')
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
@@ -942,6 +984,7 @@ def cmd_demo(args):
         idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',
                                   subtitle=None,
+                                  github_url=None, home_url=None,
                                   output=str(DEMOS_DIR / 'demos-index.html'))
         cmd_table(a)
         print(f"📇 索引重建: {len(idx_rows)} 独立案例 → demos-index.html")
