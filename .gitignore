@@ -44,3 +44,7 @@ data/_provinces-source.json
 
 # Hermes skills 扩展（映射 ~/.hermes/skills，非项目运行时文件）
 skills-extension/
+src/
+src/
+dist/
+build/
