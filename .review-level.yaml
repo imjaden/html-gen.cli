@@ -370,3 +370,14 @@ review_history:
     findings_open: 3
     tracking: HG-SEC-043..045 (🟡×3, open) + 🟢 HG-SEC-046..052 (OBS, 随 v1.1)
     report: documents/review/table-videos-design-review-v1.0-20260828.md
+  - date: 2026-08-28
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-videos-design v1.1 复审 — RIG-001..003 fix (HG-SEC-043..045) + 🟢 OBS 规格落地 (046..052) + 数据漂移断言同步; commit 99cede3 (git mv v1.0→v1.1)"
+    verdict: PASS
+    score: 95
+    findings_total: 11
+    findings_open: 0
+    tracking: "HG-SEC-043..045 (closed v1.1) + HG-SEC-046..052 (OBS, closed v1.1) + N1 (🟡 §8.7 用例数 6→8, closed v1.1 dev prompt)"
+    report: documents/review/table-videos-design-rereview-v1.1-20260828.md
