@@ -672,7 +672,7 @@
     if (rest) rest.style.display = '';
     el.style.display = 'none';
   };
-  // split 预览 / expand 行内展开：markdown 链接风格 [图标 title (duration)](url) —— label 为链接文本，url 以括号明文跟随
+  // split 预览 / expand 行内展开：markdown 链接风格 [图标 title (duration)] —— label 为链接文本（点击打开 url），url 仅 hover title 可见
   function renderVideoListHtml(videos) {
     if (!Array.isArray(videos) || !videos.length) return '';
     return videos.map(function(v) {
@@ -682,8 +682,7 @@
       if (url) {
         var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
         return '<div style="margin:2px 0;line-height:1.6">' +
-          '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a>' +
-          '(' + escapeHtml(String(url)) + ')</div>';
+          '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
       }
       return '<div style="margin:2px 0;line-height:1.6">' + escapeHtml(label) + '</div>';
     }).join('');
