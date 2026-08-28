@@ -59,13 +59,13 @@ class TestHistoryTables(unittest.TestCase):
     def test_01_strategy_headers_and_index(self):
         self._load('history-strategy-table.html')
         self.assertEqual(self._headers(),
-                         ['序号', '计策名称', '分类', '衍生词', '同源意象', '近义词', '反义词', '兵法', '人物'],
+                         ['序号', '计名', '分类', '别名', '衍生成语', '兵法', '人物'],
                          f"36计表头: {self._headers()}")
         first = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')[0]
         tds = first.find_elements(By.TAG_NAME, 'td')
         self.assertEqual(tds[0].text, '1', "序号应为 1")
         self.assertEqual(tds[1].text, '瞒天过海')
-        self.assertIn('备周则意怠', tds[7].text, "兵法列应展示原文")
+        self.assertIn('备周则意怠', tds[5].text, "兵法列应展示原文")
 
     def test_02_strategy_pill_filter(self):
         self._load('history-strategy-table.html')

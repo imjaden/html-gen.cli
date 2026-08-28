@@ -287,7 +287,7 @@ class TestTableFeatures(unittest.TestCase):
 
     def test_12_description_empty_hidden(self):
         """无 subtitle → .table-desc 空且 display:none."""
-        src = PROJECT / 'data' / '_drama-table-history-strategy.json'
+        src = PROJECT / 'data' / '_countries-data.json'
         tmp = PROJECT / 'tests' / '_tmp_desc_empty.html'
         try:
             self._gen_table_page(src, tmp)

@@ -342,7 +342,7 @@ class TestCountriesBackfill(unittest.TestCase):
         row = self._row_for_country('韩国')
         self.assertIsNotNone(row, "应能找到韩国行")
         tds = row.find_elements(By.TAG_NAME, 'td')
-        gdp_col = len(tds) - 1  # 最后一列 = gdp_province
+        gdp_col = len(tds) - 2  # 倒数第 2 列 = gdp_province（末列已为 videos）
         pills = [p.text for p in tds[gdp_col].find_elements(By.CSS_SELECTOR, '.cell-pill')]
         self.assertIn('广东', pills, f"韩国 gdp_province 应含广东: {pills}")
         self._clear_search()
@@ -352,7 +352,7 @@ class TestCountriesBackfill(unittest.TestCase):
         row = self._row_for_country('柬埔寨')
         self.assertIsNotNone(row, "应能找到柬埔寨行")
         tds = row.find_elements(By.TAG_NAME, 'td')
-        area_col = len(tds) - 3  # 第 15 列 = area_province
+        area_col = len(tds) - 4  # 倒数第 4 列 = area_province（其后 pop/gdp/videos 3 列）
         pills = [p.text for p in tds[area_col].find_elements(By.CSS_SELECTOR, '.cell-pill')]
         self.assertIn('广东', pills, f"柬埔寨 area_province 应含广东: {pills}")
         self._clear_search()
