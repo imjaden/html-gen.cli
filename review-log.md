@@ -918,3 +918,53 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 授权 push（8347dd8 + 审计交付物）至 github/main
 
 ---
+
+## 2026-08-28 — table videos 字段设计 v1.0 审计（CONDITIONAL PASS 85/B）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: b0896c1 docs@table: videos field design v1.0 (HTML-GEN-CL001) — table 模板新 col.type="videos"（数组多视频 url/title/duration/platform + maxShow 折叠默认3 + 平台图标映射 + countries 巴西行 2 条 douyin 联动）；决策 A1 B1 C1 D1 E3 F1 G
+- **Verdict**: ⚠️ **CONDITIONAL PASS 85/100（B）** — 不 push
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-043（🟡 split 预览 [object Object]）/ HG-SEC-044（🟡 platform 归一化未指定）/ HG-SEC-045（🟡 长标题截断与 nowrap CSS 冲突）open；🟢 HG-SEC-046..052（OBS，随 v1.1）
+- **Findings**: 0 🔴 / 3 🟡 / 7 🟢
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| commit 范围 | `git show b0896c1 --stat` → 仅 1 文件（设计文档 +110），无代码/数据混入 ✓ |
+| 数据文件 | _countries-data.json 17 列/195 行；顶层 title == demo `<title>` == 「全球国家速查表（195 国）」；0 行含 videos ✓ |
+| 列尾追加安全 | test_countries_table.py 13 用例无列数/表头硬断言，tds[] 索引断言仅 0-6，videos 追加 index 17 不破坏 ✓ |
+| 模板现状 | layout-table.html grep videos = 0（新分支）；escapeHtml(:367)/window.open noopener,noreferrer(:591)/pills(:529-544) 先例可复用 ✓ |
+| split 预览风险 | renderSplitPreview(:986-991) 对数组 `String(v)` → `[object Object]`；countries 分栏可达（country_zh onCellClick:'split' + videos preview:true）✗ |
+| 测试基线 | 188 defs / 20 文件（与 AGENTS.md 一致）；实跑 **185 passed / 3 failed** — 均为 134e3c6 数据漂移未同步测试（塞尔维亚 region_tags 3 值 / history-strategy 重构 / table-features subtitle），与本次评审无关 |
+
+### Findings
+
+| # | Severity | Title | Status |
+|:---|:---:|:---|:---:|
+| HG-SEC-043 | 🟡 | split 预览 videos 渲染 [object Object]；设计 §5「默认 kv-list」承诺与现模板不符 | ⏳ OPEN |
+| HG-SEC-044 | 🟡 | platform 归一化（trim/lowercase/别名表）未指定 | ⏳ OPEN |
+| HG-SEC-045 | 🟡 | 长标题截断（word-break）与 .cell-pill nowrap CSS 冲突 | ⏳ OPEN |
+| HG-SEC-046..052 | 🟢 | OBS：+N 状态机 / onclick 转义 / col.videos 键名 / split 测试缺失 / 分三组非必要 / 空壳 pill / 搜索噪音 | 随 v1.1 |
+
+### Positives
+
+- A-G 决策闭环，六要素齐全，dev 可直接实施；复用 pills 视觉 + hrefKey 新标签页 + escapeHtml + searchFields 白名单
+- F 独立新类型正确（pills 语义是字符串分隔筛选，videos 是对象数组链接组）
+- countries 联动可验收：列尾追加不破坏 13 用例，巴西行数据完整，生成命令 title 一致
+- 向后兼容：videos 空/缺省 → 空单元格；CLI 零改动（数据驱动注入）
+
+### RIG 清单（ops 修 v1.1，全部 Bucket A）
+
+| # | 项 | 修复 |
+|:-:|:---|:---|
+| RIG-001 | §5 分栏预览段重写 | Array.isArray 特判：split 预览与 expand detail 逐条渲染 [icon] title (duration)+url；§7 补 test_07 |
+| RIG-002 | §5 平台映射补归一化一行 | trim + lowercase + 别名表 {抖音→douyin, b站→bilibili, youtube→youtube}；未命中 → 📹 |
+| RIG-003 | §5/§9 截断边界明确 | `.video-pill`：max-width 180px + white-space:normal + word-break:break-all（或 nowrap+ellipsis 二选一） |
+
+- 报告: `documents/review/table-videos-design-review-v1.0-20260828.md`
+- 处理: CONDITIONAL PASS → 不 push；ops 修 v1.1 后复审
+
+---
