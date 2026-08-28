@@ -968,3 +968,42 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: CONDITIONAL PASS → 不 push；ops 修 v1.1 后复审
 
 ---
+
+## 2026-08-28 — table videos 字段设计 v1.1 复审（PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: 99cede3 docs@table: videos design v1.1 (HTML-GEN-CL001) — RIG-001..003 fix (HG-SEC-043..045) + 🟢 OBS 规格落地 (046..052) + 数据漂移断言同步；git mv v1.0→v1.1 保留历史（b0896c1 + 99cede3）
+- **Verdict**: ✅ **PASS 95/100（A）** — 闭环，转 dev 实施
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-043..045（🟡×3，closed v1.1）/ HG-SEC-046..052（🟢 OBS，closed v1.1）/ N1（🟡 §8.7 用例数 6→8 陈旧，closed v1.1 dev prompt 内嵌）
+- **Findings**: 0 🔴 / 0 🟡 (初审) / 1 🟡 (新增 N1) / 0 🟢
+
+### 复审核对摘要
+
+| 初审项 | 状态 | 证据 |
+|:---|:---:|:---|
+| RIG-001 (HG-SEC-043) | ✅ | §5 L73-76 Array.isArray 特判（split+expand 逐条渲染）；§7 test_07 |
+| RIG-002 (HG-SEC-044) | ✅ | §5 L64-68 trim().toLowerCase() 归一化 + 别名映射（抖音→🎵 / b站→📺） |
+| RIG-003 (HG-SEC-045) | ✅ | §5 L69-71 .video-pill 独立类 max-width:180px + white-space:normal + word-break:break-all；§9 L123 同步 |
+| 🟢 046..052 | ✅ | +N 状态机 / onclick 转义 / 键名说明 / split 测试 / -n 4 兜底 / title 必填 / 搜索排除 逐项落地 |
+| 漂移断言 ×3 | ✅ | 实跑复现 3 failed：塞尔维亚 pills 3 值 / 实际表头 7 列 / history-strategy subtitle 非空；方案与现状精确一致 |
+
+### 新增发现
+
+- N1 🟡：§8.7「test_videos.py 6 用例」未随 §7 同步（现 8 用例）—— 纯文档文本陈旧，dev prompt 核心变更 #8 内嵌修复，不阻断闭环
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| commit 范围 | `git show 99cede3 --stat` → 1 文件 rename +35/-14 ✓ |
+| git mv 历史 | `git log --follow` → b0896c1 + 99cede3 ✓ |
+| 漂移断言实跑 | python3.12 -m pytest 3 项定向 → 3 failed，diff 与设计期望精确一致 ✓ |
+| 数据源 | _countries-data.json subtitle=None/title 有；_drama-table-history-strategy.json subtitle=《孙子兵法》描述 ✓ |
+| 治理文件 | .review-level.yaml yaml.safe_load ✓（34 条历史，末条 open=3 → 本条 open=0）|
+
+- 报告: `documents/review/table-videos-design-rereview-v1.1-20260828.md`
+- 处理: PASS → 生成 dev 实施 prompt（`cache/review-prep/prompt-table-videos-dev-20260828.md`）转 dev；实施完成后 ops 核查 → review 实施审计 → push
+
+---
