@@ -168,13 +168,14 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         self.assertIn('html-gen slide', all_copy, "复制全部缺 slide 命令")
 
     def test_11_footer_links(self):
-        """footer 存在且含 GitHub / Gitee 链接 + favicon 图标."""
+        """footer 存在且含 GitHub / Gitee / PyPI 链接 + favicon 图标."""
         footer = self.driver.find_element(By.CSS_SELECTOR, 'footer.site-footer')
         hrefs = [a.get_attribute('href') or '' for a in footer.find_elements(By.TAG_NAME, 'a')]
         self.assertTrue(any('github.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 GitHub 链接")
         self.assertTrue(any('gitee.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 Gitee 链接")
+        self.assertTrue(any('pypi.org/project/html-gen-cli' in h for h in hrefs), "缺 PyPI 链接")
         imgs = [i.get_attribute('src') or '' for i in footer.find_elements(By.CSS_SELECTOR, 'img.favicon')]
-        self.assertEqual(2, len(imgs), f"应有 2 个 favicon 图标: {imgs}")
+        self.assertEqual(3, len(imgs), f"应有 3 个 favicon 图标: {imgs}")
         self.assertTrue(all('favicon' in s for s in imgs), f"favicon src 异常: {imgs}")
 
     def test_12_theme_persist(self):
