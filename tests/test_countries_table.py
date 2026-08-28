@@ -73,8 +73,8 @@ class TestCountriesTable(unittest.TestCase):
         # 限定大洲列（tds[6]）内的 pills——新加的省份关联列同为 pills 类型
         tds = row.find_elements(By.TAG_NAME, 'td')
         pills = tds[6].find_elements(By.CSS_SELECTOR, '.cell-pill')
-        self.assertEqual([p.text for p in pills], ['欧洲', '南欧'],
-                         "大洲列应按顿号切分为 欧洲/南欧 两个标签")
+        self.assertEqual([p.text for p in pills], ['欧洲', '南欧', '前南斯拉夫'],
+                         "大洲列应按顿号切分为 欧洲/南欧/前南斯拉夫 三个标签")
 
     def test_02_country_click_no_quickfilter(self):
         row = self._row_for_country('中国')
