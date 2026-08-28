@@ -337,22 +337,35 @@ class TestCountriesBackfill(unittest.TestCase):
                 return r
         return None
 
+    def _col_idx(self, label):
+        """按表头文本定位列索引（不依赖固定列数/倒数第 N 列）."""
+        ths = self.driver.find_elements(By.CSS_SELECTOR, 'thead th')
+        for i, th in enumerate(ths):
+            if th.text == label:
+                return i
+        return None
+
     def test_11_korea_gdp_province_contains_gd(self):
         # 广东 GDP 命中韩国 → 韩国行反向 gdp_province 含"广东"
         row = self._row_for_country('韩国')
         self.assertIsNotNone(row, "应能找到韩国行")
         tds = row.find_elements(By.TAG_NAME, 'td')
-        gdp_col = len(tds) - 2  # 倒数第 2 列 = gdp_province（末列已为 videos）
+        gdp_col = self._col_idx('GDP相近省份')
+        assert gdp_col is not None, "表头应含 GDP相近省份 列"
         pills = [p.text for p in tds[gdp_col].find_elements(By.CSS_SELECTOR, '.cell-pill')]
         self.assertIn('广东', pills, f"韩国 gdp_province 应含广东: {pills}")
         self._clear_search()
 
     def test_12_cambodia_area_province_contains_gd(self):
         # 面积归一化对照：广东 17.97 万km² ↔ 柬埔寨 18.10（area_km2=181035 → 18.10）
+        # area_province 列默认 initialHidden → 先通过设置面板显示
+        self.driver.execute_script("toggleCol('area_province', true);")
+        time.sleep(0.3)
         row = self._row_for_country('柬埔寨')
         self.assertIsNotNone(row, "应能找到柬埔寨行")
         tds = row.find_elements(By.TAG_NAME, 'td')
-        area_col = len(tds) - 4  # 倒数第 4 列 = area_province（其后 pop/gdp/videos 3 列）
+        area_col = self._col_idx('面积相近省份')
+        assert area_col is not None, "表头应含 面积相近省份 列"
         pills = [p.text for p in tds[area_col].find_elements(By.CSS_SELECTOR, '.cell-pill')]
         self.assertIn('广东', pills, f"柬埔寨 area_province 应含广东: {pills}")
         self._clear_search()
