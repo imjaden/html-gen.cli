@@ -272,6 +272,10 @@ pre code { background: none; padding: 0; }
 .data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
 .data-table .cell-pill.pill-clickable { cursor:pointer; }
 .data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
+/* ── Videos 视频列 pill（独立类：max-width 截断 + 多行换行，勿继承 .cell-pill nowrap） ── */
+.data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:normal; word-break:break-all; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
+.data-table .video-pill:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
+.data-table .video-pill.video-more { color:var(--cobalt-300); border-style:dashed; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -658,10 +662,10 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容；videos 列排除：数组 String() 噪音 + title 误命中）
     if (q) {
       var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
-        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
         return searchKeys.some(function(k) {
           return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
@@ -775,6 +779,27 @@ pre code { background: none; padding: 0; }
               rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
+            if (col.type === 'videos') {
+              // 视频列：每视频一个 pill [图标] title (duration)；maxShow 折叠 "+N"，点击展开全部（不折叠回，re-render 重置）
+              var videos = val;
+              var vMaxShow = (col.videos && typeof col.videos.maxShow === 'number') ? col.videos.maxShow : 3;
+              var vCount = Array.isArray(videos) ? videos.length : 0;
+              var vVisible = Math.min(vCount, vMaxShow);
+              var vHtml = '';
+              for (var vi = 0; vi < vVisible; vi++) vHtml += renderVideoPill(videos[vi]);
+              var vRestHtml = '';
+              if (vCount > vVisible) {
+                vRestHtml = '<span class="video-rest" style="display:none">';
+                for (var vj = vVisible; vj < vCount; vj++) vRestHtml += renderVideoPill(videos[vj]);
+                vRestHtml += '</span>';
+              }
+              var vMoreHtml = vCount > vVisible ? '<span class="video-pill video-more" onclick="event.stopPropagation();expandVideos(this)" title="展开全部">+' + (vCount - vVisible) + '</span>' : '';
+              var freezeClsV = col.freeze ? ' frozen-col' : '';
+              var stickyClsV = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyleV = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeClsV+stickyClsV+'"'+freezeStyleV+'>'+vHtml+vRestHtml+vMoreHtml+'</td>';
+              return;
+            }
             if (col.render) val = col.render(val, row);
           else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
           else if (col.escape) val = escapeHtml(String(val));
@@ -805,7 +830,14 @@ pre code { background: none; padding: 0; }
         rowHtml += '<div class="expand-grid">';
         detailCols.forEach(function(c) {
           var v = row[c.key]; if (v === null || v === undefined) v = '';
-          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + escapeHtml(String(v)) + '</div></div>';
+          var valHtml;
+          if (Array.isArray(v) && c.type === 'videos') {
+            // videos 数组特判：逐条渲染 [图标] title (duration) + url 链接（勿 String(v) → [object Object]）
+            valHtml = renderVideoListHtml(v);
+          } else {
+            valHtml = escapeHtml(String(v));
+          }
+          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + valHtml + '</div></div>';
         });
         rowHtml += '</div></td></tr>';
       }
@@ -837,6 +869,56 @@ pre code { background: none; padding: 0; }
   };
 
   function escapeAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+  /* ── Videos column (col.type === 'videos') ── */
+  // 平台图标映射：归一化 String(platform).trim().toLowerCase() 后匹配别名（抖音→douyin、B站→bilibili、YouTube→youtube）
+  var VIDEO_PLATFORM_ICONS = {
+    'douyin': '🎵', '抖音': '🎵',
+    'bilibili': '📺', 'b站': '📺',
+    'youtube': '▶️'
+  };
+  function videoPlatformIcon(platform) {
+    var p = String(platform === undefined || platform === null ? '' : platform).trim().toLowerCase();
+    return VIDEO_PLATFORM_ICONS[p] || '📹';
+  }
+  // pill 文案：[图标] title (duration)；title 缺省 → [图标] platform (duration)；均缺省 → [📹] (duration)
+  function videoPillLabel(v) {
+    var icon = videoPlatformIcon(v.platform);
+    var dur = v.duration ? ' (' + v.duration + ')' : '';
+    if (v.title) return icon + ' ' + v.title + dur;
+    if (v.platform) return icon + ' ' + String(v.platform) + dur;
+    return icon + dur;
+  }
+  // 单元格视频 pill：点击新标签页打开 url（noopener,noreferrer；onclick 转义沿用 actions 先例 JSON.stringify + &quot;）
+  function renderVideoPill(v) {
+    if (!v || typeof v !== 'object') return '';
+    var url = v.url;
+    if (url === undefined || url === null) return '';
+    var label = videoPillLabel(v);
+    var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
+    return '<span class="video-pill" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
+  }
+  // 折叠 "+N"：点击展开全部（DOM 显示剩余 pill），不折叠回；跨 re-render 重置折叠态
+  window.expandVideos = function(el) {
+    var td = el.parentNode;
+    var rest = td.querySelector('.video-rest');
+    if (rest) rest.style.display = '';
+    el.style.display = 'none';
+  };
+  // split 预览 / expand 行内展开：逐条渲染 [图标] title (duration) + 可点击 url 链接
+  function renderVideoListHtml(videos) {
+    if (!Array.isArray(videos) || !videos.length) return '';
+    return videos.map(function(v) {
+      if (!v || typeof v !== 'object') return '';
+      var url = v.url;
+      var h = escapeHtml(videoPillLabel(v));
+      if (url) {
+        var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
+        h += ' <a href="javascript:void(0)" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(String(url)) + '</a>';
+      }
+      return '<div style="margin:2px 0;line-height:1.6">' + h + '</div>';
+    }).join('');
+  }
 
   function getRowClickCol() {
     return COLUMNS.find(function(c){return c.onClick;});
@@ -1219,7 +1301,13 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
-        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        var valHtml;
+        if (Array.isArray(v) && c.type === 'videos') {
+          // videos 数组特判：逐条渲染 + url 链接（勿 String(v) → [object Object]）
+          valHtml = renderVideoListHtml(v);
+        } else {
+          valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        }
         return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
