@@ -117,6 +117,7 @@ iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
 URL 白名单校验 (https?/ / ~/ 前缀) ✅ — layout-table.html
 Cinema 纪律化宽度 (table-layout:fixed, 每列显式 width, td max-width:0, 无 colgroup) ✅ — layout-table.html
 Pills 标签列 (col.type:pills, 逗号分隔→tag pills, 标签筛选默认开 pillFilter:false 关闭) ✅ — layout-table.html
+Videos 视频列 (col.type:videos, 数组 url/title/duration/platform, maxShow 折叠 +N 点击展开, 平台图标映射 douyin🎵/bilibili📺/youtube▶️, 点击新标签页 noopener,noreferrer, 默认搜索排除) ✅ — layout-table.html
 Datetime 排序 (col.type:datetime, Date.parse 比较) ✅ — layout-table.html
 右侧固定列 (col.stickyRight:true, position:sticky) ✅ — layout-table.html
 分栏列过滤增强 (options.columnsSplit + col.preview fallback) ✅ — layout-table.html
@@ -152,7 +153,7 @@ Badge 彩色标记 (知道/理解/能讲/能输出, 4 色方案) ✅ — layout-
 ### table 输入
 简单 JSON 数组 (向后兼容, 列名自推导) ✅ — html-gen.py (cmd_table)
 结构化 JSON 对象 (columns/data/tabs/options) ✅ — html-gen.py (cmd_table)
-col.type: string/number/datetime/pills/actions ✅ — layout-table.html
+col.type: string/number/datetime/pills/actions/videos ✅ — layout-table.html
 col.sortable (是否可排序) ✅ — layout-table.html
 col.locale (中文 localeCompare 排序) ✅ — layout-table.html
 col.freeze (列冻结 sticky) ✅ — layout-table.html

@@ -102,6 +102,7 @@ html-gen help demo
 - 设置面板：⚙️ 下拉，密度/点击模式/列可见性/视图预设，内部点击不关闭，✕ 关闭按钮
 - `printColWidths()` 控制台调试函数
 - 安全：`copyAction()` 含 execCommand fallback（headless Chrome 兼容）
+- **Videos 视频列**：`col.type: "videos"`，行字段为对象数组 `[{url,title,duration,platform}]`，每视频一个 pill（图标+标题+时长）；`col.videos.maxShow` 折叠 "+N" 点击展开（不折叠回，re-render 重置）；平台图标映射 douyin/抖音🎵 bilibili/B站/b站📺 youtube▶️ 其他📹；pill 点击新标签页（noopener,noreferrer）；默认搜索排除 videos；split/expand 数组特判渲染
 
 ### layout-knowledge.html（C 型知识库）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
@@ -162,6 +163,7 @@ html-gen help demo
 - `number`：数值排序（parseFloat 比较）
 - `actions`：操作按钮列，支持 `copyKey`（复制）和 `hrefKey`（跳转）
 - `pills`：标签样式渲染，逗号分隔值转 tag pills
+- `videos`：视频列，行字段为对象数组（url 必填 + title/duration/platform 可选），每视频渲染 pill `[平台图标] title (duration)`；`col.videos.maxShow`（默认 3）折叠 "+N" 点击展开全部（不折叠回，re-render 重置）；平台图标映射（归一化 trim().toLowerCase()）：douyin/抖音→🎵、bilibili/B站/b站→📺、youtube→▶️、其他→📹；点击 pill 新标签页打开（window.open noopener,noreferrer，onclick 转义 JSON.stringify+&quot;）；默认搜索排除 videos 列；split 预览 / expand 展开对 videos 数组 Array.isArray 特判逐条渲染 + url 链接（勿 String(v) → [object Object]）
 
 列属性：
 - `col.sortable`：是否可排序（默认 true）
@@ -223,7 +225,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 188 tests（20 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 196 tests（21 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -248,7 +250,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (188 tests)
+├── tests/                      # Selenium + 回归测试 (196 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md
