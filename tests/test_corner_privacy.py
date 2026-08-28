@@ -41,6 +41,7 @@ class TestCornerPrivacy(unittest.TestCase):
         self.assertNotIn('class="github-corner-hit"', html)
         self.assertNotIn('class="home-link"', html)
         self.assertNotIn('imjaden', html)
+        self.assertNotIn('jaden.tech', html)
 
     def test_02_github_url_injects_corner(self):
         """--github-url 注入 corner, href 正确."""
