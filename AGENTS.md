@@ -16,7 +16,7 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 
 | 文件 | 用途 |
 |:---|:---|
-| `html-gen.py` | 主 CLI，3 个子命令，958 行 |
+| `html-gen.py` | 主 CLI，8 个子命令，1078 行 |
 | `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库（groups/data/html + content/metrics 内容页自动生成） |
 | `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |
@@ -30,10 +30,15 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 # doc — Markdown 转 B 型文档
 html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]
 
+# slide — Markdown 转 D 型幻灯片
+html-gen slide -i slides.md -o slides.html [--title "标题"]
+
 # table — JSON 转 A 型数据表格
 html-gen table -d data.json [--title "标题"] [--subtitle "段落描述"] [-o index.html]
 #   --title    优先级: CLI > JSON 顶层 title > "数据表格"
 #   --subtitle 页面级段落描述(纯文本, \n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空
+# 四渲染子命令通用参数: --github-url <url> 右上角 GitHub corner (默认不带, 隐私) / --home-url <url> demo 首页入口 / --quiet 仅打印路径
+#   环境变量兜底: HTML_GEN_GITHUB_URL / HTML_GEN_HOME_URL (CLI 参数优先)
 
 # knowledge — JSON 转 C 型知识库
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
@@ -48,6 +53,9 @@ html-gen prompt <skill> [--brief] [--json]
 
 # help — 6 主题（doc/slide/table/knowledge/prompt/demo）
 html-gen help demo
+
+# version — 版本 (CL016: {name} v{ver} ({date}); --version flag 兼容同格式)
+html-gen version
 ```
 
 ## 模板注入机制
@@ -225,7 +233,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 196 tests（21 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 214 tests（24 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
