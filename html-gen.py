@@ -9,10 +9,13 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
   html-gen table --data data.json [--title "xxx"] [--output index.html]
   html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [--output kb.html]
 
-版本: 3.1(2026-07-23)
+版本: 3.2(2026-08-28)
 """
 import html, json, re, sys, os, time, argparse, types
 from pathlib import Path
+
+__version__ = "3.2"              # CL016: 版本号 (格式 \d+\.\d+)
+__release_date__ = "2026-08-28"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent
 TEMPLATE_DOC   = SKILLS_DIR / 'layout-doc.html'
@@ -461,8 +464,8 @@ def cmd_knowledge(args):
 
 # ═══ Help System ═══
 
-HELP_OVERVIEW = """\
-html-gen — HTML 模板 CLI 生成器 v3.1(2026-07-23)
+HELP_OVERVIEW = f"""\
+html-gen — HTML 模板 CLI 生成器 v{__version__}({__release_date__})
 
 四型模板:
   doc       Markdown → B 型文档 (侧边栏 TOC + 阅读)
@@ -686,16 +689,23 @@ def cmd_help(args):
         print(HELP_OVERVIEW)
 
 
+def cmd_version(args):
+    """CL016: version 子指令, 输出 {name} v{ver} ({date}) 空格分隔."""
+    print(f'html-gen v{__version__} ({__release_date__})')
+
+
 # ═══ CLI ═══
 def main():
-    p = argparse.ArgumentParser(description='HTML 模板生成器')
-    p.add_argument('--version', action='version', version='html-gen 3.1(2026-07-23)')
+    p = argparse.ArgumentParser(description=f'html-gen v{__version__}({__release_date__}) — HTML 模板生成器')
+    p.add_argument('--version', action='version', version=f'html-gen v{__version__} ({__release_date__})')
     p.add_argument('--quiet', action='store_true', help='仅打印生成路径，抑制统计信息')
     sub = p.add_subparsers(dest='command', required=True)
 
     h = sub.add_parser('help', help='显示帮助')
     h.add_argument('topic', nargs='?', choices=['doc', 'slide', 'table', 'knowledge', 'prompt', 'demo'],
                    help='帮助主题 (doc/slide/table/knowledge/prompt/demo)')
+
+    v = sub.add_parser('version', help='显示版本')
 
     d = sub.add_parser('doc', help='Markdown → B 型文档')
     d.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -741,7 +751,7 @@ def main():
     dm.add_argument('--rebuild', action='store_true', help='重新扫描 demos/ 生成 _registry.json')
 
     args = p.parse_args()
-    {'help': cmd_help, 'doc': cmd_doc, 'slide': cmd_slide,
+    {'help': cmd_help, 'version': cmd_version, 'doc': cmd_doc, 'slide': cmd_slide,
      'table': cmd_table, 'knowledge': cmd_knowledge, 'prompt': cmd_prompt,
      'demo': cmd_demo}[args.command](args)
 

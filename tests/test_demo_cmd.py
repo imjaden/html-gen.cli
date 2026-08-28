@@ -94,11 +94,11 @@ class TestDemoCmd(unittest.TestCase):
         self.assertEqual(r.stderr, '', "错误应走信封，不污染 stderr")
 
     def test_11_version_flag(self):
-        """--version 输出版本号."""
+        """--version 输出版本号 (CL016: 与 version 子指令同格式)."""
         r = subprocess.run(['python3', str(GEN), '--version'],
                            capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0)
-        self.assertIn('html-gen 3.1', r.stdout, f"版本号: {r.stdout}")
+        self.assertIn('html-gen v3.2 (2026-08-28)', r.stdout, f"版本号: {r.stdout}")
 
     def test_09_registry_exists(self):
         """_registry.json 存在且条目与文件对应."""
