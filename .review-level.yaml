@@ -359,3 +359,14 @@ review_history:
     findings_open: 0
     tracking: HG-SEC-041..042 (closed 8347dd8)
     report: documents/review/html-gen-typography-review-v1.0-20260827.md
+  - date: 2026-08-28
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-videos-design v1.0 — table 模板 col.type=videos (数组多视频 url/title/duration/platform + maxShow 折叠默认3 + 平台图标映射 + countries 巴西行 2 条 douyin 联动); commit b0896c1; 决策 A1 B1 C1 D1 E3 F1 G"
+    verdict: CONDITIONAL_PASS
+    score: 85
+    findings_total: 10
+    findings_open: 3
+    tracking: HG-SEC-043..045 (🟡×3, open) + 🟢 HG-SEC-046..052 (OBS, 随 v1.1)
+    report: documents/review/table-videos-design-review-v1.0-20260828.md
