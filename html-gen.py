@@ -11,7 +11,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 
 版本: 3.1(2026-07-23)
 """
-import html, json, re, sys, os, argparse, types
+import html, json, re, sys, os, time, argparse, types
 from pathlib import Path
 
 SKILLS_DIR = Path(__file__).resolve().parent
@@ -52,6 +52,22 @@ def inline_style(template):
         '<link rel="stylesheet" href="style-guide.css">',
         f'<style>\n{css}\n</style>'
     )
+
+
+# ═══ Render Summary ═══
+def human_size(n):
+    """人类可读文件大小: <1KB 显示 B, 否则 KB 保留 1 位小数."""
+    return f"{n/1024:.1f} KB" if n >= 1024 else f"{n} B"
+
+
+def print_summary(out, src_path, src_size, out_size, elapsed, stats):
+    """渲染完成后打印统计信息卡（--quiet 时不调用）."""
+    print(f"✅ 已生成: {out}")
+    print(f"   📄 源文件: {src_path} · {human_size(src_size)}")
+    print(f"   📦 产物: {human_size(out_size)}")
+    for line in stats:
+        print(f"   {line}")
+    print(f"   ⏱ 耗时: {elapsed:.2f}s")
 
 
 # ═══ Markdown → HTML (minimal, no deps) ═══
@@ -209,6 +225,7 @@ def extract_title(md_text):
 # ═══ Commands ═══
 def cmd_doc(args):
     from datetime import datetime
+    t0 = time.perf_counter()
     md = Path(args.input)
     if not md.exists():
         print(f"❌ 文件不存在: {args.input}", file=sys.stderr)
@@ -264,12 +281,19 @@ def cmd_doc(args):
     result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content)
     out = args.output or md.with_suffix('.html')
     Path(out).write_text(result, encoding='utf-8')
-    print(f"✅ 已生成: {out}")
+    if not getattr(args, 'quiet', False):
+        h3_count = len(re.findall(r'<h3\b', content))
+        stats = [f"📑 章节: {h2_count} 节" + (f" · {h3_count} 子节" if h3_count else '')]
+        print_summary(out, args.input, stat.st_size, Path(out).stat().st_size,
+                      time.perf_counter() - t0, stats)
+    else:
+        print(f"✅ 已生成: {out}")
 
 
 def cmd_slide(args):
     """Markdown → slide 幻灯片（h2 分页）"""
     from datetime import datetime
+    t0 = time.perf_counter()
     md = Path(args.input)
     if not md.exists():
         print(f"❌ 文件不存在: {args.input}", file=sys.stderr)
@@ -326,10 +350,16 @@ def cmd_slide(args):
                     cover=h1_html, h2_count=str(h2_count), perf_warning=perf_warning)
     out = args.output or md.with_suffix('.slide.html')
     Path(out).write_text(result, encoding='utf-8')
-    print(f"✅ 已生成: {out}")
+    if not getattr(args, 'quiet', False):
+        pages = h2_count + (1 if h1_html else 0)
+        print_summary(out, args.input, stat.st_size, Path(out).stat().st_size,
+                      time.perf_counter() - t0, [f"🖥 页面: {pages} 页"])
+    else:
+        print(f"✅ 已生成: {out}")
 
 
 def cmd_table(args):
+    t0 = time.perf_counter()
     data_path = Path(args.data)
     if not data_path.exists():
         print(f"❌ 数据文件不存在: {args.data}", file=sys.stderr)
@@ -375,11 +405,18 @@ def cmd_table(args):
                     filters='', search_placeholder='搜索...')
     out = args.output or 'index.html'
     Path(out).write_text(result, encoding='utf-8')
-    print(f"✅ 已生成: {out}")
+    if not getattr(args, 'quiet', False):
+        tabs_n = len(tabs)
+        stats = [f"📊 数据: {len(data)} 行 × {len(columns)} 列" + (f" · {tabs_n} 标签页" if tabs_n else '')]
+        print_summary(out, args.data, data_path.stat().st_size, Path(out).stat().st_size,
+                      time.perf_counter() - t0, stats)
+    else:
+        print(f"✅ 已生成: {out}")
 
 
 def cmd_knowledge(args):
     """从 JSON 数据生成 C 型知识库 HTML（顶部类目 + 左侧章节）"""
+    t0 = time.perf_counter()
     data_path = Path(args.data)
     if not data_path.exists():
         print(f"❌ 数据文件不存在: {args.data}", file=sys.stderr)
@@ -409,7 +446,17 @@ def cmd_knowledge(args):
                     items=json.dumps(items, ensure_ascii=False))
     out = args.output or 'kb.html'
     Path(out).write_text(result, encoding='utf-8')
-    print(f"✅ 已生成: {out}")
+    if not getattr(args, 'quiet', False):
+        if isinstance(items, list):
+            sections_n = len({i.get('section') for i in items if isinstance(i, dict) and i.get('section')})
+            items_n = len(items)
+        else:
+            sections_n = items_n = 0
+        stats = [f"🏷 类目 {len(groups)} · 章节 {sections_n} · 条目 {items_n}"]
+        print_summary(out, args.data, data_path.stat().st_size, Path(out).stat().st_size,
+                      time.perf_counter() - t0, stats)
+    else:
+        print(f"✅ 已生成: {out}")
 
 
 # ═══ Help System ═══
@@ -643,6 +690,7 @@ def cmd_help(args):
 def main():
     p = argparse.ArgumentParser(description='HTML 模板生成器')
     p.add_argument('--version', action='version', version='html-gen 3.1(2026-07-23)')
+    p.add_argument('--quiet', action='store_true', help='仅打印生成路径，抑制统计信息')
     sub = p.add_subparsers(dest='command', required=True)
 
     h = sub.add_parser('help', help='显示帮助')
@@ -650,6 +698,7 @@ def main():
                    help='帮助主题 (doc/slide/table/knowledge/prompt/demo)')
 
     d = sub.add_parser('doc', help='Markdown → B 型文档')
+    d.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
     d.add_argument('-i', '--input', required=True)
     d.add_argument('-o', '--output')
     d.add_argument('--title')
@@ -657,18 +706,21 @@ def main():
     d.add_argument('--metadata')
 
     s = sub.add_parser('slide', help='Markdown → 幻灯片')
+    s.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
     s.add_argument('-i', '--input', required=True)
     s.add_argument('-o', '--output')
     s.add_argument('--title')
     s.add_argument('--subtitle')
 
     t = sub.add_parser('table', help='JSON → A 型数据表格')
+    t.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
     t.add_argument('-d', '--data', required=True)
     t.add_argument('--title')  # 优先级: CLI > JSON 顶层 title > '数据表格'
     t.add_argument('--subtitle', help='页面级段落描述(纯文本, \\n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空')
     t.add_argument('-o', '--output', default='index.html')
 
     k = sub.add_parser('knowledge', help='JSON → C 型知识库')
+    k.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
     k.add_argument('-d', '--data', required=True)
     k.add_argument('-g', '--groups')
     k.add_argument('--title', default='知识库')
