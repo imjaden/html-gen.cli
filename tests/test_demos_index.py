@@ -79,6 +79,7 @@ class TestDemosIndex(unittest.TestCase):
         hrefs = [a.get_attribute('href') or '' for a in footer.find_elements(By.TAG_NAME, 'a')]
         self.assertTrue(any('github.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 GitHub 链接")
         self.assertTrue(any('gitee.com/imjaden/html-gen.cli' in h for h in hrefs), "缺 Gitee 链接")
+        self.assertTrue(any('pypi.org/project/html-gen-cli' in h for h in hrefs), "缺 PyPI 链接")
 
     def test_05_dual_source_consistency(self):
         """双源一致性: 根 index.html 与 demos/index.html 关键功能特征一致 (防漂移)."""
@@ -91,6 +92,7 @@ class TestDemosIndex(unittest.TestCase):
             'class="copy-btn"',         # 复制按钮
             'max-width: 1500px',        # 2 列断点
             '--gh-octocat',             # github-corner 浅色变量
+            'pypi.org/project/html-gen-cli',  # PyPI 平台链接 (双源)
             'rel="noopener"',           # 外链安全属性
             'html-gen table -d data.json',   # A 卡 cli 命令
             'html-gen doc -i report.md',     # B 卡 cli 命令

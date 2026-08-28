@@ -9,12 +9,12 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
   html-gen table --data data.json [--title "xxx"] [--output index.html]
   html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [--output kb.html]
 
-版本: 3.2(2026-08-28)
+版本: 3.3(2026-08-28)
 """
 import html, json, re, sys, os, time, argparse, types
 from pathlib import Path
 
-__version__ = "3.2"              # CL016: 版本号 (格式 \d+\.\d+)
+__version__ = "3.3"              # CL016: 版本号 (格式 \d+\.\d+)
 __release_date__ = "2026-08-28"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent

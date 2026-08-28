@@ -17,25 +17,25 @@ class TestCliVersion(unittest.TestCase):
         """html-gen help 首屏标题含 v{ver}({date}) 紧凑格式."""
         r = run('help')
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertIn('v3.2(2026-08-28)', r.stdout, "help 首屏应内嵌 v3.2(2026-08-28)")
+        self.assertIn('v3.3(2026-08-28)', r.stdout, "help 首屏应内嵌 v3.3(2026-08-28)")
 
     def test_02_version_subcommand(self):
         """version 子指令输出 {name} v{ver} ({date}) 空格分隔."""
         r = run('version')
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(r.stdout.strip(), 'html-gen v3.2 (2026-08-28)')
+        self.assertEqual(r.stdout.strip(), 'html-gen v3.3 (2026-08-28)')
 
     def test_03_version_flag_compatible(self):
         """--version flag 兼容, 输出与 version 子指令一致."""
         r = run('--version')
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertEqual(r.stdout.strip(), 'html-gen v3.2 (2026-08-28)')
+        self.assertEqual(r.stdout.strip(), 'html-gen v3.3 (2026-08-28)')
 
     def test_04_argparse_help_description(self):
         """argparse -h description 内嵌版本日期."""
         r = run('-h')
         self.assertEqual(r.returncode, 0, r.stderr)
-        self.assertIn('v3.2(2026-08-28)', r.stdout, "-h 首屏应内嵌 v3.2(2026-08-28)")
+        self.assertIn('v3.3(2026-08-28)', r.stdout, "-h 首屏应内嵌 v3.3(2026-08-28)")
 
     def test_05_version_constants(self):
         """模块常量: __version__ 格式 \\d+\\.\\d+, __release_date__ 格式 YYYY-MM-DD."""
