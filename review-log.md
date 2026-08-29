@@ -1062,3 +1062,120 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 完成闭环信号，复盘 md 由 ops 生成；push 授权由 review profile 执行（github/main）
 
 ---
+
+## 2026-08-29 — table videos syncer 设计 v1.0 审计（CONDITIONAL PASS 85/B）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `24b9cbc` docs@table: videos syncer script design v1.0 (HTML-GEN-CL002) — yaml 增量→按 country_zh 外键匹配 json 行→url 去重补充 videos→全局镜像回写 yaml→重建 demos；决策 A/B/C/D/E/F/G/W；test_sync_videos.py 10 用例；前置 HTML-GEN-CL001（videos 字段已闭环）
+- **Verdict**: ⚠️ **CONDITIONAL PASS 85/100（B）** — 不 push
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-054（🟡 yaml.safe_load 未指定）/ HG-SEC-055（🟡 subprocess list-form 未指定）/ HG-SEC-056（🟡 target 路径解析基准未定义）open；🟢 HG-SEC-057..060（随 v1.1）
+- **Findings**: 0 🔴 / 3 🟡 / 4 🟢
+
+### 验证明细
+
+| 项 | 结果 |
+|:---|:---|
+| commit 范围 | `git show 24b9cbc --stat` → 仅 1 文件（设计文档 +137），无代码/数据混入 ✓ |
+| E 命令复现 | `python3 html-gen.py table -d data/_countries-data.json -o /tmp/cl002-repro.html` → 195 行 × 18 列 · 6 标签页；产物 `<title>` == JSON 顶层 title「全球国家速查表（195 国）」== cmd_table L424 无 --title 取 json_title ✓ |
+| duration 60 进制坑 | `yaml.safe_load('6:55')` → 415 / `('11:38')` → 698，设计 §3 断言精确 ✓ |
+| 缅甸/伊朗基线 | data/_countries-data.json：缅甸 L3170 无 videos（0 条）、伊朗 L470 1 条「中东为何永不团结」；grep `"videos"` 恰 10 数据行（§1「已有 10 行」成立）✓ |
+| yaml 草稿 | cache/data/_countries-data.videos.yaml 与设计 §3 示例逐字一致（缅甸 1 + 伊朗 1，伊朗 url 与 json 既有不同 → 1→2 成立）✓ |
+| videos 列渲染 | layout-table.html L636-685 col.type="videos" + VIDEO_PLATFORM_ICONS + maxShow + noopener,noreferrer；同步器输出 douyin/bilibili/youtube 均为模板可识别 ✓ |
+| 回归面 | test_countries_table.py 14 用例 / test_videos.py 8 用例无列数/videos 硬断言；videos 增不减不改 195 行计数/tab 计数/region pills ✓ |
+| 前置衔接 | CL001 设计 v1.1 §3/§5：yaml 字段（country_zh/title/url/duration/platform）与 videos 对象字段一致 ✓ |
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-054 | 🟡 | §4.2 step1「解析 yaml（PyYAML）」未 pin safe_load（yaml.load 任意代码执行面） | ⏳ OPEN |
+| HG-SEC-055 | 🟡 | §4.2 step8 subprocess 未 pin list-form（target 路径来自 yaml，shell=True 有注入面） | ⏳ OPEN |
+| HG-SEC-056 | 🟡 | target.data/html 相对路径解析基准未定义（CWD 契约缺失，E 命令依赖 CWD=项目根） | ⏳ OPEN |
+| HG-SEC-057 | 🟢 | duration int 归一化仅覆盖 M:SS，H:MM:SS（如 1:02:03→3723）未指定 | 随 v1.1 |
+| HG-SEC-058 | 🟢 | 脚本名 `vides` 拼写（新建文件零迁移成本，建议直接 videos） | 待确认 |
+| HG-SEC-059 | 🟢 | url 尾部空白 strip 无显式用例（§7 已列风险，§5 未断言） | 随 v1.1 |
+| HG-SEC-060 | 🟢 | §1 背景「134KB」已漂移为 131.7KB（工作树未提交 restructure，非 spec 载荷） | 随 v1.1 |
+
+### Positives
+
+- 四段式数据流清晰（yaml 增量 → json 事实源 → yaml 镜像 → 重建 demos），additive-only + F 校验先行 + G 幂等三层写盘安全，无回滚逻辑
+- 8 决策闭环、10 用例覆盖 7 决策（B/D 为环境/依赖面合理豁免）、8 验收项与测试 1:1 无悬空
+- duration 60 进制坑、url strip 去重、dry-run 默认态等边界在 §7 显式列出，规格严谨
+- 复用 html-gen.py table 命令 + CL001 videos 渲染（noopener,noreferrer + escapeHtml 已审计），无重复造轮子
+- B 决策正确隔离手写草稿（cache/ gitignored）与入库产物
+
+### RIG 清单（ops 修 v1.1，全部 Bucket A 一句话补齐）
+
+| # | 项 | 修复 |
+|:-:|:---|:---|
+| RIG-001 | §4.2 step1 | `解析 yaml（PyYAML，safe_load）` |
+| RIG-002 | §4.2 step8 | `subprocess.run([...], shell=False)` 列表参数（python3 / html-gen.py / table / -d / -o），无 shell |
+| RIG-003 | §4.2 step2 | 补「相对路径以项目根为基准解析（脚本须在项目根运行或推导项目根）」 |
+
+- 报告: `documents/review/table-videos-syncer-design-review-v1.0-20260829.md`
+- 处理: CONDITIONAL PASS → 不 push；ops 修 v1.1 后复审（PASS 后生成 dev 实施 prompt 转 dev）
+
+---
+
+## 2026-08-29 — table videos syncer 设计 v1.1 修正（RIG-001/002/003 + 🟢 落地，⏳ 待复审）
+
+- **闭环**: HTML-GEN-CL002 ｜ **Step**: 设计（CONDITIONAL 修正路径 §5.1，git mv v1.0→v1.1 保留历史）
+- **修正提交**: `431c1df` docs@design: CL002 design v1.1 — review fixes RIG-001/002/003 (HTML-GEN-CL002)（仅设计文档 1 文件，+18/-14）
+- **RIG 落点**:
+  - RIG-001 (HG-SEC-054) ✅ §4.2 step1：显式 `yaml.safe_load`（禁 yaml.load / FullLoader，防 `!!python/object` 任意代码执行）
+  - RIG-002 (HG-SEC-055) ✅ §4.2 step8：`subprocess.run([sys.executable 或 python3, 'html-gen.py', 'table', '-d', target.data, '-o', target.html], shell=False)` 列表参数，禁 shell=True / 字符串拼接
+  - RIG-003 (HG-SEC-056) ✅ §4.2 step2：补「相对路径以项目根为基准解析（脚本须在项目根运行或以脚本位置推导项目根），勿相对 cache/data/」一行，并注明覆盖 step8 重建路径
+- **🟢 落地**: HG-SEC-057（duration int 容错仅 M:SS + H:MM:SS 必须引号，§2/§5 test_02/§7 同步）/ HG-SEC-058（脚本名 vides → tool-table-videos-syncer.py，§2/§4.1/§7 + draft 同步）/ HG-SEC-059（§5 test_05 增 url 尾部空格 strip 后去重/回写断言）/ HG-SEC-060（§1 134KB → 131.7KB 实测值）
+- **状态**: ✅ RE-REVIEWED 2026-08-29: PASS 95/A（RIG-001/002/003 + 🟢 057..060 closed；HG-SEC-061 阈值 fold dev prompt；见下节）
+
+---
+
+## 2026-08-29 — table videos syncer 设计 v1.1 复审（PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `431c1df` docs@design: CL002 design v1.1 — review fixes RIG-001/002/003 (HTML-GEN-CL002)（git mv v1.0→v1.1 保留历史，仅 1 文件 +18/-14）
+- **Verdict**: ✅ **PASS 95/100（A）** — 闭环，生成 dev 实施 prompt
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-054..056（🟡×3，closed v1.1）+ HG-SEC-057..060（🟢，closed v1.1）+ HG-SEC-061（🟡 新发现 duration 阈值 `<6000`→`<3600`，fold dev prompt）
+- **Findings**: 0 🔴 / 1 🟡（新）/ 0 🟢（残留）｜ 实现 prompt: ✅ 已生成
+
+### RIG 核验（复审核对项 1-3）
+
+| RIG | HG-SEC | v1.1 落点 | 结果 |
+|:---|:---|:---|:---:|
+| RIG-001 | 054 | §4.2 step1 显式 `yaml.safe_load`，禁 yaml.load/FullLoader | ✅ |
+| RIG-002 | 055 | §4.2 step8 `subprocess.run([...], shell=False)` 列表参数，禁 shell=True/字符串拼接 | ✅ |
+| RIG-003 | 056 | §4.2 step2 相对路径以项目根为基准（勿相对 cache/data/）+ step8 引用覆盖重建路径 | ✅ |
+
+### 🟢 落地核验（复审核对项 4）
+
+| HG-SEC | 结果 |
+|:---|:---:|
+| 057 | ✅ §2/§5 test_02/§7 三处同步「仅 M:SS；H:MM:SS 必须引号」（⚠️ 阈值矛盾 → HG-SEC-061） |
+| 058 | ✅ 全文 vides→videos（§2/§4.1/§7 + TODO draft），无残留脚本名 |
+| 059 | ✅ test_05 增 url 尾部空格 strip 断言，保持 10 用例 |
+| 060 | ✅ §1 134KB→131.7KB，无残留 |
+
+### 新发现 HG-SEC-061（🟡）
+
+§2 补充规格「int < 6000 按秒数归一化」与「未引号 3723 不在容错语义内」矛盾（3723 < 6000）。M:SS 上界 59:59=3599s，正确阈值 `<3600`。fold dev 实施 prompt 一并订正，非安全面，不阻断闭环。
+
+### 验收清单 §6 可执行性（复审核对项 5）
+
+8 项验收 + test_sync_videos 10 用例 + 回归面 1:1 映射无漂移，均保留可执行。
+
+### Positives
+
+- 3 个 🟡 RIG（安全面：safe_load / subprocess list-form / 路径基准）全部一句话级精确补齐，措辞直接覆盖初审要求
+- 🟢 057..060 全落地且三处（§2/§5/§7）同步，无半落地/单处更新
+- git mv v1.0→v1.1 保留历史（`git log --follow` 显示 24b9cbc + 431c1df），修订记录 §8 完整
+- 唯一新发现为规格精度矛盾（阈值边界），非安全/架构缺陷
+
+- 报告: `documents/review/table-videos-syncer-design-rereview-v1.1-20260829.md`
+- dev 实施 prompt: `cache/review-prep/prompt-table-videos-syncer-dev-20260829.md`
+- 处理: PASS → 闭环 + auto-push（github/main）；dev 按实施 prompt 落地 CL002
+
+---
