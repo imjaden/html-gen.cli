@@ -392,3 +392,25 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-053 (🟢 record; countries 巴西行 videos 无提交级回归断言, 建议后续补 test_15)"
     report: documents/review/table-videos-impl-audit-v1.1-20260828.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-videos-syncer-design v1.0 — yaml 增量→country_zh 外键匹配 json 行→url 去重补充 videos→全局镜像回写 yaml→重建 demos (HTML-GEN-CL002); commit 24b9cbc; 决策 A/B/C/D/E/F/G/W; 前置 CL001 已闭环"
+    verdict: CONDITIONAL_PASS
+    score: 85
+    findings_total: 7
+    findings_open: 7
+    tracking: "HG-SEC-054..056 (🟡×3, open: safe_load/subprocess list-form/路径解析基准) + HG-SEC-057..060 (🟢 records, 随 v1.1)"
+    report: documents/review/table-videos-syncer-design-review-v1.0-20260829.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-videos-syncer-design v1.1 复审 — RIG-001..003 fix (HG-SEC-054..056) + 🟢 057..060 落地 + 新发现 HG-SEC-061 (duration 阈值 '<6000'→'<3600'); commit 431c1df (git mv v1.0→v1.1)"
+    verdict: PASS
+    score: 95
+    findings_total: 8
+    findings_open: 0
+    tracking: "HG-SEC-054..056 (🟡×3, closed v1.1) + HG-SEC-057..060 (🟢, closed v1.1) + HG-SEC-061 (🟡 阈值 '<6000'→'<3600', closed dev prompt)"
+    report: documents/review/table-videos-syncer-design-rereview-v1.1-20260829.md
