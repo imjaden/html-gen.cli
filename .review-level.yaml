@@ -448,3 +448,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-067..069 (✅ closed v1.2) + HG-SEC-070 (🟢 record, 折入 D5 非阻断)"
     report: documents/review/table-knowledge-json-output-design-review-v1.2-20260829.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "table-knowledge-json-output 实现审计 — 3 commits (f6efacb fix@html-gen 三态+11 用例 / 27a4470 docs@html-gen D5 13 文件 / 1fae2fd docs@html-gen 计数 224→235), 设计 v1.2 PASS 0295e8f; HTML-GEN-CL003"
+    verdict: PASS
+    score: 100
+    findings_total: 2
+    findings_open: 0
+    tracking: "HG-SEC-070 (✅ closed 本次 D5) + HG-SEC-071..072 (🟢 records 非阻断: 行号漂移/测试粒度)"
+    report: documents/review/table-knowledge-json-output-impl-audit-v1.0-20260829.md

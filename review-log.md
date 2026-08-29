@@ -1312,3 +1312,41 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 生成 dev 实施 prompt + auto-push；dev 按 D1-D7 实施
 
 ---
+
+## 2026-08-29 — table/knowledge JSON 顶层 output 字段实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（implementation-audit）
+- **Scope**: `f6efacb` fix@html-gen（源码三态 + test_json_output 11 用例）→ `27a4470` docs@html-gen（D5 文档同步 13 文件）→ `1fae2fd` docs@html-gen（AGENTS 计数 224→235）（HTML-GEN-CL003）；设计 v1.2 PASS 0295e8f
+- **Verdict**: 🟢 **PASS 100/100（A）** — D1-D7 全数落地，ops 8 项证据逐条实测复核通过，HG-SEC-070 闭合
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-070（✅ closed 本次 D5，features.md L30 对称改「必填」）+ HG-SEC-071..072（🟢 records，非阻断）
+- **Findings**: 2 🟢（记录）/ 0 🟡 / 0 🔴
+
+### Summary
+
+实现链对设计 D1-D7 全数落地且逐条实测核验。三态逻辑 `CLI -o > JSON 顶层 output > 中断(exit 1)` 在 cmd_table（L447-450）与 cmd_knowledge（L496-499）正确实现；根因位 argparse 两处 `default='index.html'/'kb.html'` 已删（L790/L801，原设计锚点 L768/779 因 HELP 增行漂移，内容定位正确）；NO_OUTPUT_MSG 共用常量（L28）+ stderr + 写盘前中断；knowledge 决策 7（只认 data output、groups 忽略）经 test_08/test_09 锁定。11 用例覆盖设计 §5 全表，tempfile 每用例隔离 xdist 兼容。D5 文档同步 8 表面全齐，HG-SEC-070（features.md L30）对称修正闭合，兜底 grep（*.py/*.html/*.md 排除历史）0 残留。D7 打包源 src/html_gen/html-gen.py 与根 byte-identical（sha256 7e50ad87），已装 `~/.local/bin/html-gen` 为 exec 根源码 thin wrapper 无 stale 风险。全量 235 passed 无回归；3 commit 自洽，drama WIP（data/_drama-table-history-strategy.json + demos/drama/history-strategy-table.html）为另一会话 pre-existing 未提交修改，不在 commit 内。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-070 | 🟢 | features.md:30（knowledge `-o`）未纳入 D5，兜底 grep 不命中 | ✅ closed 本次 D5（对称改「必填」） |
+| HG-SEC-071 | 🟢 | 设计 argparse 行号锚点 L768/779 → 实际 L790/801（HELP 增行漂移），内容定位正确 | ✅ record（非缺陷） |
+| HG-SEC-072 | 🟢 | test_05 未单独覆盖「CLI 空串+皆无 JSON→中断」子分支（等价 test_03 truthiness 路径） | ✅ record（可选补断言） |
+
+### Positives
+
+- 根因位修复到位：不删 argparse default 则 `args.output` 恒真、三态步骤 2/3 不可达——两处 default 已删，特性非空转
+- ops 8 项证据逐条实测复核通过（含 demo --rebuild 幂等、src byte-identical、235 passed），无「声称已测实未发生」
+- HG-SEC-070（设计评审 🟢 残留）由 dev 在 D5 中与 L23 对称修正，闭环完整
+- 打包源双保险：src/ gitignored 生成物已同步 + 已装 CLI exec 根源码，优于设计评审时的 stale 担忧
+- 兜底 grep 全仓清点 0 残留，连续三轮的「文档同步清单遗漏」问题收敛
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit + auto-push（github + gitee 双 remote）
+
+- 报告: `documents/review/table-knowledge-json-output-impl-audit-v1.0-20260829.md`
+
+---
