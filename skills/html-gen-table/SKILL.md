@@ -1,7 +1,7 @@
 ---
 name: html-gen-table
 description: Use when building data table HTML pages with html-gen. Covers column config, actions, tabs, sorting, CSV export, and row selection for the A-type layout-table template.
-version: 2.3.0
+version: 2.4.0
 author: dev
 license: MIT
 metadata:
@@ -144,6 +144,20 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 | `search` | bool | true | 显示搜索框 |
 | `clickModes` | array | `["tab"]` | 允许的点击模式 `"tab"`/`"modal"`/`"split"`/`"expand"`; 兼容单数 `clickMode` |
 
+## URL 状态分享 (🔗)
+
+表格支持通过 URL 查询参数同步并分享当前视图状态（`?tab&q&split`）：
+
+- `?tab=<key>` — 当前 Tab（白名单校验，无效忽略）
+- `?q=<关键字>` — 搜索词（随 300ms debounce 同步）
+- `?split=<行号>` — 分栏预览行（越界忽略；有 quickFilter 时下标语义失效跳过）
+
+行为：
+- 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空 tab/q/split）自动剔除
+- 右上角 🔗 按钮拷贝规范化分享 URL（clipboard + execCommand fallback，headless 兼容）
+- 排序 / 快速过滤（quickFilter）触发时自动 closeSplit（下标语义失效保护）
+- 加载时按 tab → q → split 顺序恢复（HG-SEC-076）
+
 ## 操作按钮 Emoji 参考
 
 | 类别 | Emoji |
@@ -205,6 +219,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 
 ## 变更记录
+- v2.4.0 (2026-08-29): 新增 URL 状态分享（?tab&q&split replaceState 同步/恢复 + 🔗 拷贝按钮）
 - v2.3.0 (2026-08-06): quickFilter 默认关（显式 true 启用）+ pillFilter/onCellClick/preview 列属性; tabs value/contains 匹配; pills 顿号分隔; 第 1 列默认分栏
 - v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项; 兼容单数 clickMode
 - v2.1.0: 列冻结、右侧固定列、分栏列过滤增强、单元格点击分栏、自定义模态框渲染器、SKILL.md 加载

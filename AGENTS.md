@@ -38,8 +38,8 @@ html-gen table -d data.json [--title "标题"] [--subtitle "段落描述"] [-o i
 #   -o 必填二选一: CLI -o <out.html> 或 JSON 顶层 "output" (优先级 CLI > JSON; 均无 → 提示中断 exit 1)
 #   --title    优先级: CLI > JSON 顶层 title > "数据表格"
 #   --subtitle 页面级段落描述(纯文本, \n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空
-# 四渲染子命令通用参数: --github-url <url> 右上角 GitHub corner (默认不带, 隐私) / --home-url <url> demo 首页入口 / --quiet 仅打印路径
-#   环境变量兜底: HTML_GEN_GITHUB_URL / HTML_GEN_HOME_URL (CLI 参数优先)
+# 四渲染子命令通用参数: --github-url <url> 右上角 GitHub corner (默认不带, 隐私) / --home-url <url> demo 首页入口 / --favicon <url> favicon 图标 (默认注入 DEFAULT_FAVICON, 显式空串禁用) / --quiet 仅打印路径
+#   环境变量兜底: HTML_GEN_GITHUB_URL / HTML_GEN_HOME_URL / HTML_GEN_FAVICON (CLI 参数优先)
 
 # knowledge — JSON 转 C 型知识库
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
@@ -75,6 +75,21 @@ for f in data/*.json; do html-gen table -d "$f"; done
 ```
 
 注意：`data/_demos-data.json` 无 output 字段——**手工** `html-gen table -d data/_demos-data.json`（不带 -o）从「静默写 index.html」变为「中断提示」（预期行为变更，防覆盖错文件）；`html-gen demo --rebuild` 直调 cmd_table 已传 output，不受影响。doc/slide 不受影响（md 派生默认）。
+
+### videos 同步脚本（CL002 / CL004）
+
+`scripts/tool-table-videos-syncer.py`：yaml 增量 → json videos 补充（按 url 去重）+ yaml 全局镜像回写 + html 重建。
+
+```shell
+scripts/tool-table-videos-syncer.py                            # 缺省 yaml (cache/data/_countries-data.videos.yaml) + 预览(dry-run)
+scripts/tool-table-videos-syncer.py <yaml> --dry-run           # 预览, 零写盘
+scripts/tool-table-videos-syncer.py <yaml> --apply             # 执行写盘 (json → yaml 回写 → html 重建)
+scripts/tool-table-videos-syncer.py <yaml> --empty-video       # 列出 videos 为空的行 (只读, 零写盘)
+```
+
+- `--dry-run` / `--apply` / `--empty-video` 三向互斥（argparse mutually exclusive group）
+- yaml `target` 段扩展 `rebuild: {github_url, home_url, favicon}`：缺省用固定默认；`github_url` 优先级 rebuild 配置 > 旧产物 github-corner 提取 > 固定默认；任一键显式空串 = 禁用（不传该参数）
+- `--apply` 重建时打印 `[执行]` 完整 html-gen 命令（含 `--github-url`/`--home-url`/`--favicon` 三参数）
 
 ## 模板注入机制
 
@@ -254,7 +269,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 235 tests（26 文件；测试文件：test_json_output 11 / test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_sync_videos 10 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 246 tests（27 文件；测试文件：test_json_output 14 / test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_sync_videos 13 / test_url_state 5 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -279,7 +294,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (196 tests)
+├── tests/                      # Selenium + 回归测试 (246 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md

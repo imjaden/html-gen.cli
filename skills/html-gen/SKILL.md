@@ -1,7 +1,7 @@
 ---
 name: html-gen
 description: Use when asked to generate HTML from markdown or JSON using html-gen, create data table pages, knowledge bases, slide presentations, or document pages. Use when user references html-gen CLI or wants markdown converted to styled HTML.
-version: 2.3.0
+version: 2.4.0
 author: dev
 license: MIT
 metadata:
@@ -46,6 +46,8 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ```
 
 输出均为自包含单文件 HTML（CSS 内联，零外部依赖）。
+
+四渲染子命令通用参数：`--github-url <url>`（右上角 GitHub corner，默认不带）、`--home-url <url>`（demo 首页入口）、`--favicon <url>`（favicon 图标，默认注入 `DEFAULT_FAVICON`，显式空串禁用）、`--quiet`（仅打印路径）；环境变量兜底 `HTML_GEN_GITHUB_URL` / `HTML_GEN_HOME_URL` / `HTML_GEN_FAVICON`（CLI 参数优先）。
 
 ## 支持的 Markdown 语法
 
@@ -276,5 +278,6 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 
 
 ## 变更记录
+- v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明
 - v2.3.0 (2026-08-06): 新增 frontmatter 自动剥离; 修复 doc/slide 侧边栏 sticky 失效
 - v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项
