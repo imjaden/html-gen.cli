@@ -1032,7 +1032,8 @@ def cmd_demo(args):
         idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',
                                   subtitle=None,
-                                  github_url=None, home_url=None,
+                                  github_url=None,
+                                  home_url='https://html-gen.cli.jaden.tech/',  # G1(CL005): demo 首页入口, 与 syncer rebuild 缺省一致
                                   output=str(DEMOS_DIR / 'demos-index.html'))
         cmd_table(a)
         print(f"📇 索引重建: {len(idx_rows)} 独立案例 → demos-index.html")
