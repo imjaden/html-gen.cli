@@ -425,3 +425,26 @@ review_history:
     findings_open: 3
     tracking: "HG-SEC-062 (🔴 open) + HG-SEC-063..064 (🟡 open) + HG-SEC-065..066 (🟢 随 v1.1)"
     report: documents/review/table-knowledge-json-output-design-review-v1.0-20260829.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-knowledge-json-output-design v1.1 复审 — RIG-001..003 + OBS-001..002 闭合 (HG-SEC-062..066); 新发现 HG-SEC-067..069 (🟡×3 影响面遗漏: features.md/html-gen-cli-spec/build-package src); commit 2454e37"
+    verdict: CONDITIONAL_PASS
+    score: 85
+    findings_total: 8
+    findings_open: 3
+    tracking: "HG-SEC-062..066 (✅ closed v1.1) + HG-SEC-067..069 (🟡×3, closed v1.2)"
+    report: documents/review/table-knowledge-json-output-design-review-v1.1-20260829.md
+    resolved_by: re-review v1.2 (2026-08-29) — PASS 100/100
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-knowledge-json-output-design v1.2 复审 — RIG-004..006 闭合 (HG-SEC-067..069: features.md/cli-spec/build-package src); 新发现 HG-SEC-070 (🟢 features.md:30 knowledge -o 对称, 折入 D5); commit 0295e8f"
+    verdict: PASS
+    score: 100
+    findings_total: 4
+    findings_open: 0
+    tracking: "HG-SEC-067..069 (✅ closed v1.2) + HG-SEC-070 (🟢 record, 折入 D5 非阻断)"
+    report: documents/review/table-knowledge-json-output-design-review-v1.2-20260829.md

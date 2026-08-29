@@ -1224,3 +1224,91 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: CONDITIONAL PASS → 不 push；ops 修 v1.1 后复审（PASS 后生成 dev 实施 prompt 转 dev 按 D1-D6 实施）
 
 ---
+
+## 2026-08-29 — table/knowledge JSON 顶层 output 字段设计 v1.1 复审（CONDITIONAL PASS 85/B）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: `2454e37` docs@design: table/knowledge JSON output field design v1.1 — review fixes RIG-001/002/003（HTML-GEN-CL003）；v1.0 已删（HEAD 仅存 v1.1）；复审上轮 HG-SEC-062..066
+- **Verdict**: 🟠 **CONDITIONAL PASS 85/100（B）** — 上轮 5 项全闭合，新发现 3 🟡 修 v1.2 后复审
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-062..066（✅ closed v1.1）+ HG-SEC-067/068/069（🟡 open）
+- **Findings**: 3 🟡（新增）/ 0 🔴
+
+### Summary
+
+上轮 1 🔴 + 2 🟡 + 2 🟢 全数正确闭合：argparse L768/L779 默认值删除点（§3.4 点 1 + D1/D2）、knowledge json_output 提取位置（L475 raw 最终化后 isinstance(raw,dict)）、usage-guide.md 纳入 D5（:126/:186/:60 逐字核验）、§3.2 矩阵「CLI -o 非空」、§5「-g + data 带 output」用例——均实测落地无半落地。复审对影响面做系统性 grep 枚举，新发现 D5 仍漏 3 处表面：`features.md:23`（table -o 默认 index.html）、`skills/html-gen-cli-spec/SKILL.md:44`（默认 index.html / kb.html）、`src/html_gen/` pip 打包源（build-package.py 未纳入 D-list，已装 `html-gen` v3.3 入口将滞留旧默认）。无逻辑缺陷，均为文档/构建同步完整性缺口，且是 D5 完整性连续两轮的问题（v1.0 漏 usage-guide → v1.1 仍漏 3 处）。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-062 | 🔴 | argparse `default='index.html'`/`'kb.html'`（L768/779）未纳入 D1/D2 | ✅ closed v1.1 |
+| HG-SEC-063 | 🟡 | D5 遗漏 `demos/usage-guide.md`（:126「默认 index.html」） | ✅ closed v1.1 |
+| HG-SEC-064 | 🟡 | D2 cmd_knowledge json_output 提取位置未指定 | ✅ closed v1.1 |
+| HG-SEC-065 | 🟢 | 矩阵「显式传入」未限定非空 | ✅ closed v1.1 |
+| HG-SEC-066 | 🟢 | §5 缺「-g + data output」组合用例 | ✅ closed v1.1 |
+| HG-SEC-067 | 🟡 | D5 遗漏 `features.md`（:23「table -o 默认 index.html」将漂移） | ✅ closed v1.2 |
+| HG-SEC-068 | 🟡 | D5 遗漏 `skills/html-gen-cli-spec/SKILL.md`（:44「默认 index.html / kb.html」） | ✅ closed v1.2 |
+| HG-SEC-069 | 🟡 | D1-D6 未含 build-package.py 重生成 src/，已装 `html-gen` 入口行为漂移 | ✅ closed v1.2 |
+
+### Positives
+
+- 上轮 5 项意见逐条实测闭合，代码锚点（L441/L484/L768/L779/L473-475）与 usage-guide.md（:126/:186/:60）逐字一致，_demos-data.json 实测无 output 键
+- 三态实现落点完整（6 处），knowledge json_output 提取位置（L474 raw 恒为 data 文件最终解析，有/无 -g 均成立）无歧义
+- §3.2 空串语义（`-o ""` truthiness 视为未传）与 title/subtitle 的不对称已显式文档化、有意区分
+- 向后兼容零回归（cmd_demo rebuild 已传 output / doc/slide md 派生 / 现有测试全部显式 -o）不变
+- 测试规划 11 用例完整，纯 CLI subprocess 断言声明正确
+
+### RIG 清单（ops 修 v1.2）
+
+| # | 项 | 修复 |
+|:-:|:---|:---|
+| RIG-4 (067) | D5 | 增 `features.md`：L23「table -o 默认 index.html」改「必填（CLI -o 或 JSON output 二选一）」；顺带修 L10「doc -o 默认 index.html」既有错误（doc 实为 md 派生默认） |
+| RIG-5 (068) | D5 | 增 `skills/html-gen-cli-spec/SKILL.md`：L44「默认 index.html / kb.html」改「必填（CLI -o 或 JSON output 二选一）」 |
+| RIG-6 (069) | D-list | 补「`python3 scripts/build-package.py` 重新生成 src/html_gen/（含 skills 副本）；已 pip 安装（`~/.local/bin/html-gen` v3.3）需同步重装」；§4「代码 6 处」补注 src/ 打包源 |
+
+- 兜底: dev 实施 D5 以全仓 `grep -rn "默认.*index.html\|默认.*kb.html\|default='index.html'\|default='kb.html'"` 结果逐项清点，避免第三轮遗漏
+- 报告: `documents/review/table-knowledge-json-output-design-review-v1.1-20260829.md`
+- 处理: ✅ RESOLVED → v1.2 (2026-08-29 re-review PASS 100/A，HG-SEC-067..069 闭合)
+
+---
+
+## 2026-08-29 — table/knowledge JSON 顶层 output 字段设计 v1.2 复审（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: `0295e8f` docs@design: table/knowledge JSON output field design v1.2 — review fixes RIG-004/005/006（HTML-GEN-CL003）；复审上轮 HG-SEC-067..069
+- **Verdict**: 🟢 **PASS 100/100（A）** — RIG-4/5/6 全部闭合，无新增 🔴/🟡，1 🟢 记录折入 D5
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-067..069（✅ closed v1.2）+ HG-SEC-070（🟢 record，折入 D5，非阻断）
+- **Findings**: 1 🟢（记录）/ 0 🟡 / 0 🔴
+
+### Summary
+
+上轮 3 🟡（RIG-4/5/6）逐条实测闭合：features.md L10「doc -o 默认 index.html」+ L23「table -o 默认 index.html」逐字核验、skills/html-gen-cli-spec/SKILL.md L44「默认 index.html / kb.html」逐字核验、D7 build-package.py 同步 src/（实测 src 与根 byte-identical sha 459af1bf、`~/.local/bin/html-gen` v3.3 已装确认）。修订未引入新问题：D7 位于 D6 后（打包同步步骤）正确、§4「6 处」计数与 src/ 注记分离清晰、修订记录表完整。残留 1 🟢 HG-SEC-070：features.md 三条 `-o` 行中 L30（knowledge -o）未显式纳入 D5，且兜底 grep 模式（`默认.*`/`default=`）不会命中该行（L30 无「默认」字样）——非错误、非阻断，dev 实施 D5 时与 L23 对称改「必填」即可。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-067 | 🟡 | D5 遗漏 `features.md`（:23「table -o 默认 index.html」将漂移） | ✅ closed v1.2 |
+| HG-SEC-068 | 🟡 | D5 遗漏 `skills/html-gen-cli-spec/SKILL.md`（:44「默认 index.html / kb.html」） | ✅ closed v1.2 |
+| HG-SEC-069 | 🟡 | D1-D6 未含 build-package.py 重生成 src/，已装 `html-gen` 入口行为漂移 | ✅ closed v1.2 |
+| HG-SEC-070 | 🟢 | features.md:30（knowledge `-o`）未显式纳入 D5，兜底 grep 不命中；与 L23 对称改「必填」 | ⏳ 折入 D5（dev） |
+
+### Positives
+
+- RIG-4/5/6 三处修复锚点逐字实测核验通过（features.md L10/L23、cli-spec SKILL.md L44、build-package.py src 同步），无半落地
+- src/html_gen/html-gen.py 与根 html-gen.py byte-identical（sha256 前缀 459af1bf）实测确认；已装 CLI `~/.local/bin/html-gen` v3.3 存在，D7 确为必要步骤
+- 修订未引入新问题：D7 位置正确、§4 影响面计数一致、§0 修订记录表完整
+- 兜底 grep 枚举已采纳（§4 D5 末条），连续三轮的「文档同步清单遗漏」问题得到机制性收敛
+
+### 实现 prompt
+
+- ✅ 已生成（dev 按 D1-D7 实施；D5 补 features.md L30 与 L23 对称改「必填」）
+
+- 报告: `documents/review/table-knowledge-json-output-design-review-v1.2-20260829.md`
+- 处理: PASS → 生成 dev 实施 prompt + auto-push；dev 按 D1-D7 实施
+
+---
