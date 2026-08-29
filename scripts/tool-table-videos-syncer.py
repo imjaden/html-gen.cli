@@ -159,6 +159,17 @@ def build_mirror_countries(rows):
     return out
 
 
+def extract_corner_url(html_path):
+    """E 重建前提取既有产物 github-corner 的 repo URL（FIND-002 fix）：
+    旧 html 含 corner（HG-SEC-014 demo 页规范）时透传 --github-url，避免重建丢失。"""
+    try:
+        text = html_path.read_text(encoding='utf-8')
+    except OSError:
+        return None
+    m = re.search(r'href="(https://github\.com/[^"]+)"[^>]*class="[^"]*github-corner', text)
+    return m.group(1) if m else None
+
+
 def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows,
               rows_by_country, new_items):
     """执行写盘：append json → 写 json → W 回写 yaml → E 重建 html。"""
@@ -195,10 +206,12 @@ def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows
     if not html_gen.is_file():
         print(f'[错误] 未找到 html-gen.py: {html_gen}', file=sys.stderr)
         return 1
-    result = subprocess.run(
-        [sys.executable, str(html_gen), 'table', '-d', str(json_path),
-         '-o', str(html_path)],
-        shell=False)
+    cmd = [sys.executable, str(html_gen), 'table', '-d', str(json_path),
+           '-o', str(html_path)]
+    corner_url = extract_corner_url(html_path)
+    if corner_url:
+        cmd += ['--github-url', corner_url]
+    result = subprocess.run(cmd, shell=False)
     if result.returncode != 0:
         print(f'[错误] html 重建失败（exit {result.returncode}）', file=sys.stderr)
         return result.returncode
