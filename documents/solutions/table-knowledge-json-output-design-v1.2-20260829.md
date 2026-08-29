@@ -1,18 +1,28 @@
-# table/knowledge JSON 顶层 output 字段设计 v1.1
+# table/knowledge JSON 顶层 output 字段设计 v1.2
 
 - 日期: 2026-08-29
-- 状态: 已确认（探讨决策 1A2A3A4A5 + 1A2A3A + 1A2A 全部闭合）；v1.1 按 review 意见修订（HG-SEC-062..066）
+- 状态: 已确认（探讨决策 1A2A3A4A5 + 1A2A3A + 1A2A 全部闭合）；v1.2 按复审意见修订（HG-SEC-067..069）
 - 类别: 功能解决方案（CLI 行为变更）
 
-## 0. 修订记录（v1.0 → v1.1）
+## 0. 修订记录
+
+### v1.0 → v1.1（review v1.0，HG-SEC-062..066）
 
 | 意见 | 严重度 | 处理 |
 |:--|:--:|:--|
 | HG-SEC-062 / RIG-1 | 🔴 | ✅ 已修：§3.4/D1/D2 增 argparse `default=` 删除点（html-gen.py:768/779）；§4 代码改动点更正为「两处 cmd + 两处 argparse default + 两处 JSON 解析分支」 |
-| HG-SEC-063 / RIG-2 | 🟡 | ✅ 已修：§4 D5 文档同步清单增 `demos/usage-guide.md`（usage-guide.html 重新生成）；§3.5 补 `_demos-data.json` 手工调用行为变更提示 |
+| HG-SEC-063 / RIG-2 | 🟡 | ✅ 已修：§4 D5 文档同步清单增 `demos/usage-guide.md`；§3.5 补 `_demos-data.json` 手工调用行为变更提示 |
 | HG-SEC-064 / RIG-3 | 🟡 | ✅ 已修：§3.4/D2 增 cmd_knowledge json_output 提取位置（L475 raw 最终化后，结构化键 items/data） |
-| HG-SEC-065 / OBS-1 | 🟢 | ✅ 已修：§3.2 矩阵行 1 表述改「CLI `-o` 非空」，与 §3.1 空串语义对齐 |
-| HG-SEC-066 / OBS-2 | 🟢 | ✅ 已修：§5 测试表补「knowledge `-g` groups.json + data 文件带 output 生效」组合用例 |
+| HG-SEC-065 / OBS-1 | 🟢 | ✅ 已修：§3.2 矩阵行 1 表述改「CLI `-o` 非空」 |
+| HG-SEC-066 / OBS-2 | 🟢 | ✅ 已修：§5 测试表补「knowledge `-g` + data 带 output」组合用例 |
+
+### v1.1 → v1.2（复审 v1.1，HG-SEC-067..069）
+
+| 意见 | 严重度 | 处理 |
+|:--|:--:|:--|
+| HG-SEC-067 / RIG-4 | 🟡 | ✅ 已修：§4 D5 增 `features.md`（L23 改"必填"；顺带修 L10「doc -o 默认 index.html」既有错误——doc 实为 md 派生默认，`-o` 可选） |
+| HG-SEC-068 / RIG-5 | 🟡 | ✅ 已修：§4 D5 增 `skills/html-gen-cli-spec/SKILL.md`（L44 默认值改"必填（CLI `-o` 或 JSON `output` 二选一）"） |
+| HG-SEC-069 / RIG-6 | 🟡 | ✅ 已修：§6 新增 D7「重跑 build-package.py 同步 src/html_gen/ + 已 pip 安装则重装」；§4 补注 src/ 打包源 |
 
 ## 1. 背景与需求
 
@@ -107,14 +117,18 @@ table 无 `-o` 时静默落 `index.html`、knowledge 静默落 `kb.html`（历�
 ## 4. 影响面分析
 
 - 代码：6 处——两处 cmd（L441/L484）+ **两处 argparse default（L768/L779）** + 两处 JSON 解析分支（table L409-421 / knowledge L473-475）
+- **src/ 打包源（HG-SEC-069）**：`src/html_gen/` 是 `scripts/build-package.py` 生成的 pip 打包源（当前与根 html-gen.py byte-identical，已安装为 `~/.local/bin/html-gen` v3.3）——根改动后必须重跑 build-package.py 同步 src/，否则已装 CLI 仍走旧默认值、特性空转；若已 pip 安装需同步重装
 - 测试：已实测排查 tests/ 全部 table/knowledge 子进程调用（test_templates / test_render_summary / test_corner_privacy / test_initial_hidden_split / test_videos / test_table_features `_gen_table_page`）均显式传 `-o`，**零测试依赖静默默认值**；test_demos_index.py:97/99 的「table -d data.json」仅为页面展示字符串非真实调用（页面示例可保留，若要同步需连断言一起改）
 - 文档同步清单（D5）：
   - AGENTS.md：CLI 子命令节 `-o` 可选性描述 + 数据格式节补 output 字段说明 + 批量场景说明（含 _demos-data.json 行为变更提示）
   - html-gen.py HELP 文本：help table / help knowledge 的 JSON 数据格式说明补 output 字段 + `-o` 表述
   - demos/table-guide.html + demos/knowledge-guide.html（md 源 → doc 重新生成）
-  - **demos/usage-guide.md → usage-guide.html（重新生成）**：table 节（:126 现写「默认 index.html」）改「必填（CLI `-o` 或 JSON `output` 二选一）」；knowledge 节（:186）同理；doc 节（:60）不受影响（md 派生默认保留）
+  - demos/usage-guide.md → usage-guide.html（重新生成）：table 节（:126 现写「默认 index.html」）改「必填（CLI `-o` 或 JSON `output` 二选一）」；knowledge 节（:186）同理；doc 节（:60）不受影响（md 派生默认保留）
   - README.md / README.zh.md：Commands 节 `-o` 描述
+  - **features.md**（功能登记表）：L23「table -o/--output 默认 index.html」改「必填（CLI `-o` 或 JSON `output` 二选一）」；**顺带修 L10「doc -o 默认 index.html」既有错误**（doc 实为 md 派生默认，`-o` 可选）
+  - **skills/html-gen-cli-spec/SKILL.md**（CLI 参数惯例权威表）：L44「默认 index.html / kb.html」改「必填（CLI `-o` 或 JSON `output` 二选一）」
   - skills/html-gen-table/SKILL.md + html-gen-knowledge/SKILL.md：数据格式节补 output
+  - **兜底枚举（dev 实施 D5 时）**：全仓 `grep -rn "默认.*index.html\|默认.*kb.html\|default='index.html'\|default='kb.html'"` 结果为准逐项清点，避免第三轮遗漏
 - 无模板（layout-*.html）改动
 
 ## 5. 测试计划
@@ -143,8 +157,9 @@ table 无 `-o` 时静默落 `index.html`、knowledge 静默落 `kb.html`（历�
 - D2: cmd_knowledge 三态解析 + **argparse L779 删 `default='kb.html'`** + **L475 raw 最终化后提取 json_output（isinstance(raw, dict) 判断，结构化键 items/data）**
 - D3: 中断文案统一（两处共用，stderr + exit 1，写盘前）
 - D4: tests/test_json_output.py 新用例（上表全量）
-- D5: 文档同步（AGENTS.md / HELP / guides 含 **usage-guide.md** / README / skills）
+- D5: 文档同步（AGENTS.md / HELP / guides 含 usage-guide.md / README / features.md / skills 含 html-gen-cli-spec / 全仓 grep 兜底枚举）
 - D6: 全量回归通过
+- D7: **重跑 `python3 scripts/build-package.py` 同步 src/html_gen/（含 skills 副本）；若已 pip 安装（`~/.local/bin/html-gen` v3.3）同步重装**
 
 ## 7. 验证清单（ops 核查用）
 
@@ -155,3 +170,4 @@ table 无 `-o` 时静默落 `index.html`、knowledge 静默落 `kb.html`（历�
 5. `html-gen demo --rebuild` 正常（demos-index.html 生成，不触发中断）
 6. `html-gen table -d data/_demos-data.json`（手工无 -o）→ 中断提示（预期行为变更）
 7. 全量 pytest 通过
+8. src/html_gen/html-gen.py 与根文件 byte-identical（build-package 同步生效）
