@@ -102,6 +102,28 @@ def corner_args(args):
     return (github_corner_html(gh) if gh else ''), (home_link_html(home) if home else '')
 
 
+# ═══ Favicon (CL004: 默认注入 DEFAULT_FAVICON; --favicon 覆盖; 显式空串禁用) ═══
+DEFAULT_FAVICON = "https://www.jaden.tech/static/img/favicon.png"
+
+
+def favicon_link_html(url):
+    """favicon link 注入串；空 → 空串（禁用, 与 --github-url 空语义对齐）。"""
+    if not url:
+        return ''
+    return f'<link rel="icon" href="{url}" type="image/png">'
+
+
+def favicon_args(args):
+    """--favicon 入参 + env 兜底 (HG-SEC-073: 勿用 or 链, 否则空串禁用失效).
+
+    优先级: CLI --favicon > env HTML_GEN_FAVICON > DEFAULT_FAVICON。
+    显式传空串 → 空串 → favicon_link_html 返回 '' → 不注入。
+    """
+    favicon = args.favicon if getattr(args, 'favicon', None) is not None \
+        else (os.environ.get('HTML_GEN_FAVICON') or DEFAULT_FAVICON)
+    return favicon_link_html(favicon)
+
+
 # ═══ Markdown → HTML (minimal, no deps) ═══
 def md_to_html(text):
     lines = text.split('\n')
@@ -312,7 +334,7 @@ def cmd_doc(args):
     tmpl = inline_style(read_template(TEMPLATE_DOC))
     gc, hl = corner_args(args)
     result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content,
-                    github_corner=gc, home_link=hl)
+                    github_corner=gc, home_link=hl, favicon=favicon_args(args))
     out = args.output or md.with_suffix('.html')
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
@@ -383,7 +405,7 @@ def cmd_slide(args):
     gc, hl = corner_args(args)
     result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content,
                     cover=h1_html, h2_count=str(h2_count), perf_warning=perf_warning,
-                    github_corner=gc, home_link=hl)
+                    github_corner=gc, home_link=hl, favicon=favicon_args(args))
     out = args.output or md.with_suffix('.slide.html')
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
@@ -442,7 +464,7 @@ def cmd_table(args):
                     tabs=json.dumps(tabs, ensure_ascii=False),
                     options=json.dumps(options, ensure_ascii=False),
                     filters='', search_placeholder='搜索...',
-                    github_corner=gc, home_link=hl)
+                    github_corner=gc, home_link=hl, favicon=favicon_args(args))
     # CL003: 输出目标三态 — CLI -o 非空 > JSON 顶层 output > 中断 (写盘前)
     out = args.output or json_output
     if not out:
@@ -491,7 +513,7 @@ def cmd_knowledge(args):
                     welcome_text=args.welcome or '从上方类目选择，浏览整理的知识内容。',
                     groups=json.dumps(groups, ensure_ascii=False),
                     items=json.dumps(items, ensure_ascii=False),
-                    github_corner=gc, home_link=hl)
+                    github_corner=gc, home_link=hl, favicon=favicon_args(args))
     # CL003: 输出目标三态 — CLI -o 非空 > JSON 顶层 output > 中断 (写盘前)
     out = args.output or json_output
     if not out:
@@ -772,6 +794,7 @@ def main():
     d.add_argument('--metadata')
     d.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
     d.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    d.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     s = sub.add_parser('slide', help='Markdown → 幻灯片')
     s.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -781,6 +804,7 @@ def main():
     s.add_argument('--subtitle')
     s.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
     s.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    s.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     t = sub.add_parser('table', help='JSON → A 型数据表格')
     t.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -790,6 +814,7 @@ def main():
     t.add_argument('-o', '--output', help='输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一)')
     t.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
     t.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    t.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     k = sub.add_parser('knowledge', help='JSON → C 型知识库')
     k.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
@@ -801,6 +826,7 @@ def main():
     k.add_argument('-o', '--output', help='输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一)')
     k.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
     k.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    k.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>)')
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
