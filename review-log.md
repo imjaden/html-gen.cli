@@ -1393,3 +1393,46 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 审计三件套 + commit（仅 commit 不 push，AGENTS.md 约定 + 本任务约束）
 
 ---
+
+## 2026-08-29 — html-gen favicon + URL状态 + syncer参数 实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（implementation-audit）
+- **Scope**: HTML-GEN-CL004 实现 commit 链 8 个（`9a9c608` docs@design → `43c5ffd` docs@review → `872593e` feat@html-gen → `b97ca54` feat@template → `33707e7` feat@script → `ae606f3` test@script → `0b95c2b` docs@html-gen → `1d864b1` data@demo，全部未 push）；设计 v1.0 PASS 85/A
+- **Verdict**: 🟢 **PASS 100/100（A）** — 三项需求全数落地且源码级+实测双重核验通过，HG-SEC-073..079 七项全部折入并闭合
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-073..079（✅ closed 本次实现验证）+ HG-SEC-080（🟢 record 非阻断）
+- **Findings**: 1 🟢（记录）/ 0 🟡 / 0 🔴
+
+### Summary
+
+实现链对设计 §三/四/五 三项需求全数落地。favicon：DEFAULT_FAVICON 默认注入（html-gen.py L106）+ `favicon_args` 三层优先级（L122-123 用 `is not None` 判断，HG-SEC-073 空串禁用生效）+ 四子命令 argparse `--favicon`（L797/807/817/829）+ 四处 inject（L337/408/467/516）+ 四模板 `<!--FAVICON-->`（L7），四模板产物实测均注入默认 favicon。URL 状态：`syncUrlState` 统一封装（layout-table L1016-1027）+ 五同步点（switchTab L1351/搜索 debounce L1339/activateSplit L1043/splitNav/closeSplit L1063）+ 恢复顺序 tab→q→split（L1440-1484，HG-SEC-076）+ URLSearchParams 读写对称（HG-SEC-074）+ sort/quickFilter closeSplit（L728/741/797，HG-SEC-075）+ 🔗 shareBtn（clipboard + execCommand fallback + toast）。syncer：yaml_path 缺省路径（L40）+ 三向互斥 exit 2（L299-303）+ --empty-video 只读（L219-239）+ rebuild 三键配置（L188-216，空串禁用 HG-SEC-078）+ [执行] shlex.quote 完整命令 + shell=False（L282-283，RIG-002）。测试：test_url_state 5 / test_sync_videos 13 / test_json_output 14 / test_corner_privacy 6，专项 32 passed，全量 246 collected。治理：8 commit 全 type@scope、未 push、4 个 drama WIP 文件未混入、AGENTS.md 计数 246 一致。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-073 | 🟡→✅ | `--favicon ""` 禁用 None/"" 区分 | ✅ closed（`L122-123` `is not None`，实测空串禁用） |
+| HG-SEC-074 | 🟡→✅ | URL q 编解码对称 + malformed % URIError | ✅ closed（`L1018/1441-1449` 统一 URLSearchParams） |
+| HG-SEC-075 | 🟡→✅ | split 下标 vs sort/quickFilter 交互 | ✅ closed（`L728/741/797` closeSplit） |
+| HG-SEC-076 | 🟢→✅ | 恢复 init() 挂钩 + defaultFilter 优先级 | ✅ closed（`L1440-1484` + `L1479` `!quickFilter`） |
+| HG-SEC-077 | 🟢→✅ | render_* 实为 cmd_* 命名 | ✅ closed（按 cmd_* 定位正确） |
+| HG-SEC-078 | 🟢→✅ | rebuild 三键空串语义 | ✅ closed（`L197-215` 空串=禁用，实测 [执行] 无对应参数） |
+| HG-SEC-079 | 🟢→✅ | test 锁「[执行] 打印行」断言 | ✅ closed（test_11 assertRegex 三参数打印行） |
+| HG-SEC-080 | 🟢 | favicon/home URL 未 HTML 转义（operator 受控，与既有 github-corner 同模式） | ✅ record（非阻断，仅未来引入非受控 URL 才需转义） |
+
+### Positives
+
+- 设计评审 7 项 findings 全部折入实现并逐条验证闭合，无「折入即忘」——每项均有源码行号 + 实测证据（含 HG-SEC-078 rebuild 空串禁用临时 yaml 实测、HG-SEC-073 空串禁用 grep=0）
+- 三处 🟡（073/074/075）均按设计评审建议的「一处一行」收紧，非绕过或含糊处理
+- 安全面保持设计评审确认：URL 参数无 innerHTML、tab 白名单、split 越界、syncer shell=False + safe_load
+- 12 项验证证据全属实（专项 32 passed + favicon 三态 + 四模板 + empty-video 173 条 + 互斥 exit 2 + [执行] 三参数 + 全量 246 collected），无「声称已测实未发生」
+- commit 治理干净：8 commit 全 type@scope、drama WIP 未夹带、AGENTS.md 计数 246 与 `246 collected` 精确一致
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`docs@review: html-gen favicon+URL状态+syncer参数 实现审计 PASS (HTML-GEN-CL004)`）；仅 commit 不 push（AGENTS.md 约定 + 本任务约束）
+
+- 报告: `documents/review/html-gen-favicon-urlstate-syncer-impl-audit-v1.0-20260829.md`
+
+---
