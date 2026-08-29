@@ -31,7 +31,7 @@ CL001 落地了 table 模板 `col.type="videos"` 列，countries-table 已有 10
 - 脚本名 scripts/tool-table-videos-syncer.py（v1.1 修正：原 vides 拼写错误，新建文件零迁移成本，统一为 videos 拼写）【v1.1: HG-SEC-058】
 - CLI：`scripts/tool-table-videos-syncer.py <yaml-path> [--dry-run] [--apply]`；默认无参 = dry-run 预览；--dry-run 与 --apply 同传 → 报错互斥
 - 去重键 = url（strip 后精确比较）；yaml 内部同 url 重复 → 后者忽略
-- duration 保持字符串原样（M:SS / H:MM:SS），不转数值；int 容错仅支持 M:SS（未引号 int < 6000 按秒数归一化，如 415 → "6:55"）；H:MM:SS 必须引号包裹（未引号 3723 不在容错语义内）【v1.1: HG-SEC-057】
+- duration 保持字符串原样（M:SS / H:MM:SS），不转数值；int 容错仅支持 M:SS（未引号 int < 3600 按秒数归一化，如 415 → "6:55"；M:SS 上界 59:59 = 3599s）；H:MM:SS 必须引号包裹（未引号 3723 不在容错语义内）【v1.1: HG-SEC-057】【v1.1: HG-SEC-061 修正 6000→3600】
 - additive 语义：只 append 不删除不覆盖；yaml 某国列表为空 = 无操作；未覆盖行不动
 
 ## 3. yaml 格式规格（A）
