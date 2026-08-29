@@ -1,23 +1,30 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""A 型表格 videos 同步辅助脚本（HTML-GEN-CL002）。
+"""A 型表格 videos 同步辅助脚本（HTML-GEN-CL002 / CL004）。
 
 以 yaml 为增量输入，按 country_zh 外键匹配 data JSON 行，将 json 尚未包含的
 视频（按 url 去重）append 进对应行 videos 数组；随后将 json 全部 videos 全局
 镜像回写 yaml（countries 段），并调用 html-gen.py table 重建 demos 产物。
 
-用法:
-    scripts/tool-table-videos-syncer.py <yaml-path>            # 预览（默认 dry-run）
+用法 (CL004 参数体系):
+    scripts/tool-table-videos-syncer.py                      # 缺省 yaml + 预览（默认 dry-run）
+    scripts/tool-table-videos-syncer.py <yaml-path>          # 预览（默认 dry-run）
     scripts/tool-table-videos-syncer.py <yaml-path> --dry-run  # 预览，零写盘
     scripts/tool-table-videos-syncer.py <yaml-path> --apply    # 执行写盘
+    scripts/tool-table-videos-syncer.py <yaml-path> --empty-video  # 列出 videos 为空的行（只读，零写盘）
+
+yaml target 段扩展 rebuild: {github_url, home_url, favicon}（缺省用固定默认；
+github_url 优先级: rebuild 配置 > 旧产物 github-corner 提取 > 固定默认）。
 
 设计: documents/solutions/table-videos-syncer-design-v1.1-20260829.md
+      documents/solutions/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md §5
 依赖: 仅 PyYAML（dev 依赖 requirements-dev.txt），运行时 html-gen 零依赖不受影响
 """
 
 import argparse
 import json
 import re
+import shlex
 import subprocess
 import sys
 from pathlib import Path
@@ -28,6 +35,14 @@ import yaml
 # scripts/ 的上级 = 项目根；target.data / target.html / html-gen.py 等相对路径
 # 一律以项目根为基准解析（RIG-003 / HG-SEC-056），勿相对 yaml 所在目录（cache/）
 PROJECT_ROOT = Path(__file__).resolve().parents[1]
+
+# CL004: 缺省 yaml 路径（I2, 项目根解析）
+DEFAULT_YAML = PROJECT_ROOT / 'cache' / 'data' / '_countries-data.videos.yaml'
+
+# CL004: rebuild 缺省默认（L1 / 1B / C1）
+DEFAULT_GITHUB_URL = 'https://github.com/imjaden/html-gen.cli'
+DEFAULT_HOME_URL = 'https://html-gen.cli.jaden.tech/'
+DEFAULT_FAVICON = 'https://www.jaden.tech/static/img/favicon.png'
 
 # duration int 容错阈值：M:SS 上界 59:59 = 3599s，故 < 3600（HG-SEC-061）
 DURATION_INT_THRESHOLD = 3600
@@ -170,6 +185,60 @@ def extract_corner_url(html_path):
     return m.group(1) if m else None
 
 
+def resolve_rebuild_args(target, html_path):
+    """rebuild 配置节 → html-gen 显式参数追加段（L1 / 2A / 1B）。
+
+    github_url 优先级: rebuild.github_url > extract_corner_url(旧 html) > 固定默认 (2A)。
+    home_url / favicon 缺省用固定默认（1B / C1）。
+    HG-SEC-078: 任一键显式空串 = 禁用 → 不传该参数（跳过提取/默认）。
+    """
+    rebuild = target.get('rebuild') or {}
+    extra = []
+    if 'github_url' in rebuild:
+        if rebuild['github_url']:
+            extra += ['--github-url', rebuild['github_url']]
+        # 空串 → 显式禁用, 不传 --github-url
+    else:
+        corner = extract_corner_url(html_path) or DEFAULT_GITHUB_URL
+        extra += ['--github-url', corner]
+    if 'home_url' in rebuild:
+        if rebuild['home_url']:
+            extra += ['--home-url', rebuild['home_url']]
+        # 空串 → 显式禁用, 不传 --home-url
+    else:
+        extra += ['--home-url', DEFAULT_HOME_URL]
+    if 'favicon' in rebuild:
+        if rebuild['favicon']:
+            extra += ['--favicon', rebuild['favicon']]
+        # 空串 → 显式禁用, 不传 --favicon
+    else:
+        extra += ['--favicon', DEFAULT_FAVICON]
+    return extra
+
+
+def run_empty_video(data_doc):
+    """--empty-video 只读：列出 videos 缺失或为空的 json 行（K1 / 4A）。
+
+    输出逐行「首字段 (次字段)」：按 json 行内字段序取前两个非空字段，
+    空字段显示 (空)；底部「共 N 条 videos 为空」。零写盘，exit 0。
+    """
+    rows = data_doc['data'] if isinstance(data_doc, dict) and 'data' in data_doc else data_doc
+    if not rows:
+        print('[empty-video] 无数据行')
+        return 0
+    keys = list(rows[0].keys())
+    empty = [r for r in rows if not r.get('videos')]
+    if not empty:
+        print(f'全部 {len(rows)} 条均有 videos')
+        return 0
+    for row in empty:
+        vals = [str(row[k]) for k in keys if row.get(k) not in (None, '')]
+        vals = (vals[:2] + ['', ''])[:2]
+        print(f'{vals[0] or "(空)"} ({vals[1] or "(空)"})')
+    print(f'共 {len(empty)} 条 videos 为空')
+    return 0
+
+
 def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows,
               rows_by_country, new_items):
     """执行写盘：append json → 写 json → W 回写 yaml → E 重建 html。"""
@@ -208,9 +277,9 @@ def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows
         return 1
     cmd = [sys.executable, str(html_gen), 'table', '-d', str(json_path),
            '-o', str(html_path)]
-    corner_url = extract_corner_url(html_path)
-    if corner_url:
-        cmd += ['--github-url', corner_url]
+    # CL004: rebuild 配置节 → 显式 --github-url/--home-url/--favicon 三参数 (D1/L1/2A)
+    cmd += resolve_rebuild_args(target, html_path)
+    print('[执行] ' + ' '.join(shlex.quote(str(a)) for a in cmd))
     result = subprocess.run(cmd, shell=False)
     if result.returncode != 0:
         print(f'[错误] html 重建失败（exit {result.returncode}）', file=sys.stderr)
@@ -224,10 +293,14 @@ def main(argv=None):
         prog='tool-table-videos-syncer.py',
         description='table videos 同步辅助脚本：yaml 增量 → json videos 补充 + yaml 全局镜像 + html 重建',
     )
-    parser.add_argument('yaml_path', help='增量 yaml 路径（如 cache/data/_countries-data.videos.yaml）')
+    parser.add_argument('yaml_path', nargs='?',
+                        default=str(DEFAULT_YAML),
+                        help='增量 yaml 路径（缺省 cache/data/_countries-data.videos.yaml）')
     group = parser.add_mutually_exclusive_group()
     group.add_argument('--dry-run', action='store_true', help='预览模式（默认，零写盘）')
     group.add_argument('--apply', action='store_true', help='执行写盘（json → yaml 回写 → html 重建）')
+    group.add_argument('--empty-video', action='store_true',
+                       help='列出 videos 为空的行（只读，零写盘；与 --apply/--dry-run 互斥）')
     args = parser.parse_args(argv)
 
     # 1. 解析 yaml（RIG-001：必须 yaml.safe_load，禁 yaml.load / FullLoader，
@@ -265,6 +338,10 @@ def main(argv=None):
         cz = row.get('country_zh')
         if cz:
             rows_by_country.setdefault(cz, row)
+
+    # CL004: --empty-video 只读列出（J1: 读 target.data 指向的 json; 零写盘 exit 0）
+    if args.empty_video:
+        return run_empty_video(data_doc)
 
     # 3. F3 校验先行（任一 country_zh 缺失 → 打印缺失键清单 exit 1 零写盘）
     missing = validate_countries(countries, rows_by_country)
