@@ -41,7 +41,10 @@ class TestCornerPrivacy(unittest.TestCase):
         self.assertNotIn('class="github-corner-hit"', html)
         self.assertNotIn('class="home-link"', html)
         self.assertNotIn('imjaden', html)
-        self.assertNotIn('jaden.tech', html)
+        # CL004 决策 A1/C1: 默认 favicon 注入 www.jaden.tech 品牌图标（设计预期, 非隐私泄露）。
+        # jaden.tech 仅应出现于 favicon link，不应有额外的 home-link / github-corner 域名泄露。
+        self.assertEqual(html.count('jaden.tech'), 1,
+                         'jaden.tech 仅应来自默认 favicon，不应有额外 home/github 泄露')
 
     def test_02_github_url_injects_corner(self):
         """--github-url 注入 corner, href 正确."""

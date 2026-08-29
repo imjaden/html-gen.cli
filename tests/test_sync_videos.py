@@ -116,9 +116,11 @@ class SyncVideosTestBase(unittest.TestCase):
         return yaml_path
 
     def run_script(self, yaml_path, *flags):
-        return subprocess.run(
-            [sys.executable, str(self.script), str(yaml_path), *flags],
-            capture_output=True, text=True, cwd=self.tmp)
+        cmd = [sys.executable, str(self.script)]
+        if yaml_path is not None:
+            cmd.append(str(yaml_path))
+        cmd += list(flags)
+        return subprocess.run(cmd, capture_output=True, text=True, cwd=self.tmp)
 
     def read_json(self):
         return json.loads((self.tmp / 'data' / '_countries-data.json').read_text(encoding='utf-8'))
@@ -384,6 +386,82 @@ class TestSyncVideos(SyncVideosTestBase):
         # FIND-002：corner 保留（提取旧 html 的 repo URL 透传 --github-url）
         self.assertIn('github-corner', html)
         self.assertIn('href="https://github.com/imjaden/html-gen.cli"', html)
+
+    # ── CL004: rebuild 显式三参数 / --empty-video / 缺省 yaml 路径 ──
+
+    def test_11_apply_rebuild_prints_full_cmd(self):
+        """E 重建命令含 --github-url/--home-url/--favicon 三参数（[执行] 打印行断言,
+        HG-SEC-079: HTML_GEN_STUB 仅识别 --github-url, 新增断言走打印行路径）。"""
+        countries = (
+            '- country_zh: 缅甸\n'
+            '  title: 缅甸-散装缅甸\n'
+            '  url: https://v.douyin.com/-IIdHuXNL0o/\n'
+            '  duration: "6:55"\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        # [执行] 打印行含三参数与缺省默认值（target 无 rebuild 节 → 固定默认; 无旧 html → 默认 github）
+        self.assertRegex(r.stdout,
+                         r'\[执行\].*--github-url https://github\.com/imjaden/html-gen\.cli')
+        self.assertRegex(r.stdout,
+                         r'\[执行\].*--home-url https://html-gen\.cli\.jaden\.tech/')
+        self.assertRegex(r.stdout,
+                         r'\[执行\].*--favicon https://www\.jaden\.tech/static/img/favicon\.png')
+        # 重建产物仍含新视频（stub 忽略未知参数, 行为不变）
+        html = (self.tmp / 'demos' / 'countries-table.html').read_text(encoding='utf-8')
+        self.assertIn('缅甸-散装缅甸', html)
+
+    def test_12_empty_video_lists_and_mutex(self):
+        """--empty-video: 逐行「首字段 (次字段)」+ 空字段 (空) + 底部计数 + 零写盘；
+        与 --apply 同用 → argparse exit 2（三向互斥）。"""
+        data_doc = {
+            "title": "空 videos 测试",
+            "data": [
+                {"country_zh": "缅甸", "country_en": "Myanmar"},
+                {"country_zh": "中国", "country_en": ""},
+                {"country_zh": "", "country_en": "EmptyZh"},
+                {"country_zh": "伊朗", "country_en": "Iran", "videos": [
+                    {"title": "x", "url": "https://v.douyin.com/x/"}]},
+            ],
+        }
+        yaml_path = self.setup_fixture(data_doc, '')
+        before = self.snapshot()
+        r = self.run_script(yaml_path, '--empty-video')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('缅甸 (Myanmar)', r.stdout)
+        self.assertIn('中国 ((空))', r.stdout)
+        # 首字段为空 → 跳过取次非空字段 EmptyZh; 无第二个非空 → (空)（K1: 取前两个非空字段）
+        self.assertIn('EmptyZh ((空))', r.stdout)
+        self.assertNotIn('伊朗', r.stdout)  # 有 videos 的行不列出
+        self.assertIn('共 3 条 videos 为空', r.stdout)
+        self.assert_unchanged(before)
+        # 三向互斥: --empty-video + --apply → argparse exit 2
+        r2 = self.run_script(yaml_path, '--empty-video', '--apply')
+        self.assertEqual(r2.returncode, 2)
+        self.assert_unchanged(before)
+
+    def test_13_default_yaml_path(self):
+        """无参运行 → 缺省 cache/data/_countries-data.videos.yaml（项目根解析, dry-run）。"""
+        countries = (
+            '- country_zh: 缅甸\n'
+            '  title: 缅甸-散装缅甸\n'
+            '  url: https://v.douyin.com/-IIdHuXNL0o/\n'
+            '  duration: "6:55"\n'
+            '  platform: douyin\n'
+        )
+        self.setup_fixture(make_base_data(), countries)  # 写 data json（target 指向它）
+        default_dir = self.tmp / 'cache' / 'data'
+        default_dir.mkdir(parents=True, exist_ok=True)
+        (default_dir / '_countries-data.videos.yaml').write_text(
+            YAML_TEMPLATE.format(countries=countries), encoding='utf-8')
+        before = self.snapshot()
+        r = self.run_script(None)  # 无参 → 缺省 yaml
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('[预览] 新增 1 条', r.stdout)
+        self.assertIn('使用 --apply 执行', r.stdout)
+        self.assert_unchanged(before)
 
 
 if __name__ == '__main__':
