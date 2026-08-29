@@ -132,6 +132,7 @@ scripts/tool-table-videos-syncer.py <yaml> --empty-video       # 列出 videos �
 - **列隐藏**：`col.hide: true` → 永不可见
 - **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
 - **批量操作**：选中行出现工具栏（全选/取消/导出 CSV）
+- **URL 状态分享**（CL004/CL005）：`?tab&q&split` 参数 replaceState 同步 + 加载恢复（tab 白名单 / split 越界忽略 / q 仅 input.value）；tabs 行居右按钮区 `.tabs-actions`：↗ 拷贝分享链接（clipboard + execCommand fallback）+ 🏠 home 入口（`--home-url` 注入, 与 share 同容器 36px 圆角深底）；排序/quickFilter 变化自动 closeSplit
 - **视图预设**：保存/加载/删除设置（密度/模式/排序/列可见性，最多 10 个，≤2KB）
 - 列名从 JSON 首条 key 自动推导
 - 支持单元格 HTML（`<a>`、`<code>` 等）
@@ -269,7 +270,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 246 tests（27 文件；测试文件：test_json_output 14 / test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_sync_videos 13 / test_url_state 5 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 247 tests（27 文件；测试文件：test_json_output 14 / test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_sync_videos 13 / test_url_state 6 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -294,7 +295,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json）
-├── tests/                      # Selenium + 回归测试 (246 tests)
+├── tests/                      # Selenium + 回归测试 (247 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md

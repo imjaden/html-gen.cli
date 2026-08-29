@@ -154,7 +154,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 行为：
 - 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空 tab/q/split）自动剔除
-- 右上角 🔗 按钮拷贝规范化分享 URL（clipboard + execCommand fallback，headless 兼容）
+- **tabs 行居右按钮区 `.tabs-actions`**（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（`--home-url` 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）
 - 排序 / 快速过滤（quickFilter）触发时自动 closeSplit（下标语义失效保护）
 - 加载时按 tab → q → split 顺序恢复（HG-SEC-076）
 
@@ -219,6 +219,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 
 ## 变更记录
+- v2.5.0 (2026-08-29): 分享/Home 按钮统一放 tabs 行居右 `.tabs-actions`（↗ 图标 + home-link 流式同容器 36px，CL005）
 - v2.4.0 (2026-08-29): 新增 URL 状态分享（?tab&q&split replaceState 同步/恢复 + 🔗 拷贝按钮）
 - v2.3.0 (2026-08-06): quickFilter 默认关（显式 true 启用）+ pillFilter/onCellClick/preview 列属性; tabs value/contains 匹配; pills 顿号分隔; 第 1 列默认分栏
 - v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项; 兼容单数 clickMode
