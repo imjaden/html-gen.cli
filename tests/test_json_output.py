@@ -124,6 +124,34 @@ class TestJsonOutput(unittest.TestCase):
         self.assertEqual(r.returncode, 1)
         self.assertIn('未指定输出文件', r.stderr)
 
+    # ── favicon 三态 (CL004: 默认注入 / --favicon 覆盖 / 空串禁用) ──
+    DEFAULT_FAVICON = 'https://www.jaden.tech/static/img/favicon.png'
+
+    def render_table(self, data, *args):
+        out = self.tmp / 'favicon-out.html'
+        doc = {'title': 'favicon 测试', 'output': str(out), 'data': data}
+        write_json(self.tmp / 'data.json', doc)
+        r = run('table', '-d', str(self.tmp / 'data.json'), *args)
+        self.assertEqual(r.returncode, 0, r.stderr)
+        return out.read_text(encoding='utf-8')
+
+    def test_12_favicon_default_injected(self):
+        """默认注入 DEFAULT_FAVICON: <link rel="icon" href=默认> 存在于 head."""
+        html = self.render_table([{'a': 1}])
+        self.assertIn(f'rel="icon" href="{self.DEFAULT_FAVICON}"', html)
+
+    def test_13_favicon_override(self):
+        """--favicon 覆盖默认: 注入指定 URL, 不含默认 URL."""
+        custom = 'https://example.com/custom.ico'
+        html = self.render_table([{'a': 1}], '--favicon', custom)
+        self.assertIn(f'rel="icon" href="{custom}"', html)
+        self.assertNotIn(self.DEFAULT_FAVICON, html)
+
+    def test_14_favicon_empty_disables(self):
+        """--favicon "" 显式禁用: 无任何 rel="icon" link (HG-SEC-073)."""
+        html = self.render_table([{'a': 1}], '--favicon', '')
+        self.assertNotIn('rel="icon"', html)
+
     # ── 边界 ──
     def test_10_plain_array_no_o(self):
         """简单数组无 -o: exit 1 (CLI-only 语义)."""
