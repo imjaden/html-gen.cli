@@ -45,6 +45,9 @@ class TestCornerPrivacy(unittest.TestCase):
         # jaden.tech 仅应出现于 favicon link，不应有额外的 home-link / github-corner 域名泄露。
         self.assertEqual(html.count('jaden.tech'), 1,
                          'jaden.tech 仅应来自默认 favicon，不应有额外 home/github 泄露')
+        # CL005: 分享按钮模板内置默认存在（tabs 行居右容器内），home 需显式 --home-url
+        self.assertIn('class="share-link"', html)
+        self.assertIn('tabs-actions', html)
 
     def test_02_github_url_injects_corner(self):
         """--github-url 注入 corner, href 正确."""
@@ -55,11 +58,15 @@ class TestCornerPrivacy(unittest.TestCase):
         self.assertNotIn('class="home-link"', html)
 
     def test_03_home_url_injects_link(self):
-        """--home-url 注入 🏠 入口."""
+        """--home-url 注入 🏠 入口（tabs 行居右 .tabs-actions 内, CL005）. """
         html = self._gen('--home-url', 'demos/index.html')
         self.assertIn('class="home-link"', html)
         self.assertIn('href="demos/index.html"', html)
         self.assertNotIn('class="github-corner"', html)
+        # CL005: home 与 share 同放 .tabs-actions（tabs 行居右）
+        self.assertIn('tabs-actions', html)
+        self.assertIn('class="share-link"', html)
+        self.assertIn('↗', html)
 
     def test_04_env_fallback(self):
         """env HTML_GEN_GITHUB_URL / HTML_GEN_HOME_URL 兜底生效."""
