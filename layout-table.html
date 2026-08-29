@@ -161,7 +161,6 @@
 .wrapper.split-mode .table-main { overflow: auto; min-width: 200px; }
 .wrapper.split-mode .split-drag { display: block !important; grid-column: 2; }
 .wrapper.split-mode .split-preview { display: flex; }
-.wrapper.split-mode .toast { display: none !important; }
 .split-preview { display:none; flex-direction:column; background:var(--surface-900); border-left:1px solid #2a2a3e;
   min-width:200px; position:relative; }
 .wrapper.split-mode .split-preview { display:flex; }
@@ -268,6 +267,7 @@
   <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
   <div class="flex-1"></div>
   <input class="header-search" id="searchInput" placeholder="<!--SEARCH_PLACEHOLDER-->" onkeydown="if(event.key==='Enter')doSearch()">
+  <button class="fs-btn" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">🔗</button>
   <!--FILTERS-->
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
   <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
@@ -725,6 +725,7 @@
   }
 
   window.quickFilterBy = function(key, value, mode) {
+    if (splitActive) closeSplit();  // HG-SEC-075: quickFilter 设置/清除 → 关闭分栏 (split 下标仅对默认排序+无 quickFilter 有效)
     mode = mode || 'exact';
     if (quickFilter && quickFilter.key === key && quickFilter.value === value && (quickFilter.mode || 'exact') === mode) {
       quickFilter = null;  // toggle off
@@ -737,6 +738,7 @@
   };
 
   window.clearQuickFilter = function() {
+    if (splitActive) closeSplit();  // HG-SEC-075
     quickFilter = null;
     currentPage = 1;
     render();
@@ -792,6 +794,7 @@
 
   var sortKey2 = '', sortAsc2 = true;
   window.sortBy = function(key, event) {
+    if (splitActive) closeSplit();  // HG-SEC-075: sort 变化 → 关闭分栏 (split 下标仅对默认排序有效)
     if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
     else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
     expandedIdx = -1; initThead(); render();
@@ -1009,9 +1012,24 @@
 
   /* ── Split View ── */
   var splitRow = null, splitIdx = -1;
+
+  /* ── URL 状态同步 (CL004: ?tab&q&split replaceState; HG-SEC-074 统一 URLSearchParams) ── */
+  function syncUrlState() {
+    var p = new URLSearchParams();
+    if (TABS && TABS.length && activeTab && activeTab !== TABS[0].key) p.set('tab', activeTab);
+    var q = document.getElementById('searchInput').value;
+    if (q) p.set('q', q);
+    if (splitActive && splitIdx >= 0) p.set('split', String(splitIdx));
+    var qs = p.toString();
+    var url = location.pathname + (qs ? '?' + qs : '');
+    try { history.replaceState(null, '', url); } catch(e) {}
+  }
+  window.syncUrlState = syncUrlState;
+
   function activateSplit(row, idx) {
     splitRow = row; splitIdx = idx;
     splitActive = true;
+    window.splitActive = true; window.splitIdx = idx;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.add('split-mode');
     initThead();
@@ -1022,6 +1040,7 @@
     var rows = tbody.querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
     if (rows[idx]) rows[idx].classList.add('split-active');
+    syncUrlState();
   }
   window.activateSplit = activateSplit;
   window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
@@ -1032,6 +1051,7 @@
   };
   window.closeSplit = function() {
     splitActive = false;
+    window.splitActive = false; window.splitIdx = -1;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.remove('split-mode');
     splitRow = null; splitIdx = -1;
@@ -1040,6 +1060,7 @@
     // clear highlight
     var rows = document.getElementById('tbody').querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
+    syncUrlState();
   };
 
   function renderSplitPreview(row) {
@@ -1178,6 +1199,34 @@
     } catch(e) { showToast('复制失败'); }
   };
 
+  /* ── Share link (CL004: 🔗 拷贝规范化分享 URL; clipboard + execCommand fallback) ── */
+  function fallbackCopyUrl(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('已复制链接');
+    } catch(e) { showToast('复制失败'); }
+  }
+  function buildShareUrl() {
+    syncUrlState();  // 确保 URL 与当前状态一致 (默认/空参数已剔除)
+    return location.href;
+  }
+  window.buildShareUrl = buildShareUrl;
+  window.shareLink = function() {
+    var url = buildShareUrl();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function() {
+        showToast('已复制链接');
+      }).catch(function() {
+        fallbackCopyUrl(url);  // headless/权限受限 → execCommand fallback
+      });
+    } else {
+      fallbackCopyUrl(url);
+    }
+  };
+
   /* ── Column visibility ── */
   var MAX_PRESETS = 10, MAX_PRESET_SIZE = 2048;
   function listPresets() {
@@ -1287,9 +1336,9 @@
   var searchTimer;
   document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); }, 300);
+    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); syncUrlState(); }, 300);  // H1: q 随 debounce 同步
   });
-  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); };
+  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); syncUrlState(); };
 
   /* ── Tab switch ── */
   window.switchTab = function(key) {
@@ -1299,6 +1348,7 @@
     buildTabs();
     currentPage = 1;
     render();
+    syncUrlState();
   };
 
   /* ── CSV Export ── */
@@ -1387,6 +1437,18 @@
 
   /* ── Init ── */
   function init() {
+    // CL004: URL 状态恢复 — 顺序 tab(buildTabs 前) → q(render 前) → split(render 后) (HG-SEC-076)
+    var _params = new URLSearchParams(location.search);
+    var _urlTab = _params.get('tab');
+    if (_urlTab && TABS && TABS.find(function(t){ return t.key === _urlTab; })) {
+      activeTab = _urlTab;  // 白名单校验, 无效忽略
+    }
+    var _urlQ = _params.get('q');
+    if (_urlQ !== null) {
+      // 仅 value 赋值 (无 innerHTML 注入面), URLSearchParams 自动解码 (HG-SEC-074)
+      document.getElementById('searchInput').value = _urlQ;
+    }
+    var _urlSplit = _params.get('split');
     // Restore saved column widths
     try {
       var savedWidths = localStorage.getItem(COL_WIDTHS_KEY);
@@ -1412,6 +1474,13 @@
     var _df = OPTIONS && OPTIONS.defaultFilter;
     if (_df && _df.key && _df.value) {
       quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
+    // CL004: split 恢复 (render 后; filtered 已按 tab+q 重建; 越界忽略; 有 quickFilter 时下标语义失效跳过)
+    if (_urlSplit !== null && !quickFilter) {
+      var n = parseInt(_urlSplit, 10);
+      if (!isNaN(n) && n >= 0 && n < filtered.length) {
+        activateSplit(filtered[n], n);
+      }
     }
   }
   init();
@@ -1448,6 +1517,7 @@
       this.active = false;
       currentPage = 1;
       render();
+      syncUrlState();
     },
 
     updateMatchCount: function() {
