@@ -459,3 +459,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-070 (✅ closed 本次 D5) + HG-SEC-071..072 (🟢 records 非阻断: 行号漂移/测试粒度)"
     report: documents/review/table-knowledge-json-output-impl-audit-v1.0-20260829.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen favicon 默认注入 + table URL 状态分享 + syncer 参数体系 设计 v1.0 — 决策 A1..L1 + 1B 2A 3A 4A 5A; commit 9a9c608 (HTML-GEN-CL004)"
+    verdict: PASS
+    score: 85
+    findings_total: 7
+    findings_open: 0
+    tracking: "HG-SEC-073..075 (🟡×3 非阻断, 折入实施: favicon None/'' 区分 / URL q 编解码对称 / split 下标 vs sort) + HG-SEC-076..079 (🟢 records: init 挂钩点 / cmd_* 命名 / rebuild 空串语义 / test 桩断言)"
+    report: documents/review/html-gen-favicon-urlstate-syncer-design-review-v1.0-20260829.md

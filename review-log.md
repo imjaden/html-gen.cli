@@ -1350,3 +1350,46 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 报告: `documents/review/table-knowledge-json-output-impl-audit-v1.0-20260829.md`
 
 ---
+
+## 2026-08-29 — html-gen favicon + URL状态 + syncer参数 设计评审（PASS 85/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: `9a9c608` docs@design: html-gen favicon 默认注入 + table URL 状态分享 + syncer 参数体系 设计 v1.0（HTML-GEN-CL004）；决策 A1..L1 + 1B 2A 3A 4A 5A
+- **Verdict**: 🟢 **PASS 85/100（A）** — 无 🔴；3 🟡 非阻断规格收紧 + 4 🟢 记录
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-073..075（🟡×3 非阻断）+ HG-SEC-076..079（🟢 records）
+- **Findings**: 3 🟡（非阻断）/ 4 🟢 / 0 🔴
+
+### Summary
+
+设计 v1.0 三项需求（favicon 默认注入 / table URL 状态分享 / syncer 参数体系）架构正确、范围适中，行号锚点全部实测命中（corner_args L98-102、四子命令 argparse L773-803、四处 cmd_* inject L314/384/439/489、syncer run_apply L173-219、layout-table 状态/分栏函数 L351-364/L1011-1042/L1287/L1294、四模板 head L6、缺省 yaml 路径存在、countries 195 行含 tabs）。安全面完整：URL 参数无 innerHTML 注入（tab 白名单 + split parseInt 越界 + q 仅 input.value）、favicon 注入源为 operator 受控（与既有 github/home 一致）、syncer subprocess 保持 RIG-002 shell=False + yaml safe_load。三处 🟡 均为「一处一行即可在实施中折叠」的规格收紧，不阻塞实施启动。无 🔴。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-073 | 🟡 | `--favicon ""` 禁用未钉死 None/"" 区分，corner_args `or` 链照搬会失效 | ⏳ 折入实施 |
+| HG-SEC-074 | 🟡 | URL q 编解码对称性 + malformed % 编码 URIError 未钉死 | ⏳ 折入实施 |
+| HG-SEC-075 | 🟡 | split=<n>（filtered 下标）与 sort/quickFilter 交互未说明，分享可能错行 | ⏳ 折入实施 |
+| HG-SEC-076 | 🟢 | 恢复流程 init() 挂钩点 + defaultFilter 优先级未指定 | ⏳ 折入实施 |
+| HG-SEC-077 | 🟢 | §3.1 render_* 实为 cmd_* 命名漂移 | ⏳ 折入实施 |
+| HG-SEC-078 | 🟢 | rebuild 三键空串语义；demo --rebuild 归一化存量 cache-busting favicon | ⏳ 折入实施 |
+| HG-SEC-079 | 🟢 | test_10 HTML_GEN_STUB 仅识别 --github-url，需锁「[执行] 打印行」断言 | ⏳ 折入实施 |
+
+### Positives
+
+- 行号锚点零漂移（设计引用 L 与源码逐一命中，含 layout-table 9 处 + syncer 3 处 + html-gen 4 处）
+- 需求→决策映射 1:1 完整（§一 三需求 ↔ §二 决策 A-L+1-5 ↔ §三/四/五），无跨节不一致
+- 安全面显式覆盖（§4.5 白名单/越界/无 innerHTML + 零写盘），favicon/syncer 注入源均为 operator 受控，无新增攻击面
+- 向后兼容闭合（§5.3 现有调用不变、URL 无参不变、favicon 默认与 34 个存量产物对齐）
+- 修订日志登记 FIND-001（共享文件污染，推送前由归属 CL 登记）与 FIND-002（favicon 闭合）清晰
+
+### 实现 prompt
+
+- ✅ 已生成（PASS → dev 按 §三/四/五实施；实施时折叠 HG-SEC-073..079 七项收紧/记录）
+
+- 报告: `documents/review/html-gen-favicon-urlstate-syncer-design-review-v1.0-20260829.md`
+- 处理: PASS → 审计三件套 + commit（仅 commit 不 push，AGENTS.md 约定 + 本任务约束）
+
+---
