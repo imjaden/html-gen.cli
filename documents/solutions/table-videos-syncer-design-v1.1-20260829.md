@@ -139,3 +139,4 @@ scripts/tool-table-videos-syncer.py <yaml-path> [--dry-run] [--apply]
 
 - v1.0 (2026-08-28)：初始设计（HTML-GEN-CL002），探讨确认 A1 B1 C1 D1 E2 F3 W1；评审 CONDITIONAL 85/B（24b9cbc，HG-SEC-054..060）
 - v1.1 (2026-08-29)：评审修正 —— RIG-001（§4.2 step1 `yaml.safe_load`）/ RIG-002（§4.2 step8 subprocess 列表参数无 shell）/ RIG-003（§4.2 step2 路径解析以项目根为基准）；🟢 HG-SEC-057（duration 容错仅 M:SS，§2/§5 test_02/§7）、HG-SEC-058（脚本名 → tool-table-videos-syncer.py，§2/§4.1/§7）、HG-SEC-059（§5 test_05 增 url strip 断言）、HG-SEC-060（§1 134KB → 131.7KB）
+- v1.1 追加（2026-08-29 审计后）：FIND-001 登记 —— 0deaf5c 混入工作区既有列配置变更（6 列 initialHidden 含 videos + 4 列 splitFull + note preview 反转），非 CL002 设计范围、与 drama WIP 同源；用户确认为有意保留，随 CL002 推送，影响：countries-table 默认隐藏 6 列（⚙️ 可开启/分栏全列渲染不受影响）；FIND-002 —— E 重建丢 github-corner，修复：E 命令自动提取旧产物 corner URL 透传 --github-url（0af421d + test_10 断言）
