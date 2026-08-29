@@ -41,7 +41,7 @@ tags: [html-gen, cli, spec, json, governance]
 |:-----|:-------|:-----|:-----|
 | 输入文件 | `--input` | `-i` | doc/slide 必填 |
 | 数据文件 | `--data` | `-d` | table/knowledge 必填 |
-| 输出文件 | `--output` | `-o` | 默认 index.html / kb.html |
+| 输出文件 | `--output` | `-o` | 必填（CLI `-o` 或 JSON 顶层 `output` 二选一；table/knowledge） |
 | 标题 | `--title` | — | 页面标题 |
 | 副标题 | `--subtitle` | — | 页面副标题 |
 | 分组 | `--groups` | `-g` | knowledge 分组文件 |

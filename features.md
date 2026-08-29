@@ -7,7 +7,7 @@
 ### 主命令组 (html-gen CLI)
 html-gen doc — Markdown 转 B 型文档 ✅ — layout-doc.html
 html-gen doc -i/--input — 输入 Markdown 文件 ✅ — html-gen.py
-html-gen doc -o/--output — 输出 HTML 路径 (默认 index.html) ✅ — html-gen.py
+html-gen doc -o/--output — 输出 HTML 路径 (可选; 缺省 md 派生 .html) ✅ — html-gen.py
 html-gen doc --title — 文档标题 ✅ — html-gen.py
 html-gen doc --subtitle — 副标题 ✅ — html-gen.py
 html-gen doc --metadata — 元数据 (路径信息) ✅ — html-gen.py
@@ -20,14 +20,14 @@ html-gen slide --subtitle — 副标题 (显示在封面) ✅ — html-gen.py
 html-gen table — JSON 转 A 型数据表格 ✅ — layout-table.html
 html-gen table -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
 html-gen table --title — 表格标题 ✅ — html-gen.py
-html-gen table -o/--output — 输出 HTML 路径 (默认 index.html) ✅ — html-gen.py
+html-gen table -o/--output — 输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一) ✅ — html-gen.py
 html-gen knowledge — JSON 转 C 型知识库 ✅ — layout-knowledge.html
 html-gen knowledge -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
 html-gen knowledge -g/--groups — 输入 groups JSON (类目定义) ✅ — html-gen.py
 html-gen knowledge --title — 知识库标题 ✅ — html-gen.py
 html-gen knowledge --subtitle — 副标题 ✅ — html-gen.py
 html-gen knowledge --welcome — 欢迎面板文字 ✅ — html-gen.py
-html-gen knowledge -o/--output — 输出 HTML 路径 ✅ — html-gen.py
+html-gen knowledge -o/--output — 输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一) ✅ — html-gen.py
 html-gen help — 显示帮助 ✅ — html-gen.py
 html-gen help <topic> — 按主题显示帮助 (doc/slide/table/knowledge) ✅ — html-gen.py
 
@@ -153,6 +153,7 @@ Badge 彩色标记 (知道/理解/能讲/能输出, 4 色方案) ✅ — layout-
 ### table 输入
 简单 JSON 数组 (向后兼容, 列名自推导) ✅ — html-gen.py (cmd_table)
 结构化 JSON 对象 (columns/data/tabs/options) ✅ — html-gen.py (cmd_table)
+JSON 顶层 output (渲染目标: CLI -o 覆盖; 均无 → 中断 exit 1) ✅ — html-gen.py (cmd_table, CL003)
 col.type: string/number/datetime/pills/actions/videos ✅ — layout-table.html
 col.sortable (是否可排序) ✅ — layout-table.html
 col.locale (中文 localeCompare 排序) ✅ — layout-table.html
@@ -177,6 +178,7 @@ options.clickModes (可用点击模式列表) ✅ — layout-table.html
 
 ### knowledge 输入
 JSON 数组 (items: title/group/section/badge/url/desc) ✅ — layout-knowledge.html
+JSON 顶层 output (仅 data 文件识别, groups 忽略; CLI -o 覆盖) ✅ — html-gen.py (cmd_knowledge, CL003)
 groups JSON (类目定义: key/label/icon) ✅ — layout-knowledge.html
 
 ### doc/slide 输入

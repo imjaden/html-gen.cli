@@ -53,6 +53,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html
     {"key": "actions", "label": "操作", "type": "actions", "actions": [...]}
   ],
   "data": [...],
+  "output": "demos/xxx.html",   // 渲染目标 (无 CLI -o 时生效; 均无 → 中断 exit 1)
   "tabs": [
     {"key": "all", "label": "全部"},
     {"key": "Python", "label": "🐍 Python", "field": "lang"}
