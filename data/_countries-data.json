@@ -109,20 +109,15 @@
       "preview": true
     },
     {
-      "key": "note",
-      "label": "备注",
-      "width": "160px",
-      "quickFilter": false,
-      "preview": true
-    },
-    {
       "key": "ethnic_groups",
       "label": "主要民族",
       "sortable": true,
       "locale": "zh",
       "width": "150px",
       "preview": true,
-      "quickFilter": false
+      "quickFilter": false,
+      "splitFull": true,
+      "initialHidden": true
     },
     {
       "key": "religions",
@@ -131,21 +126,25 @@
       "locale": "zh",
       "width": "150px",
       "preview": true,
-      "quickFilter": false
+      "quickFilter": false,
+      "splitFull": true,
+      "initialHidden": true
     },
     {
       "key": "area_province",
       "label": "面积相近省份",
       "type": "pills",
       "sortable": true,
-      "width": "170px"
+      "width": "170px",
+      "initialHidden": true
     },
     {
       "key": "pop_province",
       "label": "人口相近省份",
       "type": "pills",
       "sortable": true,
-      "width": "170px"
+      "width": "170px",
+      "initialHidden": true
     },
     {
       "key": "gdp_province",
@@ -160,9 +159,20 @@
       "type": "videos",
       "width": "260px",
       "preview": true,
+      "splitFull": true,
+      "initialHidden": true,
       "videos": {
         "maxShow": 2
       }
+    },
+    {
+      "key": "note",
+      "label": "备注",
+      "width": "160px",
+      "quickFilter": false,
+      "preview": false,
+      "splitFull": true,
+      "initialHidden": true
     }
   ],
   "data": [
@@ -221,7 +231,21 @@
       "religions": "无宗教/民间信仰 ~70%、佛教 ~15%、伊斯兰教 ~2%、基督教 ~3%",
       "area_province": "",
       "pop_province": "",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "中国-人文地理",
+          "url": "https://v.douyin.com/mRFhNNgxCBk/",
+          "duration": "0:22",
+          "platform": "douyin"
+        },
+        {
+          "title": "淮河-中国南北分界线",
+          "url": "https://v.douyin.com/-XVnR04s3GY/",
+          "duration": "4:41",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "中非",
@@ -278,7 +302,15 @@
       "religions": "东正教 ~70%、希腊礼天主教 10%",
       "area_province": "四川、青海、黑龙江",
       "pop_province": "贵州、陕西、山西",
-      "gdp_province": "吉林、甘肃、黑龙江"
+      "gdp_province": "吉林、甘肃、黑龙江",
+      "videos": [
+        {
+          "title": "乌克兰-领土变化经历",
+          "url": "https://v.douyin.com/pExkP0EurJI/",
+          "duration": "0:58",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "乌兹别克斯坦",
@@ -449,7 +481,21 @@
       "religions": "伊斯兰教什叶派 90%、逊尼派 9%",
       "area_province": "新疆、西藏",
       "pop_province": "江苏、河南、四川",
-      "gdp_province": "陕西、江西、辽宁"
+      "gdp_province": "陕西、江西、辽宁",
+      "videos": [
+        {
+          "title": "中东为何永不团结",
+          "url": "https://v.douyin.com/Ez_SJIkymk0/",
+          "duration": "4:54",
+          "platform": "douyin"
+        },
+        {
+          "title": "伊朗-美国为什么征服不了伊朗",
+          "url": "https://v.douyin.com/1IxN2ag0e8U/",
+          "duration": "11:38",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "伯利兹",
@@ -1950,7 +1996,15 @@
       "religions": "",
       "area_province": "重庆、宁夏",
       "pop_province": "西藏",
-      "gdp_province": "宁夏、海南"
+      "gdp_province": "宁夏、海南",
+      "videos": [
+        {
+          "title": "巴拿马-因运河而建国",
+          "url": "https://v.douyin.com/LQ-giOuUXKM/",
+          "duration": "0:42",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "巴林",
@@ -1990,8 +2044,18 @@
       "pop_province": "",
       "gdp_province": "广东、江苏",
       "videos": [
-        {"title": "每天了解一个国家，巴西", "url": "https://v.douyin.com/8KyFzcfoH68/", "duration": "3:22", "platform": "douyin"},
-        {"title": "巴西建国史——巴西如何从创业成功走向贫穷漩涡", "url": "https://v.douyin.com/Y6VCrD4QQg8/", "duration": "8:37", "platform": "douyin"}
+        {
+          "title": "巴西-每天了解一个国家",
+          "url": "https://v.douyin.com/8KyFzcfoH68/",
+          "duration": "3:22",
+          "platform": "douyin"
+        },
+        {
+          "title": "巴西-从创业成功走向贫穷漩涡",
+          "url": "https://v.douyin.com/Y6VCrD4QQg8/",
+          "duration": "8:37",
+          "platform": "douyin"
+        }
       ]
     },
     {
@@ -2087,7 +2151,15 @@
       "religions": "基督教 57%（天主教/新教）、无宗教 ~35%、伊斯兰教 ~5%",
       "area_province": "云南、甘肃",
       "pop_province": "四川、江苏、河北",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "德国-从日耳曼到三次帝国",
+          "url": "https://v.douyin.com/4jB_RN61Qsg/",
+          "duration": "2:28",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "意大利",
@@ -2106,7 +2178,15 @@
       "religions": "天主教 74%、无宗教 16%、伊斯兰教 2%",
       "area_province": "广西、湖南",
       "pop_province": "湖北、安徽、浙江",
-      "gdp_province": "广东、江苏"
+      "gdp_province": "广东、江苏",
+      "videos": [
+        {
+          "title": "意大利-每天了解一个国家",
+          "url": "https://v.douyin.com/Qcs704IZQAA/",
+          "duration": "2:51",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "所罗门群岛",
@@ -2980,7 +3060,15 @@
       "religions": "伊斯兰教 76%、基督教 19%（外籍）",
       "area_province": "北京",
       "pop_province": "",
-      "gdp_province": "甘肃、吉林"
+      "gdp_province": "甘肃、吉林",
+      "videos": [
+        {
+          "title": "科威特-历史上也属实当过主角",
+          "url": "https://v.douyin.com/XzcCouIps9M/",
+          "duration": "7:37",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "科摩罗",
@@ -3151,7 +3239,15 @@
       "religions": "佛教 88%、基督教 6%、伊斯兰教 4%",
       "area_province": "青海、四川",
       "pop_province": "湖北、广西、安徽",
-      "gdp_province": "宁夏、青海"
+      "gdp_province": "宁夏、青海",
+      "videos": [
+        {
+          "title": "缅甸-散装缅甸",
+          "url": "https://v.douyin.com/-IIdHuXNL0o/",
+          "duration": "6:55",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "罗马尼亚",
@@ -3436,7 +3532,15 @@
       "religions": "天主教 79%、无宗教 15%",
       "area_province": "重庆、浙江、江苏",
       "pop_province": "海南",
-      "gdp_province": "贵州、内蒙古、新疆"
+      "gdp_province": "贵州、内蒙古、新疆",
+      "videos": [
+        {
+          "title": "葡萄牙-前世界第一列强",
+          "url": "https://v.douyin.com/leqDe7XKeQU/",
+          "duration": "8:17",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "蒙古",
@@ -3474,7 +3578,15 @@
       "religions": "天主教 60%、无宗教 36%、伊斯兰教 4%",
       "area_province": "四川、黑龙江、甘肃",
       "pop_province": "广西、云南、江西",
-      "gdp_province": "江苏、广东、山东"
+      "gdp_province": "江苏、广东、山东",
+      "videos": [
+        {
+          "title": "西班牙-边界最奇特的国家",
+          "url": "https://v.douyin.com/Nv24-Ax9hyw/",
+          "duration": "1:36",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "贝宁",
