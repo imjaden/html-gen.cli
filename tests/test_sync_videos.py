@@ -30,22 +30,29 @@ HTML_GEN_STUB = """\
 import json, sys
 from pathlib import Path
 
-args = sys.argv[1:]  # ['table', '-d', <data>, '-o', <out>]
+args = sys.argv[1:]  # ['table', '-d', <data>, '-o', <out>, ('--github-url', <url>)]
 if '-d' in args:
     with open(args[args.index('-d') + 1], encoding='utf-8') as f:
         doc = json.load(f)
 out = Path(args[args.index('-o') + 1])
 out.parent.mkdir(parents=True, exist_ok=True)
+github_url = None
+if '--github-url' in args:
+    github_url = args[args.index('--github-url') + 1]
 title = doc.get('title', '数据表格')
 data = doc.get('data', doc)
 titles = []
 for row in data:
     for v in (row.get('videos') or []):
         titles.append(v.get('title', ''))
+corner = ''
+if github_url:
+    corner = '<a href="' + github_url + '" class="github-corner">c</a>'
 html = (
     '<!DOCTYPE html><html><head><title>' + title + '</title></head><body>'
     '<div class="data-table">' + json.dumps(data, ensure_ascii=False) + '</div>'
-    '<ul>' + ''.join('<li>' + t + '</li>' for t in titles) + '</ul></body></html>'
+    + corner
+    + '<ul>' + ''.join('<li>' + t + '</li>' for t in titles) + '</ul></body></html>'
 )
 with open(out, 'w', encoding='utf-8') as f:
     f.write(html)
@@ -350,7 +357,7 @@ class TestSyncVideos(SyncVideosTestBase):
         self.assert_unchanged(before2)
 
     def test_10_rebuild_html_contains_video_title_unchanged(self):
-        """E 重建：apply 后 html 含新视频标题文本，且 <title> 不变。"""
+        """E 重建：apply 后 html 含新视频标题文本、<title> 不变、github-corner 保留（FIND-002）。"""
         countries = (
             '- country_zh: 缅甸\n'
             '  title: 缅甸-散装缅甸\n'
@@ -359,6 +366,14 @@ class TestSyncVideos(SyncVideosTestBase):
             '  platform: douyin\n'
         )
         yaml_path = self.setup_fixture(make_base_data(), countries)
+        # 预置旧产物：含 github-corner（HG-SEC-014 demo 页规范），E 重建应提取并透传
+        old_html = self.tmp / 'demos' / 'countries-table.html'
+        old_html.parent.mkdir(parents=True, exist_ok=True)
+        old_html.write_text(
+            '<html><head><title>测试国家表</title></head><body>'
+            '<a href="https://github.com/imjaden/html-gen.cli" class="github-corner">c</a>'
+            '<div class="data-table"></div></body></html>',
+            encoding='utf-8')
         r = self.run_script(yaml_path, '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
         self.assertIn('[重建] demos/countries-table.html', r.stdout)
@@ -366,6 +381,9 @@ class TestSyncVideos(SyncVideosTestBase):
         self.assertIn('<title>测试国家表</title>', html)
         self.assertIn('缅甸-散装缅甸', html)
         self.assertIn('中东为何永不团结', html)
+        # FIND-002：corner 保留（提取旧 html 的 repo URL 透传 --github-url）
+        self.assertIn('github-corner', html)
+        self.assertIn('href="https://github.com/imjaden/html-gen.cli"', html)
 
 
 if __name__ == '__main__':
