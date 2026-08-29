@@ -212,7 +212,15 @@
       "religions": "天主教 97%、新教 2%",
       "area_province": "北京、天津",
       "pop_province": "",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "东帝汶-建国之路",
+          "url": "https://v.douyin.com/ksBIqe1KmdM/",
+          "duration": "6:02",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "中国",
@@ -264,7 +272,15 @@
       "religions": "",
       "area_province": "青海、四川、黑龙江",
       "pop_province": "青海",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "中非-非洲正中央的国家",
+          "url": "https://v.douyin.com/_sEruUNqcqQ/",
+          "duration": "01:11",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "丹麦",
@@ -443,7 +459,15 @@
       "religions": "犹太教 74%、伊斯兰教 18%、基督教 2%",
       "area_province": "北京",
       "pop_province": "海南",
-      "gdp_province": "陕西、北京、河北"
+      "gdp_province": "陕西、北京、河北",
+      "videos": [
+        {
+          "title": "以色列-摩萨德策反伊拉克米格21飞行员#钻石行动",
+          "url": "https://v.douyin.com/OSfhyptRRFc/",
+          "duration": "08:44",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "伊拉克",
@@ -989,7 +1013,15 @@
       "religions": "印度教 80%、伊斯兰教 14%、基督教 2.3%、锡克教 1.7%",
       "area_province": "",
       "pop_province": "",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "印度-全球独一无二的联邦制",
+          "url": "https://v.douyin.com/SnZEd3ERNzM/",
+          "duration": "06:08",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "印度尼西亚",
@@ -1008,7 +1040,15 @@
       "religions": "伊斯兰教 87%、基督教 10%、印度教 2%",
       "area_province": "新疆",
       "pop_province": "",
-      "gdp_province": "山东、浙江、江苏"
+      "gdp_province": "山东、浙江、江苏",
+      "videos": [
+        {
+          "title": "印度尼西亚-为何成不了世界大国#科伦坡#群岛国家",
+          "url": "https://v.douyin.com/A3iNu4nSHwg/",
+          "duration": "10:38",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "危地马拉",
@@ -1274,7 +1314,15 @@
       "religions": "伊斯兰教 99%（逊尼 ~85%、阿列维 ~15%）",
       "area_province": "青海",
       "pop_province": "江苏、四川、河北",
-      "gdp_province": "山东、浙江"
+      "gdp_province": "山东、浙江",
+      "videos": [
+        {
+          "title": "土耳其-凯末尔建立新秩序",
+          "url": "https://v.douyin.com/1ELCBlLmZBU/",
+          "duration": "4:57",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "圣卢西亚",
@@ -1673,7 +1721,15 @@
       "religions": "天主教 57%、无宗教 27%、伊斯兰教 8%",
       "area_province": "重庆、宁夏、浙江",
       "pop_province": "海南、香港",
-      "gdp_province": "陕西、江西、北京"
+      "gdp_province": "陕西、江西、北京",
+      "videos": [
+        {
+          "title": "奥地利-维也纳、阿尔卑斯、施瓦辛格#前身奥匈帝国#山体国家",
+          "url": "https://v.douyin.com/mC_of4exhMY/",
+          "duration": "03:06",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "委内瑞拉",
@@ -1977,7 +2033,15 @@
       "religions": "",
       "area_province": "云南、甘肃、黑龙江",
       "pop_province": "宁夏、香港、青海",
-      "gdp_province": "澳门、青海、西藏"
+      "gdp_province": "澳门、青海、西藏",
+      "videos": [
+        {
+          "title": "巴拉圭-心比天高，命比纸薄",
+          "url": "https://v.douyin.com/fxvEUhcHVL0/",
+          "duration": "11:50",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "巴拿马",
@@ -2157,6 +2221,12 @@
           "title": "德国-从日耳曼到三次帝国",
           "url": "https://v.douyin.com/4jB_RN61Qsg/",
           "duration": "2:28",
+          "platform": "douyin"
+        },
+        {
+          "title": "德国-一战:国家机器对皇室的联合围剿#萨拉热窝",
+          "url": "https://v.douyin.com/MxNUTlOUbnw/",
+          "duration": "11:17",
           "platform": "douyin"
         }
       ]
@@ -2433,7 +2503,15 @@
       "religions": "佛教 70%、印度教 13%、伊斯兰教 10%、基督教 7%",
       "area_province": "宁夏、重庆",
       "pop_province": "北京、台湾、内蒙古",
-      "gdp_province": "海南、宁夏"
+      "gdp_province": "海南、宁夏",
+      "videos": [
+        {
+          "title": "斯里兰卡-破产国家#科伦坡#热带岛国",
+          "url": "https://v.douyin.com/1u-IwWd8bbU/",
+          "duration": "04:12",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "新加坡",
@@ -2471,7 +2549,15 @@
       "religions": "无宗教 49%、基督教 37%",
       "area_province": "广西、湖南、陕西",
       "pop_province": "青海",
-      "gdp_province": "新疆、天津、贵州"
+      "gdp_province": "新疆、天津、贵州",
+      "videos": [
+        {
+          "title": "新西兰-世界上最孤独的国家",
+          "url": "https://v.douyin.com/xCu-r3wsanQ/",
+          "duration": "02:02",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "日本",
@@ -2718,7 +2804,21 @@
       "religions": "天主教 47%、无宗教 33%、伊斯兰教 5%",
       "area_province": "青海、四川、黑龙江",
       "pop_province": "湖南、浙江、河北",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "法国-欧洲第一农业国#曾日不落帝国",
+          "url": "https://v.douyin.com/OQB4JncqaFQ/",
+          "duration": "03:08",
+          "platform": "douyin"
+        },
+        {
+          "title": "法国-南美飞地",
+          "url": "https://v.douyin.com/zFq-OS2Lk2U/",
+          "duration": "1:13",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "波兰",
@@ -3220,7 +3320,15 @@
       "religions": "",
       "area_province": "青海",
       "pop_province": "",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "纳米比亚-拥有一块狭长的领土",
+          "url": "https://v.douyin.com/fc46KRyjnp0/",
+          "duration": "01:43",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "缅甸",
@@ -3285,7 +3393,21 @@
       "religions": "基督教 63%、无宗教 29%、犹太教 2%",
       "area_province": "",
       "pop_province": "",
-      "gdp_province": ""
+      "gdp_province": "",
+      "videos": [
+        {
+          "title": "美国-对格陵兰岛的执念",
+          "url": "https://v.douyin.com/TusT8RClXpg/",
+          "duration": "00:31",
+          "platform": "douyin"
+        },
+        {
+          "title": "美国-世界面积前六的唯二地大物博",
+          "url": "https://v.douyin.com/Lzv1VMsc8yY/",
+          "duration": "02:25",
+          "platform": "douyin"
+        }
+      ]
     },
     {
       "country_zh": "老挝",
@@ -3538,6 +3660,12 @@
           "title": "葡萄牙-前世界第一列强",
           "url": "https://v.douyin.com/leqDe7XKeQU/",
           "duration": "8:17",
+          "platform": "douyin"
+        },
+        {
+          "title": "葡萄牙-西临大西洋的国家#C罗#达伽马#麦哲伦#曾日不落帝国",
+          "url": "https://v.douyin.com/5okZqSDOMPk/",
+          "duration": "02:43",
           "platform": "douyin"
         }
       ]
