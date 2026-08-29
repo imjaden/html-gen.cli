@@ -8,8 +8,16 @@
 <link rel="stylesheet" href="style-guide.css">
 <style>
 /* ── Tabs ── */
-.table-tabs { display:flex; gap:4px; margin-bottom:10px; overflow-x:auto; flex-wrap:nowrap; }
+.tabs-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.table-tabs { display:flex; gap:4px; overflow-x:auto; flex-wrap:nowrap; flex:1; min-width:0; }
 .table-tabs:empty { display:none; }
+.tabs-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.tabs-actions:empty { display:none; }
+/* 居右分享/Home 按钮（CL005）: 同尺寸 36px 圆角深底, 图标 emoji 全尺寸 font-size 1rem */
+.home-link, .share-link { display:flex; align-items:center; justify-content:center; width:36px; height:36px;
+  border-radius:8px; background:rgba(0,0,0,0.41); text-decoration:none; font-size:1rem; cursor:pointer;
+  border:none; color:inherit; font-family:inherit; flex-shrink:0; line-height:1; }
+.home-link:hover, .share-link:hover { background:rgba(0,0,0,0.6); }
 .tab-btn {
   padding:5px 14px; border-radius:6px 6px 0 0; cursor:pointer; font-size:0.72rem; font-weight:500;
   background:var(--surface-900); color:#6b7280; border:1px solid #1a1a2e; border-bottom:none;
@@ -66,7 +74,7 @@
 .ratio-wrap { position:relative; display:inline-block; }
 
 @media print {
-  .table-tabs, .table-header, .table-desc, .pager, .toast, .modal-overlay, .qs-overlay,
+  .table-tabs, .tabs-actions, .table-header, .table-desc, .pager, .toast, .modal-overlay, .qs-overlay,
   .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
   .data-table th, .data-table td { color: #000; border-color: #ccc; }
   .data-table th { background: #f5f5f5; }
@@ -156,7 +164,7 @@
   grid-template-columns: var(--spl-ratio, 40%) 5px 1fr;
   grid-template-rows: auto auto 1fr;
 }
-.wrapper.split-mode .table-tabs { grid-column: 1 / -1; }
+.wrapper.split-mode .tabs-row { grid-column: 1 / -1; }
 .wrapper.split-mode .batch-bar { grid-column: 1 / -1; }
 .wrapper.split-mode .table-main { overflow: auto; min-width: 200px; }
 .wrapper.split-mode .split-drag { display: block !important; grid-column: 2; }
@@ -238,18 +246,21 @@
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
-  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
-  .home-link:hover { background: rgba(0,0,0,0.6); }
   
 
 </style>
 </head>
 <body>
 <!--GITHUB_CORNER-->
-<!--HOME_LINK-->
 <div class="wrapper">
 
-<div class="table-tabs" id="tabsBar"></div>
+<div class="tabs-row">
+  <div class="table-tabs" id="tabsBar"></div>
+  <div class="tabs-actions">
+    <!--HOME_LINK-->
+    <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>
+  </div>
+</div>
 
 <div class="batch-bar" id="batchBar">
   <span class="bb-text" id="batchCount">已选 0 条</span>
@@ -267,7 +278,6 @@
   <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
   <div class="flex-1"></div>
   <input class="header-search" id="searchInput" placeholder="<!--SEARCH_PLACEHOLDER-->" onkeydown="if(event.key==='Enter')doSearch()">
-  <button class="fs-btn" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">🔗</button>
   <!--FILTERS-->
   <button class="btn btn-ghost btn-sm" id="exportBtn" title="导出 CSV" style="display:none">📥</button>
   <button class="fs-btn" id="fsBtn" onclick="toggleFullscreen()" title="全屏 (F)">⛶</button>
