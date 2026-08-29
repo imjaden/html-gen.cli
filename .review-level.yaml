@@ -470,3 +470,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-073..075 (🟡×3 非阻断, 折入实施: favicon None/'' 区分 / URL q 编解码对称 / split 下标 vs sort) + HG-SEC-076..079 (🟢 records: init 挂钩点 / cmd_* 命名 / rebuild 空串语义 / test 桩断言)"
     report: documents/review/html-gen-favicon-urlstate-syncer-design-review-v1.0-20260829.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "HTML-GEN-CL004 实现审计 — 8 commits (9a9c608 docs@design / 43c5ffd docs@review / 872593e feat@html-gen favicon / b97ca54 feat@template URL状态 / 33707e7 feat@script syncer参数 / ae606f3 test@script / 0b95c2b docs@html-gen 计数235→246 / 1d864b1 data@demo), 全部未 push; 设计 v1.0 PASS 85/A"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 0
+    tracking: "HG-SEC-073..079 (✅ closed 本次实现验证: favicon is-not-None / URLSearchParams 对称 / sort-quickFilter closeSplit / init 恢复顺序 / cmd_* 命名 / rebuild 空串禁用 / [执行] 打印行断言) + HG-SEC-080 (🟢 record 非阻断: favicon/home URL 未转义, operator 受控)"
+    report: documents/review/html-gen-favicon-urlstate-syncer-impl-audit-v1.0-20260829.md
