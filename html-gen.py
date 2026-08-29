@@ -6,8 +6,8 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 用法:
   html-gen doc --input report.md --output report.html [--title "xxx"]
   html-gen slide --input report.md --output report.html [--title "xxx"]
-  html-gen table --data data.json [--title "xxx"] [--output index.html]
-  html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [--output kb.html]
+  html-gen table --data data.json [-o out.html]  # 输出: CLI -o 或 JSON 顶层 output 必填其一
+  html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [-o out.html]
 
 版本: 3.3(2026-08-28)
 """
@@ -23,6 +23,9 @@ TEMPLATE_SLIDE = SKILLS_DIR / 'layout-slide.html'
 TEMPLATE_TABLE = SKILLS_DIR / 'layout-table.html'
 TEMPLATE_KNOWLEDGE = SKILLS_DIR / 'layout-knowledge.html'
 STYLE_GUIDE    = SKILLS_DIR / 'style-guide.css'
+
+# CL003: table/knowledge 无输出目标时的中断文案 (两处共用, stderr + exit 1)
+NO_OUTPUT_MSG = '❌ 未指定输出文件: 请补充 -o <output.html>，或 JSON 顶层加 "output": "demos/xxx.html"'
 
 
 def read_template(path):
@@ -408,8 +411,9 @@ def cmd_table(args):
         options = {}
         json_title = None
         json_subtitle = None
+        json_output = None  # 简单数组无元数据能力, CLI-only
     else:
-        # Structured object: {columns?, data?, rows?, tabs?, options?, title?, subtitle?}
+        # Structured object: {columns?, data?, rows?, tabs?, options?, title?, subtitle?, output?}
         data = raw.get('data') or raw.get('rows') or []
         if 'columns' in raw:
             columns = raw['columns']
@@ -419,6 +423,7 @@ def cmd_table(args):
         options = raw.get('options', {})
         json_title = raw.get('title')
         json_subtitle = raw.get('subtitle')
+        json_output = raw.get('output')
 
     # title/subtitle 优先级: CLI 显式入参 > JSON 顶层字段 > 默认值
     title = args.title if args.title is not None else (json_title or '数据表格')
@@ -438,7 +443,11 @@ def cmd_table(args):
                     options=json.dumps(options, ensure_ascii=False),
                     filters='', search_placeholder='搜索...',
                     github_corner=gc, home_link=hl)
-    out = args.output or 'index.html'
+    # CL003: 输出目标三态 — CLI -o 非空 > JSON 顶层 output > 中断 (写盘前)
+    out = args.output or json_output
+    if not out:
+        print(NO_OUTPUT_MSG, file=sys.stderr)
+        sys.exit(1)
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
         tabs_n = len(tabs)
@@ -473,6 +482,8 @@ def cmd_knowledge(args):
     with open(data_path) as f:
         raw = json.load(f)
     items = raw if isinstance(raw, list) else (raw.get('items') or raw.get('data') or raw)
+    # CL003: knowledge 只认 data 文件的 output (groups 文件不带); 结构化键 items/data, 简单数组 None
+    json_output = raw.get('output') if isinstance(raw, dict) else None
     tmpl = inline_style(read_template(TEMPLATE_KNOWLEDGE))
     gc, hl = corner_args(args)
     result = inject(tmpl, title=args.title or '知识库',
@@ -481,7 +492,11 @@ def cmd_knowledge(args):
                     groups=json.dumps(groups, ensure_ascii=False),
                     items=json.dumps(items, ensure_ascii=False),
                     github_corner=gc, home_link=hl)
-    out = args.output or 'kb.html'
+    # CL003: 输出目标三态 — CLI -o 非空 > JSON 顶层 output > 中断 (写盘前)
+    out = args.output or json_output
+    if not out:
+        print(NO_OUTPUT_MSG, file=sys.stderr)
+        sys.exit(1)
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
         if isinstance(items, list):
@@ -564,6 +579,9 @@ A 型 · 数据表格 JSON 格式 (Cinema 纪律化宽度模型)
 简单格式 (JSON 数组):
   [{"名称": "A", "数量": 10}, {"名称": "B", "数量": 20}]
 
+输出目标 (-o 必填二选一):
+  CLI -o/--output  >  JSON 顶层 "output"  >  均无 → 提示中断 (exit 1)
+
 结构化格式:
 {
   "columns": [
@@ -590,6 +608,7 @@ A 型 · 数据表格 JSON 格式 (Cinema 纪律化宽度模型)
     {"key": "Python", "label": "🐍 Python", "field": "lang"},
     {"key": "dev", "label": "🧑‍💻 dev", "field": "profiles", "contains": true}
   ],
+  "output": "demos/xxx.html",   // 可选: 渲染目标 (无 CLI -o 时生效; 均无则中断)
   "options": {
     "pageSize": 30, "exportCSV": true, "rowSelect": true,
     "clickModes": ["tab", "modal", "split", "expand"],
@@ -645,6 +664,9 @@ C 型 · 知识库 JSON 格式
     "url": "detail.html"    // iframe 加载 (与 desc 二选一)
   }
 ]
+
+输出目标 (-o 必填二选一):
+  CLI -o/--output  >  JSON 顶层 "output" (仅 data 文件)  >  均无 → 提示中断 (exit 1)
 
 类目分组 (可选, 不提供时从 group 自动推导):
 [
@@ -765,7 +787,7 @@ def main():
     t.add_argument('-d', '--data', required=True)
     t.add_argument('--title')  # 优先级: CLI > JSON 顶层 title > '数据表格'
     t.add_argument('--subtitle', help='页面级段落描述(纯文本, \\n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空')
-    t.add_argument('-o', '--output', default='index.html')
+    t.add_argument('-o', '--output', help='输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一)')
     t.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
     t.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
 
@@ -776,7 +798,7 @@ def main():
     k.add_argument('--title', default='知识库')
     k.add_argument('--subtitle', default='')
     k.add_argument('--welcome', default='')
-    k.add_argument('-o', '--output', default='kb.html')
+    k.add_argument('-o', '--output', help='输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一)')
     k.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
     k.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
 
