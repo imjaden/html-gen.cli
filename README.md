@@ -22,6 +22,7 @@
 - [x] **Knowledge Base** — top tabs + sidebar sections + iframe/inline content, URL sync & state restore
 - [x] **AI Agent Integration** — `html-gen prompt` ships project skills (usage docs for AI agents)
 - [x] **Privacy by Default** — generated HTML carries no personal links unless you opt in (`--github-url` / `--home-url`)
+- [x] **Favicon Injection** — default favicon injected into `<head>`; `--favicon <url>` overrides, empty string disables
 
 ## Installation
 
@@ -95,5 +96,5 @@ python3 -m pytest tests/ -q -n 4
 
 ## Testing
 
-- Selenium headless Chrome regression suite (`tests/test_*.py`, 214+ cases)
+- Selenium headless Chrome regression suite (`tests/test_*.py`, 246 cases)
 - Every test asserts zero JS errors on page load

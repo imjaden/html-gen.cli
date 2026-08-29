@@ -22,6 +22,7 @@
 - [x] **知识库** — 顶部标签栏 + 侧栏章节 + iframe/内联内容，URL 同步与状态恢复
 - [x] **AI 对接** — `html-gen prompt` 输出项目 skills（供 AI agent 读取使用说明）
 - [x] **默认隐私** — 生成物默认不含个人信息链接，显式入参才带（`--github-url` / `--home-url`）
+- [x] **默认 favicon** — 默认注入 favicon 图标到 `<head>`；`--favicon <url>` 覆盖，显式空串禁用
 
 ## 安装
 
@@ -95,5 +96,5 @@ python3 -m pytest tests/ -q -n 4
 
 ## 测试
 
-- Selenium headless Chrome 回归套件（`tests/test_*.py`，214+ 用例）
+- Selenium headless Chrome 回归套件（`tests/test_*.py`，246 用例）
 - 每个用例断言页面加载零 JS 错误
