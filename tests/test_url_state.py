@@ -218,6 +218,33 @@ class TestUrlState(unittest.TestCase):
         self.assertIn('split=0', url)
         self.assertEqual(get_errors(self.driver), [])
 
+    # ── test_06 分享/Home 按钮位于 tabs 行居右 (CL005) ──
+    def test_06_share_home_buttons_in_tabs_actions(self):
+        """shareBtn 位于 .tabs-actions（tabs 行居右）且图标 ↗; --home-url 注入的 home-link 同容器。"""
+        self._gen_page()
+        btn = self.driver.find_element(By.ID, 'shareBtn')
+        parent = btn.find_element(By.XPATH, '..')
+        self.assertIn('tabs-actions', parent.get_attribute('class'))
+        self.assertIn('↗', btn.text)
+        # --home-url 生成页: home-link 与 shareBtn 同容器（tabs 行居右）
+        stamp = str(int(time.time() * 1000))
+        src = PROJECT / 'tests' / f'_tmp_cl005home_{stamp}.json'
+        out = PROJECT / 'tests' / f'_tmp_cl005home_{stamp}.html'
+        self._tmp_files += [src, out]
+        src.write_text(json.dumps(PAYLOAD, ensure_ascii=False), encoding='utf-8')
+        proc = subprocess.run([sys.executable, str(PROJECT / 'html-gen.py'), 'table',
+                               '-d', str(src), '-o', str(out),
+                               '--home-url', 'https://example.com/'],
+                              capture_output=True, text=True)
+        self.assertEqual(proc.returncode, 0, proc.stderr)
+        self.driver.get('file://' + str(out))
+        WebDriverWait(self.driver, 5).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#tbody tr, #emptyState')))
+        error_collector(self.driver)
+        home = self.driver.find_element(By.CSS_SELECTOR, '.home-link')
+        self.assertIn('tabs-actions', home.find_element(By.XPATH, '..').get_attribute('class'))
+        self.assertEqual(get_errors(self.driver), [])
+
 
 if __name__ == '__main__':
     unittest.main()
