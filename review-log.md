@@ -1179,3 +1179,48 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 处理: PASS → 闭环 + auto-push（github/main）；dev 按实施 prompt 落地 CL002
 
 ---
+
+## 2026-08-29 — table/knowledge JSON 顶层 output 字段设计 v1.0 评审（CONDITIONAL PASS 75/B）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: `e76bcde` docs@design: table/knowledge JSON 顶层 output 字段设计 v1.0（HTML-GEN-CL003）— `output` 字段内嵌渲染目标 + CLI `-o` 最高优先级 + 无输出中断 exit 1 + 批量文档化；决策 1A/2A/3/4A/5/6/7/8/9 全闭合
+- **Verdict**: 🟠 **CONDITIONAL PASS 75/100（B）** — 修 v1.1 后复审
+- **Score**: 75 / 100
+- **Tracking**: HG-SEC-062（🔴 open）+ HG-SEC-063/064（🟡 open）+ HG-SEC-065/066（🟢 随 v1.1）
+- **Findings**: 1 🔴 / 2 🟡 / 2 🟢
+
+### Summary
+
+4 点需求 + 9 项决策全部落位，优先级三态矩阵主路径无歧义，向后兼容零回归（grep tests/ 全部 table/knowledge 子进程调用均显式传 `-o`，doc/slide 无 JSON 分支，cmd_demo --rebuild L988 已传 output）。唯一 🔴 是实现落点遗漏：argparse L768/L779 自带 `default='index.html'`/`default='kb.html'`，未删则 `args.output` 恒真、JSON output 与中断分支不可达、特性空转。2 处 🟡（usage-guide.md 文档漂移 / D2 knowledge json_output 提取位置未指定）+ 2 处 🟢（`-o ""` 措辞 / `-g`+data output 测试缺口）。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-062 | 🔴 | argparse `default='index.html'`/`'kb.html'`（L768/779）未纳入 D1/D2，三态步骤 2/3 不可达 | ⏳ OPEN |
+| HG-SEC-063 | 🟡 | D5 遗漏 `demos/usage-guide.md`（:126「默认 index.html」将漂移） | ⏳ OPEN |
+| HG-SEC-064 | 🟡 | D2 cmd_knowledge json_output 提取位置未指定（raw L475 最终化、items/data 键） | ⏳ OPEN |
+| HG-SEC-065 | 🟢 | 矩阵「显式传入」未限定非空，`-o ""` 与 title/subtitle 空串语义不对称 | 随 v1.1 |
+| HG-SEC-066 | 🟢 | §5 缺「`-g` + data 文件 output 生效」组合用例 | 随 v1.1 |
+
+### Positives
+
+- 需求覆盖完整，9 决策闭环，决策与 §3 细节逐条自洽无悬空
+- 向后兼容论证到位且经实测复核（现有测试 0 依赖静默默认值、cmd_demo rebuild 已传 output、doc/slide 无 JSON 分支）
+- 三态矩阵主路径（CLI > JSON > 中断）与 title/subtitle 优先级顺序自洽，空串/None 语义在 §3.1 显式声明「无清空语义」
+- 零依赖约束遵守（纯 stdlib 三态解析）；错误处理对齐「数据文件不存在」的 stderr + exit 1 既有模式
+- 测试规划正确声明纯 CLI 行为（subprocess 断言、无需 Selenium），主分支覆盖齐全
+
+### RIG 清单（ops 修 v1.1）
+
+| # | 项 | 修复 |
+|:-:|:---|:---|
+| RIG-1 (062) | D1+D2+§4 | L768/L779 删 argparse `default='index.html'`/`'kb.html'`（缺省 None）；§4「两处 cmd」更正为「两处 cmd + 两处 argparse default + 两处 JSON 分支」 |
+| RIG-2 (063) | D5 | 增 `demos/usage-guide.md`：table 节 :126 改「必填（CLI -o 或 JSON output 二选一）」，knowledge 节 :186 同理 |
+| RIG-3 (064) | D2 | 补「L475 raw 最终化后 `json_output = raw.get('output') if isinstance(raw, dict) else None`；knowledge 键为 items/data（非 columns）」 |
+
+- 报告: `documents/review/table-knowledge-json-output-design-review-v1.0-20260829.md`
+- 处理: CONDITIONAL PASS → 不 push；ops 修 v1.1 后复审（PASS 后生成 dev 实施 prompt 转 dev 按 D1-D6 实施）
+
+---

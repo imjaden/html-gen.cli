@@ -414,3 +414,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-054..056 (🟡×3, closed v1.1) + HG-SEC-057..060 (🟢, closed v1.1) + HG-SEC-061 (🟡 阈值 '<6000'→'<3600', closed dev prompt)"
     report: documents/review/table-videos-syncer-design-rereview-v1.1-20260829.md
+  - date: 2026-08-29
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-knowledge-json-output-design v1.0 — JSON 顶层 output 字段 + CLI -o 最高优先级 + 无输出中断 exit 1 + 批量文档化; commit e76bcde; 决策 1A/2A/3/4A/5/6/7/8/9"
+    verdict: CONDITIONAL_PASS
+    score: 75
+    findings_total: 5
+    findings_open: 3
+    tracking: "HG-SEC-062 (🔴 open) + HG-SEC-063..064 (🟡 open) + HG-SEC-065..066 (🟢 随 v1.1)"
+    report: documents/review/table-knowledge-json-output-design-review-v1.0-20260829.md
