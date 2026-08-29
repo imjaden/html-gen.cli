@@ -155,6 +155,8 @@ html-gen knowledge \\
 ]
 ```
 
+> **输出目标（CL003）**：结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）。优先级 CLI `-o` > JSON `output`；均无 → 提示中断（exit 1）。
+
 ### groups.json（可选）
 
 ```json
@@ -173,7 +175,7 @@ html-gen knowledge -h
   --title TEXT        知识库标题
   --subtitle TEXT     副标题
   --welcome TEXT      欢迎面板文本
-  -o, --output FILE   输出 HTML
+  -o, --output FILE   输出 HTML（必填: CLI -o 或 JSON 顶层 output 二选一）
 ```
 
 ---

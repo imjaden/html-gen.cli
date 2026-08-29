@@ -66,6 +66,8 @@ html-gen knowledge -d kb.json -g groups.json -o kb.html
 | `html-gen prompt [skill]` | Output project skills (AI-facing docs) |
 | `html-gen demo list` | Demo index & registry |
 
+> Output: `table`/`knowledge` `-o/--output` is **required** — pass CLI `-o` or a top-level JSON `output` field (both missing → error + exit 1)
+
 ## AI Interchange
 
 ```bash

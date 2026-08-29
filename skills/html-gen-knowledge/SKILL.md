@@ -37,6 +37,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 - `url` 与 `desc` 二选一 (iframe vs 内联渲染)
 - `badge` 可选 (自定义标记)
 - title 与 section 同名时自动跳过 item 行 (K2 rule)
+- 输出目标: 结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）；优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)
 
 ## groups 格式
 

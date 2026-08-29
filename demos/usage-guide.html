@@ -423,7 +423,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 }
 
 @media print {
-  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit { display: none !important; }
+  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
   .doc-body { color: #000; }
   .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
   .doc-body code { background: #f0f0f0; color: #000; }
@@ -432,9 +432,12 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 /* ── GitHub Corner ── */
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
-body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit { display: none; }
+body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
+  .home-link:hover { background: rgba(0,0,0,0.6); }
+  
 
 </style>
 </head>
@@ -461,6 +464,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 </a>
 <a class="github-corner-hit" href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener" aria-label="GitHub"></a>
 
+
 <div class="doc-wrapper">
   <aside class="doc-sidebar" id="sidebar">
     <div class="doc-sidebar-resize" id="sbResize"></div>
@@ -486,7 +490,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen · CLI 使用说明</h1>
-      <div class="meta">创建: 2026-08-24 16:03 · 编辑: 2026-07-11 11:57<br>字数: 1,002 · 阅读约 5 分钟<span class="meta-path"> · 路径: <code>usage-guide.md</code></span></div>
+      <div class="meta">创建: 2026-08-29 10:31 · 编辑: 2026-08-29 10:31<br>字数: 1,045 · 阅读约 5 分钟<span class="meta-path"> · 路径: <code>usage-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <blockquote>三层模板架构的 CLI 生成器：将 Markdown/JSON 注入模板，输出自包含单文件 HTML。</blockquote>
@@ -741,8 +745,8 @@ html-gen table -d data.json --title "项目列表"</code></pre>
 </tr>
 <tr>
 <td><code>-o, --output</code></td>
-<td>输出 HTML 路径（默认 <code>index.html</code>）</td>
-<td></td>
+<td>输出 HTML 路径（必填：CLI <code>-o</code> 或 JSON 顶层 <code>output</code> 二选一；均无 → 提示中断 exit 1）</td>
+<td>✅</td>
 </tr>
 </tbody></table>
 <h3 id="数据格式">数据格式</h3>
@@ -802,6 +806,7 @@ html-gen table -d data.json --title "项目列表"</code></pre>
 <td>搜索无结果时显示「无匹配数据」</td>
 </tr>
 </tbody></table>
+<blockquote><strong>输出目标（CL003）</strong>：优先级 CLI <code>-o</code> &gt; JSON 顶层 <code>output</code> &gt; 中断（exit 1 + 「未指定输出文件」提示）。批量循环时若 JSON 顶层带 <code>output</code> 可免 <code>-o</code>；<code>data/_demos-data.json</code> 无 output，手工不带 <code>-o</code> 会中断（预期行为变更，防覆盖错文件）。</blockquote>
 <hr>
 <h2 id="五-knowledge-json-转知识库">五、knowledge — JSON 转知识库</h2>
 <h3 id="用法">用法</h3>
@@ -846,8 +851,8 @@ html-gen knowledge -d data.json -g groups.json \
 </tr>
 <tr>
 <td><code>-o, --output</code></td>
-<td>输出 HTML 路径</td>
-<td></td>
+<td>输出 HTML 路径（必填：CLI <code>-o</code> 或 JSON 顶层 <code>output</code> 二选一；均无 → 提示中断 exit 1）</td>
+<td>✅</td>
 </tr>
 </tbody></table>
 <h3 id="数据格式">数据格式</h3>

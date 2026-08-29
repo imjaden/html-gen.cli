@@ -149,6 +149,8 @@ open index.html
 ]
 ```
 
+> **输出目标（CL003）**：结构化 JSON 顶层可带 `"output": "demos/xxx.html"` 指定渲染目标。优先级 CLI `-o` > JSON `output`；均无 → 提示中断（exit 1）。简单数组格式无元数据能力，必须 CLI `-o`。
+
 ### 数据源维护指南
 
 #### 数据源与产物的关系
@@ -263,7 +265,7 @@ html-gen table -h
   -d, --data PATH    JSON 数据文件（必需）
   --title TEXT       页面标题（优先级: CLI > JSON 顶层 title > "数据表格"）
   --subtitle TEXT    页面级段落描述（纯文本, \n 换行; JSON 顶层 subtitle 兜底, 显式传空串清空）
-  -o, --output FILE  输出 HTML 路径（默认: index.html）
+  -o, --output FILE  输出 HTML 路径（必填: CLI -o 或 JSON 顶层 output 二选一; 均无 → 提示中断 exit 1）
 ```
 
 ---

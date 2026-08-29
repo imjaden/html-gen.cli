@@ -35,6 +35,7 @@ html-gen slide -i slides.md -o slides.html [--title "标题"]
 
 # table — JSON 转 A 型数据表格
 html-gen table -d data.json [--title "标题"] [--subtitle "段落描述"] [-o index.html]
+#   -o 必填二选一: CLI -o <out.html> 或 JSON 顶层 "output" (优先级 CLI > JSON; 均无 → 提示中断 exit 1)
 #   --title    优先级: CLI > JSON 顶层 title > "数据表格"
 #   --subtitle 页面级段落描述(纯文本, \n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空
 # 四渲染子命令通用参数: --github-url <url> 右上角 GitHub corner (默认不带, 隐私) / --home-url <url> demo 首页入口 / --quiet 仅打印路径
@@ -42,6 +43,7 @@ html-gen table -d data.json [--title "标题"] [--subtitle "段落描述"] [-o i
 
 # knowledge — JSON 转 C 型知识库
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
+#   -o 必填二选一: CLI -o <out.html> 或 JSON 顶层 "output" (仅 data 文件识别; groups 文件不带)
 
 # demo — 案例清单与详情（按模板分组 / --json / --all / --open / --rebuild）
 html-gen demo list
@@ -57,6 +59,22 @@ html-gen help demo
 # version — 版本 (CL016: {name} v{ver} ({date}); --version flag 兼容同格式)
 html-gen version
 ```
+
+### 批量渲染场景（CL003，2026-08-29）
+
+table/knowledge 输出目标三态：CLI `-o` > JSON 顶层 `output` > 中断（exit 1 + 「未指定输出文件」提示）。批量循环两种写法：
+
+```shell
+# 方式一: 循环显式传 -o（推荐，数据文件无需改动）
+for f in data/*.json; do
+  html-gen table -d "$f" -o "out/$(basename "$f" .json).html"
+done
+
+# 方式二: 结构化 JSON 顶层带 "output": "out/xxx.html"，循环免 -o
+for f in data/*.json; do html-gen table -d "$f"; done
+```
+
+注意：`data/_demos-data.json` 无 output 字段——**手工** `html-gen table -d data/_demos-data.json`（不带 -o）从「静默写 index.html」变为「中断提示」（预期行为变更，防覆盖错文件）；`html-gen demo --rebuild` 直调 cmd_table 已传 output，不受影响。doc/slide 不受影响（md 派生默认）。
 
 ## 模板注入机制
 
@@ -149,6 +167,7 @@ html-gen version
 {
   "title": "项目速查表",          // 可选，页面标题（默认 "数据表格"，CLI --title 覆盖）
   "subtitle": "共 N 条记录\n按需换行", // 可选，h1 下方段落描述（CLI --subtitle 覆盖，显式传空串清空）
+  "output": "demos/xxx.html",   // 可选，渲染目标（CLI -o 覆盖；均无 → 中断 exit 1）
   "columns": [
     {"key": "name", "label": "项目", "sortable": true, "locale": "zh"},
     {"key": "stars", "label": "Stars", "type": "number"},
@@ -212,6 +231,8 @@ Options（均可选）：
   "url": "detail.html"      // 与 desc 二选一，iframe 加载
 }]
 ```
+
+输出目标：结构化 dict 顶层可带 `"output"`（渲染目标；仅 data 文件识别，groups 文件忽略；CLI `-o` 覆盖；均无 → 中断 exit 1）
 
 ### groups 输入（JSON 数组）
 ```json

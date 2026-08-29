@@ -123,7 +123,7 @@ html-gen table -d data.json --title "项目列表"
 |:---|:---|:---:|
 | `-d, --data` | JSON 数据文件路径 | ✅ |
 | `--title` | 页面标题（默认「数据表格」） | |
-| `-o, --output` | 输出 HTML 路径（默认 `index.html`） | |
+| `-o, --output` | 输出 HTML 路径（必填：CLI `-o` 或 JSON 顶层 `output` 二选一；均无 → 提示中断 exit 1） | ✅ |
 
 ### 数据格式
 
@@ -157,6 +157,8 @@ html-gen table -d data.json --title "项目列表"
 | **深色主题** | 与 style-guide.css 一致 |
 | **无数据提示** | 搜索无结果时显示「无匹配数据」 |
 
+> **输出目标（CL003）**：优先级 CLI `-o` > JSON 顶层 `output` > 中断（exit 1 + 「未指定输出文件」提示）。批量循环时若 JSON 顶层带 `output` 可免 `-o`；`data/_demos-data.json` 无 output，手工不带 `-o` 会中断（预期行为变更，防覆盖错文件）。
+
 ---
 
 ## 五、knowledge — JSON 转知识库
@@ -183,7 +185,7 @@ html-gen knowledge -d data.json -g groups.json \
 | `--title` | 知识库标题 | |
 | `--subtitle` | 副标题 | |
 | `--welcome` | 欢迎面板提示文本 | |
-| `-o, --output` | 输出 HTML 路径 | |
+| `-o, --output` | 输出 HTML 路径（必填：CLI `-o` 或 JSON 顶层 `output` 二选一；均无 → 提示中断 exit 1） | ✅ |
 
 ### 数据格式
 

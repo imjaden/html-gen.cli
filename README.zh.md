@@ -66,6 +66,8 @@ html-gen knowledge -d kb.json -g groups.json -o kb.html
 | `html-gen prompt [skill]` | 输出项目 skills（AI 对接说明） |
 | `html-gen demo list` | demo 清单与 registry |
 
+> 输出: table/knowledge 的 `-o/--output` **必填**（CLI `-o` 或 JSON 顶层 `output` 二选一；均无 → 提示中断 exit 1）
+
 ## AI 对接
 
 ```bash
