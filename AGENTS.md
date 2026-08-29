@@ -233,7 +233,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 214 tests（24 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 224 tests（25 文件；测试文件：test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_sync_videos 10 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -251,7 +251,7 @@ Options（均可选）：
 html-gen.cli/
 ├── index.html                 # 落地页（动态两屏 hero + 四模板网格 + 上箭头 A/B 返回首页 + 🌙☀️ 主题切换 + 📋 复制按钮 + footer）
 ├── html-gen.py                 # Layer 3 CLI 生成器
-├── scripts/                     # 脚本与 schema（company-report 生成器）
+├── scripts/                     # 脚本与 schema（company-report 生成器 / tool-table-videos-syncer.py videos 同步）
 ├── style-guide.css             # Layer 1 样式基座
 ├── layout-doc.html             # Layer 2 B 型文档模板
 ├── layout-table.html           # Layer 2 A 型表格模板
