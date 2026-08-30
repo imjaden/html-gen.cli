@@ -481,3 +481,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-073..079 (✅ closed 本次实现验证: favicon is-not-None / URLSearchParams 对称 / sort-quickFilter closeSplit / init 恢复顺序 / cmd_* 命名 / rebuild 空串禁用 / [执行] 打印行断言) + HG-SEC-080 (🟢 record 非阻断: favicon/home URL 未转义, operator 受控)"
     report: documents/review/html-gen-favicon-urlstate-syncer-impl-audit-v1.0-20260829.md
+  - date: 2026-08-30
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "table-videos-syncer-design v1.2 — 增量模型两态→三态(新增/更新/跳过) + title 变更全字段覆盖 + 全包含统计 (HTML-GEN-CL006); commit 29bdbd2; 前置 CL002/CL004 已闭环"
+    verdict: PASS
+    score: 90
+    findings_total: 5
+    findings_open: 0
+    tracking: "HG-SEC-081..082 (🟡×2 折叠 dev prompt: duration 判空 pin raw 值 / 数据印证漂移 31/24→59/31) + HG-SEC-083..085 (🟢 records: 4A 措辞 / test_05 语义漂移 / title 空用例缺口)"
+    report: documents/review/table-videos-syncer-v1.2-design-review-v1.0-20260830.md
