@@ -1436,3 +1436,44 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 - 报告: `documents/review/html-gen-favicon-urlstate-syncer-impl-audit-v1.0-20260829.md`
 
 ---
+
+## 2026-08-30 — table-videos-syncer 设计评审 v1.2（PASS 90/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: table-videos-syncer-design v1.2（commit `29bdbd2`）— 增量模型两态→三态（新增/更新/跳过）+ title 变更全字段覆盖 + 全包含统计（HTML-GEN-CL006）
+- **Verdict**: 🟢 **PASS 90/100（A）** — 三态模型 + 幂等闭环成立，7 决策全数落入设计，无 🔴，2 🟡 折叠进 dev prompt
+- **Score**: 90 / 100
+- **Tracking**: HG-SEC-081..082（🟡×2 折叠进 dev）+ HG-SEC-083..085（🟢 记录）
+- **Findings**: 2 🟡 / 3 🟢 / 0 🔴
+
+### Summary
+
+v1.2 三态增量模型（new_items/updates/skipped）是 v1.1 additive 语义的最小扩展：url 已存在 + yaml title 非空 + title ≠ json 既有 title → 全字段覆盖更新（title 覆盖 / duration 空保留 / platform detect 兜底空保留）。7 项决策（1B/2A/3A/4A + platform/duration/触发判据三子决策）全数落入 §2，无遗漏无矛盾。幂等闭环成立（更新写盘 → W 镜像带新 title → 下次 url+title 相同跳过）。G 判定修订（new_items 与 updates 双空才中断）正确修复「仅更新无新增误判中断」。实测数据核验：cache yaml 现 59 条/31 国、json 31 条视频，28 条新增候选 + 土耳其 1 条 title 不一致（更新候选）——设计 §1「31/24/31 已包含」已漂移（HG-SEC-082）。
+
+### Findings
+
+| # | Severity | Title | Status |
+|:--:|:---:|:---|:---:|
+| HG-SEC-081 | 🟡 | duration 空/缺省判空谓词未 pin 在 raw yaml 值（normalize_duration(None)→'None' 会误判非空而覆盖） | ⏳ 折叠 dev prompt |
+| HG-SEC-082 | 🟡 | §1/§4.3/§6 数据印证漂移（31/24/31已包含 → 实测 59/31/28新增+1更新） | ⏳ 折叠 dev prompt |
+| HG-SEC-083 | 🟢 | 4A「同 url 取首条」vs 实现「同 country+url 取首条」措辞不一致 | 记录 |
+| HG-SEC-084 | 🟢 | test_05 第三条「（重复）」title 由 skip 语义漂移为 update | 记录 |
+| HG-SEC-085 | 🟢 | 缺「title 空 → 不触发更新」(2A) 显式用例 | 记录 |
+
+### Positives
+
+- 三态模型是最小扩展，未触碰 v1.1 的 W 回写 / E 重建 / F 校验 / 路径解析等已闭环决策，改动面收敛
+- 幂等闭环经源码级验证成立（build_mirror_countries 读 json 现值回写，更新后自动带新 title）
+- 触发判据收敛唯一（title 不同），避免把 yaml 未维护的 duration/platform 误当权威（§7 风险已显式声明）
+- 'None' 防护风险被 U2 显式点名，t18 作为回归护栏可兜底朴素实现缺陷
+- 安全面完全沿用已审计路径（safe_load / shell=False / json.dump + escapeHtml），零新增攻击面
+
+### 实现 prompt
+
+- ✅ 已生成（已存在 `documents/review/table-videos-syncer-v1.2-dev-impl-prompt-20260830.md`；实施时折叠 HG-SEC-081/082：duration 判空 pin raw 值 + §验证 dry-run 预期改为「28 新增 + 1 更新」）
+
+- 报告: `documents/review/table-videos-syncer-v1.2-design-review-v1.0-20260830.md`
+- 处理: PASS → 审计三件套 + commit（仅 commit 不 push，AGENTS.md 约定 + 本任务约束）
+
+---
