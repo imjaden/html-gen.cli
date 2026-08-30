@@ -1,10 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""A 型表格 videos 同步辅助脚本（HTML-GEN-CL002 / CL004）。
+"""A 型表格 videos 同步辅助脚本（HTML-GEN-CL002 / CL004 / CL006）。
 
 以 yaml 为增量输入，按 country_zh 外键匹配 data JSON 行，将 json 尚未包含的
-视频（按 url 去重）append 进对应行 videos 数组；随后将 json 全部 videos 全局
-镜像回写 yaml（countries 段），并调用 html-gen.py table 重建 demos 产物。
+视频（按 url 去重）append 进对应行 videos 数组（v1.2 起三态增量：新增/更新/
+跳过——url 已存在且 yaml title 非空且不同 → 全字段覆盖更新）；随后将 json
+全部 videos 全局镜像回写 yaml（countries 段），并调用 html-gen.py table 重建
+demos 产物。
 
 用法 (CL004 参数体系):
     scripts/tool-table-videos-syncer.py                      # 缺省 yaml + 预览（默认 dry-run）
@@ -16,7 +18,8 @@
 yaml target 段扩展 rebuild: {github_url, home_url, favicon}（缺省用固定默认；
 github_url 优先级: rebuild 配置 > 旧产物 github-corner 提取 > 固定默认）。
 
-设计: documents/solutions/table-videos-syncer-design-v1.1-20260829.md
+设计: documents/solutions/table-videos-syncer-design-v1.2-20260830.md
+      documents/solutions/table-videos-syncer-design-v1.1-20260829.md
       documents/solutions/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md §5
 依赖: 仅 PyYAML（dev 依赖 requirements-dev.txt），运行时 html-gen 零依赖不受影响
 """
@@ -121,9 +124,16 @@ def validate_countries(countries, rows_by_country):
 
 
 def build_increments(countries, rows_by_country):
-    """逐条计算增量：url（strip）不在该行 videos 集合中 → 新增；yaml 内部同
-    country+url 只取首条。返回 (new_items, skipped)。"""
+    """逐条计算三态增量（v1.2）：
+    - new_items: url（strip）不在该行 videos 集合中 → 新增
+    - updates:   url 已存在 + yaml title 非空 + ≠ json 既有 title → 覆盖更新
+    - skipped:   其余（url 已存在且 title 相同，或 yaml title 为空）
+    yaml 内部同 country+url 只取首条（去重口径与全包含统计 N/M 一致）。
+    updates 保留 raw duration（HG-SEC-081：判空须针对 raw yaml 值，勿用
+    normalize_duration 后的 'None' 字面量）与 old_title（取自 json 既有条目）。
+    返回 (new_items, updates, skipped)。"""
     new_items = []
+    updates = []
     skipped = []
     seen = set()
     for entry in countries:
@@ -134,22 +144,40 @@ def build_increments(countries, rows_by_country):
             continue
         key = (cz, url)
         if key in seen:
-            continue  # yaml 内部同 url 只取首条
+            continue  # yaml 内部同 country+url 只取首条
         seen.add(key)
         row = rows_by_country[cz]
-        existing = {v.get('url', '').strip() for v in (row.get('videos') or [])}
-        item = {
-            'country_zh': cz,
-            'title': (entry.get('title') or '').strip(),
-            'url': url,
-            'duration': normalize_duration(entry.get('duration')),
-            'platform': entry.get('platform'),
-        }
-        if url in existing:
-            skipped.append(item)
+        existing_map = {v.get('url', '').strip(): v for v in (row.get('videos') or [])}
+        if url not in existing_map:
+            new_items.append({
+                'country_zh': cz,
+                'title': (entry.get('title') or '').strip(),
+                'url': url,
+                'duration': normalize_duration(entry.get('duration')),
+                'platform': entry.get('platform'),
+            })
+            continue
+        existing_v = existing_map[url]
+        yaml_title = (entry.get('title') or '').strip()
+        if yaml_title and yaml_title != (existing_v.get('title') or '').strip():
+            updates.append({
+                'country_zh': cz,
+                'title': yaml_title,
+                'old_title': (existing_v.get('title') or '').strip(),
+                'url': url,
+                # HG-SEC-081: 更新步判空须用 raw 值（None/'' → 保留 json 现值）
+                'raw_duration': entry.get('duration'),
+                'platform': entry.get('platform'),
+            })
         else:
-            new_items.append(item)
-    return new_items, skipped
+            skipped.append({
+                'country_zh': cz,
+                'title': yaml_title,
+                'url': url,
+                'duration': normalize_duration(entry.get('duration')),
+                'platform': entry.get('platform'),
+            })
+    return new_items, updates, skipped
 
 
 def build_mirror_countries(rows):
@@ -240,8 +268,8 @@ def run_empty_video(data_doc):
 
 
 def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows,
-              rows_by_country, new_items):
-    """执行写盘：append json → 写 json → W 回写 yaml → E 重建 html。"""
+              rows_by_country, new_items, updates):
+    """执行写盘：append json（新增）→ 覆盖更新 → 写 json → W 回写 yaml → E 重建 html。"""
     # 6. 按 country_zh 分组补充（videos 缺失先初始化 []；platform 缺省按 C1 识别）
     for it in new_items:
         row = rows_by_country[it['country_zh']]
@@ -257,6 +285,29 @@ def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows
     print(f'[同步] 新增 {len(new_items)} 条视频')
     for it in new_items:
         print(f'  - {it["country_zh"]}: {it["title"]} {it["url"]} ({it["duration"]})')
+
+    # 6b. 更新步（v1.2）：url 已存在且 title 变更 → 全字段覆盖
+    # - title：直接覆盖（触发条件已保证非空）
+    # - duration：按 raw yaml 值判空（HG-SEC-081），非空才覆盖；空/缺省保留 json 现值
+    # - platform：yaml 有值用 yaml；缺省 → detect_platform(url) 兜底；detect 空 → 保留既有（U1）
+    updated_details = []
+    for it in updates:
+        row = rows_by_country[it['country_zh']]
+        target = next((v for v in (row.get('videos') or [])
+                       if v.get('url', '').strip() == it['url']), None)
+        if target is None:
+            continue  # 防御：url 已存在才进 updates，正常不会缺失
+        target['title'] = it['title']
+        if it['raw_duration'] is not None and it['raw_duration'] != '':
+            target['duration'] = normalize_duration(it['raw_duration'])
+        platform = it['platform'] or detect_platform(it['url'])
+        if platform:
+            target['platform'] = platform
+        updated_details.append((it['country_zh'], it['old_title'], it['title']))
+    if updated_details:
+        print(f'[同步] 更新 {len(updated_details)} 条视频（title 变更）')
+        for cz, old_title, new_title in updated_details:
+            print(f'  - {cz}: {old_title} → {new_title}')
 
     # 写 json（indent=2 与现文件格式一致）
     with open(json_path, 'w', encoding='utf-8') as f:
@@ -351,12 +402,18 @@ def main(argv=None):
             print(f'  - {m}')
         return 1
 
-    # 4. 逐条计算增量（yaml 内部同 url 只取首条）
-    new_items, skipped = build_increments(countries, rows_by_country)
+    # 4. 逐条计算三态增量（v1.2：新增 / 更新 / 跳过；yaml 内部同 country+url 取首条）
+    new_items, updates, skipped = build_increments(countries, rows_by_country)
 
-    # 5. G 判定：无增量 → 打印提示中断 exit 0，不写任何文件（幂等）
-    if not new_items:
-        print('[提示] 所有 videos 均已包含，无需同步')
+    # 5. G 判定（v1.2 修订）：new 与 updates 双空才中断 → 打印统计提示 exit 0 零写盘（幂等）。
+    #    N = 去重后 yaml 有效条目数、M = 去重国家数（口径与 build_increments 一致，
+    #    畸形条目缺 country_zh/url 被 warn+continue 不计入，HG-SEC-085）
+    if not new_items and not updates:
+        all_items = new_items + updates + skipped
+        n_count = len(all_items)
+        m_count = len({it['country_zh'] for it in all_items})
+        print(f'[提示] 所有 videos 均已包含，无需同步'
+              f'（yaml 检查 {n_count} 条 / 涉及 {m_count} 个国家）')
         return 0
 
     # dry-run 预览（默认态，零写盘）
@@ -364,8 +421,12 @@ def main(argv=None):
         print(f'[预览] 新增 {len(new_items)} 条:')
         for it in new_items:
             print(f'  - {it["country_zh"]}: {it["title"]} {it["url"]} ({it["duration"]})')
+        if updates:
+            print(f'[预览] 更新 {len(updates)} 条（url 已存在, title 变更）:')
+            for it in updates:
+                print(f'  - {it["country_zh"]}: {it["old_title"]} → {it["title"]} {it["url"]}')
         if skipped:
-            print(f'[预览] 跳过 {len(skipped)} 条（url 已存在）:')
+            print(f'[预览] 跳过 {len(skipped)} 条（url 已存在, title 相同）:')
             for it in skipped:
                 print(f'  - {it["country_zh"]}: {it["title"]} {it["url"]}')
         print(f'[预览] 将回写 yaml countries 段（全局镜像）+ 重建 {html_rel}')
@@ -374,7 +435,7 @@ def main(argv=None):
 
     # --apply 执行
     return run_apply(args, doc, target, countries, json_path, html_path,
-                     data_doc, rows, rows_by_country, new_items)
+                     data_doc, rows, rows_by_country, new_items, updates)
 
 
 if __name__ == '__main__':
