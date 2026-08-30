@@ -22,8 +22,8 @@ v1.1 语义为 **additive**（只 append 不删除不覆盖）：yaml 增量中 
 2. 全包含提示补充统计：`[提示] 所有 videos 均已包含，无需同步（yaml 检查 N 条 / 涉及 M 个国家）`，
    统计口径与增量模型一致（yaml 内部同 country+url 只取首条，去重）。
 
-实时数据印证：yaml 31 条 / 24 国，json 31 条视频全部已包含（31/31），其中
-土耳其 1 条 title 不一致 → 本版生效后下次同步自动修复。
+实时数据印证（快照 2026-08-30 11:59，cache yaml 为手工草稿随时漂移；评审实测 59 条 / 31 国，
+json 31 条视频：28 条新增候选 + 土耳其 1 条 title 更新候选）→ 本版生效后下次同步自动修复土耳其 title。
 
 ## 2. 决策记录
 
@@ -32,7 +32,7 @@ v1.1 语义为 **additive**（只 append 不删除不覆盖）：yaml 增量中 
 | U 更新触发 | url 已存在 + yaml title 非空 + title ≠ json 既有 title → 覆盖更新 | 触发判据唯一 = title 不同（3A）；url 相同 title 相同 → 跳过；title 空不触发（2A，防空 title 清空既有标题） |
 | U1 platform | yaml 有值用 yaml；缺省 → detect_platform(url) 兜底（与新增条目一致）；detect 仍空 → 保留 json 既有值 | 不清除既有数据（1A） |
 | U2 duration | yaml 非空才覆盖；空/缺省 → 保留 json 现值 | 防 normalize_duration(None) 写入 'None' 字符串（2A） |
-| S 统计 | 全包含提示加「yaml 检查 N 条 / 涉及 M 个国家」 | 仅 yaml 输入侧（3A）；去重口径与增量模型一致，yaml 内部同 url 取首条（4A） |
+| S 统计 | 全包含提示加「yaml 检查 N 条 / 涉及 M 个国家」 | 仅 yaml 输入侧（3A）；去重口径与增量模型一致，yaml 内部同 country+url 取首条（4A；N 排除畸形条目，缺 country_zh/url 被 warn+continue） |
 | W 回写 | 维持全局镜像，零改动 | json 更新后 yaml 镜像自动带出新值，下次运行 url+title 相同 → 跳过，幂等闭环 |
 
 其余 v1.1 决策（A 格式 / B 存放 / C platform 识别 / D 依赖 / E 重建 / F 校验 / G 无增量）
@@ -126,7 +126,7 @@ test_sync_videos.py（v1.1 的 13 例保持；新增用例）：
 - [ ] 全包含提示含「yaml 检查 N 条 / 涉及 M 个国家」（去重口径）
 - [ ] dry-run / --apply 输出含更新段
 - [ ] test_sync_videos 新增 6 用例全通过；全量 pytest -n 4 通过（253）
-- [ ] 真实数据验证：dry-run 显示土耳其更新 1 条 → --apply 后 json/yaml/html 三态复核
+- [ ] 真实数据验证：dry-run 显示「N 新增 + 1 更新（土耳其 title 变更）」（N 随 yaml 草稿漂移，以三态行为为准，勿硬编码）→ --apply 后 json/yaml/html 三态复核
 - [ ] 实现审计 PASS（review 子会话）
 
 ## 7. 风险与边界
