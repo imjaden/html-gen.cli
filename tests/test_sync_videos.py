@@ -633,6 +633,43 @@ class TestSyncVideos(SyncVideosTestBase):
         row = next(x for x in self.read_json()['data'] if x['country_zh'] == '伊朗')
         self.assertEqual(row['videos'][0]['title'], '中东为何永不团结')
 
+    def test_21_rebuild_args_preserved_on_update(self):
+        """ops 核查回归：更新步局部变量遮蔽 target 参数 → resolve_rebuild_args
+        拿到视频条目而非 yaml target 段，rebuild 配置被静默丢弃。断言 [执行] 行
+        含 rebuild 配置值（非固定默认），证明 target 段未被遮蔽。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结#更新\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        # 覆写 yaml：target 段加 rebuild 配置（与固定默认不同值，便于区分遮蔽与否）
+        yaml_path.write_text(
+            'target:\n'
+            '- data: data/_countries-data.json\n'
+            '- html: demos/countries-table.html\n'
+            '- rebuild:\n'
+            '    github_url: https://github.com/other/repo\n'
+            '    home_url: https://other.example.com/\n'
+            '    favicon: https://other.example.com/favicon.ico\n'
+            '\n'
+            'countries:\n' + countries, encoding='utf-8')
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        # 更新确实执行
+        self.assertIn('[同步] 更新 1 条视频', r.stdout)
+        row = next(x for x in self.read_json()['data'] if x['country_zh'] == '伊朗')
+        self.assertEqual(row['videos'][0]['title'], '中东为何永不团结#更新')
+        # rebuild 配置透传（若 target 被遮蔽 → 走固定默认，断言失败）
+        self.assertRegex(r.stdout,
+                         r'\[执行\].*--github-url https://github\.com/other/repo')
+        self.assertRegex(r.stdout,
+                         r'\[执行\].*--home-url https://other\.example\.com/')
+        self.assertRegex(r.stdout,
+                         r'\[执行\].*--favicon https://other\.example\.com/favicon\.ico')
+
 
 if __name__ == '__main__':
     unittest.main()

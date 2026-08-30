@@ -293,16 +293,16 @@ def run_apply(args, doc, target, countries, json_path, html_path, data_doc, rows
     updated_details = []
     for it in updates:
         row = rows_by_country[it['country_zh']]
-        target = next((v for v in (row.get('videos') or [])
-                       if v.get('url', '').strip() == it['url']), None)
-        if target is None:
+        existing_entry = next((v for v in (row.get('videos') or [])
+                               if v.get('url', '').strip() == it['url']), None)
+        if existing_entry is None:
             continue  # 防御：url 已存在才进 updates，正常不会缺失
-        target['title'] = it['title']
+        existing_entry['title'] = it['title']
         if it['raw_duration'] is not None and it['raw_duration'] != '':
-            target['duration'] = normalize_duration(it['raw_duration'])
+            existing_entry['duration'] = normalize_duration(it['raw_duration'])
         platform = it['platform'] or detect_platform(it['url'])
         if platform:
-            target['platform'] = platform
+            existing_entry['platform'] = platform
         updated_details.append((it['country_zh'], it['old_title'], it['title']))
     if updated_details:
         print(f'[同步] 更新 {len(updated_details)} 条视频（title 变更）')
