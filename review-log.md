@@ -1477,3 +1477,37 @@ v1.2 三态增量模型（new_items/updates/skipped）是 v1.1 additive 语义�
 - 处理: PASS → 审计三件套 + commit（仅 commit 不 push，AGENTS.md 约定 + 本任务约束）
 
 ---
+
+## 2026-08-30 — table-videos-syncer v1.2 实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（implementation-audit）
+- **Scope**: table-videos-syncer v1.2 实现审计 — dev 实施（`df2e28c`）+ ops 修复（`7dbaf4c` 更新步变量遮蔽 target → rebuild 配置丢失 + test_21）；设计 v1.2 PASS 90/A（HTML-GEN-CL006）
+- **Verdict**: 🟢 **PASS 100/100（A）** — 三态增量模型源码级 + 实测双重核验通过，HG-SEC-081..085 五折叠项全数闭合，ops 遮蔽缺陷已修复并带回归测试
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-081..085（✅ closed 本次实现验证）+ 遮蔽缺陷修复 t21
+- **Findings**: 0 🟢 / 0 🟡 / 0 🔴
+
+### Summary
+
+三态增量模型实现与设计 §4.2 逐条一致：build_increments（L126-180）新增（url 不在 existing_map）/ 更新（url 已存在 + yaml title 非空 + ≠ json 既有 title，携带 old_title + raw_duration）/ 跳过（其余），yaml 内部同 country+url 去重（seen 集合）。run_apply 更新步（L293-310）：title 直接覆盖、duration 以 raw yaml 值判空（HG-SEC-081，L301 杜绝 normalize_duration(None)→'None' 覆盖）、platform yaml→detect→保留既有（U1）。G 判定（L411）改 new/updates 双空才中断，正确修复「仅更新无新增误判中断」；全包含统计 N/M（L412-414）与 build_increments 同口径（去重 + 畸形条目排除）。ops 核查发现的 df2e28c「循环局部变量 target 遮蔽 run_apply target 参数 → resolve_rebuild_args 拿到视频条目 → rebuild 三键配置静默丢弃」缺陷，已由 7dbaf4c 修复（target→existing_entry）+ test_21 回归护栏。实测：专项 21 passed、全量 255 passed、dry-run 28 新增 + 1 更新（土耳其 title 变更）+ 30 跳过（零写盘）。
+
+### Findings
+
+无（0 🔴 / 0 🟡 / 0 🟢）。附注：df2e28c 引入的 target 遮蔽缺陷已在审计链内（7dbaf4c）闭环，不计 findings。
+
+### Positives
+
+- 5 项评审折叠项（HG-SEC-081..085）全部折入实现并逐条闭合，均有源码行号 + 回归测试（t17/t18/t19/t20 + test_05 fixture）+ 实测证据，无「折入即忘」
+- HG-SEC-081（duration 判空 pin raw 值）的 t18 护栏 + HG-SEC-085（title 空）的 t20 护栏均落地，杜绝清空/None 覆盖两类回归
+- ops 发现的 target 遮蔽缺陷（rebuild 配置静默丢失，属正确性级回归）带回了 test_21 透传断言，锁死同类回归
+- 三项实测证据精确吻合设计预期（28+1+30），安全面沿用 safe_load / shell=False / json.dump，零新增攻击面
+- 提交治理干净：2 实施 commit 只含 syncer + tests，未夹带 data/_countries-data.json 他人 note 编辑
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`docs@review: syncer v1.2 实现审计 (HTML-GEN-CL006)`）；仅 commit 不 push（AGENTS.md 约定 + 本任务约束）
+
+- 报告: `documents/review/table-videos-syncer-v1.2-impl-audit-v1.0-20260830.md`
+
+---
