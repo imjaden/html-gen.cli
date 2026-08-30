@@ -237,10 +237,12 @@ class TestSyncVideos(SyncVideosTestBase):
             '  duration: "11:38"\n'
             '  platform: douyin\n'
             '- country_zh: 伊朗\n'
-            '  title: 中东为何永不团结（重复）\n'
+            '  title: 中东为何永不团结\n'
             '  url: https://v.douyin.com/Ez_SJIkymk0/  \n'
             '  duration: "4:54"\n'
             '  platform: douyin\n'
+            # HG-SEC-084: 第三条与 json 既有伊朗视频同 url 且 title 相同 →
+            # v1.2 下保持 skip 语义（勿用「（重复）」后缀，否则漂移为 update）
         )
         yaml_path = self.setup_fixture(make_base_data(), countries)
         r = self.run_script(yaml_path, '--apply')
@@ -462,6 +464,174 @@ class TestSyncVideos(SyncVideosTestBase):
         self.assertIn('[预览] 新增 1 条', r.stdout)
         self.assertIn('使用 --apply 执行', r.stdout)
         self.assert_unchanged(before)
+
+    # ── v1.2 (HTML-GEN-CL006): 三态增量 — 更新/跳过 + 全包含统计 ──
+
+    def test_14_update_title_apply(self):
+        """v1.2 更新 apply：yaml 同 url 新 title → json 既有条目 title 覆盖；
+        yaml 镜像回写带新值；行数不变。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结#阿拉伯国家为何分裂\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('[同步] 更新 1 条视频（title 变更）', r.stdout)
+        row = next(x for x in self.read_json()['data'] if x['country_zh'] == '伊朗')
+        self.assertEqual(len(row['videos']), 1)  # 行数不变（不新增不删除）
+        self.assertEqual(row['videos'][0]['title'],
+                         '中东为何永不团结#阿拉伯国家为何分裂')
+        # yaml 镜像回写带新值（下次运行 url+title 相同 → 跳过，幂等闭环）
+        yaml_doc = self.read_yaml()
+        self.assertIn('中东为何永不团结#阿拉伯国家为何分裂',
+                      [c['title'] for c in yaml_doc['countries']])
+
+    def test_15_update_only_no_early_exit(self):
+        """v1.2 G 判定：所有 url 已存在但 1 条 title 不同 → apply 执行写盘
+        （非「均已包含」），修复「仅更新无新增误判中断」。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结#阿拉伯国家为何分裂\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+            '- country_zh: 中国\n'
+            '  title: 既有视频\n'
+            '  url: https://v.douyin.com/OLD123/\n'
+            '  duration: "2:30"\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertNotIn('均已包含', r.stdout)
+        self.assertIn('[同步] 更新 1 条视频（title 变更）', r.stdout)
+        row = next(x for x in self.read_json()['data'] if x['country_zh'] == '伊朗')
+        self.assertEqual(row['videos'][0]['title'],
+                         '中东为何永不团结#阿拉伯国家为何分裂')
+
+    def test_16_dry_run_update_preview(self):
+        """v1.2 dry-run 更新预览：含 `[预览] 更新 N 条（url 已存在, title 变更）`
+        与旧→新 title + url；零写盘。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结#阿拉伯国家为何分裂\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        before = self.snapshot()
+        r = self.run_script(yaml_path)  # 无参 = dry-run
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('[预览] 更新 1 条（url 已存在, title 变更）', r.stdout)
+        self.assertIn('中东为何永不团结 → 中东为何永不团结#阿拉伯国家为何分裂',
+                      r.stdout)
+        self.assertIn('https://v.douyin.com/Ez_SJIkymk0/', r.stdout)
+        self.assertIn('使用 --apply 执行', r.stdout)
+        self.assert_unchanged(before)
+
+    def test_17_all_included_statistics(self):
+        """v1.2 全包含统计：`（yaml 检查 N 条 / 涉及 M 个国家）`，N/M 与去重口径
+        一致（yaml 内部同 country+url 去重；畸形条目缺 url 不计入 N）；零写盘。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+            '- country_zh: 中国\n'
+            '  title: 既有视频\n'
+            '  url: https://v.douyin.com/OLD123/\n'
+            '  duration: "2:30"\n'
+            '  platform: douyin\n'
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+            # 畸形条目（缺 url）被 warn+continue，不计入 N（HG-SEC-085）
+            '- country_zh: 缅甸\n'
+            '  title: 无 url 畸形条目\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        before = self.snapshot()
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('均已包含', r.stdout)
+        self.assertIn('（yaml 检查 2 条 / 涉及 2 个国家）', r.stdout)
+        self.assert_unchanged(before)
+
+    def test_18_update_keep_existing_when_missing(self):
+        """HG-SEC-081 回归护栏：更新条目 yaml 缺 duration/platform 或 duration 空
+        → json 既有 duration/platform 保留，不写 'None'（判空用 raw 值）。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: 中东为何永不团结#阿拉伯国家为何分裂\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            # 缺 duration/platform
+            '- country_zh: 中国\n'
+            '  title: 既有视频#更新\n'
+            '  url: https://v.douyin.com/OLD123/\n'
+            '  duration: ""\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        rows = {x['country_zh']: x for x in self.read_json()['data']}
+        iran = rows['伊朗']['videos'][0]
+        self.assertEqual(iran['title'], '中东为何永不团结#阿拉伯国家为何分裂')
+        # 伊朗缺 duration → 保留 json 既有 '4:54'；缺 platform → detect 兜底命中同值 douyin
+        self.assertEqual(iran['duration'], '4:54')
+        self.assertEqual(iran['platform'], 'douyin')
+        china = rows['中国']['videos'][0]
+        self.assertEqual(china['title'], '既有视频#更新')
+        # duration 空串 → 保留 json 既有 '2:30'
+        self.assertEqual(china['duration'], '2:30')
+        # 全 json 无 'None' 字符串（normalize_duration(None) 防护）
+        self.assertNotIn('None', json.dumps(self.read_json(), ensure_ascii=False))
+
+    def test_19_update_platform_detect_fallback(self):
+        """U1：更新条目 yaml 缺 platform 但 url 可识别 → json platform 更新为
+        识别值（与新增条目 C1 一致）。"""
+        data_doc = make_base_data()
+        # 既有值与 url host 不符（bilibili vs v.douyin.com）→ detect 兜底应覆盖
+        data_doc['data'][2]['videos'][0]['platform'] = 'bilibili'
+        countries = (
+            '- country_zh: 中国\n'
+            '  title: 既有视频#更新\n'
+            '  url: https://v.douyin.com/OLD123/\n'
+            '  duration: "2:30"\n'
+        )
+        yaml_path = self.setup_fixture(data_doc, countries)
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        china = next(x for x in self.read_json()['data']
+                     if x['country_zh'] == '中国')['videos'][0]
+        self.assertEqual(china['title'], '既有视频#更新')
+        self.assertEqual(china['platform'], 'douyin')  # detect 兜底更新
+
+    def test_20_empty_title_skips_update(self):
+        """HG-SEC-085 回归护栏：yaml title 为空且 url 已存在 → 跳过，json 既有
+        title 保留（2A 清空防护，防空 title 覆盖既有标题）。"""
+        countries = (
+            '- country_zh: 伊朗\n'
+            '  title: ""\n'
+            '  url: https://v.douyin.com/Ez_SJIkymk0/\n'
+            '  duration: "4:54"\n'
+            '  platform: douyin\n'
+        )
+        yaml_path = self.setup_fixture(make_base_data(), countries)
+        r = self.run_script(yaml_path, '--apply')
+        self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
+        self.assertIn('均已包含', r.stdout)
+        row = next(x for x in self.read_json()['data'] if x['country_zh'] == '伊朗')
+        self.assertEqual(row['videos'][0]['title'], '中东为何永不团结')
 
 
 if __name__ == '__main__':
