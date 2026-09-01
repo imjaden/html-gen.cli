@@ -17,7 +17,9 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 | 文件 | 用途 |
 |:---|:---|
 | `html-gen.py` | 主 CLI，8 个子命令，1078 行 |
-| `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库（groups/data/html + content/metrics 内容页自动生成） |
+| `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库（groups/data/html + content/metrics 内容页自动生成 + 📰新闻动态组自动附加，数据源 data/_cloudwise-news.json） |
+| `scripts/cloudwise-news-sync.py` | 云智慧公众号周报同步器：读 web2md 索引 → 增量更新 data/_cloudwise-news.json → 重建知识库 → commit（每周六 10:00 cron 驱动；--dry-run/--rebuild/--no-rebuild/--no-commit） |
+| `scripts/cloudwise-fetch.py` | 云智慧公众号新文章处理入口：web2md <URL> 自动 step1 全文+step2 智读，--sync 可选立即入库 |
 | `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |
 | `layout-table.html` | A 型表格模板：搜索 + 排序 + 分页 |
@@ -294,7 +296,7 @@ html-gen.cli/
 ├── layout-table.html           # Layer 2 A 型表格模板
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
-├── data/                       # 数据文件（*_data.json, *_groups.json）
+├── data/                       # 数据文件（*_data.json, *_groups.json, _cloudwise-news.json 公众号文章库）
 ├── tests/                      # Selenium + 回归测试 (247 tests)
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
@@ -337,4 +339,5 @@ html-gen.cli/
 - `company-report.py` 调用同目录的 `html-gen.py knowledge`，通过 subprocess 运行；items 含 `content`（正文 md）+ `metrics`（数据卡表格）时自动生成内容页（doc 产物）
 - 内容页数据卡模式：schema items.metrics → 内容页顶部"核心数据"表格（6 卡对齐：成立/客户/产品/专利/融资/荣誉）
 - 数据采集：`scripts/qcc-cloudwise.py`（企查查 selenium 采集，登录态 30s 手工窗口）
+- 公众号动态管线（2026-09-01 上线）：人工发现新文章 → `scripts/cloudwise-fetch.py <URL> --sync --rebuild-kb` → web2md 处理 → 每周六 10:00 cron（cloudwise-news-weekly，deliver 飞书）自动同步 → 知识库「📰新闻动态」组；文章源为 web2md 索引 `~/Documents/10-DataDrived/web2md_index.json`（script-miner 项目，只读不修改）
 - 输出均为自包含单文件 HTML，无外部资源引用
