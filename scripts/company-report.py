@@ -67,6 +67,52 @@ def generate_content_pages(out, items):
     return count
 
 
+NEWS_GROUP = "新闻动态"
+
+
+def load_news():
+    """读取 data/_cloudwise-news.json（不存在或非数组 → 空列表）。"""
+    news_path = HTML_DEMOS / 'data' / '_cloudwise-news.json'
+    if not news_path.exists():
+        return []
+    try:
+        with open(news_path, encoding='utf-8') as f:
+            data = json.load(f)
+    except Exception:
+        return []
+    return data if isinstance(data, list) else []
+
+
+def attach_news(groups, clean_items):
+    """把新闻动态组附加到 groups/items（不写入 schema，news JSON 驱动）。
+
+    条目 desc 内联摘要 + 原文链接（新标签打开），不放 url 避免 iframe。
+    """
+    import html as _html
+    news = load_news()
+    if not news:
+        return 0
+    if not any(g.get('key') == NEWS_GROUP for g in groups):
+        groups.append({'key': NEWS_GROUP, 'label': NEWS_GROUP, 'icon': '📰'})
+    n = 0
+    for item in news:
+        summary = _html.escape(item.get('summary') or '')
+        url = _html.escape(item.get('url') or '#', quote=True)
+        parts = []
+        if summary:
+            parts.append(f'<p>{summary}</p>')
+        parts.append(f'<p><a href="{url}" target="_blank" rel="noopener noreferrer">🔗 阅读原文</a></p>')
+        clean_items.append({
+            'title': item.get('title', '未命名'),
+            'group': NEWS_GROUP,
+            'section': item.get('section') or '动态',
+            'badge': '动态',
+            'desc': ''.join(parts),
+        })
+        n += 1
+    return n
+
+
 def generate(schema):
     company = schema['company']
     out     = schema['output']
@@ -78,13 +124,7 @@ def generate(schema):
     if n_content:
         print(f"  ✅ 内容页 {n_content} 个（schema 自动生成）")
 
-    # 1. Write groups JSON (path-validated)
-    groups_path = _safe_path(HTML_DEMOS, out['groups_file'])
-    with open(groups_path, 'w') as f:
-        json.dump(groups, f, ensure_ascii=False, indent=2)
-    print(f"  ✅ {out['groups_file']}")
-
-    # 2. Write items JSON (path-validated)
+    # 0.5 新闻动态组（data/_cloudwise-news.json 驱动，不进 schema）
     clean_items = []
     for item in items:
         entry = {}
@@ -92,7 +132,17 @@ def generate(schema):
             if key in item:
                 entry[key] = item[key]
         clean_items.append(entry)
+    n_news = attach_news(groups, clean_items)
+    if n_news:
+        print(f"  ✅ 新闻动态 {n_news} 条（data/_cloudwise-news.json）")
 
+    # 1. Write groups JSON (path-validated)
+    groups_path = _safe_path(HTML_DEMOS, out['groups_file'])
+    with open(groups_path, 'w') as f:
+        json.dump(groups, f, ensure_ascii=False, indent=2)
+    print(f"  ✅ {out['groups_file']}")
+
+    # 2. Write items JSON (path-validated)
     data_path = _safe_path(HTML_DEMOS, out['data_file'])
     with open(data_path, 'w') as f:
         json.dump(clean_items, f, ensure_ascii=False, indent=2)

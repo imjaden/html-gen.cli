@@ -96,5 +96,96 @@
     "section": "生态合作",
     "badge": "数据",
     "url": "cloudwise/open-source.html"
+  },
+  {
+    "title": "云智慧 Castrel AI 健康巡检：把故障后的“救火”，变成业务受影响前的主动处置",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>大多数IT团队都经历过这样的状态：仪表盘显示正常，告警保持静默，SLO 尚未跌破，但部分运行信号已经呈现持续恶化趋势。传统故障排查通常围绕已经发生的服务影响展开，难以覆盖这类业务尚未受到影响、风险却在持续积累的场景。 要系统性地处理这类风险，还需要一个面向事前风险治理的运维环节：健康巡检。 它通常定期执行，或在发现早期异常趋势时启动，关注风险是否正在积累、可能如何传导，以及何时需要采取行动。</p><p><a href=\"https://mp.weixin.qq.com/s/1C8OXFyvvtQYyy8FGb6a0w\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "别急着上 AI，先把路修好｜云智慧亮相华北制造业 CIO 研讨会，共话 AI 赋能新未来",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>近日，以「AI 赋能・智启新未来」为主题的华北制造业 CIO 研讨会在北京启幕，数百位制造企业 CIO 与 IT 掌舵人齐聚一堂，讨论一个绕不开的问题——AI 喊了三年，制造业如何更有价值的落地？ 云智慧携制造业全栈 AI 基础设施智能运维解决方案参会，带来主题演讲与展位展示，给出的回答朴素但锋利：别急着跑，先把路修好。</p><p><a href=\"https://mp.weixin.qq.com/s/6pA40jEUrIYQQelgovnWsw\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "WRC 2026｜当机器人走出展馆，“可靠” 才是它真正的入场券",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>8月19日至23日，2026 世界机器人大会（World Robot Conference，WRC）在北京举行。展馆里，每一台机器人都在展示自己 “能做什么”。而当掌声散去、灯光熄灭，真正的问题才刚刚浮现：当机器人走出展馆，走进数据中心的深夜走廊、走进变电站的高温环境、走进工业园区的复杂管线，它们还能不能一如既往地可靠工作？</p><p><a href=\"https://mp.weixin.qq.com/s/T1Q7xc4pj_hmaJW45BJONg\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "轻帆云 AI 员工“上岗” WorkBuddy：IT 服务随叫随到",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>2026年，中国办公智能体平台市场从概念预热转入爆发式增长。腾讯旗下全场景 AI 办公工作台 WorkBuddy 上线数月即领跑国内 PC 端办公智能体访问榜——据易观分析发布的《2026 Q2 中国办公智能体平台市场洞察报告》，其 6 月单月访问量达 2097 万，超第二三名之和。AI 办公工作台正逐步走入职场人的日常工作流。</p><p><a href=\"https://mp.weixin.qq.com/s/xc_ReHMjMZl01GIOxbucIg\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "挑战香港中文大学团队 RCA 基准，云智慧 Castrel AI · RCA Studio 交出 82.8% 命中率",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>近期，云智慧 AI SRE 实验室公布了一项测试结果：在香港中文大学与中山大学团队提出的公开 RCA 基准 Cloud-OpsBench 上， Castrel AI 的新一代 RCA Studio 完成 Train-Ticket 系统全量 204 个故障场景测试，综合根因命中率达到 82.8%，较基线63%的准确率提高了 19 个百分点。 这不是一次实验室里的静态模拟。</p><p><a href=\"https://mp.weixin.qq.com/s/sjSxDfIEbnYfCdApirAx1A\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "从 SLO 到健康巡检：云智慧 Castrel AI 如何构建可视化、可验证的应用运行基线",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>名词释义 SLO（Service Level Objective，服务等级目标）是企业为关键数字服务设定的可靠性目标，用于明确服务在一定周期内应达到的运行水平。它通常以可用性、延迟和正确率等与用户体验直接相关的指标来衡量，为服务监测和运维决策提供依据。 在实际运维中，企业通常会将 SLO 作为判断关键数字服务是否达到预期可靠性水平的依据。</p><p><a href=\"https://mp.weixin.qq.com/s/lK85YDQXilEzATJm_vjxKw\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "从“会回答”到“能执行”：轻帆云 AI 员工如何重构 IT 服务台？",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>在传统 ITSM 模式下，服务台往往是 IT 团队中负荷最重、沟通成本最高的节点。 大量模糊报障涌入，一线人员的精力被耗费在信息收集与手动派单上；后端工程师接手后，又常因上下文缺失反复追问，导致整体的服务响应与处理效率大打折扣。 这种低效背后隐藏着极高的业务复杂度：信息非结构化、处置链路长且需跨系统协同。要化解这一矛盾，不能仅靠流程优化，更需要引入全新的生产力要素。</p><p><a href=\"https://mp.weixin.qq.com/s/TM-tvnX7wiXhPbzsigB5qw\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "这个“AI员工”，不是你想象中的AI员工",
+    "group": "新闻动态",
+    "section": "2026-08",
+    "badge": "动态",
+    "desc": "<p>全球的企业软件市场正在经历一场底层形态的更替。Gartner预测：到2026年底，40%的企业应用将集成任务型 AI 智能体，而2025年这一比例还不足5%。 在所有企业软件门类中，ITSM 或许是最先迎来这一变化的领域。理解这一判断，需要回到 ITSM 自身的演进脉络中。 01 从流程标准化到 AI 辅助，ITSM 的智能化演进 过去二十年，ITSM 的核心贡献在于实现了服务过程的标准化。</p><p><a href=\"https://mp.weixin.qq.com/s/v-FEJrR896OV9C92PptXiA\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "【案例】旭阳集团×轻帆云：告别“人找人”，打造智能制造时代的集团级 IT 共享服务中心",
+    "group": "新闻动态",
+    "section": "2026-07",
+    "badge": "动态",
+    "desc": "<p>旭阳集团（下称“该集团”）创立于1995年，是一家以焦炭、化工为主业的大型能源化工集团，业务版图横跨国内外，生产园区遍布多地。随着数字化与智能制造进程的深入，该集团已上线包括MES、LIMS、PMS、ERP等在内的超100套核心IT系统，覆盖从生产制造到经营管理的各个环节。 但随着系统规模的扩大，如何为遍布各地园区的业务用户提供统一、高效的 IT 服务，成为摆在集团信息管理部门面前的现实课题。</p><p><a href=\"https://mp.weixin.qq.com/s/9wV_M21FZ49br9wSL9pDdA\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "AI 正在进入真实世界：从 Physical AI 看企业智能化新路径",
+    "group": "新闻动态",
+    "section": "2026-07",
+    "badge": "动态",
+    "desc": "<p>作者：刘语然Melly 两百多位讲者，三百多家展台。主题词是 agentic，但地面上真正在动的东西是机器人。谁在台上讲物理世界、谁在展台上演、谁在真的开发票——答案不在同一批人身上。 7 月 18 到 19 日，AGI Summit 2026 在旧金山 Palace of Fine Arts 开了两天，回来之后给我最强的一个感觉是：Physical AI 的叙事和 Physical AI 的现金…</p><p><a href=\"https://mp.weixin.qq.com/s/EWg3Oo2Z3EafEvl6WcKp_w\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "AGI Summit 2026 圆桌实录｜云智慧与OpenAI、Supermicro、Fireworks.AI等全球 AI 领军者共话：专用智能时代，AI 价值终将沉淀产业应用",
+    "group": "新闻动态",
+    "section": "2026-07",
+    "badge": "动态",
+    "desc": "<p>当通用大模型迈过能力竞争阶段，全球 AI 产业开始进入一个新的命题：未来 AI 真正的价值，将积累在哪一层？ 是持续突破模型能力边界？还是不断降低推理成本？又或是在应用层，让 AI 真正走进企业、走进业务、走进真实世界？</p><p><a href=\"https://mp.weixin.qq.com/s/fa-Kpjg9zG9stSjtj2irCA\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "从工具到价值，轻帆云全栈产品矩阵：ITSM、CMDB、ITAM三位一体，AI 驱动智能运维新范式",
+    "group": "新闻动态",
+    "section": "2026-07",
+    "badge": "动态",
+    "desc": "<p>在数智化转型的浪潮中，企业 IT 基础设施正变得愈发庞大与复杂，传统运维模式逐渐暴露出五大困境——服务响应低效、流程固化僵硬、数据孤岛林立、知识散落流失、资产管理粗放： 这些问题并非孤立存在，仅靠叠加单点工具已触及效能天花板。</p><p><a href=\"https://mp.weixin.qq.com/s/dS7rB9puk_FIZ62fCsm91w\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
+  },
+  {
+    "title": "AGI Summit 2026 圆满落幕：AI 终将走进真实世界，云智慧以全栈软硬实力诠释中国 AI 落地路径",
+    "group": "新闻动态",
+    "section": "2026-07",
+    "badge": "动态",
+    "desc": "<p>随着 AGI SUMMIT 2026 在美国旧金山艺术宫落幕，这场汇聚全球15000余名开发者、企业家、投资人与学术领袖的国际 AI 盛会，也向行业释放了一个清晰信号—— AI 的发展重心，正从&quot;更强的模型&quot;，迈向&quot;更真实的世界&quot;。</p><p><a href=\"https://mp.weixin.qq.com/s/L11kgHNP_7x7GN7HDQNFmQ\" target=\"_blank\" rel=\"noopener noreferrer\">🔗 阅读原文</a></p>"
   }
 ]
