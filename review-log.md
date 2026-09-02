@@ -1511,3 +1511,37 @@ v1.2 三态增量模型（new_items/updates/skipped）是 v1.1 additive 语义�
 - 报告: `documents/review/table-videos-syncer-v1.2-impl-audit-v1.0-20260830.md`
 
 ---
+
+## 2026-09-02 — html-gen prompt 在线阅读站点 设计 v1.0 评审（PASS 85/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: html-gen prompt --site 在线阅读站点（prompts/ 静态目录 + {skill}.md/.json + all.md + index.html 合集，HTML-GEN-CL007 kind=independent）；commit fe2ee22；前置 CL004/CL006 已闭环
+- **Verdict**: 🟢 **PASS 85/100（A）** — 架构正确，3 项 🟡 非阻断折叠实现（幂等口径 / h1 fence-aware / 清空 containment），无 🔴
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-086..088（🟡×3 折叠 dev 实施）+ HG-SEC-089..095（🟢 records）
+- **Findings**: 7 🟢 / 3 🟡 / 0 🔴
+
+### Summary
+
+设计复用 cmd_doc + layout-doc.html（零新模板），9 决策（A1 B3 C1 D1 E1 F1 G1 H1 I1）→ §4/§5/§6/§9 逐节映射一致。数据实证：8 skills（1185 行）+ references（177 行）核验准确；frontmatter 剥离定论由 §3 Jekyll 实证支撑（SKILL.md→404 / README.md→200 text/markdown）；双形态差异（CLI 含 frontmatter vs 站点剥离）已 §6.5 文档化。命名 html-gen-prompts-site-design-v1.0-20260902.md + commit docs@html-gen 均合规；设计文档 header 式无 YAML frontmatter 与兄弟设计文档惯例一致（非 §2 违规）。三项 🟡：① cmd_doc 把 all.md 分钟粒度 st_ctime/st_mtime 注入 index.html meta → 幂等 diff 跨分钟 flaky；② 3 个 skill 正文含代码块内 `# ` 注释行 → h1 计数/删除须 fence-aware；③ `--dir` 清空目录无 containment（误删风险）。七项 🟢 记录：references 数 4→3 笔误 / index.html favicon·github env 兜底未指定 / test_02 未点名 html-gen-slide 2 references / all.md TOC 扁平 / 「同构」措辞 / HELP_PROMPT 遗漏 --site / YAML 多行 description 截断。
+
+### Findings
+
+- 🔴 0 / 🟡 3（HG-SEC-086..088，均非阻断，折入实施）/ 🟢 7（HG-SEC-089..095，记录）
+
+### Positives
+
+- 需求五项（在线+md+json+all.md+README）全覆盖，9 决策零矛盾
+- frontmatter 剥离有 Jekyll 实证链（非臆断），双形态差异显式文档化
+- 内存构建 fail-fast 先于清空写盘，防半成品；cmd_doc Namespace 直调对 github/home/favicon getattr 兜底，稳妥
+- --dir 测试隔离（test_08 断言默认路径不写仓库）+ 验收清单命令级可跑
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`docs@review: prompt 在线阅读站点 设计评审 (HTML-GEN-CL007)`）；仅 commit 不 push（AGENTS.md 约定）
+- ✅ 实现 prompt 已生成（折入 HG-SEC-086..088）
+
+- 报告: `documents/review/html-gen-prompts-site-design-review-v1.0-20260902.md`
+
+---

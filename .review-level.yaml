@@ -503,3 +503,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-081..085 (✅ closed 本次实现: duration raw 判空 t18 / 数据印证 dry-run 28+1+30 / 4A 措辞 / test_05 skip 语义 / title 空 t20) + 遮蔽缺陷修复 t21"
     report: documents/review/table-videos-syncer-v1.2-impl-audit-v1.0-20260830.md
+  - date: 2026-09-02
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen prompt --site 在线阅读站点 设计 v1.0 — prompts/ 静态目录 + {skill}.md/.json + all.md + index.html 合集 (HTML-GEN-CL007 kind=independent); commit fe2ee22; 前置 CL004/CL006"
+    verdict: PASS
+    score: 85
+    findings_total: 10
+    findings_open: 0
+    tracking: "HG-SEC-086..088 (🟡×3 非阻断, 折入 dev 实施: 幂等 diff 限定 17 文件 / h1 删除计数 fence-aware / 清空目录只删已知产物名) + HG-SEC-089..095 (🟢 records: references 4→3 笔误 / index.html favicon·github env 兜底 / test_02 补 slide 2 refs / all.md TOC 扁平 / 同构措辞 / HELP_PROMPT 遗漏 --site / YAML 多行 description 截断)"
+    report: documents/review/html-gen-prompts-site-design-review-v1.0-20260902.md
