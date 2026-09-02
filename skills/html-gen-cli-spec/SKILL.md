@@ -32,7 +32,7 @@ tags: [html-gen, cli, spec, json, governance]
 | `slide` | Markdown → 幻灯片 | `-i/--input` | `-o/--output` `--title` `--subtitle` | HTML 文件 |
 | `table` | JSON → A 型数据表格 | `-d/--data` | `--title` `-o/--output` | HTML 文件 |
 | `knowledge` | JSON → C 型知识库 | `-d/--data` | `-g/--groups` `--title` `--subtitle` `--welcome` `-o/--output` | HTML 文件 |
-| `prompt` | 输出项目 skills 内容 | — | `<skill>` `--brief` `--json` | 文本 / JSON |
+| `prompt` | 输出项目 skills 内容 / 生成 prompts/ 在线阅读站点 | — | `<skill>` `--brief` `--json` `--site` `--dir` | 文本 / JSON / 站点 (28 文件) |
 | `demo` | demo 列表与详情 | — | `list\|<name>` `--json` `--all` `--open` `--rebuild` | 文本 / JSON |
 
 ## 3. 参数惯例（对齐 cli-args-reference.md）

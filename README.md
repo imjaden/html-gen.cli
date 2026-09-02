@@ -80,8 +80,8 @@ html-gen prompt --json            # machine-readable envelope
 
 ### Read Online & curl Fetch (`--site`)
 
-Generate the `prompts/` site (18 files) for GitHub Pages serving — online reading
-page + plain-markdown/JSON-envelope downloads for every skill:
+Generate the `prompts/` site (28 files) for GitHub Pages serving — C-type knowledge
+portal + per-skill detail pages + plain-markdown/JSON-envelope downloads:
 
 ```bash
 html-gen prompt --site                        # → prompts/ (repo root)
@@ -90,13 +90,15 @@ html-gen prompt --site --dir <path>           # output dir override
 
 | File | URL | Content |
 |:--|:--|:--|
-| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | Combined reading page (B-type doc render) |
+| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | C 型 knowledge 门户（5 tab: A 表格/B 文档/C 知识库/D 幻灯片/通用 CLI; 纵向 指令 CLI/模板语法/使用案例） |
+| `prompts/kb/{skill}.html` | https://html-gen.cli.jaden.tech/prompts/kb/{skill}.html | Per-skill doc detail page (×8) |
 | `prompts/all.md` | https://html-gen.cli.jaden.tech/prompts/all.md | All 8 skills in one fetch |
 | `prompts/{skill}.md` | https://html-gen.cli.jaden.tech/prompts/{skill}.md | Single skill plain markdown (body + references) |
 | `prompts/{skill}.json` | https://html-gen.cli.jaden.tech/prompts/{skill}.json | Single skill JSON envelope (`{status,error,data}`) |
 
 ```bash
-curl -s https://html-gen.cli.jaden.tech/prompts/                # reading page
+curl -s https://html-gen.cli.jaden.tech/prompts/                # knowledge portal
+curl -s https://html-gen.cli.jaden.tech/prompts/kb/html-gen.html # skill detail
 curl -s https://html-gen.cli.jaden.tech/prompts/all.md          # full collection
 curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.md     # one skill (markdown)
 curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.json   # one skill (JSON)

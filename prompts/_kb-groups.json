@@ -1,0 +1,27 @@
+[
+  {
+    "key": "table",
+    "label": "A 表格",
+    "icon": "📊"
+  },
+  {
+    "key": "doc",
+    "label": "B 文档",
+    "icon": "📄"
+  },
+  {
+    "key": "knowledge",
+    "label": "C 知识库",
+    "icon": "📚"
+  },
+  {
+    "key": "slide",
+    "label": "D 幻灯片",
+    "icon": "🎞️"
+  },
+  {
+    "key": "cli",
+    "label": "通用 CLI",
+    "icon": "🛠️"
+  }
+]

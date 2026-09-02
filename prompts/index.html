@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>html-gen Prompt 合集</title>
+<title>html-gen Prompt 站点</title>
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
@@ -240,1960 +240,500 @@ pre code { background: none; padding: 0; }
 
 </style>
 <style>
-.doc-wrapper { display: flex; min-height: 100vh; }
-.doc-sidebar {
+/* ── Layout ── */
+.kw-wrapper { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ── */
+.kw-sidebar {
   width: 260px; min-width: 260px;
   background: var(--surface-900);
   border-right: 1px solid #2a2a3e;
-  flex-direction: column;
-  position: sticky; top: 0; height: 100vh;
+  display: flex; flex-direction: column;
   overflow-y: auto;
   transition: width 0.25s, min-width 0.25s;
 }
-
-/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
-.doc-sidebar { display: none; }
-.top-toolbar { display: none; }
-body.show-sidebar .doc-sidebar { display: flex; }
-body.show-toolbar .top-toolbar { display: flex; }
-.doc-sidebar.collapsed { width: 48px; min-width: 48px; }
-.doc-sidebar-resize {
-  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
-  cursor: col-resize; z-index: 20; transition: background 0.15s;
-}
-.doc-sidebar-resize:hover, .doc-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
-.doc-sidebar.collapsed .doc-sidebar-header,
-.doc-sidebar.collapsed .doc-toc,
-.doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
-.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
-.doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
-.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
-.doc-sidebar-header {
-  padding: 16px 18px 12px;
+.kw-sidebar.collapsed { width: 48px; min-width: 48px; }
+.kw-sidebar.collapsed .kw-sidebar-header,
+.kw-sidebar.collapsed .kw-sections,
+.kw-sidebar.collapsed .kw-sidebar-footer { display: none; }
+.kw-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.kw-sidebar.collapsed .kw-sidebar-icon { display: flex; }
+.kw-sidebar-header {
+  padding: 14px 16px 10px;
   border-bottom: 1px solid #2a2a3e;
   flex-shrink: 0;
 }
-.doc-sidebar-header .sidebar-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
-.doc-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
-.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
-.doc-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
-.doc-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
-.doc-h3-toggle:hover { color: #9ca3af; }
-.doc-h3-toggle.on { color: var(--cobalt-400); }
-.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
-.doc-toc ul { list-style: none; padding: 0; margin: 0; }
-.doc-toc a {
-  display: block;
-  padding: 7px 18px 7px 0;
-  font-size: 0.8rem; color: #9ca3af;
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: all 0.15s;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+.kw-sidebar-header .sidebar-title { font-size: 0.82rem; font-weight: 700; color: var(--cobalt-400); cursor: pointer; }
+.kw-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
+.kw-sidebar-header .sub { font-size: 0.7rem; color: #6b7280; margin-top: 2px; }
+.kw-sections { flex: 1; overflow-y: auto; padding: 6px 0; display: none; }
+.kw-sections.active { display: block; }
+.kw-section-title {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px 4px; font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: #6b7280; cursor: pointer; user-select: none;
 }
-.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
-.doc-toc a.active {
-  background: rgba(79,70,229,0.1);
-  color: var(--cobalt-400);
-  border-left-color: var(--cobalt-600);
+.kw-section-title:hover { color: #e0e0e0; }
+.kw-section-title.active { color: var(--cobalt-400); }
+.kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.kw-section-title .kw-section-icon { font-size: 0.9rem; flex-shrink: 0; }
+/* 搜索/折叠功能隐藏（与顶部菜单同高同字体；按钮功能保留但不再展示） */
+#kwSearchBtn, #collapseBtn { display: none !important; }
+.kw-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px 8px 28px; cursor: pointer; transition: all 0.12s;
+  border-left: 3px solid transparent; color: #9ca3af; font-size: 0.82rem;
 }
-.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
-.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; display: none; }
-.doc-toc .toc-h3.show { display: block; }
-
-.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
-.doc-header {
-  padding: 0 80px;
-  margin-top: 30px;
-  position: sticky; top: 0; z-index: 10;
-  background: var(--surface-950);
-}
-.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
-.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
-.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
-/* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
-.meta-path { display: none; }
-body.show-md .meta-path { display: inline; }
-.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
-/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
-body.width-narrow .doc-body { max-width: 720px; }
-body.width-wide .doc-body { max-width: 1280px; }
-
-.doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
-.doc-body h1:first-child { margin-top: 0; }
-.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
-.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
-.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
-.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
-.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
-.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
-.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
-.doc-body li { line-height: 1.8; margin: 3px 0; }
-.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
-.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
-.doc-body th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
-.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
-.doc-body tr:hover { background: rgba(79,70,229,0.06); }
-.doc-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
-.doc-body pre { position: relative; background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
-.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
-.copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }
-pre:hover .copy-btn { opacity: 1; }
-.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
-.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
-.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
-.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
-.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
-
-.progress-bar { position: fixed; top: 0; left: 0; width: 0; height: 2px; background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear; }
-
-.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; cursor: zoom-out; }
-.lightbox.active { display: flex; }
-.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }
-.lightbox .lb-close { position: fixed; top: 16px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }
-.lightbox .lb-close:hover { color: #fff; }
-.doc-body img { cursor: zoom-in; }
-
-.anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
-h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
-.anchor-link:hover { color: var(--cobalt-400); }
-
-.code-with-lines { counter-reset: line; padding-left: 0; }
-.code-with-lines .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2.5em; min-width: 2.5em; text-align: right; padding-right: 1em; color: #4a5568; user-select: none; }
-
-.doc-body blockquote.callout { border-left-width: 4px; padding: 10px 16px; margin: 0.75rem 0; }
-.doc-body blockquote.callout strong { font-weight: 700; }
-.doc-body blockquote.callout.note { border-left-color: var(--cobalt-500); background: rgba(79,70,229,0.08); color: #c0c4f0; }
-.doc-body blockquote.callout.tip { border-left-color: #34d399; background: rgba(52,211,153,0.08); color: #a7f3d0; }
-.doc-body blockquote.callout.warning { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); color: #fde68a; }
-.doc-body blockquote.callout.danger { border-left-color: #f87171; background: rgba(248,113,113,0.08); color: #fecaca; }
+.kw-item:hover { background: rgba(79,70,229,0.04); color: #e0e0e0; }
+.kw-item.active { background: rgba(79,70,229,0.08); color: var(--cobalt-400); border-left-color: var(--cobalt-600); }
+.kw-item .kw-item-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kw-item .kw-item-badge { font-size: 0.62rem; padding: 1px 6px; border-radius: 8px; font-weight: 600; letter-spacing: 0.02em; flex-shrink: 0; }
 
 /* ── Sidebar Footer ── */
-.doc-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-.doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
-.doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+.kw-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.kw-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
+.kw-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
 
-/* ── TOC Search ── */
-.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
-.doc-toc-search.active { display: block; }
-.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
-.doc-toc-search input:focus { border-color: var(--cobalt-600); }
-.doc-toc-search input::placeholder { color: #555; }
-:root.light .doc-toc-search { border-color: #e5e5e5; }
-:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
-.doc-toc a.filtered-out { display: none; }
+/* ── Sidebar Search ── */
+.kw-search-wrap { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.kw-search-wrap.active { display: block; }
+.kw-search-wrap input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.kw-search-wrap input:focus { border-color: var(--cobalt-600); }
+.kw-search-wrap input::placeholder { color: #555; }
+.kw-item.filtered-out { display: none; }
+.kw-section-title.filtered-out { display: none; }
+
+/* ── Sidebar Resize ── */
+.kw-sidebar { position: relative; }
+.kw-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.kw-sidebar-resize:hover, .kw-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
 
 /* ── Top-Right Toolbar ── */
-.top-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
-:root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
-.tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
-.tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
-.tb-btn.active { background: var(--cobalt-600); color: #fff; }
-.tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+.kw-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .kw-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.kw-tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.kw-tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.kw-tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.kw-tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
 
 /* ── Light Theme ── */
 :root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
 :root.light body { color: #333; background: #f5f5f5; }
-:root.light .doc-sidebar { background: #fff; border-color: #e5e5e5; }
-:root.light .doc-sidebar-header { border-color: #e5e5e5; }
-:root.light .doc-sidebar-footer { border-color: #e5e5e5; }
-:root.light .doc-toc a { color: #666; }
-:root.light .doc-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
-:root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
-:root.light .doc-body h2 { color: #222; }
-:root.light .doc-body h3 { color: #333; }
-:root.light .doc-body h4 { color: #444; }
-:root.light .doc-body h5 { color: #555; }
-:root.light .doc-body h6 { color: #666; }
-:root.light .doc-body p, :root.light .doc-body li { color: #444; }
-:root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
-:root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
-:root.light .doc-body blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
-:root.light .doc-body table th { background: #f0f0f0; color: #555; }
-:root.light .doc-body table td { border-color: #ddd; }
-:root.light .doc-body hr { border-color: #ddd; }
-:root.light .doc-header { background: #f5f5f5; }
-:root.light .doc-header h1 { color: #222; }
+:root.light .kw-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-sidebar-header { border-color: #e5e5e5; }
+:root.light .kw-sidebar-footer { border-color: #e5e5e5; }
+:root.light .kw-sidebar-header .sidebar-title { color: #333; }
+:root.light .kw-sidebar-header .sub { color: #999; }
+:root.light .kw-item { color: #555; }
+:root.light .kw-item:hover { background: rgba(79,70,229,0.03); color: #333; }
+:root.light .kw-item.active { background: rgba(79,70,229,0.06); color: var(--cobalt-600); }
+:root.light .kw-tab-bar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-tab { color: #666; }
+:root.light .kw-tab:hover { color: #333; }
+:root.light .kw-tab.active { color: var(--cobalt-600); }
+:root.light .kw-content { background: #f5f5f5; }
+:root.light .kw-search-wrap { border-color: #e5e5e5; }
+:root.light .kw-search-wrap input { background: #f5f5f5; border-color: #ddd; color: #333; }
+:root.light .kw-welcome .w-title { color: #333; }
+
+/* ── Main ── */
+.kw-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* ── Tab Bar (aligned with sidebar title) ── */
+.kw-tab-bar {
+  height: 48px; min-height: 48px;
+  display: flex; align-items: stretch;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  overflow-x: auto; overflow-y: hidden;
+  flex-shrink: 0;
+}
+.kw-tab-bar::-webkit-scrollbar { height: 0; }
+.kw-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 20px; cursor: pointer; white-space: nowrap;
+  font-size: 0.82rem; font-weight: 500;
+  color: #9ca3af; border-bottom: 2px solid transparent;
+  transition: all 0.15s; flex-shrink: 0; user-select: none;
+}
+.kw-tab:hover { background: rgba(79,70,229,0.04); color: #e0e0e0; }
+.kw-tab.active { color: var(--cobalt-400); border-bottom-color: var(--cobalt-600); }
+.kw-tab .kw-tab-icon { font-size: 0.9rem; }
+
+/* ── Content area ── */
+.kw-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--surface-950); }
+.kw-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+
+/* ── Welcome ── */
+.kw-welcome { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 40px 20px; text-align: center; }
+.kw-welcome.active { display: flex; }
+.kw-welcome .w-title { font-size: 1.3rem; font-weight: 700; color: #e0e0e0; }
+.kw-welcome .w-sub { font-size: 0.85rem; color: #6b7280; max-width: 440px; line-height: 1.7; }
+.kw-welcome .w-legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.kw-welcome .w-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #9ca3af; }
+.kw-welcome .w-legend-item .ldot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Content iframe ── */
+.kw-frame-wrap { display: none; flex: 1; flex-direction: column; }
+.kw-frame-wrap.active { display: flex; }
+.kw-frame-wrap iframe { width: 100%; flex: 1; border: none; background: var(--surface-950); }
 
 @media (max-width: 768px) {
-  .doc-sidebar { display: none; }
-  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
-  .doc-body { padding: 0 16px 40px; }
-  .doc-header { padding: 0 16px; }
+  .kw-sidebar { display: none; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 100; }
+  .kw-sidebar.open { display: flex; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .kw-body { padding: 16px; }
 }
 
 @media print {
-  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
-  .doc-body { color: #000; }
-  .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
-  .doc-body code { background: #f0f0f0; color: #000; }
-  .doc-body a { color: #000; text-decoration: underline; }
+  .kw-sidebar, .kw-tab-bar, .kw-toolbar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
+  .kw-body { color: #000; }
+  .kw-welcome { display: none !important; }
+  body { background: #fff; }
 }
+
 /* ── GitHub Corner ── */
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
-body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
   .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
   .home-link:hover { background: rgba(0,0,0,0.6); }
   
-
+.kw-sidebar::-webkit-scrollbar { width: 4px; }
+.kw-sidebar::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
 </style>
 </head>
 <body>
-<div class="progress-bar" id="progressBar"></div>
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <span class="lb-close" onclick="closeLightbox()">✕</span>
-  <img id="lightboxImg" src="" alt="">
-</div>
-
 <!-- Top-Right Toolbar -->
-<div class="top-toolbar" id="topToolbar">
-  <button class="tb-btn active" id="langZh" onclick="setLang('zh')" title="中文">🇨🇳</button>
-  <button class="tb-btn" id="langEn" onclick="setLang('en')" title="English">🇺🇸</button>
-  <span class="tb-divider"></span>
-  <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
+<div class="kw-toolbar" id="kwToolbar">
+  <button class="kw-tb-btn active" id="kwLangZh" onclick="setKwLang('zh')" title="中文">🇨🇳</button>
+  <button class="kw-tb-btn" id="kwLangEn" onclick="setKwLang('en')" title="English">🇺🇸</button>
+  <span class="kw-tb-divider"></span>
+  <button class="kw-tb-btn" id="kwThemeBtn" onclick="toggleKwTheme()" title="切换主题">🌙</button>
 </div>
 
 <a class="home-link" href="https://html-gen.cli.jaden.tech/" aria-label="Demo 首页">🏠</a>
 
-<div class="doc-wrapper">
-  <aside class="doc-sidebar" id="sidebar">
-    <div class="doc-sidebar-resize" id="sbResize"></div>
-    <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
-    <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="html-gen Prompt 合集" id="sidebarTitle">📄 html-gen Prompt 合集</div>
-      <div class="sub-row">
-        <div class="sub"></div>
-        <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
-      </div>
+<div class="kw-wrapper">
+
+  <aside class="kw-sidebar" id="kwSidebar">
+    <div class="kw-sidebar-resize" id="kwSbResize"></div>
+    <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
+    <div class="kw-sidebar-header">
+      <div class="sidebar-title" title="html-gen Prompt 站点">📚 html-gen Prompt 站点</div>
+      <div class="sub"></div>
     </div>
-    <nav class="doc-toc" id="toc"></nav>
-    <!-- TOC Search -->
-    <div class="doc-toc-search" id="tocSearchWrap">
-      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    <div id="kwSectionsContainer"></div>
+    <!-- Sidebar Search -->
+    <div class="kw-search-wrap" id="kwSearchWrap">
+      <input type="text" id="kwSearchInput" placeholder="搜索...">
     </div>
-    <div class="doc-sidebar-footer">
-      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
+    <div class="kw-sidebar-footer">
+      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索">🔍</button>
       <span style="flex:1"></span>
       <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
     </div>
   </aside>
-  <div class="doc-main" id="docMain">
-    <div class="doc-header">
-      <h1>html-gen Prompt 合集</h1>
-      <div class="meta">创建: 2026-09-02 13:53 · 编辑: 2026-09-02 13:53<br>字数: 5,239 · 阅读约 26 分钟<span class="meta-path"> · 路径: <code>all.md</code></span></div>
+
+  <div class="kw-main">
+    <div class="kw-tab-bar" id="kwTabBar"></div>
+    <div class="kw-content">
+      <div class="kw-welcome active" id="welcomePanel">
+        <div class="w-title">📚 html-gen Prompt 站点</div>
+        <div class="w-sub">从上方类目选择: 每模板维度下 指令 CLI / 模板语法 / 使用案例</div>
+        <div class="w-legend" id="wLegend"></div>
+      </div>
+      <div class="kw-frame-wrap" id="frameWrap">
+        <iframe id="contentFrame" src="about:blank" style="width:100%;flex:1;border:none;background:var(--surface-950);display:none;"></iframe>
+        <div class="kw-body" id="kwBody"></div>
+      </div>
     </div>
-    <div class="doc-body" id="docBody"><blockquote>在线阅读: html-gen 项目 8 个 skills prompt 全文（含 references）。</blockquote>
-<blockquote>单篇获取: prompts/{skill}.md（纯 markdown）· prompts/{skill}.json（JSON 信封）· all.md（全量）。</blockquote>
-<blockquote>重新生成: html-gen prompt --site（产物勿手改，由生成器产出）。</blockquote>
-<h2 id="html-gen">html-gen</h2>
-<blockquote>Use when asked to generate HTML from markdown or JSON using html-gen, create data table pages, knowledge bases, slide presentations, or document pages. Use when user references html-gen CLI or wants markdown converted to styled HTML.</blockquote>
-<h2 id="概述">概述</h2>
-<p><code>html-gen</code> 是一个零依赖 Python CLI 工具，将 Markdown/JSON 数据注入 HTML 模板，输出自包含单文件 HTML。深色主题，4 种模板类型。</p>
-<h2 id="四型总览">四型总览</h2>
-<table><thead><tr>
-<th>类型</th>
-<th>模板文件</th>
-<th>命令</th>
-<th>输入</th>
-<th>输出场景</th>
-</tr></thead><tbody>
-<tr>
-<td>A 型 · 数据表格</td>
-<td><code>layout-table.html</code></td>
-<td><code>table</code></td>
-<td>JSON 数据</td>
-<td>文件索引、项目列表、数据浏览</td>
-</tr>
-<tr>
-<td>B 型 · 文档阅读</td>
-<td><code>layout-doc.html</code></td>
-<td><code>doc</code></td>
-<td>Markdown</td>
-<td>分析报告、技术文档、长文阅读</td>
-</tr>
-<tr>
-<td>C 型 · 知识库</td>
-<td><code>layout-knowledge.html</code></td>
-<td><code>knowledge</code></td>
-<td>JSON 条目+类目</td>
-<td>知识库、面试准备、项目 Wiki</td>
-</tr>
-<tr>
-<td>D 型 · 幻灯片</td>
-<td><code>layout-slide.html</code></td>
-<td><code>slide</code></td>
-<td>Markdown</td>
-<td>课件演示、会议分享、分段阅读</td>
-</tr>
-</tbody></table>
-<blockquote>A 型表格的详细列配置、操作按钮、Tab 过滤等高级功能参见 <code>html-gen-table</code> skill。</blockquote>
-<h2 id="cli-命令">CLI 命令</h2>
-<pre><code class="language-shell"># B 型 — Markdown → 文档
-html-gen doc -i report.md -o report.html
-
-&gt; 默认隐藏侧边栏/工具栏（Bare 模式）；独立完整浏览加 `?sidebar=1&amp;toolbar=1` [--title "标题"] [--subtitle "副标题"]（自动剥离 YAML frontmatter）
-
-# D 型 — Markdown → 幻灯片
-html-gen slide -i slides.md -o slides.html [--title "标题"] [--subtitle "副标题"]
-
-# A 型 — JSON → 数据表格
-html-gen table -d data.json [--title "标题"] [-o index.html]
-
-# C 型 — JSON → 知识库
-html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]</code></pre>
-<p>输出均为自包含单文件 HTML（CSS 内联，零外部依赖）。</p>
-<p>四渲染子命令通用参数：<code>--github-url &lt;url&gt;</code>（右上角 GitHub corner，默认不带）、<code>--home-url &lt;url&gt;</code>（demo 首页入口）、<code>--favicon &lt;url&gt;</code>（favicon 图标，默认注入 <code>DEFAULT_FAVICON</code>，显式空串禁用）、<code>--quiet</code>（仅打印路径）；环境变量兜底 <code>HTML_GEN_GITHUB_URL</code> / <code>HTML_GEN_HOME_URL</code> / <code>HTML_GEN_FAVICON</code>（CLI 参数优先）。</p>
-<h2 id="支持的-markdown-语法">支持的 Markdown 语法</h2>
-<p><code>md_to_html()</code> 内置渲染器支持以下语法子集。<strong>AI 生成 Markdown 时必须遵守此规范</strong>：</p>
-<h3 id="块级元素">块级元素</h3>
-<table><thead><tr>
-<th>语法</th>
-<th>写法</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td>h1 标题</td>
-<td><code># 标题</code></td>
-<td>全文档唯一</td>
-</tr>
-<tr>
-<td>h2 标题</td>
-<td><code>## 标题</code></td>
-<td>自动加入 TOC、slide 分页边界</td>
-</tr>
-<tr>
-<td>h3 标题</td>
-<td><code>### 标题</code></td>
-<td>自动加入 TOC</td>
-</tr>
-<tr>
-<td>无序列表</td>
-<td><code>- 列表项</code></td>
-<td>连续自动合并为 <code><ul></code></td>
-</tr>
-<tr>
-<td>有序列表</td>
-<td><code>1. 列表项</code></td>
-<td>连续自动合并为 <code><ol></code></td>
-</tr>
-<tr>
-<td>表格</td>
-<td>`\</td>
-<td>A \</td>
-<td>B \</td>
-<td><code> + </code>\</td>
-<td>:---\</td>
-<td>:---\</td>
-<td>`</td>
-<td>第二行为对齐分隔行</td>
-</tr>
-<tr>
-<td>围栏代码块</td>
-<td><code> </code><code>`lang </code> … <code> </code><code>` </code></td>
-<td>支持变长 fence 嵌套</td>
-</tr>
-<tr>
-<td>引用</td>
-<td><code>> 文字</code></td>
-<td>单行模式</td>
-</tr>
-<tr>
-<td>分隔线</td>
-<td><code>---</code></td>
-<td>连续 3+ 短横</td>
-</tr>
-<tr>
-<td>Callout 提示框</td>
-<td><code>> <strong>Note:</strong> 内容</code></td>
-<td>支持 Note/Tip/Warning/Danger/Caution + 中文对应词</td>
-</tr>
-</tbody></table>
-<h3 id="行内元素">行内元素</h3>
-<table><thead><tr>
-<th>语法</th>
-<th>写法</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td>加粗</td>
-<td><code><strong>文字</strong></code></td>
-<td>全局有效，表格内也支持</td>
-</tr>
-<tr>
-<td>斜体</td>
-<td><code><em>文字</em></code></td>
-<td><code>**</code> 优先匹配</td>
-</tr>
-<tr>
-<td>行内代码</td>
-<td><code>` </code>code<code> </code>`</td>
-<td>在 <code><pre><code></code> 内无效</td>
-</tr>
-<tr>
-<td>链接</td>
-<td><code><a href="url" target="_blank" rel="noopener">文字</a></code></td>
-<td>自动 <code>target="_blank"</code></td>
-</tr>
-<tr>
-<td>图片</td>
-<td><code>不解析</code></td>
-<td>用纯 HTML <code><img></code> 代替</td>
-</tr>
-</tbody></table>
-<h3 id="不支持">不支持</h3>
-<ul>
-<li>缩进子列表（平铺即可）</li>
-<li>图片 Markdown 语法 <code>!<a href="url" target="_blank" rel="noopener">alt</a></code></li>
-<li>HTML 标签（会被转义）</li>
-<li>Emoji 短码 <code>:smile:</code>（直接用 Unicode Emoji）</li>
-</ul>
-<h3 id="callout-关键词对照">Callout 关键词对照</h3>
-<pre><code class="language-">&gt; **Note:** ...     &gt; **注意**：...
-&gt; **Tip:** ...      &gt; **提示**：...
-&gt; **Warning:** ...  &gt; **警告**：...
-&gt; **Danger:** ...   &gt; **危险**：...
-&gt; **Caution:** ...  &gt; **注意**：...</code></pre>
-<h2 id="b-型-文档阅读-doc">B 型 · 文档阅读 (doc)</h2>
-<p><strong>输入</strong>: Markdown 文件  </p>
-<p><strong>输出</strong>: 侧边栏 TOC + 内容区 HTML 文档</p>
-<p>自动功能：</p>
-<ul>
-<li>从 h2/h3 生成侧边栏目录，点击平滑滚动</li>
-<li>滚动时自动高亮当前章节</li>
-<li>代码块悬停复制按钮 + CSS 行号</li>
-<li>h2/h3 悬浮 ¶ 锚点链接，点击复制 <code>#id</code></li>
-<li>顶部阅读进度条</li>
-<li>图片点击灯箱放大</li>
-<li>外链自动归档到文档底部</li>
-<li>文件元信息（路径/创建时间/字数/阅读时长）</li>
-</ul>
-<p><strong>用法</strong>:</p>
-<pre><code class="language-shell">html-gen doc -i report.md -o report.html
-
-&gt; 默认隐藏侧边栏/工具栏（Bare 模式）；独立完整浏览加 `?sidebar=1&amp;toolbar=1` --title "标题" --subtitle "副标题"</code></pre>
-<h2 id="d-型-幻灯片-slide">D 型 · 幻灯片 (slide)</h2>
-<p><strong>输入</strong>: Markdown 文件（每个 <code>##</code> 为一页）  </p>
-<p><strong>输出</strong>: h2 分页幻灯片 + 底部圆点导航</p>
-<p>自动功能：</p>
-<ul>
-<li>封面页（h1 标题 + 副标题 + 元信息 + 节数统计）</li>
-<li>h2 自动分页，每个二级标题独立一页</li>
-<li>键盘翻页：← → Space Home End</li>
-<li>底部圆点导航（已读/当前/未读三色）</li>
-<li>右上角页码 n/N（3s 渐隐）</li>
-<li>F 键全屏演示</li>
-<li>localStorage 进度保存</li>
-<li>侧边栏 TOC（h3 默认隐藏，可通过 H3 开关显示）</li>
-<li>&gt;50 h2 时显示性能警告</li>
-</ul>
-<p><strong>用法</strong>:</p>
-<pre><code class="language-shell">html-gen slide -i slides.md -o slides.html --title "标题" --subtitle "副标题"</code></pre>
-<h2 id="a-型-数据表格-table">A 型 · 数据表格 (table)</h2>
-<p><strong>输入</strong>: JSON 数据（简单数组 或 结构化对象）  </p>
-<p><strong>输出</strong>: 可搜索/排序/分页的交互表格</p>
-<h3 id="简单格式">简单格式</h3>
-<pre><code class="language-json">[{"名称": "项目A", "数量": 10}, {"名称": "项目B", "数量": 20}]</code></pre>
-<p>列名自动从首条 key 推导。</p>
-<h3 id="结构化格式">结构化格式</h3>
-<pre><code class="language-json">{
-  "columns": [
-    {"key": "name", "label": "名称", "sortable": true, "locale": "zh"},
-    {"key": "stars", "label": "Stars", "type": "number"},
-    {"key": "actions", "label": "操作", "type": "actions", "actions": [
-      {"icon": "📋", "label": "复制", "copyKey": "name"},
-      {"icon": "🔗", "label": "打开", "hrefKey": "url"},
-      {"icon": "👁️", "label": "详情", "desc": "查看详细信息"}
-    ]}
-  ],
-  "data": [
-    {"name": "project-a", "stars": 120, "url": "https://github.com/..."}
-  ],
-  "tabs": [
-    {"key": "all", "label": "全部"},
-    {"key": "Python", "label": "🐍 Python", "field": "lang"}
-  ],
-  "options": {"pageSize": 30, "exportCSV": true, "rowSelect": true}
-}</code></pre>
-<p>列类型: <code>string</code>(默认) / <code>number</code> / <code>actions</code>。详见 <code>html-gen-table</code> skill。</p>
-<h2 id="c-型-知识库-knowledge">C 型 · 知识库 (knowledge)</h2>
-<p><strong>输入</strong>: JSON 条目 + 可选类目分组  </p>
-<p><strong>输出</strong>: 顶部标签栏 + 左侧章节 + 右侧内容区</p>
-<h3 id="数据格式">数据格式</h3>
-<pre><code class="language-json">[
-  {
-    "title": "条目名称",
-    "group": "所属类目",
-    "section": "子分类",
-    "badge": "标记",
-    "desc": "&lt;p&gt;HTML 内容（内联渲染）&lt;/p&gt;",
-    "url": "detail.html"
-  }
-]</code></pre>
-<ul>
-<li><code>title</code>(必填): 条目名称</li>
-<li><code>group</code>(必填): 所属类目，对应顶部 Tab</li>
-<li><code>section</code>(可选): 子分类，侧栏分组</li>
-<li><code>badge</code>(可选): 标记文本</li>
-<li><code>desc</code>: 内联 HTML 内容（与 url 二选一）</li>
-<li><code>url</code>: 外部 HTML 路径（iframe 加载，与 desc 二选一）</li>
-</ul>
-<h3 id="类目分组-可选">类目分组（可选）</h3>
-<pre><code class="language-json">[
-  {"key": "Agent 框架", "label": "🤖 Agent 框架", "icon": "🤖"},
-  {"key": "HTML 工具", "label": "🌐 HTML 工具", "icon": "🌐"}
-]</code></pre>
-<p>不提供 groups 时，从条目的 <code>group</code> 字段自动推导。</p>
-<h3 id="用法">用法</h3>
-<pre><code class="language-shell"># 自动推导类目
-html-gen knowledge -d data.json --title "知识库" -o kb.html
-
-# 指定类目
-html-gen knowledge -d data.json -g groups.json --title "知识库" --welcome "从上方类目选择" -o kb.html</code></pre>
-<h2 id="ai-工作流程">AI 工作流程</h2>
-<p>当用户要求生成 HTML 页面时：</p>
-<ul>
-<li><strong>确定类型</strong>: 根据用户需求选择 A/B/C/D 型</li>
-<li><strong>准备数据</strong>: </li>
-</ul>
-<p>   - B/D 型: 按规范编写 Markdown 文件</p>
-<p>   - A/C 型: 按 schema 编写 JSON 数据文件</p>
-<ul>
-<li><strong>生成</strong>: 执行对应 CLI 命令</li>
-<li><strong>交付</strong>: 输出 <code>.html</code> 文件路径</li>
-</ul>
-<h3 id="典型场景">典型场景</h3>
-<p><strong>场景 1: 将笔记转为文档</strong></p>
-<pre><code class="language-shell">html-gen doc -i notes.md -o notes.html --title "学习笔记"</code></pre>
-<p><strong>场景 2: 生成课件幻灯片</strong></p>
-<pre><code class="language-shell">html-gen slide -i lecture.md -o lecture.html --title "第3讲" --subtitle "课件"</code></pre>
-<p><strong>场景 3: 生成项目索引页</strong></p>
-<pre><code class="language-json">// data.json
-[{"name": "repo-a", "stars": 120, "lang": "Python"}]</code></pre>
-<pre><code class="language-shell">html-gen table -d data.json --title "项目列表" -o index.html</code></pre>
-<h2 id="常见问题">常见问题</h2>
-<h3 id="q-markdown-中的-script-会被执行吗">Q: Markdown 中的 `&lt;script&gt;` 会被执行吗？</h3>
-<p>不会。<code>_md_escape()</code> 转义 <code>&amp;</code> <code>&lt;</code> <code>&gt;</code>，安全。</p>
-<h3 id="q-生成的-html-为什么没有图片">Q: 生成的 HTML 为什么没有图片？</h3>
-<p>Markdown 图片语法 <code>!<a href="url" target="_blank" rel="noopener">alt</a></code> 不解析。用 <code>&lt;img src="..."&gt;</code> 代替。</p>
-<h3 id="q-列表缩进子项没渲染">Q: 列表缩进子项没渲染？</h3>
-<p>不支持缩进子列表，改为平铺写法。</p>
-<h2 id="验证清单">验证清单</h2>
-<ul>
-<li>[ ] Markdown 语法符合上述规范（无缩进子列表、无 <code>![img]</code>）</li>
-<li>[ ] JSON 数据格式正确（A/C 型）</li>
-<li>[ ] CLI 命令执行成功，输出 <code>✅ 已生成: xxx.html</code></li>
-<li>[ ] 生成的 HTML 在浏览器中正常渲染</li>
-<li>[ ] 链接、表格、代码块显示正确</li>
-</ul>
-<h2 id="变更记录">变更记录</h2>
-<ul>
-<li>v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明</li>
-<li>v2.3.0 (2026-08-06): 新增 frontmatter 自动剥离; 修复 doc/slide 侧边栏 sticky 失效</li>
-<li>v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项</li>
-</ul>
-<h2 id="html-gen-cli-spec">html-gen-cli-spec</h2>
-<blockquote>html-gen CLI 参数惯例、子指令表、--json 统一信封（checkpoint 协议）与 skills 同步约定。开发/审计 html-gen CLI 时参考。</blockquote>
-<blockquote>本文档定义 html-gen 项目的 CLI 规范（对齐 hermes-manager 治理规范</blockquote>
-<blockquote>「CLI 规范」条目 + cli-args-reference.md 统一 JSON 信封）。</blockquote>
-<blockquote>2026-08-19 定稿（决策: 1B 2A 3B 4A 5C 6A 7A）。</blockquote>
-<h2 id="1-入口与命名">1. 入口与命名</h2>
-<ul>
-<li>入口: <code>html-gen.py</code>（argparse 子指令分发, <code>main()</code> 内 <code>add_subparsers</code>）</li>
-<li>辅助脚本: <code>company-report.py</code>（独立入口, 不并入 html-gen 主 CLI）</li>
-<li>Handler 命名: <code>cmd_{指令}</code>（如 <code>cmd_doc</code> / <code>cmd_slide</code> / <code>cmd_table</code> /</li>
-</ul>
-<p>  <code>cmd_knowledge</code> / <code>cmd_prompt</code> / <code>cmd_demo</code> / <code>cmd_help</code>）</p>
-<p>  —— 为 hermes-manager <code>handle_{指令}</code> 惯例的项目变体（cmd_ 前缀,</p>
-<p>  语义等价, 2026-08-19 决策保留不改）</p>
-<ul>
-<li>分发: <code>{'help': cmd_help, ...}<a href="args" target="_blank" rel="noopener">args.command</a></code>（dict 映射）</li>
-</ul>
-<h2 id="2-子指令表">2. 子指令表</h2>
-<table><thead><tr>
-<th>子指令</th>
-<th>用途</th>
-<th>必填参数</th>
-<th>可选参数</th>
-<th>输出</th>
-</tr></thead><tbody>
-<tr>
-<td><code>help</code></td>
-<td>显示帮助</td>
-<td>—</td>
-<td>—</td>
-<td>文本</td>
-</tr>
-<tr>
-<td><code>doc</code></td>
-<td>Markdown → B 型文档页</td>
-<td><code>-i/--input</code></td>
-<td><code>-o/--output</code> <code>--title</code> <code>--subtitle</code> <code>--metadata</code></td>
-<td>HTML 文件</td>
-</tr>
-<tr>
-<td><code>slide</code></td>
-<td>Markdown → 幻灯片</td>
-<td><code>-i/--input</code></td>
-<td><code>-o/--output</code> <code>--title</code> <code>--subtitle</code></td>
-<td>HTML 文件</td>
-</tr>
-<tr>
-<td><code>table</code></td>
-<td>JSON → A 型数据表格</td>
-<td><code>-d/--data</code></td>
-<td><code>--title</code> <code>-o/--output</code></td>
-<td>HTML 文件</td>
-</tr>
-<tr>
-<td><code>knowledge</code></td>
-<td>JSON → C 型知识库</td>
-<td><code>-d/--data</code></td>
-<td><code>-g/--groups</code> <code>--title</code> <code>--subtitle</code> <code>--welcome</code> <code>-o/--output</code></td>
-<td>HTML 文件</td>
-</tr>
-<tr>
-<td><code>prompt</code></td>
-<td>输出项目 skills 内容</td>
-<td>—</td>
-<td><code><skill></code> <code>--brief</code> <code>--json</code></td>
-<td>文本 / JSON</td>
-</tr>
-<tr>
-<td><code>demo</code></td>
-<td>demo 列表与详情</td>
-<td>—</td>
-<td>`list\</td>
-<td><name><code> </code>--json<code> </code>--all<code> </code>--open<code> </code>--rebuild`</td>
-<td>文本 / JSON</td>
-</tr>
-</tbody></table>
-<h2 id="3-参数惯例-对齐-cli-args-reference-md">3. 参数惯例（对齐 cli-args-reference.md）</h2>
-<table><thead><tr>
-<th>功能</th>
-<th>参数名</th>
-<th>缩写</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td>输入文件</td>
-<td><code>--input</code></td>
-<td><code>-i</code></td>
-<td>doc/slide 必填</td>
-</tr>
-<tr>
-<td>数据文件</td>
-<td><code>--data</code></td>
-<td><code>-d</code></td>
-<td>table/knowledge 必填</td>
-</tr>
-<tr>
-<td>输出文件</td>
-<td><code>--output</code></td>
-<td><code>-o</code></td>
-<td>必填（CLI <code>-o</code> 或 JSON 顶层 <code>output</code> 二选一；table/knowledge）</td>
-</tr>
-<tr>
-<td>标题</td>
-<td><code>--title</code></td>
-<td>—</td>
-<td>页面标题</td>
-</tr>
-<tr>
-<td>副标题</td>
-<td><code>--subtitle</code></td>
-<td>—</td>
-<td>页面副标题</td>
-</tr>
-<tr>
-<td>分组</td>
-<td><code>--groups</code></td>
-<td><code>-g</code></td>
-<td>knowledge 分组文件</td>
-</tr>
-<tr>
-<td>JSON 输出</td>
-<td><code>--json</code></td>
-<td>—</td>
-<td>checkpoint 信封（见 §4）</td>
-</tr>
-<tr>
-<td>摘要</td>
-<td><code>--brief</code></td>
-<td>—</td>
-<td>prompt 仅输出摘要</td>
-</tr>
-<tr>
-<td>帮助</td>
-<td><code>--help</code></td>
-<td><code>-h</code></td>
-<td>argparse 内置</td>
-</tr>
-</tbody></table>
-<p>注: <code>--version</code> 未实现（版本硬编码在 docstring「版本: 3.1(2026-07-23)」,</p>
-<p>2026-08-19 观察项, 后续可补 argparse <code>--version</code>）。</p>
-<h2 id="4-json-统一信封-checkpoint-协议">4. --json 统一信封（checkpoint 协议）</h2>
-<p><code>prompt</code> / <code>demo</code> 子指令的 <code>--json</code> 输出统一使用 checkpoint 信封:</p>
-<pre><code class="language-json">{"status": "ok", "error": "", "data": ...}        // 成功
-{"status": "error", "data": null, "error": "..."} // 失败</code></pre>
-<p>字段:</p>
-<ul>
-<li><code>status</code>: <code>"ok"</code> / <code>"error"</code>（必填, 仅两值）</li>
-<li><code>data</code>: 成功时结果; no-match 返回 <code>[]</code> 非 <code>null</code></li>
-<li><code>error</code>: 失败消息; 成功为 <code>""</code></li>
-</ul>
-<p>各子指令 data 结构:</p>
-<ul>
-<li><code>prompt</code>（无 skill）: <code>[{"name", "description", "references": []}, ...]</code></li>
-<li><code>prompt &lt;skill&gt;</code>: <code>{"name", "content", "references": {stem: content}}</code></li>
-<li><code>prompt &lt;不存在&gt;</code>: <code>{"status": "error", "error": "skill 'x' 不存在"}</code></li>
-<li><code>demo list</code>: <code>[{name, entry, type, featured, stale, ...}, ...]</code></li>
-<li><code>demo &lt;name&gt;</code>: 单 demo 对象</li>
-</ul>
-<p>约定:</p>
-<ul>
-<li>错误走信封, 不 print 污染 stdout（人类提示走 stderr）</li>
-<li>no-match 返回 <code>[]</code> 非 <code>null</code></li>
-<li>doc/slide/table/knowledge 输出 HTML 文件, 无 --json</li>
-</ul>
-<h2 id="5-skills-同步约定">5. skills/ 同步约定</h2>
-<ul>
-<li><strong>真源</strong>: <code>~/.hermes/profiles/dev/skills/software-development/html-gen*/</code></li>
-</ul>
-<p>  （skill_manage 写入位置, agent 会话加载处）</p>
-<ul>
-<li><strong>项目副本</strong>: <code>html-gen/skills/</code>（已 git 提交）</li>
-<li><strong>同步</strong>: 编辑 dev profile skill 后必须拷贝项目副本:</li>
-</ul>
-<p>  <code>`</code>bash</p>
-<p>  cp -R ~/.hermes/profiles/dev/skills/software-development/html-gen*/ ~/CodeSpace/html-gen/skills/</p>
-<p>  cd ~/CodeSpace/html-gen &amp;&amp; git add skills/ &amp;&amp; git commit -m "docs@skills: sync html-gen 项目副本"</p>
-<p>  <code>`</code></p>
-<ul>
-<li>拷贝整目录时清掉 <code>__pycache__/</code></li>
-<li>2026-08-19 当前项目副本: html-gen / html-gen-doc / html-gen-knowledge /</li>
-</ul>
-<p>  html-gen-table / html-gen-slide / test-speed-optimization</p>
-<h2 id="6-审计入口">6. 审计入口</h2>
-<ul>
-<li><code>hm check cli &lt;path&gt;</code>（治理规范 CLI 规范条目）: 检查 --json 检出 +</li>
-</ul>
-<p>  handle_{指令} 命名 + help/version 内置</p>
-<ul>
-<li>本规范文件: <code>html-gen/skills/html-gen-cli-spec/SKILL.md</code></li>
-</ul>
-<h2 id="html-gen-doc">html-gen-doc</h2>
-<blockquote>html-gen B 型文档模板规范。使用 html-gen doc 命令将 Markdown 转为自包含 HTML 文档页时参考。</blockquote>
-<h2 id="概述">概述</h2>
-<p>B 型文档模板从 Markdown 生成完整的文档页面。自动剥离 YAML frontmatter，提供侧边栏 TOC 导航、实时高亮、搜索等功能。</p>
-<h2 id="何时使用">何时使用</h2>
-<ul>
-<li>需要将 Markdown 文档转为可分享的自包含 HTML 页面</li>
-<li>需要带侧边栏导航的长文档（报告/手册/指南）</li>
-<li>需要幻灯片模式（doc/slide 双模式）</li>
-</ul>
-<h2 id="cli-用法">CLI 用法</h2>
-<pre><code class="language-">html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]</code></pre>
-<p>自动剥离 YAML frontmatter。标题优先级: <code>--title</code> &gt; fm title &gt; body h1 &gt; stem。</p>
-<h2 id="markdown-语法规范">Markdown 语法规范</h2>
-<ul>
-<li>h1-h3: 自动加 id 锚点</li>
-<li><strong>加粗</strong> / <em>斜体</em> / <code>代码</code> / <a href="url" target="_blank" rel="noopener">链接</a></li>
-<li>围栏代码块 (变长 fence 嵌套)</li>
-<li>表格 (pipe table)</li>
-<li>无序/有序列表</li>
-<li>Callout: <code>&gt; <strong>Note/Warning/Tip/Danger/注意/警告/提示/危险</strong>: 内容</code></li>
-<li>分隔线 <code>---</code> / 引用 <code>&gt; 文字</code></li>
-<li>不解析图片 (安全限制)</li>
-</ul>
-<h2 id="文档页特性">文档页特性</h2>
-<ul>
-<li>侧边栏 TOC (h2/h3 自动生成) + 实时高亮当前章节</li>
-<li>TOC 搜索 (🔍 按钮, 150ms debounce, ≥2 字符)</li>
-<li>折叠/展开侧边栏 (48px, <code>[</code> 快捷键)</li>
-<li>侧边栏宽度拖拽 (200-400px, localStorage)</li>
-<li>H3 子项开关 / 中英双语 / 🌙☀️ 主题切换</li>
-<li>标题点击复制路径 / 代码复制 (clipboard + fallback)</li>
-<li>行号 / Callout 提示框 / 阅读进度条 / 图片灯箱</li>
-</ul>
-<h2 id="验证清单">验证清单</h2>
-<ul>
-<li>[ ] <code>html-gen doc</code> 命令执行成功</li>
-<li>[ ] 侧边栏 TOC 与正文 h2/h3 对应</li>
-<li>[ ] 搜索过滤正常</li>
-<li>[ ] 折叠/展开/拖拽功能正常</li>
-<li>[ ] 代码复制功能正常</li>
-</ul>
-<h2 id="变更记录">变更记录</h2>
-<ul>
-<li>v1.0.0 (2026-08-08): 首次提炼自 AGENTS.md</li>
-</ul>
-<h2 id="html-gen-knowledge">html-gen-knowledge</h2>
-<blockquote>html-gen C 型知识库模板规范。使用 html-gen knowledge 命令生成分 tab 侧栏的知识库页面时参考。</blockquote>
-<h2 id="概述">概述</h2>
-<p>C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构，以 iframe 或内联 HTML 展示内容。专为多主题知识索引场景设计。</p>
-<h2 id="何时使用">何时使用</h2>
-<ul>
-<li>多主题知识索引（如以剧读史、技术文档索引）</li>
-<li>需要 tab 切换 + 侧栏导航的知识库</li>
-<li>section 与 item 一对一时可跳过 item 行直接点击 section 标题</li>
-</ul>
-<h2 id="cli-用法">CLI 用法</h2>
-<pre><code class="language-">html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]</code></pre>
-<h2 id="数据格式">数据格式</h2>
-<pre><code class="language-json">[
-  {"title": "条目名称", "group": "所属类目", "section": "子分类",
-   "url": "detail.html", "desc": "&lt;p&gt;内联 HTML&lt;/p&gt;", "badge": "标记"}
-]</code></pre>
-<ul>
-<li><code>title</code> 必填, <code>group</code> 必填, <code>section</code> 可选</li>
-<li><code>url</code> 与 <code>desc</code> 二选一 (iframe vs 内联渲染)</li>
-<li><code>badge</code> 可选 (自定义标记)</li>
-<li>title 与 section 同名时自动跳过 item 行 (K2 rule)</li>
-<li>输出目标: 结构化 dict 顶层可带 <code>"output"</code>（仅 data 文件识别，groups 文件忽略）；优先级 CLI <code>-o</code> &gt; JSON <code>output</code> &gt; 均无中断 (exit 1)</li>
-</ul>
-<h2 id="groups-格式">groups 格式</h2>
-<pre><code class="language-json">[{"key": "类目key", "label": "显示名", "icon": "🏛️"}]</code></pre>
-<h2 id="模板特性">模板特性</h2>
-<ul>
-<li>顶部横向标签栏 (按 group 分组)</li>
-<li>左侧 section-as-menu (section 标题可点击跳转)</li>
-<li>selectItem 双参数 (group, title) 支持跨组同名</li>
-<li>侧边栏搜索 (150ms debounce, ≥2 字符过滤)</li>
-<li>折叠/展开侧边栏 (<code>[</code> 快捷键, localStorage)</li>
-<li>双内容模式 (iframe / 内联 HTML)</li>
-<li>空状态欢迎面板</li>
-<li>localStorage 状态恢复 (group + item)</li>
-</ul>
-<h2 id="注意事项">注意事项</h2>
-<ul>
-<li>iframe 内容必须与知识库页面同源</li>
-<li>单条 section (title===section &amp;&amp; count===1) 自动跳过 kw-item 渲染</li>
-<li>Selenium headless 测试: iframe 内元素需 <code>driver.switch_to.frame()</code> 切换</li>
-</ul>
-<h2 id="变更记录">变更记录</h2>
-<ul>
-<li>v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md</li>
-</ul>
-<h2 id="html-gen-slide">html-gen-slide</h2>
-<blockquote>Use when generating slide-style presentation HTML from Markdown with</blockquote>
-<h2 id="概述">概述</h2>
-<p><code>layout-slide.html</code> 是 html-gen 的独立幻灯片模板 — 将 Markdown 文件按 h2 标题分页，渲染为可逐页演示的 HTML。支持封面页、圆点导航、键盘翻页、全屏模式、localStorage 进度保存和性能警告。</p>
-<blockquote>文档平铺阅读使用 <code>html-gen doc</code> 命令（<code>layout-doc.html</code>）。详见 <code>html-gen-doc</code> skill。</blockquote>
-<h2 id="何时使用">何时使用</h2>
-<ul>
-<li>将 Markdown 课件/讲稿渲染为逐页幻灯片</li>
-<li>需要键盘翻页演示的长文档</li>
-<li>会议记录/课程笔记的分段回顾</li>
-<li>演讲时配合全屏模式 <code>F</code> 键</li>
-</ul>
-<h2 id="cli-用法">CLI 用法</h2>
-<pre><code class="language-shell">html-gen slide -i lecture.md -o lecture.slide.html --title "课件标题" --subtitle "副标题"</code></pre>
-<h2 id="分页规则">分页规则</h2>
-<ul>
-<li><strong>封面页</strong>（Page 1）：h1 标题 + 副标题 + 元信息 + 节数统计</li>
-<li><strong>内容页</strong>（Page 2+）：每个 <code>##</code> h2 为一页，包含标题及其后续内容直到下一个 h2</li>
-</ul>
-<h2 id="phase-3-4-toc-搜索-侧边栏宽度拖拽-v1-1">Phase 3/4 — TOC 搜索 + 侧边栏宽度拖拽 (v1.1)</h2>
-<h3 id="toc-搜索">TOC 搜索</h3>
-<p>侧边栏底部 🔍 按钮 → 切换 TOC 顶部搜索输入框 <code>.slide-toc-search</code>：</p>
-<ul>
-<li>150ms 防抖，输入 ≥2 字符触发过滤</li>
-<li>不匹配条目 <code>.filtered-out</code> (display:none)</li>
-<li>Enter → 跳转到第一个匹配项 + 关闭搜索</li>
-<li>Esc → 关闭搜索，清除过滤</li>
-<li>点击搜索框外部 → 自动关闭</li>
-<li>激活时 🔍 按钮变 <code>var(--cobalt-400)</code> 高亮</li>
-</ul>
-<h3 id="侧边栏宽度拖拽">侧边栏宽度拖拽</h3>
-<p>侧边栏右边缘拖拽调整宽度：</p>
-<ul>
-<li><code>.slide-sidebar-resize</code>: 8px handle，hover/active 时 cobalt 高亮</li>
-<li>拖拽范围 200–400px</li>
-<li>实时更新 <code>sb.style.width</code> 和 <code>sb.style.minWidth</code></li>
-<li>localStorage 持久化 key: <code>html-gen:slide:sidebar-width</code></li>
-</ul>
-<h3 id="侧边栏底部工具栏">侧边栏底部工具栏</h3>
-<ul>
-<li>🔍 — TOC 搜索开关</li>
-<li>◀◀ / ▶▶ — 折叠/展开侧边栏 (48px collapsed)</li>
-<li><code>[</code> 快捷键仅在非 input/textarea 聚焦时触发</li>
-</ul>
-<h2 id="导航操作">导航操作</h2>
-<table><thead><tr>
-<th>操作</th>
-<th>行为</th>
-</tr></thead><tbody>
-<tr>
-<td><code>←</code> / <code>→</code></td>
-<td>上/下一页</td>
-</tr>
-<tr>
-<td><code>↑</code> / <code>↓</code></td>
-<td>上/下一页</td>
-</tr>
-<tr>
-<td><code>Space</code></td>
-<td>下一页</td>
-</tr>
-<tr>
-<td><code>Shift+Space</code></td>
-<td>上一页</td>
-</tr>
-<tr>
-<td><code>Home</code></td>
-<td>首页（封面）</td>
-</tr>
-<tr>
-<td><code>End</code></td>
-<td>末页</td>
-</tr>
-<tr>
-<td><code>F</code></td>
-<td>全屏演示切换</td>
-</tr>
-<tr>
-<td>底部圆点点击</td>
-<td>跳转对应页</td>
-</tr>
-<tr>
-<td>侧边栏 TOC 点击</td>
-<td>跳转对应 h2 页</td>
-</tr>
-</tbody></table>
-<h2 id="进度系统">进度系统</h2>
-<ul>
-<li>底部圆点导航：未访问(暗灰) / 已访问(灰) / 当前(蓝)</li>
-<li>页码浮层 <code>N / M</code> 右上角显示，3s 无操作渐隐</li>
-<li>localStorage 进度保存（key: <code>layoutslide_page</code>），下次打开自动恢复</li>
-</ul>
-<h2 id="性能提示">性能提示</h2>
-<p>当 Markdown 含 &gt;50 个 h2 时，封面页顶部显示黄色警告条：</p>
-<pre><code class="language-">⚠️ 本文档共 N 节，幻灯片模式下可能加载较慢</code></pre>
-<h2 id="侧边栏-h3-开关-v2-2">侧边栏 H3 开关（v2.2+）</h2>
-<p>侧边栏头部包含 H3 子标题开关，默认隐藏 <code>.toc-h3</code> 项：</p>
-<ul>
-<li>开关位于 sub 行右侧，显示 <code>H3</code>（关闭）/ <code>H3 ✓</code>（打开）</li>
-<li><code>.toc-h3</code> 默认 <code>display: none</code></li>
-<li>点击开关切换所有 <code>.toc-h3</code> 的显示状态</li>
-</ul>
-<h3 id="css-优先级-重要">CSS 优先级（重要）</h3>
-<p><code>.slide-toc a { display: block; }</code> 优先级高于 <code>.toc-h3 { display: none; }</code>。</p>
-<p><strong>正确写法</strong>:</p>
-<pre><code class="language-css">.toc-h3 { display: none; }
-.toc-h3.show { display: block; }
-/* 必须用更高优先级覆盖 .slide-toc a */
-.slide-toc .toc-h3 { display: none; }
-.slide-toc .toc-h3.show { display: block; }</code></pre>
-<h2 id="侧边栏头部显示-v2-2">侧边栏头部显示（v2.2+）</h2>
-<ul>
-<li><strong>logo</strong>: 文档标题超过 30 字自动截断 + <code>…</code></li>
-<li><strong>sub</strong>: 显示副标题（如 <code>Slide 演示</code>） + 节数统计（<code>共 N 节</code>），如无副标题则仅显示节数</li>
-</ul>
-<pre><code class="language-javascript">// logo 截断
-var txt = logoEl.textContent.replace(/^🎞️\s*/, '');
-if (txt.length &gt; 30) txt = txt.substring(0, 30) + '…';
-logoEl.textContent = '🎞️ ' + txt;
-
-// sub 节数
-var base = subEl.textContent.trim();
-subEl.textContent = (base ? base + ' · ' : '') + '共 ' + (pages.length - 1) + ' 节';</code></pre>
-<h2 id="安全实现">安全实现</h2>
-<h3 id="dom-渲染">DOM 渲染</h3>
-<ul>
-<li>页面内容使用 <code>cloneNode(true)</code> 深拷贝 DOM 子树，不经过字符串序列化</li>
-<li>禁止 <code>innerHTML</code> 直接注入用户内容</li>
-<li>侧边栏标题使用 <code>textContent</code> 设置</li>
-</ul>
-<h3 id="null-guard-关键规范">Null Guard（关键规范）</h3>
-<p><strong>所有 <code>getElementById()</code> 调用必须添加 null guard。</strong> 即使 HTML 结构正确，生成的模板在不同浏览器/环境可能出现元素不存在的情况。</p>
-<pre><code class="language-javascript">// ✅ 正确 — null guard
-var el = document.getElementById('slideDots');
-if (!el) return;
-el.innerHTML = '';
-
-// ❌ 错误 — 直接访问 null 属性导致 TypeError
-document.getElementById('slideDots').innerHTML = '';</code></pre>
-<p>受影响的方法：<code>buildDots</code>、<code>_updateDots</code>、<code>_showPageNum</code>、<code>enter</code>、<code>exit</code>、<code>_syncToc</code>、<code>renderPage</code>、TOC click handler。</p>
-<p>详见 <code>references/slide-mode-null-guards.md</code>。</p>
-<h3 id="localstorage">localStorage</h3>
-<pre><code class="language-javascript">// ✅ 正确 — parseInt + 边界校验
-try {
-  var n = parseInt(localStorage.getItem('layoutslide_page'), 10);
-  if (isNaN(n) || n &lt; 0 || n &gt;= this.pages.length) n = 0;
-  this.currentPage = n;
-} catch(e) { this.currentPage = 0; }</code></pre>
-<h3 id="xss-防护">XSS 防护</h3>
-<ul>
-<li>所有 <code>&lt;!--KEY--&gt;</code> 注入值自动转义 <code>&lt;/</code> → <code>&lt;\/</code>（防止 script 标签闭合）</li>
-<li>Markdown 纯文本 <code>&lt;</code> <code>&gt;</code> <code>&amp;</code> 自动转义（<code>_md_escape</code> 在 <code>inline_format</code> 前调用）</li>
-</ul>
-<h2 id="与-doc-模板的区别">与 doc 模板的区别</h2>
-<table><thead><tr>
-<th></th>
-<th>`layout-doc.html`</th>
-<th>`layout-slide.html`</th>
-</tr></thead><tbody>
-<tr>
-<td>命令</td>
-<td><code>html-gen doc</code></td>
-<td><code>html-gen slide</code></td>
-</tr>
-<tr>
-<td>渲染模式</td>
-<td>平铺连续滚动</td>
-<td>h2 逐页分页</td>
-</tr>
-<tr>
-<td>TOC 点击</td>
-<td>滚动到锚点</td>
-<td>跳转到对应页</td>
-</tr>
-<tr>
-<td>进度条</td>
-<td>顶部 2px 线</td>
-<td>底部圆点</td>
-</tr>
-<tr>
-<td>页码</td>
-<td>无</td>
-<td>右上角 <code>N / M</code></td>
-</tr>
-<tr>
-<td>全屏</td>
-<td>无</td>
-<td><code>F</code> 键</td>
-</tr>
-<tr>
-<td>代码复制</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>代码行号</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>图片灯箱</td>
-<td>✅</td>
-<td>❌</td>
-</tr>
-<tr>
-<td>输出后缀</td>
-<td><code>.html</code></td>
-<td><code>.slide.html</code></td>
-</tr>
-</tbody></table>
-<h2 id="常见问题">常见问题</h2>
-<h3 id="键盘翻页不响应">键盘翻页不响应</h3>
-<p>确保未聚焦在 input/textarea 元素中。模板会跳过表单元素内的键盘事件。</p>
-<h3 id="页面内容为空">页面内容为空</h3>
-<p>检查 Markdown 的 h2 标题是否被正确解析。<code>## Title</code> 必须有空格。</p>
-<h3 id="localstorage-恢复失败">localStorage 恢复失败</h3>
-<p>所有 localStorage 操作包裹 <code>try/catch</code>，失败时回退到封面页（page 0）。</p>
-<h3 id="切换全屏后布局错乱">切换全屏后布局错乱</h3>
-<p>按 <code>F</code> 或 <code>Esc</code> 退出全屏。全屏使用 <code>Element.requestFullscreen()</code> 标准 API。</p>
-<h2 id="验证清单">验证清单</h2>
-<ul>
-<li>[ ] 运行 <code>html-gen slide -i input.md -o output.html</code> 正常生成</li>
-<li>[ ] 封面页显示 h1 标题、副标题、元信息、节数</li>
-<li>[ ] 所有 h2 正确分页，内容无丢失</li>
-<li>[ ] 键盘 ← → Space Home End 翻页正常</li>
-<li>[ ] 底部圆点导航正常，当前/已访问状态正确</li>
-<li>[ ] <code>F</code> 全屏进入/退出正常</li>
-<li>[ ] &gt;50 h2 时性能警告显示</li>
-<li>[ ] 浏览器 Console 无 TypeError（所有 DOM null guard 生效）</li>
-</ul>
-<hr>
-<h2 id="selenium-h3-toggle-testing">selenium-h3-toggle-testing</h2>
-<h2 id="h3-toggle-visibility-test">H3 Toggle Visibility Test</h2>
-<p>Test <code>.toc-h3</code> hidden by default and toggleable via the H3 switch:</p>
-<pre><code class="language-python">class TestH3Toggle(unittest.TestCase):
-    @classmethod
-    def setUpClass(cls):
-        opts = Options()
-        opts.add_argument('--headless')
-        opts.add_argument('--no-sandbox')
-        svc = Service(CHROMEDRIVER_PATH)
-        cls.driver = webdriver.Chrome(service=svc, options=opts)
-
-    def setUp(self):
-        # CRITICAL: headless Chrome defaults to 800×600 which triggers
-        # @media (max-width: 768px) → sidebar hidden → elements not interactable
-        self.driver.set_window_size(1280, 800)
-        self.driver.get('file://' + str(DEMO_HTML))
-
-    def test_h3_hidden_by_default(self):
-        h3s = self.driver.find_elements(By.CSS_SELECTOR, '.toc-h3')
-        for h3 in h3s:
-            self.assertEqual(h3.value_of_css_property('display'), 'none')
-
-    def test_h3_toggle_visible(self):
-        toggle = self.driver.find_element(By.ID, 'h3Toggle')
-        toggle.click()
-        h3s = self.driver.find_elements(By.CSS_SELECTOR, '.toc-h3')
-        for h3 in h3s:
-            self.assertNotEqual(h3.value_of_css_property('display'), 'none')
-
-    def test_h3_toggle_hidden_again(self):
-        toggle = self.driver.find_element(By.ID, 'h3Toggle')
-        toggle.click(); time.sleep(0.15)  # show
-        toggle.click(); time.sleep(0.15)  # hide
-        h3s = self.driver.find_elements(By.CSS_SELECTOR, '.toc-h3')
-        for h3 in h3s:
-            self.assertEqual(h3.value_of_css_property('display'), 'none')</code></pre>
-<h2 id="css-specificity-debugging">CSS Specificity Debugging</h2>
-<p>When <code>display: none</code> doesn't work despite correct CSS:</p>
-<ul>
-<li>Check if a higher-specificity rule overrides it (e.g. <code>.slide-toc a { display: block }</code> beats <code>.toc-h3 { display: none }</code>)</li>
-<li>Use DevTools → Computed Styles to see which rule wins</li>
-<li>Fix: match or exceed specificity (e.g. <code>.slide-toc .toc-h3 { display: none }</code>)</li>
-</ul>
-<hr>
-<h2 id="slide-mode-null-guards">slide-mode-null-guards</h2>
-<h2 id="问题背景">问题背景</h2>
-<p>2026-07-13，<code>layout-doc.html</code> 合并 doc/slide 模式时，在浏览器 Console 出现以下错误：</p>
-<pre><code class="language-">Uncaught TypeError: Cannot set properties of null (setting 'innerHTML')
-    at Object.buildDots (template-B-markdown-spec-v1.0-20260707.html:1219:22)
-
-Uncaught TypeError: Cannot read properties of null (reading 'classList')
-    at Object.enter (template-B-markdown-spec-v1.0-20260707.html:1131:43)
-
-Uncaught TypeError: Cannot read properties of null (reading 'scrollIntoView')
-    at HTMLAnchorElement.&lt;anonymous&gt; (template-B-markdown-spec-v1.0-20260707.html:993:53)</code></pre>
-<h2 id="根因">根因</h2>
-<p><code>document.getElementById()</code> 返回 <code>null</code> 时，直接访问 <code>.classList</code>、<code>.style</code>、<code>.innerHTML</code> 等属性导致 <code>TypeError</code>。即使在 HTML 中元素确实存在，不同浏览器/环境/解析顺序可能导致临时不可用。</p>
-<h2 id="解决方案">解决方案</h2>
-<p>所有 <code>getElementById()</code> 调用必须添加 null guard：</p>
-<pre><code class="language-javascript">// buildDots
-var dots = document.getElementById('slideDots');
-if (!dots) return;
-dots.innerHTML = '';
-
-// _updateDots
-var dotsEl = document.getElementById('slideDots');
-if (!dotsEl) return;
-var dots = dotsEl.children;
-
-// _showPageNum
-var el = document.getElementById('slidePageNum');
-if (!el) return;
-
-// _syncToc / slideNavTitle
-var titleEl = document.getElementById('slideNavTitle');
-if (titleEl) titleEl.textContent = ...;
-
-// enter
-var dm = document.getElementById('docMain');
-var sm = document.getElementById('slideMain');
-var sn = document.getElementById('slideNav');
-if (!dm || !sm || !sn) return;
-
-// exit
-var sm = document.getElementById('slideMain');
-if (sm) sm.classList.remove('active');
-
-// TOC click
-var target = document.getElementById(this.dataset.target);
-if (target) target.scrollIntoView({ behavior: 'smooth' });
-
-// perfWarning
-var pw = document.getElementById('perfWarning');
-if (pw &amp;&amp; pw.textContent.trim()) pw.style.display = 'block';</code></pre>
-<h2 id="影响范围">影响范围</h2>
-<p>以下方法/位置必须添加 null guard：</p>
-<table><thead><tr>
-<th>位置</th>
-<th>元素</th>
-<th>风险</th>
-</tr></thead><tbody>
-<tr>
-<td><code>buildDots()</code></td>
-<td><code>slideDots</code></td>
-<td>innerHTML</td>
-</tr>
-<tr>
-<td><code>_updateDots()</code></td>
-<td><code>slideDots</code>, <code>slideNavTitle</code></td>
-<td>children, textContent</td>
-</tr>
-<tr>
-<td><code>_showPageNum()</code></td>
-<td><code>slidePageNum</code></td>
-<td>textContent, classList</td>
-</tr>
-<tr>
-<td><code>enter()</code></td>
-<td><code>docMain</code>, <code>slideMain</code>, <code>slideNav</code></td>
-<td>style.display, classList</td>
-</tr>
-<tr>
-<td><code>exit()</code></td>
-<td><code>slideMain</code>, <code>slideNav</code>, <code>docMain</code>, <code>perfWarning</code></td>
-<td>classList, style.display</td>
-</tr>
-<tr>
-<td>TOC click handler</td>
-<td><code>this.dataset.target</code></td>
-<td>scrollIntoView</td>
-</tr>
-</tbody></table>
-<h2 id="测试验证">测试验证</h2>
-<p>结构测试即可覆盖（无需 Selenium）：</p>
-<pre><code class="language-python">def test_null_guards_in_template(self):
-    tmpl = (PROJECT / 'layout-slide.html').read_text()
-    for pattern, desc in [
-        (r'if\s*\(!?\s*dots?\s*\)\s*return', 'buildDots'),
-        (r'if\s*\(!?\s*el\s*\)\s*return', '_showPageNum'),
-        (r'if\s*\(!dm\s*\|\|\s*!sm\s*\|\|\s*!sn\s*\)\s*return', 'enter'),
-        (r'if\s*\(target\s*\)\s*target\.scrollIntoView', 'TOC'),
-    ]:
-        self.assertIsNotNone(re.search(pattern, tmpl), f"Missing: {desc}")</code></pre>
-<h2 id="html-gen-table">html-gen-table</h2>
-<blockquote>Use when building data table HTML pages with html-gen. Covers column config, actions, tabs, sorting, CSV export, and row selection for the A-type layout-table template.</blockquote>
-<h2 id="概述">概述</h2>
-<p><code>layout-table.html</code> 是 html-gen 的 A 型模板 — 将 JSON 数据渲染为可交互的数据表格。支持搜索、排序、分页、Tab 分类过滤、操作列按钮、行选择、CSV 导出、列可见性控制和列宽拖拽。生成自包含单文件 HTML，零外部依赖。</p>
-<h2 id="何时使用">何时使用</h2>
-<ul>
-<li>将 JSON 数据列表渲染为可交互 HTML 表格</li>
-<li>文件索引、项目管理、数据浏览等列表展示场景</li>
-<li>需要搜索/排序/分页的只读数据展示</li>
-<li>演示操作按钮功能（使用 <code>desc</code> 模式）</li>
-</ul>
-<h2 id="cli-用法">CLI 用法</h2>
-<pre><code class="language-shell"># 简单数组格式（向后兼容）
-html-gen table -d data.json --title "数据表格" -o index.html
-
-# 结构化格式（推荐）
-html-gen table -d data.json --title "项目列表" -o projects.html</code></pre>
-<h2 id="数据格式">数据格式</h2>
-<h3 id="简单格式-json-数组">简单格式（JSON 数组）</h3>
-<pre><code class="language-json">[{"名称": "项目A", "数量": 10}, {"名称": "项目B", "数量": 20}]</code></pre>
-<p>列名自动从第一条记录的 key 推导，所有列默认可排序。</p>
-<h3 id="结构化格式-推荐">结构化格式（推荐）</h3>
-<pre><code class="language-json">{
-  "columns": [
-    {"key": "name", "label": "名称", "sortable": true, "locale": "zh"},
-    {"key": "count", "label": "数量", "type": "number", "sortable": true},
-    {"key": "actions", "label": "操作", "type": "actions", "actions": [...]}
-  ],
-  "data": [...],
-  "output": "demos/xxx.html",   // 渲染目标 (无 CLI -o 时生效; 均无 → 中断 exit 1)
-  "tabs": [
-    {"key": "all", "label": "全部"},
-    {"key": "Python", "label": "🐍 Python", "field": "lang"}
-  ],
-  "options": {"pageSize": 30, "exportCSV": true, "rowSelect": true}
-}</code></pre>
-<h2 id="列配置-columns">列配置 (COLUMNS)</h2>
-<table><thead><tr>
-<th>字段</th>
-<th>类型</th>
-<th>必填</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td><code>key</code></td>
-<td>string</td>
-<td>✅</td>
-<td>数据字段名</td>
-</tr>
-<tr>
-<td><code>label</code></td>
-<td>string</td>
-<td>✅</td>
-<td>表头显示名</td>
-</tr>
-<tr>
-<td><code>sortable</code></td>
-<td>bool</td>
-<td></td>
-<td>是否可排序（默认 true）</td>
-</tr>
-<tr>
-<td><code>type</code></td>
-<td>string</td>
-<td></td>
-<td><code>string</code>(默认) / <code>number</code> / <code>datetime</code> / <code>pills</code> / <code>actions</code></td>
-</tr>
-<tr>
-<td><code>locale</code></td>
-<td>string</td>
-<td></td>
-<td>排序 locale，如 <code>"zh"</code></td>
-</tr>
-<tr>
-<td><code>width</code></td>
-<td>string</td>
-<td></td>
-<td>CSS 宽度，如 <code>"120px"</code>。<strong>仅作初始值</strong>——列宽拖拽会记忆到 localStorage（<code>html-gen:table:col-widths</code>）并在刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效</td>
-</tr>
-<tr>
-<td><code>freeze</code></td>
-<td>bool</td>
-<td></td>
-<td>列冻结 (sticky left)</td>
-</tr>
-<tr>
-<td><code>quickFilter</code></td>
-<td>bool</td>
-<td></td>
-<td>点击单元格值精确筛选，<strong>默认关</strong>，显式 <code>true</code> 才启用</td>
-</tr>
-<tr>
-<td><code>pillFilter</code></td>
-<td>bool</td>
-<td></td>
-<td>pills 列标签点击筛选（contains 匹配），默认开，<code>false</code> 关闭</td>
-</tr>
-<tr>
-<td><code>onCellClick</code></td>
-<td>string</td>
-<td></td>
-<td>单元格点击行为：<code>"split"</code> 分栏预览 / <code>"modal"</code> 弹出详情</td>
-</tr>
-<tr>
-<td><code>preview</code></td>
-<td>bool</td>
-<td></td>
-<td>分栏模式下显示的列（split 预览/表格仅显示 preview 列，未配 preview 列则全显）</td>
-</tr>
-<tr>
-<td><code>class</code></td>
-<td>string</td>
-<td></td>
-<td>单元格 CSS class</td>
-</tr>
-<tr>
-<td><code>escape</code></td>
-<td>bool</td>
-<td></td>
-<td>是否 HTML 转义值（安全）</td>
-</tr>
-<tr>
-<td><code>render</code></td>
-<td>func</td>
-<td></td>
-<td>自定义渲染函数</td>
-</tr>
-<tr>
-<td><code>onClick</code></td>
-<td>string</td>
-<td></td>
-<td>行点击行为（<code>"url"</code> 跳转到 row.url）</td>
-</tr>
-<tr>
-<td><code>actions</code></td>
-<td>array</td>
-<td></td>
-<td>仅 <code>type: "actions"</code>，操作按钮数组</td>
-</tr>
-</tbody></table>
-<h3 id="列类型详情">列类型详情</h3>
-<p><strong>type: "string"</strong> (默认) — 文本排序，使用 <code>localeCompare</code>；配合 <code>locale: "zh"</code> 实现中文拼音排序</p>
-<p><strong>type: "number"</strong> — 数值排序，使用 <code>parseFloat</code> 比较，空值视为 0</p>
-<p><strong>type: "datetime"</strong> — 日期排序，使用 <code>Date.parse</code> 比较，空值视为 0；渲染原样展示 ISO 日期字符串</p>
-<p><strong>type: "pills"</strong> — 标签样式，逗号/顿号/中文逗号分隔字符串渲染为 tag pills（分隔符 <code>[,，、]+</code>）；标签点击筛选默认开（<code>pillFilter: false</code> 关闭）</p>
-<p><strong>type: "actions"</strong> — 操作按钮列，每个按钮支持三种模式：</p>
-<pre><code class="language-json">{
-  "icon": "📋",        // Emoji 图标
-  "label": "复制",     // title 提示文本
-  "copyKey": "name",  // 模式1: 复制字段值到剪贴板
-  "hrefKey": "url",   // 模式2: 新标签页打开 URL
-  "desc": "复制名称"   // 模式3: 点击弹 Toast 展示描述（演示用）
-}</code></pre>
-<p>优先级：<code>copyKey</code> &gt; <code>hrefKey</code> &gt; <code>desc</code>，只生效第一个匹配的。</p>
-<h2 id="tab-分类过滤-tabs">Tab 分类过滤 (TABS)</h2>
-<pre><code class="language-json">[
-  {"key": "all", "label": "全部"},
-  {"key": "Python", "label": "🐍 Python", "field": "lang"},
-  {"key": "工具", "label": "🔧 工具", "field": "group"}
-]</code></pre>
-<ul>
-<li><code>key</code>: Tab 标识，第一个 Tab 的 key 用于"全部"</li>
-<li><code>label</code>: 显示文本（可含 Emoji）</li>
-<li><code>field</code>: 匹配的数据字段名（默认 <code>group</code> 或 <code>category</code>）</li>
-<li><code>contains</code>: 数组字段包含匹配（值用逗号/顿号分隔时，如 <code>"field": "region_tags", "contains": true</code>）</li>
-<li><code>value</code>: contains 模式下匹配的目标值（不配则用 key 匹配）；Tab 计数 = 匹配行数</li>
-<li>Tab 选择自动保存到 localStorage</li>
-</ul>
-<h2 id="单元格点击行为-默认">单元格点击行为（默认）</h2>
-<p>点击行为优先级链（从高到低）：</p>
-<ul>
-<li><code>col.onCellClick: 'split'</code> / <code>'modal'</code>（显式配置）</li>
-<li><code>col.quickFilter: true</code>（显式筛选）</li>
-<li><strong>第 1 列（首个有 key 的数据列）→ 默认打开分栏预览</strong>（展示该行元信息）</li>
-<li>其余列 → 无操作</li>
-</ul>
-<p>即：普通单元格默认无筛选；需要按值筛选的列显式配 <code>quickFilter: true</code>；标签列默认可点筛选（pillFilter）。</p>
-<h2 id="全局选项-options">全局选项 (OPTIONS)</h2>
-<table><thead><tr>
-<th>选项</th>
-<th>类型</th>
-<th>默认</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td><code>pageSize</code></td>
-<td>int</td>
-<td>30</td>
-<td>每页条数</td>
-</tr>
-<tr>
-<td><code>exportCSV</code></td>
-<td>bool</td>
-<td>false</td>
-<td>显示 CSV 导出按钮</td>
-</tr>
-<tr>
-<td><code>rowSelect</code></td>
-<td>bool</td>
-<td>false</td>
-<td>启用行选择（checkbox）</td>
-</tr>
-<tr>
-<td><code>search</code></td>
-<td>bool</td>
-<td>true</td>
-<td>显示搜索框</td>
-</tr>
-<tr>
-<td><code>clickModes</code></td>
-<td>array</td>
-<td><code>["tab"]</code></td>
-<td>允许的点击模式 <code>"tab"</code>/<code>"modal"</code>/<code>"split"</code>/<code>"expand"</code>; 兼容单数 <code>clickMode</code></td>
-</tr>
-</tbody></table>
-<h2 id="url-状态分享">URL 状态分享 (🔗)</h2>
-<p>表格支持通过 URL 查询参数同步并分享当前视图状态（<code>?tab&amp;q&amp;split</code>）：</p>
-<ul>
-<li><code>?tab=&lt;key&gt;</code> — 当前 Tab（白名单校验，无效忽略）</li>
-<li><code>?q=&lt;关键字&gt;</code> — 搜索词（随 300ms debounce 同步）</li>
-<li><code>?split=&lt;行号&gt;</code> — 分栏预览行（越界忽略；有 quickFilter 时下标语义失效跳过）</li>
-</ul>
-<p>行为：</p>
-<ul>
-<li>状态变化用 <code>history.replaceState</code> 静默同步（不产生历史记录），默认参数（空 tab/q/split）自动剔除</li>
-<li><strong>tabs 行居右按钮区 <code>.tabs-actions</code></strong>（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（<code>--home-url</code> 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）</li>
-<li>排序 / 快速过滤（quickFilter）触发时自动 closeSplit（下标语义失效保护）</li>
-<li>加载时按 tab → q → split 顺序恢复（HG-SEC-076）</li>
-</ul>
-<h2 id="操作按钮-emoji-参考">操作按钮 Emoji 参考</h2>
-<table><thead><tr>
-<th>类别</th>
-<th>Emoji</th>
-</tr></thead><tbody>
-<tr>
-<td>查看/导航</td>
-<td>👁️ 查看 · 🔗 打开 · 👀 预览 · 📍 定位</td>
-</tr>
-<tr>
-<td>编辑/修改</td>
-<td>✏️ 编辑 · 📝 重命名 · 📁 移动 · 📌 置顶 · ⭐ 收藏</td>
-</tr>
-<tr>
-<td>操作/执行</td>
-<td>▶️ 播放 · ⬇️ 下载 · 🚀 运行 · 🧬 克隆</td>
-</tr>
-<tr>
-<td>复制/分享</td>
-<td>📋 复制 · 📎 链接 · 💻 命令 · 🗂️ 路径 · 📤 分享</td>
-</tr>
-<tr>
-<td>删除/清理</td>
-<td>🗑️ 删除 · 📥 归档 · 🧹 清理</td>
-</tr>
-<tr>
-<td>信息/诊断</td>
-<td>ℹ️ 元信息 · 📄 日志 · 📊 状态 · 🕐 历史 · 🔍 Diff</td>
-</tr>
-</tbody></table>
-<h2 id="常见场景">常见场景</h2>
-<h3 id="文件管理器">文件管理器</h3>
-<pre><code class="language-json">{"actions": [
-  {"icon": "👁️", "label": "预览", "desc": "预览文件内容"},
-  {"icon": "📋", "label": "复制路径", "copyKey": "path"},
-  {"icon": "🗑️", "label": "删除", "desc": "永久删除（需确认）"}
-]}</code></pre>
-<h3 id="crud-管理">CRUD 管理</h3>
-<pre><code class="language-json">{"actions": [
-  {"icon": "👁️", "label": "查看", "desc": "查看详细信息"},
-  {"icon": "✏️", "label": "编辑", "desc": "修改记录内容"},
-  {"icon": "🔗", "label": "打开", "hrefKey": "url"},
-  {"icon": "🗑️", "label": "删除", "desc": "永久删除（需二次确认）"}
-]}</code></pre>
-<h2 id="常见问题">常见问题</h2>
-<h3 id="q-操作按钮点击没反应">Q: 操作按钮点击没反应？</h3>
-<p>检查 <code>col.type</code> 是否设为 <code>"actions"</code>，actions 数组中每个按钮必须至少配置 <code>copyKey</code>、<code>hrefKey</code> 或 <code>desc</code> 之一。</p>
-<h3 id="q-数字列排序不正确">Q: 数字列排序不正确？</h3>
-<p>设置 <code>col.type: "number"</code>。JSON 注入后数字可能变字符串，<code>type: "number"</code> 确保使用 <code>parseFloat</code> 比较。</p>
-<h3 id="q-中文排序混乱">Q: 中文排序混乱？</h3>
-<p>设置 <code>col.locale: "zh"</code> 使用 <code>localeCompare(text, 'zh')</code>。</p>
-<h3 id="q-tab-切换后分页错误">Q: Tab 切换后分页错误？</h3>
-<p>每次切换 Tab 自动重置到第 1 页。Tab 状态保存在 localStorage key <code>htmlgen_tab</code>。</p>
-<h2 id="验证清单">验证清单</h2>
-<ul>
-<li>[ ] 数据 JSON 格式正确（简单数组或结构化对象）</li>
-<li>[ ] 列 key 与数据字段名一致</li>
-<li>[ ] <code>type: "actions"</code> 列配置了 actions 数组</li>
-<li>[ ] Tab 的 field 与数据字段匹配</li>
-<li>[ ] 运行 <code>html-gen table -d data.json -o output.html</code> 正常生成</li>
-<li>[ ] 生成的 HTML 在浏览器中表格正常渲染</li>
-<li>[ ] 排序、搜索、分页功能正常</li>
-<li>[ ] 操作按钮点击有响应（copyKey 复制 / hrefKey 跳转 / desc Toast）</li>
-</ul>
-<h2 id="变更记录">变更记录</h2>
-<ul>
-<li>v2.5.0 (2026-08-29): 分享/Home 按钮统一放 tabs 行居右 <code>.tabs-actions</code>（↗ 图标 + home-link 流式同容器 36px，CL005）</li>
-<li>v2.4.0 (2026-08-29): 新增 URL 状态分享（?tab&amp;q&amp;split replaceState 同步/恢复 + 🔗 拷贝按钮）</li>
-<li>v2.3.0 (2026-08-06): quickFilter 默认关（显式 true 启用）+ pillFilter/onCellClick/preview 列属性; tabs value/contains 匹配; pills 顿号分隔; 第 1 列默认分栏</li>
-<li>v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项; 兼容单数 clickMode</li>
-<li>v2.1.0: 列冻结、右侧固定列、分栏列过滤增强、单元格点击分栏、自定义模态框渲染器、SKILL.md 加载</li>
-</ul>
-<hr>
-<h2 id="table-demo-prompt">table-demo-prompt</h2>
-<h2 id="任务">任务</h2>
-<p>使用 <code>html-gen table</code> 命令将 JSON 数据转为自包含 HTML 数据表格页。</p>
-<h2 id="数据规范">数据规范</h2>
-<pre><code class="language-">columns: [{key, label, sortable, type, width, freeze, preview, quickFilter, onCellClick}]
-data:    [{key: value}]
-tabs:    [{key, label, field}]
-options: {pageSize, exportCSV, rowSelect, search, clickModes, columnsSplit}</code></pre>
-<h2 id="列类型">列类型</h2>
-<p><code>string</code>(默认) / <code>number</code> / <code>datetime</code>(Date.parse) / <code>pills</code>(逗号分隔 tag) / <code>actions</code>(按钮)</p>
-<h2 id="默认行为须知">默认行为须知</h2>
-<ul>
-<li>quickFilter 默认关 (<code>col.quickFilter: true</code> 显式启用)</li>
-<li>pillFilter 默认开 (<code>col.pillFilter: false</code> 关闭)</li>
-<li>第 1 列默认分栏 (无显式 onclick 时打开 split)</li>
-</ul>
-<h2 id="生成命令">生成命令</h2>
-<pre><code class="language-bash">html-gen table -d data.json --title "标题" -o index.html</code></pre>
-<h2 id="质量要求">质量要求</h2>
-<ul>
-<li>所有数据列设 <code>width</code></li>
-<li>操作列 <code>type: "actions"</code></li>
-<li>标签列 <code>type: "pills"</code></li>
-</ul>
-<h2 id="pages-index">pages-index</h2>
-<blockquote>Use when building or optimizing a GitHub Pages project landing/index page. Hero + product-matrix layout, light theme, copy buttons, dynamic two-screen hero, github-corner theming, dual-source sync.</blockquote>
-<h2 id="概述">概述</h2>
-<p>沉淀自 html-gen.cli 落地页两轮迭代（2026-08-24，review 审计 PASS 100/A）。适用于"一仓多产物"项目（如 CLI 工具 + 多模板/多 demo）的 pages index 页。深色主题 + 浅色可切换，中文优先，零依赖单文件。</p>
-<h2 id="骨架-hero-产物矩阵">骨架（hero + 产物矩阵）</h2>
-<pre><code class="language-">&lt;body&gt;
-  &lt;button class="theme-btn" id="themeBtn" aria-pressed="false"&gt;🌙&lt;/button&gt;   ← 固定右上角 right:88px 避让 corner
-  &lt;a class="github-corner"&gt;…SVG…&lt;/a&gt;
-  &lt;section class="hero"&gt;       ← 动态两屏（见下）
-    h1 渐变标题(前置品牌圆标 img.hero-logo) + tagline + badges 徽章行 + scroll-hint
-    hero-blocks 2 卡:
-      卡1: ⚡ 安装 &amp; 快速开始（合并, 每条 code-block 行内复制 + block-title "复制全部"）
-      卡2: 🆚 竞品对比（转置表格: 行=维度, 列=工具, 自家列全 ✓ 高亮 .win）
-  &lt;/section&gt;
-  &lt;section class="templates"&gt;  ← 产物矩阵: 每产物一张卡
-    tpl-head: icon(四色 ia/ib/ic/id) + 名称 + guide 链接 + 文件行数
-    tpl-body: scenarios pills + features 列表 + cli-box(带复制) + demos 列表
-  &lt;/section&gt;
-  &lt;footer class="site-footer"&gt;GitHub(favicon) · Gitee(favicon) · MIT&lt;/footer&gt;
-&lt;/body&gt;</code></pre>
-<p>断点: 4 列 → <code>@media (max-width:1500px)</code> 2 列 → <code>@media (max-width:1100px)</code> 1 列。</p>
-<p>hero 卖点分层: title(品牌) → tagline(一句话定位) → badges(3-4 短徽章: ⚡ 零依赖 · 🌙 深色主题 · 🇨🇳 中文优先 · 📦 单文件) → blocks(安装/对比)。tagline 已承载卖点时可跳过 badges（避免重复）。</p>
-<p>竞品对比卡（转置模式）: 340px 卡片内放不下"工具×维度"正排表，转置为"维度×工具"（6 行维度 × 4 列工具），自家列 <code>th.hl</code> + <code>td.win</code> 高亮，✓/— 符号，11px 紧凑样式。对比是"为什么选我"最直接说服工具（http-server 实证）。</p>
-<h2 id="主题系统">主题系统</h2>
-<ul>
-<li>style-guide.css <code>:root</code> 定义语义色变量: <code>--text-primary/--text-body/--text-secondary/--text-muted/--text-faint/--border-strong/--border-soft/--code-bg/--code-text/--code-cmd/--hero-title-from</code>；<code>:root.light</code> 覆盖全套</li>
-<li>页面所有硬编码色一律 var() 引用（含 inline style），否则浅色下对比度失败（WCAG AA 4.5:1）</li>
-<li>主题按钮: <code>document.documentElement.classList.toggle('light')</code> + localStorage key 规范 <code>html-gen:&lt;page&gt;_theme</code>（模板页用 doc_theme/kw_theme/layoutslide_theme，落地页用 index_theme 隔离）</li>
-<li><code>aria-pressed</code> 随状态同步</li>
-<li>陷阱: style-guide.css 的 <code>:root.light a { color: var(--cobalt-600) }</code> 特异性 (0,1,1) 会覆盖 <code>.github-corner</code> (0,1,0)，浅色下 corner 变 indigo——必须加 <code>:root.light .github-corner { color: var(--gh-octocat); }</code> (0,2,0) 且 hover 同样覆盖</li>
-</ul>
-<h2 id="github-corner-浅色配色">github-corner 浅色配色</h2>
-<ul>
-<li>变量: <code>:root { --gh-corner-fill: rgba(0,0,0,0.41); --gh-octocat: var(--text-secondary); }</code> / <code>:root.light { --gh-corner-fill: rgba(0,0,0,0.75); --gh-octocat: #ffffff; }</code></li>
-<li>SVG: 三角 <code>fill="var(--gh-corner-fill)"</code>，octocat <code>fill="currentColor"</code> + <code>.github-corner { color: var(--gh-octocat); }</code></li>
-<li>浅色 = 深三角 + 白猫（经典 GitHub 形态）；深色 hover 也须保持 <code>var(--gh-octocat)</code>（加 <code>.github-corner:hover</code> 保护）</li>
-<li>两种模式: 无工具栏页 = 全图标可点（pointer-events auto）；有工具栏页 = 穿透 <code>pointer-events:none</code> + hit 区（36px）</li>
-</ul>
-<h2 id="动态两屏-hero">动态两屏 hero</h2>
-<p>目标: 首屏底部看到第二屏标题 + scroll-hint 固定视口底部。</p>
-<pre><code class="language-js">function updateHeroHeight() {
-  var hero = document.querySelector('.hero');
-  if (hero) hero.style.minHeight = (window.innerHeight - 55) + 'px';  // 55≈第二屏标题露出高度，按需微调（-55~-110）
-}
-updateHeroHeight();
-window.addEventListener('resize', updateHeroHeight);</code></pre>
-<ul>
-<li><code>.scroll-hint</code>: <code>position:fixed; bottom:24px; left:50%; translateX(-50%)</code> + <code>.hide { opacity:0; visibility:hidden }</code>，scrollY&gt;8 淡出、回顶恢复</li>
-<li>CSS 保留 <code>min-height:80vh</code> 作无 JS fallback</li>
-</ul>
-<h2 id="复制按钮">复制按钮</h2>
-<pre><code class="language-js">function copyText(text, btn) {
-  var orig = btn ? btn.textContent : '';
-  var done = function() { if (btn) { btn.classList.add('ok'); btn.textContent = '✅';
-    setTimeout(function() { btn.classList.remove('ok'); btn.textContent = orig; }, 1500); } };
-  var fallback = function() {
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.left = '-9999px';
-    document.body.appendChild(ta); ta.select();
-    var ok = false;
-    try { ok = document.execCommand('copy'); } catch(e) {}
-    document.body.removeChild(ta);
-    if (ok) done();   // 必须检查返回值，失败不标记 ✅
-  };
-  if (navigator.clipboard &amp;&amp; navigator.clipboard.writeText) {
-    navigator.clipboard.writeText(text).then(done).catch(fallback);
-  } else { fallback(); }
-}</code></pre>
-<ul>
-<li>按钮 <code>data-copy</code> 存原文（不含 <code>$</code> prompt），恢复用保存的 orig（勿硬编码 📋，会丢"复制"标签）</li>
-<li>headless Chrome 兼容: clipboard API 不可用时走 execCommand</li>
-<li><strong>行内复制模式</strong>（首屏快速开始区价值最高）: <code>.code-block</code> 改 flex + <code>margin-left:auto</code> 的 copy-btn；block-title 可留"复制全部"（data-copy 用 <code>&amp;#10;</code> 连接多条命令）。层级: 块级"复制全部" + 行级精准复制</li>
-</ul>
-<h2 id="双源同步-防漂移测试">双源同步 + 防漂移测试</h2>
-<p>根 index.html 与 demos/index.html 为独立副本时: 功能特性必须同步，保留各自差异（corner 模式/链接前缀/hero 有无）。防漂移测试断言两文件关键功能特征一致:</p>
-<pre><code class="language-python">features = ['id="themeBtn"', 'html-gen:index_theme', 'class="site-footer"',
-            'class="copy-btn"', 'max-width: 1500px', '--gh-octocat', 'rel="noopener"',
-            'html-gen table -d data.json', ...]
-missing_root = [f for f in features if f not in root]   # 同样查 demos</code></pre>
-<h2 id="footer-favicon-图标化">Footer favicon 图标化</h2>
-<p>平台链接前置 14px favicon: <code>&lt;img class="favicon" src="https://github.com/favicon.ico" alt=""&gt;</code> + 文本。样式 <code>.favicon { width:14px; height:14px; vertical-align:-2px; margin-right:5px; }</code>。前提: 逐个 <code>curl -sL -o /dev/null -w "%{http_code}" &lt;url&gt;</code> 验证 200（部分平台 favicon 带 hash 易 404，如 PyPI）。</p>
-<h2 id="测试规范">测试规范</h2>
-<ul>
-<li>沿用项目模式: headless Chrome + <code>window.__testErrors</code> JS 错误检查 + <code>WebDriverWait</code> 主元素</li>
-<li>覆盖: hero 动态高度（<code>offsetHeight ≈ innerHeight-110 ±6</code>）、scroll-hint fixed+淡出、主题切换+localStorage 持久化、复制按钮数量+data-copy 非空、footer 链接、light 白猫（<code>rgb(255,255,255)</code>）、双源一致性</li>
-<li>全量: <code>python3 -m pytest tests/ -q -n 4</code></li>
-</ul>
-<h2 id="pitfalls">Pitfalls</h2>
-<ul>
-<li><code>:root.light a</code> 全局规则覆盖 corner/按钮颜色（特异性陷阱）——高特异性覆盖必须显式加</li>
-<li>inline style 硬编码色不随主题——所有颜色走变量</li>
-<li><code>test_02_hero_100vh</code> 类断言随 hero 高度设计变更必须同步（80vh→动态两屏→断言 ≥0.75 或精确 vh−110）</li>
-<li>行数/文件数等元信息漂移（AGENTS.md vs 页面 tpl-file）——review 会抓（HG-SEC-036）</li>
-<li>双源只改一处导致防漂移测试红——同步时保留差异点，同步功能点</li>
-</ul>
-<h2 id="test-speed-optimization">test-speed-optimization</h2>
-<blockquote>html-gen Selenium 测试套件提速。测试执行慢时用 xdist 并行 + sleep 调低 + WebDriverWait 三方案优化。</blockquote>
-<h2 id="何时使用">何时使用</h2>
-<ul>
-<li>全量 Selenium 测试执行慢（&gt;100s），需要提速</li>
-<li>需要定位耗时瓶颈（sleep 分布 / --durations）</li>
-<li>需要并行化测试（xdist）或调低固定 sleep</li>
-</ul>
-<h2 id="耗时分析方法论">耗时分析方法论</h2>
-<ul>
-<li><strong>sleep 分布统计</strong>：扫描 tests/*.py 统计 <code>time.sleep(X)</code> 分布，定位大值 sleep</li>
-</ul>
-<p>   <code>`</code>python</p>
-<p>   import re</p>
-<p>   from pathlib import Path</p>
-<p>   for f in sorted(Path('tests').glob('test_*.py')):</p>
-<p>       sleeps = re.findall(r'time\.sleep\(([\d.]+)\)', f.read_text())</p>
-<p>       # 按值聚合计次</p>
-<p>   <code>`</code></p>
-<ul>
-<li><strong>--durations 定位</strong>：<code>pytest tests/ -q --durations=10</code> 看最慢的 10 个用例</li>
-<li><strong>区分 sleep 类型</strong>：</li>
-</ul>
-<p>   - setUp 页面加载 wait（<code>get()</code> 后的大 sleep）→ 用 WebDriverWait（D'）</p>
-<p>   - 交互 wait（点击后的小 sleep）→ 调低映射（D）</p>
-<p>   - localStorage 上下文 wait（clear 前的 sleep）→ 保持或微调</p>
-<h2 id="三方案">三方案</h2>
-<h3 id="方案-c-pytest-xdist-并行-最大收益-零逻辑风险">方案 C — pytest-xdist 并行（最大收益，零逻辑风险）</h3>
-<pre><code class="language-ini"># pytest.ini
-[pytest]
-addopts = -n 4</code></pre>
-<pre><code class="language-bash">python3 -m pytest tests/ -q -n 4     # 并行, ~4x 提速
-python3 -m pytest tests/ -q -n 0     # 定向调试, 关闭并行</code></pre>
-<p>依赖：<code>pytest-xdist&gt;=3.8.0</code>（requirements-dev.txt 或 AGENTS.md 显式声明）。</p>
-<h3 id="方案-d-setup-sleep-webdriverwait-最稳健">方案 D' — setUp sleep → WebDriverWait（最稳健）</h3>
-<pre><code class="language-python">from selenium.webdriver.support.ui import WebDriverWait
-from selenium.webdriver.support import expected_conditions as EC
-
-WebDriverWait(self.driver, 5).until(
-    EC.presence_of_element_located((By.CSS_SELECTOR, '&lt;主元素&gt;'))
-)</code></pre>
-<p>主元素按页面类型：table → <code>.data-table</code>；knowledge → <code>.kw-tab</code>；doc → <code>.doc-body</code>；slide → <code>.slide-sidebar</code>。超时兜底 5s。</p>
-<h3 id="方案-d-交互-sleep-调低映射-机械">方案 D — 交互 sleep 调低映射（机械）</h3>
-<p>映射表（大值减半，小值不动）：</p>
-<table><thead><tr>
-<th>原值</th>
-<th>新值</th>
-</tr></thead><tbody>
-<tr>
-<td>0.3</td>
-<td>0.15</td>
-</tr>
-<tr>
-<td>0.4</td>
-<td>0.2</td>
-</tr>
-<tr>
-<td>0.5</td>
-<td>0.25</td>
-</tr>
-<tr>
-<td>0.6</td>
-<td>0.3</td>
-</tr>
-<tr>
-<td>0.8</td>
-<td>0.4</td>
-</tr>
-<tr>
-<td>0.9</td>
-<td>0.45</td>
-</tr>
-</tbody></table>
-<p><code>0.08 / 0.1 / 0.15 / 0.2 / 0.25</code> 保持不变。</p>
-<p>辅助脚本：<code>scripts/speedup_sleeps.py</code>（--dry-run / --apply / --restore）。</p>
-<h2 id="验证流程-防-flaky">验证流程（防 flaky）</h2>
-<ul>
-<li>D' + D 改完 → 单线程连跑 2 次：<code>pytest tests/ -q -n 0</code></li>
-<li>加并行：<code>pytest tests/ -q -n 4</code></li>
-<li>抽样 flaky（各 3 次）：<code>test_table_features.py</code> / <code>test_drama_knowledge.py</code></li>
-<li>任何文件失败 → 从 .bak 回退该文件（<code>cp test_x.py.bak test_x.py</code>）</li>
-</ul>
-<h2 id="坑">坑</h2>
-<ul>
-<li><strong>副本测试文件 PROJECT 绝对路径</strong>：不同环境 chromedriver/项目路径不同，副本文件须修正 <code>PROJECT</code>、<code>CHROMEDRIVER</code> 绝对路径。</li>
-<li><strong>stale element</strong>：split 面板/详情加载类交互需较慢 wait，sleep 减半可能触发 <code>StaleElementReferenceException</code>，该文件回退。</li>
-<li><strong>WebDriverWait 注入需补 import</strong>：若原文件未 <code>from selenium.webdriver.common.by import By</code>，注入 WebDriverWait 时必须一并补 By/WebDriverWait/EC 三个 import，否则 <code>NameError</code>。</li>
-<li><strong>并行共享路径</strong>：所有测试写 /tmp 须文件名唯一（不跨文件冲突），不得写 demos/ 或项目目录；xdist 下各 worker 独立进程。</li>
-<li><strong>幂等</strong>：speedup_sleeps.py 用 <code># [speedup]</code> 标记已改行，二次 --apply 不重复改。注意：被回退的文件（cp .bak 还原）无标记，--dry-run 会再次列出该文件——属预期，勿二次 --apply（否则重新引入 flaky）。</li>
-<li><strong>toast/异步文本等待</strong>（2026-08-21 实测）：点击后 <code>time.sleep(0.2)</code> 再读 toast textContent 会偶发 flaky（单线程慢时 0.2s 内 toast 未更新）。改 <code>WebDriverWait.until(EC.text_to_be_present_in_element((By.ID, 'docToast'), '已复制: xxx'))</code>。规律：<strong>凡是断言"点击后产生的异步文本/DOM"一律用 WebDriverWait，不用固定 sleep</strong>。</li>
-<li><strong>测试收集边界</strong>（2026-08-19 实测核实）：pytest.ini <code>testpaths = tests</code> 已限定收集范围——根目录直接 <code>python -m pytest</code>（无参数）只收集 tests/ 的 141 用例，正常无崩溃；scripts/ 下辅助脚本（company-report.py 等）不被收集。约定：① 全量/定向统一显式 <code>pytest tests/</code>（意图明确）；② scripts/ 下脚本避免 <code>test_</code> 前缀命名（若移除 testpaths 或 <code>pytest scripts/</code> 会按文件名误收集）；③ 早前"scripts/test_profile.py 顶层 sys.exit(1) 导致 xdist 崩溃"的 pitfall 已不适用（该文件不存在、pytest.ini 为 <code>-n 4</code> 非 <code>-n auto</code>、testpaths 已防）。</li>
-</ul>
-<h2 id="验证清单">验证清单</h2>
-<ul>
-<li>[ ] 单线程 <code>pytest tests/ -q -n 0</code>：全绿，连跑 2 次无 flaky</li>
-<li>[ ] 并行 <code>pytest tests/ -q -n 4</code>：全绿，~25-30s</li>
-<li>[ ] speedup_sleeps.py --dry-run / --apply 幂等验证</li>
-<li>[ ] 无测试写共享路径（并行安全）</li>
-</ul></div>
   </div>
+
 </div>
+
 <script>
 (function() {
-  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
-  var params = new URLSearchParams(location.search);
-  // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
-  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
-  if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
+  const GROUPS = [{"key": "table", "label": "A 表格", "icon": "📊"}, {"key": "doc", "label": "B 文档", "icon": "📄"}, {"key": "knowledge", "label": "C 知识库", "icon": "📚"}, {"key": "slide", "label": "D 幻灯片", "icon": "🎞️"}, {"key": "cli", "label": "通用 CLI", "icon": "🛠️"}];  // [{key, label, icon}]
+  const ITEMS  = [{"title": "html-gen-table", "group": "table", "section": "指令 CLI", "badge": "Prompt", "desc": "Use when building data table HTML pages with html-gen. Covers column config, actions, tabs, sorting, CSV export, and row selection for the A-type layout-table template.", "url": "kb/html-gen-table.html", "kind": "skill"}, {"title": "html-gen-doc", "group": "doc", "section": "指令 CLI", "badge": "Prompt", "desc": "html-gen B 型文档模板规范。使用 html-gen doc 命令将 Markdown 转为自包含 HTML 文档页时参考。", "url": "kb/html-gen-doc.html", "kind": "skill"}, {"title": "html-gen-knowledge", "group": "knowledge", "section": "指令 CLI", "badge": "Prompt", "desc": "html-gen C 型知识库模板规范。使用 html-gen knowledge 命令生成分 tab 侧栏的知识库页面时参考。", "url": "kb/html-gen-knowledge.html", "kind": "skill"}, {"title": "html-gen-slide", "group": "slide", "section": "指令 CLI", "badge": "Prompt", "desc": "Use when generating slide-style presentation HTML from Markdown with", "url": "kb/html-gen-slide.html", "kind": "skill"}, {"title": "html-gen", "group": "cli", "section": "指令 CLI", "badge": "Prompt", "desc": "Use when asked to generate HTML from markdown or JSON using html-gen, create data table pages, knowledge bases, slide presentations, or document pages. Use when user references html-gen CLI or wants markdown converted to styled HTML.", "url": "kb/html-gen.html", "kind": "skill"}, {"title": "html-gen-cli-spec", "group": "cli", "section": "指令 CLI", "badge": "Prompt", "desc": "html-gen CLI 参数惯例、子指令表、--json 统一信封（checkpoint 协议）与 skills 同步约定。开发/审计 html-gen CLI 时参考。", "url": "kb/html-gen-cli-spec.html", "kind": "skill"}, {"title": "pages-index", "group": "cli", "section": "页面规范", "badge": "Prompt", "desc": "Use when building or optimizing a GitHub Pages project landing/index page. Hero + product-matrix layout, light theme, copy buttons, dynamic two-screen hero, github-corner theming, dual-source sync.", "url": "kb/pages-index.html", "kind": "skill"}, {"title": "test-speed-optimization", "group": "cli", "section": "测试规范", "badge": "Prompt", "desc": "html-gen Selenium 测试套件提速。测试执行慢时用 xdist 并行 + sleep 调低 + WebDriverWait 三方案优化。", "url": "kb/test-speed-optimization.html", "kind": "skill"}, {"title": "A 型 · 数据表格方案", "group": "table", "section": "模板语法", "badge": "指南", "desc": "table 模板方案指南 (列配置/交互/案例)", "url": "../demos/table-guide.html", "kind": "guide"}, {"title": "B 型 · 文档阅读方案", "group": "doc", "section": "模板语法", "badge": "指南", "desc": "doc 模板方案指南 (Markdown/阅读)", "url": "../demos/doc-guide.html", "kind": "guide"}, {"title": "C 型 · 知识库方案", "group": "knowledge", "section": "模板语法", "badge": "指南", "desc": "knowledge 模板方案指南 (条目/分组)", "url": "../demos/knowledge-guide.html", "kind": "guide"}, {"title": "D 型 · 幻灯片方案", "group": "slide", "section": "模板语法", "badge": "指南", "desc": "slide 模板方案指南 (分页/演示)", "url": "../demos/slide-guide.html", "kind": "guide"}, {"title": "CLI 使用说明", "group": "cli", "section": "指令 CLI", "badge": "指南", "desc": "html-gen CLI 命令总览", "url": "../demos/usage-guide.html", "kind": "guide"}, {"title": "Markdown 语法规范", "group": "doc", "section": "模板语法", "badge": "指南", "desc": "md_to_html 支持的语法子集 (随 doc 组)", "url": "../demos/markdown-spec.html", "kind": "guide"}, {"title": "全球国家速查表", "group": "table", "section": "使用案例", "badge": "案例", "desc": "全球 195 国速查表 (A 型)", "url": "../demos/countries-table.html", "kind": "case"}, {"title": "中国省份速查表", "group": "table", "section": "使用案例", "badge": "案例", "desc": "中国 34 省速查表 (A 型)", "url": "../demos/provinces-table.html", "kind": "case"}, {"title": "表格功能全演示", "group": "table", "section": "使用案例", "badge": "案例", "desc": "表格功能全演示 (A 型)", "url": "../demos/table-features-demo.html", "kind": "case"}, {"title": "Hermes Skills 列表", "group": "table", "section": "使用案例", "badge": "案例", "desc": "Hermes Skills 列表 (A 型)", "url": "../demos/hermes-profile-skills-list.html", "kind": "case"}, {"title": "长亭公司档案", "group": "doc", "section": "使用案例", "badge": "案例", "desc": "长亭公司档案 (B 型内容页)", "url": "../demos/chaitin/company-profile.html", "kind": "case"}, {"title": "云智慧公司档案", "group": "doc", "section": "使用案例", "badge": "案例", "desc": "云智慧公司档案 (B 型内容页)", "url": "../demos/cloudwise/company-profile.html", "kind": "case"}, {"title": "长亭商业模式", "group": "doc", "section": "使用案例", "badge": "案例", "desc": "长亭商业模式 (B 型内容页)", "url": "../demos/chaitin/business-model.html", "kind": "case"}, {"title": "以剧读史知识库", "group": "knowledge", "section": "使用案例", "badge": "案例", "desc": "以剧读史影视历史知识库 (C 型)", "url": "../demos/drama-knowledge.html", "kind": "case"}, {"title": "长亭商业分析", "group": "knowledge", "section": "使用案例", "badge": "案例", "desc": "长亭科技商业分析知识库 (C 型)", "url": "../demos/chaitin-business-analysis.html", "kind": "case"}, {"title": "云智慧商业分析", "group": "knowledge", "section": "使用案例", "badge": "案例", "desc": "云智慧商业分析知识库 (C 型)", "url": "../demos/cloudwise-business-analysis.html", "kind": "case"}, {"title": "知识库功能演示", "group": "knowledge", "section": "使用案例", "badge": "案例", "desc": "知识库功能演示 (C 型)", "url": "../demos/knowledge-demo.html", "kind": "case"}, {"title": "幻灯片演示", "group": "slide", "section": "使用案例", "badge": "案例", "desc": "D 型幻灯片演示", "url": "../demos/slide-demo.html", "kind": "case"}];   // [{title, group, section?, badge?, url?, desc?}]
 
-  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
-  var w = params.get('width');
-  if (w === 'narrow') document.body.classList.add('width-narrow');
-  else if (w === 'wide') document.body.classList.add('width-wide');
-  // medium 或未指定: 不加 class, 用默认 960px
-
-  // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──
-  if (params.get('show-md') === '1') document.body.classList.add('show-md');
-
-  const body = document.getElementById('docBody');
-  const toc  = document.getElementById('toc');
-  const headings = body.querySelectorAll('h2, h3');
-  const tocItems = [];
+  let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
+  let activeItem = null;
+  const COLORS = ['#38bdf8','#34d399','#c084fc','#fb923c','#f472b6','#fbbf24','#818cf8'];
+  const BADGE_COLORS = {
+    '知道':{bg:'rgba(56,189,248,0.12)',color:'#38bdf8',border:'rgba(56,189,248,0.25)'},
+    '理解':{bg:'rgba(52,211,153,0.12)',color:'#34d399',border:'rgba(52,211,153,0.25)'},
+    '能讲':{bg:'rgba(192,132,252,0.12)',color:'#c084fc',border:'rgba(192,132,252,0.25)'},
+    '能输出':{bg:'rgba(251,146,60,0.12)',color:'#fb923c',border:'rgba(251,146,60,0.25)'},
+  };
 
   /* ═══════ i18n & Theme ═══════ */
-  var _lang = localStorage.getItem('html-gen:doc_lang');
-  _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
-  var L = { zh: { pages: '共 {n} 节' }, en: { pages: '{n} sections' } };
-  function t(key, params) { var s = L[_lang][key]; Object.keys(params).forEach(function(k) { s = s.replace('{'+k+'}', params[k]); }); return s; }
-  document.getElementById('langZh').classList.toggle('active', _lang === 'zh');
-  document.getElementById('langEn').classList.toggle('active', _lang === 'en');
+  var _kwLang = (function() { try { var v = localStorage.getItem('html-gen:kw_lang'); return (v === 'zh' || v === 'en') ? v : 'zh'; } catch(e) { return 'zh'; } })();
+  document.getElementById('kwLangZh').classList.toggle('active', _kwLang === 'zh');
+  document.getElementById('kwLangEn').classList.toggle('active', _kwLang === 'en');
 
-  window.setLang = function(lang) {
+  window.setKwLang = function(lang) {
     if (lang !== 'zh' && lang !== 'en') return;
-    _lang = lang;
-    try { localStorage.setItem('html-gen:doc_lang', lang); } catch(e) {}
-    document.getElementById('langZh').classList.toggle('active', lang === 'zh');
-    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    _kwLang = lang;
+    try { localStorage.setItem('html-gen:kw_lang', lang); } catch(e) {}
+    document.getElementById('kwLangZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('kwLangEn').classList.toggle('active', lang === 'en');
     updateSub();
   };
 
-  var _theme = localStorage.getItem('html-gen:doc_theme');
-  if (_theme === 'light') document.documentElement.classList.add('light');
-  document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
+  var _kwTheme = (function() { try { return localStorage.getItem('html-gen:kw_theme') || 'dark'; } catch(e) { return 'dark'; } })();
+  if (_kwTheme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('kwThemeBtn').textContent = _kwTheme === 'light' ? '☀️' : '🌙';
 
-  window.toggleTheme = function() {
+  window.toggleKwTheme = function() {
     var r = document.documentElement;
     var isLight = !r.classList.contains('light');
     r.classList.toggle('light', isLight);
-    try { localStorage.setItem('html-gen:doc_theme', isLight ? 'light' : 'dark'); } catch(e) {}
-    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+    try { localStorage.setItem('html-gen:kw_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('kwThemeBtn').textContent = isLight ? '☀️' : '🌙';
   };
 
-  // Title click → copy path (via meta text)
-  document.getElementById('sidebarTitle').addEventListener('click', function() {
-    var metaEl = document.querySelector('.doc-header .meta');
-    var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
+  function updateSub() {
+    var sub = document.querySelector('.kw-sidebar-header .sub');
+    if (sub) {
+      var base = (sub.textContent || '').replace(/\s*共\s+\d+\s*条目.*/, '').trim();
+      var label = _kwLang === 'en' ? ' items' : ' 条目';
+      sub.textContent = (base ? base + ' · ' : '') + '共 ' + ITEMS.length + label;
+    }
+  }
+  updateSub();
+
+  // Title click → copy full URL（中文参数解码为原文，如 ?group=大明王朝1566）
+  document.querySelector('.kw-sidebar-header .sidebar-title').addEventListener('click', function() {
+    var m = this.title.match(/路径:\s*(.+)/);
     var target = m ? m[1].trim() : decodeURI(window.location.href);
-    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
+    if (/^(https?:|\/|~\/)/.test(target)) {
       try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
-      showToast('已复制: ' + target);
+      showKwToast('已复制: ' + target);
     }
   });
 
-  function showToast(msg) {
-    var el = document.getElementById('docToast'); if (!el) { el = document.createElement('div'); el.id = 'docToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+  function showKwToast(msg) {
+    var el = document.getElementById('kwToast');
+    if (!el) { el = document.createElement('div'); el.id = 'kwToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
     el.textContent = msg; el.style.opacity = '1';
     clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
   }
 
-  // Section count
-  var _h2Count = body.querySelectorAll('h2').length;
-  function updateSub() {
-    var subEl = document.querySelector('.doc-sidebar-header .sub');
-    if (!subEl) return;
-    var base = (subEl.textContent || '').replace(/\s*共\s*\d+\s*节.*|\s*\d+\s*sections.*/, '').trim();
-    var text = t('pages', {n: _h2Count});
-    subEl.textContent = (base ? base + ' · ' : '') + text;
+  // ── Render tabs ──
+  function renderTabs() {
+    var bar = document.getElementById('kwTabBar');
+    bar.innerHTML = (GROUPS || []).map(function(g, i) {
+      var c = COLORS[i % COLORS.length];
+      return '<div class="kw-tab' + (g.key === activeGroup ? ' active' : '') + '" data-key="' + g.key + '" onclick="switchGroup(\'' + g.key + '\')">' +
+        (g.icon ? '<span class="kw-tab-icon">' + g.icon + '</span>' : '<span class="kw-tab-icon" style="color:' + c + '">●</span>') +
+        g.label + '</div>';
+    }).join('');
+    renderSidebar();
   }
-  updateSub();
 
-  /* ═══════ H3 Toggle ═══════ */
-  var _h3Visible = false;
-  window.toggleH3 = function() {
-    _h3Visible = !_h3Visible;
-    var btn = document.getElementById('h3Toggle');
-    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
-    try { localStorage.setItem('html-gen:doc:h3-visible', _h3Visible); } catch(e) {}
-    var h3s = document.querySelectorAll('.toc-h3');
-    for (var i = 0; i < h3s.length; i++) h3s[i].classList.toggle('show', _h3Visible);
+  window.switchGroup = function(key) {
+    activeGroup = key;
+    try { localStorage.setItem('html-gen:kw_group', key); } catch(e) {}
+    document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
+    renderSidebar();
+    // 跨组保持：优先选中当前 section 在同组同名 item（如 36计策 跨组跟随），否则第一个 item
+    var targetItem = null;
+    if (activeItem) {
+      var secName = (function(){ var it = ITEMS.find(function(i){ return i.group === key && i.title === activeItem; }); return it ? it.title : null; })();
+      targetItem = secName ? ITEMS.find(function(i) { return i.group === key && i.title === secName; }) : null;
+    }
+    if (!targetItem) {
+      var curItem = ITEMS.find(function(i) { return i.group !== key && i.title === activeItem; });
+      if (curItem) targetItem = ITEMS.find(function(i) { return i.group === key && i.title === curItem.title; });
+    }
+    var firstItem = targetItem || ITEMS.find(function(i) { return i.group === key; });
+    if (firstItem) selectItem(activeGroup, firstItem.title);
   };
-  try { if (localStorage.getItem('html-gen:doc:h3-visible') === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; } } catch(e) {}
+
+  // ── Render sidebar sections ──
+  function renderSidebar() {
+    var container = document.getElementById('kwSectionsContainer');
+    var groupItems = ITEMS.filter(function(item) { return item.group === activeGroup; });
+    var sections = {};
+    groupItems.forEach(function(item) {
+      var sec = item.section || item.group || 'default';
+      if (!sections[sec]) sections[sec] = [];
+      sections[sec].push(item);
+    });
+    var html = '';
+    var keys = Object.keys(sections);
+    keys.forEach(function(sec) {
+      var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
+      var c = COLORS[Math.max(0, ci) % COLORS.length];
+      if (keys.length > 1) {
+        var secIcon = sections[sec][0] && sections[sec][0].section_icon;
+        html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')">' +
+          (secIcon ? '<span class="kw-section-icon">' + secIcon + '</span>' : '<span class="dot" style="background:' + c + '"></span>') + sec + '</div>';
+      }
+      // Single-item section matching section name: skip kw-item row (section title itself is the click target)
+      var isSingleItem = sections[sec].length === 1 && sections[sec][0].title === sec;
+      if (!isSingleItem) {
+        sections[sec].forEach(function(item) {
+        var badgeHtml = '';
+        if (item.badge) {
+          var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
+          badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
+        }
+        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+      });
+      }
+    });
+    container.innerHTML = html || '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.78rem;">暂无内容</div>';
+  }
+
+  // ── Select section (click section title) ──
+  window.selectSection = function(group, sec) {
+    var item = ITEMS.find(function(i) { return i.group === group && i.section === sec; });
+    if (!item) return;
+    selectItem(group, item.title);
+  };
+
+  // ── Select item ──
+  // URL 参数同步（拷贝 URL 可定位指定页签/条目）
+  function syncUrl() {
+    try {
+      var u = new URL(window.location.href);
+      if (activeGroup) u.searchParams.set('group', activeGroup);
+      else u.searchParams.delete('group');
+      if (activeItem && ITEMS.some(function(i){ return i.group === activeGroup && i.title === activeItem; }))
+        u.searchParams.set('item', activeItem);
+      else u.searchParams.delete('item');
+      history.replaceState(null, '', u.toString());
+    } catch(e) {}
+  }
+
+  window.selectItem = function(group, title) {
+    activeItem = title;
+    try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
+    document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
+    var item = ITEMS.find(function(i) { return i.group === group && i.title === title; });
+    if (!item) return;
+    // 高亮所属 section（section-as-menu 单 item 模式无 kw-item 行，靠 section-title 呈现）
+    var secName = item.section || item.title;
+    document.querySelectorAll('.kw-section-title').forEach(function(el) {
+      el.classList.toggle('active', el.textContent.indexOf(secName) !== -1);
+    });
+    document.getElementById('welcomePanel').classList.remove('active');
+    document.getElementById('frameWrap').classList.add('active');
+    var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (item.url.indexOf('overview') !== -1 ? 'width=wide&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
+    else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
+    else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
+    syncUrl();
+  };
+
+  function renderLegend() {
+    var el = document.getElementById('wLegend');
+    el.innerHTML = (GROUPS || []).map(function(g, i) { var c = COLORS[i % COLORS.length]; return '<span class="w-legend-item"><span class="ldot" style="background:' + c + '"></span> ' + g.label + '</span>'; }).join('');
+  }
+
+  // Restore last state: URL 参数优先 > localStorage > 默认
+  var urlParams = new URLSearchParams(location.search);
+  var savedGroup = urlParams.get('group') || localStorage.getItem('html-gen:kw_group');
+  var savedItem = urlParams.get('item') || localStorage.getItem('html-gen:kw_item');
+  var groupValid = savedGroup && GROUPS.some(function(g) { return g.key === savedGroup; });
+  var itemValid = savedItem && ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
+  if (groupValid) {
+    activeGroup = savedGroup; renderTabs();
+    if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
+    else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
+  } else {
+    renderTabs();
+    renderLegend();
+  }
 
   /* ═══════ Sidebar Collapse ═══════ */
-  var _sidebarCollapsed = false;
+  var _collapsed = false;
   window.toggleSidebar = function() {
-    _sidebarCollapsed = !_sidebarCollapsed;
-    var sb = document.getElementById('sidebar'); var btn = document.getElementById('collapseBtn');
-    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
-    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
-    try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
-    setTimeout(function() { updateProgress(); }, 300);
+    _collapsed = !_collapsed;
+    var sb = document.getElementById('kwSidebar'), btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _collapsed);
+    if (btn) btn.textContent = _collapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:kw:collapsed', _collapsed); } catch(e) {}
   };
-  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
-  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
-  try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
+  try { if (localStorage.getItem('html-gen:kw:collapsed') === 'true') toggleSidebar(); } catch(e) {}
 
   document.addEventListener('keydown', function(e) {
-    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
-    if (!e.metaKey && !e.ctrlKey) {
-      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
-      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'IFRAME') {
+      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
     }
   });
 
-  /* ═══════ TOC Search ═══════ */
-  var _tocSearchActive = false, _tocSearchTimer;
-  window.toggleTocSearch = function() {
-    _tocSearchActive = !_tocSearchActive;
-    var wrap = document.getElementById('tocSearchWrap');
-    var input = document.getElementById('tocSearchInput');
-    var btn = document.getElementById('tocSearchBtn');
-    if (wrap) wrap.classList.toggle('active', _tocSearchActive);
-    if (btn) btn.style.color = _tocSearchActive ? 'var(--cobalt-400)' : '';
-    if (_tocSearchActive) {
+  /* ── Sidebar Search ── */
+  var _kwSearchActive = false, _kwSearchTimer;
+  window.toggleKwSearch = function() {
+    _kwSearchActive = !_kwSearchActive;
+    var wrap = document.getElementById('kwSearchWrap');
+    var input = document.getElementById('kwSearchInput');
+    var btn = document.getElementById('kwSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _kwSearchActive);
+    if (btn) btn.style.color = _kwSearchActive ? 'var(--cobalt-400)' : '';
+    if (_kwSearchActive) {
       setTimeout(function() { input.focus(); input.select(); }, 50);
     } else {
       input.value = '';
-      doTocFilter('');
+      doKwFilter('');
     }
   };
 
-  function doTocFilter(q) {
-    tocItems.forEach(function(a) {
-      a.classList.toggle('filtered-out', q.length >= 2 && a.textContent.toLowerCase().indexOf(q) === -1);
+  function doKwFilter(q) {
+    var items = document.querySelectorAll('.kw-item');
+    var titles = document.querySelectorAll('.kw-section-title');
+    var hasMatch = false;
+    items.forEach(function(el) {
+      var text = (el.querySelector('.kw-item-text') || {}).textContent || '';
+      var match = q.length < 2 || text.toLowerCase().indexOf(q) !== -1;
+      el.classList.toggle('filtered-out', !match);
+      if (match) hasMatch = true;
+    });
+    // Hide section titles if all their items are filtered out
+    titles.forEach(function(title) {
+      var next = title.nextElementSibling;
+      var allHidden = true;
+      while (next && !next.classList.contains('kw-section-title')) {
+        if (!next.classList.contains('filtered-out')) { allHidden = false; break; }
+        next = next.nextElementSibling;
+      }
+      title.classList.toggle('filtered-out', allHidden);
     });
   }
 
-  document.getElementById('tocSearchInput').addEventListener('input', function() {
+  document.getElementById('kwSearchInput').addEventListener('input', function() {
     var q = this.value.toLowerCase().trim();
-    clearTimeout(_tocSearchTimer);
-    _tocSearchTimer = setTimeout(function() { doTocFilter(q); }, 150);
+    clearTimeout(_kwSearchTimer);
+    _kwSearchTimer = setTimeout(function() { doKwFilter(q); }, 150);
   });
 
-  window.tocSearchKey = function(e) {
-    if (e.key === 'Escape') {
-      _tocSearchActive = true; toggleTocSearch(); // force close
-    } else if (e.key === 'Enter') {
-      var q = document.getElementById('tocSearchInput').value.toLowerCase().trim();
-      if (q.length >= 2) {
-        var match = tocItems.find(function(a){ return !a.classList.contains('filtered-out'); });
-        if (match) match.click();
-        toggleTocSearch();
-      }
+  document.getElementById('kwSearchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); }
+    else if (e.key === 'Enter') {
+      var firstVisible = document.querySelector('.kw-item:not(.filtered-out)');
+      if (firstVisible) firstVisible.click();
+      _kwSearchActive = true; toggleKwSearch();
     }
-  };
+  });
 
   // Click away to close
   document.addEventListener('click', function(e) {
-    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
-      _tocSearchActive = true; toggleTocSearch();
+    if (_kwSearchActive && !e.target.closest('.kw-search-wrap') && e.target !== document.getElementById('kwSearchBtn')) {
+      _kwSearchActive = true; toggleKwSearch();
     }
   });
 
-  /* ═══════ TOC ═══════ */
-  headings.forEach(function(h, i) {
-    if (!h.id) h.id = 'section-' + i;
-    var anchor = document.createElement('a'); anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
-    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; navigator.clipboard.writeText(url); anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); });
-    h.appendChild(anchor);
-    var level = h.tagName.toLowerCase().replace('h', '');
-    var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
-    link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
-    toc.appendChild(link); tocItems.push(link);
-  });
-
-  // h4-h6 anchors (not in TOC)
-  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
-    if (!h.id) h.id = 'section-' + i;
-    var anchor = document.createElement('a');
-    anchor.className = 'anchor-link';
-    anchor.href = '#' + h.id;
-    anchor.textContent = '\u00b6';
-    h.appendChild(anchor);
-  });
-
-  function onScroll() {
-    var current = ''; headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
-    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-
-  body.querySelectorAll('pre').forEach(function(pre) {
-    var btn = document.createElement('button'); btn.className = 'copy-btn'; btn.textContent = '复制';
-    btn.addEventListener('click', function() {
-      var code = pre.querySelector('code'); var text = code ? code.textContent : pre.textContent;
-      function done() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); }
-      if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done).catch(fallback); } else { fallback(); }
-      function fallback() { var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.pointerEvents = 'none'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
-    });
-    pre.appendChild(btn);
-  });
-
-  body.querySelectorAll('pre code').forEach(function(code) {
-    var text = code.textContent; var lines = text.split('\n'); if (lines.length > 0 && lines[lines.length-1] === '') lines.pop(); if (lines.length < 2) return;
-    code.textContent = ''; lines.forEach(function(line, idx) { var span = document.createElement('span'); span.className = 'line'; span.textContent = line; code.appendChild(span); if (idx < lines.length-1) code.appendChild(document.createTextNode('\n')); });
-    code.classList.add('code-with-lines');
-  });
-
-  var main = document.getElementById('docMain'); var bar = document.getElementById('progressBar');
-  function updateProgress() { var p = main.scrollTop / (main.scrollHeight - main.clientHeight); bar.style.width = (p * 100) + '%'; }
-  main.addEventListener('scroll', updateProgress, { passive: true }); updateProgress();
-
-  var lb = document.getElementById('lightbox'); var lbImg = document.getElementById('lightboxImg');
-  body.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function(e) { e.stopPropagation(); lbImg.src = this.src; lb.classList.add('active'); }); });
-  window.closeLightbox = function(e) { if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) lb.classList.remove('active'); };
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active'); });
-
   /* ── Sidebar Resize ── */
   (function() {
-    var sb = document.getElementById('sidebar');
-    var handle = document.getElementById('sbResize');
+    var sb = document.getElementById('kwSidebar');
+    var handle = document.getElementById('kwSbResize');
     var dragging = false;
     handle.addEventListener('mousedown', function(e) {
       e.preventDefault();
@@ -2211,10 +751,10 @@ WebDriverWait(self.driver, 5).until(
       if (dragging) {
         dragging = false;
         handle.classList.remove('active');
-        try { localStorage.setItem('html-gen:doc:sidebar-width', sb.style.width); } catch(e) {}
+        try { localStorage.setItem('html-gen:kw:sidebar-width', sb.style.width); } catch(e) {}
       }
     });
-    try { var sw = localStorage.getItem('html-gen:doc:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+    try { var sw = localStorage.getItem('html-gen:kw:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
   })();
 })();
 </script>
