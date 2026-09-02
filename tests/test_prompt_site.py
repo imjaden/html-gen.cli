@@ -2,7 +2,7 @@
 
 统一用 --dir 临时目录, 绝不触碰仓库 prompts/ (test_08 显式断言不变)。
 """
-import json, re, shutil, subprocess, sys, tempfile
+import json, os, re, shutil, subprocess, sys, tempfile
 from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parent.parent
@@ -259,3 +259,40 @@ class TestPromptSite:
                 assert after == before, '测试不应改动仓库 prompts/'
         finally:
             shutil.rmtree(d, ignore_errors=True)
+    # ── test_09 env-set pin (HG-SEC-097): 显式空串禁用 > env 兜底 ──
+    def test_09_env_set_cannot_override_disabled(self):
+        d = make_dir()
+        try:
+            env = dict(os.environ)
+            env['HTML_GEN_GITHUB_URL'] = 'https://github.com/evil/example'
+            env['HTML_GEN_HOME_URL'] = 'https://evil.example/'
+            r = subprocess.run(
+                [sys.executable, str(GEN), 'prompt', '--site', '--dir', str(d)],
+                capture_output=True, text=True, timeout=120, env=env)
+            assert r.returncode == 0, f'exit={r.returncode} stderr={r.stderr}'
+            html = (d / 'index.html').read_text(encoding='utf-8')
+            # github corner 仍禁用 (github_url='' 显式禁用优先于 env)
+            assert not re.search(r'<a[^>]*class="github-corner"', html)
+            assert 'github.com/evil' not in html
+            # home 仍指向站点 (home_url 显式传站点, 不受 env 污染)
+            assert 'evil.example' not in html
+            assert re.search(
+                r'<a class="home-link" href="https://html-gen\.cli\.jaden\.tech/"', html)
+        finally:
+            shutil.rmtree(d, ignore_errors=True)
+
+    # ── test_10 --dir 守卫 (HG-SEC-098): 空串 / 仓库根 拒绝 ──
+    def test_10_dir_guard(self):
+        # 空串 --dir '' → exit 1
+        r = run_site('--dir', '')
+        assert r.returncode == 1, f'--dir 空串应 exit 1 (got {r.returncode})'
+        assert '--dir' in r.stderr
+        # 仓库根 (index.html/all.md 同名产物在 known 清理集) → exit 1
+        r2 = subprocess.run(
+            [sys.executable, str(GEN), 'prompt', '--site', '--dir', str(PROJECT)],
+            capture_output=True, text=True, timeout=120)
+        assert r2.returncode == 1, f'--dir 仓库根应 exit 1 (got {r2.returncode})'
+        assert '仓库根' in r2.stderr
+        # 仓库 prompts/ 未被上述误操作触碰
+        assert (PROJECT / 'prompts').is_dir()
+

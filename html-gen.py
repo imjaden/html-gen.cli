@@ -843,8 +843,8 @@ def main():
     d.add_argument('--title')
     d.add_argument('--subtitle')
     d.add_argument('--metadata')
-    d.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
-    d.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    d.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_GITHUB_URL)')
+    d.add_argument('--home-url', help='demo 首页入口链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_HOME_URL)')
     d.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     s = sub.add_parser('slide', help='Markdown → 幻灯片')
@@ -853,8 +853,8 @@ def main():
     s.add_argument('-o', '--output')
     s.add_argument('--title')
     s.add_argument('--subtitle')
-    s.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
-    s.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    s.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_GITHUB_URL)')
+    s.add_argument('--home-url', help='demo 首页入口链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_HOME_URL)')
     s.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     t = sub.add_parser('table', help='JSON → A 型数据表格')
@@ -863,8 +863,8 @@ def main():
     t.add_argument('--title')  # 优先级: CLI > JSON 顶层 title > '数据表格'
     t.add_argument('--subtitle', help='页面级段落描述(纯文本, \\n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空')
     t.add_argument('-o', '--output', help='输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一)')
-    t.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
-    t.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    t.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_GITHUB_URL)')
+    t.add_argument('--home-url', help='demo 首页入口链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_HOME_URL)')
     t.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     k = sub.add_parser('knowledge', help='JSON → C 型知识库')
@@ -875,8 +875,8 @@ def main():
     k.add_argument('--subtitle', default='')
     k.add_argument('--welcome', default='')
     k.add_argument('-o', '--output', help='输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一)')
-    k.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私)')
-    k.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
+    k.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_GITHUB_URL)')
+    k.add_argument('--home-url', help='demo 首页入口链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_HOME_URL)')
     k.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
     pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>; --site 生成在线阅读站点)')
@@ -1020,9 +1020,18 @@ def cmd_prompt_site(args):
         print("❌ skills/ 目录不存在", file=sys.stderr)
         sys.exit(1)
     default_out = Path(__file__).resolve().parent / 'prompts'
-    out_dir = Path(args.dir) if getattr(args, 'dir', None) else default_out
+    raw_dir = getattr(args, 'dir', None)
+    if raw_dir is not None and str(raw_dir).strip() == '':
+        print('❌ --dir 不能为空串 (站点输出目录)', file=sys.stderr)
+        sys.exit(1)
+    out_dir = Path(raw_dir) if raw_dir else default_out
     if out_dir.exists() and not out_dir.is_dir():
-        print(f"❌ --dir 输出路径不是目录: {out_dir}", file=sys.stderr)
+        print(f'❌ --dir 输出路径不是目录: {out_dir}', file=sys.stderr)
+        sys.exit(1)
+    if out_dir.resolve() == Path(__file__).resolve().parent.resolve():
+        # HG-SEC-098: 仓库根含 index.html/all.md 同名产物在 known 清理集 → 防误删
+        print('❌ --dir 不能为仓库根目录 (含 index.html/all.md 同名产物, 防误删)',
+              file=sys.stderr)
         sys.exit(1)
 
     # 收集 skills (sorted, 与 cmd_prompt 一致)
