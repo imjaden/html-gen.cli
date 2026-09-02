@@ -514,3 +514,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-086..088 (🟡×3 非阻断, 折入 dev 实施: 幂等 diff 限定 17 文件 / h1 删除计数 fence-aware / 清空目录只删已知产物名) + HG-SEC-089..095 (🟢 records: references 4→3 笔误 / index.html favicon·github env 兜底 / test_02 补 slide 2 refs / all.md TOC 扁平 / 同构措辞 / HELP_PROMPT 遗漏 --site / YAML 多行 description 截断)"
     report: documents/review/html-gen-prompts-site-design-review-v1.0-20260902.md
+  - date: 2026-09-02
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "html-gen prompt --site 在线阅读站点 实现审计 — feat d4ec017; commit 范围 fe2ee22..d4ec017 (设计 v1.0 → 订正 9c0cb1a → 评审/实施 prompt cd6c724 → feat); 设计 v1.0 PASS 85/A, 折叠项 HG-SEC-086..095 已订正入文 (HTML-GEN-CL007 kind=independent)"
+    verdict: PASS
+    score: 100
+    findings_total: 4
+    findings_open: 0
+    tracking: "HG-SEC-086..095 (✅ closed 本次实现逐条验证: 幂等 17 文件 / fence-aware h1 / known-name containment / cmd_doc github_url='' 显式 / slide 2 refs 断言 / HELP_PROMPT --site / references 3 数 / TOC 扁平 / 结构同构 / YAML description 截断) + HG-SEC-096..099 (🟢 records 非阻断: refs h1 剥离·清理残留设计文本漂移 / corner '' 语义缺 env-set 回归测试·help 未注空串禁用 / --dir 空串·仓库根边界 / AGENTS.md 同步遗留)"
+    report: documents/review/html-gen-prompts-site-impl-audit-v1.0-20260902.md
