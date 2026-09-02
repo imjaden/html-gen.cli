@@ -1582,3 +1582,65 @@ v1.2 三态增量模型（new_items/updates/skipped）是 v1.1 additive 语义�
 - 报告: `documents/review/html-gen-prompts-site-impl-audit-v1.0-20260902.md`
 
 ---
+
+## 2026-09-02 — html-gen prompt 在线阅读站点 v2 设计评审（PASS 95/A）【回填】
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2（design-document-review）
+- **Scope**: html-gen prompt --site v2（C 型 knowledge 门户 5 tab + kb/{skill}.html detail ×8 + 体系化沉淀，HTML-GEN-CL008 kind=independent）；commit 456a12c；前置 CL007 已闭环
+- **Verdict**: 🟢 **PASS 95/100（A）** — 架构正确：三动机完整落地、C 型 IA 全部在 layout-knowledge 现成能力内、注册表与素材零漂移（8 skills/6 guides/12 cases 实证存在）、幂等集 20 成立、hs 移植锚点全部实测命中；无 🔴
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-100（🟡 折叠实施）+ HG-SEC-101..105（🟢 records）
+- **Findings**: 5 🟢 / 1 🟡 / 0 🔴
+
+### Summary
+
+> ⚠️ 回填注记：本设计评审 commit（2f748fe）当时未同步 append review-log.md/.review-level.yaml（CL007 惯例三件套同 commit），此处由 CL008 实现审计一并补录（HG-SEC-108）。评审详情见 documents/review/html-gen-prompts-site-v2-design-review-v1.0-20260902.md：唯一 🟡 HG-SEC-100 为 §7 直调 Namespace 契约完整性 + kb detail env pin（折叠进 dev 实施）；5 项 🟢 为 desc 元数据注明 / append 序约束 / kb mkdir·清理·stdout 抑制·统计解耦 / 计数 18→28 / Jekyll _ 前缀不发布——均折入 dev 实施 prompt（v2-dev-impl-prompt-20260902.md），由 feat 479f053 落实。
+
+### Findings
+
+- 🔴 0 / 🟡 1（HG-SEC-100 折叠实施）/ 🟢 5（HG-SEC-101..105，记录折入）
+
+### 处理
+
+- ✅ PASS → 评审报告 + dev 实施 prompt 随 commit 2f748fe；trail 回填于 CL008 实现审计 commit
+- 报告: `documents/review/html-gen-prompts-site-v2-design-review-v1.0-20260902.md`
+
+---
+
+## 2026-09-02 — html-gen prompt 在线阅读站点 v2 实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: html-gen prompt --site v2 C 型门户 + kb detail（prompts/ 28 文件：C 型 knowledge 门户 + kb/{skill}.html ×8 + _kb json，HTML-GEN-CL008 kind=independent）；feat 479f053；commit 范围 456a12c..479f053（设计 v1.0 → 评审 2f748fe → feat）
+- **Verdict**: 🟢 **PASS 100/100（A）** — 实现与设计 §4/§5/§6/§7/§8 逐项一致，6 项折叠（HG-SEC-100..105）全部落实并有源码行号 + 测试 + 独立复跑证据，提交产物 20 确定性文件与生成器当前输出 byte-identical（kb/ 8 仅 meta 分钟粒度差），门户 C 型渲染静态 + Selenium 双重验证零 JS 错误，全量 268 passed，无 🔴/🟡
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-100..105（✅ closed 本次实现逐条验证）+ HG-SEC-106..108（🟢 records 非阻断）
+- **Findings**: 3 🟢 / 0 🟡 / 0 🔴
+
+### Summary
+
+实现与设计基线逐条吻合：SITE_GROUPS 5 group / SKILL_TO_GROUP 8 skills / GUIDE_MAP 6 / CASE_MAP 12 与 §4 逐字一致；产物 28 = 顶层 20（index/_kb-groups/_kb-data/all.md/16 md|json）+ kb/ 8 detail 精确集合；_kb-data 26 条目（skill 8 + guide 6 + case 12）7 字段齐、skill url=kb/{name}.html 8/8、guide/case url 存在性零缺失（防注册表漂移）、section 首现序符合 HG-SEC-102。6 项折叠全部落实：HG-SEC-100（两处直调 Namespace 全字段 + kb 页 env pin 扩展 test_09）、101（desc 元数据 docstring 注明 + url 优先实证）、102（append 序 SKILL→GUIDE→CASE + test_11 顺序断言）、103（kb mkdir + kb 内 known 清理 + 双 cmd stdout 抑制 + 统计 n_total 解耦）、104（HELP_PROMPT/argparse/docstring 18→28 零残留）、105（Jekyll _ 前缀不发布 SKILL.md 注记）。产物一致性最强证据：独立 --dir 生成与提交 prompts/ 20 确定性文件 byte-identical（含 index.html——knowledge 无 doc meta），kb/ 8 页 diff 仅「创建/编辑」时间戳行（幂等集 20 成立，实测二次生成零 diff + containment 无关文件保留）。契约回归 8/8 {skill}.md == strip(SKILL.md)+refs 逐字（镜像 html-gen.py strip 正则）+ json 信封 + all.md h1 不变；旧 18 文件 URL 原位无破坏。门户渲染：静态 kw-tab/5 tab 标签/零 corner/home-link 指向站点 + Selenium 实跑 5 tab → html-gen-table 条目 → iframe 自动 `?sidebar=0&toolbar=0&t=`（裸模式降级实证）→ doc-body 加载、门户与内嵌零 JS 错误。全量 pytest -n 4 = 268 passed（265→+3，与设计 §8 精确一致）；专项 18 passed。安全面干净：注册表 URL 全相对无外链注入、ITEMS/GROUPS script 上下文 inject() `</`→`<\/` 转义、github_url='' 防 env、_kb json 不发布、零凭据零新依赖。AGENTS.md 两处同步仍被受保护文件审批拦截（非阻断遗留，HG-SEC-106）；设计 v1.0 折叠文本未订正入文（可选，HG-SEC-107）；设计评审 2f748fe trail 缺失本次回填（HG-SEC-108）。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 3（HG-SEC-106..108，记录非阻断）：
+  - HG-SEC-106：AGENTS.md 两处同步（prompt 段 18→28 + 目录结构 prompts/ 行）被「受保护文件」审批拦截（dev/ops 均超时 deny）→ 遗留待用户批准后补 docs commit（与 CL007 HG-SEC-099 同型）
+  - HG-SEC-107：设计 v1.0 §5/§6/§7 未随折叠项订正入文（HG-SEC-100 修复建议原文为 §7 文本；对照 CL007 有 9c0cb1a 订正 commit）——实现侧注释/测试/SKILL.md 已全量承载，可选补 docs 订正
+  - HG-SEC-108：CL008 设计评审 commit 2f748fe 未同步 append review-log.md/.review-level.yaml（CL007 惯例三件套同 commit）→ 本审计 commit 一并回填设计评审 PASS 95/A 条目
+
+### Positives
+
+- 折叠项「折入即落实」：HG-SEC-100..105 六项全部有源码行号 + 回归测试 + 独立复跑证据，含 Namespace 全字段防 AttributeError/env 污染（test_09 kb 页扩展）与 append 序/注册表漂移的双重测试护栏（test_11）
+- 产物一致性强证据：提交 prompts/ 与独立生成 20 确定性文件 byte-identical（含 C 型 index.html——无 doc meta），kb/ 8 仅 meta 时间戳差，与幂等集 20 设计精确吻合
+- 门户渲染闭环：静态 DOM + Selenium 实跑双验证（5 tab 渲染、iframe 自动裸模式参数、doc-body 加载、双页零 JS 错误），「iframe 双 chrome」设计风险被模板机制完全化解并有实证
+- 契约零漂移：8/8 {skill}.md 逐字（镜像 strip 正则独立比对）+ json 信封 + all.md；旧 18 URL 原位；test_13 显式声明契约不变
+- 安全面干净：注册表零外链、script 上下文转义、github_url='' 防 env、_kb json Jekyll 不发布、containment 不扩大误删面
+- 测试纪律：13 用例统一 --dir 临时目录 + test_08 断言仓库 prompts/ 不被触碰；ops 独立核查 6 项与本次审计独立复跑全部吻合
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`docs@review: prompt 站点 v2 实现审计 (HTML-GEN-CL008)`）；仅 commit 不 push（本任务约束）
+- 报告: `documents/review/html-gen-prompts-site-v2-impl-audit-v1.0-20260902.md`
+
+---
