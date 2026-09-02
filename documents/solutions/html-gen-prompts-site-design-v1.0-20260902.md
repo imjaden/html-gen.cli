@@ -6,6 +6,8 @@
 > 影响: html-gen.py（prompt 子命令扩展）+ 新增 prompts/ 目录 + README.md/README.zh.md + AGENTS.md
 > 评审: PASS 85/A（2026-09-02, documents/review/html-gen-prompts-site-design-review-v1.0-20260902.md）;
 >       折叠项 HG-SEC-086..095 已订正入文（版本保持 v1.0，非阻断）
+> 实现审计: PASS 100/A（2026-09-02, documents/review/html-gen-prompts-site-impl-audit-v1.0-20260902.md）;
+>       记录项 HG-SEC-096..099（096 措辞 / 097 env 回归 / 098 --dir 守卫已落实; 099 AGENTS.md 待用户）
 
 ## 1. 背景与需求
 
@@ -85,9 +87,11 @@ html-gen prompt --site [--dir <path>]
 2. **内存构建全部产物内容**（8 md + 8 json + all.md 文本）。任一文件读失败 →
    fail-fast stderr + exit 1；此时零写盘（避免半成品目录）。
 3. **清理已知产物名**：仅删除 index.html / all.md / 8×{skill}.md / 8×{skill}.json
-   （共 18 个已知产物名），目录内其他文件一律保留——含 `--dir` 自由路径时的
-   containment（误传 ~/ 等不误删无关文件）【HG-SEC-088】；skill 被删除后其旧产物
-   名不在已知集 → 由本清理移除（幂等不残留）。
+   （共 18 个已知产物名，以**当前遍历到的 skills** 为准），目录内其他文件一律保留——含
+   `--dir` 自由路径时的 containment（误传 ~/ 等不误删无关文件）【HG-SEC-088】；
+   注意：若某 skill 被删除，其旧 {skill}.md/.json 不在 known 清理集 → 会残留，
+   由 git rm / 人工处理（containment 优先于自动清除）【HG-SEC-096 订正：原文字
+   「旧产物由本清理移除」与实现不符】。
 4. 写 8 个 {skill}.md、8 个 {skill}.json、all.md。
 5. 调 cmd_doc 渲染 index.html：构造 Namespace 显式传 input=all.md 路径、
    output=index 路径、title="html-gen Prompt 合集"、
@@ -135,7 +139,9 @@ references 文件按文件名 sorted glob（references/*.md），原文直读不
      正文的代码围栏内含 `# ` 注释行（html-gen 7 / html-gen-table 3 / test-speed-optimization 2），
      不得计入；实现复用 md_to_html 的围栏解析语义【HG-SEC-087】；
    - 正文余下原样（h2/h3 进入 doc TOC）；
-   - references 拼接同 6.1（置于该 skill 段末尾）。
+   - references 拼接同 6.1（置于该 skill 段末尾）；all.md 内 ref 段复用正文规则：
+     `## {stem}` 段标题已承载 → 剥离 reference 自身首个顶层 `# ` 标题（fence-aware），
+     保唯一顶层 h1；单篇 {skill}.md 保留 ref 原样（与 CLI 全文一致）【HG-SEC-096 记录】。
 
 ### 6.4 index.html
 
