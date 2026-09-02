@@ -768,14 +768,16 @@ prompt — 输出项目 skills 内容
   html-gen prompt <skill>        输出该 skill 摘要 + 章节
   html-gen prompt <skill> --brief  仅输出摘要 (不打印章节/全文)
   html-gen prompt <skill> --json  JSON 输出 (checkpoint 信封 {status,data,error})
-  html-gen prompt --site         生成 prompts/ 在线阅读站点 (18 文件)
+  html-gen prompt --site         生成 prompts/ 在线阅读站点 (28 文件)
   html-gen prompt --site --dir <path>  站点输出目录覆盖 (默认 仓库根/prompts/)
 
 说明:
   skills/ 每子目录一个 skill (含 SKILL.md), 支持 references/*.md 拼接。
   --site: 产物一律剥离 YAML frontmatter (GitHub Pages 原样服务, curl 可得纯 md /
-  json 信封 / all.md 全量; index.html 为 B 型 doc 合集阅读页)。--site 与
-  skill/--brief/--json 互斥。产物勿手改, 由 --site 重新生成。"""
+  json 信封 / all.md 全量; index.html 为 C 型 knowledge 门户 (5 tab: A 表格/B 文档/
+  C 知识库/D 幻灯片/通用 CLI; 纵向 指令 CLI/模板语法/使用案例), kb/{skill}.html
+  为 skill detail 页)。--site 与 skill/--brief/--json 互斥。产物勿手改,
+  由 --site 重新生成。"""
 
 HELP_DEMO = """\
 demo — demo 清单与详情
@@ -883,7 +885,7 @@ def main():
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
     pr.add_argument('--brief', action='store_true', help='仅输出摘要')
     pr.add_argument('--json', action='store_true', help='JSON 输出 (checkpoint 信封 {status,data,error})')
-    pr.add_argument('--site', action='store_true', help='生成 prompts/ 在线阅读站点 (18 文件)')
+    pr.add_argument('--site', action='store_true', help='生成 prompts/ 在线阅读站点 (28 文件: C 型门户 + kb detail)')
     pr.add_argument('--dir', help='站点输出目录覆盖 (默认 仓库根/prompts/)')
     pr.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
 
@@ -1005,11 +1007,113 @@ def cmd_prompt(args):
             print()
 
 
-def cmd_prompt_site(args):
-    """生成 prompts/ 在线阅读站点 (18 文件): index.html + all.md + 8×{skill}.md/.json.
+# ── prompt --site v2 门户注册表 (HTML-GEN-CL008, 设计 §4) ──
+# groups: 横向 5 tab; SKILL_TO_GROUP/GUIDE_MAP/CASE_MAP: _kb-data 条目 append 序
+# = SKILL_TO_GROUP → GUIDE_MAP → CASE_MAP (HG-SEC-102: layout-knowledge 侧栏按
+# 数据数组内 section 首现顺序渲染, 保证组内 指令 CLI → 模板语法 → 使用案例)。
 
-    HTML-GEN-CL007。流程: 内存全量构建(fail-fast, 零写盘) → 清理已知产物名
-    (HG-SEC-088 containment) → 写 8 md + 8 json + all.md → cmd_doc 渲染 index.html。
+SITE_GROUPS = [
+    {'key': 'table',     'label': 'A 表格',   'icon': '📊'},
+    {'key': 'doc',       'label': 'B 文档',   'icon': '📄'},
+    {'key': 'knowledge', 'label': 'C 知识库', 'icon': '📚'},
+    {'key': 'slide',     'label': 'D 幻灯片', 'icon': '🎞️'},
+    {'key': 'cli',       'label': '通用 CLI', 'icon': '🛠️'},
+]
+
+SKILL_TO_GROUP = {
+    'html-gen-table':          ('table',     '指令 CLI'),
+    'html-gen-doc':            ('doc',       '指令 CLI'),
+    'html-gen-knowledge':      ('knowledge', '指令 CLI'),
+    'html-gen-slide':          ('slide',     '指令 CLI'),
+    'html-gen':                ('cli',       '指令 CLI'),
+    'html-gen-cli-spec':       ('cli',       '指令 CLI'),
+    'pages-index':             ('cli',       '页面规范'),
+    'test-speed-optimization': ('cli',       '测试规范'),
+}
+
+# demos/ 指南页 (badge 指南; file 相对 demos/, group/section 门户归属, desc 一句)
+GUIDE_MAP = [
+    {'file': 'table-guide.html',      'group': 'table',     'section': '模板语法',
+     'title': 'A 型 · 数据表格方案',  'desc': 'table 模板方案指南 (列配置/交互/案例)'},
+    {'file': 'doc-guide.html',        'group': 'doc',       'section': '模板语法',
+     'title': 'B 型 · 文档阅读方案',  'desc': 'doc 模板方案指南 (Markdown/阅读)'},
+    {'file': 'knowledge-guide.html',  'group': 'knowledge', 'section': '模板语法',
+     'title': 'C 型 · 知识库方案',    'desc': 'knowledge 模板方案指南 (条目/分组)'},
+    {'file': 'slide-guide.html',      'group': 'slide',     'section': '模板语法',
+     'title': 'D 型 · 幻灯片方案',    'desc': 'slide 模板方案指南 (分页/演示)'},
+    {'file': 'usage-guide.html',      'group': 'cli',       'section': '指令 CLI',
+     'title': 'CLI 使用说明',         'desc': 'html-gen CLI 命令总览'},
+    {'file': 'markdown-spec.html',    'group': 'doc',       'section': '模板语法',
+     'title': 'Markdown 语法规范',    'desc': 'md_to_html 支持的语法子集 (随 doc 组)'},
+]
+
+# demos/ 使用案例 (badge 案例; cli 组无案例维, G1b-1)
+CASE_MAP = [
+    # table
+    {'file': 'countries-table.html',          'group': 'table',     'section': '使用案例',
+     'title': '全球国家速查表',               'desc': '全球 195 国速查表 (A 型)'},
+    {'file': 'provinces-table.html',          'group': 'table',     'section': '使用案例',
+     'title': '中国省份速查表',               'desc': '中国 34 省速查表 (A 型)'},
+    {'file': 'table-features-demo.html',      'group': 'table',     'section': '使用案例',
+     'title': '表格功能全演示',               'desc': '表格功能全演示 (A 型)'},
+    {'file': 'hermes-profile-skills-list.html', 'group': 'table',   'section': '使用案例',
+     'title': 'Hermes Skills 列表',           'desc': 'Hermes Skills 列表 (A 型)'},
+    # doc (内容子页)
+    {'file': 'chaitin/company-profile.html',  'group': 'doc',       'section': '使用案例',
+     'title': '长亭公司档案',                 'desc': '长亭公司档案 (B 型内容页)'},
+    {'file': 'cloudwise/company-profile.html', 'group': 'doc',      'section': '使用案例',
+     'title': '云智慧公司档案',               'desc': '云智慧公司档案 (B 型内容页)'},
+    {'file': 'chaitin/business-model.html',   'group': 'doc',       'section': '使用案例',
+     'title': '长亭商业模式',                 'desc': '长亭商业模式 (B 型内容页)'},
+    # knowledge
+    {'file': 'drama-knowledge.html',          'group': 'knowledge', 'section': '使用案例',
+     'title': '以剧读史知识库',               'desc': '以剧读史影视历史知识库 (C 型)'},
+    {'file': 'chaitin-business-analysis.html', 'group': 'knowledge', 'section': '使用案例',
+     'title': '长亭商业分析',                 'desc': '长亭科技商业分析知识库 (C 型)'},
+    {'file': 'cloudwise-business-analysis.html', 'group': 'knowledge', 'section': '使用案例',
+     'title': '云智慧商业分析',               'desc': '云智慧商业分析知识库 (C 型)'},
+    {'file': 'knowledge-demo.html',           'group': 'knowledge', 'section': '使用案例',
+     'title': '知识库功能演示',               'desc': '知识库功能演示 (C 型)'},
+    # slide
+    {'file': 'slide-demo.html',               'group': 'slide',     'section': '使用案例',
+     'title': '幻灯片演示',                   'desc': 'D 型幻灯片演示'},
+]
+
+
+def _site_kb_items(skills):
+    """构建 _kb-data.json 条目列表 (kind ∈ skill/guide/case).
+
+    desc: skill = SKILL.md frontmatter description 首行 (HG-SEC-095);
+    guide/case = 注册表一句。url 为门户相对路径: kb/{skill}.html (detail) 或
+    ../demos/*.html (guide/case)。全条目带 url → layout-knowledge url 优先,
+    desc 不参与门户 UI 渲染, 仅注册表元数据 (HG-SEC-101)。"""
+    by_name = {s['name']: s for s in skills}
+    items = []
+    for name, (group, section) in SKILL_TO_GROUP.items():
+        s = by_name.get(name)
+        if not s:
+            continue
+        items.append({'title': name, 'group': group, 'section': section,
+                      'badge': 'Prompt', 'desc': _skill_desc(s['path']),
+                      'url': f'kb/{name}.html', 'kind': 'skill'})
+    for g in GUIDE_MAP:
+        items.append({'title': g['title'], 'group': g['group'], 'section': g['section'],
+                      'badge': '指南', 'desc': g['desc'],
+                      'url': '../demos/' + g['file'], 'kind': 'guide'})
+    for c in CASE_MAP:
+        items.append({'title': c['title'], 'group': c['group'], 'section': c['section'],
+                      'badge': '案例', 'desc': c['desc'],
+                      'url': '../demos/' + c['file'], 'kind': 'case'})
+    return items
+
+
+def cmd_prompt_site(args):
+    """生成 prompts/ 在线阅读站点 (28 文件): C 型知识库门户 + kb/{skill}.html ×8.
+
+    HTML-GEN-CL008 (v2)。流程: 内存全量构建(fail-fast, 零写盘) → 清理已知产物名
+    (顶层 20 + kb/ 8, HG-SEC-088 containment) → 写 16 md/json + all.md +
+    _kb-groups/_kb-data json → cmd_doc 渲染 8 个 kb/{skill}.html (stdout 抑制)
+    → cmd_knowledge 渲染 index.html 门户 (stdout 抑制)。
     产物一律剥离 frontmatter (Jekyll 原样服务依据, 设计 §3/§6)。
     """
     import json as _json
@@ -1071,17 +1175,25 @@ def cmd_prompt_site(args):
         print(f"❌ 读取失败: {e}", file=sys.stderr)
         sys.exit(1)
 
-    # ── 清理已知产物名 (HG-SEC-088: 仅删 18 个已知名, 其他文件保留; --dir 任意路径 containment) ──
-    known = {'index.html', 'all.md'}
+    # ── 清理已知产物名 (HG-SEC-088: 仅删已知产物名, 其他文件保留; containment) ──
+    # 顶层 20 = index.html + all.md + _kb-groups/_kb-data json + 16 md/json
+    top_known = {'index.html', 'all.md', '_kb-groups.json', '_kb-data.json'}
     for s in skills:
-        known.add(f'{s["name"]}.md')
-        known.add(f'{s["name"]}.json')
+        top_known.add(f'{s["name"]}.md')
+        top_known.add(f'{s["name"]}.json')
+    # kb/ 8 个 detail (顶层 iterdir 扫不到子目录 → 对 kb/ 内已知名再循环, HG-SEC-103)
+    kb_known = {f'{s["name"]}.html' for s in skills}
     out_dir.mkdir(parents=True, exist_ok=True)
     for f in out_dir.iterdir():
-        if f.is_file() and f.name in known:
+        if f.is_file() and f.name in top_known:
+            f.unlink()
+    kb_dir = out_dir / 'kb'
+    kb_dir.mkdir(parents=True, exist_ok=True)   # cmd_doc/cmd_knowledge 均不建父目录
+    for f in kb_dir.iterdir():
+        if f.is_file() and f.name in kb_known:
             f.unlink()
 
-    # ── 写 8 md + 8 json + all.md ──
+    # ── 写 16 md/json + all.md + _kb-groups/_kb-data json ──
     for s in skills:
         (out_dir / f'{s["name"]}.md').write_text(md_texts[s['name']], encoding='utf-8')
         (out_dir / f'{s["name"]}.json').write_text(
@@ -1089,24 +1201,49 @@ def cmd_prompt_site(args):
             encoding='utf-8')
     all_md = _site_all_md(skills, site_sections)
     (out_dir / 'all.md').write_text(all_md, encoding='utf-8')
+    (out_dir / '_kb-groups.json').write_text(
+        _json.dumps(SITE_GROUPS, ensure_ascii=False, indent=2) + '\n',
+        encoding='utf-8')
+    (out_dir / '_kb-data.json').write_text(
+        _json.dumps(_site_kb_items(skills), ensure_ascii=False, indent=2) + '\n',
+        encoding='utf-8')
 
-    # ── index.html: cmd_doc 渲染 all.md (B 型 doc) ──
-    a = types.SimpleNamespace(
-        input=str(out_dir / 'all.md'),
+    # ── kb/{skill}.html ×8: cmd_doc 渲染 detail (Namespace 全字段 HG-SEC-100) ──
+    for s in skills:
+        a = types.SimpleNamespace(
+            input=str(out_dir / f'{s["name"]}.md'),
+            output=str(kb_dir / f'{s["name"]}.html'),
+            title=s['name'],
+            subtitle=None,
+            quiet=True,
+            github_url='',                                       # 空串: 防 env 覆盖 (HG-SEC-090)
+            home_url='',                                         # detail 无首页入口
+        )
+        with contextlib.redirect_stdout(io.StringIO()):          # 抑制 cmd_doc 内部输出
+            cmd_doc(a)
+
+    # ── index.html: cmd_knowledge 渲染 C 型门户 (Namespace 全字段 HG-SEC-100) ──
+    p = types.SimpleNamespace(
+        data=str(out_dir / '_kb-data.json'),
+        groups=str(out_dir / '_kb-groups.json'),
         output=str(out_dir / 'index.html'),
-        title='html-gen Prompt 合集',
+        title='html-gen Prompt 站点',
+        welcome='从上方类目选择: 每模板维度下 指令 CLI / 模板语法 / 使用案例',
         subtitle=None,
         quiet=True,
-        github_url='',                                       # HG-SEC-090: 空串禁用防 env 覆盖
-        home_url='https://html-gen.cli.jaden.tech/',         # demo 首页入口 (与 cmd_demo 缺省一致)
+        github_url='',
+        home_url='https://html-gen.cli.jaden.tech/',
     )
-    with contextlib.redirect_stdout(io.StringIO()):          # 抑制 cmd_doc 内部输出
-        cmd_doc(a)
+    with contextlib.redirect_stdout(io.StringIO()):              # HG-SEC-103: quiet 非「仅打印路径」
+        cmd_knowledge(p)
 
+    # 统计「28 文件」与清理集解耦 (HG-SEC-103): 每 skill 3 文件 (md/json/kb) + 顶层 4
+    n_total = len(skills) * 3 + 4
     if getattr(args, 'quiet', False):
         print(str(out_dir))
     else:
-        print(f"[站点] {out_dir} 已生成: {len(skills)} skills ({len(known)} 文件)")
+        print(f"[站点] {out_dir} 已生成: {len(skills)} skills "
+              f"({n_total} 文件: 门户 + kb×{len(skills)} + md/json×{len(skills) * 2} + all.md)")
 
 
 def _strip_leading_h1(text):

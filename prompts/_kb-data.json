@@ -1,0 +1,236 @@
+[
+  {
+    "title": "html-gen-table",
+    "group": "table",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "Use when building data table HTML pages with html-gen. Covers column config, actions, tabs, sorting, CSV export, and row selection for the A-type layout-table template.",
+    "url": "kb/html-gen-table.html",
+    "kind": "skill"
+  },
+  {
+    "title": "html-gen-doc",
+    "group": "doc",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "html-gen B 型文档模板规范。使用 html-gen doc 命令将 Markdown 转为自包含 HTML 文档页时参考。",
+    "url": "kb/html-gen-doc.html",
+    "kind": "skill"
+  },
+  {
+    "title": "html-gen-knowledge",
+    "group": "knowledge",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "html-gen C 型知识库模板规范。使用 html-gen knowledge 命令生成分 tab 侧栏的知识库页面时参考。",
+    "url": "kb/html-gen-knowledge.html",
+    "kind": "skill"
+  },
+  {
+    "title": "html-gen-slide",
+    "group": "slide",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "Use when generating slide-style presentation HTML from Markdown with",
+    "url": "kb/html-gen-slide.html",
+    "kind": "skill"
+  },
+  {
+    "title": "html-gen",
+    "group": "cli",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "Use when asked to generate HTML from markdown or JSON using html-gen, create data table pages, knowledge bases, slide presentations, or document pages. Use when user references html-gen CLI or wants markdown converted to styled HTML.",
+    "url": "kb/html-gen.html",
+    "kind": "skill"
+  },
+  {
+    "title": "html-gen-cli-spec",
+    "group": "cli",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "html-gen CLI 参数惯例、子指令表、--json 统一信封（checkpoint 协议）与 skills 同步约定。开发/审计 html-gen CLI 时参考。",
+    "url": "kb/html-gen-cli-spec.html",
+    "kind": "skill"
+  },
+  {
+    "title": "pages-index",
+    "group": "cli",
+    "section": "页面规范",
+    "badge": "Prompt",
+    "desc": "Use when building or optimizing a GitHub Pages project landing/index page. Hero + product-matrix layout, light theme, copy buttons, dynamic two-screen hero, github-corner theming, dual-source sync.",
+    "url": "kb/pages-index.html",
+    "kind": "skill"
+  },
+  {
+    "title": "test-speed-optimization",
+    "group": "cli",
+    "section": "测试规范",
+    "badge": "Prompt",
+    "desc": "html-gen Selenium 测试套件提速。测试执行慢时用 xdist 并行 + sleep 调低 + WebDriverWait 三方案优化。",
+    "url": "kb/test-speed-optimization.html",
+    "kind": "skill"
+  },
+  {
+    "title": "A 型 · 数据表格方案",
+    "group": "table",
+    "section": "模板语法",
+    "badge": "指南",
+    "desc": "table 模板方案指南 (列配置/交互/案例)",
+    "url": "../demos/table-guide.html",
+    "kind": "guide"
+  },
+  {
+    "title": "B 型 · 文档阅读方案",
+    "group": "doc",
+    "section": "模板语法",
+    "badge": "指南",
+    "desc": "doc 模板方案指南 (Markdown/阅读)",
+    "url": "../demos/doc-guide.html",
+    "kind": "guide"
+  },
+  {
+    "title": "C 型 · 知识库方案",
+    "group": "knowledge",
+    "section": "模板语法",
+    "badge": "指南",
+    "desc": "knowledge 模板方案指南 (条目/分组)",
+    "url": "../demos/knowledge-guide.html",
+    "kind": "guide"
+  },
+  {
+    "title": "D 型 · 幻灯片方案",
+    "group": "slide",
+    "section": "模板语法",
+    "badge": "指南",
+    "desc": "slide 模板方案指南 (分页/演示)",
+    "url": "../demos/slide-guide.html",
+    "kind": "guide"
+  },
+  {
+    "title": "CLI 使用说明",
+    "group": "cli",
+    "section": "指令 CLI",
+    "badge": "指南",
+    "desc": "html-gen CLI 命令总览",
+    "url": "../demos/usage-guide.html",
+    "kind": "guide"
+  },
+  {
+    "title": "Markdown 语法规范",
+    "group": "doc",
+    "section": "模板语法",
+    "badge": "指南",
+    "desc": "md_to_html 支持的语法子集 (随 doc 组)",
+    "url": "../demos/markdown-spec.html",
+    "kind": "guide"
+  },
+  {
+    "title": "全球国家速查表",
+    "group": "table",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "全球 195 国速查表 (A 型)",
+    "url": "../demos/countries-table.html",
+    "kind": "case"
+  },
+  {
+    "title": "中国省份速查表",
+    "group": "table",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "中国 34 省速查表 (A 型)",
+    "url": "../demos/provinces-table.html",
+    "kind": "case"
+  },
+  {
+    "title": "表格功能全演示",
+    "group": "table",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "表格功能全演示 (A 型)",
+    "url": "../demos/table-features-demo.html",
+    "kind": "case"
+  },
+  {
+    "title": "Hermes Skills 列表",
+    "group": "table",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "Hermes Skills 列表 (A 型)",
+    "url": "../demos/hermes-profile-skills-list.html",
+    "kind": "case"
+  },
+  {
+    "title": "长亭公司档案",
+    "group": "doc",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "长亭公司档案 (B 型内容页)",
+    "url": "../demos/chaitin/company-profile.html",
+    "kind": "case"
+  },
+  {
+    "title": "云智慧公司档案",
+    "group": "doc",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "云智慧公司档案 (B 型内容页)",
+    "url": "../demos/cloudwise/company-profile.html",
+    "kind": "case"
+  },
+  {
+    "title": "长亭商业模式",
+    "group": "doc",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "长亭商业模式 (B 型内容页)",
+    "url": "../demos/chaitin/business-model.html",
+    "kind": "case"
+  },
+  {
+    "title": "以剧读史知识库",
+    "group": "knowledge",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "以剧读史影视历史知识库 (C 型)",
+    "url": "../demos/drama-knowledge.html",
+    "kind": "case"
+  },
+  {
+    "title": "长亭商业分析",
+    "group": "knowledge",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "长亭科技商业分析知识库 (C 型)",
+    "url": "../demos/chaitin-business-analysis.html",
+    "kind": "case"
+  },
+  {
+    "title": "云智慧商业分析",
+    "group": "knowledge",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "云智慧商业分析知识库 (C 型)",
+    "url": "../demos/cloudwise-business-analysis.html",
+    "kind": "case"
+  },
+  {
+    "title": "知识库功能演示",
+    "group": "knowledge",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "知识库功能演示 (C 型)",
+    "url": "../demos/knowledge-demo.html",
+    "kind": "case"
+  },
+  {
+    "title": "幻灯片演示",
+    "group": "slide",
+    "section": "使用案例",
+    "badge": "案例",
+    "desc": "D 型幻灯片演示",
+    "url": "../demos/slide-demo.html",
+    "kind": "case"
+  }
+]

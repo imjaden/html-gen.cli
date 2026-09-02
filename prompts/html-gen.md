@@ -38,6 +38,36 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 四渲染子命令通用参数：`--github-url <url>`（右上角 GitHub corner，默认不带）、`--home-url <url>`（demo 首页入口）、`--favicon <url>`（favicon 图标，默认注入 `DEFAULT_FAVICON`，显式空串禁用）、`--quiet`（仅打印路径）；环境变量兜底 `HTML_GEN_GITHUB_URL` / `HTML_GEN_HOME_URL` / `HTML_GEN_FAVICON`（CLI 参数优先）。
 
+## prompt — 项目 skills 输出
+
+skills/ 每子目录一个 skill（含 SKILL.md），可拼接 references/*.md：
+
+```shell
+html-gen prompt                    # 列出全部 skill (名称 + 摘要)
+html-gen prompt <skill>            # 输出该 skill 摘要 + 章节
+html-gen prompt <skill> --brief    # 仅摘要
+html-gen prompt <skill> --json     # JSON 信封 {status,data,error}
+html-gen prompt --site             # 生成 prompts/ 在线阅读站点 (28 文件)
+html-gen prompt --site --dir <path> # 站点输出目录覆盖 (默认 仓库根/prompts/)
+```
+
+`--site` 产物（勿手改，由生成器产出；一律剥离 YAML frontmatter）：
+- `prompts/index.html` — C 型 knowledge 门户（5 tab：A 表格 / B 文档 / C 知识库 / D 幻灯片 / 通用 CLI；纵向 = 指令 CLI / 模板语法 / 使用案例；guide/case 以 iframe 加载 demos/ 页）
+- `prompts/kb/{skill}.html` ×8 — 每 skill 的 doc detail 页
+- `prompts/{skill}.md` / `.json` ×16 + `prompts/all.md` — curl 契约文件
+- `prompts/_kb-groups.json` / `_kb-data.json` — 门户运行时数据（Jekyll `_` 前缀不发布，已内联 index.html）
+
+curl 契约 URL（GitHub Pages 域）：
+```shell
+curl -s https://html-gen.cli.jaden.tech/prompts/              # 门户
+curl -s https://html-gen.cli.jaden.tech/prompts/kb/html-gen.html
+curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.md    # 单 skill 纯 md
+curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.json  # JSON 信封
+curl -s https://html-gen.cli.jaden.tech/prompts/all.md         # 全量合集
+```
+
+`--site` 与 `skill` / `--brief` / `--json` 互斥。
+
 ## 支持的 Markdown 语法
 
 `md_to_html()` 内置渲染器支持以下语法子集。**AI 生成 Markdown 时必须遵守此规范**：
@@ -267,6 +297,7 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 
 
 ## 变更记录
+- v2.5.0 (2026-09-02): prompt 子命令段补 `--site`（prompts/ 在线阅读站点 28 文件: C 型 knowledge 门户 5 tab + kb/{skill}.html detail + curl 契约）
 - v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明
 - v2.3.0 (2026-08-06): 新增 frontmatter 自动剥离; 修复 doc/slide 侧边栏 sticky 失效
 - v2.2.0 (2026-08-06): 新增 quickFilter/freeze 列属性、datetime/pills 列类型、clickModes 选项
