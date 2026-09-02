@@ -1545,3 +1545,40 @@ v1.2 三态增量模型（new_items/updates/skipped）是 v1.1 additive 语义�
 - 报告: `documents/review/html-gen-prompts-site-design-review-v1.0-20260902.md`
 
 ---
+
+## 2026-09-02 — html-gen prompt 在线阅读站点 实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: html-gen prompt --site 在线阅读站点（prompts/ 静态站点 18 产物：index.html + all.md + 8×{skill}.md/.json，HTML-GEN-CL007 kind=independent）；feat d4ec017；commit 范围 fe2ee22..d4ec017（设计 v1.0 → 订正 9c0cb1a → 评审/实施 prompt cd6c724 → feat）
+- **Verdict**: 🟢 **PASS 100/100（A）** — 与设计 §5/§6/§7 逐项一致，10 项折叠（HG-SEC-086..095）全部落实，2 个 dev 实施决策合理且零回归，产物 17 确定性文件与提交逐字节一致，无 🔴/🟡
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-086..095（✅ closed 本次实现验证）+ HG-SEC-096..099（🟢 records 非阻断）
+- **Findings**: 4 🟢 / 0 🟡 / 0 🔴
+
+### Summary
+
+实现与设计基线逐条吻合：cmd_prompt 顶部互斥校验（--site × skill/brief/json → stderr+exit1）、cmd_prompt_site 流程（内存全量构建 fail-fast 零写盘 → 仅删 18 个已知产物名 containment → 写 8 md + 8 json + all.md → cmd_doc 渲染 index.html）全部按 §5 落地，源码行号 1008-1130。10 项设计折叠逐条闭合有据：HG-SEC-086（test_06 幂等限定 17 确定性文件 + index 结构断言）、087（_fence_top_h1_indices 复用 md_to_html 围栏语义 + test_04 fence-aware 计数==1）、088（known-name 清理 + test_06 无关文件保留）、090（SimpleNamespace github_url='' 防 env 覆盖 + test_05 元素级零 corner 断言）、091（test_02 slide 2 refs 显式断言）、094（HELP_PROMPT 771-772 补 --site）。两个 dev 决策评估：a) all.md 内 references 首 h1 剥离合理——{skill}.md 保留 ref 原 h1 与 CLI 逐字一致（test_02 全 8 skill 通过），§6.1「原文直读」契约未破坏，all.md 若保留 3 个 ref 自身 `# ` 将违反 §6.3 唯一顶层 h1 规则；b) corner_args 语义改「None→env 兜底；显式 ''→禁用」零回归——4 个消费点（doc/slide/table/knowledge）+ demo rebuild（github_url=None）env 行为不变，差异仅在「显式空串 + env 已设」场景从 env 胜出变为禁用，与 favicon HG-SEC-073 对齐。回归面：test_prompt_cmd 5 + corner_privacy 6 + test_prompt_site 8 专项 19 passed；全量 -n 4 复跑 263 passed（首跑 test_videos 4 failed 为并行瞬时 flake：单线程 8 passed、并行重跑即恢复，与 CL007 无涉）。产物一致性独立复跑：提交 prompts/ 与当前生成器输出 17 文件 byte-identical，index.html 仅 meta 时间戳行差（HG-SEC-086 已知预期）。README 双份 + HELP_PROMPT 同步完成；AGENTS.md 两处同步被受保护文件审批拦截（非阻断遗留）。凭据扫描零命中，内容源受控（skills/），渲染走既有 md_to_html 转义管线，无注入面。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 4（HG-SEC-096..099，记录非阻断）：
+  - HG-SEC-096：设计 §5 步3「旧产物由本清理移除」/§10「生成前清空」文字与 known-name 清理实现不符（被删 skill 旧产物不在 known 集 → 实际残留）；§6.3 未注明 all.md refs 首 h1 剥离 → 建议回写设计文本，不改代码亦可接受
+  - HG-SEC-097：corner_args「显式 ''→禁用 env」新语义缺 env-set 回归测试 pin（test_05 未设 HTML_GEN_GITHUB_URL，or-chain 回归不红）；--github-url/--home-url argparse help 未注「显式空串禁用」（favicon help 已注）
+  - HG-SEC-098：--dir 空串解析为 `.`（cwd），仓库根 index.html（落地页）在 known 集 → 建议空值/仓库根拒绝
+  - HG-SEC-099：AGENTS.md 两处同步（prompt 段 --site / 目录结构 prompts/）+ 测试计数 stale，受保护文件审批拦截 → 非阻断遗留待用户批准后补 commit
+
+### Positives
+
+- 折叠项「折入即落实」：HG-SEC-086..095 十项全部有源码行号 + 回归测试 + 独立复跑证据，含 086 幂等口径与 088 containment 的测试化护栏
+- 产物一致性强证据：17 确定性文件与提交 byte-identical（非测试自证，独立 --dir 生成 + cmp 比对），index 差异仅 meta 时间戳，与设计预期精确吻合
+- 安全面干净：清理 containment、fail-fast 零写盘、内容源受控、转义渲染、零凭据零新依赖；json/md 产物键值逐字验证（test_02/03 全 8 skill）
+- 回归零扰动：corner_args 语义变更经全调用点核查零回归；test_prompt_cmd 5 例未动即证明 prompt 既有行为完全不变
+- 测试纪律：test_prompt_site 8 用例统一 --dir 临时目录 + test_08 断言仓库 prompts/ 不被触碰，无自证循环
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`docs@review: prompt 在线阅读站点 实现审计 (HTML-GEN-CL007)`）；仅 commit 不 push（AGENTS.md 约定 + 本任务约束）
+- 报告: `documents/review/html-gen-prompts-site-impl-audit-v1.0-20260902.md`
+
+---
