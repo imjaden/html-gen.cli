@@ -54,6 +54,7 @@ html-gen demo --rebuild
 
 # prompt — 项目 skills 输出
 html-gen prompt <skill> [--brief] [--json]
+html-gen prompt --site [--dir <path>]   # 生成 prompts/ 在线阅读站点 (18 文件; --site 与 skill/--brief/--json 互斥; 产物勿手改)
 
 # help — 6 主题（doc/slide/table/knowledge/prompt/demo）
 html-gen help demo
@@ -298,6 +299,7 @@ html-gen.cli/
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json, _cloudwise-news.json 公众号文章库）
 ├── tests/                      # Selenium + 回归测试 (247 tests)
+├── prompts/                    # prompt --site 生成物（在线阅读站点: index.html 合集 + {skill}.md/.json + all.md; 勿手改, 由 --site 重新生成）
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
     │   ├── html-gen-table/SKILL.md
