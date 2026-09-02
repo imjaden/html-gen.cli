@@ -1,0 +1,9 @@
+{
+  "status": "ok",
+  "error": "",
+  "data": {
+    "name": "html-gen-knowledge",
+    "content": "\n# html-gen C 型知识库规范\n\n## 概述\nC 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构，以 iframe 或内联 HTML 展示内容。专为多主题知识索引场景设计。\n\n## 何时使用\n- 多主题知识索引（如以剧读史、技术文档索引）\n- 需要 tab 切换 + 侧栏导航的知识库\n- section 与 item 一对一时可跳过 item 行直接点击 section 标题\n\n## CLI 用法\n\n```\nhtml-gen knowledge -d data.json [-g groups.json] [--title \"标题\"] [--welcome \"欢迎语\"] [-o kb.html]\n```\n\n## 数据格式\n\n```json\n[\n  {\"title\": \"条目名称\", \"group\": \"所属类目\", \"section\": \"子分类\",\n   \"url\": \"detail.html\", \"desc\": \"<p>内联 HTML</p>\", \"badge\": \"标记\"}\n]\n```\n\n- `title` 必填, `group` 必填, `section` 可选\n- `url` 与 `desc` 二选一 (iframe vs 内联渲染)\n- `badge` 可选 (自定义标记)\n- title 与 section 同名时自动跳过 item 行 (K2 rule)\n- 输出目标: 结构化 dict 顶层可带 `\"output\"`（仅 data 文件识别，groups 文件忽略）；优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)\n\n## groups 格式\n\n```json\n[{\"key\": \"类目key\", \"label\": \"显示名\", \"icon\": \"🏛️\"}]\n```\n\n## 模板特性\n- 顶部横向标签栏 (按 group 分组)\n- 左侧 section-as-menu (section 标题可点击跳转)\n- selectItem 双参数 (group, title) 支持跨组同名\n- 侧边栏搜索 (150ms debounce, ≥2 字符过滤)\n- 折叠/展开侧边栏 (`[` 快捷键, localStorage)\n- 双内容模式 (iframe / 内联 HTML)\n- 空状态欢迎面板\n- localStorage 状态恢复 (group + item)\n\n## 注意事项\n- iframe 内容必须与知识库页面同源\n- 单条 section (title===section && count===1) 自动跳过 kw-item 渲染\n- Selenium headless 测试: iframe 内元素需 `driver.switch_to.frame()` 切换\n\n## 变更记录\n- v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md\n",
+    "references": {}
+  }
+}

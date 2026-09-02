@@ -96,9 +96,16 @@ def home_link_html(url):
 
 
 def corner_args(args):
-    """--github-url/--home-url 入参 + env 兜底 (CLI 优先; 默认空 = 隐私不带)."""
-    gh = getattr(args, 'github_url', None) or os.environ.get('HTML_GEN_GITHUB_URL', '')
-    home = getattr(args, 'home_url', None) or os.environ.get('HTML_GEN_HOME_URL', '')
+    """--github-url/--home-url 入参 + env 兜底 (CLI 优先; 显式空串禁用, 同 favicon HG-SEC-073).
+
+    None(未传) → env 兜底; 显式 '' → 禁用(不落 env) — cmd_prompt_site 直调传空串防
+    HTML_GEN_GITHUB_URL 环境覆盖 (HG-SEC-090)."""
+    gh = getattr(args, 'github_url', None)
+    if gh is None:
+        gh = os.environ.get('HTML_GEN_GITHUB_URL', '')
+    home = getattr(args, 'home_url', None)
+    if home is None:
+        home = os.environ.get('HTML_GEN_HOME_URL', '')
     return (github_corner_html(gh) if gh else ''), (home_link_html(home) if home else '')
 
 
@@ -256,6 +263,45 @@ def strip_frontmatter(text):
         if m:
             return text[m.end():], m.group(0)
     return text, ''
+
+
+def _skill_desc(skill_path):
+    """读取 SKILL.md frontmatter description 首行 (缺失返回 '')."""
+    try:
+        with open(skill_path) as _f:
+            for _line in _f:
+                if _line.startswith('description:'):
+                    return _line.split(':', 1)[1].strip()
+    except Exception:
+        pass
+    return ''
+
+
+RE_FENCE = re.compile(r'^(```+)(.*)$')
+
+
+def _fence_top_h1_indices(lines):
+    """fence-aware: 返回顶层(围栏外) `# ` 标题行索引 (复用 md_to_html 围栏解析语义, HG-SEC-087).
+
+    3 个 skill 正文的代码围栏内含 `# ` 注释行 (html-gen 7 / html-gen-table 3 /
+    test-speed-optimization 2)，不得计入——删除/h1 计数均须 fence-aware。
+    """
+    idxs, in_code, fence_len = [], False, 0
+    for i, line in enumerate(lines):
+        m = RE_FENCE.match(line)
+        if m:
+            ticks, rest = m.group(1), m.group(2).strip()
+            num = len(ticks)
+            if in_code:
+                # 闭合: 同/更多 backticks 且行内无附加文本
+                if num >= fence_len and not rest:
+                    in_code, fence_len = False, 0
+            else:
+                in_code, fence_len = True, num
+            continue
+        if not in_code and line.startswith('# '):
+            idxs.append(i)
+    return idxs
 
 
 def _md_escape(text):
@@ -722,9 +768,14 @@ prompt — 输出项目 skills 内容
   html-gen prompt <skill>        输出该 skill 摘要 + 章节
   html-gen prompt <skill> --brief  仅输出摘要 (不打印章节/全文)
   html-gen prompt <skill> --json  JSON 输出 (checkpoint 信封 {status,data,error})
+  html-gen prompt --site         生成 prompts/ 在线阅读站点 (18 文件)
+  html-gen prompt --site --dir <path>  站点输出目录覆盖 (默认 仓库根/prompts/)
 
 说明:
-  skills/ 每子目录一个 skill (含 SKILL.md), 支持 references/*.md 拼接。"""
+  skills/ 每子目录一个 skill (含 SKILL.md), 支持 references/*.md 拼接。
+  --site: 产物一律剥离 YAML frontmatter (GitHub Pages 原样服务, curl 可得纯 md /
+  json 信封 / all.md 全量; index.html 为 B 型 doc 合集阅读页)。--site 与
+  skill/--brief/--json 互斥。产物勿手改, 由 --site 重新生成。"""
 
 HELP_DEMO = """\
 demo — demo 清单与详情
@@ -828,10 +879,13 @@ def main():
     k.add_argument('--home-url', help='demo 首页入口链接 (默认不带; env: HTML_GEN_HOME_URL)')
     k.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
 
-    pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>)')
+    pr = sub.add_parser('prompt', help='输出项目 skills (html-gen prompt <skill>; --site 生成在线阅读站点)')
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
     pr.add_argument('--brief', action='store_true', help='仅输出摘要')
     pr.add_argument('--json', action='store_true', help='JSON 输出 (checkpoint 信封 {status,data,error})')
+    pr.add_argument('--site', action='store_true', help='生成 prompts/ 在线阅读站点 (18 文件)')
+    pr.add_argument('--dir', help='站点输出目录覆盖 (默认 仓库根/prompts/)')
+    pr.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
 
     dm = sub.add_parser('demo', help='demo 列表与详情 (html-gen demo list|<name>)')
     dm.add_argument('name', nargs='?', help='demo 名称 (可选; 缺省=list)')
@@ -848,21 +902,20 @@ def main():
 
 def cmd_prompt(args):
     """输出项目 skills prompt 内容."""
+    # HTML-GEN-CL007: --site 生成 prompts/ 在线阅读站点 (互斥校验 → cmd_prompt_site)
+    if getattr(args, 'site', False):
+        if args.skill or args.brief or args.json:
+            print('❌ --site 与 skill/--brief/--json 互斥（--site 独立生成 prompts/ 站点）',
+                  file=sys.stderr)
+            sys.exit(1)
+        cmd_prompt_site(args)
+        return
+
     import subprocess as _sp
     import json as _json
     SKILLS_DIR = Path(__file__).resolve().parent / 'skills'
     if not SKILLS_DIR.is_dir():
         print("❌ skills/ 目录不存在", file=sys.stderr); sys.exit(1)
-
-    def _skill_desc(skill_path):
-        try:
-            with open(skill_path) as _f:
-                for _line in _f:
-                    if _line.startswith('description:'):
-                        return _line.split(':', 1)[1].strip()
-        except Exception:
-            pass
-        return ''
 
     # 收集所有 skill
     skills = []
@@ -950,6 +1003,131 @@ def cmd_prompt(args):
             print(f'## {r.stem}')
             print(r.read_text(encoding='utf-8'))
             print()
+
+
+def cmd_prompt_site(args):
+    """生成 prompts/ 在线阅读站点 (18 文件): index.html + all.md + 8×{skill}.md/.json.
+
+    HTML-GEN-CL007。流程: 内存全量构建(fail-fast, 零写盘) → 清理已知产物名
+    (HG-SEC-088 containment) → 写 8 md + 8 json + all.md → cmd_doc 渲染 index.html。
+    产物一律剥离 frontmatter (Jekyll 原样服务依据, 设计 §3/§6)。
+    """
+    import json as _json
+    import contextlib
+    import io
+    SKILLS_DIR = Path(__file__).resolve().parent / 'skills'
+    if not SKILLS_DIR.is_dir():
+        print("❌ skills/ 目录不存在", file=sys.stderr)
+        sys.exit(1)
+    default_out = Path(__file__).resolve().parent / 'prompts'
+    out_dir = Path(args.dir) if getattr(args, 'dir', None) else default_out
+    if out_dir.exists() and not out_dir.is_dir():
+        print(f"❌ --dir 输出路径不是目录: {out_dir}", file=sys.stderr)
+        sys.exit(1)
+
+    # 收集 skills (sorted, 与 cmd_prompt 一致)
+    skills = []
+    for d in sorted(SKILLS_DIR.iterdir()):
+        if d.is_dir():
+            smd = d / 'SKILL.md'
+            if smd.exists():
+                skills.append({'name': d.name, 'path': smd, 'dir': d})
+    if not skills:
+        print("❌ 无可用 skill", file=sys.stderr)
+        sys.exit(1)
+
+    # ── 内存构建全部产物 (fail-fast: 任一读失败 → stderr + exit 1, 零写盘) ──
+    md_texts, json_docs, site_sections = {}, {}, []
+    try:
+        for s in skills:
+            raw = Path(s['path']).read_text(encoding='utf-8')
+            stripped, _fm = strip_frontmatter(raw)
+            refs = sorted(Path(s['dir']).glob('references/*.md'))
+            ref_contents, md_tail, site_refs = {}, [], []
+            for r in refs:
+                rtext = r.read_text(encoding='utf-8')
+                ref_contents[r.stem] = rtext
+                # §6.1: 每 reference 前 \n\n---\n\n## {stem}\n + 原文 (CLI prompt 全文一致)
+                md_tail.append(f'\n\n---\n\n## {r.stem}\n{rtext}')
+                # all.md 内: 段标题 ## {stem} 已承载 → 剥离 reference 自身首个顶层 h1
+                site_refs.append((r.stem, _strip_leading_h1(rtext)))
+            md_texts[s['name']] = stripped + ''.join(md_tail)
+            json_docs[s['name']] = {'status': 'ok', 'error': '', 'data': {
+                'name': s['name'],
+                'content': stripped,
+                'references': ref_contents,
+            }}
+            site_sections.append(_site_skill_section(s, stripped, site_refs))
+    except OSError as e:
+        print(f"❌ 读取失败: {e}", file=sys.stderr)
+        sys.exit(1)
+
+    # ── 清理已知产物名 (HG-SEC-088: 仅删 18 个已知名, 其他文件保留; --dir 任意路径 containment) ──
+    known = {'index.html', 'all.md'}
+    for s in skills:
+        known.add(f'{s["name"]}.md')
+        known.add(f'{s["name"]}.json')
+    out_dir.mkdir(parents=True, exist_ok=True)
+    for f in out_dir.iterdir():
+        if f.is_file() and f.name in known:
+            f.unlink()
+
+    # ── 写 8 md + 8 json + all.md ──
+    for s in skills:
+        (out_dir / f'{s["name"]}.md').write_text(md_texts[s['name']], encoding='utf-8')
+        (out_dir / f'{s["name"]}.json').write_text(
+            _json.dumps(json_docs[s['name']], ensure_ascii=False, indent=2) + '\n',
+            encoding='utf-8')
+    all_md = _site_all_md(skills, site_sections)
+    (out_dir / 'all.md').write_text(all_md, encoding='utf-8')
+
+    # ── index.html: cmd_doc 渲染 all.md (B 型 doc) ──
+    a = types.SimpleNamespace(
+        input=str(out_dir / 'all.md'),
+        output=str(out_dir / 'index.html'),
+        title='html-gen Prompt 合集',
+        subtitle=None,
+        quiet=True,
+        github_url='',                                       # HG-SEC-090: 空串禁用防 env 覆盖
+        home_url='https://html-gen.cli.jaden.tech/',         # demo 首页入口 (与 cmd_demo 缺省一致)
+    )
+    with contextlib.redirect_stdout(io.StringIO()):          # 抑制 cmd_doc 内部输出
+        cmd_doc(a)
+
+    if getattr(args, 'quiet', False):
+        print(str(out_dir))
+    else:
+        print(f"[站点] {out_dir} 已生成: {len(skills)} skills ({len(known)} 文件)")
+
+
+def _strip_leading_h1(text):
+    """删除 markdown 文本首个顶层(围栏外) `# ` 标题行 (fence-aware, HG-SEC-087)."""
+    lines = text.split('\n')
+    idxs = _fence_top_h1_indices(lines)
+    if idxs:
+        del lines[idxs[0]]
+    return '\n'.join(lines).strip('\n')
+
+
+def _site_skill_section(skill, stripped, site_refs):
+    """all.md 单 skill 段: ## {name} + > description + 正文(删 h1) + references."""
+    desc = _skill_desc(skill['path'])
+    parts = [f"## {skill['name']}"]
+    if desc:
+        parts.append(f"> {desc}")
+    parts.append(_strip_leading_h1(stripped))
+    for stem, rtext in site_refs:
+        parts.append(f"---\n\n## {stem}\n\n{rtext}")
+    return '\n\n'.join(parts)
+
+
+def _site_all_md(skills, site_sections):
+    """all.md 组装: 唯一顶层 h1 + 说明引用块 + 8 skill 段."""
+    header = ("# html-gen Prompt 合集\n\n"
+              "> 在线阅读: html-gen 项目 8 个 skills prompt 全文（含 references）。\n"
+              "> 单篇获取: prompts/{skill}.md（纯 markdown）· prompts/{skill}.json（JSON 信封）· all.md（全量）。\n"
+              "> 重新生成: html-gen prompt --site（产物勿手改，由生成器产出）。\n")
+    return header + '\n\n' + '\n\n'.join(site_sections) + '\n'
 
 
 def cmd_demo(args):

@@ -78,6 +78,34 @@ html-gen prompt html-gen-table --brief
 html-gen prompt --json            # 机器可读信封
 ```
 
+### 在线阅读 & curl 获取（`--site`）
+
+生成 `prompts/` 站点（18 文件），供 GitHub Pages 原样服务——在线阅读页 + 每 skill
+的纯 markdown / JSON 信封下载：
+
+```bash
+html-gen prompt --site                        # → prompts/（仓库根）
+html-gen prompt --site --dir <path>           # 输出目录覆盖
+```
+
+| 文件 | URL | 内容 |
+|:--|:--|:--|
+| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | 合集阅读页（B 型 doc 渲染） |
+| `prompts/all.md` | https://html-gen.cli.jaden.tech/prompts/all.md | 8 skills 全量（一次拉取） |
+| `prompts/{skill}.md` | https://html-gen.cli.jaden.tech/prompts/{skill}.md | 单 skill 纯 markdown（正文 + references） |
+| `prompts/{skill}.json` | https://html-gen.cli.jaden.tech/prompts/{skill}.json | 单 skill JSON 信封（`{status,error,data}`） |
+
+```bash
+curl -s https://html-gen.cli.jaden.tech/prompts/                # 阅读页
+curl -s https://html-gen.cli.jaden.tech/prompts/all.md          # 全量合集
+curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.md     # 单篇 markdown
+curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.json   # 单篇 JSON 信封
+```
+
+> 站点产物一律剥离 YAML frontmatter（GitHub Pages 原样服务），与终端
+> `html-gen prompt <skill>`（保留 frontmatter）差异仅此一段。`prompts/` 勿手改，
+> 由 `html-gen prompt --site` 重新生成。`--site` 与 `skill` / `--brief` / `--json` 互斥。
+
 ## 数据目录
 
 - `data/*.json` — 源数据（表格 / 知识库）

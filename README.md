@@ -78,6 +78,35 @@ html-gen prompt html-gen-table --brief
 html-gen prompt --json            # machine-readable envelope
 ```
 
+### Read Online & curl Fetch (`--site`)
+
+Generate the `prompts/` site (18 files) for GitHub Pages serving — online reading
+page + plain-markdown/JSON-envelope downloads for every skill:
+
+```bash
+html-gen prompt --site                        # → prompts/ (repo root)
+html-gen prompt --site --dir <path>           # output dir override
+```
+
+| File | URL | Content |
+|:--|:--|:--|
+| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | Combined reading page (B-type doc render) |
+| `prompts/all.md` | https://html-gen.cli.jaden.tech/prompts/all.md | All 8 skills in one fetch |
+| `prompts/{skill}.md` | https://html-gen.cli.jaden.tech/prompts/{skill}.md | Single skill plain markdown (body + references) |
+| `prompts/{skill}.json` | https://html-gen.cli.jaden.tech/prompts/{skill}.json | Single skill JSON envelope (`{status,error,data}`) |
+
+```bash
+curl -s https://html-gen.cli.jaden.tech/prompts/                # reading page
+curl -s https://html-gen.cli.jaden.tech/prompts/all.md          # full collection
+curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.md     # one skill (markdown)
+curl -s https://html-gen.cli.jaden.tech/prompts/html-gen.json   # one skill (JSON)
+```
+
+> Site artifacts strip YAML frontmatter (GitHub Pages serves them verbatim), so they
+> differ from `html-gen prompt <skill>` terminal output (which keeps frontmatter) by
+> that one section only. Never hand-edit `prompts/` — regenerate with `html-gen prompt --site`.
+> `--site` is mutually exclusive with `skill` / `--brief` / `--json`.
+
 ## Data Directory
 
 - `data/*.json` — source data (tables / knowledge bases)
