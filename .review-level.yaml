@@ -525,3 +525,26 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-086..095 (✅ closed 本次实现逐条验证: 幂等 17 文件 / fence-aware h1 / known-name containment / cmd_doc github_url='' 显式 / slide 2 refs 断言 / HELP_PROMPT --site / references 3 数 / TOC 扁平 / 结构同构 / YAML description 截断) + HG-SEC-096..099 (🟢 records 非阻断: refs h1 剥离·清理残留设计文本漂移 / corner '' 语义缺 env-set 回归测试·help 未注空串禁用 / --dir 空串·仓库根边界 / AGENTS.md 同步遗留)"
     report: documents/review/html-gen-prompts-site-impl-audit-v1.0-20260902.md
+  - date: 2026-09-02
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen prompt --site v2 设计评审 — C 型 knowledge 门户 5 tab + kb detail + 体系化沉淀 (HTML-GEN-CL008 kind=independent); commit 456a12c; 前置 CL007 已闭环 (回填: 2f748fe 未同步 append trail, 本次实现审计一并补录)"
+    verdict: PASS
+    score: 95
+    findings_total: 6
+    findings_open: 0
+    tracking: "HG-SEC-100 (🟡 折叠实施: §7 直调 Namespace 完整字段 + kb env pin + test_09 扩展) + HG-SEC-101..105 (🟢 records 折叠实施: desc 元数据注明 / append 序约束 / kb mkdir·清理·stdout 抑制·统计解耦 / 计数 18→28 / Jekyll _ 前缀不发布)"
+    report: documents/review/html-gen-prompts-site-v2-design-review-v1.0-20260902.md
+  - date: 2026-09-02
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "html-gen prompt --site v2 实现审计 — feat 479f053; commit 范围 456a12c..479f053 (设计 v1.0 → 评审 2f748fe → feat); 设计 v1.0 PASS 95/A, 折叠项 HG-SEC-100..105 (HTML-GEN-CL008 kind=independent)"
+    verdict: PASS
+    score: 100
+    findings_total: 3
+    findings_open: 0
+    tracking: "HG-SEC-100..105 (✅ closed 本次实现逐条验证: Namespace 全字段+test_09 kb env pin / desc 元数据注释 / append 序 SKILL→GUIDE→CASE+test_11 / kb mkdir+known 清理+stdout 抑制+统计解耦 / 计数 18→28 / Jekyll _ 前缀 SKILL.md 注记) + HG-SEC-106..108 (🟢 records 非阻断: AGENTS.md 同步遗留待用户 / 设计 doc 折叠文本未订正入文 / 设计评审 2f748fe trail 回填)"
+    report: documents/review/html-gen-prompts-site-v2-impl-audit-v1.0-20260902.md
+
