@@ -4,6 +4,8 @@
 > 探讨确认: A1 B3 C1 D1 E1 F1（2026-09-02）· G1 H1 I1（2026-09-02）
 > 前置: HTML-GEN-CL004（prompt CLI 子命令）/ CL006（独立模式闭环实录）
 > 影响: html-gen.py（prompt 子命令扩展）+ 新增 prompts/ 目录 + README.md/README.zh.md + AGENTS.md
+> 评审: PASS 85/A（2026-09-02, documents/review/html-gen-prompts-site-design-review-v1.0-20260902.md）;
+>       折叠项 HG-SEC-086..095 已订正入文（版本保持 v1.0，非阻断）
 
 ## 1. 背景与需求
 
@@ -37,7 +39,8 @@ github imjaden/html-gen.cli main 分支），零新模板、零外部依赖。
 ## 3. 现状与约束（实测 2026-09-02）
 
 - Pages 站点在线：https://html-gen.cli.jaden.tech/ → 200；demos/*.html 等静态文件正常。
-- skills/ 已 git 跟踪：8 个 SKILL.md（1185 行）+ 4 个 references/*.md（177 行）。
+- skills/ 已 git 跟踪：8 个 SKILL.md（1185 行）+ 3 个 references/*.md（177 行：
+  html-gen-slide×2 + html-gen-table×1）。【HG-SEC-089 订正：原文 4 个为笔误】
 - **Jekyll 实证**：/skills/html-gen/SKILL.md → 404（带 frontmatter 文件被 Jekyll 转换）；
   /skills/html-gen/SKILL.html → 200 text/html —— 原始 markdown 在 Pages 域不可达。
 - **无 frontmatter 实证**：/README.md → 200 text/markdown —— 无 frontmatter 的 .md
@@ -81,10 +84,16 @@ html-gen prompt --site [--dir <path>]
 1. 收集 skills：复用现有遍历逻辑（SKILLS_DIR/skills/*/SKILL.md，sorted）。
 2. **内存构建全部产物内容**（8 md + 8 json + all.md 文本）。任一文件读失败 →
    fail-fast stderr + exit 1；此时零写盘（避免半成品目录）。
-3. 清空输出目录现有文件（目录专用语义，同 demos「勿手改」）。
+3. **清理已知产物名**：仅删除 index.html / all.md / 8×{skill}.md / 8×{skill}.json
+   （共 18 个已知产物名），目录内其他文件一律保留——含 `--dir` 自由路径时的
+   containment（误传 ~/ 等不误删无关文件）【HG-SEC-088】；skill 被删除后其旧产物
+   名不在已知集 → 由本清理移除（幂等不残留）。
 4. 写 8 个 {skill}.md、8 个 {skill}.json、all.md。
-5. 调 cmd_doc 渲染 index.html（title="html-gen Prompt 合集"、
-   home_url=https://html-gen.cli.jaden.tech/、quiet；github corner 不带，隐私默认）。
+5. 调 cmd_doc 渲染 index.html：构造 Namespace 显式传 input=all.md 路径、
+   output=index 路径、title="html-gen Prompt 合集"、
+   home_url="https://html-gen.cli.jaden.tech/"、
+   github_url=""（空串显式禁用，防 HTML_GEN_GITHUB_URL env 覆盖隐私意图）、
+   quiet=True（favicon 不传沿用默认注入；CLI 参数优先于 env）【HG-SEC-090】。
 6. 打印统计 `[站点] prompts/ 已生成: 8 skills (18 文件)`；--quiet 仅打印目录路径。
 
 ## 6. 内容规格
@@ -97,7 +106,9 @@ references 文件按文件名 sorted glob（references/*.md），原文直读不
 
 ### 6.2 {skill}.json（curl JSON）
 
-信封与 CLI `html-gen prompt <skill> --json` 同构：
+信封与 CLI `html-gen prompt <skill> --json` **结构同构**（status/data/error 键名
+与嵌套一致；content 值为剥离 frontmatter 的正文，与 CLI 直出含 frontmatter 不同——
+差异说明见 §6.5）【HG-SEC-093】：
 
 ```json
 {"status": "ok", "error": "", "data": {
@@ -114,10 +125,15 @@ references 文件按文件名 sorted glob（references/*.md），原文直读不
 1. 首行 `# html-gen Prompt 合集`（唯一顶层 h1；B 型 doc 标题由此/--title 决定）。
 2. 说明引用块（用途、生成命令、URL 提示）。
 3. 每 skill 一段，顺序同遍历（sorted）：
-   - 段标题 `## {skill.name}`；
-   - 下一行 `> {frontmatter description}`（description 缺失则省略）；
+   - 段标题 `## {skill.name}`（与正文 h2 同级 → TOC 扁平，skill 边界靠阅读顺序区分；
+     已评估为可接受结构，记录不修）【HG-SEC-092】；
+   - 下一行 `> {frontmatter description}`（description 缺失则省略；提取沿用 `_skill_desc`
+     语义即 `description:` 行首行——html-gen-slide 的 description 为多行 YAML，仅取首行，
+     继承既有 cmd_prompt 限制，记录不修）【HG-SEC-095】；
    - 正文 = 该 skill 剥离 frontmatter 后的内容，**删除正文首个顶层 `# ` 标题行**（若有，
-     段标题已承载，避免重复 h1/h2）；
+     段标题已承载，避免重复 h1/h2）；「删除 / h1 计数」必须 **fence-aware**：3 个 skill
+     正文的代码围栏内含 `# ` 注释行（html-gen 7 / html-gen-table 3 / test-speed-optimization 2），
+     不得计入；实现复用 md_to_html 的围栏解析语义【HG-SEC-087】；
    - 正文余下原样（h2/h3 进入 doc TOC）；
    - references 拼接同 6.1（置于该 skill 段末尾）。
 
@@ -139,14 +155,20 @@ html-gen doc 渲染 all.md（B 型文档模板：侧边栏 TOC + 深色主题 + 
 
 1. test_01_site_generates_18_files：8 md + 8 json + all.md + index.html。
 2. test_02_skill_md_equals_stripped_skill：全部 8 skill，md 正文段 == strip_frontmatter(SKILL.md)；
-   html-gen-table 含 references 拼接段（## table-demo-prompt）；html-gen 无 references 不含 `## ` ref 段。
+   html-gen-table 含 references 拼接段（## table-demo-prompt）；html-gen-slide 的 2 个
+   references（selenium-h3-toggle-testing / slide-mode-null-guards）显式断言
+   【HG-SEC-091】；html-gen 无 references 不含 `## ` ref 段。
 3. test_03_skill_json_envelope：json.loads 通过；status/error/data 键齐；data.name 正确；
    data.content == 同 skill .md 正文段；data.references 键 == 实际 references stems。
 4. test_04_all_md_structure：不以 `---` 开头；含 8 个 `## {skill.name}` 段标题；
-   含 `# html-gen Prompt 合集` 唯一顶层 h1（计数 == 1）；references 原文出现在对应段。
+   含 `# html-gen Prompt 合集` 唯一顶层 h1（计数 == 1，**fence-aware**：围栏内 `# ` 行不计）
+   【HG-SEC-087】；references 原文出现在对应段。
 5. test_05_index_html_dom：index.html 含 doc-body / 侧边栏容器 / 标题文本；零 JS 错误可
    用现有 doc 模板测试的 Selenium 模式（可选，若静态断言充分可不启浏览器）。
-6. test_06_idempotent：连续生成两次 → 目录内容 diff 为空。
+6. test_06_idempotent：连续生成两次 → **17 个确定性文件**（8 md + 8 json + all.md）
+   diff 为空；index.html 改结构/标题断言（cmd_doc meta 含分钟粒度时间戳，字节 diff 会
+   跨分钟 flaky）【HG-SEC-086】；兼 containment：目录预置无关文件 → 断言保留
+   【HG-SEC-088】。
 7. test_07_site_exclusive：--site 与 skill / --brief / --json 组合 → exit 1 + stderr 提示。
 8. test_08_default_dir_untouched：默认路径生成逻辑不因测试而写仓库（集成用例显式断言）。
 
@@ -160,7 +182,8 @@ html-gen doc 渲染 all.md（B 型文档模板：侧边栏 TOC + 深色主题 + 
 3. 8 个 .json json.loads + 信封键 + content 一致。
 4. all.md 结构断言（唯一顶层 h1、8 段标题、references 出现）。
 5. index.html 静态断言（doc 模板关键元素 + 标题）。
-6. 幂等：两次生成 diff -r 为空。
+6. 幂等：**17 个确定性文件**（8 md + 8 json + all.md）两次生成 diff 为空；
+   index.html 结构断言；目录预置无关文件 → 保留【HG-SEC-086/088】。
 7. 互斥组合 exit 1。
 8. 仓库内真实 `html-gen prompt --site` 生成 → git status 仅 prompts/ 新增 → commit。
 9. push 后 curl 实测：/prompts/ 200 html；/prompts/all.md 200（text/markdown）；
@@ -175,6 +198,8 @@ html-gen doc 渲染 all.md（B 型文档模板：侧边栏 TOC + 深色主题 + 
   prompts/ 说明 + 4 条 URL/curl 示例（/prompts/、all.md、{skill}.md、{skill}.json）
   + 生成命令 `html-gen prompt --site` + 「生成物勿手改，由 --site 重新生成」。
 - AGENTS.md：目录结构补 prompts/ 行；prompt 子命令段补 `--site`。
+- html-gen.py HELP_PROMPT（prompt 帮助文本段，html-gen.py:713 起）：补 `--site`
+  （argparse --help 自动覆盖；HELP 文本同步）【HG-SEC-094】。
 
 ## 10. 边界与风险
 
