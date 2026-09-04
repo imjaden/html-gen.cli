@@ -158,10 +158,10 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         self.assertEqual(11, len(btns), f"复制按钮数量应为 11: {len(btns)}")
         for b in btns:
             self.assertTrue(b.get_attribute('data-copy'), "data-copy 为空")
-        # HG-SEC-038: 含引号命令必须完整转义（此前 PATH 行被截断为 'export PATH='）
-        path_btn = next(b for b in btns if (b.get_attribute('data-copy') or '').startswith('export PATH'))
-        self.assertEqual('export PATH="$HOME/.local/bin:$PATH"', path_btn.get_attribute('data-copy'),
-                         "PATH 行 data-copy 应完整含引号")
+        # prompt [--json] 行 (替换原 export PATH 行, 注明可选 --json 入参; README.md L75 风格)
+        prompt_btn = next(b for b in btns if (b.get_attribute('data-copy') or '').startswith('html-gen prompt'))
+        self.assertEqual('html-gen prompt --json', prompt_btn.get_attribute('data-copy'),
+                         "prompt 行 data-copy 应为 html-gen prompt --json")
         all_btn = next(b for b in btns if '复制全部' in (b.text or ''))
         all_copy = all_btn.get_attribute('data-copy') or ''
         self.assertIn('bash install.sh install', all_copy, "复制全部缺安装命令")
@@ -225,13 +225,19 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         btn.click()
         time.sleep(0.2)
 
-    def test_16_hero_badges(self):
-        """hero 特性徽章行存在, 4 项核心卖点."""
-        badges = self.driver.find_elements(By.CSS_SELECTOR, '.hero-badges span')
-        self.assertEqual(4, len(badges), f"badges 应为 4 项: {[b.text for b in badges]}")
-        text = ' '.join(b.text for b in badges)
-        for kw in ['零依赖', '深色主题', '中文优先', '单文件']:
-            self.assertIn(kw, text, f"badges 缺 {kw}")
+    def test_16_hero_prompt_link(self):
+        """hero 徽章行: 2 保留徽章 (⚡零依赖/📦单文件输出) + 在线 Prompts 链接; 已删 🌙深色主题/🇨🇳中文优先."""
+        spans = self.driver.find_elements(By.CSS_SELECTOR, '.hero-badges span')
+        self.assertEqual(2, len(spans), f"保留徽章应为 2 项: {[s.text for s in spans]}")
+        text = ' '.join(s.text for s in spans)
+        for kw in ['零依赖', '单文件']:
+            self.assertIn(kw, text, f"保留徽章缺 {kw}: {text}")
+        for gone in ['深色主题', '中文优先']:
+            self.assertNotIn(gone, text, f"已删徽章仍存在 {gone}: {text}")
+        link = self.driver.find_element(By.CSS_SELECTOR, '.hero-badges a')
+        href = link.get_attribute('href') or ''
+        self.assertIn('prompts/?group=cli&item=html-gen', href, f"在线 Prompts 链接 href 异常: {href}")
+        self.assertIn('在线 Prompts', link.text or '', f"链接文案缺 '在线 Prompts': {link.text}")
 
     def test_17_compare_table(self):
         """竞品对比卡: 6 维度行, html-gen 列全 ✓ 高亮."""

@@ -55,6 +55,8 @@ html { scroll-behavior: smooth; }
   margin: 0 auto 30px;
 }
 .hero-badges span { margin: 0 7px; white-space: nowrap; }
+.hero-badges a { color: var(--cobalt-400); text-decoration: none; border-bottom: 1px dashed var(--cobalt-400); padding-bottom: 1px; }
+.hero-badges a:hover { opacity: 0.85; border-bottom-style: solid; }
 .hero-blocks {
   display: flex;
   gap: 20px;
@@ -87,14 +89,14 @@ html { scroll-behavior: smooth; }
   font-size: 0.78rem;
   line-height: 1.7;
   color: var(--code-text);
-  overflow-x: auto;
+  overflow: hidden;
   display: flex;
   align-items: center;
   gap: 8px;
 }
 .code-block + .code-block { margin-top: 8px; }
 .code-block .prompt { color: var(--text-muted); flex-shrink: 0; }
-.code-block .cmd { color: var(--code-cmd); }
+.code-block .cmd { color: var(--code-cmd); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; min-width: 0; flex: 1 1 0; }
 .code-block .copy-btn { margin-left: auto; flex-shrink: 0; }
 .scroll-hint {
   position: fixed;
@@ -235,7 +237,7 @@ html { scroll-behavior: smooth; }
 }
 .copy-btn:hover { border-color: var(--cobalt-700); color: var(--text-primary); }
 .copy-btn.ok { border-color: var(--cobalt-600); color: var(--cobalt-400); }
-.hero-block .copy-btn { position: absolute; top: 18px; right: 18px; }
+.hero-block .block-title .copy-btn { position: absolute; top: 18px; right: 18px; }
 .cli-box { position: relative; padding-right: 52px; }
 .cli-box .copy-btn { position: absolute; top: 8px; right: 8px; }
 
@@ -256,7 +258,7 @@ html { scroll-behavior: smooth; }
   font-size: 0.72rem; line-height: 1.5;
 }
 .compare-table th, .compare-table td {
-  padding: 3px 4px; text-align: center;
+  padding: 16px 4px; text-align: center;
   border-bottom: 1px solid var(--border-soft);
   color: var(--text-secondary);
 }
@@ -281,12 +283,12 @@ html { scroll-behavior: smooth; }
 <section class="hero">
   <h1 class="hero-title"><img class="hero-logo" src="https://www.jaden.tech/static/img/favicon.png?=20260705" alt="">html-gen</h1>
   <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML · 深色主题 · 中文优先</p>
-  <p class="hero-badges"><span>⚡ 零依赖</span><span>🌙 深色主题</span><span>🇨🇳 中文优先</span><span>📦 单文件输出</span></p>
+  <p class="hero-badges"><span>⚡ 零依赖</span><span>📦 单文件输出</span><a href="/prompts/?group=cli&item=html-gen">📖 在线 Prompts</a></p>
   <div class="hero-blocks">
     <div class="hero-block">
-      <div class="block-title">⚡ 安装 & 快速开始 <button class="copy-btn" data-copy="bash install.sh install&#10;export PATH=&quot;$HOME/.local/bin:$PATH&quot;&#10;html-gen doc -i report.md -o report.html --title &quot;标题&quot;&#10;html-gen table -d data.json -o index.html&#10;html-gen knowledge -d data.json -o kb.html&#10;html-gen slide -i slides.md -o slides.html" aria-label="复制全部命令">📋 复制全部</button></div>
+      <div class="block-title">⚡ 安装 & 快速开始 <button class="copy-btn" data-copy="bash install.sh install&#10;html-gen prompt --json&#10;html-gen doc -i report.md -o report.html --title &quot;标题&quot;&#10;html-gen table -d data.json -o index.html&#10;html-gen knowledge -d data.json -o kb.html&#10;html-gen slide -i slides.md -o slides.html" aria-label="复制全部命令">📋 复制全部</button></div>
       <div class="code-block"><span class="prompt">$</span> <span class="cmd">bash install.sh install</span><button class="copy-btn" data-copy="bash install.sh install" aria-label="复制命令">📋</button></div>
-      <div class="code-block"><span class="prompt">$</span> <span class="cmd">export PATH="$HOME/.local/bin:$PATH"</span><button class="copy-btn" data-copy="export PATH=&quot;$HOME/.local/bin:$PATH&quot;" aria-label="复制命令">📋</button></div>
+      <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen prompt [--json]</span><button class="copy-btn" data-copy="html-gen prompt --json" aria-label="复制命令">📋</button></div>
       <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html --title "标题"</span><button class="copy-btn" data-copy="html-gen doc -i report.md -o report.html --title &quot;标题&quot;" aria-label="复制命令">📋</button></div>
       <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span><button class="copy-btn" data-copy="html-gen table -d data.json -o index.html" aria-label="复制命令">📋</button></div>
       <div class="code-block"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span><button class="copy-btn" data-copy="html-gen knowledge -d data.json -o kb.html" aria-label="复制命令">📋</button></div>
