@@ -163,7 +163,7 @@ countries:
 
 ## 6. 关键决策（原文编号）
 
-### 6.1 videos 字段（CL001，solutions/table-videos-design-v1.1-20260828.md，拍板 A1..G）
+### 6.1 videos 字段（CL001，documents/archive/solutions-20260908/table-videos-design-v1.1-20260828.md，拍板 A1..G）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -182,7 +182,7 @@ countries:
 | HG-SEC-047 | onclick url 转义 JSON.stringify + &quot;（沿用 actions 先例） |
 | HG-SEC-052 | videos 从默认搜索键排除 |
 
-### 6.2 syncer v1.1（CL002，solutions/table-videos-syncer-design-v1.1-20260829.md，拍板 A1..W1 + 决策 A..W）
+### 6.2 syncer v1.1（CL002，documents/archive/solutions-20260908/table-videos-syncer-design-v1.1-20260829.md，拍板 A1..W1 + 决策 A..W）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -202,7 +202,7 @@ countries:
 | FIND-001 | 共享文件污染（整文件 git add 纳入并行编辑）→ 有意保留，CL004 修订日志登记 |
 | FIND-002 | E 重建丢 github-corner/favicon → extract_corner_url 透传 --github-url（0af421d + test_10） |
 
-### 6.3 syncer v1.2（CL006，solutions/table-videos-syncer-design-v1.2-20260830.md，探讨确认 1B 2A 3A 4A + 1A 2A 3A）
+### 6.3 syncer v1.2（CL006，documents/archive/solutions-20260908/table-videos-syncer-design-v1.2-20260830.md，探讨确认 1B 2A 3A 4A + 1A 2A 3A）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -213,7 +213,7 @@ countries:
 | 3A/4A/S | 统计：全包含提示加「yaml 检查 N 条 / 涉及 M 个国家」（去重口径与增量模型一致，畸形条目不计） |
 | W | 回写维持全局镜像零改动（幂等闭环） |
 
-### 6.4 favicon/URL/syncer 参数（CL004，solutions/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md）
+### 6.4 favicon/URL/syncer 参数（CL004，documents/archive/solutions-20260908/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -264,19 +264,19 @@ countries:
 ## 9. 参考文档
 
 - 保留原位：features.md、layout-table.html、html-gen.py、scripts/tool-table-videos-syncer.py、data/_countries-data.json、demos/countries-table.html、review-log.md / .review-level.yaml（历史不追改）。
-- **源码引用面（归档 docs@sync 需同步）**：scripts/tool-table-videos-syncer.py docstring L21-23 引 3 份设计（syncer v1.2/v1.1 + favicon §5）；tests/test_sync_videos.py docstring L4 引 table-videos-syncer-design-v1.1（§5 测试计划）；tests/test_url_state.py docstring L5 引 favicon 设计 §6。
-- 本族过程文档（23 份）待归档 → `documents/archive/{solutions,root,review}-20260908/`（以执行批次实际日期为准）：
+- **源码引用面（已随归档同步至 archive 路径，2026-09-08）**：scripts/tool-table-videos-syncer.py docstring L21-23 引 3 份设计（syncer v1.2/v1.1 + favicon §5）；tests/test_sync_videos.py docstring L4 引 table-videos-syncer-design-v1.1（§5 测试计划）；tests/test_url_state.py docstring L5 引 favicon 设计 §6。
+- 本族过程文档（23 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 
-| 素材 | 原位路径 | 归档桶 |
+| 素材 | 归档路径 | 归档桶 |
 |:--|:--|:--|
-| cmd-f-search / table-actions 设计（族 A） | documents/cmd-f-search-design-v1.0-20260712.md · documents/table-actions-design-v1.0-20260712.md | root |
-| quickfilter 设计 / verify | documents/solutions/table-quickfilter-default-design-v1.0-20260806.md · documents/verify-prompt-quickfilter-20260808.md | solutions / root |
-| quickfilter 设计评审 / 实现评审 | documents/review/table-quickfilter-default-{review-v1.0,implementation-review-v1.0}-20260808.md | review |
-| videos 设计 v1.1（CL001） | documents/solutions/table-videos-design-v1.1-20260828.md | solutions |
-| videos 设计评审/复审/实现审计 | documents/review/table-videos-{design-review-v1.0,design-rereview-v1.1,impl-audit-v1.1}-20260828.md | review |
-| syncer 设计 v1.1（CL002） | documents/solutions/table-videos-syncer-design-v1.1-20260829.md | solutions |
-| syncer v1.1 评审/复审/审计 | documents/review/table-videos-syncer-{design-review-v1.0,design-rereview-v1.1,impl-audit-v1.1}-20260829.md | review |
-| syncer 设计 v1.2（CL006） | documents/solutions/table-videos-syncer-design-v1.2-20260830.md | solutions |
-| syncer v1.2 评审 / 审计 / process prompt ×3 | documents/review/table-videos-syncer-v1.2-{design-review-v1.0,impl-audit-v1.0,design-review-prompt,dev-impl-prompt,impl-audit-prompt}-20260830.md | review |
-| favicon/urlstate/syncer 设计（CL004） | documents/solutions/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md | solutions |
-| favicon 设计评审 / 实现审计 | documents/review/html-gen-favicon-urlstate-syncer-{design-review-v1.0,impl-audit-v1.0}-20260829.md | review |
+| cmd-f-search / table-actions 设计（族 A） | documents/archive/root-20260908/cmd-f-search-design-v1.0-20260712.md · documents/archive/root-20260908/table-actions-design-v1.0-20260712.md | root |
+| quickfilter 设计 / verify | documents/archive/solutions-20260908/table-quickfilter-default-design-v1.0-20260806.md · documents/archive/root-20260908/verify-prompt-quickfilter-20260808.md | solutions / root |
+| quickfilter 设计评审 / 实现评审 | documents/archive/review-20260908/table-quickfilter-default-{review-v1.0,implementation-review-v1.0}-20260808.md | review |
+| videos 设计 v1.1（CL001） | documents/archive/solutions-20260908/table-videos-design-v1.1-20260828.md | solutions |
+| videos 设计评审/复审/实现审计 | documents/archive/review-20260908/table-videos-{design-review-v1.0,design-rereview-v1.1,impl-audit-v1.1}-20260828.md | review |
+| syncer 设计 v1.1（CL002） | documents/archive/solutions-20260908/table-videos-syncer-design-v1.1-20260829.md | solutions |
+| syncer v1.1 评审/复审/审计 | documents/archive/review-20260908/table-videos-syncer-{design-review-v1.0,design-rereview-v1.1,impl-audit-v1.1}-20260829.md | review |
+| syncer 设计 v1.2（CL006） | documents/archive/solutions-20260908/table-videos-syncer-design-v1.2-20260830.md | solutions |
+| syncer v1.2 评审 / 审计 / process prompt ×3 | documents/archive/review-20260908/table-videos-syncer-v1.2-{design-review-v1.0,impl-audit-v1.0,design-review-prompt,dev-impl-prompt,impl-audit-prompt}-20260830.md | review |
+| favicon/urlstate/syncer 设计（CL004） | documents/archive/solutions-20260908/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md | solutions |
+| favicon 设计评审 / 实现审计 | documents/archive/review-20260908/html-gen-favicon-urlstate-syncer-{design-review-v1.0,impl-audit-v1.0}-20260829.md | review |

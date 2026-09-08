@@ -2,7 +2,7 @@
 """Selenium test: layout-table URL 状态分享（HTML-GEN-CL004）— ?tab&q&split
 replaceState 同步与初始化恢复（tab 白名单 / split 越界忽略 / q 仅 input.value）+ 🔗 拷贝按钮。
 
-设计: documents/solutions/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md §6
+设计: documents/archive/solutions-20260908/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md §6
 HG-SEC-074: URL 读写统一 URLSearchParams（自动编解码）; HG-SEC-075: sort/quickFilter 变化 closeSplit;
 HG-SEC-076: 恢复顺序 tab(buildTabs 前) → q(render 前) → split(render 后)。
 """

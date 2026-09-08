@@ -33,7 +33,7 @@ hi
 
 ## 输出 / 关键路径
 - /Users/jadenli/CodeSpace/html-gen.cli
-- /Users/jadenli/CodeSpace/html-gen.cli/documents/review/html-gen-index-optimize-review-v1.0-20260825.…
+- /Users/jadenli/CodeSpace/html-gen.cli/documents/archive/review-20260908/html-gen-index-optimize-review-v1.0-20260825.…
 - /Users/jadenli/CodeSpace/html-gen.cli/skills
 - /Users/jadenli/CodeSpace/http-server.cli/documents/review/html-gen-optimize-suggestions-20260825.md
 

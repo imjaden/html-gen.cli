@@ -39,7 +39,7 @@ risk: 3 项 🟡 未处理：qcc 数据补来源/采集日期、chaitin-menu-des
 - /Users/jadenli/CodeSpace/html-gen
 - /Users/jadenli/CodeSpace/html-gen/.review-level.yaml
 - ~/CodeSpace/html-gen
-- ~/CodeSpace/html-gen/documents/html-gen-fix-design-v1.0-20260806.md
+- ~/CodeSpace/html-gen/documents/archive/root-20260908/html-gen-fix-design-v1.0-20260806.md
 
 ## 边界
 - started: 1783789898.147338, messages: 624

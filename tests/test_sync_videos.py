@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 """tests/test_sync_videos.py — table videos 同步辅助脚本测试（HTML-GEN-CL002）.
 
-设计: documents/solutions/table-videos-syncer-design-v1.1-20260829.md（§5 测试计划）
+设计: documents/archive/solutions-20260908/table-videos-syncer-design-v1.1-20260829.md（§5 测试计划）
 
 非 Selenium：unittest + subprocess 调 scripts/tool-table-videos-syncer.py。
 每用例独立 tempfile.mkdtemp（xdist 多 worker 隔离，勿用模块级共享目录）。

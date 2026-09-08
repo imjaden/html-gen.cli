@@ -28,7 +28,7 @@ risk: 工作区有未提交变更：3 个 strategy-table html（drama 数据改�
 - 提供第一批资讯主题，试跑迁移 prompt 端到端验证
 
 ## 目标
-按治理规范commit规范，commit documents/verify-prompt-doc-drama-20260806.md，并根据其内容进行验证
+按治理规范commit规范，commit documents/archive/root-20260908/verify-prompt-doc-drama-20260806.md，并根据其内容进行验证
 
 ## 输入
 - profile: ops
@@ -59,7 +59,7 @@ risk: 工作区有未提交变更：3 个 strategy-table html（drama 数据改�
 - e7d86fd docs@html-gen: h4-h6 heading fix review pr
 
 ## 下一步清单
-1. 继续: 按治理规范commit规范，commit documents/verify-prompt-doc-d
+1. 继续: 按治理规范commit规范，commit documents/archive/root-20260908/verify-prompt-doc-d
 2. 元素，这条 CSS hover 是死代码。设计「影响范围」表和「实现方案」均未提及需拆分 L376 循环。
 3. 审计范围（7 commits，均未 push）：
 4. 5. 遗留：skills 真源漂移（dev profile 5 个 vs 项目副本 7 个）已记录未整改

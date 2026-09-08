@@ -188,17 +188,17 @@ scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双�
 ## 9. 参考文档
 
 - 保留原位：根 index.html、demos/index.html、demos/demos-index.html、demos/drama-knowledge.html、demos/drama/、demos/countries-table.html、demos/provinces-table.html、data/_drama-*.json、data/_provinces-data.json、data/_countries-data.json、scripts/provinces-match.py、skills/pages-index/SKILL.md、demos/_registry.json、features.md、AGENTS.md、review-log.md / .review-level.yaml（历史不追改）。
-- 本族过程文档（18 份）待归档 → `documents/archive/{solutions,root,review}-20260908/`（以执行批次实际日期为准）：
+- 本族过程文档（18 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 
-| 素材 | 原位路径 | 归档桶 |
+| 素材 | 归档路径 | 归档桶 |
 |:--|:--|:--|
-| index-landing 设计 v1.0 | documents/index-landing-design-v1.0-20260822.md | root |
-| index-landing 设计评审 / 实现 / ui-polish / 回归 | documents/review/index-landing-{design-review-v1.0,implementation-review-v1.0,ui-polish-implementation-review-v1.0,regression-implementation-review-v1.0}-20260823.md | review |
-| index-landing sync 复查 | documents/review/index-landing-sync-review-v1.0-20260824.md | review |
-| 索引优化复查 | documents/review/html-gen-index-optimize-review-v1.0-20260825.md | review |
-| pages/skills/demos 三处 index 同步 | documents/review/pages-index-skill-demos-index-sync-review-v1.0-20260824.md | review |
-| drama-kb-table 设计 | documents/drama-kb-table-design-v1.0-20260806.md | root |
-| drama 验证 prompt | documents/verify-prompt-doc-drama-20260806.md | root |
-| drama kb 评审 / 实现评审 / 朱院长实现评审 | documents/review/drama-{kb-table-review-v1.0,kb-table-implementation-review-v1.0,zhuyuanzhang-implementation-review-v1.0}-20260806/20260822.md | review |
-| provinces 设计 v1.2 | documents/solutions/provinces-table-design-v1.2-20260824.md | solutions |
-| provinces 设计评审 v1.0/v1.1 / v1.2 变更 / 实现评审 | documents/review/provinces-table-{design-review-v1.0,design-review-v1.1,design-v1.2-change-review,implementation-review-v1.0}-20260824.md | review |
+| index-landing 设计 v1.0 | documents/archive/root-20260908/index-landing-design-v1.0-20260822.md | root |
+| index-landing 设计评审 / 实现 / ui-polish / 回归 | documents/archive/review-20260908/index-landing-{design-review-v1.0,implementation-review-v1.0,ui-polish-implementation-review-v1.0,regression-implementation-review-v1.0}-20260823.md | review |
+| index-landing sync 复查 | documents/archive/review-20260908/index-landing-sync-review-v1.0-20260824.md | review |
+| 索引优化复查 | documents/archive/review-20260908/html-gen-index-optimize-review-v1.0-20260825.md | review |
+| pages/skills/demos 三处 index 同步 | documents/archive/review-20260908/pages-index-skill-demos-index-sync-review-v1.0-20260824.md | review |
+| drama-kb-table 设计 | documents/archive/root-20260908/drama-kb-table-design-v1.0-20260806.md | root |
+| drama 验证 prompt | documents/archive/root-20260908/verify-prompt-doc-drama-20260806.md | root |
+| drama kb 评审 / 实现评审 / 朱院长实现评审 | documents/archive/review-20260908/drama-{kb-table-review-v1.0,kb-table-implementation-review-v1.0,zhuyuanzhang-implementation-review-v1.0}-20260806/20260822.md | review |
+| provinces 设计 v1.2 | documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md | solutions |
+| provinces 设计评审 v1.0/v1.1 / v1.2 变更 / 实现评审 | documents/archive/review-20260908/provinces-table-{design-review-v1.0,design-review-v1.1,design-v1.2-change-review,implementation-review-v1.0}-20260824.md | review |

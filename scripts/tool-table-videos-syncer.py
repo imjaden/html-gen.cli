@@ -18,9 +18,9 @@ demos 产物。
 yaml target 段扩展 rebuild: {github_url, home_url, favicon}（缺省用固定默认；
 github_url 优先级: rebuild 配置 > 旧产物 github-corner 提取 > 固定默认）。
 
-设计: documents/solutions/table-videos-syncer-design-v1.2-20260830.md
-      documents/solutions/table-videos-syncer-design-v1.1-20260829.md
-      documents/solutions/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md §5
+设计: documents/archive/solutions-20260908/table-videos-syncer-design-v1.2-20260830.md
+      documents/archive/solutions-20260908/table-videos-syncer-design-v1.1-20260829.md
+      documents/archive/solutions-20260908/html-gen-favicon-urlstate-syncer-design-v1.0-20260829.md §5
 依赖: 仅 PyYAML（dev 依赖 requirements-dev.txt），运行时 html-gen 零依赖不受影响
 """
 

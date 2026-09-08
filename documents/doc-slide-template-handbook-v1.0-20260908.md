@@ -125,7 +125,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 
 ## 6. 关键决策（原文编号）
 
-### 6.1 doc bare 模式（solutions/layout-doc-bare-design-v1.1-20260806.md，D1-D6）
+### 6.1 doc bare 模式（documents/archive/solutions-20260908/layout-doc-bare-design-v1.1-20260806.md，D1-D6）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -140,7 +140,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | N3/N4/N5(🟡) | iframe `?t=` 表述 / 测试计数 / collapsed 死交互 |
 | N6(🟢) | 同特异性级联顺序——默认隐藏规则须置后或改写原 display:flex |
 
-### 6.2 doc-body 三级宽度（doc-body-width-levels-design-v1.0-20260819.md）
+### 6.2 doc-body 三级宽度（documents/archive/root-20260908/doc-body-width-levels-design-v1.0-20260819.md）
 
 | 决策行 | 内容 |
 |:--|:--|
@@ -149,7 +149,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | 不持久化 | URL 是唯一状态源，不写 localStorage |
 | 范围 | 仅 layout-doc.html；已生成 html 重新生成才生效 |
 
-### 6.3 doc meta show-md（doc-meta-path-showmd-design-v1.0-20260819.md + dev-prompt I1-I8）
+### 6.3 doc meta show-md（documents/archive/root-20260908/doc-meta-path-showmd-design-v1.0-20260819.md + dev-prompt I1-I8）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -158,7 +158,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | slide 处理 | slide 不做运行时显隐（无 URLSearchParams），生成端统一输出 + 默认隐藏 |
 | I1-I8 | 两 cmd meta 追加路径行（basename 脱敏）/ doc CSS+JS show-md / L311 正则扩展 / 测试并入 test_templates.py / 产物重生成 / features.md 补 |
 
-### 6.4 h4-h6（heading-levels-fix-design-v1.0-20260812.md，决策 1-6 + D-新增）
+### 6.4 h4-h6（documents/archive/root-20260908/heading-levels-fix-design-v1.0-20260812.md，决策 1-6 + D-新增）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -170,7 +170,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | 6 | 测试：md_to_html 回归 + Selenium 渲染 |
 | D-新增 | JS 拆分 anchor 循环：h4-h6 独立循环追加 `.anchor-link`，TOC 循环保持 h2/h3（初版 review 遗漏） |
 
-### 6.5 排版审计（review/html-gen-typography-review-v1.0-20260827.md）
+### 6.5 排版审计（documents/archive/review-20260908/html-gen-typography-review-v1.0-20260827.md）
 
 - 决策依据 1A 容器基座 / 2A blockquote 紧凑 / 3A callout 保持 / 4A 仅 doc/slide / 5A 重生成产物。
 - 初轮 CONDITIONAL 80/B：HG-SEC-041（🔴 slide-demo.html 变量基座丢失，深色失效）+ HG-SEC-042（🟡 双 style 块旧覆新）。
@@ -209,19 +209,19 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 ## 9. 参考文档
 
 - 保留原位：features.md、layout-doc.html、layout-slide.html、layout-knowledge.html、style-guide.css、html-gen.py、demos/（B 型产物）、review-log.md / .review-level.yaml（历史不追改）。
-- 本族过程文档（17 份）待归档 → `documents/archive/{solutions,root,review}-20260908/`（以执行批次实际日期为准）：
+- 本族过程文档（17 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 
-| 素材 | 原位路径 | 归档桶 |
+| 素材 | 归档路径 | 归档桶 |
 |:--|:--|:--|
-| doc-body 三级宽度设计 + verify? | documents/doc-body-width-levels-design-v1.0-20260819.md | root |
-| doc-body 评审 + process prompt | documents/review/doc-body-width-levels-{review-v1.0,review-prompt}-20260819.md | review |
-| doc meta show-md 设计 | documents/doc-meta-path-showmd-design-v1.0-20260819.md | root |
-| doc meta 评审 / dev-prompt / process prompt | documents/review/doc-meta-path-showmd-{review-v1.0,dev-prompt,review-prompt}-20260819/20260821.md | review |
-| layout-doc bare 设计 v1.1 | documents/solutions/layout-doc-bare-design-v1.1-20260806.md | solutions |
-| layout-doc bare 初审 / 复审 | documents/review/layout-doc-bare-{review-v1.0,review-v1.1}-20260812.md | review |
-| heading-levels-fix 设计 | documents/heading-levels-fix-design-v1.0-20260812.md | root |
-| heading-levels 复检 / process prompt | documents/review/heading-levels-fix-{review-v1.0,review-prompt}-20260812.md | review |
-| heading-levels verify | documents/verify-prompt-heading-levels-20260812.md | root |
-| 排版审计 | documents/review/html-gen-typography-review-v1.0-20260827.md | review |
-| sidebar+table 设计 v3.2 | documents/sidebar-table-design-v3.2-20260714.md | root |
-| slide 工具栏设计 v1.0 | documents/slide-toolbar-design-v1.0-20260714.md | root |
+| doc-body 三级宽度设计 + verify? | documents/archive/root-20260908/doc-body-width-levels-design-v1.0-20260819.md | root |
+| doc-body 评审 + process prompt | documents/archive/review-20260908/doc-body-width-levels-{review-v1.0,review-prompt}-20260819.md | review |
+| doc meta show-md 设计 | documents/archive/root-20260908/doc-meta-path-showmd-design-v1.0-20260819.md | root |
+| doc meta 评审 / dev-prompt / process prompt | documents/archive/review-20260908/doc-meta-path-showmd-{review-v1.0,dev-prompt,review-prompt}-20260819/20260821.md | review |
+| layout-doc bare 设计 v1.1 | documents/archive/solutions-20260908/layout-doc-bare-design-v1.1-20260806.md | solutions |
+| layout-doc bare 初审 / 复审 | documents/archive/review-20260908/layout-doc-bare-{review-v1.0,review-v1.1}-20260812.md | review |
+| heading-levels-fix 设计 | documents/archive/root-20260908/heading-levels-fix-design-v1.0-20260812.md | root |
+| heading-levels 复检 / process prompt | documents/archive/review-20260908/heading-levels-fix-{review-v1.0,review-prompt}-20260812.md | review |
+| heading-levels verify | documents/archive/root-20260908/verify-prompt-heading-levels-20260812.md | root |
+| 排版审计 | documents/archive/review-20260908/html-gen-typography-review-v1.0-20260827.md | review |
+| sidebar+table 设计 v3.2 | documents/archive/root-20260908/sidebar-table-design-v3.2-20260714.md | root |
+| slide 工具栏设计 v1.0 | documents/archive/root-20260908/slide-toolbar-design-v1.0-20260714.md | root |

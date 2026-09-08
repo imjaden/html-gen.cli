@@ -112,10 +112,10 @@ python3 -m pytest tests/ -q --tb=short   # 失败定位
 ## 8. 参考文档
 
 - 保留原位：pytest.ini、requirements-dev.txt、tests/、skills/test-speed-optimization（SKILL.md + scripts/speedup_sleeps.py）、features.md、review-log.md / .review-level.yaml（历史不追改）。
-- 本族过程文档（4 份）待归档 → `documents/archive/{root,review}-20260908/`（以执行批次实际日期为准）：
+- 本族过程文档（4 份）已归档（2026-09-08 执行） → `documents/archive/{root,review}-20260908/`：
 
-| 素材 | 原位路径 | 归档桶 |
+| 素材 | 归档路径 | 归档桶 |
 |:--|:--|:--|
-| 测试提速设计 v1.0 | documents/test-speed-optimization-design-v1.0-20260819.md | root |
-| 设计评审 / process prompt | documents/review/test-speed-optimization-{review-v1.0,review-prompt}-20260819.md | review |
-| 实现审计 | documents/review/test-speed-optimization-implementation-review-v1.0-20260821.md | review |
+| 测试提速设计 v1.0 | documents/archive/root-20260908/test-speed-optimization-design-v1.0-20260819.md | root |
+| 设计评审 / process prompt | documents/archive/review-20260908/test-speed-optimization-{review-v1.0,review-prompt}-20260819.md | review |
+| 实现审计 | documents/archive/review-20260908/test-speed-optimization-implementation-review-v1.0-20260821.md | review |

@@ -177,7 +177,7 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 
 ## 8. 关键决策（原文编号）
 
-### 8.1 prompt CLI 挂载（CL004，solutions/html-gen-prompt-cli-design-v1.0-20260806.md）
+### 8.1 prompt CLI 挂载（CL004，documents/archive/solutions-20260908/html-gen-prompt-cli-design-v1.0-20260806.md）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -193,7 +193,7 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 | D6 | tests/test_prompt_cmd.py 5 用例（列/全文/带 reference/不存在 exit1/--brief） |
 | D7 | 文档同步（AGENTS.md CLI 表 + skills/ 挂载清单） |
 
-### 8.2 站点 v1（CL007，solutions/html-gen-prompts-site-design-v1.0-20260902.md）
+### 8.2 站点 v1（CL007，documents/archive/solutions-20260908/html-gen-prompts-site-design-v1.0-20260902.md）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -208,7 +208,7 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 | I1 | 触发时机：仅手动生成 commit，无 cron/CI |
 | （派生） | 站点产物一律剥离 YAML frontmatter |
 
-### 8.3 站点 v2（CL008，solutions/html-gen-prompts-site-v2-design-v1.0-20260902.md，14 条目）
+### 8.3 站点 v2（CL008，documents/archive/solutions-20260908/html-gen-prompts-site-v2-design-v1.0-20260902.md，14 条目）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -227,7 +227,7 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 | K-1 | 产物布局：prompts/kb/{skill}.html ×8 + _kb-groups.json + _kb-data.json |
 | L-1 | 通用 skill 命名 cli-prompts-site（Hermes devops 类） |
 
-### 8.4 table/knowledge output 三态（CL003，solutions/table-knowledge-json-output-design-v1.2-20260829.md）
+### 8.4 table/knowledge output 三态（CL003，documents/archive/solutions-20260908/table-knowledge-json-output-design-v1.2-20260829.md）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -271,15 +271,15 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 ## 11. 参考文档
 
 - 保留原位：features.md（功能清单）、skills/（html-gen-cli-spec 等 8 篇）、prompts/（生成产物）、review-log.md / .review-level.yaml（历史记录，不追改）。
-- 本族过程文档（18 份）待归档 → `documents/archive/{solutions,root,review}-20260908/`（以执行批次实际日期为准）：
+- 本族过程文档（18 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 
-| 素材 | 原位路径 | 归档桶 |
+| 素材 | 归档路径 | 归档桶 |
 |:--|:--|:--|
-| prompt CLI 设计 v1.0（CL004） | documents/solutions/html-gen-prompt-cli-design-v1.0-20260806.md | solutions |
-| prompt CLI 验证项 | documents/verify-prompt-prompt-cli-20260808.md | root |
-| 站点 v1 设计（CL007） | documents/solutions/html-gen-prompts-site-design-v1.0-20260902.md | solutions |
-| 站点 v1 设计评审 / 实现审计 / process prompt ×3 | documents/review/html-gen-prompts-site-{design-review-v1.0,impl-audit-v1.0,design-review-prompt,dev-impl-prompt,impl-audit-prompt}-20260902.md | review |
-| 站点 v2 设计（CL008） | documents/solutions/html-gen-prompts-site-v2-design-v1.0-20260902.md | solutions |
-| 站点 v2 设计评审 / 实现审计 / process prompt ×2 | documents/review/html-gen-prompts-site-v2-{design-review-v1.0,impl-audit-v1.0,dev-impl-prompt,impl-audit-prompt}-20260902.md | review |
-| table/knowledge output 设计 v1.2（CL003） | documents/solutions/table-knowledge-json-output-design-v1.2-20260829.md | solutions |
-| output 设计评审 v1.0/v1.1/v1.2 + 实现审计 | documents/review/table-knowledge-json-output-{design-review-v1.0,design-review-v1.1,design-review-v1.2,impl-audit-v1.0}-20260829.md | review |
+| prompt CLI 设计 v1.0（CL004） | documents/archive/solutions-20260908/html-gen-prompt-cli-design-v1.0-20260806.md | solutions |
+| prompt CLI 验证项 | documents/archive/root-20260908/verify-prompt-prompt-cli-20260808.md | root |
+| 站点 v1 设计（CL007） | documents/archive/solutions-20260908/html-gen-prompts-site-design-v1.0-20260902.md | solutions |
+| 站点 v1 设计评审 / 实现审计 / process prompt ×3 | documents/archive/review-20260908/html-gen-prompts-site-{design-review-v1.0,impl-audit-v1.0,design-review-prompt,dev-impl-prompt,impl-audit-prompt}-20260902.md | review |
+| 站点 v2 设计（CL008） | documents/archive/solutions-20260908/html-gen-prompts-site-v2-design-v1.0-20260902.md | solutions |
+| 站点 v2 设计评审 / 实现审计 / process prompt ×2 | documents/archive/review-20260908/html-gen-prompts-site-v2-{design-review-v1.0,impl-audit-v1.0,dev-impl-prompt,impl-audit-prompt}-20260902.md | review |
+| table/knowledge output 设计 v1.2（CL003） | documents/archive/solutions-20260908/table-knowledge-json-output-design-v1.2-20260829.md | solutions |
+| output 设计评审 v1.0/v1.1/v1.2 + 实现审计 | documents/archive/review-20260908/table-knowledge-json-output-{design-review-v1.0,design-review-v1.1,design-review-v1.2,impl-audit-v1.0}-20260829.md | review |
