@@ -1644,3 +1644,38 @@ v1.2 三态增量模型（new_items/updates/skipped）是 v1.1 additive 语义�
 - 报告: `documents/review/html-gen-prompts-site-v2-impl-audit-v1.0-20260902.md`
 
 ---
+
+## 2026-09-08 — html-gen documents-consolidation 审计（PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (commit-range-audit)
+- **Scope**: P5 推广 #1 documents-consolidation 三 commit（a77bfae 五手册 v1.0 / 514ca8f 归档 87 份 / cfd91ff 引用同步 + README + features 校正）；审计项 1-7（手册-实现一致性 / 归档计数+保历史 / 引用零残留 / features 越界 / 测试 / git 卫生 / 安全面）
+- **Verdict**: 🟢 **PASS 95/100（A）** — 87 份归档全部 R100 保历史（11 solutions + 19 root + 57 review，M1-M5 80 + HIST 7 自洽）；87 basename 引用零残留；features 两处校正实测互证；27 passed；仅 1 🟡 非阻断
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-109（🟡 建议修，非阻断）
+- **Findings**: 0 🟢 / 1 🟡 / 0 🔴
+
+### Summary
+
+phase-1 盘点 M1-M5 五族（80 份）+ HIST 7 共 87 份 process 文档，phase-3 归档为三桶（solutions 11 / root 19 / review 57），全部 R100 纯 rename（git 保历史，`--follow` 可追溯）；源目录 documents/{solutions,review}/ 清空、原位件（features/skills/源码/README*/handoff/ 等）未动。5 份手册 + documents/README.md frontmatter 合规（type=summary / date=2026-09-08 / author=hermes-v0.20.6(2026.8.27) / profile=dev）。手册内容与实现抽样互证：v3.3(2026-08-28)、8 skills、7 子命令、268 collected、bare 模式默认展示（layout-doc.html L263-264 `params.get('sidebar')!=='0'`）。features.md 校正仅 2 hunk 无越界（bare 默认语义反转 + 测试 154→268），均已实测核验。引用面扫描 209 个非豁免 tracked 文件：87 basename 零残留；scripts/tool-table-videos-syncer.py + 2 test docstring 已同步 archive 前缀。
+
+### Findings
+
+- 🟡 HG-SEC-109：scripts/provinces-match.py:4 docstring 仍引 `documents/solutions/provinces-table-design-v1.1-20260824.md` —— 双陈旧（v1.1 已于 a148b8d 更名 v1.2；solutions/ 本次归档后清空）。cfd91ff「reference updates」同步了 table-template 族 syncer+2 test 的 docstring（手册 §9 显式列「源码引用面」），但 pages-content 族未列 provinces-match.py 的 docstring 引用面 → 覆盖缺口。非功能、非 87 basename、非阻断；修法一行：改 `documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md`。
+
+### Positives
+
+- 归档零误移：87/87 R100 纯 rename（零相似度降级、零正文改动），历史可 `--follow` 追溯；桶计数与 README 归档批次记录逐桶自洽（11/19/57 = 87，M1-M5 80 + HIST 7）
+- 引用零残留达标：209 非豁免文件扫描，87 basename 零残留；syncer+2 test docstring 的 archive 前缀同步已落实
+- features 校正克制：diff 精确 2 hunk，bare 语义与 268 计数均实测互证，未核项未擅改
+- 手册-实现一致性高：CLI 命令/数据格式/测试口径/版本号/skills 数均与源码互证；决策编号保留原文（CL001-CL008 / D1-D6 / HG-SEC-xxx）
+- 测试纪律：test_sync_videos 21 + test_url_state 6 = 27 passed；pytest --collect-only 268 collected 与 features/手册 §3 口径一致
+- git 卫生：三 commit 各只含目标文件；working tree 干净；review-log.md/.review-level.yaml 未被 dev 改；syncer 脚本仅 docstring 路径变更无功能改动
+- 安全面：纯文档/路径变更，零凭据零依赖零外链引入
+
+### 处理
+
+- ✅ PASS → review-log.md + .review-level.yaml 登记 + push github main（项目惯例仅推 github，gitee 镜像 47 behind 按惯例不追）
+- HG-SEC-109 遗留：建议 dev 后续一行修 provinces-match.py docstring（非阻断）
+
+---

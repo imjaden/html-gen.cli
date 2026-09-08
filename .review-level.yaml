@@ -547,4 +547,14 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-100..105 (✅ closed 本次实现逐条验证: Namespace 全字段+test_09 kb env pin / desc 元数据注释 / append 序 SKILL→GUIDE→CASE+test_11 / kb mkdir+known 清理+stdout 抑制+统计解耦 / 计数 18→28 / Jekyll _ 前缀 SKILL.md 注记) + HG-SEC-106..108 (🟢 records 非阻断: AGENTS.md 同步遗留待用户 / 设计 doc 折叠文本未订正入文 / 设计评审 2f748fe trail 回填)"
     report: documents/review/html-gen-prompts-site-v2-impl-audit-v1.0-20260902.md
+  - date: 2026-09-08
+    reviewer: Security Reviewer
+    review_type: commit-range-audit
+    review_level: L2
+    scope: "P5 推广 #1 documents-consolidation 审计 — 3 commits (a77bfae 五手册 v1.0 / 514ca8f 归档 87 份 R100 / cfd91ff 引用同步+README+features 校正); 归档桶 11 solutions + 19 root + 57 review; 手册-实现一致性 + 引用零残留 + features 无越界 + 27 passed"
+    verdict: PASS
+    score: 95
+    findings_total: 1
+    findings_open: 1
+    tracking: "HG-SEC-109 (🟡 建议修非阻断: scripts/provinces-match.py:4 docstring 引 v1.1 + solutions/ 已归档, 应改 archive/solutions-20260908/provinces-table-design-v1.2)"
 
