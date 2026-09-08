@@ -1679,3 +1679,23 @@ phase-1 盘点 M1-M5 五族（80 份）+ HIST 7 共 87 份 process 文档，phas
 - HG-SEC-109 遗留：建议 dev 后续一行修 provinces-match.py docstring（非阻断）
 
 ---
+
+## 2026-09-08 — HG-SEC-109 尾项复核（provinces-match docstring 一行修）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit-recheck)
+- **Scope**: 未 push 1 commit（bea6fdf fix@pages），provinces-match.py:4 docstring 改指 archive v1.2（一行）
+- **Verdict**: 🟢 **PASS 100/100（A）**
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-109（✅ closed bea6fdf）
+- **Findings**: 0 🟢 / 0 🟡 / 0 🔴
+
+### Summary
+
+HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:4 docstring 从 `documents/solutions/provinces-table-design-v1.1-20260824.md`（双陈旧：v1.1→v1.2 + solutions/ 已归档）改为 `documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md`。验证：diff 仅 1 行（1 文件 1 增 1 删）；目标 archive 文件存在（11630 字节，§三/§四 齐全）；grep 'provinces-table-design-v1.1' scripts/ 零命中；py_compile OK；工作树干净；无 -A。镜像 gitee 已由用户授权补推同步至 da27ba2，与 github 一致。
+
+### 处理
+
+- ✅ PASS → review-log.md + .review-level.yaml 登记 + push github main + gitee 镜像
+
+---
