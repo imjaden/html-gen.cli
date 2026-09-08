@@ -1,7 +1,7 @@
 #!/usr/bin/env python3
 """provinces-match.py — 中国省份 ↔ 全球国家 面积/人口/GDP 相近关联匹配草稿生成器。
 
-设计依据: documents/solutions/provinces-table-design-v1.1-20260824.md §三/§四
+设计依据: documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md §三/§四
 - 国家侧归一化: area_km2 ÷ 10000 → 万km²; gdp_yi × 7.08 → 亿元 (2023 年均汇率, 国家统计局口径)
 - 阈值: 面积 |Δ|≤30% / 人口 ≤20% / GDP ≤30% (相对省份值)
 - 每项取 2-3 个 (|Δ| 升序 + 人工复核兜底)
