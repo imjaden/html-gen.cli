@@ -131,6 +131,25 @@ def favicon_args(args):
     return favicon_link_html(favicon)
 
 
+# ═══ GitHub Issue 反馈通道 (CL009: --feedback-repo; 默认不注入, 隐私同 --github-url) ═══
+def feedback_repo_args(args, options):
+    """反馈仓库三级取值并合并进 options.feedback（CL009 K1）。
+
+    优先级: CLI --feedback-repo > env HTML_GEN_FEEDBACK_REPO > JSON options.feedback.repo。
+    显式空串 → 禁用（不渲染反馈按钮, 与 --favicon/--github-url 空语义对齐）。
+    仅 table 子命令调用；未配置且无 dataset → 不新增 feedback 键（产物与既有逐字一致）。
+    """
+    repo = getattr(args, 'feedback_repo', None)
+    if repo is None:
+        env = os.environ.get('HTML_GEN_FEEDBACK_REPO')
+        repo = env if env is not None else (options.get('feedback') or {}).get('repo', '')
+    fb = dict(options.get('feedback') or {})
+    fb['repo'] = '' if repo is None else str(repo)
+    if fb['repo'] or fb.get('dataset'):
+        options['feedback'] = fb
+    return options
+
+
 # ═══ Markdown → HTML (minimal, no deps) ═══
 def md_to_html(text):
     lines = text.split('\n')
@@ -502,6 +521,9 @@ def cmd_table(args):
     # 段落描述: 纯文本安全转义, \n → <br> 换行
     description = html.escape(subtitle, quote=False).replace('\n', '<br>')
 
+    # CL009: --feedback-repo / env / JSON options.feedback.repo 三级取值合并
+    options = feedback_repo_args(args, options)
+
     tmpl = inline_style(read_template(TEMPLATE_TABLE))
     gc, hl = corner_args(args)
     result = inject(tmpl, title=title, description=description,
@@ -868,6 +890,7 @@ def main():
     t.add_argument('--github-url', help='右上角 GitHub corner 链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_GITHUB_URL)')
     t.add_argument('--home-url', help='demo 首页入口链接 (默认不带, 隐私; 显式空串禁用; env: HTML_GEN_HOME_URL)')
     t.add_argument('--favicon', help='favicon URL (默认注入默认图标; 显式空串禁用; env: HTML_GEN_FAVICON)')
+    t.add_argument('--feedback-repo', help='GitHub Issue 反馈通道仓库 owner/repo (默认不注入, 隐私; 显式空串禁用; env: HTML_GEN_FEEDBACK_REPO)')
 
     k = sub.add_parser('knowledge', help='JSON → C 型知识库')
     k.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')

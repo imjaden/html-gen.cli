@@ -40,6 +40,7 @@ html-gen table -d data.json [--title "标题"] [--subtitle "段落描述"] [-o i
 #   -o 必填二选一: CLI -o <out.html> 或 JSON 顶层 "output" (优先级 CLI > JSON; 均无 → 提示中断 exit 1)
 #   --title    优先级: CLI > JSON 顶层 title > "数据表格"
 #   --subtitle 页面级段落描述(纯文本, \n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空
+#   --feedback-repo <owner/repo> GitHub Issue 反馈通道开关 (仅 table; 默认不注入, 显式空串禁用; env HTML_GEN_FEEDBACK_REPO; case 级配置 data JSON options.feedback)
 # 四渲染子命令通用参数: --github-url <url> 右上角 GitHub corner (默认不带, 隐私) / --home-url <url> demo 首页入口 / --favicon <url> favicon 图标 (默认注入 DEFAULT_FAVICON, 显式空串禁用) / --quiet 仅打印路径
 #   环境变量兜底: HTML_GEN_GITHUB_URL / HTML_GEN_HOME_URL / HTML_GEN_FAVICON (CLI 参数优先)
 
@@ -93,6 +94,23 @@ scripts/tool-table-videos-syncer.py <yaml> --empty-video       # 列出 videos �
 - `--dry-run` / `--apply` / `--empty-video` 三向互斥（argparse mutually exclusive group）
 - yaml `target` 段扩展 `rebuild: {github_url, home_url, favicon}`：缺省用固定默认；`github_url` 优先级 rebuild 配置 > 旧产物 github-corner 提取 > 固定默认；任一键显式空串 = 禁用（不传该参数）
 - `--apply` 重建时打印 `[执行]` 完整 html-gen 命令（含 `--github-url`/`--home-url`/`--favicon` 三参数）
+
+### GitHub Issue 反馈通道（CL009，2026-09-10）
+
+`scripts/countries-issue-sync.py` + `scripts/feedback-targets.yaml`：A 型表格分栏预览 header 的 ✏️ 按钮 → GitHub Issue Form（`.github/ISSUE_TEMPLATE/data-fix.yml`，预填 page/dataset/row/row_en/field/current）→ 脚本按 target 白名单校验 → 写回 data JSON → 调 `html-gen.py table` 重建 → 回评（`--close` 追加关闭）。
+
+```shell
+scripts/countries-issue-sync.py --list                 # 列待处理 issue（零写盘）
+scripts/countries-issue-sync.py                        # 预览（默认 --dry-run，零写盘）
+scripts/countries-issue-sync.py --apply                # 写回 JSON + 重建产物 + 回评
+scripts/countries-issue-sync.py --apply --close        # 追加关闭已处理 issue
+```
+
+- 页面侧开关：`html-gen table --feedback-repo <owner/repo>`（table 专属；env `HTML_GEN_FEEDBACK_REPO`；CLI > env > JSON `options.feedback.repo`；均无 → 不渲染按钮）；repo 落 JSON 可防 videos syncer 重建时丢按钮（HG-SEC-111）
+- 校验六项：page 匹配 / dataset 匹配 / 行唯一定位（`key_field` → `alt_key` 退化，0 或多命中拒绝）/ 字段在 `editable` 白名单 / 数值列可解析 / 建议值非空；另含幂等（值未变跳过）与冲突取最新
+- `protected: [videos]` 禁止 issue 写视频列（视频归 `tool-table-videos-syncer.py`）
+- 重建参数固化在 `targets.<name>.rebuild.args`（含 `--github-url`/`--home-url`/`--favicon`/`--feedback-repo`），apply 时打印 `[执行]`
+- 复用：新增案例只需追加一份 target（join key：countries=country_zh、provinces=province、drama=strategy/era）
 
 ## 模板注入机制
 
@@ -273,7 +291,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 247 tests（27 文件；测试文件：test_json_output 14 / test_drama_knowledge 16 / test_templates 18 / test_hermes_skills 15 / test_provinces_table 13 / test_countries_table 13 / test_index_landing 18 / test_table_features 14 / test_videos 8 / test_sync_videos 13 / test_url_state 6 / test_demo_cmd 10 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_doc_sidebar 7 / test_doc_bare 6 / test_sticky_width 6 / test_heading_levels 6 / test_initial_hidden_split 5 / test_prompt_cmd 5 / test_demos_index 6 / test_render_summary 7 / test_cli_version 5 / test_corner_privacy 6 / test_slide_h3_toggle 4 / test_datetime_clickmode 3 等）
+- 当前 285 tests（29 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 17 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_prompt_cmd 5 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -291,14 +309,16 @@ Options（均可选）：
 html-gen.cli/
 ├── index.html                 # 落地页（动态两屏 hero + 四模板网格 + 上箭头 A/B 返回首页 + 🌙☀️ 主题切换 + 📋 复制按钮 + footer）
 ├── html-gen.py                 # Layer 3 CLI 生成器
-├── scripts/                     # 脚本与 schema（company-report 生成器 / tool-table-videos-syncer.py videos 同步）
+├── .github/ISSUE_TEMPLATE/      # data-fix.yml（数据纠错表单）+ config.yml（关闭 blank issue）
+├── scripts/                     # 脚本与 schema（company-report 生成器 / tool-table-videos-syncer.py videos 同步 /
+│                                #   countries-issue-sync.py 反馈闭环 + feedback-targets.yaml 目标配置）
 ├── style-guide.css             # Layer 1 样式基座
 ├── layout-doc.html             # Layer 2 B 型文档模板
 ├── layout-table.html           # Layer 2 A 型表格模板
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json, _cloudwise-news.json 公众号文章库）
-├── tests/                      # Selenium + 回归测试 (247 tests)
+├── tests/                      # Selenium + 回归测试 (285 tests)
 ├── prompts/                    # prompt --site 生成物（在线阅读站点: index.html 合集 + {skill}.md/.json + all.md; 勿手改, 由 --site 重新生成）
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md

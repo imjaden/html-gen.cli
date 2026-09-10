@@ -21,6 +21,7 @@ html-gen table — JSON 转 A 型数据表格 ✅ — layout-table.html
 html-gen table -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
 html-gen table --title — 表格标题 ✅ — html-gen.py
 html-gen table -o/--output — 输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一) ✅ — html-gen.py
+html-gen table --feedback-repo — GitHub Issue 反馈通道开关 (table 专属, 默认不注入/空串禁用) ✅ — html-gen.py
 html-gen knowledge — JSON 转 C 型知识库 ✅ — layout-knowledge.html
 html-gen knowledge -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
 html-gen knowledge -g/--groups — 输入 groups JSON (类目定义) ✅ — html-gen.py
@@ -250,15 +251,15 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 
 | 指标 | 数值 |
 |:---|---:|
-| Python 文件 | 4 (html-gen 546行 / company-report 101行 / test×2) |
+| Python 文件 | 5 (html-gen / company-report / countries-issue-sync / test×2；行数见 AGENTS.md) |
 | 模板文件 | 4 (doc 444行 / slide 681行 / table 1143行 / knowledge 342行) |
 | CSS 基座 | 1 (style-guide.css) |
 | 数据文件 | 7 |
 | Demo 文件 | 56 (registry: 21 独立 + 35 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 268 (pytest --collect-only -n 0 实测口径 2026-09-08; Selenium + CLI 回归) |
+| 测试用例 | 285 (pytest --collect-only -n 0 实测口径 2026-09-10; Selenium + CLI 回归) |
 | CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
-| CLI 参数 | 15 |
+| CLI 参数 | 16 |
 | localStorage keys | 17 |
 | 数据卡 metrics | company-report content 页自动生成（6 卡模式） |
 | GitHub Corner | demo 页右上角双层可点区防遮挡；根落地页全图标可点 + hover 波浪动画 |

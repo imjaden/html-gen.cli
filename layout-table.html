@@ -179,6 +179,8 @@
 .split-preview-header .sp-nav { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.7rem; font-family:inherit; }
 .split-preview-header .sp-nav:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 .split-preview-header .sp-nav:disabled { opacity:0.3; cursor:default; }
+.split-preview-header .sp-feedback { display:inline-flex; align-items:center; justify-content:center; height:24px; padding:0 6px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.75rem; font-family:inherit; }
+.split-preview-header .sp-feedback:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 .split-preview-body { flex:1; overflow:auto; padding:14px; }
 .split-preview-body iframe { width:100%; height:70vh; border:none; }
 .split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
@@ -351,6 +353,11 @@
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
   }
+
+  // CL009: GitHub Issue 反馈通道 — options.feedback={repo,dataset,key,altKey}
+  // 未配置 repo（或显式空串）→ 不渲染反馈按钮（既有页面零变更）
+  const FB_CFG  = (OPTIONS && OPTIONS.feedback) || null;
+  const FB_REPO = (FB_CFG && FB_CFG.repo) ? String(FB_CFG.repo) : '';
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
@@ -549,7 +556,9 @@
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
               // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
-              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              // CL009: 携带列 key，反馈链接可预填 field
+              var pillsKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+pillsKey+')"' : '';
               rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
@@ -585,13 +594,13 @@
           var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
-            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
           } else if (col.quickFilter === true) {
             // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
           } else if (col === firstKeyCol) {
             // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
-            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
@@ -1021,7 +1030,7 @@
   });
 
   /* ── Split View ── */
-  var splitRow = null, splitIdx = -1;
+  var splitRow = null, splitIdx = -1, splitField = '';  // CL009: splitField = 触发分栏的列 key（'' = 未知）
 
   /* ── URL 状态同步 (CL004: ?tab&q&split replaceState; HG-SEC-074 统一 URLSearchParams) ── */
   function syncUrlState() {
@@ -1036,10 +1045,10 @@
   }
   window.syncUrlState = syncUrlState;
 
-  function activateSplit(row, idx) {
-    splitRow = row; splitIdx = idx;
+  function activateSplit(row, idx, colKey) {
+    splitRow = row; splitIdx = idx; splitField = colKey || '';  // CL009
     splitActive = true;
-    window.splitActive = true; window.splitIdx = idx;  // 暴露供调试/测试
+    window.splitActive = true; window.splitIdx = idx; window.splitRow = row;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.add('split-mode');
     initThead();
@@ -1053,18 +1062,18 @@
     syncUrlState();
   }
   window.activateSplit = activateSplit;
-  window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
+  window.openSplitAt = function(idx, colKey) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx, colKey); };
   window.splitNav = function(dir) {
     var newIdx = splitIdx + dir;
     if (newIdx < 0 || newIdx >= filtered.length) return;
-    activateSplit(filtered[newIdx], newIdx);
+    activateSplit(filtered[newIdx], newIdx, '');
   };
   window.closeSplit = function() {
     splitActive = false;
-    window.splitActive = false; window.splitIdx = -1;  // 暴露供调试/测试
+    window.splitActive = false; window.splitIdx = -1; window.splitRow = null;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.remove('split-mode');
-    splitRow = null; splitIdx = -1;
+    splitRow = null; splitIdx = -1; splitField = '';
     initThead();
     render();
     // clear highlight
@@ -1073,14 +1082,53 @@
     syncUrlState();
   };
 
+  /* ── CL009: GitHub Issue 反馈链接（Issue Form 预填，全部 encodeURIComponent） ── */
+  function buildFeedbackUrl(row) {
+    if (!FB_REPO || !row) return '';
+    var keyField = (FB_CFG && FB_CFG.key) || 'name';
+    var altField = (FB_CFG && FB_CFG.altKey) || '';
+    var rowId = (row[keyField] === null || row[keyField] === undefined) ? '' : String(row[keyField]);
+    if (!rowId) return '';
+    var parts = [];
+    function add(k, v) {
+      if (v === null || v === undefined) return;
+      v = String(v);
+      if (!v) return;
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+    }
+    add('template', 'data-fix.yml');
+    var bits = [];
+    if (FB_CFG && FB_CFG.dataset) bits.push(String(FB_CFG.dataset));
+    bits.push(rowId);
+    if (splitField) bits.push(splitField);
+    add('title', '[数据纠错] ' + bits.join(' · '));
+    add('page', (location.pathname || '').replace(/^\/+/, ''));
+    add('dataset', FB_CFG && FB_CFG.dataset);
+    add('row', rowId);
+    add('row_en', altField ? row[altField] : '');
+    add('field', splitField);
+    if (splitField) add('current', row[splitField]);
+    return 'https://github.com/' + FB_REPO + '/issues/new?' + parts.join('&');
+  }
+  window.buildFeedbackUrl = buildFeedbackUrl;
+  window.openFeedbackIssue = function() {
+    var url = buildFeedbackUrl(splitRow);
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
   function renderSplitPreview(row) {
     var header = document.getElementById('splitPreviewHeader');
     var body = document.getElementById('splitPreviewBody');
     // title from first column
     var titleCol = visibleCols({requireKey: true})[0];
+    // CL009: 反馈按钮仅当 options.feedback.repo 配置时渲染
+    var fbBtn = FB_REPO
+      ? '<button class="sp-feedback" id="spFeedbackBtn" onclick="openFeedbackIssue()" title="反馈/纠错数据">✏️</button>'
+      : '';
     header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
       '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
       ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+      fbBtn +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
     // render: url → iframe, desc → textContent, else kv-list

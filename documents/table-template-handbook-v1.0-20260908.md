@@ -261,7 +261,28 @@ countries:
 - `data/_phase2-demo.json` / `demos/phase2-demo.html`（quickfilter 测试载体）现仓已不在；现行 data/ 有 `_table-features-demo.json`（疑为后继，待核）。
 - 设计 D6 一处路径 `demos/countries/countries-table.html` 为文档笔误（实际根路径 `demos/countries-table.html`）。
 
-## 9. 参考文档
+## 9. GitHub Issue 反馈通道（CL009，2026-09-10）
+
+读者在 A 型表格发现数据错误 → 分栏预览 header 的 ✏️ 按钮 → GitHub Issue Form（预填上下文）→
+`scripts/countries-issue-sync.py` 白名单校验写回 → 重建产物。原则：静态站无后端，页面只负责
+「发起」，解析与写回全部在本地脚本完成（先 dry-run 后 apply）。
+
+| 环节 | 载体 | 说明 |
+|:--|:--|:--|
+| 按钮 | layout-table.html `renderSplitPreview` | 仅当 `OPTIONS.feedback.repo` 非空时渲染 `#spFeedbackBtn`（默认不注入 → 既有页面视觉零变更） |
+| 列上下文 | `openSplitAt(idx, colKey)` | 3 处调用（pills / `onCellClick='split'` / 首列默认）携带列 key → URL `field` 参数 |
+| 预填链接 | `buildFeedbackUrl(row)` | page（运行时 pathname）+ dataset/row/row_en/field/current，全量 `encodeURIComponent`；`window.open(..., 'noopener,noreferrer')` |
+| 表单 | `.github/ISSUE_TEMPLATE/data-fix.yml` | 9 字段（页面/数据集/行标识/行英文标识/字段/当前值/建议值/来源/补充说明）；预填字段一律 input（GitHub 仅 input/textarea 支持 URL 预填）；label `data-fix` |
+| 解析 | `parse_issue_body` | 「空行 + `### <label>`」切段；未知段并入上一字段（HG-SEC-115）；`_No response_` → 空 |
+| 校验 | `plan_issues` | page / dataset / 行唯一定位（key_field → alt_key 退化，0 或多命中拒绝）/ 字段白名单 / 类型 / 建议值非空 六项 + 幂等 + 冲突取最新；`protected:[videos]` 拒写 |
+| 写回 | `json.dumps(ensure_ascii=False, indent=2)` | 与现文件逐字一致（无尾换行）；apply 前必有 dry-run 预览 |
+| 重建 | `targets.<name>.rebuild.args` | 固化 `--github-url`/`--home-url`/`--favicon`/`--feedback-repo`；apply 时打印 `[执行]` |
+
+已知边界：预填字段可被人工篡改（靠白名单 + 人工 dry-run 兜底）；videos 列不走本通道（归 videos syncer）；
+doc / knowledge / slide 模板无「数据行」概念不适用。设计:
+`documents/solutions/countries-issue-feedback-design-v1.1-20260910.md`。
+
+## 10. 参考文档
 
 - 保留原位：features.md、layout-table.html、html-gen.py、scripts/tool-table-videos-syncer.py、data/_countries-data.json、demos/countries-table.html、review-log.md / .review-level.yaml（历史不追改）。
 - **源码引用面（已随归档同步至 archive 路径，2026-09-08）**：scripts/tool-table-videos-syncer.py docstring L21-23 引 3 份设计（syncer v1.2/v1.1 + favicon §5）；tests/test_sync_videos.py docstring L4 引 table-videos-syncer-design-v1.1（§5 测试计划）；tests/test_url_state.py docstring L5 引 favicon 设计 §6。

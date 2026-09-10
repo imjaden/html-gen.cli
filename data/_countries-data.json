@@ -4661,6 +4661,12 @@
       "country_en",
       "capital_zh",
       "capital_en"
-    ]
+    ],
+    "feedback": {
+      "dataset": "countries",
+      "key": "country_zh",
+      "altKey": "country_en",
+      "repo": "imjaden/html-gen.cli"
+    }
   }
 }

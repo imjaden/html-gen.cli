@@ -1,0 +1,74 @@
+name: 数据纠错
+description: 报告案例表格中的数据错误或过时信息（页面上的「✏️」按钮会自动填写上下文）
+title: "[数据纠错] "
+labels: ["data-fix"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！**标注「请勿修改」的字段由页面自动填充**，如被改动会导致本条被同步脚本跳过。
+        请只填写「建议值」「来源」等开放字段。
+  - type: input
+    id: page
+    attributes:
+      label: 页面
+      description: 请勿修改（由页面自动填充）
+      placeholder: demos/countries-table.html
+    validations:
+      required: true
+  - type: input
+    id: dataset
+    attributes:
+      label: 数据集
+      description: 请勿修改（由页面自动填充）
+    validations:
+      required: true
+  - type: input
+    id: row
+    attributes:
+      label: 行标识
+      description: 请勿修改（由页面自动填充）
+    validations:
+      required: true
+  - type: input
+    id: row_en
+    attributes:
+      label: 行英文标识
+      description: 请勿修改（可选，用于二次校验）
+    validations:
+      required: false
+  - type: input
+    id: field
+    attributes:
+      label: 字段
+      description: 请勿修改（数据列 key，如 pop_wan）
+    validations:
+      required: true
+  - type: input
+    id: current
+    attributes:
+      label: 当前值
+      description: 请勿修改（页面现值，仅供对照）
+    validations:
+      required: false
+  - type: textarea
+    id: suggested
+    attributes:
+      label: 建议值
+      description: 请填写修正后的值（数值列请只填数字）
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: 来源
+      description: 权威出处链接或说明（用于核对）
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 补充说明
+      description: 可选，其他需要说明的信息
+    validations:
+      required: false

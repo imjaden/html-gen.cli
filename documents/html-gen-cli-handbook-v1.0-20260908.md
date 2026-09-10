@@ -45,7 +45,7 @@ usage: html-gen.py [-h] [--version] [--quiet]
 
 全局参数：`-h/--help`、`--version`、`--quiet`（仅打印生成路径，抑制统计信息）。
 
-通用隐私参数（doc/slide/table/knowledge 等共用）：`--github-url`、`--home-url`、`--favicon` —— 默认不注入（隐私意图）；**显式传空串 `''` 禁用 env 兜底**；env 分别为 `HTML_GEN_GITHUB_URL` / `HTML_GEN_HOME_URL` / `HTML_GEN_FAVICON`。站点生成内部对所有 Namespace 字段显式 pin（`github_url=''`、`home_url=站点根`），防止操作机 env 污染入库产物（HG-SEC-100）。
+通用隐私参数（doc/slide/table/knowledge 等共用）：`--github-url`、`--home-url`、`--favicon`；**table 专属** `--feedback-repo`（GitHub Issue 反馈通道，默认不注入，env `HTML_GEN_FEEDBACK_REPO`，CL009）—— 均默认不注入（隐私意图）；**显式传空串 `''` 禁用 env 兜底**；env 分别为 `HTML_GEN_GITHUB_URL` / `HTML_GEN_HOME_URL` / `HTML_GEN_FAVICON`。站点生成内部对所有 Namespace 字段显式 pin（`github_url=''`、`home_url=站点根`），防止操作机 env 污染入库产物（HG-SEC-100）。
 
 ### 分发与打包惯例
 

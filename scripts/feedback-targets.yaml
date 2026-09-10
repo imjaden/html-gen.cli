@@ -1,0 +1,69 @@
+# A 型表格「GitHub Issue 反馈通道」目标配置（HTML-GEN-CL009 / S1 V1）
+#
+# 每个 target 描述一个可被 issue 纠错的案例：数据文件、产物、行标识、可写字段白名单、
+# 类型约束与重建参数。新增案例只需追加一份 target（见设计 §12 复用指引）。
+#
+# 注意（V1）：本配置独立于 cache/data/_countries-data.videos.yaml
+#   —— 后者由 tool-table-videos-syncer.py 以 {'target','countries'} 整体重写，
+#      任何附加段都会被覆盖，故不可复用。
+#
+# 设计: documents/solutions/countries-issue-feedback-design-v1.0-20260910.md
+# 依赖: 仅 PyYAML（dev 依赖 requirements-dev.txt），运行时 html-gen 零依赖不受影响
+
+targets:
+  countries:
+    repo: imjaden/html-gen.cli
+    label: data-fix
+    dataset: countries
+    page: demos/countries-table.html        # 全路径或 basename 均可匹配
+    data: data/_countries-data.json
+    html: demos/countries-table.html
+    key_field: country_zh
+    alt_key: country_en
+    editable:
+      - country_zh
+      - country_en
+      - capital_zh
+      - capital_en
+      - capital_lat
+      - capital_lon
+      - region_tags
+      - area_km2
+      - pop_wan
+      - gdp_yi
+      - loc_url
+      - ethnic_groups
+      - religions
+      - area_province
+      - pop_province
+      - gdp_province
+      - note
+    protected: [videos]                     # 视频列归 tool-table-videos-syncer.py，禁止 issue 写入
+    types:
+      capital_lat: number
+      capital_lon: number
+      area_km2: number
+      pop_wan: number
+      gdp_yi: number
+    parse_fields:
+      page: 页面
+      dataset: 数据集
+      row: 行标识
+      row_en: 行英文标识
+      field: 字段
+      current: 当前值
+      suggested: 建议值
+      source: 来源
+      note: 补充说明
+    # 重建参数固化（含 corner/home/feedback 三参数）——防「重建漏传参数丢 corner/home」
+    # （CL002 FIND-002 同类缺陷，2026-09-10 手工重建时复发过一次）
+    rebuild:
+      args:
+        - --github-url
+        - https://github.com/imjaden/html-gen.cli
+        - --home-url
+        - https://html-gen.cli.jaden.tech/
+        - --favicon
+        - https://www.jaden.tech/static/img/favicon.png
+        - --feedback-repo
+        - imjaden/html-gen.cli

@@ -23,6 +23,7 @@
 - [x] **AI 对接** — `html-gen prompt` 输出项目 skills（供 AI agent 读取使用说明）
 - [x] **默认隐私** — 生成物默认不含个人信息链接，显式入参才带（`--github-url` / `--home-url`）
 - [x] **默认 favicon** — 默认注入 favicon 图标到 `<head>`；`--favicon <url>` 覆盖，显式空串禁用
+- [x] **Issue 反馈闭环** — A 型表格可带 ✏️ 按钮跳转预填 GitHub Issue；`scripts/countries-issue-sync.py` 白名单校验后写回数据 JSON 并重建产物（table 专属 `--feedback-repo`）
 
 ## 安装
 
