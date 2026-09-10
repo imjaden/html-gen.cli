@@ -135,7 +135,10 @@ class TestFeedbackRender(unittest.TestCase):
 
     # ── 渲染条件 ──
     def test_01_default_no_button(self):
-        """无 feedback 配置 → 产物无 issues/new、无 sp-feedback、无 FB_REPO 值。"""
+        """无 feedback 配置 → 未注入 options.feedback、分栏 header 无 #spFeedbackBtn。
+
+        HG-SEC-112/121: 不断言 JS 源码无 `issues/new` 字面量（buildFeedbackUrl 常驻定义）。
+        """
         out = self._gen(mutate=lambda d: d['options'].pop('feedback', None))
         html = out.read_text(encoding='utf-8')
         self.assertNotIn('"feedback"', html)          # 未注入 options.feedback
@@ -192,7 +195,7 @@ class TestFeedbackRender(unittest.TestCase):
         url = self.driver.execute_script('return window.buildFeedbackUrl(window.splitRow);')
         self.assertIn('field=pop', url)
         self.assertIn('current=9157', url)
-        self.assertIn('title=' + '%5B%E6%95%B0%E6%8D%AE%E7%BA%A0%E9%94%99%5D', url)  # [数据纠错]
+        self.assertIn('title=' + '%5B%E6%95%B0%E6%8D%AE%E5%8F%8D%E9%A6%88%5D', url)  # [数据反馈]
 
     def test_06_no_js_errors(self):
         """分栏 + 按钮路径无 JS 报错。"""
@@ -209,6 +212,8 @@ class TestIssueSyncScript(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.mod = _load_sync_module()
+        # HG-SEC-122: staticmethod 包装——否则经实例访问会被绑定为方法（多传 self → TypeError）
+        cls.parse_fn = staticmethod(cls.mod.parse_issue_body)
 
     # ── 解析 ──
     def test_10_parse_body(self):
@@ -317,7 +322,7 @@ class TestIssueSyncScript(unittest.TestCase):
             actions, skips = self.mod.plan_issues(
                 [{'number': 2, 'body': fields, 'createdAt': '2026-09-10T00:00:00Z'}], t, rows, idx)
         finally:
-            self.mod.parse_issue_body = orig_parse
+            self.mod.parse_issue_body = self.parse_fn
         self.assertEqual(actions, [], skips)
         self.assertIn('歧义', skips[0][1])
 
@@ -343,54 +348,59 @@ class TestIssueSyncScript(unittest.TestCase):
         try:
             actions, skips = self.mod.plan_issues(issues, t, rows, idx)
         finally:
-            self.mod.parse_issue_body = orig_parse
+            self.mod.parse_issue_body = self.parse_fn
         self.assertEqual(len(actions), 1)
         self.assertEqual(actions[0]['issue'], 11)
         self.assertEqual(actions[0]['new'], 9300)
         self.assertTrue(any('冲突' in s[1] for s in skips))
 
-    # ── apply 往返 ──
-    def test_19_apply_roundtrip(self):
+    # ── apply / dry-run / --issue ──
+    def _tmp_project(self):
+        """临时项目：data/d.json + cfg.yaml；返回 (tmp, data_path, cfg, doc)。"""
         tmp = Path(tempfile.mkdtemp(prefix='_tmp_issue_sync_'))
-        try:
-            (tmp / 'data').mkdir()
-            doc = {'title': 't', 'columns': [{'key': 'country_zh', 'label': '国家'},
-                                             {'key': 'pop_wan', 'label': '人口', 'type': 'number'}],
-                   'data': [{'country_zh': '伊朗', 'country_en': 'Iran', 'pop_wan': 9157}],
-                   'options': {'feedback': {'dataset': 'countries', 'key': 'country_zh',
-                                            'altKey': 'country_en'}}}
-            raw = json.dumps(doc, ensure_ascii=False, indent=2)      # 无尾换行
-            data_path = tmp / 'data' / 'd.json'
-            data_path.write_text(raw, encoding='utf-8')
-            cfg = tmp / 'cfg.yaml'
-            cfg.write_text(json.dumps({'targets': {'countries': {
-                'repo': 'o/r', 'label': 'data-fix', 'dataset': 'countries',
-                'page': 'demos/countries-table.html', 'data': 'data/d.json',
-                'html': 'demos/countries-table.html', 'key_field': 'country_zh',
-                'alt_key': 'country_en', 'editable': ['pop_wan', 'note'],
-                'protected': ['videos'], 'types': {'pop_wan': 'number'},
-                'parse_fields': {'page': '页面', 'dataset': '数据集', 'row': '行标识',
-                                 'row_en': '行英文标识', 'field': '字段', 'current': '当前值',
-                                 'suggested': '建议值', 'source': '来源', 'note': '补充说明'},
-                'rebuild': {'args': ['--feedback-repo', 'o/r']}}}},
-                ensure_ascii=False), encoding='utf-8')
+        (tmp / 'data').mkdir()
+        doc = {'title': 't', 'columns': [{'key': 'country_zh', 'label': '国家'},
+                                         {'key': 'pop_wan', 'label': '人口', 'type': 'number'}],
+               'data': [{'country_zh': '伊朗', 'country_en': 'Iran', 'pop_wan': 9157}],
+               'options': {'feedback': {'dataset': 'countries', 'key': 'country_zh',
+                                        'altKey': 'country_en'}}}
+        data_path = tmp / 'data' / 'd.json'
+        data_path.write_text(json.dumps(doc, ensure_ascii=False, indent=2), encoding='utf-8')
+        cfg = tmp / 'cfg.yaml'
+        cfg.write_text(json.dumps({'targets': {'countries': {
+            'repo': 'o/r', 'label': 'data-fix', 'dataset': 'countries',
+            'page': 'demos/countries-table.html', 'data': 'data/d.json',
+            'html': 'demos/countries-table.html', 'key_field': 'country_zh',
+            'alt_key': 'country_en', 'editable': ['pop_wan', 'note'],
+            'protected': ['videos'], 'types': {'pop_wan': 'number'},
+            'parse_fields': {'page': '页面', 'dataset': '数据集', 'row': '行标识',
+                             'row_en': '行英文标识', 'field': '字段', 'current': '当前值',
+                             'suggested': '建议值', 'source': '来源', 'note': '补充说明'},
+            'rebuild': {'args': ['--feedback-repo', 'o/r']}}}}, ensure_ascii=False),
+            encoding='utf-8')
+        return tmp, data_path, cfg, doc
 
-            mod = self.mod
-            orig_root, orig_list, orig_rebuild, orig_comment = (
-                mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment)
-            calls = {}
-            mod.PROJECT_ROOT = tmp
-            mod.gh_issue_list = lambda repo, label, limit, issue_no=None: ([{
-                'number': 7, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
-                'body': ISSUE_BODY.replace('demos/countries-table.html', 'demos/countries-table.html'),
-            }], None)
-            mod.rebuild = lambda target: calls.setdefault('rebuild', target) and 0 or 0
-            mod.gh_comment = lambda repo, no, body, close=False: calls.setdefault('comment', (no, close)) and True or True
-            try:
-                rc = mod.main(['--config', str(cfg), '--apply'])
-            finally:
-                mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment = (
-                    orig_root, orig_list, orig_rebuild, orig_comment)
+    def _run_main(self, tmp, cfg, argv):
+        """在临时 PROJECT_ROOT 下运行 main，打桩 gh/rebuild/comment；返回 (rc, calls)。"""
+        mod = self.mod
+        saved = (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment)
+        calls = {}
+        mod.PROJECT_ROOT = tmp
+        mod.gh_issue_list = lambda repo, label, limit, issue_no=None: ([{
+            'number': 7, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
+            'body': ISSUE_BODY, 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]}], None)
+        mod.rebuild = lambda target: (calls.__setitem__('rebuild', target), 0)[1]
+        mod.gh_comment = lambda repo, no, body, close=False: (calls.__setitem__('comment', (no, close)), True)[1]
+        try:
+            rc = mod.main(['--config', str(cfg)] + argv)
+        finally:
+            mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment = saved
+        return rc, calls
+
+    def test_19_apply_roundtrip(self):
+        tmp, data_path, cfg, doc = self._tmp_project()
+        try:
+            rc, calls = self._run_main(tmp, cfg, ['--apply'])
             self.assertEqual(rc, 0)
             new_raw = data_path.read_text(encoding='utf-8')
             self.assertFalse(new_raw.endswith('\n'), '不得新增尾换行')
@@ -403,5 +413,60 @@ class TestIssueSyncScript(unittest.TestCase):
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
+    def test_20_dry_run_writes_nothing(self):
+        """HG-SEC-120: 默认 --dry-run 零写盘且不触发重建/回评。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            before = data_path.read_text(encoding='utf-8')
+            rc, calls = self._run_main(tmp, cfg, [])
+            self.assertEqual(rc, 0)
+            self.assertEqual(data_path.read_text(encoding='utf-8'), before)
+            self.assertNotIn('rebuild', calls)
+            self.assertNotIn('comment', calls)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
 
-orig_parse = _load_sync_module().parse_issue_body
+    def test_21_issue_flag_direct_lookup(self):
+        """HG-SEC-119: --issue N 走 gh issue view 直查，不使用无效的 in:number 搜索限定符。"""
+        seen = []
+
+        class _R:
+            returncode = 0
+            stderr = ''
+            stdout = json.dumps({'number': 42, 'state': 'OPEN', 'labels': [{'name': 'data-fix'}],
+                                 'title': 't', 'body': '', 'url': '', 'createdAt': ''})
+
+        def fake_run(cmd, **kw):
+            seen.append(list(cmd))
+            return _R()
+
+        real = self.mod.run
+        self.mod.run = fake_run
+        try:
+            issues, err = self.mod.gh_issue_list('o/r', 'data-fix', 100, issue_no=42)
+        finally:
+            self.mod.run = real
+        self.assertIsNone(err)
+        self.assertEqual(len(issues), 1)
+        self.assertEqual(seen[0][:3], ['gh', 'issue', 'view'])
+        self.assertNotIn('--search', seen[0])
+
+    def test_22_issue_flag_filters_state_and_label(self):
+        """HG-SEC-119 口径：非 open 或缺 label 的 issue 不返回。"""
+        class _R:
+            returncode = 0
+            stderr = ''
+
+        real = self.mod.run
+        for state, labels, expect in (('CLOSED', [{'name': 'data-fix'}], 0),
+                                      ('OPEN', [{'name': 'other'}], 0),
+                                      ('OPEN', [{'name': 'data-fix'}], 1)):
+            _R.stdout = json.dumps({'number': 5, 'state': state, 'labels': labels,
+                                    'title': 't', 'body': '', 'url': '', 'createdAt': ''})
+            self.mod.run = lambda cmd, **kw: _R()
+            try:
+                issues, err = self.mod.gh_issue_list('o/r', 'data-fix', 100, issue_no=5)
+            finally:
+                self.mod.run = real
+            self.assertIsNone(err)
+            self.assertEqual(len(issues), expect, f'{state}/{labels}')

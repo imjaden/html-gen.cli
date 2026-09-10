@@ -1,6 +1,6 @@
-name: 数据纠错
+name: 数据反馈
 description: 报告案例表格中的数据错误或过时信息（页面上的「✏️」按钮会自动填写上下文）
-title: "[数据纠错] "
+title: "[数据反馈] "
 labels: ["data-fix"]
 body:
   - type: markdown

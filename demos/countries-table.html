@@ -1341,7 +1341,7 @@ pre code { background: none; padding: 0; }
     if (FB_CFG && FB_CFG.dataset) bits.push(String(FB_CFG.dataset));
     bits.push(rowId);
     if (splitField) bits.push(splitField);
-    add('title', '[数据纠错] ' + bits.join(' · '));
+    add('title', '[数据反馈] ' + bits.join(' · '));
     add('page', (location.pathname || '').replace(/^\/+/, ''));
     add('dataset', FB_CFG && FB_CFG.dataset);
     add('row', rowId);
@@ -1363,7 +1363,7 @@ pre code { background: none; padding: 0; }
     var titleCol = visibleCols({requireKey: true})[0];
     // CL009: 反馈按钮仅当 options.feedback.repo 配置时渲染
     var fbBtn = FB_REPO
-      ? '<button class="sp-feedback" id="spFeedbackBtn" onclick="openFeedbackIssue()" title="反馈/纠错数据">✏️</button>'
+      ? '<button class="sp-feedback" id="spFeedbackBtn" onclick="openFeedbackIssue()" title="反馈数据">✏️</button>'
       : '';
     header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
       '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +

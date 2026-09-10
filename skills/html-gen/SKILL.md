@@ -310,7 +310,7 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 
 
 ## 变更记录
-- v2.6.0 (2026-09-10): table 专属 `--feedback-repo`（GitHub Issue 反馈通道 + scripts/countries-issue-sync.py 数据纠错闭环）
+- v2.6.0 (2026-09-10): table 专属 `--feedback-repo`（GitHub Issue 反馈通道 + scripts/countries-issue-sync.py 数据反馈闭环）
 - v2.5.0 (2026-09-02): prompt 子命令段补 `--site`（prompts/ 在线阅读站点 28 文件: C 型 knowledge 门户 5 tab + kb/{skill}.html detail + curl 契约）
 - v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明
 - v2.3.0 (2026-08-06): 新增 frontmatter 自动剥离; 修复 doc/slide 侧边栏 sticky 失效

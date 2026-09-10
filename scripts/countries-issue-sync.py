@@ -3,7 +3,7 @@
 """A 型表格「GitHub Issue 反馈通道」同步脚本（HTML-GEN-CL009）。
 
 从 GitHub issue（表单模板 .github/ISSUE_TEMPLATE/data-fix.yml）读取读者提交的
-数据纠错，按 scripts/feedback-targets.yaml 的 target 定义校验（页面/数据集/行唯一
+数据反馈，按 scripts/feedback-targets.yaml 的 target 定义校验（页面/数据集/行唯一
 定位/字段白名单/类型/保护列），白名单写回 data JSON，并调用 html-gen.py table
 重建产物；可选回评/关闭 issue。
 
@@ -46,22 +46,40 @@ def run(cmd, **kw):
     return subprocess.run(cmd, shell=False, capture_output=True, text=True, **kw)
 
 
+def gh_issue_by_number(repo, number, label):
+    """按编号直查单个 issue（HG-SEC-119：GitHub 搜索无 in:number 限定符，故用 gh issue view）。
+
+    仅返回 open 且带目标 label 的 issue，其余返回 []（与 --list 口径一致）。
+    """
+    cmd = ['gh', 'issue', 'view', str(number), '--repo', repo,
+           '--json', 'number,title,body,url,createdAt,state,labels']
+    r = run(cmd, cwd=str(PROJECT_ROOT))
+    if r.returncode != 0:
+        return [], (r.stderr or r.stdout or 'gh 调用失败').strip()
+    try:
+        issue = json.loads(r.stdout or '{}')
+    except json.JSONDecodeError as e:
+        return [], f'gh 输出非 JSON: {e}'
+    if (issue.get('state') or '').upper() != 'OPEN':
+        return [], None
+    if label and label not in [(l or {}).get('name') for l in (issue.get('labels') or [])]:
+        return [], None
+    return [issue], None
+
+
 def gh_issue_list(repo, label, limit, issue_no=None):
     """拉取待处理 issue（gh CLI，shell=False）。返回 (issues, error)。"""
+    if issue_no:
+        return gh_issue_by_number(repo, issue_no, label)
     cmd = ['gh', 'issue', 'list', '--repo', repo, '--label', label, '--state', 'open',
            '--limit', str(limit), '--json', 'number,title,body,url,createdAt']
-    if issue_no:
-        cmd += ['--search', f'{issue_no} in:number']
     r = run(cmd, cwd=str(PROJECT_ROOT))
     if r.returncode != 0:
         return None, (r.stderr or r.stdout or 'gh 调用失败').strip()
     try:
-        issues = json.loads(r.stdout or '[]')
+        return json.loads(r.stdout or '[]'), None
     except json.JSONDecodeError as e:
         return None, f'gh 输出非 JSON: {e}'
-    if issue_no:
-        issues = [i for i in issues if i.get('number') == issue_no]
-    return issues, None
 
 
 def parse_issue_body(body, parse_fields):
@@ -275,7 +293,7 @@ def gh_comment(repo, no, body, close=False):
 def main(argv=None):
     ap = argparse.ArgumentParser(
         prog='countries-issue-sync.py',
-        description='GitHub issue（数据纠错表单）→ 白名单写回 data JSON + 重建产物（HTML-GEN-CL009）')
+        description='GitHub issue（数据反馈表单）→ 白名单写回 data JSON + 重建产物（HTML-GEN-CL009）')
     ap.add_argument('--config', default=str(DEFAULT_CONFIG), help='目标配置（缺省 scripts/feedback-targets.yaml）')
     ap.add_argument('--target', help='目标名（缺省：配置仅一个 target 时自动选用）')
     ap.add_argument('--limit', type=int, default=100, help='拉取 issue 上限（缺省 100）')
