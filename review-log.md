@@ -1741,3 +1741,43 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 - 报告: `documents/review/countries-issue-feedback-design-review-v1.0-20260910.md`
 
 ---
+
+## 2026-09-10 — GitHub Issue 反馈通道 实现审计（PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: countries-issue-feedback 实现审计 — commit 范围 46ea35d（设计评审）→ c918522（设计 v1.1）→ 1e8b24d（实现）→ 8022fba（ops 核查）；设计 v1.1 PASS 85/A（HG-SEC-110..118）；HTML-GEN-CL009 kind=independent
+- **Verdict**: 🟢 **PASS 95/100（A）** — 1 🟡 非阻断 + 5 🟢 记录，无 🔴
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-119（🟡 open 非阻断）+ HG-SEC-120..124（🟢 records）
+- **Findings**: 5 🟢 / 1 🟡 / 0 🔴
+
+### Summary
+
+设计 → 实现 → 真实数据落点全程可复现：模板门控（FB_CFG/FB_REPO）/列上下文（openSplitAt 三处 + splitField 生命周期）/URL 构造（全量 encodeURIComponent + current 仅 field 存在时 + noopener）/CLI 三级取值（CLI>env>JSON，空串禁用）/Issue Form 9 字段/脚本六校验+幂等+冲突取最新+protected[videos]/JSON 往返逐字（indent=2 无尾换行）/rebuild 四参数固化/退出码 0/1/2 逐条核对命中。285 tests 全绿（串行 144.25s / 并行 40.49s）。安全面 URL 全编码 + noopener + json.dumps 注入 + 白名单/类型/protected/行唯一五层兜底，无 🔴 无凭据泄露。HG-SEC-110..116 全部落定，HG-SEC-117（skillSplit 缺省 '' 降级）/HG-SEC-118（title 待实测）正确记录不阻断。唯一 🟡 HG-SEC-119（--issue 便捷 flag 静默失效）非阻断。
+
+### Findings
+
+- 🔴 0 / 🟡 1（HG-SEC-119）/ 🟢 5（HG-SEC-120..124）：
+  - HG-SEC-119（🟡 open）：`--issue N` 用 `gh issue list --search "N in:number"`，`in:number` 非 GitHub 合法限定符（实测静默忽略退化为文本搜索）→ 指定 issue 可能被静默漏过（「无待处理 issue」假阴性）；且 ops 核查 §2 推荐的「按 --issue 直查」对策因此失效。修：改 `gh issue view N --json` 直查或去 --search 仅靠后置过滤
+  - HG-SEC-120（🟢）：设计 §9 TC-08 dry-run 零写盘无独立自动化测试（结构保证 `if not args.apply: return 0` + ops E2E git status 干净双覆盖，功能正确）
+  - HG-SEC-121（🟢）：test_01 docstring 残留旧口径「产物无 issues/new」，实际断言已按 HG-SEC-112 收紧（不断言 issues/new）
+  - HG-SEC-122（🟢）：test 文件 orig_parse 跨 module 实例（L407 二次加载），restore 功能等价但跨实例
+  - HG-SEC-123（🟢）：设计 §4.3 L594 分支标注不准（实为首列默认分栏非 onCellClick）；实现正确覆盖 3 处
+  - HG-SEC-124（🟢）：demos-index.html 连带重建（HG-SEC-114 正常表现）+ 脚本 --limit flag 超设计 §7.1（benign）
+
+### Positives
+
+- 安全面干净：gh 调用统一 `run()` shell=False + list-form（grep shell=True=0/os.system=0）；comment body 用户数据独立 argv 元素；URL 全 encodeURIComponent + noopener + repo json.dumps 注入
+- 六校验+幂等+冲突取最新+protected[videos] 层层兜底，误写面收窄；JSON 往返逐字（test_19 断言无尾换行）
+- 退出码三态实测（互斥冲突/未知 target=2，--json 空结果=0 合法 JSON）
+- 285 tests 零回归；HG-SEC-112 TC-01 口径正确收紧（不断言 JS 源码无 issues/new）
+- 文档同步面齐备：AGENTS/features/README×2/skills/handbook×2/prompts 重生成，CLI 参数 15→16、测试计数 285 一致
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`audit@review: GitHub Issue 反馈通道 实现审计 PASS (HTML-GEN-CL009)`）；仅 commit 不 push（本任务约束）
+- HG-SEC-119（🟡）建议 follow-up 修复，非阻断
+- 报告: `documents/review/countries-issue-feedback-impl-audit-v1.0-20260910.md`
+
+---
