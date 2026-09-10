@@ -213,7 +213,8 @@ class TestCountriesTable(unittest.TestCase):
 
     def test_13_iran_afghanistan_west_asia(self):
         # 伊朗/阿富汗 → 亚洲、西亚（限定大洲列 pills，新省份关联列同属 pills 类型）
-        for name, expected in [('伊朗', ['亚洲', '西亚']), ('阿富汗', ['亚洲', '西亚'])]:
+        # 2026-09-10: 伊朗 region_tags 增补古代帝国标签（波斯帝国/古代帝国），期望值同步
+        for name, expected in [('伊朗', ['亚洲', '西亚', '波斯帝国', '古代帝国']), ('阿富汗', ['亚洲', '西亚'])]:
             row = self._row_for_country(name)
             self.assertIsNotNone(row)
             tds = row.find_elements(By.TAG_NAME, 'td')
