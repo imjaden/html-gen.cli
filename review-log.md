@@ -1699,3 +1699,45 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 - ✅ PASS → review-log.md + .review-level.yaml 登记 + push github main + gitee 镜像
 
 ---
+
+## 2026-09-10 — GitHub Issue 反馈通道 设计评审（PASS 85/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: countries-issue-feedback-design v1.0 — A 型表格 GitHub Issue 反馈通道（页面 ✏️纠错按钮 → Issue Form 预填 → 本地脚本解析 → 白名单回写 → 重建产物，HTML-GEN-CL009 kind=independent，试点 countries-table）；commit 4e14795；前置 CL002/CL004/CL006
+- **Verdict**: 🟢 **PASS 85/100（A）** — 架构正确，4 🟡 非阻断折叠实施 + 5 🟢 记录，无 🔴
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-110..113（🟡×4 折叠 dev 实施）+ HG-SEC-114..118（🟢 records）
+- **Findings**: 5 🟢 / 4 🟡 / 0 🔴
+
+### Summary
+
+静态站无后端约束下的「Issue Form 预填 + 本地脚本解析回写 + 重建」闭环成立；11 占位符/模板改动点/脚本锚点全部实测命中（renderSplitPreview L1076-1110、activateSplit 族 L1039-1074、inject/_SCRIPT_KEYS 含 options、.github 待建、268 tests 精确）；安全面 URL 全 encodeURIComponent + window.open noopener/noreferrer + repo json.dumps 注入 + 白名单/类型/protected(videos)/行唯一定位 层层兜底；editable 17 + protected 1 = 18 列精确全覆盖无遗漏；复用分层（§12）与 config schema（§8）自洽；V1 不复用 videos yaml 理由被源码佐证（videos syncer 写 `{'target','countries'}` 且 resolve_rebuild_args 不读 feedback 键）。JSON 无尾换行 + videos syncer 同款 json.dump(indent=2) → 往返逐字断言成立。4 项 🟡 均属实现前规格订正/一致性补强，折叠进 dev 实施，不阻塞开工。
+
+### Findings
+
+- 🔴 0 / 🟡 4（HG-SEC-110..113，非阻断折叠实施）/ 🟢 5（HG-SEC-114..118，记录）：
+  - HG-SEC-110：§7.2 gh 调用（list/comment/close）未像 step 7 显式规定 list-form + shell=False；comment body 含用户数据 → 注入面。须统一 `subprocess.run([...], shell=False)`（RIG-002 同款）
+  - HG-SEC-111：跨重建漂移——videos syncer resolve_rebuild_args 永不发 --feedback-repo，而 §2.1 options.feedback 无 repo（仅 dataset/key/altKey）→ videos 周更重建 countries-table 后反馈按钮丢失。建议 repo 落 JSON options.feedback（§5 已列 JSON 为优先级 3，仅 §2.1 漏列）或 videos syncer 增发 --feedback-repo
+  - HG-SEC-112：TC-01「HTML 无 issues/new」与 §4.4 buildFeedbackUrl 常驻 JS 字面量矛盾（FEEDBACK=false 时函数体仍含 issues/new）→ 断言收紧为「无 .sp-feedback 按钮 + 无渲染 feedback 链接」或 URL 构造 FEEDBACK 门控
+  - HG-SEC-113：§10 文档同步面遗漏 documents/html-gen-cli-handbook（L48 隐私参数枚举，--feedback-repo 同语义）+ features.md（L261「CLI 参数 15」→16；§10「若有则同步」弱化，实为已确认存在）
+  - HG-SEC-114：A0-1「零变更」= 视觉/行为零变更非 byte-identical（FB/FEEDBACK/buildFeedbackUrl 常驻 JS）；设计用词「视觉零变更」准确，仅记录
+  - HG-SEC-115：issue body `### <label>` 切段歧义面（值内含 `### ` 行干扰），三重兜底缓解，建议首现序切段+未知段丢弃
+  - HG-SEC-116：rebuild.args 缺 --favicon（当前默认 favicon 不漂移，未来自定义案例静默回退）
+  - HG-SEC-117：activateSplit 形参调用点枚举遗漏 skillSplit（L883/885，handler 模式），缺省 '' 优雅降级
+  - HG-SEC-118：title URL 参数覆盖表单固定 title 待实施实测
+
+### Positives
+
+- 安全面干净：URL 全编码 + noopener/noreferrer + repo json.dumps 注入；数据写回 白名单+类型+protected+行唯一+冲突取最新+dry-run 六层兜底，误写面收窄
+- 复用分层自洽：模板零改动/JSON 一行/config 增 target/表单共用，成本递增清晰；V1 不复用 videos yaml 有源码级佐证（非臆断）
+- editable+protected 恰好覆盖 18 列零遗漏；videos 双写风险堵死
+- 测试计划 §9 可行且覆盖充分：Selenium（渲染/URL）+ unittest/subprocess/mock gh（脚本六校验/幂等/冲突/dry-run）复用现有基建；268→~279 精确
+- rebuild.args 显式 flat list 固化三参数，比 videos syncer dict 兜底更严，杜绝 FIND-002 同类丢失
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`audit@review: GitHub Issue 反馈通道 设计评审 PASS (HTML-GEN-CL009)`）；仅 commit 不 push（本任务约束）
+- 报告: `documents/review/countries-issue-feedback-design-review-v1.0-20260910.md`
+
+---
