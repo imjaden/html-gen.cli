@@ -2,7 +2,7 @@
 
 - 主题：全球 195 国（联合国会员 193 + 观察员 2）速查表
 - 创建日期：2026-08-11
-- 来源：MyVideos data/countries.csv（World Bank + UN M49 + data/zh_names.json 手工校核表）
+- 来源：公开数据集（World Bank + UN M49 + zh_names 手工校核表）
 - 模板类型：A 型表格（html-gen table）
 - 数据文件：data/_countries-data.json（columns + data + tabs + options）
 - 页面：demos/countries-table.html
