@@ -212,8 +212,6 @@ class TestIssueSyncScript(unittest.TestCase):
     @classmethod
     def setUpClass(cls):
         cls.mod = _load_sync_module()
-        # HG-SEC-122: staticmethod 包装——否则经实例访问会被绑定为方法（多传 self → TypeError）
-        cls.parse_fn = staticmethod(cls.mod.parse_issue_body)
 
     # ── 解析 ──
     def test_10_parse_body(self):
@@ -317,12 +315,13 @@ class TestIssueSyncScript(unittest.TestCase):
         fields = {'page': 'demos/countries-table.html', 'dataset': 'countries', 'row': '伊朗',
                   'row_en': 'Iran', 'field': 'pop_wan', 'current': '9157', 'suggested': '9200',
                   'source': 's', 'note': ''}
+        real = self.mod.parse_issue_body          # HG-SEC-132: patch 时捕获，避免跨用例恢复失真
         self.mod.parse_issue_body = lambda body, pf: body
         try:
             actions, skips = self.mod.plan_issues(
                 [{'number': 2, 'body': fields, 'createdAt': '2026-09-10T00:00:00Z'}], t, rows, idx)
         finally:
-            self.mod.parse_issue_body = self.parse_fn
+            self.mod.parse_issue_body = real
         self.assertEqual(actions, [], skips)
         self.assertIn('歧义', skips[0][1])
 
@@ -344,11 +343,12 @@ class TestIssueSyncScript(unittest.TestCase):
             {'number': 10, 'body': dict(base, suggested='9200'), 'createdAt': '2026-09-10T00:00:00Z'},
             {'number': 11, 'body': dict(base, suggested='9300'), 'createdAt': '2026-09-10T01:00:00Z'},
         ]
+        real = self.mod.parse_issue_body          # HG-SEC-132
         self.mod.parse_issue_body = lambda body, pf: body
         try:
             actions, skips = self.mod.plan_issues(issues, t, rows, idx)
         finally:
-            self.mod.parse_issue_body = self.parse_fn
+            self.mod.parse_issue_body = real
         self.assertEqual(len(actions), 1)
         self.assertEqual(actions[0]['issue'], 11)
         self.assertEqual(actions[0]['new'], 9300)

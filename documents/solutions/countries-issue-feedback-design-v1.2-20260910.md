@@ -119,7 +119,7 @@ https://github.com/<repo>/issues/new
 header 由 `▲ ▼ 标题 ✕` 变为 `▲ ▼ 标题 ✏️ ✕`（`✏️` 仅当反馈已启用时渲染）：
 
 ```js
-var fb = FEEDBACK ? '<button class="sp-feedback" onclick="openFeedbackIssue()" title="反馈/纠错数据">✏️</button>' : '';
+var fb = FEEDBACK ? '<button class="sp-feedback" onclick="openFeedbackIssue()" title="反馈数据">✏️</button>' : '';
 header.innerHTML = '<button class="sp-nav" …>▲</button><button class="sp-nav" …>▼</button> '
                  + title + fb + '<button class="sp-close" …>✕</button>';
 ```
@@ -179,9 +179,9 @@ window.openFeedbackIssue = function () {
 ### 6.1 `data-fix.yml`（通用一份，T1）
 
 ```yaml
-name: 数据纠错
+name: 数据反馈
 description: 报告案例表格中的数据错误或过时信息（页面按钮会自动填写上下文）
-title: "[数据纠错] "
+title: "[数据反馈] "
 labels: ["data-fix"]
 body:
   - type: markdown
@@ -209,7 +209,7 @@ blank_issues_enabled: false
 
 ### 6.3 label
 
-`gh label create data-fix --repo imjaden/html-gen.cli --color FBCA04 --description "案例数据纠错"`（幂等：已存在则跳过）。
+`gh label create data-fix --repo imjaden/html-gen.cli --color FBCA04 --description "案例数据反馈"`（幂等：已存在则跳过）。
 
 ## 7. 同步脚本规格（scripts/countries-issue-sync.py）
 
@@ -385,7 +385,7 @@ FIND-002 同类缺陷，2026-09-10 又在手工重建中复发过一次）。
 - **activateSplit 形参覆盖（HG-SEC-117）**：`skillSplit`（layout-table.html:883/885）未传列 key，
   缺省 `''` 优雅降级；skills-list 属 U1 排除范围，不影响 countries 试点。
 - **title 预填待实测（HG-SEC-118）**：URL `?title=` 能否覆盖表单 YAML 固定 `title` 存在版本差异，
-  实施期以真实 issue 实测确认；若不可覆盖，则 title 恒为 `[数据纠错] `（功能不受影响）。
+  实施期以真实 issue 实测确认；若不可覆盖，则 title 恒为 `[数据反馈] `（功能不受影响）。
 
 ## 14. 修订记录
 
