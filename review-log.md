@@ -1781,3 +1781,44 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 - 报告: `documents/review/countries-issue-feedback-impl-audit-v1.0-20260910.md`
 
 ---
+
+## 2026-09-11 — 推送前复核 round-3（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (push-review / commit-range-audit)
+- **Scope**: `github/main..HEAD` 12 笔（`f2de562..1b060b9`）— 两轮历史清理（清理 1 code-inventory 历史重写 + 清理 2 MyVideos 文档删除）+ CL009 链 9 笔复核
+- **Verdict**: 🟢 **PASS 100/100（A）** — 无 🔴/🟡，1 🟢 记录（作者占位，非阻断）
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-125..133（131 缺口；125/126/127/128/129/132/133 已处置，130 open 🟢 记录）
+- **Findings**: 0 🔴 / 0 🟡 / 1 🟢
+
+### Summary
+
+两轮历史清理均完成且零残留：MyVideos 提及 0 行、code-inventory 提交/对象/树三查 = 0、三文件悬挂引用 0 行。回归串行 288 passed（128.48s）+ 并行 288 passed（37.96s，首跑 1 例 flaky 隔离复跑恢复）。CL009 交付面 spFeedbackBtn=1 / github-corner=1 / `--list` exit 0。12 笔 commit 类型全规范（data/docs/audit/feat/fix/chore，无 add@/fixed@/remove@）。round-2 编号的 HG-SEC-125..133 在本轮重建轨迹：7 项已处置（125 历史重写 / 128 9974fe8 措辞 / 132 9974fe8 patch-restore / 133 features 数据文件 7 / 129 历史重写 / 126/127 随历史移除），仅 HG-SEC-130（10 笔 commit 作者占位 `t <t@t.com>`）因「不改写历史」约束保留为 🟢 记录。安全面增量：shell=True=0、`in:number` 仅存注释、无凭据/magnet/成人片商名残留。ff-only 可推。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 1（HG-SEC-130 open 非阻断）：
+  - HG-SEC-125（🔴 已处置）：code-inventory 公开 832 JAV 番号 + 649 magnet + 成人片商名 → 清理 1 历史重写 + gc，三查 = 0
+  - HG-SEC-126（🔴 已处置）/ HG-SEC-127（🟡 已处置）：title/三处 rebuild 漂移 → 相关提交随历史移除
+  - HG-SEC-128（🟡 已处置）：设计 v1.2 §4.1/§6.1/§6.3/§13 五处「数据纠错」→ `9974fe8`；现存 4 处「纠错」均为修订记录/决策表 B1/通用词
+  - HG-SEC-129（🟢 已处置）：commit 类型非规范 → 清理 1；12 笔扫描全规范
+  - HG-SEC-130（🟢 **open**）：10 笔 commit 作者占位 `t <t@t.com>` → 不改写历史无法修复；git 身份已配 `Jaden.Li <jaden.li@jaden.tech>`，后续正常
+  - HG-SEC-132（🟢 已处置）：test parse staticmethod 前提存疑 → `9974fe8` patch 时捕获 + finally 恢复
+  - HG-SEC-133（🟢 已处置）：features.md「数据文件 8」→ 现为 7
+
+### Positives
+
+- 两轮清理彻底：MyVideos/code-inventory/悬挂引用三查零残留，对象库物理清除（rev-list 0）
+- 回归双绿（串行 + 并行），flaky 隔离复跑恢复，工作树干净
+- CL009 交付面三抽查全中；`--issue` 直查（HG-SEC-119）已改 `gh issue view --json`，`in:number` 仅存注释
+- 12 笔 commit 类型全规范；安全面 shell=True=0、无凭据
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`audit@review: html-gen 推送前复核 round-3 PASS (HG-SEC-125..133)`）
+- 推送 `git push github main`（ff-only，不 force，不推 gitee）
+- HG-SEC-130（🟢 作者占位）记录，不改写历史
+- 报告: `documents/review/html-gen-push-review-v1.0-20260910.md`
+
+---

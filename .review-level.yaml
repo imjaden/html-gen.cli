@@ -586,7 +586,19 @@ review_history:
     verdict: PASS
     score: 95
     findings_total: 6
-    findings_open: 1
-    tracking: "HG-SEC-119 (🟡 open 非阻断: --issue 无效 gh 搜索限定符 in:number 退化文本搜索) + HG-SEC-120..124 (🟢 records: TC-08 dry-run 零写盘无自动化测试 / test_01 docstring 口径残留 / orig_parse 跨 module 实例 / 设计 §4.3 L594 分支标注 / demos-index 连带重建+--limit 超设计)"
+    findings_open: 0
+    tracking: "HG-SEC-119..124 (✅ closed 49bf912: gh_issue_by_number 用 gh issue view 直查 / test_20 dry-run 断言 / test_01 口径对齐 / parse 恢复改 patch-capture / §4.3 L594 标注更正 / demos-index benign)"
     report: documents/review/countries-issue-feedback-impl-audit-v1.0-20260910.md
+    resolved_by: 49bf912 + 9974fe8 (HG-SEC-119..124 全闭合)
+  - date: 2026-09-11
+    reviewer: Security Reviewer
+    review_type: push-review
+    review_level: L2
+    scope: "推送前复核 round-3 — github/main..HEAD 12 笔 (f2de562..1b060b9), 两轮历史清理 (清理1 code-inventory 历史重写 + 清理2 MyVideos 文档删除) + CL009 链 9 笔复核"
+    verdict: PASS
+    score: 100
+    findings_total: 8
+    findings_open: 1
+    tracking: "HG-SEC-125..133 (131 缺口; 125/126/127/128/129/132/133 已处置, 130 🟢 open 作者占位 t<t@t.com 不改写历史)"
+    report: documents/review/html-gen-push-review-v1.0-20260910.md
 
