@@ -259,6 +259,10 @@ def plan_issues(issues, target, rows, index, override_field=None, override_value
                 continue
         else:
             new = str(suggested).strip()
+            # C1: XSS 入库防护 — 拒绝含 HTML 标签的建议值（HG-SEC-134, CL010）
+            if '<' in new or '>' in new:
+                skips.append((no, f'字段 {field} 建议值含 HTML 标签字符（< 或 >），安全策略拒绝'))
+                continue
         if norm(old) == norm(new):
             skips.append((no, f'{field} 建议值与现值一致，无变化'))
             continue

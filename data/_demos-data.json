@@ -24,7 +24,8 @@
       "sortable": true,
       "locale": "zh",
       "width": "260px",
-      "preview": true
+      "preview": true,
+      "escape": false
     }
   ],
   "data": [

@@ -825,8 +825,9 @@ pre code { background: none; padding: 0; }
             }
             if (col.render) val = col.render(val, row);
           else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
-          else if (col.escape) val = escapeHtml(String(val));
+          else if (col.escape === false) { /* 显式豁免: raw HTML（如 <a> 链接列） */ }
           else if (val === undefined || val === null) val = '';
+          else val = escapeHtml(String(val));  // HG-SEC-134: 默认转义，防止 stored XSS
           var freezeCls = col.freeze ? ' frozen-col' : '';
           var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';

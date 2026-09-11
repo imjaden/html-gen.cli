@@ -1362,7 +1362,7 @@ def cmd_demo(args):
         idx_columns = [
             {'key': '标题', 'label': '标题', 'sortable': True, 'locale': 'zh', 'width': '200px', 'freeze': True, 'preview': True},
             {'key': '模板', 'label': '模板', 'type': 'pills', 'sortable': True, 'locale': 'zh', 'width': '120px', 'preview': True},
-            {'key': '文档链接', 'label': '文档链接', 'sortable': True, 'locale': 'zh', 'width': '260px', 'preview': True},
+            {'key': '文档链接', 'label': '文档链接', 'sortable': True, 'locale': 'zh', 'width': '260px', 'preview': True, 'escape': False},
         ]
         idx_rows = []
         for d in indep:
