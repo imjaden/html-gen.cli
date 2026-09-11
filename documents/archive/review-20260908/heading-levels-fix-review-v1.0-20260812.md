@@ -6,7 +6,7 @@ v1.1 (2026-08-12, 复检)
 
 ## 审查对象
 
-- documents/heading-levels-fix-design-v1.0-20260812.md (commit 19ee648, 复检 c33005f)
+- （审查对象文档已按用户口径删除）
 
 ## 复检结论
 

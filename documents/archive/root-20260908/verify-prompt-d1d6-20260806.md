@@ -5,7 +5,6 @@
 对 html-gen 项目 ~/CodeSpace/html-gen 验证 datetime 排序 / clickMode 单数兼容 /
 SKILL.md 文档同步 / features.md 同步 / Selenium 测试。
 
-聚焦: documents/html-gen-fix-design-v1.0-20260806.md (commit 039f6c0)
 
 ━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
 检查项

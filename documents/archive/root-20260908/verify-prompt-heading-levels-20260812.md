@@ -5,7 +5,6 @@
 对 html-gen 项目 ~/CodeSpace/html-gen 验证 h4-h6 标题渲染支持实现。
 
 聚焦:
-- documents/heading-levels-fix-design-v1.0-20260812.md (设计方案, 含 c33005f 复检修订)
 - documents/review/heading-levels-fix-review-v1.0-20260812.md (审计报告, PASS)
 - 本 session commit: a02897b (dev 实现)
 

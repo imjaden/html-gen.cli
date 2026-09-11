@@ -158,7 +158,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | slide 处理 | slide 不做运行时显隐（无 URLSearchParams），生成端统一输出 + 默认隐藏 |
 | I1-I8 | 两 cmd meta 追加路径行（basename 脱敏）/ doc CSS+JS show-md / L311 正则扩展 / 测试并入 test_templates.py / 产物重生成 / features.md 补 |
 
-### 6.4 h4-h6（documents/archive/root-20260908/heading-levels-fix-design-v1.0-20260812.md，决策 1-6 + D-新增）
+### 6.4 h4-h6（决策 1-6 + D-新增）
 
 | 编号 | 决策 |
 |:--|:--|
@@ -219,7 +219,6 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | doc meta 评审 / dev-prompt / process prompt | documents/archive/review-20260908/doc-meta-path-showmd-{review-v1.0,dev-prompt,review-prompt}-20260819/20260821.md | review |
 | layout-doc bare 设计 v1.1 | documents/archive/solutions-20260908/layout-doc-bare-design-v1.1-20260806.md | solutions |
 | layout-doc bare 初审 / 复审 | documents/archive/review-20260908/layout-doc-bare-{review-v1.0,review-v1.1}-20260812.md | review |
-| heading-levels-fix 设计 | documents/archive/root-20260908/heading-levels-fix-design-v1.0-20260812.md | root |
 | heading-levels 复检 / process prompt | documents/archive/review-20260908/heading-levels-fix-{review-v1.0,review-prompt}-20260812.md | review |
 | heading-levels verify | documents/archive/root-20260908/verify-prompt-heading-levels-20260812.md | root |
 | 排版审计 | documents/archive/review-20260908/html-gen-typography-review-v1.0-20260827.md | review |

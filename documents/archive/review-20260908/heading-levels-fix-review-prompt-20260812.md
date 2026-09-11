@@ -5,7 +5,6 @@ Review prompt — html-gen h4-h6 标题渲染支持
 对 html-gen 项目 ~/CodeSpace/html-gen 审查 h4-h6 标题渲染修正方案。
 
 聚焦:
-- documents/heading-levels-fix-design-v1.0-20260812.md (commit 19ee648)
 
 背景:
 - cult-analysis-report-v2.1-20260812.html 中 `#### 6.1.5 关键寓意`、`##### 剧情 ↔ 历史对位表`
