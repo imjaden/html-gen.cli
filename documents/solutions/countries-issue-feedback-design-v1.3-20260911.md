@@ -129,10 +129,11 @@ https://github.com/<repo>/issues/new
 
 ```
 [--config …] [--target countries] [--list | --dry-run | --apply] [--close]
-[--issue N] [--field KEY] [--repo …] [--limit N] [--check-template] [--json]
+[--issue N] [--field KEY] [--value TEXT | --value-file PATH] [--repo …] [--limit N] [--check-template] [--json]
 ```
 
-- `--field KEY`：仅与 `--issue N` 联用，**显式覆盖** issue 所填字段（人工裁决入口，N1）
+- `--field KEY` / `--value TEXT` / `--value-file PATH`：仅与 `--issue N` 联用，**显式覆盖** issue 所填字段与建议值
+  （人工裁决入口，N1；`--value-file` 适合 #2 这类「真内容在补充说明里」的长文本）
 - `--check-template`：只读一致性校验（L1），与其它模式互斥，exit 0/1
 
 ### 7.2 校验链（在 v1.2 六项之上强化）
@@ -173,7 +174,9 @@ targets:
     key_guard: [country_zh, country_en]   # 新增：主键/匹配键硬保护（A1，双保险）
     types: {capital_lat: number, capital_lon: number, area_km2: number, pop_wan: number, gdp_yi: number}
     parse_fields: {page: 页面, dataset: 数据集, row: 行标识, row_en: 行英文标识,
-                   field: 字段, suggested: 建议值, source: 来源, note: 补充说明}  # id 沿用 suggested（label 不变, H1）; current 移除（F2）
+                   field: 字段, current: 当前值, suggested: 建议值, source: 来源, note: 补充说明}
+                                             # 表单已删 current（F2）；parse_fields 保留其 label 作为**旧 issue 兼容 shim**
+                                             # （缺该映射会把 `### 当前值` 段并入上一字段，污染解析）
     rebuild: { args: [--github-url …, --home-url …, --favicon …, --feedback-repo …] }
 ```
 

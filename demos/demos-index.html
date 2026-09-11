@@ -587,7 +587,7 @@ pre code { background: none; padding: 0; }
     COLUMNS._splitCols = OPTIONS.columnsSplit;
   }
 
-  // CL009: GitHub Issue 反馈通道 — options.feedback={repo,dataset,key,altKey}
+  // CL009: GitHub Issue 反馈通道 — options.feedback={repo,dataset,key,altKey,template}
   // 未配置 repo（或显式空串）→ 不渲染反馈按钮（既有页面零变更）
   const FB_CFG  = (OPTIONS && OPTIONS.feedback) || null;
   const FB_REPO = (FB_CFG && FB_CFG.repo) ? String(FB_CFG.repo) : '';
@@ -1329,18 +1329,17 @@ pre code { background: none; padding: 0; }
       if (!v) return;
       parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
     }
-    add('template', 'data-fix.yml');
+    // v1.3 (CL009): 模板名来自 options.feedback.template（案例自描述）
+    add('template', (FB_CFG && FB_CFG.template) || 'data-fix.yml');
     var bits = [];
     if (FB_CFG && FB_CFG.dataset) bits.push(String(FB_CFG.dataset));
     bits.push(rowId);
-    if (splitField) bits.push(splitField);
     add('title', '[数据反馈] ' + bits.join(' · '));
     add('page', (location.pathname || '').replace(/^\/+/, ''));
     add('dataset', FB_CFG && FB_CFG.dataset);
     add('row', rowId);
     add('row_en', altField ? row[altField] : '');
-    add('field', splitField);
-    if (splitField) add('current', row[splitField]);
+    // v1.3 (D1): 不再预填 field / current —— 字段由表单下拉选择（dropdown 不可 URL 预填）
     return 'https://github.com/' + FB_REPO + '/issues/new?' + parts.join('&');
   }
   window.buildFeedbackUrl = buildFeedbackUrl;

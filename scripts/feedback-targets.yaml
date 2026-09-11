@@ -15,14 +15,13 @@ targets:
     repo: imjaden/html-gen.cli
     label: data-fix
     dataset: countries
+    template: data-fix-countries.yml        # 表单模板名（M1；页面按钮拼 ?template= 用）
     page: demos/countries-table.html        # 全路径或 basename 均可匹配
     data: data/_countries-data.json
     html: demos/countries-table.html
     key_field: country_zh
     alt_key: country_en
     editable:
-      - country_zh
-      - country_en
       - capital_zh
       - capital_en
       - capital_lat
@@ -39,6 +38,7 @@ targets:
       - gdp_province
       - note
     protected: [videos]                     # 视频列归 tool-table-videos-syncer.py，禁止 issue 写入
+    key_guard: [country_zh, country_en]     # A1: 主键/匹配键硬保护（代码层再拦一次，配置误列也无效）
     types:
       capital_lat: number
       capital_lon: number
@@ -51,7 +51,7 @@ targets:
       row: 行标识
       row_en: 行英文标识
       field: 字段
-      current: 当前值
+      current: 当前值          # 兼容 shim: v1.2 旧 issue 含该段（表单已删除此字段, F2），仅解析不参与定位
       suggested: 建议值
       source: 来源
       note: 补充说明

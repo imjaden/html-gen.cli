@@ -13,6 +13,7 @@
     scripts/countries-issue-sync.py --apply                # 写回 JSON + 重建产物 + 回评
     scripts/countries-issue-sync.py --apply --close        # 追加关闭已处理 issue
     scripts/countries-issue-sync.py --issue 12 --apply     # 只处理指定 issue
+    scripts/countries-issue-sync.py --issue 12 --field note --value-file body.txt --apply  # 人工裁决：指定字段与值
     scripts/countries-issue-sync.py --target countries --config scripts/feedback-targets.yaml
 
 退出码: 0 成功（含无待处理/全部跳过） / 1 校验失败或外部调用失败 / 2 参数错误
@@ -183,7 +184,34 @@ def resolve_row(fields, index, target):
     return None, f'{key}={fields.get("row", "")!r} 未找到匹配行'
 
 
-def plan_issues(issues, target, rows, index):
+def resolve_field(raw, target, override=None):
+    """字段解析（K1/O1/N1）：--field 覆盖 → `标签｜key` 取末段 → 裸 key（旧 issue 兼容）。
+
+    返回 (key, err)；无法识别返回 (None, 原因)。
+    """
+    if override:
+        return str(override).strip(), None
+    v = norm(raw).strip()
+    if not v:
+        return None, '字段为空'
+    editable = target.get('editable') or []
+    key = v.split('｜')[-1].strip() if '｜' in v else v
+    if key in editable:
+        return key, None
+    if v in editable:                       # 兜底：整串即 key
+        return v, None
+    return None, f'字段值无法识别（{v!r} 不在可写列中）'
+
+
+def guarded_fields(target):
+    """受保护字段集合（A1）：key_field / alt_key / key_guard / protected。"""
+    guard = set(target.get('key_guard') or [])
+    guard |= {target.get('key_field'), target.get('alt_key')}
+    guard |= set(target.get('protected') or [])
+    return {g for g in guard if g}
+
+
+def plan_issues(issues, target, rows, index, override_field=None, override_value=None):
     """逐条校验 → (actions, skips)。actions: dict(row_idx, field, old, new, issue)。"""
     actions, skips = [], []
     t_page = norm(target.get('page'))
@@ -199,14 +227,18 @@ def plan_issues(issues, target, rows, index):
         if norm(fields.get('dataset')).strip() != norm(target.get('dataset')):
             skips.append((no, f'dataset 不匹配（{fields.get("dataset")!r}）'))
             continue
-        field = norm(fields.get('field')).strip()
-        if field in (target.get('protected') or []):
-            skips.append((no, f'字段 {field} 属保护列（另有专用同步流程）'))
+        field, ferr = resolve_field(fields.get('field'), target, override_field)
+        if ferr:
+            skips.append((no, ferr))
+            continue
+        if field in guarded_fields(target):
+            # A1: 主键 / 匹配键 / 保护列 一律拒绝（配置误列也在代码层拦截）
+            skips.append((no, f'字段 {field} 属受保护列（主键/匹配键/视频列不可修改）'))
             continue
         if field not in (target.get('editable') or []):
             skips.append((no, f'字段 {field} 不在可写白名单'))
             continue
-        suggested = fields.get('suggested')
+        suggested = override_value if override_value is not None else fields.get('suggested')
         if not suggested or not str(suggested).strip():
             skips.append((no, '建议值为空'))
             continue
@@ -290,6 +322,61 @@ def gh_comment(repo, no, body, close=False):
     return True
 
 
+def check_template(target):
+    """L1: 模板 dropdown 选项 ↔ config.editable / 数据 columns[].label 一致性校验。返回退出码。"""
+    tmpl_rel = target.get('template') or 'data-fix.yml'
+    tmpl = PROJECT_ROOT / '.github' / 'ISSUE_TEMPLATE' / tmpl_rel
+    if not tmpl.is_file():
+        print(f'[错误] 模板不存在: {tmpl}', file=sys.stderr)
+        return 1
+    try:
+        doc = yaml.safe_load(tmpl.read_text(encoding='utf-8')) or {}
+    except yaml.YAMLError as e:
+        print(f'[错误] 模板解析失败: {e}', file=sys.stderr)
+        return 1
+    options = []
+    for blk in (doc.get('body') or []):
+        if blk.get('type') == 'dropdown' and blk.get('id') == 'field':
+            options = [str(o) for o in ((blk.get('attributes') or {}).get('options') or [])]
+    if not options:
+        print('[错误] 模板未找到 id=field 的 dropdown 选项', file=sys.stderr)
+        return 1
+    keys, labels = [], {}
+    for o in options:
+        if '｜' in o:
+            lab, _, k = o.rpartition('｜')
+            labels[k.strip()] = lab.strip()
+            keys.append(k.strip())
+        else:
+            keys.append(o.strip())
+    editable = list(target.get('editable') or [])
+    guard = guarded_fields(target)
+    problems = []
+    if set(keys) != set(editable):
+        problems.append(f'选项 key 集合 ≠ editable（模板多 {sorted(set(keys) - set(editable))} / '
+                        f'少 {sorted(set(editable) - set(keys))}）')
+    bad = [k for k in keys if k in guard]
+    if bad:
+        problems.append(f'选项含受保护列: {sorted(set(bad))}')
+    if len(keys) != len(set(keys)):
+        problems.append('选项 key 重复')
+    try:
+        cols = {c.get('key'): c.get('label') for c in
+                (json.loads((PROJECT_ROOT / target['data']).read_text(encoding='utf-8')).get('columns') or [])}
+        for k, lab in labels.items():
+            if k in cols and lab and cols.get(k) and str(cols[k]) != lab:
+                problems.append(f'标签不一致: {k} 模板={lab!r} 数据={cols[k]!r}')
+    except (OSError, json.JSONDecodeError) as e:
+        problems.append(f'数据列标签无法比对: {e}')
+    if problems:
+        print('[校验] 模板与配置不一致:')
+        for x in problems:
+            print('  - ' + x)
+        return 1
+    print(f'[校验] 模板 {tmpl_rel} 与 config.editable / 数据列标签 一致（{len(keys)} 项）')
+    return 0
+
+
 def main(argv=None):
     ap = argparse.ArgumentParser(
         prog='countries-issue-sync.py',
@@ -297,7 +384,12 @@ def main(argv=None):
     ap.add_argument('--config', default=str(DEFAULT_CONFIG), help='目标配置（缺省 scripts/feedback-targets.yaml）')
     ap.add_argument('--target', help='目标名（缺省：配置仅一个 target 时自动选用）')
     ap.add_argument('--limit', type=int, default=100, help='拉取 issue 上限（缺省 100）')
-    ap.add_argument('--issue', type=int, help='只处理指定 issue 号（便于实测）')
+    ap.add_argument('--issue', type=int, help='只处理指定 issue 号（便于实测；与 --field 联用可人工指定目标字段）')
+    ap.add_argument('--field', help='显式指定目标字段 key（仅与 --issue 联用；人工裁决入口，N1）')
+    ap.add_argument('--value', help='显式指定建议值（仅与 --issue 联用；人工裁决入口）')
+    ap.add_argument('--value-file', help='从文件读取建议值（仅与 --issue 联用；适合多行长文本）')
+    ap.add_argument('--check-template', action='store_true',
+                    help='只读校验：表单 dropdown 选项 ↔ config.editable / 数据列标签（L1）')
     ap.add_argument('--repo', help='覆盖配置中的 repo（owner/repo）')
     ap.add_argument('--close', action='store_true', help='apply 后关闭已处理 issue（默认只回评）')
     ap.add_argument('--json', action='store_true', help='机器可读输出 {status,data,error}')
@@ -320,6 +412,18 @@ def main(argv=None):
     target, err = load_target(cfg, args.target)
     if err:
         return die(err)
+    if args.check_template:
+        return check_template(target)
+    if (args.field or args.value is not None or args.value_file) and not args.issue:
+        return die('--field / --value / --value-file 仅可与 --issue 联用（人工裁决入口）', 2)
+    override_value = None
+    if args.value_file:
+        try:
+            override_value = Path(args.value_file).read_text(encoding='utf-8')
+        except OSError as e:
+            return die(f'读取 --value-file 失败: {e}')
+    elif args.value is not None:
+        override_value = args.value
     repo = args.repo or target.get('repo')
     label = target.get('label') or 'data-fix'
     if not repo:
@@ -343,7 +447,8 @@ def main(argv=None):
         return 0
 
     index = build_row_index(rows, target)
-    actions, skips = plan_issues(issues, target, rows, index)
+    actions, skips = plan_issues(issues, target, rows, index,
+                                 override_field=args.field, override_value=override_value)
 
     if args.json:
         print(json.dumps({'status': 'ok', 'data': {

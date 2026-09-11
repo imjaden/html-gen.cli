@@ -7,7 +7,7 @@ body:
     attributes:
       value: |
         感谢反馈！**标注「请勿修改」的字段由页面自动填充**，如被改动会导致本条被同步脚本跳过。
-        请只填写「建议值」「来源」等开放字段。
+        请在「字段」下拉中选择要修改的列，并在「建议值」中填写新内容。
   - type: input
     id: page
     attributes:
@@ -27,7 +27,7 @@ body:
     id: row
     attributes:
       label: 行标识
-      description: 请勿修改（由页面自动填充）
+      description: 请勿修改（主键，仅用于定位；脚本不会修改它）
     validations:
       required: true
   - type: input
@@ -37,25 +37,35 @@ body:
       description: 请勿修改（可选，用于二次校验）
     validations:
       required: false
-  - type: input
+  - type: dropdown
     id: field
     attributes:
       label: 字段
-      description: 请勿修改（数据列 key，如 pop_wan）
+      description: 选择要修改的列（行标识/英文名/视频列不可修改）
+      multiple: false
+      options:
+        - 首都｜capital_zh
+        - 首都英文｜capital_en
+        - 纬度｜capital_lat
+        - 经度｜capital_lon
+        - 大洲｜region_tags
+        - 面积 km²｜area_km2
+        - 人口(万)｜pop_wan
+        - GDP(亿美元)｜gdp_yi
+        - 定位｜loc_url
+        - 主要民族｜ethnic_groups
+        - 主要信仰｜religions
+        - 面积相近省份｜area_province
+        - 人口相近省份｜pop_province
+        - GDP相近省份｜gdp_province
+        - 备注｜note
     validations:
       required: true
-  - type: input
-    id: current
-    attributes:
-      label: 当前值
-      description: 请勿修改（页面现值，仅供对照）
-    validations:
-      required: false
   - type: textarea
     id: suggested
     attributes:
       label: 建议值
-      description: 请填写修正后的值（数值列请只填数字）
+      description: 该字段修正后的值（数值列请只填数字；长文本可直接粘贴，换行会原样保留）
     validations:
       required: true
   - type: input

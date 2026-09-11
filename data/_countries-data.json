@@ -4666,7 +4666,8 @@
       "dataset": "countries",
       "key": "country_zh",
       "altKey": "country_en",
-      "repo": "imjaden/html-gen.cli"
+      "repo": "imjaden/html-gen.cli",
+      "template": "data-fix-countries.yml"
     }
   }
 }

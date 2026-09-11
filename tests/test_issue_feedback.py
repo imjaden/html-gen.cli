@@ -39,7 +39,8 @@ FIXTURE = {
     'tabs': [],
     'options': {
         'pageSize': 30,
-        'feedback': {'dataset': 'fixture', 'key': 'name', 'altKey': 'note'},
+        'feedback': {'dataset': 'fixture', 'key': 'name', 'altKey': 'note',
+                     'template': 'fx-form.yml'},
     },
 }
 
@@ -156,11 +157,12 @@ class TestFeedbackRender(unittest.TestCase):
         self.assertTrue(btn.is_displayed())
         url = self.driver.execute_script('return window.buildFeedbackUrl(window.splitRow);')
         self.assertTrue(url.startswith('https://github.com/imjaden/html-gen.cli/issues/new?'), url)
-        self.assertIn('template=data-fix.yml', url)
+        self.assertIn('template=fx-form.yml', url)             # v1.3/M1: 模板名来自 options.feedback.template
         self.assertIn('dataset=fixture', url)
         self.assertIn('row=' + '%E4%BC%8A%E6%9C%97', url)      # 伊朗 URL 编码
         self.assertIn('row_en=' + '%E6%B3%A2%E6%96%AF%E5%B8%9D%E5%9B%BD', url)
-        self.assertNotIn('field=', url)                        # 非单元格入口 → 无字段上下文
+        self.assertNotIn('field=', url)                        # v1.3/D1: 不再预填字段
+        self.assertNotIn('current=', url)                      # v1.3/F2: 不再预填当前值
 
     def test_03_empty_repo_disables(self):
         """显式空串 → 禁用（JSON 里有 repo 也不渲染）。"""
@@ -180,8 +182,8 @@ class TestFeedbackRender(unittest.TestCase):
                          env_extra={'HTML_GEN_FEEDBACK_REPO': 'envuser/envrepo'})
         self.assertIn('"repo": "cliuser/clirepo"', out2.read_text(encoding='utf-8'))
 
-    def test_05_cell_click_carries_field(self):
-        """点 onCellClick='split' 单元格 → URL 带 field=<列 key> + current=<值>。"""
+    def test_05_cell_click_does_not_prefill_field(self):
+        """v1.3/D1: 点任意列（含 onCellClick='split'）→ URL 仍不含 field/current（字段由表单下拉选）。"""
         doc = json.loads(self.data.read_text(encoding='utf-8'))
         doc['columns'][1]['onCellClick'] = 'split'
         doc['options'].pop('feedback', None)
@@ -193,8 +195,9 @@ class TestFeedbackRender(unittest.TestCase):
         self.driver.execute_script('arguments[0].click();', cells[1])
         time.sleep(0.3)
         url = self.driver.execute_script('return window.buildFeedbackUrl(window.splitRow);')
-        self.assertIn('field=pop', url)
-        self.assertIn('current=9157', url)
+        self.assertNotIn('field=', url)
+        self.assertNotIn('current=', url)
+        self.assertIn('row=', url)
         self.assertIn('title=' + '%5B%E6%95%B0%E6%8D%AE%E5%8F%8D%E9%A6%88%5D', url)  # [数据反馈]
 
     def test_06_no_js_errors(self):
@@ -260,8 +263,8 @@ class TestIssueSyncScript(unittest.TestCase):
         return [{'country_zh': '伊朗', 'country_en': 'Iran', 'pop_wan': 9157, 'videos': []},
                 {'country_zh': '希腊', 'country_en': 'Greece', 'pop_wan': 1041, 'videos': []}]
 
-    def _plan(self, fields_patch, created='2026-09-10T00:00:00Z'):
-        t = self._target()
+    def _plan(self, fields_patch, created='2026-09-10T00:00:00Z', target=None):
+        t = target or self._target()
         rows = self._rows()
         fields = dict(page='demos/countries-table.html', dataset='countries', row='伊朗',
                       row_en='Iran', field='pop_wan', current='9157', suggested='9200',
@@ -295,10 +298,13 @@ class TestIssueSyncScript(unittest.TestCase):
         self.assertIn('dataset 不匹配', skips[0][1])
 
     def test_15_protected_and_not_editable(self):
-        for field in ('videos', 'nonexistent_col'):
-            actions, skips = self._plan({'field': field, 'current': '', 'suggested': 'x'})
-            self.assertEqual(actions, [], field)
-            self.assertIn('保护列' if field == 'videos' else '白名单', skips[0][1])
+        # v1.3: videos 不在 editable → resolve_field 判定「不可识别」；受保护列仍被拦截
+        actions, skips = self._plan({'field': 'videos', 'current': '', 'suggested': 'x'})
+        self.assertEqual(actions, [], 'videos')
+        self.assertTrue(any('无法识别' in s[1] or '受保护列' in s[1] for s in skips), skips)
+        actions, skips = self._plan({'field': 'nonexistent_col', 'current': '', 'suggested': 'x'})
+        self.assertEqual(actions, [], 'nonexistent_col')
+        self.assertIn('无法识别', skips[0][1])
 
     def test_16_row_not_found_and_ambiguous(self):
         actions, skips = self._plan({'row': '不存在国', 'row_en': 'Nowhere'})
@@ -353,6 +359,93 @@ class TestIssueSyncScript(unittest.TestCase):
         self.assertEqual(actions[0]['issue'], 11)
         self.assertEqual(actions[0]['new'], 9300)
         self.assertTrue(any('冲突' in s[1] for s in skips))
+
+    # ── v1.3：字段解析 / 主键保护 / 模板校验 ──
+    def test_23_resolve_field_dual_form(self):
+        """K1/O1/N1: `标签｜key` 取末段；裸 key 兼容；未知值报错；--field 覆盖优先。"""
+        t = self._target()
+        self.assertEqual(self.mod.resolve_field('备注｜note', t)[0], 'note')
+        self.assertEqual(self.mod.resolve_field('大洲｜unknown｜region_tags', t)[0], 'region_tags')  # 末段规则
+        self.assertEqual(self.mod.resolve_field('note', t)[0], 'note')           # 旧形态兼容
+        self.assertIsNone(self.mod.resolve_field('', t)[0])
+        self.assertIn('无法识别', self.mod.resolve_field('不存在｜nope', t)[1])
+        self.assertEqual(self.mod.resolve_field('x', t, override='pop_wan')[0], 'pop_wan')
+
+    def test_24_key_guard_rejects_pk(self):
+        """A1: 主键/匹配键/视频列无论配置如何都被硬保护拒绝。"""
+        t = self._target()
+        guard = self.mod.guarded_fields(t)
+        for k in ('country_zh', 'country_en', 'videos'):
+            self.assertIn(k, guard, k)
+        t2 = dict(t)
+        t2['editable'] = list(t['editable']) + ['country_zh']       # 模拟配置误列
+        actions, skips = self._plan({'field': 'country_zh', 'suggested': '阿尔及利亚'}, target=t2)
+        self.assertEqual(actions, [], skips)
+        self.assertIn('受保护列', skips[0][1])
+
+    def test_25_unknown_dropdown_value(self):
+        """O1: 未知名/未知选项 → 跳过并说明。"""
+        actions, skips = self._plan({'field': '不存在列｜nope'})
+        self.assertEqual(actions, [])
+        self.assertIn('无法识别', skips[0][1])
+
+    def test_26_multiline_value_preserved(self):
+        """F2/I1: 多行建议值原样进入 action（换行保留）。"""
+        text = '第一行\n第二行\n【民族】阿拉伯人'
+        actions, skips = self._plan({'field': '备注｜note', 'suggested': text})
+        self.assertEqual(len(actions), 1, skips)
+        self.assertEqual(actions[0]['field'], 'note')
+        self.assertEqual(actions[0]['new'], text)
+
+    def test_27_human_override_requires_issue(self):
+        """N1: --field/--value/--value-file 必须与 --issue 联用（否则 exit 2）。"""
+        for argv in (['--field', 'note'], ['--value', 'x'], ['--value-file', '/tmp/nope']):
+            self.assertEqual(self.mod.main(argv), 2, argv)
+
+    def test_28_check_template_consistency(self):
+        """L1: 模板 dropdown ↔ config.editable/数据标签 一致 → 0；篡改 → 1 + 差异。"""
+        self.assertEqual(self.mod.main(['--check-template']), 0)
+        tmp = Path(tempfile.mkdtemp(prefix='_tmp_tmpl_'))
+        try:
+            (tmp / '.github' / 'ISSUE_TEMPLATE').mkdir(parents=True)
+            (tmp / 'data').mkdir()
+            doc = {'columns': [{'key': 'pop_wan', 'label': '人口(万)'}]}
+            (tmp / 'data' / 'd.json').write_text(json.dumps(doc, ensure_ascii=False), encoding='utf-8')
+            (tmp / '.github' / 'ISSUE_TEMPLATE' / 'bad.yml').write_text(
+                'body:\n  - type: dropdown\n    id: field\n    attributes:\n      options:\n'
+                '        - 备注｜note\n        - 行标识｜country_zh\n', encoding='utf-8')
+            t = dict(self._target())
+            t['template'] = 'bad.yml'
+            t['data'] = 'data/d.json'
+            real = self.mod.PROJECT_ROOT
+            self.mod.PROJECT_ROOT = tmp
+            try:
+                rc = self.mod.check_template(t)
+            finally:
+                self.mod.PROJECT_ROOT = real
+            self.assertEqual(rc, 1)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_29_form_has_dropdown_no_current(self):
+        """B1/F2: 表单字段为 dropdown(field) 且不含 current；parse_fields 保留 current 兼容 shim。"""
+        cfg = self.mod.yaml.safe_load(
+            (PROJECT / 'scripts' / 'feedback-targets.yaml').read_text(encoding='utf-8'))
+        t = cfg['targets']['countries']
+        tmpl = PROJECT / '.github' / 'ISSUE_TEMPLATE' / t['template']
+        self.assertTrue(tmpl.is_file(), tmpl)
+        doc = self.mod.yaml.safe_load(tmpl.read_text(encoding='utf-8'))
+        ids, kinds = {}, {}
+        for blk in doc['body']:
+            if 'id' in blk:
+                ids[blk['id']] = blk
+                kinds[blk['id']] = blk['type']
+        self.assertEqual(kinds.get('field'), 'dropdown')
+        self.assertEqual(kinds.get('suggested'), 'textarea')
+        self.assertNotIn('current', ids)                       # F2
+        opts = ids['field']['attributes']['options']
+        self.assertEqual([o.rpartition('｜')[2].strip() for o in opts], t['editable'])
+        self.assertEqual(t['parse_fields'].get('current'), '当前值')   # 旧 issue 兼容 shim
 
     # ── apply / dry-run / --issue ──
     def _tmp_project(self):
