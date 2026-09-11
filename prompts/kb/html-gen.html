@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen</h1>
-      <div class="meta">创建: 2026-09-10 18:26 · 编辑: 2026-09-10 18:26<br>字数: 1,200 · 阅读约 6 分钟<span class="meta-path"> · 路径: <code>html-gen.md</code></span></div>
+      <div class="meta">创建: 2026-09-11 13:19 · 编辑: 2026-09-11 13:19<br>字数: 1,212 · 阅读约 6 分钟<span class="meta-path"> · 路径: <code>html-gen.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p><code>html-gen</code> 是一个零依赖 Python CLI 工具，将 Markdown/JSON 数据注入 HTML 模板，输出自包含单文件 HTML。深色主题，4 种模板类型。</p>
@@ -541,7 +541,7 @@ html-gen table -d data.json [--title "标题"] [-o index.html]
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]</code></pre>
 <p>输出均为自包含单文件 HTML（CSS 内联，零外部依赖）。</p>
 <p>四渲染子命令通用参数：<code>--github-url &lt;url&gt;</code>（右上角 GitHub corner，默认不带）、<code>--home-url &lt;url&gt;</code>（demo 首页入口）、<code>--favicon &lt;url&gt;</code>（favicon 图标，默认注入 <code>DEFAULT_FAVICON</code>，显式空串禁用）、<code>--quiet</code>（仅打印路径）；环境变量兜底 <code>HTML_GEN_GITHUB_URL</code> / <code>HTML_GEN_HOME_URL</code> / <code>HTML_GEN_FAVICON</code>（CLI 参数优先）。</p>
-<p><strong>table 专属</strong>：<code>--feedback-repo &lt;owner/repo&gt;</code>（GitHub Issue 反馈通道开关；默认不注入，显式空串禁用，env <code>HTML_GEN_FEEDBACK_REPO</code>，CLI &gt; env &gt; JSON <code>options.feedback.repo</code>）。启用后分栏预览 header 出 ✏️ 按钮 → 跳转预填 GitHub Issue Form；issue 由 <code>scripts/countries-issue-sync.py</code>（配置 <code>scripts/feedback-targets.yaml</code>）校验后写回数据 JSON 并重建产物（设计: documents/solutions/countries-issue-feedback-design-v1.1-20260910.md）。</p>
+<p><strong>table 专属</strong>：<code>--feedback-repo &lt;owner/repo&gt;</code>（GitHub Issue 反馈通道开关；默认不注入，显式空串禁用，env <code>HTML_GEN_FEEDBACK_REPO</code>，CLI &gt; env &gt; JSON <code>options.feedback.repo</code>）。启用后分栏预览 header 出 ✏️ 按钮 → 跳转 GitHub Issue Form（v1.3 起字段为<strong>下拉选择</strong>，主键/匹配键/视频列不可选）；表单模板名由 <code>options.feedback.template</code> 指定。脚本 <code>scripts/countries-issue-sync.py</code>（<code>scripts/feedback-targets.yaml</code>）校验写回：<code>--list / --dry-run / --apply</code>；<code>--issue N --field KEY --value TEXT|--value-file PATH</code>（人工裁决）；<code>--check-template</code>（模板 ↔ config 一致性校验）。设计: documents/solutions/countries-issue-feedback-design-v1.3-20260911.md。</p>
 <h2 id="prompt-项目-skills-输出">prompt — 项目 skills 输出</h2>
 <p>skills/ 每子目录一个 skill（含 SKILL.md），可拼接 references/*.md：</p>
 <pre><code class="language-shell">html-gen prompt                    # 列出全部 skill (名称 + 摘要)

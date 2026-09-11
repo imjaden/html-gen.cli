@@ -106,9 +106,11 @@ scripts/countries-issue-sync.py --apply                # 写回 JSON + 重建产
 scripts/countries-issue-sync.py --apply --close        # 追加关闭已处理 issue
 ```
 
-- 页面侧开关：`html-gen table --feedback-repo <owner/repo>`（table 专属；env `HTML_GEN_FEEDBACK_REPO`；CLI > env > JSON `options.feedback.repo`；均无 → 不渲染按钮）；repo 落 JSON 可防 videos syncer 重建时丢按钮（HG-SEC-111）
-- 校验六项：page 匹配 / dataset 匹配 / 行唯一定位（`key_field` → `alt_key` 退化，0 或多命中拒绝）/ 字段在 `editable` 白名单 / 数值列可解析 / 建议值非空；另含幂等（值未变跳过）与冲突取最新
-- `protected: [videos]` 禁止 issue 写视频列（视频归 `tool-table-videos-syncer.py`）
+- 页面侧开关：`html-gen table --feedback-repo <owner/repo>`（table 专属；env `HTML_GEN_FEEDBACK_REPO`；CLI > env > JSON `options.feedback.repo`；均无 → 不渲染按钮）；表单模板名由 `options.feedback.template` 指定（M1，案例自描述）
+- **v1.3 表单改版（issue #2 驱动）**：`字段` 改为下拉（`标签｜key`，15 项，不含主键/匹配键/视频列）+ 值改为 textarea；主键 `country_zh` 与匹配键 `country_en` 双层硬保护（config 误列也拦）
+- 校验链：page / dataset / 字段解析（`标签｜key` → key；O1/K1）/ 主键硬保护（A1）/ `editable` 白名单 / 行唯一定位 / 类型（数值可解析）/ 非空 + 幂等 + 冲突取最新；`protected` + `key_guard` 合并拦截
+- `--issue N --field KEY --value TEXT | --value-file PATH`：人工裁决入口（N1），如 issue #2 处置
+- `--check-template`：校验模板 dropdown 选项 ↔ config `editable` / 数据列标签一致性（L1）
 - 重建参数固化在 `targets.<name>.rebuild.args`（含 `--github-url`/`--home-url`/`--favicon`/`--feedback-repo`），apply 时打印 `[执行]`
 - 复用：新增案例只需追加一份 target（join key：countries=country_zh、provinces=province、drama=strategy/era）
 
@@ -291,7 +293,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 288 tests（29 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 20 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_prompt_cmd 5 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 当前 295 tests（30 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 27 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_prompt_cmd 5 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
