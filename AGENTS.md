@@ -95,9 +95,9 @@ scripts/tool-table-videos-syncer.py <yaml> --empty-video       # 列出 videos �
 - yaml `target` 段扩展 `rebuild: {github_url, home_url, favicon}`：缺省用固定默认；`github_url` 优先级 rebuild 配置 > 旧产物 github-corner 提取 > 固定默认；任一键显式空串 = 禁用（不传该参数）
 - `--apply` 重建时打印 `[执行]` 完整 html-gen 命令（含 `--github-url`/`--home-url`/`--favicon` 三参数）
 
-### GitHub Issue 反馈通道（CL009，2026-09-10）
+### GitHub Issue 反馈通道（CL009，2026-09-10；v1.4 2026-09-11）
 
-`scripts/countries-issue-sync.py` + `scripts/feedback-targets.yaml`：A 型表格分栏预览 header 的 ✏️ 按钮 → GitHub Issue Form（`.github/ISSUE_TEMPLATE/data-fix.yml`，预填 page/dataset/row/row_en/field/current）→ 脚本按 target 白名单校验 → 写回 data JSON → 调 `html-gen.py table` 重建 → 回评（`--close` 追加关闭）。
+`scripts/countries-issue-sync.py` + `scripts/feedback-targets.yaml`：A 型表格分栏预览 header 的 ✏️ 按钮 → GitHub Issue Form（`.github/ISSUE_TEMPLATE/data-fix-countries.yml`，预填 page/dataset/row/row_en + 模板名；**字段由下拉选择**，不含主键/匹配键/视频列）→ 脚本按 target 白名单校验 → 写回 data JSON → 调 `html-gen.py table` 重建 → **自动提交两文件（本地，`--no-commit` 关闭）** → 回评（`--close` 追加关闭）。
 
 ```shell
 python3 scripts/countries-issue-sync.py --list          # 列待处理 issue（每条附 --issue N --dry-run 引导行）
@@ -314,7 +314,7 @@ Options（均可选）：
 html-gen.cli/
 ├── index.html                 # 落地页（动态两屏 hero + 四模板网格 + 上箭头 A/B 返回首页 + 🌙☀️ 主题切换 + 📋 复制按钮 + footer）
 ├── html-gen.py                 # Layer 3 CLI 生成器
-├── .github/ISSUE_TEMPLATE/      # data-fix.yml（数据反馈表单）+ config.yml（关闭 blank issue）
+├── .github/ISSUE_TEMPLATE/      # data-fix-countries.yml（数据反馈表单）+ config.yml（关闭 blank issue）
 ├── scripts/                     # 脚本与 schema（company-report 生成器 / tool-table-videos-syncer.py videos 同步 /
 │                                #   countries-issue-sync.py 反馈闭环 + feedback-targets.yaml 目标配置）
 ├── style-guide.css             # Layer 1 样式基座

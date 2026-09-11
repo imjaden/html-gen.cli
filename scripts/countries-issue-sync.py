@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 """A 型表格「GitHub Issue 反馈通道」同步脚本（HTML-GEN-CL009）。
 
-从 GitHub issue（表单模板 .github/ISSUE_TEMPLATE/data-fix.yml）读取读者提交的
+从 GitHub issue（表单模板 .github/ISSUE_TEMPLATE/data-fix-countries.yml）读取读者提交的
 数据反馈，按 scripts/feedback-targets.yaml 的 target 定义校验（页面/数据集/行唯一
 定位/字段白名单/类型/保护列），白名单写回 data JSON，并调用 html-gen.py table
 重建产物；可选回评/关闭 issue。
@@ -324,11 +324,17 @@ def git_commit(target, title, body, paths):
     r = run(['git', '-C', str(PROJECT_ROOT), 'add', '--'] + [str(x) for x in paths])
     if r.returncode != 0:
         return None, f'git add 失败: {(r.stderr or "").strip()}'
-    c = run(['git', '-C', str(PROJECT_ROOT), 'commit', '-m', title, '-m', body])
+    # HG-SEC-140: commit 亦带 pathspec —— 否则会提交整个已暂存索引（并行会话已 git add 的无关文件会被裹走）
+    c = run(['git', '-C', str(PROJECT_ROOT), 'commit', '-m', title, '-m', body, '--']
+            + [str(x) for x in paths])
     if c.returncode != 0:
         return None, f'git commit 失败: {(c.stderr or c.stdout or "").strip()}'
     v = run(['git', '-C', str(PROJECT_ROOT), 'rev-parse', '--short', 'HEAD'])
-    return ((v.stdout or '').strip() or None), None
+    short = (v.stdout or '').strip()
+    if v.returncode != 0 or not short:          # HG-SEC-141: 提交已产生但 sha 读取失败
+        print('[警告] 提交已产生，但 rev-parse 读取 sha 失败', file=sys.stderr)
+        return None, 'sha-unknown'
+    return short, None
 
 
 def rebuild(target):
@@ -542,20 +548,24 @@ def main(argv=None):
         return rc
 
     # ── 提交（A1/B1/D1/E1/F1/G1/H1） ──
-    sha, commit_err = None, None
+    sha, commit_err, sha_unknown = None, None, False
     if not args.no_commit:
         scope = ((target.get('commit') or {}).get('scope')) or target.get('dataset') or 'data'
         nums = '#' + ',#'.join(str(a['issue']) for a in actions)
         fields = ','.join(dict.fromkeys(a['field'] for a in actions))
         title = f'data@{scope}: apply {nums} {fields} 更新 (HTML-GEN-CL009)'
         cbody = ('issue 反馈自动处置：\n' + '\n'.join(
-            f"- {nums} {label_of(target, rows[a['row_idx']])}.{a['field']}: "
+            f"- #{a['issue']} {label_of(target, rows[a['row_idx']])}.{a['field']}: "
             f"{norm(a['old']) or '(空)'} → {a['new']}" for a in actions)
             + f"\n\n产物重建：{target['html']}")
         sha, commit_err = git_commit(target, title, cbody, paths)
         if commit_err == 'no-change':
             print('[提交] 无变化，跳过')
             commit_err = None
+        elif commit_err == 'sha-unknown':
+            print(f'[提交] 已提交（sha 读取失败）{title}')
+            commit_err = None
+            sha_unknown = True
         elif commit_err:
             print(f'[错误] {commit_err}', file=sys.stderr)
         else:
@@ -563,6 +573,8 @@ def main(argv=None):
 
     if args.no_commit:
         commit_txt = '提交由维护者完成（--no-commit）'
+    elif sha_unknown:
+        commit_txt = '本地提交已产生（sha 读取失败，待维护者确认）'
     elif sha:
         commit_txt = f'本地提交 `{sha}`（待推送）'
     elif commit_err:

@@ -607,6 +607,19 @@ class TestIssueSyncScript(unittest.TestCase):
             st = subprocess.run(['git', 'status', '--porcelain'], cwd=tmp,
                                 capture_output=True, text=True).stdout
             self.assertIn('other.txt', st, '未列入 pathspec 的脏文件不得被提交')
+            # HG-SEC-140 回归：并行会话已暂存(index)的无关文件也不得被 commit 裹走
+            (tmp / 'staged.txt').write_text('s1', encoding='utf-8')
+            subprocess.run(['git', 'add', 'staged.txt'], cwd=tmp, check=True)
+            (tmp / 'data' / 'd.json').write_text('{"a":3}', encoding='utf-8')
+            self.mod.PROJECT_ROOT = tmp
+            sha3, err3 = self.mod.git_commit(target, 't3', 'b3', self.mod.git_paths(target))
+            self.assertIsNone(err3)
+            shown3 = subprocess.run(['git', 'show', '--name-only', '--pretty=format:', 'HEAD'],
+                                    cwd=tmp, capture_output=True, text=True).stdout
+            self.assertEqual(sorted(x for x in shown3.splitlines() if x.strip()), ['data/d.json'])
+            st3 = subprocess.run(['git', 'status', '--porcelain'], cwd=tmp,
+                                 capture_output=True, text=True).stdout
+            self.assertIn('A  staged.txt', st3, '已暂存的无关文件应仍留在 index')
             # 目标文件干净 → 预检通过（其它文件脏不影响）
             d, e = self.mod.git_dirty(self.mod.git_paths(target))
             self.assertEqual(d, [])
