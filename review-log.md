@@ -1822,3 +1822,44 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 - 报告: `documents/review/html-gen-push-review-v1.0-20260910.md`
 
 ---
+
+## 2026-09-11 — GitHub Issue 反馈通道 v1.3 实现审计（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: 反馈通道 v1.3 delta — commit 范围 `7821427..e0e4d78`（4 笔：7750b86 设计 v1.3 / 79ad685 feat@table 字段下拉+主键硬保护+模板校验 / 15685c8 data@countries issue #2 处置 / e0e4d78 docs@html-gen 文档同步）；设计 v1.3（J1 并入 CL009 重跑实现审计）；HTML-GEN-CL009 kind=independent
+- **Verdict**: 🟢 **PASS 100/100（A）** — delta 零 🔴/零 🟡 引入，1 🟡 pre-existing + 5 🟢 记录，无阻断
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-134（🟡 pre-existing，非本 delta 引入，follow-up 建议）+ HG-SEC-135..139（🟢 records）
+- **Findings**: 0 🔴 / 1 🟡（pre-existing）/ 5 🟢
+
+### Summary
+
+设计 §3/§4/§6/§7/§8 逐条核对命中：表单 8 字段删 current + field 改 dropdown（15 选项 `标签｜key`，不含 country_zh/country_en/videos）；editable 15 项去两键列 + `key_guard: [country_zh, country_en]` 双层硬保护；`buildFeedbackUrl` 去 field/current、模板名来自 `options.feedback.template`；`resolve_field`（K1/O1/N1 末段 ｜ 规则 + 裸 key 回退 + 未知拒绝）/`guarded_fields`（A1 并集 key_field/alt_key/key_guard/protected）/`check_template`（L1）/argparse `--field/--value/--value-file/--check-template`（--field 系列仅与 --issue 联用 exit 2）/`override_value` 写入（N1）。真实运行：串行 295 passed（125.94s）+ 并行 295 passed（38.99s，无 flaky）；`--check-template` exit 0（15 项一致）；`--list` 无待处理；gh issue view 2/3 均 CLOSED；工作树干净。安全面 gh 调用统一 `run()` shell=False + list-form（HG-SEC-110 已闭环）、--value-file OSError 干净退出、check_template 读 trusted .github/ 路径。文档同步面（AGENTS/features/skills/prompts）齐备，features 288→295。
+
+### Findings
+
+- 🔴 0 / 🟡 1（HG-SEC-134 pre-existing）/ 🟢 5（HG-SEC-135..139）：
+  - HG-SEC-134（🟡 pre-existing open）：可写文本列（note/capital_zh/capital_en/ethnic_groups/religions）`escape=None`，layout-table L586-589 走 raw innerHTML 渲染 → 公开 issue 提交 `<img onerror>` 值，`--apply` 后 stored XSS。**非本 delta 引入**（v1.0~v1.2 已存在），v1.3 经「textarea 多行长文本 + issue #2 note 大段处置」放大暴露面；需维护者 review + --apply 触发；当前数据 0 处 `<`/`>` 线上安全。修：为可写文本列加 `col.escape: true` 或 sync 脚本 string 字段 escapeHtml
+  - HG-SEC-135（🟢）：countries-issue-sync.py docstring 陈旧（:5 引 data-fix.yml、:21 引设计 v1.0，应 data-fix-countries.yml + v1.3-20260911）
+  - HG-SEC-136（🟢）：AGENTS.md:100 摘要段陈旧（data-fix.yml + 预填 field/current；v1.3 bullet 已部分更正但摘要段未改）
+  - HG-SEC-137（🟢）：resolve_field:201 「兜底：整串即 key」死代码分支 + 注释误导（无 ｜ 时 key==v 已被首判覆盖，含 ｜ 时 v 不可能命中 editable）
+  - HG-SEC-138（🟢）：--value-file OSError exit 2（审计期望 1，设计 §7.3 归「参数错误」可辩）+ --value/--value-file 未 argparse 互斥（同传 --value-file 静默优先）
+  - HG-SEC-139（🟢）：设计 §3.1 id 列「value」笔误（应「suggested」，与 §8 parse_fields 及实现一致）
+
+### Positives
+
+- 主键/匹配键双层硬保护真实落位：config 层 editable 去两键列 + key_guard，代码层 guarded_fields 并集拦截，test_24 模拟 config 误列仍被拒
+- resolve_field 双形态解析（标签｜key 末段 + 裸 key）+ 未知值拒绝 + --field 覆盖，旧 issue #2 兼容（current shim）实测 CLOSED
+- check_template 一致性校验真实跑通（exit 0 / 篡改 exit 1），防 per-case 模板手工漂移
+- 295 tests 串/并双绿零 flaky；issue #2 多行 note 处置 JSON 往返逐字（`\n` 保留，0 处 `<`/`>`）
+- gh 调用 shell=False + list-form；--value-file OSError 干净退出无 traceback；路径 operator 受控非 issue body
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`audit@review: 反馈通道 v1.3 实现审计 PASS (HTML-GEN-CL009)`）
+- 推送 `git push github main`（ff-only，不 force，不推 gitee）
+- HG-SEC-134（🟡 pre-existing）建议 follow-up 修复（加 col.escape / 脚本转义），非阻断
+- 报告: `documents/review/html-gen-v1.3-impl-audit-v1.0-20260911.md`
+
+---
