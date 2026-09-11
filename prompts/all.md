@@ -46,7 +46,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 四渲染子命令通用参数：`--github-url <url>`（右上角 GitHub corner，默认不带）、`--home-url <url>`（demo 首页入口）、`--favicon <url>`（favicon 图标，默认注入 `DEFAULT_FAVICON`，显式空串禁用）、`--quiet`（仅打印路径）；环境变量兜底 `HTML_GEN_GITHUB_URL` / `HTML_GEN_HOME_URL` / `HTML_GEN_FAVICON`（CLI 参数优先）。
 
-**table 专属**：`--feedback-repo <owner/repo>`（GitHub Issue 反馈通道开关；默认不注入，显式空串禁用，env `HTML_GEN_FEEDBACK_REPO`，CLI > env > JSON `options.feedback.repo`）。启用后分栏预览 header 出 ✏️ 按钮 → 跳转 GitHub Issue Form（v1.3 起字段为**下拉选择**，主键/匹配键/视频列不可选）；表单模板名由 `options.feedback.template` 指定。脚本 `scripts/countries-issue-sync.py`（`scripts/feedback-targets.yaml`）校验写回：`--list / --dry-run / --apply`；`--issue N --field KEY --value TEXT|--value-file PATH`（人工裁决）；`--check-template`（模板 ↔ config 一致性校验）。设计: documents/solutions/countries-issue-feedback-design-v1.3-20260911.md。
+**table 专属**：`--feedback-repo <owner/repo>`（GitHub Issue 反馈通道开关；默认不注入，显式空串禁用，env `HTML_GEN_FEEDBACK_REPO`，CLI > env > JSON `options.feedback.repo`）。启用后分栏预览 header 出 ✏️ 按钮 → 跳转 GitHub Issue Form（v1.3 起字段为**下拉选择**，主键/匹配键/视频列不可选）；表单模板名由 `options.feedback.template` 指定。脚本 `python3 scripts/countries-issue-sync.py`（`scripts/feedback-targets.yaml`）校验写回：`--list`（每条附 `--issue N --dry-run` 引导）/ `--dry-run` / `--apply`（默认自动 `git commit`，显式 pathspec 仅数据+产物，`--no-commit` 关闭，只提交不推送；回评带本地短 sha）；`--issue N --field KEY --value TEXT|--value-file PATH`（人工裁决）；`--check-template`（模板 ↔ config 一致性校验）。设计: documents/solutions/countries-issue-feedback-design-v1.4-20260911.md。
 
 ## prompt — 项目 skills 输出
 

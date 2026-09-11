@@ -100,10 +100,11 @@ scripts/tool-table-videos-syncer.py <yaml> --empty-video       # 列出 videos �
 `scripts/countries-issue-sync.py` + `scripts/feedback-targets.yaml`：A 型表格分栏预览 header 的 ✏️ 按钮 → GitHub Issue Form（`.github/ISSUE_TEMPLATE/data-fix.yml`，预填 page/dataset/row/row_en/field/current）→ 脚本按 target 白名单校验 → 写回 data JSON → 调 `html-gen.py table` 重建 → 回评（`--close` 追加关闭）。
 
 ```shell
-scripts/countries-issue-sync.py --list                 # 列待处理 issue（零写盘）
-scripts/countries-issue-sync.py                        # 预览（默认 --dry-run，零写盘）
-scripts/countries-issue-sync.py --apply                # 写回 JSON + 重建产物 + 回评
-scripts/countries-issue-sync.py --apply --close        # 追加关闭已处理 issue
+python3 scripts/countries-issue-sync.py --list          # 列待处理 issue（每条附 --issue N --dry-run 引导行）
+python3 scripts/countries-issue-sync.py                 # 预览（默认 --dry-run，零写盘）
+python3 scripts/countries-issue-sync.py --apply         # 写回 JSON + 重建产物 + 自动提交 + 回评
+python3 scripts/countries-issue-sync.py --apply --close # 追加关闭已处理 issue
+python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建，不自动提交
 ```
 
 - 页面侧开关：`html-gen table --feedback-repo <owner/repo>`（table 专属；env `HTML_GEN_FEEDBACK_REPO`；CLI > env > JSON `options.feedback.repo`；均无 → 不渲染按钮）；表单模板名由 `options.feedback.template` 指定（M1，案例自描述）
@@ -111,6 +112,8 @@ scripts/countries-issue-sync.py --apply --close        # 追加关闭已处理 i
 - 校验链：page / dataset / 字段解析（`标签｜key` → key；O1/K1）/ 主键硬保护（A1）/ `editable` 白名单 / 行唯一定位 / 类型（数值可解析）/ 非空 + 幂等 + 冲突取最新；`protected` + `key_guard` 合并拦截
 - `--issue N --field KEY --value TEXT | --value-file PATH`：人工裁决入口（N1），如 issue #2 处置
 - `--check-template`：校验模板 dropdown 选项 ↔ config `editable` / 数据列标签一致性（L1）
+- **v1.4 自动提交**：`--apply` 默认 `git commit`（**显式 pathspec**：仅数据文件 + 产物；`--no-commit` 关闭；只 commit 不 push）；写盘前预检目标文件无未提交改动（脏则拒绝 exit 1）；提交消息 `data@<scope>: apply #N <字段> 更新 (HTML-GEN-CL009)`，scope 取 `commit.scope`；无变化不空提交；提交失败不回滚并 exit 1；回评带本地短 sha（待推送）
+- `--list` 引导行：每条 issue 后附 `python3 scripts/countries-issue-sync.py --issue N --dry-run`（不进 `--json`）
 - 重建参数固化在 `targets.<name>.rebuild.args`（含 `--github-url`/`--home-url`/`--favicon`/`--feedback-repo`），apply 时打印 `[执行]`
 - 复用：新增案例只需追加一份 target（join key：countries=country_zh、provinces=province、drama=strategy/era）
 
@@ -293,7 +296,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 295 tests（30 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 27 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_prompt_cmd 5 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 当前 305 tests（30 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 37 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_prompt_cmd 5 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
