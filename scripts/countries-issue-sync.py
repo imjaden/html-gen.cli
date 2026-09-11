@@ -8,17 +8,21 @@
 重建产物；可选回评/关闭 issue。
 
 用法:
-    scripts/countries-issue-sync.py --list                 # 只列待处理 issue
-    scripts/countries-issue-sync.py                        # 预览（默认 --dry-run，零写盘）
-    scripts/countries-issue-sync.py --apply                # 写回 JSON + 重建产物 + 回评
-    scripts/countries-issue-sync.py --apply --close        # 追加关闭已处理 issue
-    scripts/countries-issue-sync.py --issue 12 --apply     # 只处理指定 issue
-    scripts/countries-issue-sync.py --issue 12 --field note --value-file body.txt --apply  # 人工裁决：指定字段与值
-    scripts/countries-issue-sync.py --target countries --config scripts/feedback-targets.yaml
+    python3 scripts/countries-issue-sync.py --list          # 只列待处理 issue（每条附 --issue N --dry-run 引导）
+    python3 scripts/countries-issue-sync.py                 # 预览（默认 --dry-run，零写盘）
+    python3 scripts/countries-issue-sync.py --apply         # 写回 JSON + 重建产物 + 提交 + 回评
+    python3 scripts/countries-issue-sync.py --apply --close # 追加关闭已处理 issue
+    python3 scripts/countries-issue-sync.py --apply --no-commit   # 只写盘重建，不自动提交
+    python3 scripts/countries-issue-sync.py --issue 12 --apply    # 只处理指定 issue
+    python3 scripts/countries-issue-sync.py --issue 12 --field note --value-file body.txt --apply  # 人工裁决：指定字段与值
+    python3 scripts/countries-issue-sync.py --check-template      # 模板 ↔ 配置一致性校验
+    python3 scripts/countries-issue-sync.py --target countries --config scripts/feedback-targets.yaml
 
-退出码: 0 成功（含无待处理/全部跳过） / 1 校验失败或外部调用失败 / 2 参数错误
+提交: `--apply` 默认自动 `git commit`（显式 pathspec：数据文件 + 产物；只提交不推送；--no-commit 关闭）
 
-设计: documents/solutions/countries-issue-feedback-design-v1.0-20260910.md
+退出码: 0 成功（含无待处理/全部跳过） / 1 校验失败、外部调用失败或提交失败 / 2 参数错误
+
+设计: documents/solutions/countries-issue-feedback-design-v1.4-20260911.md
 依赖: PyYAML（dev 依赖 requirements-dev.txt）+ 本机 gh CLI（已登录）; 运行时 html-gen 零依赖不受影响
 """
 
@@ -291,6 +295,42 @@ def label_of(target, row):
     return norm(row.get(key)) or f"#{row}"
 
 
+HINT = 'python3 scripts/countries-issue-sync.py'
+
+
+def git_paths(target):
+    """本次提交涉及的仓库相对路径（B1：显式 pathspec，禁用 git add -A）。
+
+    仅数据文件 + 产物；本仓存在并行会话 WIP，-A 会裹走非本次改动（CL002 FIND-002 教训）。
+    """
+    return [str(target['data']), str(target['html'])]
+
+
+def git_dirty(paths):
+    """目标文件的未提交改动（porcelain 行列表；空 = 干净）。返回 (lines, err)。"""
+    r = run(['git', '-C', str(PROJECT_ROOT), 'status', '--porcelain', '--'] + [str(x) for x in paths])
+    if r.returncode != 0:
+        return None, (r.stderr or '').strip() or f'exit {r.returncode}'
+    return [ln for ln in (r.stdout or '').splitlines() if ln.strip()], None
+
+
+def git_commit(target, title, body, paths):
+    """H1/G1: 显式 pathspec 提交。返回 (short_sha | None, err | None)；无变化返回 ('no-change')。"""
+    dirty, err = git_dirty(paths)
+    if err:
+        return None, f'git status 失败: {err}'
+    if not dirty:
+        return None, 'no-change'
+    r = run(['git', '-C', str(PROJECT_ROOT), 'add', '--'] + [str(x) for x in paths])
+    if r.returncode != 0:
+        return None, f'git add 失败: {(r.stderr or "").strip()}'
+    c = run(['git', '-C', str(PROJECT_ROOT), 'commit', '-m', title, '-m', body])
+    if c.returncode != 0:
+        return None, f'git commit 失败: {(c.stderr or c.stdout or "").strip()}'
+    v = run(['git', '-C', str(PROJECT_ROOT), 'rev-parse', '--short', 'HEAD'])
+    return ((v.stdout or '').strip() or None), None
+
+
 def rebuild(target):
     """调 html-gen.py table 重建产物（列表参数 + shell=False，打印 [执行]）。"""
     args = ((target.get('rebuild') or {}).get('args')) or []
@@ -392,6 +432,8 @@ def main(argv=None):
                     help='只读校验：表单 dropdown 选项 ↔ config.editable / 数据列标签（L1）')
     ap.add_argument('--repo', help='覆盖配置中的 repo（owner/repo）')
     ap.add_argument('--close', action='store_true', help='apply 后关闭已处理 issue（默认只回评）')
+    ap.add_argument('--no-commit', action='store_true',
+                    help='apply 时不自动提交（默认提交数据文件与产物；显式 pathspec，只提交不推送，A1）')
     ap.add_argument('--json', action='store_true', help='机器可读输出 {status,data,error}')
     g = ap.add_mutually_exclusive_group()
     g.add_argument('--list', action='store_true', help='只列待处理 issue（零写盘）')
@@ -459,8 +501,10 @@ def main(argv=None):
         for a in actions:
             print(f"  #{a['issue']} {label_of(target, rows[a['row_idx']])} · {a['field']}: "
                   f"{norm(a['old']) or '(空)'} → {a['new']}")
+            print(f'     → {HINT} --issue {a["issue"]} --dry-run')
         for n, reason in skips:
             print(f'  #{n} [跳过] {reason}')
+            print(f'     → {HINT} --issue {n} --dry-run')
 
     if args.list or not actions:
         if not args.list and skips:
@@ -469,11 +513,20 @@ def main(argv=None):
 
     if not args.apply:
         print('[预览] 将更新 %d 个字段并重建 %s' % (len(actions), target['html']))
+        if not args.no_commit:
+            print('[预览] 将提交 %s（本地，不推送）' % '、'.join(git_paths(target)))
         print('[预览] 将回评 %s' % '、'.join(f"#{a['issue']}" for a in actions) + ('（含关闭）' if args.close else ''))
-        print('[提示] 使用 --apply 执行（--close 追加关闭 issue）')
+        print(f'[提示] 使用 {HINT} --apply 执行（--close 追加关闭；--no-commit 不提交）')
         return 0
 
     # ── apply ──
+    paths = git_paths(target)
+    if not args.no_commit:
+        dirty, gerr = git_dirty(paths)
+        if gerr:
+            return die(f'提交预检失败: {gerr}', 1)
+        if dirty:
+            return die('目标文件存在未提交改动，请先提交或回滚（C1 预检）：\n  ' + '\n  '.join(dirty), 1)
     for a in actions:
         row = rows[a['row_idx']]
         print(f"[更新] {label_of(target, row)}.{a['field']}: {norm(a['old']) or '(空)'} → {a['new']}")
@@ -487,14 +540,44 @@ def main(argv=None):
     rc = rebuild(target)
     if rc:
         return rc
+
+    # ── 提交（A1/B1/D1/E1/F1/G1/H1） ──
+    sha, commit_err = None, None
+    if not args.no_commit:
+        scope = ((target.get('commit') or {}).get('scope')) or target.get('dataset') or 'data'
+        nums = '#' + ',#'.join(str(a['issue']) for a in actions)
+        fields = ','.join(dict.fromkeys(a['field'] for a in actions))
+        title = f'data@{scope}: apply {nums} {fields} 更新 (HTML-GEN-CL009)'
+        cbody = ('issue 反馈自动处置：\n' + '\n'.join(
+            f"- {nums} {label_of(target, rows[a['row_idx']])}.{a['field']}: "
+            f"{norm(a['old']) or '(空)'} → {a['new']}" for a in actions)
+            + f"\n\n产物重建：{target['html']}")
+        sha, commit_err = git_commit(target, title, cbody, paths)
+        if commit_err == 'no-change':
+            print('[提交] 无变化，跳过')
+            commit_err = None
+        elif commit_err:
+            print(f'[错误] {commit_err}', file=sys.stderr)
+        else:
+            print(f'[提交] {sha} {title}')
+
+    if args.no_commit:
+        commit_txt = '提交由维护者完成（--no-commit）'
+    elif sha:
+        commit_txt = f'本地提交 `{sha}`（待推送）'
+    elif commit_err:
+        commit_txt = '提交失败，待维护者处理'
+    else:
+        commit_txt = '本次无文件变化，未产生提交'
+
     for a in actions:
         body = (f"✅ 已更新数据：**{label_of(target, rows[a['row_idx']])} · {a['field']}**\n\n"
                 f"- 现值：`{norm(a['old']) or '(空)'}` → 建议值：`{a['new']}`\n"
                 f"- 来源：{a['source'] or '(未填)'}\n"
-                f"- 产物已重建：`{target['html']}`（数据文件已更新，提交由维护者完成）\n\n"
+                f"- 产物已重建：`{target['html']}`；{commit_txt}\n\n"
                 f"感谢反馈！")
         gh_comment(repo, a['issue'], body, close=args.close)
-    return 0
+    return 1 if commit_err else 0
 
 
 if __name__ == '__main__':

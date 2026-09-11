@@ -7,7 +7,7 @@
 #   —— 后者由 tool-table-videos-syncer.py 以 {'target','countries'} 整体重写，
 #      任何附加段都会被覆盖，故不可复用。
 #
-# 设计: documents/solutions/countries-issue-feedback-design-v1.0-20260910.md
+# 设计: documents/solutions/countries-issue-feedback-design-v1.4-20260911.md
 # 依赖: 仅 PyYAML（dev 依赖 requirements-dev.txt），运行时 html-gen 零依赖不受影响
 
 targets:
@@ -39,6 +39,8 @@ targets:
       - note
     protected: [videos]                     # 视频列归 tool-table-videos-syncer.py，禁止 issue 写入
     key_guard: [country_zh, country_en]     # A1: 主键/匹配键硬保护（代码层再拦一次，配置误列也无效）
+    commit:                                # J1: --apply 自动提交（显式 pathspec；只提交不推送）
+      scope: countries                     #   提交消息 data@<scope>: apply #N … (HTML-GEN-CL009)
     types:
       capital_lat: number
       capital_lon: number

@@ -4,7 +4,9 @@
 1. TestFeedbackRender (Selenium): --feedback-repo 条件渲染、URL 预填参数、列上下文;
 2. TestIssueSyncScript (纯 Python): issue body 解析 / 六类校验 / 冲突 / 幂等 / apply 往返。
 """
+import contextlib
 import importlib.util
+import io
 import json
 import os
 import shutil
@@ -473,21 +475,29 @@ class TestIssueSyncScript(unittest.TestCase):
             encoding='utf-8')
         return tmp, data_path, cfg, doc
 
-    def _run_main(self, tmp, cfg, argv):
-        """在临时 PROJECT_ROOT 下运行 main，打桩 gh/rebuild/comment；返回 (rc, calls)。"""
+    def _run_main(self, tmp, cfg, argv, dirty=None, commit=None):
+        """在临时 PROJECT_ROOT 下运行 main，打桩 gh/rebuild/comment/git；返回 (rc, calls)。"""
         mod = self.mod
-        saved = (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment)
+        saved = (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment,
+                 mod.git_dirty, mod.git_commit)
         calls = {}
         mod.PROJECT_ROOT = tmp
         mod.gh_issue_list = lambda repo, label, limit, issue_no=None: ([{
             'number': 7, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
             'body': ISSUE_BODY, 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]}], None)
         mod.rebuild = lambda target: (calls.__setitem__('rebuild', target), 0)[1]
-        mod.gh_comment = lambda repo, no, body, close=False: (calls.__setitem__('comment', (no, close)), True)[1]
+        mod.gh_comment = lambda repo, no, body, close=False: (
+            calls.__setitem__('comment', (no, close)), calls.__setitem__('comment_body', body), True)[2]
+        mod.git_dirty = dirty if dirty is not None else (
+            lambda paths: (calls.__setitem__('dirty_paths', list(paths)), ([], None))[1])
+        mod.git_commit = commit if commit is not None else (
+            lambda target, title, body, paths: (
+                calls.__setitem__('commit', (title, body, list(paths))), ('abc1234', None))[1])
         try:
             rc = mod.main(['--config', str(cfg)] + argv)
         finally:
-            mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment = saved
+            (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment,
+             mod.git_dirty, mod.git_commit) = saved
         return rc, calls
 
     def test_19_apply_roundtrip(self):
@@ -563,3 +573,197 @@ class TestIssueSyncScript(unittest.TestCase):
                 self.mod.run = real
             self.assertIsNone(err)
             self.assertEqual(len(issues), expect, f'{state}/{labels}')
+
+    # ── v1.4 新增：--apply 自动提交（A1/B1/D1/E1/F1/G1/H1）+ --list 引导行（O1/Q1/M1） ──
+    def test_30_git_commit_pathspec_only(self):
+        """B1/H1: 真实 git —— 提交只含数据文件与产物；其它脏文件不被裹走；无变化→no-change。"""
+        tmp = Path(tempfile.mkdtemp(prefix='_tmp_git_'))
+        real_root = self.mod.PROJECT_ROOT
+        try:
+            for c in (['git', 'init', '-q'], ['git', 'config', 'user.email', 't@t.t'],
+                      ['git', 'config', 'user.name', 't']):
+                subprocess.run(c, cwd=tmp, check=True)
+            (tmp / 'data').mkdir()
+            (tmp / 'demos').mkdir()
+            (tmp / 'data' / 'd.json').write_text('{"a":1}', encoding='utf-8')
+            (tmp / 'demos' / 'x.html').write_text('<html>1</html>', encoding='utf-8')
+            (tmp / 'other.txt').write_text('v1', encoding='utf-8')
+            subprocess.run(['git', 'add', '-A'], cwd=tmp, check=True)
+            subprocess.run(['git', 'commit', '-qm', 'init'], cwd=tmp, check=True)
+            # 三处都改
+            for rel, val in (('data/d.json', '{"a":2}'), ('demos/x.html', '<html>2</html>'),
+                             ('other.txt', 'v2')):
+                (tmp / rel).write_text(val, encoding='utf-8')
+            target = {'data': 'data/d.json', 'html': 'demos/x.html'}
+            self.assertEqual(self.mod.git_paths(target), ['data/d.json', 'demos/x.html'])
+            self.mod.PROJECT_ROOT = tmp
+            sha, err = self.mod.git_commit(target, 'title', 'body', self.mod.git_paths(target))
+            self.assertIsNone(err)
+            self.assertTrue(sha)
+            shown = subprocess.run(['git', 'show', '--name-only', '--pretty=format:', 'HEAD'],
+                                   cwd=tmp, capture_output=True, text=True).stdout
+            self.assertEqual(sorted(x for x in shown.splitlines() if x.strip()),
+                             ['data/d.json', 'demos/x.html'])
+            st = subprocess.run(['git', 'status', '--porcelain'], cwd=tmp,
+                                capture_output=True, text=True).stdout
+            self.assertIn('other.txt', st, '未列入 pathspec 的脏文件不得被提交')
+            # 目标文件干净 → 预检通过（其它文件脏不影响）
+            d, e = self.mod.git_dirty(self.mod.git_paths(target))
+            self.assertEqual(d, [])
+            self.assertIsNone(e)
+            # 无变化 → no-change（不空提交）
+            sha2, err2 = self.mod.git_commit(target, 't2', 'b2', self.mod.git_paths(target))
+            self.assertIsNone(sha2)
+            self.assertEqual(err2, 'no-change')
+        finally:
+            self.mod.PROJECT_ROOT = real_root
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_31_apply_commits_and_comment_has_sha(self):
+        """A1/F1: apply 默认提交（显式 pathspec 两文件），回评含本地短 sha（待推送）。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            rc, calls = self._run_main(tmp, cfg, ['--apply'])
+            self.assertEqual(rc, 0)
+            self.assertIn('commit', calls)
+            title, body, paths = calls['commit']
+            self.assertEqual(paths, ['data/d.json', 'demos/countries-table.html'])
+            self.assertIn('本地提交 `abc1234`（待推送）', calls['comment_body'])
+            self.assertNotIn('提交由维护者完成', calls['comment_body'])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_32_apply_commit_message_format(self):
+        """D1/E1: 标题 data@<scope>: apply #N <fields> 更新 (HTML-GEN-CL009)；body 逐条列旧→新。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            rc, calls = self._run_main(tmp, cfg, ['--apply'])
+            self.assertEqual(rc, 0)
+            title, body, _ = calls['commit']
+            self.assertEqual(title, 'data@countries: apply #7 pop_wan 更新 (HTML-GEN-CL009)')
+            self.assertIn('#7 伊朗.pop_wan:', body)
+            self.assertIn('→ 9200', body)
+            self.assertIn('demos/countries-table.html', body)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_33_no_commit_flag(self):
+        """A1: --no-commit 不提交，回评注明由维护者完成。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            rc, calls = self._run_main(tmp, cfg, ['--apply', '--no-commit'])
+            self.assertEqual(rc, 0)
+            self.assertNotIn('commit', calls)
+            self.assertNotIn('dirty_paths', calls, '--no-commit 时不做预检')
+            self.assertIn('--no-commit', calls['comment_body'])
+            self.assertEqual(json.loads(data_path.read_text(encoding='utf-8'))['data'][0]['pop_wan'], 9200)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_34_dirty_preflight_rejects_before_write(self):
+        """C1: 目标文件脏 → 写盘前拒绝（exit 1），数据/产物/提交均不动。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            before = data_path.read_text(encoding='utf-8')
+            rc, calls = self._run_main(tmp, cfg, ['--apply'],
+                                       dirty=lambda paths: ([' M data/d.json'], None))
+            self.assertEqual(rc, 1)
+            self.assertEqual(data_path.read_text(encoding='utf-8'), before)
+            self.assertNotIn('rebuild', calls)
+            self.assertNotIn('commit', calls)
+            self.assertNotIn('comment', calls)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_35_dry_run_and_list_never_commit(self):
+        """I1: dry-run / --list 恒不提交、不预检。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            for argv in ([], ['--list']):
+                rc, calls = self._run_main(tmp, cfg, argv)
+                self.assertEqual(rc, 0, argv)
+                self.assertNotIn('commit', calls, argv)
+                self.assertNotIn('dirty_paths', calls, argv)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_36_no_change_skips_commit(self):
+        """H1: 无文件变化 → 不产生空提交，回评注明未产生提交。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            rc, calls = self._run_main(tmp, cfg, ['--apply'],
+                                       commit=lambda target, t, b, paths: (None, 'no-change'))
+            self.assertEqual(rc, 0)
+            self.assertIn('本次无文件变化，未产生提交', calls['comment_body'])
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_37_commit_failure_exit1_and_comment(self):
+        """G1: 提交失败不回滚、回评注明待维护者处理、exit 1。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            rc, calls = self._run_main(tmp, cfg, ['--apply'],
+                                       commit=lambda target, t, b, paths: (None, 'git commit 失败: x'))
+            self.assertEqual(rc, 1)
+            self.assertIn('提交失败，待维护者处理', calls['comment_body'])
+            self.assertEqual(json.loads(data_path.read_text(encoding='utf-8'))['data'][0]['pop_wan'], 9200)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_38_list_hint_lines(self):
+        """O1/Q1/M1: --list 每条 issue 后跟 python3 引导行（可执行 + 跳过各一条）。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            mod = self.mod
+            saved = (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment)
+            mod.PROJECT_ROOT = tmp
+            mod.gh_issue_list = lambda repo, label, limit, issue_no=None: ([
+                {'number': 7, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
+                 'body': ISSUE_BODY, 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]},
+                {'number': 8, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
+                 'body': '### 页面\n\ndemos/countries-table.html\n\n### 字段\n\ncountry_zh\n\n'
+                         '### 建议值\n\nX\n', 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]}], None)
+            mod.rebuild = lambda target: 0
+            mod.gh_comment = lambda *a, **k: True
+            buf = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(buf):
+                    rc = mod.main(['--config', str(cfg), '--list'])
+            finally:
+                (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment) = saved
+            out = buf.getvalue()
+            self.assertEqual(rc, 0)
+            self.assertIn('  #7 ', out)
+            self.assertIn('     → python3 scripts/countries-issue-sync.py --issue 7 --dry-run', out)
+            self.assertIn('#8 [跳过]', out)
+            self.assertIn('     → python3 scripts/countries-issue-sync.py --issue 8 --dry-run', out)
+            self.assertNotIn('/usr/bin/python3', out)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
+
+    def test_39_json_has_no_hint(self):
+        """P1: --json 结构不变、无引导行/无 hint 字段。"""
+        tmp, data_path, cfg, _ = self._tmp_project()
+        try:
+            mod = self.mod
+            saved = (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment)
+            mod.PROJECT_ROOT = tmp
+            mod.gh_issue_list = lambda repo, label, limit, issue_no=None: ([{
+                'number': 7, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
+                'body': ISSUE_BODY, 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]}], None)
+            mod.rebuild = lambda target: 0
+            mod.gh_comment = lambda *a, **k: True
+            buf = io.StringIO()
+            try:
+                with contextlib.redirect_stdout(buf):
+                    rc = mod.main(['--config', str(cfg), '--list', '--json'])
+            finally:
+                (mod.PROJECT_ROOT, mod.gh_issue_list, mod.rebuild, mod.gh_comment) = saved
+            out = buf.getvalue()
+            self.assertEqual(rc, 0)
+            data = json.loads(out)
+            self.assertEqual(sorted(data['data'].keys()), ['actions', 'skipped'])
+            self.assertNotIn('→', out)
+            self.assertNotIn('hint', out)
+        finally:
+            shutil.rmtree(tmp, ignore_errors=True)
