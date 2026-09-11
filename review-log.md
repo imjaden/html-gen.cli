@@ -1902,3 +1902,40 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 - 报告: `documents/review/html-gen-v1.4-impl-audit-v1.0-20260911.md`
 
 ---
+
+## 2026-09-11 — GitHub Issue 反馈通道 v1.4 follow-up 修复复核（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit-recheck)
+- **Scope**: `6a5b56d..HEAD`（1 笔：ee85686 fix@sync HG-SEC-140/141/142/135/136 跟进修复 + TC-30 扩展回归）
+- **Verdict**: 🟢 **PASS 100/100（A）** — 5 项 targeted findings 全闭合，delta 零 🔴/🟡 引入，1 🟢 记录（HG-SEC-144 pre-existing）
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-140/141/142/135/136（✅ closed ee85686）+ HG-SEC-144（🟢 record）
+- **Findings**: 0 🔴 / 0 🟡 / 1 🟢
+
+### Summary
+
+ee85686 对上一轮 CONDITIONAL PASS 遗留 5 项 finding 全部真实修复闭合：HG-SEC-140（🟡）commit 命令带 `-- <paths>`（L328-329），独立 temp-repo 实证「已暂存无关文件 staged.txt 不再被裹走」（git show 仅 2 文件 + status 仍 `A staged.txt`）；HG-SEC-141 rev-parse 失败走 `sha-unknown` 分支（L332-337 + main L565-568/L576-577），回评文案「本地提交已产生（sha 读取失败，待维护者确认）」且 exit 0；HG-SEC-142 body 逐条 `#N`（L557-559）；HG-SEC-135 docstring 引 data-fix-countries.yml（L5）；HG-SEC-136 AGENTS.md 摘要段同步（data-fix-countries.yml + 下拉选字段 + 自动提交，grep 无裸 data-fix.yml 残留）。真实运行：test_issue_feedback 37 passed（3.07s）+ 全量串行 305 passed（127.64s）+ 并行 305 passed（40.68s，0 flaky）；--check-template exit 0（15 项一致）；--list issue #4 幂等跳过 + 引导行；工作树干净。delta 零 🔴/🟡 引入。唯一新记 🟢 HG-SEC-144（data-fix.yml 回退默认残留代码 2 处，v1.3 rename 遗留、pre-existing、零当前影响）。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 1（HG-SEC-144 open 非阻断）：
+  - HG-SEC-140/141/142/135/136（✅ closed ee85686，逐条实证见报告 §2）
+  - HG-SEC-144（🟢 open）：`data-fix.yml` 回退默认值残留（scripts/countries-issue-sync.py:373 `or 'data-fix.yml'` / layout-table.html:1100 `|| 'data-fix.yml'` + demos 生成物），v1.3 rename 未同步；当前唯一案例显式指定 data-fix-countries.yml，回退分支从未命中，零当前影响；未来漏配 template 会拼死链 + check_template 安全失败
+  - HG-SEC-134（🟡 pre-existing）本轮未修（用户决策项），保留 open
+  - HG-SEC-143（🟢 历史记录）issue #4 数据变更混包，不改写历史无法修复，保留 open
+
+### Positives
+
+- HG-SEC-140 修复同时补 TC-30 扩展回归（真实 git 仓库验证），fix+test 同 commit 闭环
+- HG-SEC-141 引入 sha-unknown 语义分支，回评三态精确区分
+- 本轮并行 305 passed 零 flaky（上轮 test_videos 并行 flaky 未复现）
+
+### 处理
+
+- ✅ PASS → 审计三件套 + commit（`audit@review: v1.4 跟进修复复核 PASS (HTML-GEN-CL009)`）
+- 推送 `git push github main`（ff-only，不 force，不推 gitee）
+- follow-up（非阻断）：HG-SEC-144 回退默认改 data-fix-countries.yml；HG-SEC-134 加 col.escape
+- 报告: `documents/review/html-gen-v1.4-followup-review-v1.0-20260911.md`
+
+---

@@ -609,8 +609,8 @@ review_history:
     verdict: PASS
     score: 100
     findings_total: 6
-    findings_open: 6
-    tracking: "HG-SEC-134 (🟡 pre-existing, 非本 delta 引入, follow-up 建议) + HG-SEC-135..139 (🟢 records)"
+    findings_open: 4
+    tracking: "HG-SEC-134 (🟡 pre-existing, 非本 delta 引入, follow-up 建议) + HG-SEC-135..139 (🟢 records; 135/136 closed ee85686)"
     report: documents/review/html-gen-v1.3-impl-audit-v1.0-20260911.md
   - date: 2026-09-11
     reviewer: Security Reviewer
@@ -620,7 +620,20 @@ review_history:
     verdict: CONDITIONAL_PASS
     score: 95
     findings_total: 4
-    findings_open: 4
+    findings_open: 1
     tracking: "HG-SEC-140 (🟡 delta 引入: git commit 无 pathspec 可裹走无关已暂存文件) + HG-SEC-141..143 (🟢 records)"
     report: documents/review/html-gen-v1.4-impl-audit-v1.0-20260911.md
+    resolved_by: ee85686 follow-up 复核 (2026-09-11) — 140/141/142 closed; 143 record 保留
+
+  - date: 2026-09-11
+    reviewer: Security Reviewer
+    review_type: implementation-audit-recheck
+    review_level: L2
+    scope: "反馈通道 v1.4 follow-up 修复复核 — 6a5b56d..HEAD (1 笔: ee85686 fix@sync HG-SEC-140/141/142/135/136 + TC-30 扩展回归)"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 1
+    tracking: "HG-SEC-140/141/142/135/136 (✅ closed ee85686) + HG-SEC-144 (🟢 record, pre-existing data-fix.yml 回退默认残留)"
+    report: documents/review/html-gen-v1.4-followup-review-v1.0-20260911.md
 
