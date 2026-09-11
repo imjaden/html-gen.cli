@@ -612,4 +612,15 @@ review_history:
     findings_open: 6
     tracking: "HG-SEC-134 (🟡 pre-existing, 非本 delta 引入, follow-up 建议) + HG-SEC-135..139 (🟢 records)"
     report: documents/review/html-gen-v1.3-impl-audit-v1.0-20260911.md
+  - date: 2026-09-11
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "反馈通道 v1.4 delta — commit 范围 a2880fb..HEAD (3 笔: 0bad457 feat@sync 实现+设计 / 9f1ed83 docs@html-gen 文档同步 / 537eeb4 docs@readme README 同步); 设计 v1.4 (--apply 自动提交 + --list 引导行 + python3 口径); HTML-GEN-CL009 kind=independent"
+    verdict: CONDITIONAL_PASS
+    score: 95
+    findings_total: 4
+    findings_open: 4
+    tracking: "HG-SEC-140 (🟡 delta 引入: git commit 无 pathspec 可裹走无关已暂存文件) + HG-SEC-141..143 (🟢 records)"
+    report: documents/review/html-gen-v1.4-impl-audit-v1.0-20260911.md
 

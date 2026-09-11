@@ -1863,3 +1863,42 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 - 报告: `documents/review/html-gen-v1.3-impl-audit-v1.0-20260911.md`
 
 ---
+
+## 2026-09-11 — GitHub Issue 反馈通道 v1.4 实现审计（CONDITIONAL PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: 反馈通道 v1.4 delta — commit 范围 `a2880fb..HEAD`（3 笔：0bad457 feat@sync 实现+设计 / 9f1ed83 docs@html-gen 文档同步 / 537eeb4 docs@readme README 同步）；设计 v1.4（`--apply` 自动提交 + `--list` 引导行 + `python3` 口径）；HTML-GEN-CL009 kind=independent
+- **Verdict**: 🟡 **CONDITIONAL PASS 95/100（A）** — 1 🟡 delta 引入（非阻断）+ 3 🟢 记录 + 1 🟡 pre-existing 未变
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-140（🟡 delta 引入）+ HG-SEC-141..143（🟢 records）
+- **Findings**: 0 🔴 / 1 🟡（delta 引入）/ 3 🟢
+
+### Summary
+
+设计 §2..§6 逐条命中：B1 显式 pathspec 落在 `git add --`（`git_paths` L301-306；全脚本无 `add -A`/`add .`）；C1 预检 `git_dirty`（L309-314）在写盘（L530）与重建（L540）**之前**（main L522-529）；D1/E1 提交消息 `data@<scope>: apply #N …`，scope=`commit.scope`→`dataset`→`data`（config L42-43）；G1/H1 无变化 `no-change` 不空提交、失败不回滚 exit 1；F1 回评带本地短 sha `（待推送）`、删「提交由维护者完成」；O1/Q1/P1 `--list` 引导行可执行+跳过都打印且不进 `--json`；M1 docstring/提示统一 `python3 scripts/…`、`[执行]` 保留精确命令（L340 sys.executable）。真实运行：串行 305 passed（128.51s）+ 并行 305 passed（37.32s，1 例 test_videos 并行 flaky 隔离复跑恢复）；`--list` 只剩 issue #4 幂等跳过 + 引导行；`--check-template` exit 0（15 项一致）；工作树干净、无测试提交残留。安全面 gh/git 统一 `run()` shell=False list-form，退出码 0/1/2 语义正确。
+
+### Findings
+
+- 🔴 0 / 🟡 1（HG-SEC-140 delta 引入）/ 🟢 3（HG-SEC-141..143）：
+  - HG-SEC-140（🟡 delta 引入 open）：`git_commit()` 的 `git commit`（L327）未带 pathspec → 提交整个已暂存索引；C1 预检只过滤两目标文件，看不见索引中其他已暂存文件，故并行会话已 `git add` 无关文件时仍被裹走（设计 §2.2 B1 引述的 CL002 FIND-002 场景，验收标准 #1 边界下不保证）。**实证复现**（temp repo）：`git add -- data demos && git commit` 后 `git show` 含 unrelated `other.txt`。修：`git commit -m … -- <data> <html>`（已实证仅提交两文件）。非阻断（低概率、人工触发、一行修复）
+  - HG-SEC-141（🟢）：`rev-parse --short HEAD`（L330）未检 returncode，罕见失败时回评误写「本次无文件变化，未产生提交」（实际已提交、rc 仍 0）
+  - HG-SEC-142（🟢）：多 issue 提交 body 每行重复全量 `#N,#M`（L551-553），设计 §2.4 为逐条 `#N`（单 issue 常见路径不受影响）
+  - HG-SEC-143（🟢）：issue #4（阿尔巴尼亚 note）数据变更与 feat@sync（0bad457）实现提交混包，未走独立 `data@countries: apply #N` 格式
+
+### Positives
+
+- B1 显式 pathspec 落在 `git add --`（区别于既有 cloudwise-news-sync.py 的 `add -A`），注释明示 CL002 教训
+- C1 预检真实拦截写盘/重建/提交（test_34 断言数据未覆盖、无 rebuild/commit/comment）
+- G1 失败不回滚 + 回评「提交失败，待维护者处理」+ exit 1（test_37）；F1 回评带真实短 sha（test_31）
+- TC-30 用真实 git 仓库验证 pathspec 与 no-change（非纯桩），测试质量高
+- `--list` 引导行可执行/跳过均打印且不进 `--json`（test_36/38/39）
+
+### 处理
+
+- ✅ CONDITIONAL PASS（唯一 🟡 非阻断，报告显式声明可推）→ 审计三件套 + commit（`audit@review: 反馈通道 v1.4 实现审计 CONDITIONAL PASS (HTML-GEN-CL009)`）
+- 推送 `git push github main`（ff-only，不 force，不推 gitee）
+- follow-up（非阻断）：HG-SEC-140 一行修复 `git commit … -- <paths>`；HG-SEC-134（🟡 pre-existing stored XSS）仍建议加 `col.escape`
+- 报告: `documents/review/html-gen-v1.4-impl-audit-v1.0-20260911.md`
+
+---
