@@ -23,7 +23,7 @@
 - [x] **AI Agent Integration** — `html-gen prompt` ships project skills (usage docs for AI agents)
 - [x] **Privacy by Default** — generated HTML carries no personal links unless you opt in (`--github-url` / `--home-url`)
 - [x] **Favicon Injection** — default favicon injected into `<head>`; `--favicon <url>` overrides, empty string disables
-- [x] **Issue Feedback Loop** — A-type tables carry a ✏️ button that opens a prefilled GitHub issue; `scripts/countries-issue-sync.py` validates and writes accepted corrections back to the data JSON and rebuilds the page (table-only `--feedback-repo`)
+- [x] **Issue Feedback Loop** — A-type tables carry a ✏️ button that opens a prefilled GitHub issue (field chosen from a dropdown; keys/first columns protected); `python3 scripts/countries-issue-sync.py` validates and writes accepted corrections back to the data JSON, rebuilds the page and commits exactly those two files (table-only `--feedback-repo`; `--no-commit` to opt out)
 
 ## Installation
 
