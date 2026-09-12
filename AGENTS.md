@@ -55,7 +55,7 @@ html-gen demo --rebuild
 
 # prompt — 项目 skills 输出
 html-gen prompt <skill> [--brief] [--json]
-html-gen prompt --site [--dir <path>]   # 生成 prompts/ 在线阅读站点 (18 文件; --site 与 skill/--brief/--json 互斥; 产物勿手改)
+html-gen prompt --site [--dir <path>]   # 生成 prompts/ 在线阅读站点 (31 文件; --site 与 skill/--brief/--json 互斥; 产物勿手改)
 
 # help — 6 主题（doc/slide/table/knowledge/prompt/demo）
 html-gen help demo
@@ -296,7 +296,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 311 tests（31 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 37 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_xss_escape 6 / test_prompt_cmd 5 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 当前 312 tests（30 文件；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 37 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_xss_escape 6 / test_prompt_cmd 6 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -323,7 +323,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json, _cloudwise-news.json 公众号文章库）
-├── tests/                      # Selenium + 回归测试 (288 tests)
+├── tests/                      # Selenium + 回归测试 (312 tests)
 ├── prompts/                    # prompt --site 生成物（在线阅读站点: index.html 合集 + {skill}.md/.json + all.md; 勿手改, 由 --site 重新生成）
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
@@ -331,6 +331,7 @@ html-gen.cli/
     │   │   └── references/table-demo-prompt.md
     │   ├── html-gen-doc/SKILL.md
     │   ├── html-gen-knowledge/SKILL.md
+    │   ├── github-issue-feedback/SKILL.md   # GitHub Issue 数据反馈闭环（跨页面 ✏️ + Issue Form + 配置 + 同步脚本; 跨项目复用）
     │   └── pages-index/SKILL.md   # pages index 落地页规范（hero+矩阵/主题/复制/两屏/corner/双源）
     └── demos/                      # 生成的 HTML 示例（独立案例根级扁平，URL=/demos/{name}.html）
     ├── index.html              # 模板展示首页
