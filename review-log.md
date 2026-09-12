@@ -1939,3 +1939,114 @@ ee85686 对上一轮 CONDITIONAL PASS 遗留 5 项 finding 全部真实修复闭
 - 报告: `documents/review/html-gen-v1.4-followup-review-v1.0-20260911.md`
 
 ---
+
+## 2026-09-11 — GitHub Issue 反馈通道 skill 沉淀设计评审（CONDITIONAL PASS 90/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `documents/solutions/github-issue-feedback-skill-design-v1.0-20260911.md`（HTML-GEN-CL011 [2/6] 设计评审；决策 A2 B1 C1 D1 E1 F1 G1 H1；上游 CL009/CL010）
+- **Verdict**: ⏳ CONDITIONAL PASS 90/100（决策层全成立，安全面无新增风险；§4 改动面精确清单 2 处 🟡 遗漏需 ops 修正）
+- **Score**: 90 / 100
+- **Tracking**: HG-SEC-145..150（145/146 🟡 open；147..150 🟢 records）
+- **Findings**: 0 🔴 / 2 🟡 / 4 🟢
+
+### Summary
+
+对 skill 沉淀设计做逐锚点实测核对：决策 A2-H1 全部自洽（命名不带前缀、3 references、脚本冻结、门户归 table 组指令 CLI、单篇 ≤250 行、仅项目 skills、测试文档全量同步、独立立项）。数据验证确认：cmd_prompt L928-1030 / SKILL_TO_GROUP 8 项 / SITE_GROUPS 5 tab / _site_kb_items / cmd_prompt_site / n_total 动态计算（9×3+4=31）均与设计引用一致；AGENTS.md:58「18 文件」既存漂移属实（实际 28）；反馈四件套（layout-table FB_CFG+✏️ / html-gen 三级取值 / data-fix-countries.yml 下拉 15 项 / feedback-targets.yaml / countries-issue-sync.py 600 行）+ CL010 `<`/`>` 拒绝（L262-264）全确认；C1「改 3 处」位置正确（docstring/HINT/prog，无 DEFAULT_TARGET）。
+
+阻断点：§4「改动面精确清单」不完备 —— (1) §4.2 漏列 3 处硬断言（test_prompt_site.py L239==20 / L252==8 / L342==26，第 9 skill 加入后必红，20→22 / 8→9 / 26→27）；(2) §4.1 漏列/误分类 5 处硬编码注释（L1263 实为「28 文件」非 ×8；L1134 同含 ×8；L1137/L1202/L1219「顶层 20/16 md/json/kb 8」）。
+
+### Findings
+
+- 🔴 0 / 🟡 2 / 🟢 4：
+  - HG-SEC-145（🟡 open）：§4.2 测试同步清单漏列 L239/L252/L342 三处硬断言，致 §5.4「测试全绿」不可达；处置 = §4.2 显式补列三行及目标值 22/9/27，§6 缓解扩为四处断言
+  - HG-SEC-146（🟡 open）：§4.1 计数注释清单不完整（L1263 误分类为 ×8、L1134 漏 ×8、L1137/L1202/L1219 漏顶层 20/16 md/json/kb 8）；处置 = 补齐三组归类
+  - HG-SEC-147（🟢）：skills/html-gen/SKILL.md L314 为历史变更记录（v2.5.0），应追加新条目而非改写
+  - HG-SEC-148（🟢）：features.md 无「skills/能力段」，§4.3 落点悬空，需指定具体位置
+  - HG-SEC-149（🟢）：C1「改 3 处」措辞仅提「替换脚本名」，docstring 实含 4 类 countries 形态（脚本名/表单模板名/target 名/设计文档名）
+  - HG-SEC-150（🟢）：全文 ~630 行（1.7× 现有最大），schema 参考 ~130 行偏紧，建议放宽至 200+
+
+### Positives
+
+- 决策表 A2-H1 逐项带论证与先例，可追溯性强
+- 「可复制性 vs 漂移」红线（§3.4 不复制脚本正文）权衡成立：改「cp + 改 3 处」指引避免双份脚本漂移，且脚本确无脚本名/表单模板名之外的隐藏硬编码（DEFAULT_CONFIG 通用、无 DEFAULT_TARGET）
+- 改动面清单定位到行号，多数锚点精确（AGENTS.md:58 过期值识别准确，顺带修复既存漂移）
+- n_total 动态计算已解耦计数与清理集，§4.1 正确标注 L1264/L1268-1269 无需改
+
+### 处理
+
+- ⏳ CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，**不 commit**（待 ops 修正 §4.2/§4.1 后复审或直接进 [3/6]）
+- 报告: `documents/review/github-issue-feedback-skill-design-review-v1.0-20260911.md`
+
+---
+
+## 2026-09-12 — GitHub Issue 反馈通道 skill 沉淀设计复审（CONDITIONAL PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review, re-review)
+- **Scope**: `documents/solutions/github-issue-feedback-skill-design-v1.1-20260912.md`（HTML-GEN-CL011 [2/6] 设计评审复审；commit b2bf584；折入 v1.0 findings HG-SEC-145..150）
+- **Verdict**: ⏳ CONDITIONAL PASS 95/100（HG-SEC-145..150 六项全部真实核销；独立复检新发现 1 🟡 README 文案遗漏）
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-145..150（✅ 已核销 closed）+ HG-SEC-151（🟡 open）+ HG-SEC-152/153（🟢 待确认/record）
+- **Findings**: 0 🔴 / 1 🟡 / 2 🟢（+ 1 🟢 附注）
+
+### Summary
+
+逐行实测核销 v1.0 findings：HG-SEC-145（test_prompt_site L239/L252/L342 三处硬断言 + §6 四处兜底）、146（§4.1 三组 28 文件×4/×8×5/顶层20·16·kb8×3）、147（L314 追加 v2.7.0 不改写 v2.5.0）、148（features.md L24 后新增、不新造段）、149（§8 枚举 docstring 4 类 countries + HINT + prog + DEFAULT_CONFIG 无需改）、150（schema ~200 行）六项修正**全部真实成立**，与源码/测试逐行一致。决策层 A2-H1 未变且自洽。
+
+独立复检（grep 全仓 28 文件/18 文件/×8/8 个 skill/26 条/8 篇）新发现：HG-SEC-151（🟡）§4.3 漏 README.zh.md L95/L96「×8/8 skills」+ 英文 README.md 整体（对外契约文案，同 HG-SEC-146 类，致 §5#6「文档面 7 处」主张不成立）；HG-SEC-152（🟢 待确认）handbook 计数文案未覆盖且无冻结声明；HG-SEC-153（🟢 record）frontmatter 2.4.0 vs 变更记录 v2.6.0 既存漂移（handbook L269 已记待核）。
+
+### Findings
+
+- 🔴 0 / 🟡 1 / 🟢 2（+ 🟢 附注）：
+  - HG-SEC-145..150（✅ 已核销）：六项修正逐行实测核对成立
+  - HG-SEC-151（🟡 open）：§4.3 漏 README ×8/8 skills 文案（README.zh.md L95/L96 + README.md 英文 L95/L96）；处置 = §4.3 增补两处 + §5#6 计数上修
+  - HG-SEC-152（🟢 待确认）：handbook（html-gen-cli-handbook）current-state 计数（28 文件/×8/26 条目/8 篇/references 3→6）未覆盖 + 未声明冻结；处置 = 补进 §4.3 或显式声明快照
+  - HG-SEC-153（🟢 record）：frontmatter 2.4.0 vs 变更记录 v2.6.0 既存漂移；处置 = §4.3 附注现为 2.4.0 直置 2.7.0
+  - 🟢 附注：test_prompt_site.py 注释/消息串计数文案（L21/L104/L235-236/L370）未枚举（非断言，不红测试）
+
+### Positives
+
+- v1.1 §0 变更摘要表与 §4/§6/§8 实际修订逐字一致，可追溯
+- 三组归类（28 文件/×8/顶层 20·16·kb8）行号精确，L342→27 的 9+6+12 分解与 GUIDE_MAP(6)/CASE_MAP(12) 实测吻合
+- HG-SEC-147「追加而非改写」与 HG-SEC-149「4 类形态 + DEFAULT_CONFIG 无需改」语义精确，避免实施踩坑
+
+### 处理
+
+- ⏳ CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，**不 commit**（待 ops 折入 HG-SEC-151 后复审或按 🟡 单项补丁后 PASS）
+- 报告: `documents/review/github-issue-feedback-skill-design-review-v1.1-20260912.md`
+
+---
+
+## 2026-09-12 — GitHub Issue 反馈通道 skill 沉淀设计复审 v1.2（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review, re-review2)
+- **Scope**: `documents/solutions/github-issue-feedback-skill-design-v1.2-20260912.md`（HTML-GEN-CL011 [2/6] 设计评审第二轮复审；commit c76542a；折入 v1.1 findings HG-SEC-151..153 + 附注）
+- **Verdict**: ✅ PASS 100/100（A）—— 151..153 五项全部真实核销，无新 🟡；独立穷举复检仅 1 🟢 既存漂移遗漏
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-151..153（✅ 已核销 closed）+ 附注（✅ 已核销）+ 自查补漏（✅ 已核销）+ HG-SEC-154（🟢 record）
+- **Findings**: 0 🔴 / 0 🟡 / 1 🟢
+
+### Summary
+
+逐行实测核销 v1.1 findings：HG-SEC-151（README 双源 6 行：README.md L84/L95/L96 + README.zh.md L84/L95/L96，28→31/×8→×9/8→9）、152（handbook 15 行折入 §4.3 非冻结，先例 1b1ac53 git show 证实同 commit 改 handbook）、153（frontmatter 2.4.0 vs 变更记录 v2.6.0 落后两版 → 2.7.0）、附注（test_prompt_site 注释/消息串 B 组 7 行）、自查补漏（SKILL.md:70 ×16 + pages-content:32 268）五项修正全部真实成立，与源码/测试/文档逐行一致。决策层 A2-H1 未变且自洽；§0 范围判定规则三类自洽、应用无误（历史行 L61/L62/L90/L314 不改写/追加正确）。
+
+独立复跑穷举（模式扩至 288/311 等）：§4.1/§4.2/§4.3 全覆盖，仅发现 1 处遗漏 —— HG-SEC-154（🟢）AGENTS.md:326「288 tests」现行状态计数漂移未同步（实测 311 collected，`pytest --collect-only` 证实），设计 grep 含 268 无 288 故漏网。非对外契约、dev-facing、既存漂移，随 [3/6] 折入「288→311」一行即可。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 1：
+  - HG-SEC-151..153 + 附注 + 自查补漏（✅ 已核销）：v1.2 五项修正逐行实测核对成立
+  - HG-SEC-154（🟢 record）：AGENTS.md L326「288 tests」现行状态计数漂移（实测 311）未列入 §4.3，穷举模式缺「288」；处置 = §4.3 增一行 288→311 随 [3/6] 折入
+
+### Positives
+
+- 「README 双源」组精确到 L84/L95/L96 三行 × 两文件，目标值 31/×9/9 skills 逐字正确
+- handbook 折入依据先例（1b1ac53 git show 证实同 feat commit 改 handbook），「折入 vs 冻结」二选一落笔为折入，悬空 scope 已消除
+- §0 范围判定规则（现行/历史/归档三类）本轮起生效，防无限轮次追改，历史归属行（CL007/CL008/§5.1/L314）与归档快照均正确处理
+
+### 处理
+
+- ✅ PASS → 写报告 + review-log + .review-level.yaml，**commit 评审记录**（显式 pathspec，不 push）
+- 报告: `documents/review/github-issue-feedback-skill-design-review-v1.2-20260912.md`

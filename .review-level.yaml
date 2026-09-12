@@ -637,3 +637,37 @@ review_history:
     tracking: "HG-SEC-140/141/142/135/136 (✅ closed ee85686) + HG-SEC-144 (🟢 record, pre-existing data-fix.yml 回退默认残留)"
     report: documents/review/html-gen-v1.4-followup-review-v1.0-20260911.md
 
+  - date: 2026-09-11
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "GitHub Issue 反馈通道 skill 沉淀设计 v1.0 (HTML-GEN-CL011 [2/6] 设计评审; 决策 A2 B1 C1 D1 E1 F1 G1 H1; 上游 CL009/CL010)"
+    verdict: CONDITIONAL_PASS
+    score: 90
+    findings_total: 6
+    findings_open: 2
+    tracking: "HG-SEC-145 (🟡 open: §4.2 漏列 L239/L252/L342 三处硬断言) + HG-SEC-146 (🟡 open: §4.1 漏列/误分类 L1263/L1134/L1137/L1202/L1219 五处计数注释) + HG-SEC-147..150 (🟢 records: 变更记录改写/features 落点/改3处措辞/行数预算)"
+    report: documents/review/github-issue-feedback-skill-design-review-v1.0-20260911.md
+  - date: 2026-09-12
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "GitHub Issue 反馈通道 skill 沉淀设计 v1.1 复审 (HTML-GEN-CL011 [2/6]; commit b2bf584; 折入 v1.0 findings HG-SEC-145..150)"
+    verdict: CONDITIONAL_PASS
+    score: 95
+    findings_total: 4
+    findings_open: 1
+    tracking: "HG-SEC-145..150 (✅ closed, 六项逐行实测核销) + HG-SEC-151 (🟡 open: §4.3 漏 README ×8/8 skills) + HG-SEC-152 (🟢 待确认: handbook 计数未覆盖) + HG-SEC-153 (🟢 record: frontmatter 2.4.0 既存漂移)"
+    report: documents/review/github-issue-feedback-skill-design-review-v1.1-20260912.md
+  - date: 2026-09-12
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "GitHub Issue 反馈通道 skill 沉淀设计 v1.2 复审 (HTML-GEN-CL011 [2/6]; commit c76542a; 折入 v1.1 findings HG-SEC-151..153 + 附注)"
+    verdict: PASS
+    score: 100
+    findings_total: 1
+    findings_open: 0
+    tracking: "HG-SEC-151..153 (✅ closed, 五项逐行实测核销) + HG-SEC-154 (🟢 record: AGENTS.md L326 '288 tests' 现行计数漂移实测 311, 随 [3/6] 折入)"
+    report: documents/review/github-issue-feedback-skill-design-review-v1.2-20260912.md
+
