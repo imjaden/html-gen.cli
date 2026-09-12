@@ -790,7 +790,7 @@ prompt — 输出项目 skills 内容
   html-gen prompt <skill>        输出该 skill 摘要 + 章节
   html-gen prompt <skill> --brief  仅输出摘要 (不打印章节/全文)
   html-gen prompt <skill> --json  JSON 输出 (checkpoint 信封 {status,data,error})
-  html-gen prompt --site         生成 prompts/ 在线阅读站点 (28 文件)
+  html-gen prompt --site         生成 prompts/ 在线阅读站点 (31 文件)
   html-gen prompt --site --dir <path>  站点输出目录覆盖 (默认 仓库根/prompts/)
 
 说明:
@@ -908,7 +908,7 @@ def main():
     pr.add_argument('skill', nargs='?', help='skill 名称 (可选)')
     pr.add_argument('--brief', action='store_true', help='仅输出摘要')
     pr.add_argument('--json', action='store_true', help='JSON 输出 (checkpoint 信封 {status,data,error})')
-    pr.add_argument('--site', action='store_true', help='生成 prompts/ 在线阅读站点 (28 文件: C 型门户 + kb detail)')
+    pr.add_argument('--site', action='store_true', help='生成 prompts/ 在线阅读站点 (31 文件: C 型门户 + kb detail)')
     pr.add_argument('--dir', help='站点输出目录覆盖 (默认 仓库根/prompts/)')
     pr.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
 
@@ -1050,6 +1050,7 @@ SKILL_TO_GROUP = {
     'html-gen-slide':          ('slide',     '指令 CLI'),
     'html-gen':                ('cli',       '指令 CLI'),
     'html-gen-cli-spec':       ('cli',       '指令 CLI'),
+    'github-issue-feedback':   ('table',     '指令 CLI'),
     'pages-index':             ('cli',       '页面规范'),
     'test-speed-optimization': ('cli',       '测试规范'),
 }
@@ -1131,11 +1132,11 @@ def _site_kb_items(skills):
 
 
 def cmd_prompt_site(args):
-    """生成 prompts/ 在线阅读站点 (28 文件): C 型知识库门户 + kb/{skill}.html ×8.
+    """生成 prompts/ 在线阅读站点 (31 文件): C 型知识库门户 + kb/{skill}.html ×9.
 
     HTML-GEN-CL008 (v2)。流程: 内存全量构建(fail-fast, 零写盘) → 清理已知产物名
-    (顶层 20 + kb/ 8, HG-SEC-088 containment) → 写 16 md/json + all.md +
-    _kb-groups/_kb-data json → cmd_doc 渲染 8 个 kb/{skill}.html (stdout 抑制)
+    (顶层 22 + kb/ 9, HG-SEC-088 containment) → 写 18 md/json + all.md +
+    _kb-groups/_kb-data json → cmd_doc 渲染 9 个 kb/{skill}.html (stdout 抑制)
     → cmd_knowledge 渲染 index.html 门户 (stdout 抑制)。
     产物一律剥离 frontmatter (Jekyll 原样服务依据, 设计 §3/§6)。
     """
@@ -1199,12 +1200,12 @@ def cmd_prompt_site(args):
         sys.exit(1)
 
     # ── 清理已知产物名 (HG-SEC-088: 仅删已知产物名, 其他文件保留; containment) ──
-    # 顶层 20 = index.html + all.md + _kb-groups/_kb-data json + 16 md/json
+    # 顶层 22 = index.html + all.md + _kb-groups/_kb-data json + 18 md/json
     top_known = {'index.html', 'all.md', '_kb-groups.json', '_kb-data.json'}
     for s in skills:
         top_known.add(f'{s["name"]}.md')
         top_known.add(f'{s["name"]}.json')
-    # kb/ 8 个 detail (顶层 iterdir 扫不到子目录 → 对 kb/ 内已知名再循环, HG-SEC-103)
+    # kb/ 9 个 detail (顶层 iterdir 扫不到子目录 → 对 kb/ 内已知名再循环, HG-SEC-103)
     kb_known = {f'{s["name"]}.html' for s in skills}
     out_dir.mkdir(parents=True, exist_ok=True)
     for f in out_dir.iterdir():
@@ -1216,7 +1217,7 @@ def cmd_prompt_site(args):
         if f.is_file() and f.name in kb_known:
             f.unlink()
 
-    # ── 写 16 md/json + all.md + _kb-groups/_kb-data json ──
+    # ── 写 18 md/json + all.md + _kb-groups/_kb-data json ──
     for s in skills:
         (out_dir / f'{s["name"]}.md').write_text(md_texts[s['name']], encoding='utf-8')
         (out_dir / f'{s["name"]}.json').write_text(
@@ -1231,7 +1232,7 @@ def cmd_prompt_site(args):
         _json.dumps(_site_kb_items(skills), ensure_ascii=False, indent=2) + '\n',
         encoding='utf-8')
 
-    # ── kb/{skill}.html ×8: cmd_doc 渲染 detail (Namespace 全字段 HG-SEC-100) ──
+    # ── kb/{skill}.html ×9: cmd_doc 渲染 detail (Namespace 全字段 HG-SEC-100) ──
     for s in skills:
         a = types.SimpleNamespace(
             input=str(out_dir / f'{s["name"]}.md'),
@@ -1260,7 +1261,7 @@ def cmd_prompt_site(args):
     with contextlib.redirect_stdout(io.StringIO()):              # HG-SEC-103: quiet 非「仅打印路径」
         cmd_knowledge(p)
 
-    # 统计「28 文件」与清理集解耦 (HG-SEC-103): 每 skill 3 文件 (md/json/kb) + 顶层 4
+    # 统计「31 文件」与清理集解耦 (HG-SEC-103): 每 skill 3 文件 (md/json/kb) + 顶层 4
     n_total = len(skills) * 3 + 4
     if getattr(args, 'quiet', False):
         print(str(out_dir))
@@ -1291,9 +1292,9 @@ def _site_skill_section(skill, stripped, site_refs):
 
 
 def _site_all_md(skills, site_sections):
-    """all.md 组装: 唯一顶层 h1 + 说明引用块 + 8 skill 段."""
+    """all.md 组装: 唯一顶层 h1 + 说明引用块 + 9 skill 段."""
     header = ("# html-gen Prompt 合集\n\n"
-              "> 在线阅读: html-gen 项目 8 个 skills prompt 全文（含 references）。\n"
+              "> 在线阅读: html-gen 项目 9 个 skills prompt 全文（含 references）。\n"
               "> 单篇获取: prompts/{skill}.md（纯 markdown）· prompts/{skill}.json（JSON 信封）· all.md（全量）。\n"
               "> 重新生成: html-gen prompt --site（产物勿手改，由生成器产出）。\n")
     return header + '\n\n' + '\n\n'.join(site_sections) + '\n'

@@ -2,7 +2,7 @@
 
 统一用 --dir 临时目录, 绝不触碰仓库 prompts/ (test_08 显式断言不变)。
 
-v2 (CL008): 28 文件 = 顶层 20 (index/_kb-groups/_kb-data/all.md/16) + kb/ 8 detail;
+v2 (CL008): 31 文件 = 顶层 22 (index/_kb-groups/_kb-data/all.md/18) + kb/ 9 detail;
 index.html 由 B 型 doc 合集改为 C 型 knowledge 门户 (5 tab)。
 
 """
@@ -14,11 +14,12 @@ GEN = PROJECT / 'html-gen.py'
 SKILLS = PROJECT / 'skills'
 
 EXPECTED_SKILLS = [
-    'html-gen', 'html-gen-cli-spec', 'html-gen-doc', 'html-gen-knowledge',
-    'html-gen-slide', 'html-gen-table', 'pages-index', 'test-speed-optimization',
+    'github-issue-feedback', 'html-gen', 'html-gen-cli-spec', 'html-gen-doc',
+    'html-gen-knowledge', 'html-gen-slide', 'html-gen-table', 'pages-index',
+    'test-speed-optimization',
 ]
 
-# CL008 v2: 顶层 20 = index + all.md + _kb-groups/_kb-data json + 16 md/json
+# CL008 v2: 顶层 22 = index + all.md + _kb-groups/_kb-data json + 18 md/json
 EXPECTED_TOP = (['index.html', 'all.md', '_kb-groups.json', '_kb-data.json']
                 + [f'{s}.md' for s in EXPECTED_SKILLS]
                 + [f'{s}.json' for s in EXPECTED_SKILLS])
@@ -101,12 +102,12 @@ class TestPromptSite:
         assert r.returncode == 0, f'exit={r.returncode}\nstderr={r.stderr}'
         return r
 
-    # ── test_01 生成完整性: 28 文件 (顶层 20 + kb/ 8) ──
-    def test_01_site_generates_28_files(self):
+    # ── test_01 生成完整性: 31 文件 (顶层 22 + kb/ 9) ──
+    def test_01_site_generates_31_files(self):
         d = make_dir()
         try:
             r = self._run_ok(d)
-            assert '28 文件' in r.stdout, f'统计行缺失: {r.stdout}'
+            assert '31 文件' in r.stdout, f'统计行缺失: {r.stdout}'
             top_files = sorted(p.name for p in d.iterdir() if p.is_file())
             assert top_files == sorted(EXPECTED_TOP), f'顶层文件清单不符: {top_files}'
             kb = d / 'kb'
@@ -176,7 +177,7 @@ class TestPromptSite:
             text = (d / 'all.md').read_text(encoding='utf-8')
             assert not text.startswith('---'), '不以 --- 开头'
             assert text.startswith('# html-gen Prompt 合集'), '首行唯一顶层 h1'
-            # 8 个 ## {skill.name} 段标题 (各恰好一次)
+            # 9 个 ## {skill.name} 段标题 (各恰好一次)
             for name in EXPECTED_SKILLS:
                 assert re.search(rf'^## {re.escape(name)}$', text, re.M), f'缺段标题 ## {name}'
                 assert len(re.findall(rf'^## {re.escape(name)}$', text, re.M)) == 1
@@ -232,11 +233,11 @@ class TestPromptSite:
             (d / 'sub' / 'inner.txt').write_text('inner', encoding='utf-8')
 
             self._run_ok(d)
-            # CL008: 确定性集 20 = 16 md/json + all.md + _kb json + index.html
+            # CL008: 确定性集 22 = 18 md/json + all.md + _kb json + index.html
             # (knowledge 门户无 doc meta 分钟粒度 → index.html 参与字节 diff;
             #  kb/*.html 为 doc 渲染含 doc meta → 排除, HG-SEC-086 同类)
             deterministic = sorted(EXPECTED_TOP)
-            assert len(deterministic) == 20, f'确定性集应 20: {len(deterministic)}'
+            assert len(deterministic) == 22, f'确定性集应 22: {len(deterministic)}'
             snap1 = {f: (d / f).read_bytes() for f in deterministic}
             self._run_ok(d)
             for f in deterministic:
@@ -249,7 +250,7 @@ class TestPromptSite:
             kb_keep.write_text('kb unrelated', encoding='utf-8')
             self._run_ok(d)
             assert kb_keep.read_text(encoding='utf-8') == 'kb unrelated'
-            assert len(list((d / 'kb').glob('*.html'))) == 8
+            assert len(list((d / 'kb').glob('*.html'))) == 9
         finally:
             shutil.rmtree(d, ignore_errors=True)
 
@@ -306,7 +307,7 @@ class TestPromptSite:
             assert 'evil.example' not in html
             assert re.search(
                 r'<a class="home-link" href="https://html-gen\.cli\.jaden\.tech/"', html)
-            # HG-SEC-100 扩展: 8 个 kb/{skill}.html detail 页同样零 github-corner / 零 env 污染
+            # HG-SEC-100 扩展: 9 个 kb/{skill}.html detail 页同样零 github-corner / 零 env 污染
             for name in EXPECTED_SKILLS:
                 kh = (d / 'kb' / f'{name}.html').read_text(encoding='utf-8')
                 assert not re.search(r'<a[^>]*class="github-corner"', kh), f'{name} 页 corner'
@@ -339,7 +340,7 @@ class TestPromptSite:
         try:
             self._run_ok(d)
             items = json.loads((d / '_kb-data.json').read_text(encoding='utf-8'))
-            assert isinstance(items, list) and len(items) == 26
+            assert isinstance(items, list) and len(items) == 27
             groups = json.loads((d / '_kb-groups.json').read_text(encoding='utf-8'))
             group_keys = {g['key'] for g in groups}
             assert len(groups) == 5 and group_keys == {'table', 'doc', 'knowledge',
@@ -367,7 +368,7 @@ class TestPromptSite:
                     rel = it['url'][len('../demos/'):]
                     assert (PROJECT / 'demos' / rel).is_file(), \
                         f"demos 文件缺失(注册表漂移?): {it['url']}"
-            assert sorted(skills_seen) == sorted(EXPECTED_SKILLS), '8 skill 条目不齐'
+            assert sorted(skills_seen) == sorted(EXPECTED_SKILLS), '9 skill 条目不齐'
             # HG-SEC-102: 同组 section 首现顺序 = 指令 CLI → 模板语法 → 使用案例
             # (cli 组: 指令 CLI → 页面规范 → 测试规范)
             expect_order = {

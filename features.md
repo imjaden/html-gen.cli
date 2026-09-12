@@ -22,6 +22,7 @@ html-gen table -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
 html-gen table --title — 表格标题 ✅ — html-gen.py
 html-gen table -o/--output — 输出 HTML 路径 (必填: CLI -o 或 JSON 顶层 output 二选一) ✅ — html-gen.py
 html-gen table --feedback-repo — GitHub Issue 反馈通道开关 (table 专属, 默认不注入/空串禁用) ✅ — html-gen.py
+html-gen prompt github-issue-feedback — GitHub Issue 反馈通道接入规范 skill (跨项目复用: 表单/配置/脚本/安全红线) ✅ — skills/github-issue-feedback/SKILL.md
 html-gen knowledge — JSON 转 C 型知识库 ✅ — layout-knowledge.html
 html-gen knowledge -d/--data — 输入 JSON 数据文件 ✅ — html-gen.py
 html-gen knowledge -g/--groups — 输入 groups JSON (类目定义) ✅ — html-gen.py
@@ -257,7 +258,7 @@ pytest 11/11 全绿 ✅ — CI/提交前置
 | 数据文件 | 7 |
 | Demo 文件 | 56 (registry: 21 独立 + 35 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 311 (pytest --collect-only -n 0 实测口径 2026-09-11; Selenium + CLI 回归) |
+| 测试用例 | 312 (pytest --collect-only -n 0 实测口径 2026-09-12; Selenium + CLI 回归) |
 | CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
 | CLI 参数 | 16 |
 | localStorage keys | 17 |

@@ -1,0 +1,1773 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>github-issue-feedback</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+  transition: width 0.25s, min-width 0.25s;
+}
+
+/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
+.doc-sidebar { display: none; }
+.top-toolbar { display: none; }
+body.show-sidebar .doc-sidebar { display: flex; }
+body.show-toolbar .top-toolbar { display: flex; }
+.doc-sidebar.collapsed { width: 48px; min-width: 48px; }
+.doc-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.doc-sidebar-resize:hover, .doc-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+.doc-sidebar.collapsed .doc-sidebar-header,
+.doc-sidebar.collapsed .doc-toc,
+.doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
+.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
+.doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
+.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .sidebar-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.doc-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
+.doc-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
+.doc-h3-toggle:hover { color: #9ca3af; }
+.doc-h3-toggle.on { color: var(--cobalt-400); }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; display: none; }
+.doc-toc .toc-h3.show { display: block; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
+.doc-header {
+  padding: 0 80px;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-950);
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+/* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
+.meta-path { display: none; }
+body.show-md .meta-path { display: inline; }
+.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
+/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
+body.width-narrow .doc-body { max-width: 720px; }
+body.width-wide .doc-body { max-width: 1280px; }
+
+.doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
+.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
+.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+.doc-body pre { position: relative; background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+.progress-bar { position: fixed; top: 0; left: 0; width: 0; height: 2px; background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear; }
+
+.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; cursor: zoom-out; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }
+.lightbox .lb-close { position: fixed; top: 16px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }
+.lightbox .lb-close:hover { color: #fff; }
+.doc-body img { cursor: zoom-in; }
+
+.anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
+h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2.5em; min-width: 2.5em; text-align: right; padding-right: 1em; color: #4a5568; user-select: none; }
+
+.doc-body blockquote.callout { border-left-width: 4px; padding: 10px 16px; margin: 0.75rem 0; }
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note { border-left-color: var(--cobalt-500); background: rgba(79,70,229,0.08); color: #c0c4f0; }
+.doc-body blockquote.callout.tip { border-left-color: #34d399; background: rgba(52,211,153,0.08); color: #a7f3d0; }
+.doc-body blockquote.callout.warning { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); color: #fde68a; }
+.doc-body blockquote.callout.danger { border-left-color: #f87171; background: rgba(248,113,113,0.08); color: #fecaca; }
+
+/* ── Sidebar Footer ── */
+.doc-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
+.doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+
+/* ── TOC Search ── */
+.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.doc-toc-search.active { display: block; }
+.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.doc-toc-search input:focus { border-color: var(--cobalt-600); }
+.doc-toc-search input::placeholder { color: #555; }
+:root.light .doc-toc-search { border-color: #e5e5e5; }
+:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
+.doc-toc a.filtered-out { display: none; }
+
+/* ── Top-Right Toolbar ── */
+.top-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .doc-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .doc-sidebar-header { border-color: #e5e5e5; }
+:root.light .doc-sidebar-footer { border-color: #e5e5e5; }
+:root.light .doc-toc a { color: #666; }
+:root.light .doc-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
+:root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
+:root.light .doc-body h2 { color: #222; }
+:root.light .doc-body h3 { color: #333; }
+:root.light .doc-body h4 { color: #444; }
+:root.light .doc-body h5 { color: #555; }
+:root.light .doc-body h6 { color: #666; }
+:root.light .doc-body p, :root.light .doc-body li { color: #444; }
+:root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
+:root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
+:root.light .doc-body blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
+:root.light .doc-body table th { background: #f0f0f0; color: #555; }
+:root.light .doc-body table td { border-color: #ddd; }
+:root.light .doc-body hr { border-color: #ddd; }
+:root.light .doc-header { background: #f5f5f5; }
+:root.light .doc-header h1 { color: #222; }
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 0 16px 40px; }
+  .doc-header { padding: 0 16px; }
+}
+
+@media print {
+  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
+  .doc-body { color: #000; }
+  .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
+  .doc-body code { background: #f0f0f0; color: #000; }
+  .doc-body a { color: #000; text-decoration: underline; }
+}
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
+  .home-link:hover { background: rgba(0,0,0,0.6); }
+  
+
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Top-Right Toolbar -->
+<div class="top-toolbar" id="topToolbar">
+  <button class="tb-btn active" id="langZh" onclick="setLang('zh')" title="中文">🇨🇳</button>
+  <button class="tb-btn" id="langEn" onclick="setLang('en')" title="English">🇺🇸</button>
+  <span class="tb-divider"></span>
+  <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
+</div>
+
+
+
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-resize" id="sbResize"></div>
+    <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
+    <div class="doc-sidebar-header">
+      <div class="sidebar-title" title="github-issue-feedback" id="sidebarTitle">📄 github-issue-feedback</div>
+      <div class="sub-row">
+        <div class="sub"></div>
+        <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
+      </div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+    <!-- TOC Search -->
+    <div class="doc-toc-search" id="tocSearchWrap">
+      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    </div>
+    <div class="doc-sidebar-footer">
+      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
+  </aside>
+  <div class="doc-main" id="docMain">
+    <div class="doc-header">
+      <h1>github-issue-feedback</h1>
+      <div class="meta">创建: 2026-09-12 09:59 · 编辑: 2026-09-12 09:59<br>字数: 2,800 · 阅读约 14 分钟<span class="meta-path"> · 路径: <code>github-issue-feedback.md</code></span></div>
+    </div>
+    <div class="doc-body" id="docBody"><p>把「读者发现数据错误 → 提 Issue → 维护者一键写回数据 JSON → 重建静态页 → 回评」的闭环，</p>
+<p>做成<strong>配置驱动、可跨项目复制</strong>的能力。已在 html-gen 的 countries 表案例落地（CL009 + CL010）。</p>
+<h2 id="何时使用">何时使用</h2>
+<ul>
+<li>已有<strong>静态 HTML 数据页</strong>（由 <code>html-gen table</code> 生成）挂在 GitHub Pages，读者能看但不能改</li>
+<li>数据源是<strong>同源 JSON</strong>，且页面有<strong>可脚本化的重建命令</strong>（一条命令能重新生成产物）</li>
+<li>仓库有 GitHub 远端 + <code>gh</code> CLI 已认证，且你愿意让"数据纠错"走 Issue 流程而非直接提 PR</li>
+<li>想要<strong>白名单 + 类型校验 + 主键保护</strong>的安全写回，而不是任人改数据文件</li>
+</ul>
+<p>不适用：数据在数据库/API（应做后台表单）；页面非 html-gen 生成（无 ✏️ 按钮注入点）；</p>
+<p>需要读者直接改文件（用 PR 流程更简单）。</p>
+<h2 id="能力总览">能力总览</h2>
+<p>四件套，缺一不可：</p>
+<table><thead><tr>
+<th>层</th>
+<th>产物</th>
+<th>职责</th>
+</tr></thead><tbody>
+<tr>
+<td>页面侧</td>
+<td>分栏预览 header 的 <code>✏️</code> 按钮（layout-table）</td>
+<td>拼 GitHub Issue 新建 URL（预填 page/dataset/row/row_en/template，全量 URL 编码）</td>
+</tr>
+<tr>
+<td>表单侧</td>
+<td><code>.github/ISSUE_TEMPLATE/data-fix-<case>.yml</code></td>
+<td>结构化收集：字段（下拉 <code>标签｜key</code>）+ 建议值 + 来源</td>
+</tr>
+<tr>
+<td>配置侧</td>
+<td><code>scripts/feedback-targets.yaml</code></td>
+<td>声明「哪些案例可被反馈、哪些字段可写、怎么重建」</td>
+</tr>
+<tr>
+<td>脚本侧</td>
+<td><code><case>-issue-sync.py</code></td>
+<td>拉 issue → 解析 → 校验链 → 写回 JSON → 重建 → 回评/关闭 → 本地提交</td>
+</tr>
+</tbody></table>
+<p>数据流：</p>
+<pre><code class="language-">读者点 ✏️ → GitHub Issue Form（预填上下文，人工填字段/值/来源）
+   → gh issue list（按 label 拉取）
+   → 校验链：page → dataset → 字段解析 → 主键硬保护 → editable 白名单
+            → 行唯一定位 → 类型 → 非空 → 入库 XSS 防护 → 幂等 → 冲突取最新
+   → 写回数据 JSON（indent=2，逐字往返）
+   → 重建产物（html-gen table + 固化参数）
+   → 回评（含本地短 sha）/ --close 关闭
+   → 本地 git commit（显式 pathspec，只提交不推送）</code></pre>
+<p><strong>三个关键设计选择</strong>（照抄即可，勿自行简化）：</p>
+<ul>
+<li><strong>默认预览、显式落盘</strong>：默认 <code>--dry-run</code> 零写盘；<code>--apply</code> 才写盘。一次 <code>--apply</code> 批量处理所有可执行 issue。</li>
+<li><strong>提交只到本地</strong>：<code>--apply</code> 自动 <code>git commit</code>（显式 pathspec），<strong>不 push</strong>——推送交由人工/review 通道。</li>
+<li><strong>双层保护</strong>：可写字段来自配置白名单，且主键/匹配键/受保护列在<strong>代码层再拦一次</strong>（配置误列也无效）。</li>
+</ul>
+<h2 id="快速接入-6-步-摘要">快速接入（6 步 · 摘要）</h2>
+<pre><code class="language-shell"># 1) 数据 JSON 顶层加案例自描述（或改用 CLI/env）
+#    options.feedback = {repo, dataset, key, altKey, template}
+# 2) 生成命令加 --feedback-repo（并把 corner/home/favicon 固化进重建参数）
+html-gen table -d data/x.json -o demos/x.html --feedback-repo &lt;owner/repo&gt;
+# 3) 复制 Issue Form 模板并按案例改下拉选项
+cp .github/ISSUE_TEMPLATE/data-fix-countries.yml .github/ISSUE_TEMPLATE/data-fix-&lt;case&gt;.yml
+# 4) 建 data-fix label + config.yml（关闭 blank issue）
+# 5) 写 feedback-targets.yaml 的一个 target
+# 6) 复制同步脚本并替换 docstring/HINT/prog 中的案例名
+cp scripts/countries-issue-sync.py scripts/&lt;case&gt;-issue-sync.py</code></pre>
+<p>逐步骤的可复制片段 + 验证方法见 <strong><code>references/issue-feedback-adoption-prompt.md</code></strong>（可整体转交给其他项目的 agent）。</p>
+<h2 id="cli-契约">CLI 契约</h2>
+<p><strong>页面侧（三级取值，CLI &gt; env &gt; JSON）</strong></p>
+<table><thead><tr>
+<th>入口</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>html-gen table --feedback-repo <owner/repo></code></td>
+<td>仅 table 子命令；默认不注入（隐私）</td>
+</tr>
+<tr>
+<td>env <code>HTML_GEN_FEEDBACK_REPO</code></td>
+<td>兜底；显式传空串 <code>''</code> 禁用 env</td>
+</tr>
+<tr>
+<td>数据 JSON <code>options.feedback.{repo,dataset,key,altKey,template}</code></td>
+<td>案例自描述；<code>repo</code> 为空 → 不渲染按钮</td>
+</tr>
+</tbody></table>
+<p>未配置 <code>repo</code> 时<strong>不渲染 ✏️ 按钮</strong>（既有页面零变更）。其余字段：<code>dataset</code>（表单数据集校验）、</p>
+<p><code>key</code>（行主键列，默认 <code>name</code>）、<code>altKey</code>（二次校验列，可空）、<code>template</code>（表单模板名，默认 <code>data-fix.yml</code>）。</p>
+<p><strong>脚本侧（十态）</strong></p>
+<pre><code class="language-shell">python3 scripts/&lt;case&gt;-issue-sync.py --list          # 列待处理 issue（零写盘）
+python3 scripts/&lt;case&gt;-issue-sync.py                 # 预览（默认 --dry-run，零写盘）
+python3 scripts/&lt;case&gt;-issue-sync.py --apply         # 写回 + 重建 + 提交 + 回评
+python3 scripts/&lt;case&gt;-issue-sync.py --apply --close # 追加关闭已处理 issue
+python3 scripts/&lt;case&gt;-issue-sync.py --apply --no-commit   # 只写盘重建
+python3 scripts/&lt;case&gt;-issue-sync.py --issue 12 --dry-run  # 只处理指定 issue
+python3 scripts/&lt;case&gt;-issue-sync.py --issue 12 --field note --value-file body.txt --apply  # 人工裁决
+python3 scripts/&lt;case&gt;-issue-sync.py --check-template      # 表单下拉 ↔ 配置一致性校验
+python3 scripts/&lt;case&gt;-issue-sync.py --json                # 机器可读输出
+python3 scripts/&lt;case&gt;-issue-sync.py --target &lt;name&gt; --config &lt;path&gt;  # 多 target / 自定义配置</code></pre>
+<p>退出码：<code>0</code> 正常；<code>1</code> 预检脏/预检失败/提交失败；<code>2</code> 参数错误或配置缺失。</p>
+<p>字段级契约见 <strong><code>references/feedback-targets-schema.md</code></strong>。</p>
+<h2 id="安全红线-必读">安全红线（必读）</h2>
+<ul>
+<li><strong>白名单 + 硬保护双层</strong>：可写字段必须在 <code>target.editable</code>；<code>key_field</code> / <code>alt_key</code> / <code>key_guard</code> / <code>protected</code></li>
+</ul>
+<p>   在代码层硬拦（配置误列也无效）。</p>
+<ul>
+<li><strong>入库 XSS 防护</strong>：string 字段建议值含 <code>&lt;</code> 或 <code>&gt;</code> → 拒绝（防止载荷经 Issue 入库后由页面 raw 渲染执行）。</li>
+<li><strong>显式 pathspec</strong>：<code>git add --</code> / <code>git commit -- &lt;data&gt; &lt;html&gt;</code>；<strong>禁 <code>git add -A</code></strong>（并行会话 WIP 会被裹走）。</li>
+<li><strong>写盘前预检</strong>：目标文件有未提交改动 → 拒绝（<code>exit 1</code>），确保本次提交只含本次处置。</li>
+<li><strong>失败不回滚</strong>：提交失败时数据已写、产物已重建，脚本 exit 1 并在 issue 回评「提交失败，待维护者处理」。</li>
+<li><strong>全链路 <code>shell=False</code></strong>：<code>gh</code> / <code>git</code> 调用一律列表参数，无字符串拼接。</li>
+</ul>
+<h2 id="运维">运维</h2>
+<table><thead><tr>
+<th>场景</th>
+<th>做法</th>
+</tr></thead><tbody>
+<tr>
+<td>巡检待处理</td>
+<td><code>--list</code>（每条附 <code>--issue N --dry-run</code> 引导行）</td>
+</tr>
+<tr>
+<td>同字段多条 issue</td>
+<td>冲突取最新（createdAt 大者，同则 issue 号大者），旧条目标注跳过原因</td>
+</tr>
+<tr>
+<td>幂等</td>
+<td>建议值与现值一致 → 跳过，不产生空提交</td>
+</tr>
+<tr>
+<td>逃生口</td>
+<td><code>--apply --no-commit</code>（只写盘重建，人工提交）</td>
+</tr>
+<tr>
+<td>人工裁决</td>
+<td><code>--issue N --field KEY --value TEXT</code> / <code>--value-file PATH</code>（覆盖 issue 中的字段与值）</td>
+</tr>
+<tr>
+<td>表单漂移</td>
+<td><code>--check-template</code> 校验下拉选项 ↔ <code>config.editable</code> ↔ 数据列标签一致</td>
+</tr>
+<tr>
+<td>新案例</td>
+<td>追加一份 target（无需改脚本），并在页面加 <code>options.feedback</code></td>
+</tr>
+</tbody></table>
+<h2 id="本仓现状-html-gen-cli-参考实现">本仓现状（html-gen.cli 参考实现）</h2>
+<table><thead><tr>
+<th>项</th>
+<th>位置</th>
+</tr></thead><tbody>
+<tr>
+<td>页面侧按钮</td>
+<td><code>layout-table.html</code>（<code>FB_CFG</code> / <code>buildFeedbackUrl</code> / <code>renderSplitPreview</code> 的 <code>.sp-feedback</code>）</td>
+</tr>
+<tr>
+<td>CLI 三级取值</td>
+<td><code>html-gen.py</code>（<code>feedback_repo_args()</code> / table 子命令 <code>--feedback-repo</code>）</td>
+</tr>
+<tr>
+<td>表单模板</td>
+<td><code>.github/ISSUE_TEMPLATE/data-fix-countries.yml</code>（84 行）+ <code>config.yml</code></td>
+</tr>
+<tr>
+<td>target 配置</td>
+<td><code>scripts/feedback-targets.yaml</code>（countries）</td>
+</tr>
+<tr>
+<td>同步脚本</td>
+<td><code>scripts/countries-issue-sync.py</code>（600 行）</td>
+</tr>
+<tr>
+<td>设计/评审</td>
+<td><code>documents/solutions/countries-issue-feedback-design-v1.0..v1.4-<em>.md</code> + <code>documents/review/</em>issue-feedback*</code></td>
+</tr>
+</tbody></table>
+<h2 id="复用差异点-其他项目接入时必改">复用差异点（其他项目接入时必改）</h2>
+<ul>
+<li><strong>脚本名与 docstring</strong>：docstring 内案例名有 4 类形态（脚本名 ×8 / 表单模板名 / target 名 / 设计文档名）</li>
+<li><strong><code>HINT</code> 常量</strong>（引导行打印用）与 <strong>argparse <code>prog</code></strong></li>
+<li><strong>表单模板</strong>：下拉选项 = 可写列的 <code>标签｜key</code></li>
+<li><strong>target 配置</strong>：<code>data</code> / <code>html</code> / <code>key_field</code> / <code>editable</code> / <code>rebuild.args</code></li>
+<li><strong>重建参数</strong>：<code>--github-url</code> / <code>--home-url</code> / <code>--favicon</code> / <code>--feedback-repo</code> 四项固化，防重建丢 corner/home</li>
+</ul>
+<p>（<code>DEFAULT_CONFIG</code> 为通用路径，无需改；无 <code>DEFAULT_TARGET</code> 硬编码。）</p>
+<h2 id="references-索引">references 索引</h2>
+<table><thead><tr>
+<th>文件</th>
+<th>用途</th>
+</tr></thead><tbody>
+<tr>
+<td><code>references/issue-feedback-adoption-prompt.md</code></td>
+<td>跨项目接入 prompt（6 步可复制片段 + 验收清单），可整体转交</td>
+</tr>
+<tr>
+<td><code>references/feedback-targets-schema.md</code></td>
+<td>target 字段表 / 校验链顺序 / CLI 十态与退出码 / 安全红线</td>
+</tr>
+<tr>
+<td><code>references/issue-form-template.md</code></td>
+<td>Issue Form yml 模板 + 机制约束（下拉不可 URL 预填等）</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="feedback-targets-schema">feedback-targets-schema</h2>
+<h1 id="feedback-targets-yaml-字段契约与校验链">feedback-targets.yaml 字段契约与校验链</h1>
+<blockquote>配置示例：<code>html-gen.cli/scripts/feedback-targets.yaml</code>（target <code>countries</code>）。</blockquote>
+<blockquote>解析入口：<code>scripts/countries-issue-sync.py</code>（<code>load_target()</code> / <code>plan_issues()</code> / <code>guarded_fields()</code>）。</blockquote>
+<blockquote>依赖：仅 PyYAML（<strong>dev 依赖</strong>；html-gen 运行时零依赖不受影响）。</blockquote>
+<h2 id="1-target-字段表-20-项">1. target 字段表（20 项）</h2>
+<table><thead><tr>
+<th>字段</th>
+<th>类型</th>
+<th>必填</th>
+<th>语义</th>
+<th>缺省行为</th>
+</tr></thead><tbody>
+<tr>
+<td><code>repo</code></td>
+<td>str</td>
+<td>✔</td>
+<td><code>owner/repo</code>，<code>gh</code> 拉取与回评目标</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>label</code></td>
+<td>str</td>
+<td>✔</td>
+<td>只处理带该 label 的 issue</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>dataset</code></td>
+<td>str</td>
+<td>✔</td>
+<td>数据集标识，须与 issue 表单「数据集」一致</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td>str</td>
+<td>—</td>
+<td>Issue Form 文件名（<code>--check-template</code> 校验用）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td>str</td>
+<td>✔</td>
+<td>允许的页面（全路径或 basename 均可匹配）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>data</code></td>
+<td>str</td>
+<td>✔</td>
+<td>数据 JSON 仓库相对路径（写回目标）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>html</code></td>
+<td>str</td>
+<td>✔</td>
+<td>产物仓库相对路径（重建目标 + 提交范围）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>key_field</code></td>
+<td>str</td>
+<td>✔</td>
+<td>行主键列（issue「行标识」→ 定位行）</td>
+<td>—</td>
+</tr>
+<tr>
+<td><code>alt_key</code></td>
+<td>str</td>
+<td>—</td>
+<td>匹配键列（issue「行英文标识」→ 二次校验）</td>
+<td>不校验</td>
+</tr>
+<tr>
+<td><code>editable</code></td>
+<td>list</td>
+<td>✔</td>
+<td><strong>可写列白名单</strong>（issue 字段解析依据）</td>
+<td>空 → 全部拒绝</td>
+</tr>
+<tr>
+<td><code>protected</code></td>
+<td>list</td>
+<td>—</td>
+<td>由其他脚本托管的列（拒绝写入）</td>
+<td>空</td>
+</tr>
+<tr>
+<td><code>key_guard</code></td>
+<td>list</td>
+<td>—</td>
+<td>硬保护列（主键/匹配键；配置误列也无效）</td>
+<td>取 <code>key_field</code>/<code>alt_key</code></td>
+</tr>
+<tr>
+<td><code>commit.scope</code></td>
+<td>str</td>
+<td>—</td>
+<td>提交消息 <code>data@<scope>: apply #N …</code></td>
+<td>回退 <code>dataset</code> → <code>data</code></td>
+</tr>
+<tr>
+<td><code>types</code></td>
+<td>map</td>
+<td>—</td>
+<td>列 → <code>number</code>（数值解析 + 写 number）</td>
+<td>全按 string 写</td>
+</tr>
+<tr>
+<td><code>parse_fields</code></td>
+<td>map</td>
+<td>✔</td>
+<td>issue body 段落标签 → 逻辑键（见 §3）</td>
+<td>解析失败即跳过</td>
+</tr>
+<tr>
+<td><code>rebuild.args</code></td>
+<td>list</td>
+<td>✔</td>
+<td>重建附加参数（corner/home/favicon/feedback 固化）</td>
+<td>空 → 产物丢参数</td>
+</tr>
+<tr>
+<td><code>page</code>+<code>dataset</code> 组合</td>
+<td>—</td>
+<td>✔</td>
+<td>双层定位：页面不匹配或数据集不匹配 → 跳过</td>
+<td>—</td>
+</tr>
+<tr>
+<td>（隐式）<code>repo</code> 覆盖</td>
+<td>—</td>
+<td>—</td>
+<td>CLI <code>--repo</code> 可覆盖配置值</td>
+<td>—</td>
+</tr>
+<tr>
+<td>（隐式）多 target</td>
+<td>—</td>
+<td>—</td>
+<td>单 target 自动选用；多 target 需 <code>--target</code></td>
+<td>—</td>
+</tr>
+</tbody></table>
+<h2 id="2-校验链顺序-逐条短路-任一失败即跳过该-issue">2. 校验链顺序（逐条短路，任一失败即跳过该 issue）</h2>
+<table><thead><tr>
+<th>#</th>
+<th>阶段</th>
+<th>规则</th>
+<th>失败输出</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>页面匹配</td>
+<td>issue「页面」∈ {<code>target.page</code>, basename}</td>
+<td><code>page 不匹配（…）</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>数据集匹配</td>
+<td>issue「数据集」== <code>target.dataset</code></td>
+<td><code>dataset 不匹配（…）</code></td>
+</tr>
+<tr>
+<td>3</td>
+<td>字段解析</td>
+<td>下拉 <code>标签｜key</code> 取末段 → 裸 key 回退 → 未知拒绝；<code>--field</code> 可覆盖</td>
+<td><code>字段值无法识别（… 不在可写列中）</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>硬保护</td>
+<td>∈ <code>guarded_fields()</code>（<code>key_guard</code> ∪ <code>key_field</code> ∪ <code>alt_key</code> ∪ <code>protected</code>）</td>
+<td><code>字段 X 属受保护列…</code></td>
+</tr>
+<tr>
+<td>5</td>
+<td>白名单</td>
+<td>∈ <code>target.editable</code></td>
+<td><code>字段 X 不在可写白名单</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td>建议值非空</td>
+<td>strip 后非空</td>
+<td><code>建议值为空</code></td>
+</tr>
+<tr>
+<td>7</td>
+<td>行定位</td>
+<td>主键列 + 匹配键列唯一定位；0 命中/多命中均拒绝</td>
+<td><code>row=… 命中 N 行（歧义）</code> / 未命中</td>
+</tr>
+<tr>
+<td>8</td>
+<td>类型</td>
+<td><code>types[field] == number</code> → <code>to_number()</code>（容忍 <code>1,234</code>）；解析失败拒绝</td>
+<td><code>数值列 X 无法解析建议值</code></td>
+</tr>
+<tr>
+<td>9</td>
+<td>入库 XSS 防护</td>
+<td>string 字段含 <code><</code> 或 <code>></code> → 拒绝</td>
+<td><code>建议值含 HTML 标签字符（< 或 >），安全策略拒绝</code></td>
+</tr>
+<tr>
+<td>10</td>
+<td>幂等</td>
+<td>建议值 == 现值（<code>norm()</code> 归一化后）</td>
+<td><code>建议值与现值一致，无变化</code></td>
+</tr>
+<tr>
+<td>11</td>
+<td>冲突</td>
+<td>同一 (行, 字段) 多条 → 取最新（<code>createdAt</code> 大者，同则 issue 号大者），其余标注跳过</td>
+<td><code>X 与 #N 冲突，取最新</code></td>
+</tr>
+</tbody></table>
+<p><strong>行定位细节</strong>：主键列命中唯一即通过；主键 0 命中（或未填）时用 <code>alt_key</code> 再试；</p>
+<p>两者都歧义/都未命中 → 跳过。<code>key_guard</code> 保证主键<strong>永不被写</strong>。</p>
+<h2 id="3-parse_fields-映射">3. `parse_fields` 映射</h2>
+<p>issue body 被解析为「<code>### 标签</code> → 值」字典（首段需以 <code>### </code> 开头；同 id 多段自动合并）。</p>
+<p><code>parse_fields</code> 把表单 <code>id</code> 映射到 body 段落标签：</p>
+<pre><code class="language-yaml">parse_fields:
+  page: 页面            # ↦ 表单 input id=page
+  dataset: 数据集
+  row: 行标识
+  row_en: 行英文标识
+  field: 字段            # ↦ dropdown id=field（值形如 标签｜key）
+  current: 当前值        # 兼容 shim：旧版表单字段，仅解析不参与定位
+  suggested: 建议值      # ↦ textarea id=suggested
+  source: 来源
+  note: 补充说明</code></pre>
+<p>新增表单字段时：在 <code>parse_fields</code> 加一行映射，并在 <code>plan_issues()</code> 消费（否则解析后无人使用）。</p>
+<h2 id="4-cli-十态与退出码">4. CLI 十态与退出码</h2>
+<table><thead><tr>
+<th>命令</th>
+<th>行为</th>
+<th>写盘</th>
+<th>提交</th>
+<th>回评</th>
+</tr></thead><tbody>
+<tr>
+<td><code>--list</code></td>
+<td>列待处理 issue + 逐条引导行</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td>（默认）<code>--dry-run</code></td>
+<td>预览将写入的 diff</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>--apply</code></td>
+<td>写回 + 重建 + 提交 + 回评</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔</td>
+</tr>
+<tr>
+<td><code>--apply --close</code></td>
+<td>同上 + 关闭 issue</td>
+<td>✔</td>
+<td>✔</td>
+<td>✔ + close</td>
+</tr>
+<tr>
+<td><code>--apply --no-commit</code></td>
+<td>只写回 + 重建（跳预检）</td>
+<td>✔</td>
+<td>否</td>
+<td>✔</td>
+</tr>
+<tr>
+<td><code>--issue N</code></td>
+<td>只处理指定 issue</td>
+<td>依 mode</td>
+<td>依 mode</td>
+<td>依 mode</td>
+</tr>
+<tr>
+<td><code>--issue N --field KEY --value[-file]</code></td>
+<td>人工裁决：覆盖字段与值</td>
+<td>依 mode</td>
+<td>依 mode</td>
+<td>依 mode</td>
+</tr>
+<tr>
+<td><code>--check-template</code></td>
+<td>表单下拉 ↔ 配置/数据列一致性</td>
+<td>否</td>
+<td>否</td>
+<td>否</td>
+</tr>
+<tr>
+<td><code>--json</code></td>
+<td>机器可读 <code>{status,data,error}</code></td>
+<td>依 mode</td>
+<td>依 mode</td>
+<td>依 mode</td>
+</tr>
+<tr>
+<td><code>--target/--config/--limit/--repo</code></td>
+<td>目标选择与拉取范围</td>
+<td>—</td>
+<td>—</td>
+<td>—</td>
+</tr>
+</tbody></table>
+<table><thead><tr>
+<th>退出码</th>
+<th>含义</th>
+</tr></thead><tbody>
+<tr>
+<td><code>0</code></td>
+<td>正常（含「无可执行 issue」「幂等跳过」）</td>
+</tr>
+<tr>
+<td><code>1</code></td>
+<td>写盘前预检脏、预检失败、提交失败（数据已写，不回滚）</td>
+</tr>
+<tr>
+<td><code>2</code></td>
+<td>参数错误（<code>--field</code> 无 <code>--issue</code>）、配置缺失/无 targets</td>
+</tr>
+</tbody></table>
+<h2 id="5-安全红线-逐条对应实现">5. 安全红线（逐条对应实现）</h2>
+<table><thead><tr>
+<th>#</th>
+<th>红线</th>
+<th>实现</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>白名单 + 硬保护双层</td>
+<td><code>guarded_fields()</code> 先于 <code>editable</code> 检查；主键/匹配键/托管列在代码层拦截</td>
+</tr>
+<tr>
+<td>2</td>
+<td>入库 XSS 防护</td>
+<td>string 分支拒绝含 <code><</code> / <code>></code> 的建议值（防载荷经页面 raw 渲染执行）</td>
+</tr>
+<tr>
+<td>3</td>
+<td>显式 pathspec</td>
+<td><code>git add --</code> / <code>git commit -- <data> <html></code>；全脚本无 <code>git add -A</code></td>
+</tr>
+<tr>
+<td>4</td>
+<td>写盘前预检</td>
+<td><code>git status --porcelain -- <data> <html></code> 非空 → <code>exit 1</code>（在写盘之前）</td>
+</tr>
+<tr>
+<td>5</td>
+<td>失败不回滚</td>
+<td>提交失败时数据/产物保留，回评「提交失败，待维护者处理」，<code>exit 1</code></td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>shell=False</code> 全链路</td>
+<td><code>gh</code> / <code>git</code> 调用统一列表参数 + <code>subprocess.run(..., shell=False)</code></td>
+</tr>
+</tbody></table>
+<h2 id="6-回评与提交格式">6. 回评与提交格式</h2>
+<ul>
+<li><strong>回评</strong>：<code>--apply</code> 成功后在该 issue 留言，含处置摘要 + 本地短 sha（<code>（待推送）</code>）；<code>--close</code> 追加关闭。</li>
+<li><strong>提交消息</strong>：标题 <code>data@&lt;scope&gt;: apply #N &lt;字段&gt; 更新</code>；多 issue → <code>#N,#M</code>；body 逐条列 <code>- #N &lt;行标签&gt;.&lt;字段&gt;: 旧 → 新</code> + 产物路径。</li>
+<li><strong>提交范围</strong>：仅 <code>target.data</code> + <code>target.html</code>（显式 pathspec）；无变化不产生空提交。</li>
+</ul>
+<hr>
+<h2 id="issue-feedback-adoption-prompt">issue-feedback-adoption-prompt</h2>
+<h1 id="跨项目接入-prompt-github-issue-数据反馈闭环">跨项目接入 Prompt：GitHub Issue 数据反馈闭环</h1>
+<blockquote>用法：把本文整体交给目标项目的 agent（或人），按步骤执行即可接入。</blockquote>
+<blockquote>参考实现：<code>html-gen.cli</code> 的 countries 案例（<code>scripts/countries-issue-sync.py</code> + <code>scripts/feedback-targets.yaml</code>）。</blockquote>
+<blockquote>前置知识：<code>github-issue-feedback</code> SKILL.md（能力总览/安全红线）。</blockquote>
+<h2 id="0-适用判定-不满足则不要接入">0. 适用判定（不满足则不要接入）</h2>
+<table><thead><tr>
+<th>前置</th>
+<th>判定方法</th>
+</tr></thead><tbody>
+<tr>
+<td>页面由 <code>html-gen table</code> 生成</td>
+<td>产物含 <code>data-table</code> 结构；能重新跑生成命令</td>
+</tr>
+<tr>
+<td>数据源是同源 JSON</td>
+<td><code>data/<case>-data.json</code>（结构化格式：columns/data/options）</td>
+</tr>
+<tr>
+<td>有可脚本化的重建命令</td>
+<td>一条命令重新生成产物（含 corner/home/favicon 参数固化）</td>
+</tr>
+<tr>
+<td>仓库在 GitHub + <code>gh</code> 已认证</td>
+<td><code>gh auth status</code> 通过；<code>gh repo view <owner/repo></code> 可用</td>
+</tr>
+<tr>
+<td>有可挂 <code>label</code> 的权限</td>
+<td>建 <code>data-fix</code> label（一次性）</td>
+</tr>
+</tbody></table>
+<h2 id="1-交付物清单">1. 交付物清单</h2>
+<table><thead><tr>
+<th>#</th>
+<th>文件</th>
+<th>动作</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td><code>data/<case>-data.json</code></td>
+<td>改：顶层加 <code>options.feedback</code></td>
+</tr>
+<tr>
+<td>2</td>
+<td>生成/重建命令</td>
+<td>改：加 <code>--feedback-repo</code>（并固化 corner/home/favicon）</td>
+</tr>
+<tr>
+<td>3</td>
+<td><code>.github/ISSUE_TEMPLATE/data-fix-<case>.yml</code></td>
+<td>新增：表单模板（下拉选项 = 可写列）</td>
+</tr>
+<tr>
+<td>4</td>
+<td><code>.github/ISSUE_TEMPLATE/config.yml</code></td>
+<td>新增/改：关闭 blank issue</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>scripts/feedback-targets.yaml</code></td>
+<td>新增 target（多案例共用一份配置）</td>
+</tr>
+<tr>
+<td>6</td>
+<td><code>scripts/<case>-issue-sync.py</code></td>
+<td>复制 + 替换案例名（4 类形态 + HINT + prog）</td>
+</tr>
+<tr>
+<td>7</td>
+<td>GitHub label <code>data-fix</code></td>
+<td>一次性创建</td>
+</tr>
+</tbody></table>
+<h2 id="2-step-1-数据-json-声明案例-页面侧开关">2. Step 1 — 数据 JSON 声明案例（页面侧开关）</h2>
+<p>在数据 JSON 顶层加：</p>
+<pre><code class="language-json">"options": {
+  "feedback": {
+    "repo": "owner/repo",
+    "dataset": "countries",
+    "key": "country_zh",
+    "altKey": "country_en",
+    "template": "data-fix-countries.yml"
+  }
+}</code></pre>
+<table><thead><tr>
+<th>字段</th>
+<th>必填</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>repo</code></td>
+<td>✔</td>
+<td><code>owner/repo</code>；空串或缺失 → <strong>不渲染 ✏️ 按钮</strong></td>
+</tr>
+<tr>
+<td><code>dataset</code></td>
+<td>✔</td>
+<td>与 target <code>dataset</code> 一致，脚本据此拒绝跨数据集 issue</td>
+</tr>
+<tr>
+<td><code>key</code></td>
+<td>✔</td>
+<td>行主键列（预填 <code>row</code>，脚本用它唯一定位行）</td>
+</tr>
+<tr>
+<td><code>altKey</code></td>
+<td>—</td>
+<td>二次校验列（预填 <code>row_en</code>）</td>
+</tr>
+<tr>
+<td><code>template</code></td>
+<td>—</td>
+<td>Issue Form 文件名；缺省 <code>data-fix.yml</code></td>
+</tr>
+</tbody></table>
+<p><strong>替代入口</strong>（不改数据文件时）：<code>html-gen table --feedback-repo owner/repo</code>，或 env <code>HTML_GEN_FEEDBACK_REPO</code>。</p>
+<p>优先级 <strong>CLI &gt; env &gt; JSON</strong>；显式空串禁用 env 兜底。</p>
+<p><strong>验证</strong>：重建产物 → 打开页面 → 点任意行打开分栏预览 → header 出现 ✏️ → 点击跳 GitHub 新建 issue，</p>
+<p>URL 带 <code>template/page/dataset/row/row_en/title</code>（<strong>不含</strong> <code>field</code>：下拉不可 URL 预填）。</p>
+<h2 id="3-step-2-生成命令与重建参数固化">3. Step 2 — 生成命令与重建参数固化</h2>
+<pre><code class="language-shell">python3 html-gen.py table -d data/&lt;case&gt;-data.json -o demos/&lt;case&gt;.html \
+  --github-url https://github.com/&lt;owner&gt;/&lt;repo&gt; \
+  --home-url https://&lt;site-root&gt;/ \
+  --favicon https://&lt;favicon-url&gt; \
+  --feedback-repo &lt;owner&gt;/&lt;repo&gt;</code></pre>
+<p><strong>为什么必须固化</strong>：<code>--apply</code> 写回后会调生成命令重建产物；若重建命令漏参数，corner/home/feedback</p>
+<p>会静默丢失（CL002 FIND-002 同类缺陷，实测复发过一次）。故把这四项写进</p>
+<p><code>feedback-targets.yaml</code> 的 <code>target.rebuild.args</code>，让脚本每次重建都带上。</p>
+<h2 id="4-step-3-issue-form-模板">4. Step 3 — Issue Form 模板</h2>
+<pre><code class="language-shell">cp .github/ISSUE_TEMPLATE/data-fix-countries.yml .github/ISSUE_TEMPLATE/data-fix-&lt;case&gt;.yml</code></pre>
+<p>改三处：<code>title</code> 前缀、<code>page</code> 的 <code>placeholder</code>、<code>field</code> 下拉的选项列表。</p>
+<p>下拉选项格式 <strong><code>标签｜key</code></strong>（全角竖线），每项对应一个可写列：</p>
+<pre><code class="language-yaml">  - type: dropdown
+    id: field
+    attributes:
+      label: 字段
+      multiple: false
+      options:
+        - 首都｜capital_zh
+        - 备注｜note</code></pre>
+<p><strong>规则</strong>：选项<strong>不含</strong>主键/匹配键（双层保护第一层）；不含由其他脚本托管的列（如 videos）。</p>
+<p>细节与完整模板见 <code>references/issue-form-template.md</code>。</p>
+<h2 id="5-step-4-label-与-config-yml">5. Step 4 — label 与 config.yml</h2>
+<pre><code class="language-shell">gh label create data-fix --repo &lt;owner&gt;/&lt;repo&gt; --color FBCA04 \
+  --description "案例数据纠错反馈（由页面 ✏️ 按钮发起）"</code></pre>
+<p><code>.github/ISSUE_TEMPLATE/config.yml</code>（关闭 blank issue，引导走表单）：</p>
+<pre><code class="language-yaml">blank_issues_enabled: false
+contact_links:
+  - name: 数据纠错反馈
+    url: https://github.com/&lt;owner&gt;/&lt;repo&gt;/issues/new?template=data-fix-&lt;case&gt;.yml
+    about: 请通过表单提交数据纠错（页面上的 ✏️ 按钮会自动填写上下文）</code></pre>
+<h2 id="6-step-5-target-配置">6. Step 5 — target 配置</h2>
+<p>在 <code>scripts/feedback-targets.yaml</code> 的 <code>targets:</code> 下追加：</p>
+<pre><code class="language-yaml">  &lt;case&gt;:
+    repo: &lt;owner&gt;/&lt;repo&gt;
+    label: data-fix
+    dataset: &lt;case&gt;                       # 与数据 JSON options.feedback.dataset 一致
+    template: data-fix-&lt;case&gt;.yml
+    page: demos/&lt;case&gt;.html               # 全路径或 basename 均可匹配
+    data: data/&lt;case&gt;-data.json
+    html: demos/&lt;case&gt;.html
+    key_field: &lt;key&gt;                      # 主键列
+    alt_key: &lt;altKey&gt;                     # 可空
+    editable: [&lt;key1&gt;, &lt;key2&gt;, ...]       # 可写列白名单（不含主键/匹配键/托管列）
+    protected: [videos]                   # 由其他脚本托管的列
+    key_guard: [&lt;key&gt;, &lt;altKey&gt;]          # 硬保护（配置误列也无效）
+    commit:
+      scope: &lt;case&gt;                       # 提交消息 data@&lt;scope&gt;: apply #N …
+    types:                                # 数值列（可解析校验 + 写入 number）
+      area_km2: number
+    parse_fields:                         # 表单 id → issue body 段落标签
+      page: 页面
+      dataset: 数据集
+      row: 行标识
+      row_en: 行英文标识
+      field: 字段
+      suggested: 建议值
+      source: 来源
+      note: 补充说明
+    rebuild:
+      args: [--github-url, https://github.com/&lt;owner&gt;/&lt;repo&gt;,
+             --home-url, https://&lt;site-root&gt;/,
+             --favicon, https://&lt;favicon-url&gt;,
+             --feedback-repo, &lt;owner&gt;/&lt;repo&gt;]</code></pre>
+<p>字段级语义与校验链见 <code>references/feedback-targets-schema.md</code>。</p>
+<h2 id="7-step-6-复制同步脚本并替换案例名">7. Step 6 — 复制同步脚本并替换案例名</h2>
+<pre><code class="language-shell">cp &lt;html-gen.cli&gt;/scripts/countries-issue-sync.py scripts/&lt;case&gt;-issue-sync.py</code></pre>
+<p><strong>替换清单（漏改会导致校验/引导失效）</strong>：</p>
+<table><thead><tr>
+<th>#</th>
+<th>位置</th>
+<th>形态</th>
+<th>不改的后果</th>
+</tr></thead><tbody>
+<tr>
+<td>1</td>
+<td>docstring 示例命令行</td>
+<td><code>countries-issue-sync.py</code>（约 8 处）</td>
+<td>文档误导</td>
+</tr>
+<tr>
+<td>2</td>
+<td>docstring</td>
+<td>表单模板名 <code>data-fix-countries.yml</code></td>
+<td><code>--check-template</code> 指错文件</td>
+</tr>
+<tr>
+<td>3</td>
+<td>docstring</td>
+<td><code>--target countries</code> 示例</td>
+<td>引导命令不可用</td>
+</tr>
+<tr>
+<td>4</td>
+<td>docstring</td>
+<td>设计文档名引用</td>
+<td>失效链接</td>
+</tr>
+<tr>
+<td>5</td>
+<td><code>HINT</code> 常量</td>
+<td><code>python3 scripts/countries-issue-sync.py</code></td>
+<td><code>--list</code> 引导行打印错命令</td>
+</tr>
+<tr>
+<td>6</td>
+<td>argparse <code>prog=</code></td>
+<td><code>countries-issue-sync.py</code></td>
+<td><code>--help</code> 显示错名字</td>
+</tr>
+</tbody></table>
+<p>不改：<code>DEFAULT_CONFIG</code>（通用路径 <code>scripts/feedback-targets.yaml</code>）；脚本内<strong>无</strong> <code>DEFAULT_TARGET</code> 硬编码</p>
+<p>（单 target 自动选用，多 target 需 <code>--target</code>）。</p>
+<h2 id="8-首次验收清单-逐条可复跑">8. 首次验收清单（逐条可复跑）</h2>
+<pre><code class="language-shell"># 1) 模板 ↔ 配置 ↔ 数据列 一致性
+python3 scripts/&lt;case&gt;-issue-sync.py --check-template        # 期望：一致（N 项），exit 0
+# 2) 页面按钮可见
+python3 html-gen.py table -d data/&lt;case&gt;-data.json -o demos/&lt;case&gt;.html --feedback-repo &lt;owner&gt;/&lt;repo&gt;
+#    浏览器打开 → 点行 → 分栏 header 有 ✏️ → 点击 URL 含 template/page/dataset/row
+# 3) 造一条测试 issue（真实提交，稍后关闭）
+python3 scripts/&lt;case&gt;-issue-sync.py --list                  # 期望：列出该 issue
+python3 scripts/&lt;case&gt;-issue-sync.py                         # 期望：预览 diff，零写盘
+python3 scripts/&lt;case&gt;-issue-sync.py --apply --no-commit     # 期望：写回 JSON + 重建 + 回评（不提交）
+git diff -- data/&lt;case&gt;-data.json demos/&lt;case&gt;.html          # 期望：仅目标字段变化 + 产物重建
+git checkout -- data/&lt;case&gt;-data.json demos/&lt;case&gt;.html      # 回滚测试改动
+# 4) 全链路（确认无误后）
+python3 scripts/&lt;case&gt;-issue-sync.py --apply --close         # 期望：写盘 + 重建 + 本地 commit + 回评 + 关闭
+git log -1 --name-only                                       # 期望：仅 data 与 html 两个文件</code></pre>
+<h2 id="9-常见坑">9. 常见坑</h2>
+<table><thead><tr>
+<th>坑</th>
+<th>症状</th>
+<th>处置</th>
+</tr></thead><tbody>
+<tr>
+<td>下拉无法预填</td>
+<td>URL 带了 <code>field=</code> 但表单不生效</td>
+<td>GitHub Issue Forms 机制限制 → 页面不预填 field，由读者选择</td>
+</tr>
+<tr>
+<td>字段值写成裸 key</td>
+<td><code>--check-template</code> 报不一致</td>
+<td>下拉选项用 <code>标签｜key</code>（全角竖线），脚本取末段</td>
+</tr>
+<tr>
+<td>主键被写</td>
+<td>脚本直接跳过并给出原因</td>
+<td><code>key_guard</code> 硬保护；确认没有把主键放进 <code>editable</code></td>
+</tr>
+<tr>
+<td>重建丢 corner/home</td>
+<td>产物差异出现 corner 消失</td>
+<td><code>rebuild.args</code> 固化四项参数</td>
+</tr>
+<tr>
+<td>提交裹走无关文件</td>
+<td><code>git show --name-only</code> 出现其他文件</td>
+<td>脚本已用显式 pathspec；勿改成 <code>git add -A</code></td>
+</tr>
+<tr>
+<td>数值列写入字符串</td>
+<td>排序/格式化异常</td>
+<td><code>types.<key>: number</code>，脚本用 <code>to_number()</code> 解析后写 number</td>
+</tr>
+<tr>
+<td>载荷入库后执行</td>
+<td>页面弹窗/单元格执行脚本</td>
+<td>入库 <code><</code>/<code>></code> 拒绝（脚本侧）+ 模板侧默认转义，两层都要</td>
+</tr>
+</tbody></table>
+<hr>
+<h2 id="issue-form-template">issue-form-template</h2>
+<h1 id="issue-form-模板与约束">Issue Form 模板与约束</h1>
+<blockquote>参考实现：<code>html-gen.cli/.github/ISSUE_TEMPLATE/data-fix-countries.yml</code>（84 行，可直接复制）</blockquote>
+<blockquote>同目录 <code>config.yml</code> 关闭 blank issue，把读者引导到表单。</blockquote>
+<h2 id="1-完整模板-复制后改-3-处">1. 完整模板（复制后改 3 处）</h2>
+<pre><code class="language-yaml">name: 数据反馈
+description: 报告案例表格中的数据错误或过时信息（页面上的「✏️」按钮会自动填写上下文）
+title: "[数据反馈] "
+labels: ["data-fix"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢反馈！**标注「请勿修改」的字段由页面自动填充**，如被改动会导致本条被同步脚本跳过。
+        请在「字段」下拉中选择要修改的列，并在「建议值」中填写新内容。
+  - type: input
+    id: page
+    attributes:
+      label: 页面
+      description: 请勿修改（由页面自动填充）
+      placeholder: demos/&lt;case&gt;.html        # ← 改 1/3
+    validations:
+      required: true
+  - type: input
+    id: dataset
+    attributes:
+      label: 数据集
+      description: 请勿修改（由页面自动填充）
+    validations:
+      required: true
+  - type: input
+    id: row
+    attributes:
+      label: 行标识
+      description: 请勿修改（主键，仅用于定位；脚本不会修改它）
+    validations:
+      required: true
+  - type: input
+    id: row_en
+    attributes:
+      label: 行英文标识
+      description: 请勿修改（可选，用于二次校验）
+    validations:
+      required: false
+  - type: dropdown
+    id: field
+    attributes:
+      label: 字段
+      description: 选择要修改的列（行标识/英文名/视频列不可修改）
+      multiple: false
+      options:                              # ← 改 2/3：标签｜key，与 editable 一一对应
+        - &lt;列标签&gt;｜&lt;key&gt;
+    validations:
+      required: true
+  - type: textarea
+    id: suggested
+    attributes:
+      label: 建议值
+      description: 该字段修正后的值（数值列请只填数字；长文本可直接粘贴，换行会原样保留）
+    validations:
+      required: true
+  - type: input
+    id: source
+    attributes:
+      label: 来源
+      description: 权威出处链接或说明（用于核对）
+    validations:
+      required: true
+  - type: textarea
+    id: note
+    attributes:
+      label: 补充说明
+      description: 可选，其他需要说明的信息
+    validations:
+      required: false</code></pre>
+<blockquote>示例下拉（countries 案例，15 项）：</blockquote>
+<blockquote><code>- 首都｜capital_zh</code> / <code>- 备注｜note</code> / <code>- 人口(万)｜pop_wan</code> …（<strong>不含</strong> <code>country_zh</code> / <code>country_en</code> / <code>videos</code>）</blockquote>
+<h2 id="2-机制约束-为什么这样设计">2. 机制约束（为什么这样设计）</h2>
+<table><thead><tr>
+<th>约束</th>
+<th>原因</th>
+</tr></thead><tbody>
+<tr>
+<td><strong><code>field</code> 用 dropdown 而非 input</strong></td>
+<td>input 可被 URL 预填，会导致「点主键列 → 预填主键 → 主键被写」的真实事故（CL009 issue #2 驱动改版）</td>
+</tr>
+<tr>
+<td><strong>dropdown 不可 URL 预填</strong></td>
+<td>GitHub Issue Forms 机制限制：只有 input/textarea 支持 <code>?<id>=</code> 预填 → 页面<strong>不预填</strong> <code>field</code>，由读者选择</td>
+</tr>
+<tr>
+<td><strong>选项格式 <code>标签｜key</code></strong></td>
+<td>人看标签、脚本取 key；全角竖线 <code>｜</code> 分隔（<code>v.split('｜')[-1]</code>）</td>
+</tr>
+<tr>
+<td><strong>不含主键/匹配键</strong></td>
+<td>双层保护第一层；第二层在脚本 <code>guarded_fields()</code> 硬拦（配置误列也无效）</td>
+</tr>
+<tr>
+<td><strong>不含托管列（videos）</strong></td>
+<td>该列由独立脚本（如 <code>tool-table-videos-syncer.py</code>）维护，issue 写入会与之冲突</td>
+</tr>
+<tr>
+<td><strong><code>suggested</code> 用 textarea</strong></td>
+<td>多行长文本（备注/民族/信仰）需原样保留换行；<code>input</code> 会丢换行</td>
+</tr>
+<tr>
+<td><strong>上下文四字段标「请勿修改」</strong></td>
+<td><code>page</code>/<code>dataset</code> 进校验链、<code>row</code>/<code>row_en</code> 进行定位；被改动 → issue 被跳过（回评会给出原因）</td>
+</tr>
+</tbody></table>
+<h2 id="3-config-yml-关闭-blank-issue">3. `config.yml`（关闭 blank issue）</h2>
+<pre><code class="language-yaml">blank_issues_enabled: false
+contact_links:
+  - name: 数据纠错反馈
+    url: https://github.com/&lt;owner&gt;/&lt;repo&gt;/issues/new?template=data-fix-&lt;case&gt;.yml
+    about: 请通过表单提交数据纠错（页面上的 ✏️ 按钮会自动填写上下文）</code></pre>
+<h2 id="4-label-约定">4. label 约定</h2>
+<pre><code class="language-shell">gh label create data-fix --repo &lt;owner&gt;/&lt;repo&gt; \
+  --color FBCA04 --description "案例数据纠错反馈（由页面 ✏️ 按钮发起）"</code></pre>
+<ul>
+<li>表单 <code>labels: ["data-fix"]</code> 与 target <code>label: data-fix</code> <strong>必须一致</strong>（脚本按 label 拉取）</li>
+<li>建议单 label 供多案例共用；若需分流可加 <code>&lt;case&gt;</code> label 并在 target 里改</li>
+</ul>
+<h2 id="5-一致性校验">5. 一致性校验</h2>
+<pre><code class="language-shell">python3 scripts/&lt;case&gt;-issue-sync.py --check-template</code></pre>
+<p>校验三项：表单 dropdown 选项 ↔ <code>config.editable</code> ↔ 数据 JSON 列标签。</p>
+<p>期望输出「一致（N 项）」，exit 0；不一致会逐项列出差异。<strong>改完表单/配置/数据列后必跑。</strong></p>
+<h2 id="6-页面侧预填参数-对应本文表单的-id">6. 页面侧预填参数（对应本文表单的 `id`）</h2>
+<table><thead><tr>
+<th>页面参数</th>
+<th>表单 id</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>template</code></td>
+<td>—</td>
+<td>表单文件名（URL 参数 <code>?template=</code>）</td>
+</tr>
+<tr>
+<td><code>title</code></td>
+<td>—</td>
+<td><code>[数据反馈] <dataset> · <row></code></td>
+</tr>
+<tr>
+<td><code>page</code></td>
+<td><code>page</code></td>
+<td>当前页面路径（<code>location.pathname</code> 去前导 <code>/</code>）</td>
+</tr>
+<tr>
+<td><code>dataset</code></td>
+<td><code>dataset</code></td>
+<td><code>options.feedback.dataset</code></td>
+</tr>
+<tr>
+<td><code>row</code></td>
+<td><code>row</code></td>
+<td><code>row[options.feedback.key]</code></td>
+</tr>
+<tr>
+<td><code>row_en</code></td>
+<td><code>row_en</code></td>
+<td><code>row[options.feedback.altKey]</code>（可空）</td>
+</tr>
+</tbody></table>
+<p>全部经 <code>encodeURIComponent</code> 拼接，无注入面；<code>field</code> / <code>current</code> 已不再预填（v1.3 起）。</p></div>
+  </div>
+</div>
+<script>
+(function() {
+  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
+  var params = new URLSearchParams(location.search);
+  // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
+  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
+
+  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
+  var w = params.get('width');
+  if (w === 'narrow') document.body.classList.add('width-narrow');
+  else if (w === 'wide') document.body.classList.add('width-wide');
+  // medium 或未指定: 不加 class, 用默认 960px
+
+  // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──
+  if (params.get('show-md') === '1') document.body.classList.add('show-md');
+
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _lang = localStorage.getItem('html-gen:doc_lang');
+  _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
+  var L = { zh: { pages: '共 {n} 节' }, en: { pages: '{n} sections' } };
+  function t(key, params) { var s = L[_lang][key]; Object.keys(params).forEach(function(k) { s = s.replace('{'+k+'}', params[k]); }); return s; }
+  document.getElementById('langZh').classList.toggle('active', _lang === 'zh');
+  document.getElementById('langEn').classList.toggle('active', _lang === 'en');
+
+  window.setLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _lang = lang;
+    try { localStorage.setItem('html-gen:doc_lang', lang); } catch(e) {}
+    document.getElementById('langZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    updateSub();
+  };
+
+  var _theme = localStorage.getItem('html-gen:doc_theme');
+  if (_theme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
+
+  window.toggleTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    try { localStorage.setItem('html-gen:doc_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  // Title click → copy path (via meta text)
+  document.getElementById('sidebarTitle').addEventListener('click', function() {
+    var metaEl = document.querySelector('.doc-header .meta');
+    var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
+      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
+      showToast('已复制: ' + target);
+    }
+  });
+
+  function showToast(msg) {
+    var el = document.getElementById('docToast'); if (!el) { el = document.createElement('div'); el.id = 'docToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
+
+  // Section count
+  var _h2Count = body.querySelectorAll('h2').length;
+  function updateSub() {
+    var subEl = document.querySelector('.doc-sidebar-header .sub');
+    if (!subEl) return;
+    var base = (subEl.textContent || '').replace(/\s*共\s*\d+\s*节.*|\s*\d+\s*sections.*/, '').trim();
+    var text = t('pages', {n: _h2Count});
+    subEl.textContent = (base ? base + ' · ' : '') + text;
+  }
+  updateSub();
+
+  /* ═══════ H3 Toggle ═══════ */
+  var _h3Visible = false;
+  window.toggleH3 = function() {
+    _h3Visible = !_h3Visible;
+    var btn = document.getElementById('h3Toggle');
+    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
+    try { localStorage.setItem('html-gen:doc:h3-visible', _h3Visible); } catch(e) {}
+    var h3s = document.querySelectorAll('.toc-h3');
+    for (var i = 0; i < h3s.length; i++) h3s[i].classList.toggle('show', _h3Visible);
+  };
+  try { if (localStorage.getItem('html-gen:doc:h3-visible') === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; } } catch(e) {}
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _sidebarCollapsed = false;
+  window.toggleSidebar = function() {
+    _sidebarCollapsed = !_sidebarCollapsed;
+    var sb = document.getElementById('sidebar'); var btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
+    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
+    setTimeout(function() { updateProgress(); }, 300);
+  };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
+  try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+    }
+  });
+
+  /* ═══════ TOC Search ═══════ */
+  var _tocSearchActive = false, _tocSearchTimer;
+  window.toggleTocSearch = function() {
+    _tocSearchActive = !_tocSearchActive;
+    var wrap = document.getElementById('tocSearchWrap');
+    var input = document.getElementById('tocSearchInput');
+    var btn = document.getElementById('tocSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _tocSearchActive);
+    if (btn) btn.style.color = _tocSearchActive ? 'var(--cobalt-400)' : '';
+    if (_tocSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doTocFilter('');
+    }
+  };
+
+  function doTocFilter(q) {
+    tocItems.forEach(function(a) {
+      a.classList.toggle('filtered-out', q.length >= 2 && a.textContent.toLowerCase().indexOf(q) === -1);
+    });
+  }
+
+  document.getElementById('tocSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_tocSearchTimer);
+    _tocSearchTimer = setTimeout(function() { doTocFilter(q); }, 150);
+  });
+
+  window.tocSearchKey = function(e) {
+    if (e.key === 'Escape') {
+      _tocSearchActive = true; toggleTocSearch(); // force close
+    } else if (e.key === 'Enter') {
+      var q = document.getElementById('tocSearchInput').value.toLowerCase().trim();
+      if (q.length >= 2) {
+        var match = tocItems.find(function(a){ return !a.classList.contains('filtered-out'); });
+        if (match) match.click();
+        toggleTocSearch();
+      }
+    }
+  };
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
+      _tocSearchActive = true; toggleTocSearch();
+    }
+  });
+
+  /* ═══════ TOC ═══════ */
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a'); anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; navigator.clipboard.writeText(url); anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); });
+    h.appendChild(anchor);
+    var level = h.tagName.toLowerCase().replace('h', '');
+    var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link); tocItems.push(link);
+  });
+
+  // h4-h6 anchors (not in TOC)
+  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.href = '#' + h.id;
+    anchor.textContent = '\u00b6';
+    h.appendChild(anchor);
+  });
+
+  function onScroll() {
+    var current = ''; headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  body.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button'); btn.className = 'copy-btn'; btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code'); var text = code ? code.textContent : pre.textContent;
+      function done() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); }
+      if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done).catch(fallback); } else { fallback(); }
+      function fallback() { var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.pointerEvents = 'none'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
+    });
+    pre.appendChild(btn);
+  });
+
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent; var lines = text.split('\n'); if (lines.length > 0 && lines[lines.length-1] === '') lines.pop(); if (lines.length < 2) return;
+    code.textContent = ''; lines.forEach(function(line, idx) { var span = document.createElement('span'); span.className = 'line'; span.textContent = line; code.appendChild(span); if (idx < lines.length-1) code.appendChild(document.createTextNode('\n')); });
+    code.classList.add('code-with-lines');
+  });
+
+  var main = document.getElementById('docMain'); var bar = document.getElementById('progressBar');
+  function updateProgress() { var p = main.scrollTop / (main.scrollHeight - main.clientHeight); bar.style.width = (p * 100) + '%'; }
+  main.addEventListener('scroll', updateProgress, { passive: true }); updateProgress();
+
+  var lb = document.getElementById('lightbox'); var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function(e) { e.stopPropagation(); lbImg.src = this.src; lb.classList.add('active'); }); });
+  window.closeLightbox = function(e) { if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) lb.classList.remove('active'); };
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active'); });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('sidebar');
+    var handle = document.getElementById('sbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:doc:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:doc:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
+})();
+</script>
+</body>
+</html>

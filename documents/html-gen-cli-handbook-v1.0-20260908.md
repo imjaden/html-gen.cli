@@ -40,7 +40,7 @@ usage: html-gen.py [-h] [--version] [--quiet]
 | `slide` | Markdown → D 型幻灯片 | `-i` 必填；`-o` 可选（md 派生 `.slide.html`） | HTML |
 | `table` | JSON → A 型数据表格 | `-d` 必填；`-o` 必填（CLI 或 JSON 顶层 `output` 二选一）；`--title/--subtitle` | HTML |
 | `knowledge` | JSON → C 型知识库 | `-d`/`-g`；`-o` 必填（同 table 二选一）；`--title/--subtitle/--welcome` | HTML |
-| `prompt` | 输出项目 skills / 生成在线阅读站点 | `[skill]`；`--brief/--json/--site/--dir` | 文本/JSON/站点 28 文件 |
+| `prompt` | 输出项目 skills / 生成在线阅读站点 | `[skill]`；`--brief/--json/--site/--dir` | 文本/JSON/站点 31 文件 |
 | `demo` | demo 列表与详情 | `list\|<name>`；`--rebuild` | 文本/HTML |
 
 全局参数：`-h/--help`、`--version`、`--quiet`（仅打印生成路径，抑制统计信息）。
@@ -61,7 +61,7 @@ usage: html-gen.py [-h] [--version] [--quiet]
 | CL007 | 2026-09-02 | `prompt --site` v1：B 型 doc 合集 18 文件 | 评审 PASS 85/A（HG-SEC-086..095） | 审计 PASS 100/A（HG-SEC-096..099，d4ec017） |
 | CL008 | 2026-09-02 | `prompt --site` v2：C 型门户 28 文件 + 两级沉淀 | 评审 PASS 95/A（HG-SEC-100..105） | 审计 PASS 100/A（HG-SEC-106..108，479f053） |
 
-CL 前置：CL004 → CL007 → CL008；CL003 独立并行。测试基线随演进 89 → 235 → 263 → 268（当前 `pytest --collect-only` 268 collected）。
+CL 前置：CL004 → CL007 → CL008；CL003 独立并行。测试基线随演进 89 → 235 → 263 → 268 → 311 → 312（当前 `pytest --collect-only` 312 collected）。
 
 ## 4. prompt 子命令（本地供给）
 
@@ -74,7 +74,7 @@ html-gen prompt <skill> --json       # checkpoint 信封输出
 
 - skill 不存在 → stderr 报错 + 列出可用表 + `exit 1`。
 - `SKILLS_DIR = Path(__file__).resolve().parent/'skills'`（路径自定位，依赖文件位置）。
-- skills/ 现挂载 8 篇（html-gen、html-gen-cli-spec、html-gen-doc、html-gen-knowledge、html-gen-slide、html-gen-table、pages-index、test-speed-optimization）+ references 3 个。
+- skills/ 现挂载 9 篇（html-gen、html-gen-cli-spec、html-gen-doc、html-gen-knowledge、html-gen-slide、html-gen-table、github-issue-feedback、pages-index、test-speed-optimization）+ references 6 个。
 - `--json` 信封：`{status:"ok", error:"", data:...}`；无参 data 为 `[{name, description, references:[]}, ...]`；带参 data 含 `content`（含 frontmatter，与站点 JSON 不同）；不存在 → `{status:"error", error:"skill 'x' 不存在"}`。
 
 ## 5. prompt --site 在线阅读站点
@@ -92,21 +92,21 @@ html-gen prompt --site --dir <path> # 输出目录覆盖（测试/临时预览�
 | 产物 | 说明 |
 |:--|:--|
 | `index.html` | 在线阅读页（v1 = B 型 doc 合集；v2 = C 型 knowledge 门户，URL 不变） |
-| `{skill}.md` ×8 | 纯 markdown = strip_frontmatter(SKILL.md) 正文 + references 拼接（每 ref 前 `\n\n---\n\n## {stem}\n`） |
-| `{skill}.json` ×8 | JSON 信封，与 CLI `--json` **结构同构**（键 status/error/data） |
+| `{skill}.md` ×9 | 纯 markdown = strip_frontmatter(SKILL.md) 正文 + references 拼接（每 ref 前 `\n\n---\n\n## {stem}\n`） |
+| `{skill}.json` ×9 | JSON 信封，与 CLI `--json` **结构同构**（键 status/error/data） |
 | `all.md` | 全量合集：唯一顶层 h1 `# html-gen Prompt 合集` + 每 skill 一段（`## {skill.name}` 标题 + description 首行 + 正文删首个顶层 h1【fence-aware】） |
 
 站点域 https://html-gen.cli.jaden.tech/prompts/（目录带尾斜杠返回 index.html 为 Pages 标准行为）。站点产物一律**剥离 YAML frontmatter**——带 frontmatter 的 .md 被 Jekyll 转换 404，无 frontmatter 原样服务（CL007 实证链）。
 
-### 5.2 v2 门户（CL008，28 文件）
+### 5.2 v2 门户（CL008 起，现 31 文件）
 
 ```
 prompts/
 ├── index.html             C 型 knowledge 门户（5 tab 横向 = A表格/B文档/C知识库/D幻灯片/通用CLI）
 ├── _kb-groups.json        5 group 定义（_ 前缀：Jekyll 不发布，数据已内联 index.html）
-├── _kb-data.json          26 条条目（skill×8 + guide×6 + case×12），字段含 kind/url/badge/section
-├── kb/{skill}.html ×8     skill detail 页（cmd_doc 渲染 {skill}.md）
-├── {skill}.md/.json ×16   保留，逐字不变（契约回归断言）
+├── _kb-data.json          27 条条目（skill×9 + guide×6 + case×12），字段含 kind/url/badge/section
+├── kb/{skill}.html ×9     skill detail 页（cmd_doc 渲染 {skill}.md）
+├── {skill}.md/.json ×18   保留，逐字不变（契约回归断言）
 └── all.md                 保留，逐字不变
 ```
 
@@ -166,7 +166,7 @@ html-gen prompt html-gen-table --brief   # 摘要
 html-gen prompt html-gen --json          # JSON 信封
 
 # prompt 在线阅读站点
-html-gen prompt --site                   # 生成 prompts/（28 文件）
+html-gen prompt --site                   # 生成 prompts/（31 文件）
 html-gen prompt --site --dir /tmp/pg     # 隔离目录预览
 
 # 机器获取（GitHub Pages，curl）
@@ -201,7 +201,7 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 | B3 | curl 格式：每 skill .md + .json（md 纯 markdown；json 与 CLI 信封同构） |
 | C1 | 在线阅读：B 型 doc 模板渲染合集页（零新模板） |
 | D1 | 生成机制：prompt 子命令扩展 `--site`（对齐 demo --rebuild） |
-| E1 | 覆盖全部 8 skills + references |
+| E1 | 覆盖全部 9 skills + references |
 | F1 | README 加「在线阅读 & curl 获取」小节（中英双份） |
 | G1 | 合集形态：index.html 合集页 + 发布 all.md 供一次 curl 全量 |
 | H1 | v1 不做每 skill .html（后被 CL008 H1 推翻） |
@@ -224,7 +224,7 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 | H1 | 每 skill 生成 doc detail 页 kb/{skill}.html（推翻 v1 H1） |
 | I1 | 生成器内置注册表映射表（skill→group/section + guide/demo 注册表） |
 | J1 | 沉淀与改造合一 CL（HTML-GEN-CL008） |
-| K-1 | 产物布局：prompts/kb/{skill}.html ×8 + _kb-groups.json + _kb-data.json |
+| K-1 | 产物布局：prompts/kb/{skill}.html ×9 + _kb-groups.json + _kb-data.json |
 | L-1 | 通用 skill 命名 cli-prompts-site（Hermes devops 类） |
 
 ### 8.4 table/knowledge output 三态（CL003，documents/archive/solutions-20260908/table-knowledge-json-output-design-v1.2-20260829.md）
@@ -259,18 +259,18 @@ curl https://html-gen.cli.jaden.tech/prompts/all.md           # 全量合集
 | P12 | YAML 多行 description 截断 | `_skill_desc` 只取首行语义，摘要截断记录不修（HG-SEC-095） |
 | P13 | output 父目录不存在 | Path.write_text FileNotFoundError traceback（-o 既有行为，P2 可选增强） |
 | P14 | 已装 CLI 与 src/ 打包源双份 | 改根 html-gen.py 即时生效；src/ 需 build-package.py 同步（D7） |
-| P15 | AGENTS.md 文本滞后 | prompt 段仍「18 文件」、测试计数 247 vs 实测 268（HG-SEC-106 未闭环，遗留） |
+| P15 | AGENTS.md 文本滞后 | prompt 段「18 文件」（实测 28）、测试计数 247 vs 268（HG-SEC-106）——CL011 已闭环：prompt 段 → 31 文件 + 目录树 + 测试计数 312 |
 
 ## 10. 待办 / 遗留
 
-- AGENTS.md prompt 段 18→28、目录树 prompts/ 行、测试计数 247→268（HG-SEC-106，未闭环）。
+- ~~AGENTS.md prompt 段 18→28、目录树 prompts/ 行、测试计数 247→268（HG-SEC-106，未闭环）。~~ → **CL011 已闭环**（prompt 段 18→31、目录树加 github-issue-feedback、测试计数 → 312）。
 - push 后 curl 实测：.md/.json MIME、门户/kb detail 200、契约回归（验收项，用户 push 后执行）。
 - HG-SEC-097 env-set 回归测试、HG-SEC-098 --dir 空串守卫：可选未落实。
-- skills/html-gen frontmatter 2.4.0 vs 变更记录 v2.5.0 版本口径待核。
+- ~~skills/html-gen frontmatter 2.4.0 vs 变更记录 v2.5.0 版本口径待核。~~ → **CL011 已闭环**（frontmatter 与变更记录统一至 v2.7.0）。
 
 ## 11. 参考文档
 
-- 保留原位：features.md（功能清单）、skills/（html-gen-cli-spec 等 8 篇）、prompts/（生成产物）、review-log.md / .review-level.yaml（历史记录，不追改）。
+- 保留原位：features.md（功能清单）、skills/（html-gen-cli-spec 等 9 篇）、prompts/（生成产物）、review-log.md / .review-level.yaml（历史记录，不追改）。
 - 本族过程文档（18 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 
 | 素材 | 归档路径 | 归档桶 |

@@ -29,7 +29,7 @@ tags: [html-gen, index, landing, demos, drama, provinces, countries, pages-index
 | B drama | 2026-08-06 + 08-22 | kb 框架改造 + 朱院长（2006）剧集 | 设计 CONDITIONAL 90/A → 实现 100/A → 朱院长 95/A → 尾项复核 100/A |
 | C provinces | 2026-08-24 | 省表 + 国家表关联 | 设计 v1.0 70/B → v1.1 100/A → v1.2 变更 100/A → 实现 100/A → 尾项复核 100/A |
 
-测试计数演进：73 → 146 → 154 → 180 → 183（文档时代）→ 现仓 268 collected。
+测试计数演进：73 → 146 → 154 → 180 → 183（文档时代）→ 现仓 312 collected。
 
 ## 3. 落地页与索引（族 A）
 

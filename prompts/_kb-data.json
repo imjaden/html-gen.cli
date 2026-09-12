@@ -54,6 +54,15 @@
     "kind": "skill"
   },
   {
+    "title": "github-issue-feedback",
+    "group": "table",
+    "section": "指令 CLI",
+    "badge": "Prompt",
+    "desc": "Use when a static HTML data page needs a GitHub Issue feedback loop (reader submits data corrections → validated write-back to the data JSON → rebuild). Covers page-side ✏️ button, Issue Form, target config, sync script, security rules.",
+    "url": "kb/github-issue-feedback.html",
+    "kind": "skill"
+  },
+  {
     "title": "pages-index",
     "group": "cli",
     "section": "页面规范",

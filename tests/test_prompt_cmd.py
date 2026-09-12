@@ -22,6 +22,7 @@ class TestPromptCmd:
         assert 'html-gen-doc' in r.stdout
         assert 'html-gen-knowledge' in r.stdout
         assert 'html-gen' in r.stdout
+        assert 'github-issue-feedback' in r.stdout
 
     def test_02_prompt_table_full(self):
         """html-gen prompt html-gen-table outputs full SKILL.md."""
@@ -49,3 +50,14 @@ class TestPromptCmd:
         r = run_prompt('html-gen', '--brief')
         assert r.returncode == 0, f"exit={r.returncode}, stderr={r.stderr}"
         assert '章节:' in r.stdout
+
+    def test_06_prompt_feedback_skill_references(self):
+        """html-gen prompt github-issue-feedback → 全文含 3 篇 references (跨项目
+        接入 prompt 可经 CLI 一条命令取回)."""
+        r = run_prompt('github-issue-feedback')
+        assert r.returncode == 0, f"exit={r.returncode}, stderr={r.stderr}"
+        for stem in ('issue-feedback-adoption-prompt', 'feedback-targets-schema',
+                     'issue-form-template'):
+            assert f'## {stem}' in r.stdout, f'缺 reference 段 {stem}'
+        assert 'feedback-targets.yaml' in r.stdout
+        assert '--feedback-repo' in r.stdout
