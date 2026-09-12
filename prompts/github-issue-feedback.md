@@ -153,7 +153,7 @@ python3 scripts/<case>-issue-sync.py --target <name> --config <path>  # 多 targ
 > 解析入口：`scripts/countries-issue-sync.py`（`load_target()` / `plan_issues()` / `guarded_fields()`）。
 > 依赖：仅 PyYAML（**dev 依赖**；html-gen 运行时零依赖不受影响）。
 
-## 1. target 字段表（20 项）
+## 1. target 字段表（19 项：16 具体字段 + 3 隐式机制）
 
 | 字段 | 类型 | 必填 | 语义 | 缺省行为 |
 |:---|:---|:---|:---|:---|

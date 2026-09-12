@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>github-issue-feedback</h1>
-      <div class="meta">创建: 2026-09-12 09:59 · 编辑: 2026-09-12 09:59<br>字数: 2,800 · 阅读约 14 分钟<span class="meta-path"> · 路径: <code>github-issue-feedback.md</code></span></div>
+      <div class="meta">创建: 2026-09-12 10:38 · 编辑: 2026-09-12 10:38<br>字数: 2,812 · 阅读约 14 分钟<span class="meta-path"> · 路径: <code>github-issue-feedback.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><p>把「读者发现数据错误 → 提 Issue → 维护者一键写回数据 JSON → 重建静态页 → 回评」的闭环，</p>
 <p>做成<strong>配置驱动、可跨项目复制</strong>的能力。已在 html-gen 的 countries 表案例落地（CL009 + CL010）。</p>
@@ -528,7 +528,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <pre><code class="language-">读者点 ✏️ → GitHub Issue Form（预填上下文，人工填字段/值/来源）
    → gh issue list（按 label 拉取）
    → 校验链：page → dataset → 字段解析 → 主键硬保护 → editable 白名单
-            → 行唯一定位 → 类型 → 非空 → 入库 XSS 防护 → 幂等 → 冲突取最新
+            → 非空 → 行唯一定位 → 类型 → 入库 XSS 防护 → 幂等 → 冲突取最新
    → 写回数据 JSON（indent=2，逐字往返）
    → 重建产物（html-gen table + 固化参数）
    → 回评（含本地短 sha）/ --close 关闭
@@ -663,7 +663,7 @@ python3 scripts/&lt;case&gt;-issue-sync.py --target &lt;name&gt; --config &lt;pa
 </tbody></table>
 <h2 id="复用差异点-其他项目接入时必改">复用差异点（其他项目接入时必改）</h2>
 <ul>
-<li><strong>脚本名与 docstring</strong>：docstring 内案例名有 4 类形态（脚本名 ×8 / 表单模板名 / target 名 / 设计文档名）</li>
+<li><strong>脚本名与 docstring</strong>：docstring 内案例名有 4 类形态（脚本名 ×9（L11-19 示例命令行）/ 表单模板名 / target 名 / 设计文档名）</li>
 <li><strong><code>HINT</code> 常量</strong>（引导行打印用）与 <strong>argparse <code>prog</code></strong></li>
 <li><strong>表单模板</strong>：下拉选项 = 可写列的 <code>标签｜key</code></li>
 <li><strong>target 配置</strong>：<code>data</code> / <code>html</code> / <code>key_field</code> / <code>editable</code> / <code>rebuild.args</code></li>
@@ -694,7 +694,7 @@ python3 scripts/&lt;case&gt;-issue-sync.py --target &lt;name&gt; --config &lt;pa
 <blockquote>配置示例：<code>html-gen.cli/scripts/feedback-targets.yaml</code>（target <code>countries</code>）。</blockquote>
 <blockquote>解析入口：<code>scripts/countries-issue-sync.py</code>（<code>load_target()</code> / <code>plan_issues()</code> / <code>guarded_fields()</code>）。</blockquote>
 <blockquote>依赖：仅 PyYAML（<strong>dev 依赖</strong>；html-gen 运行时零依赖不受影响）。</blockquote>
-<h2 id="1-target-字段表-20-项">1. target 字段表（20 项）</h2>
+<h2 id="1-target-字段表-19-项-16-具体字段-3-隐式机制">1. target 字段表（19 项：16 具体字段 + 3 隐式机制）</h2>
 <table><thead><tr>
 <th>字段</th>
 <th>类型</th>
@@ -1263,7 +1263,7 @@ contact_links:
 <tr>
 <td>1</td>
 <td>docstring 示例命令行</td>
-<td><code>countries-issue-sync.py</code>（约 8 处）</td>
+<td><code>countries-issue-sync.py</code>（9 处，L11-19）</td>
 <td>文档误导</td>
 </tr>
 <tr>
@@ -1360,7 +1360,8 @@ git log -1 --name-only                                       # 期望：仅 data
 <h2 id="issue-form-template">issue-form-template</h2>
 <h1 id="issue-form-模板与约束">Issue Form 模板与约束</h1>
 <blockquote>参考实现：<code>html-gen.cli/.github/ISSUE_TEMPLATE/data-fix-countries.yml</code>（84 行，可直接复制）</blockquote>
-<blockquote>同目录 <code>config.yml</code> 关闭 blank issue，把读者引导到表单。</blockquote>
+<blockquote>同目录 <code>config.yml</code> 关闭 blank issue（<strong>参考实现当前仅 1 行 <code>blank_issues_enabled: false</code></strong>；</blockquote>
+<blockquote>§3 的 <code>contact_links</code> 为<strong>增强可选项</strong>，接入方可按需启用）。</blockquote>
 <h2 id="1-完整模板-复制后改-3-处">1. 完整模板（复制后改 3 处）</h2>
 <pre><code class="language-yaml">name: 数据反馈
 description: 报告案例表格中的数据错误或过时信息（页面上的「✏️」按钮会自动填写上下文）

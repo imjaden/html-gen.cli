@@ -55,7 +55,7 @@ skills/github-issue-feedback/
 ├── SKILL.md                                   # ~180 行
 └── references/
     ├── issue-feedback-adoption-prompt.md      # ~220 行（核心交付物）
-    ├── feedback-targets-schema.md             # ~200 行（20 字段 + 校验链 + 十态 CLI + 5 红线）
+    ├── feedback-targets-schema.md             # ~200 行（19 项字段 + 校验链 + 十态 CLI + 6 红线）
     └── issue-form-template.md                 # ~100 行
 ```
 合计 ~700 行；每篇 ≤250 行（E1）。
@@ -69,13 +69,15 @@ frontmatter: name/description/version 1.0.0/author ops/license MIT/metadata.herm
 
 ### 3.3 references 大纲
 1. **`issue-feedback-adoption-prompt.md`**：适用判定 + 6 步接入（每步可复制片段 + 验证法）+ 首次验收清单；第 6 步含 docstring 4 类 countries 形态替换（见 §8）
-2. **`feedback-targets-schema.md`**：target 20 字段表 + 校验链顺序（page→dataset→字段解析→主键硬保护→editable 白名单→非空→行唯一定位→类型→入库 XSS 防护→幂等→冲突取最新）+ CLI 十态与退出码 + 安全红线 5 条
+2. **`feedback-targets-schema.md`**：target 19 项字段表 + 校验链顺序（page→dataset→字段解析→主键硬保护→editable 白名单→非空→行唯一定位→类型→入库 XSS 防护→幂等→冲突取最新）+ CLI 十态与退出码 + 安全红线 6 条
 3. **`issue-form-template.md`**：Form yml 模板（dropdown/textarea）+ 机制约束（下拉不可 URL 预填 → 页面不预填 field；主键/匹配键不进下拉）+ `config.yml` + label 约定
 
 ### 3.4 内容红线
 写可复制片段/字段契约/校验链/安全红线/验收法/指路；不写版本演进史与一次性 issue 处置记录；不复制脚本正文（C1）。
 
 > **勘误（2026-09-12，实现审计 HG-SEC-155）**：§3.3 第 2 项原写校验链「行定位 → 类型 → 非空」（笔误，三轮设计评审以设计自述为据未对照源码核销）。正确顺序为 **非空 → 行唯一定位 → 类型**（源码 `scripts/countries-issue-sync.py` `plan_issues()` L245-259；`references/feedback-targets-schema.md` §2 行序正确）。实现已按正确序落盘。
+>
+> **勘误补记（2026-09-12，实现审计复审 HG-SEC-159/160）**：§3.1/§3.3 原写「20 字段」「安全红线 5 条」，实测为 **19 项**（16 具体字段 + 3 隐式机制）与 **6 条**红线；§8 原写「脚本名 ×8」，实测 docstring **9 处**（L11-19）。三处均已订正。
 
 ## 4. 挂载改动面（精确清单）
 
@@ -188,7 +190,7 @@ frontmatter: name/description/version 1.0.0/author ops/license MIT/metadata.herm
 ```
 1) cp scripts/countries-issue-sync.py <project>/scripts/<case>-issue-sync.py
 2) 替换 docstring 4 类 countries 形态:
-   a. 脚本名 ×8（示例命令行）  b. 表单模板名 data-fix-countries.yml（L5）
+   a. 脚本名 ×9（示例命令行 L11-19）  b. 表单模板名 data-fix-countries.yml（L5）
    c. target 名 countries（L19）  d. 设计文档名（L25）
    另改 HINT（L302）+ argparse prog（L432）；DEFAULT_CONFIG（L40）为通用路径, 无 DEFAULT_TARGET, 无需改
    漏改 b/c → 破 --check-template
