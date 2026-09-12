@@ -2050,3 +2050,119 @@ ee85686 对上一轮 CONDITIONAL PASS 遗留 5 项 finding 全部真实修复闭
 
 - ✅ PASS → 写报告 + review-log + .review-level.yaml，**commit 评审记录**（显式 pathspec，不 push）
 - 报告: `documents/review/github-issue-feedback-skill-design-review-v1.2-20260912.md`
+
+---
+
+## 2026-09-12 — GitHub Issue 反馈通道 skill 沉淀实现审计 v1.0（CONDITIONAL PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `skills/github-issue-feedback/`（SKILL.md + 3 references）+ `prompts/` 站点 31 文件 + 挂载代码/测试/文档同步（HTML-GEN-CL011 [5/6]；commit edd3e90 + 8bbc575 + c7bbfa0；设计基线 PASS `f3be5d9`）
+- **Verdict**: ⏳ CONDITIONAL PASS 95/100（A）—— 设计 §5 八项验收全命中（312 passed 零回归 / 31 文件幂等 / 四态 prompt / 文档全表），交付物质量审计发现 1 🟡 事实准确性缺陷
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-155（🟡 open: SKILL.md 校验链顺序与源码/自身 reference 三方不一致）+ HG-SEC-156..157（🟢 records: 脚本名 ×8 实为 9 / config.yml 模板增强 vs 实际单行）
+- **Findings**: 0 🔴 / 1 🟡 / 2 🟢
+
+### Summary
+
+独立复验（亲自跑命令/读文件，未仅信 ops 报告）：① skill 四文件行数 155/203/106/136 ≤250；② prompt 四态（list/full/brief/json）实测正常；③ `--site` 31 文件（顶层 22 + kb/ 9）、`_kb-data.json` 27 条（9+6+12）、table 组「指令 CLI」新增条目；④ 测试同步（EXPECTED_SKILLS 9 项 + 硬断言 22/9/27 + 注释消息串 6 处 + test_06 新用例）；⑤ prompts/ 重生成幂等（22 顶层文件逐字节一致，kb 仅时间戳 2 行 wildcard）；⑥ 文档 §4.3 全表命中（历史行 L61/L62/L90/v2.5.0 未改写）；⑦ 全量 `pytest -n 0` **312 passed**（129.51s）；⑧ 本报告。
+
+交付物质量审计：事实准确性逐条对照源码（--feedback-repo 三级取值 / options.feedback 五字段 / CLI 十态 / 退出码 0/1/2 / HINT·prog·DEFAULT_CONFIG / docstring 4 类形态 / rebuild.args 四项）全部一致；安全红线 6 条与 `countries-issue-sync.py` 现状逐条吻合（guarded_fields 先于 editable / `<`·`>` 拒绝 L262-265 / 显式 pathspec 无 -A / 写盘前预检 / 失败不回滚 / shell=False）；内容红线零违规（无演进史/无一次性 issue 记录/无脚本正文复制）；合规零 PII/令牌/私密路径。挂载副作用为零（既有 8 skill 确定性集零 diff，all.md/index.html/_kb-data 仅因新增条目变化）。
+
+### Findings
+
+- 🔴 0 / 🟡 1 / 🟢 2：
+  - HG-SEC-155（🟡 open）：SKILL.md L44-45 数据流图校验链顺序写「行唯一定位→类型→非空」，源码 `plan_issues()` L245-259 实为「非空→行唯一定位→类型」；`references/feedback-targets-schema.md` §2 顺序正确，故主 SKILL.md 与自身 reference + 源码三方不一致。根因 = 设计 §3.3 L72 同序错误，三轮评审以设计自述为据未对照源码。处置 = 重排 L45 三词 + 设计 §3.3 作 errata 订正（可选）
+  - HG-SEC-156（🟢 record）：SKILL.md L141「脚本名 ×8」实际 docstring 9 处示例命令行；adoption-prompt L164「约 8 处」更准确
+  - HG-SEC-157（🟢 record）：issue-form-template.md §3 与 adoption-prompt §5 的 config.yml 模板含 contact_links，参考实现实际 `.github/ISSUE_TEMPLATE/config.yml` 仅单行 `blank_issues_enabled: false`；issue-form-template.md L4「把读者引导到表单」与实际不符
+
+### Positives
+
+- 参考实现（reference）`feedback-targets-schema.md` §2 校验链 11 步顺序独立于设计错误而正确，说明 dev 写 reference 时对照了源码——知识资产的最关键细节正确，仅主 SKILL.md 摘要图继承设计错序
+- 安全红线 6 条逐条与脚本现状吻合，显式 pathspec / 写盘前预检 / shell=False 等加固点全部真实存在
+- 挂载零副作用：既有 8 skill 的 22 个确定性文件逐字节一致，增量隔离干净
+- 幂等性、四态 prompt、312 passed 全部独立复跑证实，无一处仅凭 ops 自述
+
+### 处理
+
+- ⏳ CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，**不 commit / 不 push**（待 ops 折入 HG-SEC-155..157 后复审转 PASS）
+- HG-SEC-155 为唯一 🟡，修复 = SKILL.md L45 三词重排（非阻塞，但属交付物事实准确性，应交 ops 修正）
+- 报告: `documents/review/github-issue-feedback-skill-impl-audit-v1.0-20260912.md`
+
+---
+
+## 2026-09-12 — GitHub Issue 反馈通道 skill 沉淀实现审计复审 v1.1（CONDITIONAL PASS 95/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `skills/github-issue-feedback/` + `prompts/` 31 文件 + 源码对照（HTML-GEN-CL011 [5/6] re-audit；复审 commit `b52afa5`；设计基线 PASS `f3be5d9`）
+- **Verdict**: ⏳ CONDITIONAL PASS 95/100（A）—— HG-SEC-155..157 源文件层真实修复（逐行对照源码核实），但新发现 1 🟡：kb detail 页未随订正同步（内容修复被时间戳 wildcard 还原时误回退）
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-155..157（✅ closed: 源文件层逐行核销成立）+ HG-SEC-158（🟡 open: kb/github-issue-feedback.html 仍含旧序/×8/config 旧说明）+ HG-SEC-159..160（🟢 records: 20 项→19 / 设计基线 ×8·5红线·20字段残留漂移）
+- **Findings**: 0 🔴 / 1 🟡 / 2 🟢
+
+### Summary
+
+逐条核销 HG-SEC-155/156/157 源文件层成立：SKILL.md L45 校验链「非空→行唯一定位→类型」与 `plan_issues()` L245-259 逐行吻合；SKILL.md L141「×9（L11-19）」+ adoption-prompt L164「9 处」与 docstring L11-19 九处逐行吻合；issue-form-template L3-5 config 说明与 config.yml 单行吻合。设计 §3.3 同序订正 + §3.4 勘误段（根因）已加。
+
+独立复检全量事实（--feedback-repo 三级取值 / options.feedback 五字段 / 页面预填 6 参数 / 校验链 11 步顺序与失败语义 / CLI 十态 / 退出码 0·1·2 / HINT·prog·DEFAULT_CONFIG / docstring 4 类形态 / 安全红线 6 条 / 回评·提交格式 / form 模板差异 / 15 选项·84 行·600 行·155 行计数）逐条对照源码全部一致。
+
+回归：pytest -n 0 **312 passed**（130.30s，conda py3.12 pytest 9.1.0）；--site 31 文件幂等（22 顶层确定性集逐字节一致）。
+
+新发现 HG-SEC-158（🟡）：`prompts/kb/github-issue-feedback.html` 仍为订正前内容（校验链旧序「行定位→类型→非空」/×8/约 8 处/「把读者引导到表单」）。根因 = `b52afa5`「kb/*.html 时间戳 wildcard 已还原」将内容修复与时间戳一并 git checkout 回退；8 个既有 kb 页仅时间戳（还原正确），唯 github-issue-feedback 页承载 155..157 内容修复被误还原。源已对、产物页仍错，交付物自相矛盾。修复 = 重跑 --site 提交本页内容（字数 2,800→2,808 佐证内容确变更）。
+
+### Findings
+
+- 🔴 0 / 🟡 1 / 🟢 2：
+  - HG-SEC-155..157（✅ closed）：SKILL.md / 3 references / 顶层 md·json·all.md 逐行核销成立（源文件层）
+  - HG-SEC-158（🟡 open）：kb/github-issue-feedback.html 内容修复被时间戳 wildcard 还原误回退，产物 detail 页仍含 155..157 旧文案
+  - HG-SEC-159（🟢 record）：feedback-targets-schema §1 表头「20 项」实 19 枚举行（16 具体 + 3 隐式）
+  - HG-SEC-160（🟢 record）：设计基线 §8「×8」（未随 156 订正）+ §3.1/§3.3「5 红线」（实 6）残留漂移，§3.4 勘误段仅收 155
+
+### Positives
+
+- 155..157 源文件层修复「真实成立而非文字接受」——逐行对照 `plan_issues()` 源码 + docstring 九处计数 + config.yml 单行，非仅看文案
+- 校验链 11 步顺序与失败语义、安全红线 6 条、回评/提交格式等全部与脚本现状逐条吻合
+- 幂等性、312 passed、31 文件规模全部独立复跑证实
+
+### 处理
+
+- ⏳ CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，**不 commit / 不 push**（待 ops 重生成 kb 页 + 订正计数后复审转 PASS）
+- 修复 = ① --site 重生成并提交 kb/github-issue-feedback.html；② 表头 20→19 项 + 设计 §3.4 补记（🟢 随修）
+- 报告: `documents/review/github-issue-feedback-skill-impl-audit-v1.1-20260912.md`
+
+---
+
+## 2026-09-12 — GitHub Issue 反馈通道 skill 沉淀实现审计第三轮复审 v1.2（PASS 100/A）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `skills/github-issue-feedback/` + `prompts/` 31 文件 + 源码对照（HTML-GEN-CL011 [5/6] re-audit-2；复审 commit `ba6d702`；设计基线 PASS `f3be5d9`）
+- **Verdict**: ✅ PASS 100/100（A）—— HG-SEC-158..160 三处真实修复并逐字节核销；产物一致性全量复检零内容漂移；无新发现项
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-158..160（✅ closed: kb 页内容 / 19 项表头 / 设计基线三处订正 + §3.4 勘误补记；逐条实测核销）
+- **Findings**: 0 🔴 / 0 🟡 / 0 🟢
+
+### Summary
+
+逐条核销 HG-SEC-158/159/160 成立：`prompts/kb/github-issue-feedback.html` 现含「非空→行唯一定位→类型」新序 +「×9」+「19 项：16 具体字段 + 3 隐式机制」，旧串（旧序/×8/约 8 处/把读者引导到表单/20 项）grep **0 命中**；`feedback-targets-schema.md` §1 表头「19 项」逐行计数吻合（16 具体 + 3 隐式）；设计 §8「×9」/§3.1·§3.3「19 项·6 红线」+ §3.4 勘误补记（159/160）均已落盘。
+
+产物一致性全量复检（31 文件，源于 HG-SEC-158 同型风险）：临时目录 `--site` 生成基准逐字节比对 → **22 顶层文件逐字节一致、9 kb 页仅时间戳差异、0 内容差异**；另用源文件独立重建 `github-issue-feedback.md`（strip_frontmatter + 3 refs 拼接）/ `.json`（信封）/ `all.md`（全 9 skill 段）逐字一致，`_kb-data` 该条目字段正确；`prompts/html-gen*.{md,json}` 与改后的 `skills/html-gen/SKILL.md` 逐字节一致，无 stale。
+
+回归：`pytest -n 0` **312 passed**（130.60s）；`--site` 31 文件；幂等两次同秒 31/31 逐字节一致（跨时间 22 一致 + 9 时间戳）。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 0（无新发现项）
+
+### Positives
+
+- HG-SEC-158 处置正确：仅重生成并提交 `github-issue-feedback.html` 内容修复，未再误还原其余 8 kb 页（时间戳 wildcard 边界分清）
+- 产物与源一致性的证明不依赖生成器单次执行——额外用源文件独立重建逐字比对，杜绝「生成器自身 bug 掩盖漂移」的可能
+- 回归与幂等全部独立复跑，未仅信 ops 自述
+
+### 处理
+
+- ✅ PASS → 写报告 + review-log + .review-level.yaml，commit 全部审计记录 + push `github` main（ff-only，不推 gitee、不 force）
+- 同步 v1.0/v1.1 两条 CONDITIONAL_PASS 的 findings_open 归零 + 追加本条 PASS 记录
+- 报告: `documents/review/github-issue-feedback-skill-impl-audit-v1.2-20260912.md`

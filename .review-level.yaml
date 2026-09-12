@@ -670,4 +670,39 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-151..153 (✅ closed, 五项逐行实测核销) + HG-SEC-154 (🟢 record: AGENTS.md L326 '288 tests' 现行计数漂移实测 311, 随 [3/6] 折入)"
     report: documents/review/github-issue-feedback-skill-design-review-v1.2-20260912.md
+  - date: 2026-09-12
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "GitHub Issue 反馈通道 skill 沉淀实现审计 v1.0 (HTML-GEN-CL011 [5/6]; commit edd3e90 + 8bbc575 + c7bbfa0; 设计基线 PASS f3be5d9)"
+    verdict: CONDITIONAL_PASS
+    score: 95
+    findings_total: 3
+    findings_open: 0
+    tracking: "HG-SEC-155 (✅ closed b52afa5: SKILL.md L44-45 校验链顺序重排) + HG-SEC-156..157 (🟢 records, closed b52afa5)"
+    report: documents/review/github-issue-feedback-skill-impl-audit-v1.0-20260912.md
+    resolved_by: re-audit v1.1 (2026-09-12, b52afa5) — 155..157 源文件层核销 closed
+  - date: 2026-09-12
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "GitHub Issue 反馈通道 skill 沉淀实现审计复审 v1.1 (HTML-GEN-CL011 [5/6]; 复审 commit b52afa5; 折入 v1.0 findings HG-SEC-155..157)"
+    verdict: CONDITIONAL_PASS
+    score: 95
+    findings_total: 3
+    findings_open: 0
+    tracking: "HG-SEC-155..157 (✅ closed, 源文件层逐行核销成立) + HG-SEC-158 (✅ closed ba6d702: kb/github-issue-feedback.html 内容修复提交) + HG-SEC-159..160 (🟢 records, closed ba6d702)"
+    report: documents/review/github-issue-feedback-skill-impl-audit-v1.1-20260912.md
+    resolved_by: re-audit v1.2 (2026-09-12, ba6d702) — PASS 100/100
+  - date: 2026-09-12
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "GitHub Issue 反馈通道 skill 沉淀实现审计第三轮复审 v1.2 (HTML-GEN-CL011 [5/6]; 复审 commit ba6d702; 折入 v1.1 findings HG-SEC-158..160)"
+    verdict: PASS
+    score: 100
+    findings_total: 3
+    findings_open: 0
+    tracking: "HG-SEC-158..160 (✅ closed, 逐条实测核销: kb 页内容修复 / 19 项表头 / 设计基线三处订正 + §3.4 勘误补记); 产物一致性 31 文件零内容漂移; 312 passed"
+    report: documents/review/github-issue-feedback-skill-impl-audit-v1.2-20260912.md
 
