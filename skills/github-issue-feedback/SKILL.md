@@ -42,7 +42,7 @@ metadata:
 读者点 ✏️ → GitHub Issue Form（预填上下文，人工填字段/值/来源）
    → gh issue list（按 label 拉取）
    → 校验链：page → dataset → 字段解析 → 主键硬保护 → editable 白名单
-            → 行唯一定位 → 类型 → 非空 → 入库 XSS 防护 → 幂等 → 冲突取最新
+            → 非空 → 行唯一定位 → 类型 → 入库 XSS 防护 → 幂等 → 冲突取最新
    → 写回数据 JSON（indent=2，逐字往返）
    → 重建产物（html-gen table + 固化参数）
    → 回评（含本地短 sha）/ --close 关闭
@@ -138,7 +138,7 @@ python3 scripts/<case>-issue-sync.py --target <name> --config <path>  # 多 targ
 
 ## 复用差异点（其他项目接入时必改）
 
-1. **脚本名与 docstring**：docstring 内案例名有 4 类形态（脚本名 ×8 / 表单模板名 / target 名 / 设计文档名）
+1. **脚本名与 docstring**：docstring 内案例名有 4 类形态（脚本名 ×9（L11-19 示例命令行）/ 表单模板名 / target 名 / 设计文档名）
 2. **`HINT` 常量**（引导行打印用）与 **argparse `prog`**
 3. **表单模板**：下拉选项 = 可写列的 `标签｜key`
 4. **target 配置**：`data` / `html` / `key_field` / `editable` / `rebuild.args`

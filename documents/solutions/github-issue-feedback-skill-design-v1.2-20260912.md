@@ -69,11 +69,13 @@ frontmatter: name/description/version 1.0.0/author ops/license MIT/metadata.herm
 
 ### 3.3 references 大纲
 1. **`issue-feedback-adoption-prompt.md`**：适用判定 + 6 步接入（每步可复制片段 + 验证法）+ 首次验收清单；第 6 步含 docstring 4 类 countries 形态替换（见 §8）
-2. **`feedback-targets-schema.md`**：target 20 字段表 + 校验链顺序（page→dataset→字段解析→主键硬保护→editable 白名单→行定位→类型→非空→入库 XSS 防护→幂等→冲突取最新）+ CLI 十态与退出码 + 安全红线 5 条
+2. **`feedback-targets-schema.md`**：target 20 字段表 + 校验链顺序（page→dataset→字段解析→主键硬保护→editable 白名单→非空→行唯一定位→类型→入库 XSS 防护→幂等→冲突取最新）+ CLI 十态与退出码 + 安全红线 5 条
 3. **`issue-form-template.md`**：Form yml 模板（dropdown/textarea）+ 机制约束（下拉不可 URL 预填 → 页面不预填 field；主键/匹配键不进下拉）+ `config.yml` + label 约定
 
 ### 3.4 内容红线
 写可复制片段/字段契约/校验链/安全红线/验收法/指路；不写版本演进史与一次性 issue 处置记录；不复制脚本正文（C1）。
+
+> **勘误（2026-09-12，实现审计 HG-SEC-155）**：§3.3 第 2 项原写校验链「行定位 → 类型 → 非空」（笔误，三轮设计评审以设计自述为据未对照源码核销）。正确顺序为 **非空 → 行唯一定位 → 类型**（源码 `scripts/countries-issue-sync.py` `plan_issues()` L245-259；`references/feedback-targets-schema.md` §2 行序正确）。实现已按正确序落盘。
 
 ## 4. 挂载改动面（精确清单）
 

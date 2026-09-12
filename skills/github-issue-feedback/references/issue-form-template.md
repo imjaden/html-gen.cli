@@ -1,7 +1,8 @@
 # Issue Form 模板与约束
 
 > 参考实现：`html-gen.cli/.github/ISSUE_TEMPLATE/data-fix-countries.yml`（84 行，可直接复制）
-> 同目录 `config.yml` 关闭 blank issue，把读者引导到表单。
+> 同目录 `config.yml` 关闭 blank issue（**参考实现当前仅 1 行 `blank_issues_enabled: false`**；
+> §3 的 `contact_links` 为**增强可选项**，接入方可按需启用）。
 
 ## 1. 完整模板（复制后改 3 处）
 

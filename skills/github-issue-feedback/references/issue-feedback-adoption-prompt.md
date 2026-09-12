@@ -161,7 +161,7 @@ cp <html-gen.cli>/scripts/countries-issue-sync.py scripts/<case>-issue-sync.py
 
 | # | 位置 | 形态 | 不改的后果 |
 |:---|:---|:---|:---|
-| 1 | docstring 示例命令行 | `countries-issue-sync.py`（约 8 处） | 文档误导 |
+| 1 | docstring 示例命令行 | `countries-issue-sync.py`（9 处，L11-19） | 文档误导 |
 | 2 | docstring | 表单模板名 `data-fix-countries.yml` | `--check-template` 指错文件 |
 | 3 | docstring | `--target countries` 示例 | 引导命令不可用 |
 | 4 | docstring | 设计文档名引用 | 失效链接 |
