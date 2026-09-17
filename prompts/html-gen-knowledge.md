@@ -15,7 +15,14 @@ C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构�
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
 ```
 
+> 逐 flag 清单、默认值（`--title` 默认「知识库」、`--welcome` 默认欢迎文案）与输出目标三态
+> 见 **`html-gen help knowledge`** 的「CLI 参数」段。
+
 ## 数据格式
+
+条目 schema（item 7 键: title / group / section / badge / desc / url / icon，含必填与
+`url`|`desc` 二选一语义）与数据源三态（数组 / `{items|data}` / 顶层 `output`）见
+**`html-gen help knowledge`** 的「item 条目键」「数据源与输出目标」段。示例：
 
 ```json
 [
@@ -24,13 +31,13 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ]
 ```
 
-- `title` 必填, `group` 必填, `section` 可选
-- `url` 与 `desc` 二选一 (iframe vs 内联渲染)
-- `badge` 可选 (自定义标记)
 - title 与 section 同名时自动跳过 item 行 (K2 rule)
-- 输出目标: 结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）；优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)
+- 输出目标: 结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）；
+  优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)
 
 ## groups 格式
+
+类目键（key / label / icon）见 `html-gen help knowledge` 的「groups 类目键」段。示例：
 
 ```json
 [{"key": "类目key", "label": "显示名", "icon": "🏛️"}]

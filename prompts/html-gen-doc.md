@@ -15,9 +15,21 @@ B 型文档模板从 Markdown 生成完整的文档页面。自动剥离 YAML fr
 html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]
 ```
 
+> 逐 flag 清单、默认值与 env 兜底见 **`html-gen help doc`** 的「CLI 参数」段
+> （单一事实源: `html-gen.py` 的 `TEMPLATE_CONTRACT['doc']`）。
+
 自动剥离 YAML frontmatter。标题优先级: `--title` > fm title > body h1 > stem。
 
+## URL 状态
+
+Bare 模式（默认隐藏侧边栏/工具栏，URL 参数可显式展示）与正文宽度三级
+（窄/中/宽，默认 960px）的参数键与取值口径见 **`html-gen help doc`** 的「URL 状态」段
+（`?sidebar` / `?toolbar` / `?width`）。
+
 ## Markdown 语法规范
+
+> 完整语法子集（块级 / 行内 / Callout / 不支持项）见 **`html-gen help doc`** 的语法说明段。
+
 - h1-h3: 自动加 id 锚点
 - **加粗** / *斜体* / `代码` / [链接](url)
 - 围栏代码块 (变长 fence 嵌套)

@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-table</h1>
-      <div class="meta">创建: 2026-09-12 09:59 · 编辑: 2026-09-12 09:59<br>字数: 1,057 · 阅读约 5 分钟<span class="meta-path"> · 路径: <code>html-gen-table.md</code></span></div>
+      <div class="meta">创建: 2026-09-17 16:11 · 编辑: 2026-09-17 16:11<br>字数: 873 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>html-gen-table.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p><code>layout-table.html</code> 是 html-gen 的 A 型模板 — 将 JSON 数据渲染为可交互的数据表格。支持搜索、排序、分页、Tab 分类过滤、操作列按钮、行选择、CSV 导出、列可见性控制和列宽拖拽。生成自包含单文件 HTML，零外部依赖。</p>
@@ -520,196 +520,70 @@ html-gen table -d data.json --title "项目列表" -o projects.html</code></pre>
   "options": {"pageSize": 30, "exportCSV": true, "rowSelect": true}
 }</code></pre>
 <h2 id="列配置-columns">列配置 (COLUMNS)</h2>
-<table><thead><tr>
-<th>字段</th>
-<th>类型</th>
-<th>必填</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td><code>key</code></td>
-<td>string</td>
-<td>✅</td>
-<td>数据字段名</td>
-</tr>
-<tr>
-<td><code>label</code></td>
-<td>string</td>
-<td>✅</td>
-<td>表头显示名</td>
-</tr>
-<tr>
-<td><code>sortable</code></td>
-<td>bool</td>
-<td></td>
-<td>是否可排序（默认 true）</td>
-</tr>
-<tr>
-<td><code>type</code></td>
-<td>string</td>
-<td></td>
-<td><code>string</code>(默认) / <code>number</code> / <code>datetime</code> / <code>pills</code> / <code>actions</code></td>
-</tr>
-<tr>
-<td><code>locale</code></td>
-<td>string</td>
-<td></td>
-<td>排序 locale，如 <code>"zh"</code></td>
-</tr>
-<tr>
-<td><code>width</code></td>
-<td>string</td>
-<td></td>
-<td>CSS 宽度，如 <code>"120px"</code>。<strong>仅作初始值</strong>——列宽拖拽会记忆到 localStorage（<code>html-gen:table:col-widths</code>）并在刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效</td>
-</tr>
-<tr>
-<td><code>freeze</code></td>
-<td>bool</td>
-<td></td>
-<td>列冻结 (sticky left)</td>
-</tr>
-<tr>
-<td><code>quickFilter</code></td>
-<td>bool</td>
-<td></td>
-<td>点击单元格值精确筛选，<strong>默认关</strong>，显式 <code>true</code> 才启用</td>
-</tr>
-<tr>
-<td><code>pillFilter</code></td>
-<td>bool</td>
-<td></td>
-<td>pills 列标签点击筛选（contains 匹配），默认开，<code>false</code> 关闭</td>
-</tr>
-<tr>
-<td><code>onCellClick</code></td>
-<td>string</td>
-<td></td>
-<td>单元格点击行为：<code>"split"</code> 分栏预览 / <code>"modal"</code> 弹出详情</td>
-</tr>
-<tr>
-<td><code>preview</code></td>
-<td>bool</td>
-<td></td>
-<td>分栏模式下显示的列（split 预览/表格仅显示 preview 列，未配 preview 列则全显）</td>
-</tr>
-<tr>
-<td><code>class</code></td>
-<td>string</td>
-<td></td>
-<td>单元格 CSS class</td>
-</tr>
-<tr>
-<td><code>escape</code></td>
-<td>bool</td>
-<td></td>
-<td>是否 HTML 转义值（安全）</td>
-</tr>
-<tr>
-<td><code>render</code></td>
-<td>func</td>
-<td></td>
-<td>自定义渲染函数</td>
-</tr>
-<tr>
-<td><code>onClick</code></td>
-<td>string</td>
-<td></td>
-<td>行点击行为（<code>"url"</code> 跳转到 row.url）</td>
-</tr>
-<tr>
-<td><code>actions</code></td>
-<td>array</td>
-<td></td>
-<td>仅 <code>type: "actions"</code>，操作按钮数组</td>
-</tr>
-</tbody></table>
-<h3 id="列类型详情">列类型详情</h3>
-<p><strong>type: "string"</strong> (默认) — 文本排序，使用 <code>localeCompare</code>；配合 <code>locale: "zh"</code> 实现中文拼音排序</p>
-<p><strong>type: "number"</strong> — 数值排序，使用 <code>parseFloat</code> 比较，空值视为 0</p>
-<p><strong>type: "datetime"</strong> — 日期排序，使用 <code>Date.parse</code> 比较，空值视为 0；渲染原样展示 ISO 日期字符串</p>
-<p><strong>type: "pills"</strong> — 标签样式，逗号/顿号/中文逗号分隔字符串渲染为 tag pills（分隔符 <code>[,，、]+</code>）；标签点击筛选默认开（<code>pillFilter: false</code> 关闭）</p>
-<p><strong>type: "actions"</strong> — 操作按钮列，每个按钮支持三种模式：</p>
+<blockquote><strong>键规范单一事实源</strong>: 列属性（22 键）、列类型（6 类）及其取值/默认值的完整定义只在</blockquote>
+<blockquote><strong><code>html-gen help table</code></strong> 的「列属性」「列类型」段（实现: <code>html-gen.py</code> 的</blockquote>
+<blockquote><code>TEMPLATE_CONTRACT['table']</code>，由 <code>tests/test_help_contract.py</code> 对 <code>layout-table.html</code></blockquote>
+<blockquote>实测消费做双向守卫）。本篇不再维护键表 —— 复制即漂移（CL013 起因: 「默认收起」列属性</blockquote>
+<blockquote>长期未被任何面向人的文档收录，下游据旧文档把正确写法判成「臆造属性」）。</blockquote>
+<h3 id="用法要点-键名与取值以-html-gen-help-table-为准">用法要点（键名与取值以 `html-gen help table` 为准）</h3>
+<ul>
+<li><strong>列宽</strong> <code>width</code> 仅作初始值：列宽拖拽会记忆到 localStorage（<code>html-gen:table:col-widths</code>），</li>
+</ul>
+<p>  刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效。</p>
+<ul>
+<li><strong>两种「隐藏」语义不同</strong>：一种<strong>永不可见</strong>（表格/筛选/分栏详情全部排除），另一种是</li>
+</ul>
+<p>  <strong>默认收起</strong>且 ⚙️ 面板可开启、分栏详情仍全列渲染 —— 语义与键名对照见 help（此差异是 CL013 的直接动因）。</p>
+<ul>
+<li><strong>点击筛选默认关</strong>：单元格点击筛选必须显式开启；标签列（pills）的标签点击筛选默认开、可关。</li>
+<li><strong>HTML 转义默认开启</strong>（CL010 起）：只有显式关闭才豁免，不要把它当成 opt-in。</li>
+<li><strong>分栏模式列集</strong>：任一列标记为「分栏可见」时，分栏表只显示这些列；也可用选项显式指定分栏列集。</li>
+<li><strong>数字列</strong>务必设 <code>type: "number"</code>（JSON 注入后数字可能变字符串，否则按文本排序）。</li>
+<li><strong>中文排序</strong>设 <code>locale: "zh"</code>（走 <code>localeCompare(text, 'zh')</code>）。</li>
+</ul>
+<h3 id="操作按钮-actions">操作按钮 (actions)</h3>
+<p>操作按钮列（<code>type: "actions"</code>）的按钮子键与优先级（<code>copyKey</code> &gt; <code>hrefKey</code> &gt; <code>handler</code>/<code>desc</code>）</p>
+<p>见 <code>html-gen help table</code> 的「actions[] 操作按钮子键」段。示例：</p>
 <pre><code class="language-json">{
   "icon": "📋",        // Emoji 图标
   "label": "复制",     // title 提示文本
-  "copyKey": "name",  // 模式1: 复制字段值到剪贴板
-  "hrefKey": "url",   // 模式2: 新标签页打开 URL
+  "copyKey": "name",   // 模式1: 复制字段值到剪贴板
+  "hrefKey": "url",    // 模式2: 新标签页打开 URL
   "desc": "复制名称"   // 模式3: 点击弹 Toast 展示描述（演示用）
 }</code></pre>
-<p>优先级：<code>copyKey</code> &gt; <code>hrefKey</code> &gt; <code>desc</code>，只生效第一个匹配的。</p>
+<p>只生效第一个匹配的模式；<code>handler</code> 为自定义 JS 函数名（模板调 <code>window.{handler}(event, row)</code>）。</p>
 <h2 id="tab-分类过滤-tabs">Tab 分类过滤 (TABS)</h2>
+<p>Tab 键（<code>key</code> / <code>label</code> / <code>field</code> / <code>match</code> / <code>contains</code> / <code>value</code>）、匹配语义与默认字段见</p>
+<p><code>html-gen help table</code> 的「Tab 属性」段。示例：</p>
 <pre><code class="language-json">[
   {"key": "all", "label": "全部"},
   {"key": "Python", "label": "🐍 Python", "field": "lang"},
   {"key": "工具", "label": "🔧 工具", "field": "group"}
 ]</code></pre>
 <ul>
-<li><code>key</code>: Tab 标识，第一个 Tab 的 key 用于"全部"</li>
-<li><code>label</code>: 显示文本（可含 Emoji）</li>
-<li><code>field</code>: 匹配的数据字段名（默认 <code>group</code> 或 <code>category</code>）</li>
-<li><code>contains</code>: 数组字段包含匹配（值用逗号/顿号分隔时，如 <code>"field": "region_tags", "contains": true</code>）</li>
-<li><code>value</code>: contains 模式下匹配的目标值（不配则用 key 匹配）；Tab 计数 = 匹配行数</li>
-<li>Tab 选择自动保存到 localStorage</li>
+<li>第一个 Tab 的 key 用于「全部」；<code>contains: true</code> 走逗号/顿号分隔的包含匹配；Tab 计数 = 匹配行数。</li>
+<li>Tab 选择自动保存到 localStorage。</li>
 </ul>
 <h2 id="单元格点击行为-默认">单元格点击行为（默认）</h2>
 <p>点击行为优先级链（从高到低）：</p>
 <ul>
-<li><code>col.onCellClick: 'split'</code> / <code>'modal'</code>（显式配置）</li>
-<li><code>col.quickFilter: true</code>（显式筛选）</li>
+<li>列上的显式单元格点击行为（分栏 / 弹窗）</li>
+<li>列上的点击筛选开关（显式 true）</li>
 <li><strong>第 1 列（首个有 key 的数据列）→ 默认打开分栏预览</strong>（展示该行元信息）</li>
 <li>其余列 → 无操作</li>
 </ul>
-<p>即：普通单元格默认无筛选；需要按值筛选的列显式配 <code>quickFilter: true</code>；标签列默认可点筛选（pillFilter）。</p>
+<p>即：普通单元格默认无筛选；需要按值筛选的列显式开启；标签列默认可点筛选。</p>
 <h2 id="全局选项-options">全局选项 (OPTIONS)</h2>
-<table><thead><tr>
-<th>选项</th>
-<th>类型</th>
-<th>默认</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td><code>pageSize</code></td>
-<td>int</td>
-<td>30</td>
-<td>每页条数</td>
-</tr>
-<tr>
-<td><code>exportCSV</code></td>
-<td>bool</td>
-<td>false</td>
-<td>显示 CSV 导出按钮</td>
-</tr>
-<tr>
-<td><code>rowSelect</code></td>
-<td>bool</td>
-<td>false</td>
-<td>启用行选择（checkbox）</td>
-</tr>
-<tr>
-<td><code>search</code></td>
-<td>bool</td>
-<td>true</td>
-<td>显示搜索框</td>
-</tr>
-<tr>
-<td><code>clickModes</code></td>
-<td>array</td>
-<td><code>["tab"]</code></td>
-<td>允许的点击模式 <code>"tab"</code>/<code>"modal"</code>/<code>"split"</code>/<code>"expand"</code>; 兼容单数 <code>clickMode</code></td>
-</tr>
-</tbody></table>
+<p>13 个 options 顶层键（含 <code>searchFields</code> / <code>showIndex</code> / <code>defaultFilter</code> / <code>feedback</code> /</p>
+<p><code>clickMode</code> 单数兼容别名）及其默认值见 <code>html-gen help table</code> 的「选项」段；</p>
+<p><code>options.feedback</code> 子键（5 项）见「options.feedback 子键」段。</p>
 <h2 id="url-状态分享">URL 状态分享 (🔗)</h2>
-<p>表格支持通过 URL 查询参数同步并分享当前视图状态（<code>?tab&amp;q&amp;split</code>）：</p>
-<ul>
-<li><code>?tab=&lt;key&gt;</code> — 当前 Tab（白名单校验，无效忽略）</li>
-<li><code>?q=&lt;关键字&gt;</code> — 搜索词（随 300ms debounce 同步）</li>
-<li><code>?split=&lt;行号&gt;</code> — 分栏预览行（越界忽略；有 quickFilter 时下标语义失效跳过）</li>
-</ul>
+<p>URL 状态键（<code>?tab</code> / <code>?q</code> / <code>?split</code>）的取值口径见 <code>html-gen help table</code> 的「URL 状态」段。</p>
 <p>行为：</p>
 <ul>
-<li>状态变化用 <code>history.replaceState</code> 静默同步（不产生历史记录），默认参数（空 tab/q/split）自动剔除</li>
+<li>状态变化用 <code>history.replaceState</code> 静默同步（不产生历史记录），默认参数（空值）自动剔除</li>
 <li><strong>tabs 行居右按钮区 <code>.tabs-actions</code></strong>（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（<code>--home-url</code> 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）</li>
-<li>排序 / 快速过滤（quickFilter）触发时自动 closeSplit（下标语义失效保护）</li>
+<li>排序 / 快速过滤触发时自动 closeSplit（下标语义失效保护）</li>
 <li>加载时按 tab → q → split 顺序恢复（HG-SEC-076）</li>
 </ul>
 <h2 id="操作按钮-emoji-参考">操作按钮 Emoji 参考</h2>
@@ -790,25 +664,27 @@ html-gen table -d data.json --title "项目列表" -o projects.html</code></pre>
 <h2 id="任务">任务</h2>
 <p>使用 <code>html-gen table</code> 命令将 JSON 数据转为自包含 HTML 数据表格页。</p>
 <h2 id="数据规范">数据规范</h2>
-<pre><code class="language-">columns: [{key, label, sortable, type, width, freeze, preview, quickFilter, onCellClick}]
-data:    [{key: value}]
+<p>四个顶层分区: <code>columns</code>（列定义）/ <code>data</code>（数据行, 别名 <code>rows</code>）/ <code>tabs</code>（标签页）/ <code>options</code>（选项）。</p>
+<p><strong>键名、取值与默认值一律以 <code>html-gen help table</code> 的键规范段为准</strong>（单一事实源: <code>html-gen.py</code> 的</p>
+<p><code>TEMPLATE_CONTRACT['table']</code>）。下列仅为写法示例 —— 示例可含键名, 规范以 help 为准:</p>
+<pre><code class="language-">columns: [{key, label, type, width, preview, onCellClick}]
+data:    [{&lt;字段名&gt;: &lt;值&gt;}]
 tabs:    [{key, label, field}]
-options: {pageSize, exportCSV, rowSelect, search, clickModes, columnsSplit}</code></pre>
+options: {pageSize, exportCSV, search, columnsSplit}</code></pre>
 <h2 id="列类型">列类型</h2>
-<p><code>string</code>(默认) / <code>number</code> / <code>datetime</code>(Date.parse) / <code>pills</code>(逗号分隔 tag) / <code>actions</code>(按钮)</p>
+<p>文本(默认) / 数值 / 日期 / 标签 / 视频 / 操作按钮 六类; 取值名与排序口径见</p>
+<p><code>html-gen help table</code> 的「列类型」段。</p>
 <h2 id="默认行为须知">默认行为须知</h2>
 <ul>
-<li>quickFilter 默认关 (<code>col.quickFilter: true</code> 显式启用)</li>
-<li>pillFilter 默认开 (<code>col.pillFilter: false</code> 关闭)</li>
-<li>第 1 列默认分栏 (无显式 onclick 时打开 split)</li>
+<li>标签点击筛选默认开、单元格快速筛选默认关（两者均可在列属性覆盖, 键名与默认值见 help「列属性」段）</li>
+<li>第 1 列默认分栏预览（无显式单元格点击配置时）</li>
 </ul>
 <h2 id="生成命令">生成命令</h2>
 <pre><code class="language-bash">html-gen table -d data.json --title "标题" -o index.html</code></pre>
 <h2 id="质量要求">质量要求</h2>
 <ul>
-<li>所有数据列设 <code>width</code></li>
-<li>操作列 <code>type: "actions"</code></li>
-<li>标签列 <code>type: "pills"</code></li>
+<li>所有数据列显式设列宽（Cinema 宽度模型要求; 默认值见 help「列属性」段）</li>
+<li>操作列表取 <code>actions</code>、标签列表取 <code>pills</code>（列类型取值见 help）</li>
 </ul></div>
   </div>
 </div>

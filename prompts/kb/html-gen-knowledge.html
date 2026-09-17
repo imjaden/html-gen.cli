@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-knowledge</h1>
-      <div class="meta">创建: 2026-09-12 09:59 · 编辑: 2026-09-12 09:59<br>字数: 203 · 阅读约 1 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
+      <div class="meta">创建: 2026-09-17 16:11 · 编辑: 2026-09-17 16:11<br>字数: 237 · 阅读约 1 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p>C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构，以 iframe 或内联 HTML 展示内容。专为多主题知识索引场景设计。</p>
@@ -495,19 +495,23 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 </ul>
 <h2 id="cli-用法">CLI 用法</h2>
 <pre><code class="language-">html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]</code></pre>
+<blockquote>逐 flag 清单、默认值（<code>--title</code> 默认「知识库」、<code>--welcome</code> 默认欢迎文案）与输出目标三态</blockquote>
+<blockquote>见 <strong><code>html-gen help knowledge</code></strong> 的「CLI 参数」段。</blockquote>
 <h2 id="数据格式">数据格式</h2>
+<p>条目 schema（item 7 键: title / group / section / badge / desc / url / icon，含必填与</p>
+<p><code>url</code>|<code>desc</code> 二选一语义）与数据源三态（数组 / <code>{items|data}</code> / 顶层 <code>output</code>）见</p>
+<p><strong><code>html-gen help knowledge</code></strong> 的「item 条目键」「数据源与输出目标」段。示例：</p>
 <pre><code class="language-json">[
   {"title": "条目名称", "group": "所属类目", "section": "子分类",
    "url": "detail.html", "desc": "&lt;p&gt;内联 HTML&lt;/p&gt;", "badge": "标记"}
 ]</code></pre>
 <ul>
-<li><code>title</code> 必填, <code>group</code> 必填, <code>section</code> 可选</li>
-<li><code>url</code> 与 <code>desc</code> 二选一 (iframe vs 内联渲染)</li>
-<li><code>badge</code> 可选 (自定义标记)</li>
 <li>title 与 section 同名时自动跳过 item 行 (K2 rule)</li>
-<li>输出目标: 结构化 dict 顶层可带 <code>"output"</code>（仅 data 文件识别，groups 文件忽略）；优先级 CLI <code>-o</code> &gt; JSON <code>output</code> &gt; 均无中断 (exit 1)</li>
+<li>输出目标: 结构化 dict 顶层可带 <code>"output"</code>（仅 data 文件识别，groups 文件忽略）；</li>
 </ul>
+<p>  优先级 CLI <code>-o</code> &gt; JSON <code>output</code> &gt; 均无中断 (exit 1)</p>
 <h2 id="groups-格式">groups 格式</h2>
+<p>类目键（key / label / icon）见 <code>html-gen help knowledge</code> 的「groups 类目键」段。示例：</p>
 <pre><code class="language-json">[{"key": "类目key", "label": "显示名", "icon": "🏛️"}]</code></pre>
 <h2 id="模板特性">模板特性</h2>
 <ul>

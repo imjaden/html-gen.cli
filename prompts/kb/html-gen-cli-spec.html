@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-cli-spec</h1>
-      <div class="meta">创建: 2026-09-12 09:59 · 编辑: 2026-09-12 09:59<br>字数: 536 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
+      <div class="meta">创建: 2026-09-17 16:11 · 编辑: 2026-09-17 16:11<br>字数: 448 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><blockquote>本文档定义 html-gen 项目的 CLI 规范（对齐 hermes-manager 治理规范</blockquote>
 <blockquote>「CLI 规范」条目 + cli-args-reference.md 统一 JSON 信封）。</blockquote>
@@ -504,125 +504,60 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <table><thead><tr>
 <th>子指令</th>
 <th>用途</th>
-<th>必填参数</th>
-<th>可选参数</th>
 <th>输出</th>
 </tr></thead><tbody>
 <tr>
 <td><code>help</code></td>
 <td>显示帮助</td>
-<td>—</td>
-<td>—</td>
 <td>文本</td>
 </tr>
 <tr>
 <td><code>doc</code></td>
 <td>Markdown → B 型文档页</td>
-<td><code>-i/--input</code></td>
-<td><code>-o/--output</code> <code>--title</code> <code>--subtitle</code> <code>--metadata</code></td>
 <td>HTML 文件</td>
 </tr>
 <tr>
 <td><code>slide</code></td>
 <td>Markdown → 幻灯片</td>
-<td><code>-i/--input</code></td>
-<td><code>-o/--output</code> <code>--title</code> <code>--subtitle</code></td>
 <td>HTML 文件</td>
 </tr>
 <tr>
 <td><code>table</code></td>
 <td>JSON → A 型数据表格</td>
-<td><code>-d/--data</code></td>
-<td><code>--title</code> <code>-o/--output</code></td>
 <td>HTML 文件</td>
 </tr>
 <tr>
 <td><code>knowledge</code></td>
 <td>JSON → C 型知识库</td>
-<td><code>-d/--data</code></td>
-<td><code>-g/--groups</code> <code>--title</code> <code>--subtitle</code> <code>--welcome</code> <code>-o/--output</code></td>
 <td>HTML 文件</td>
 </tr>
 <tr>
 <td><code>prompt</code></td>
 <td>输出项目 skills 内容 / 生成 prompts/ 在线阅读站点</td>
-<td>—</td>
-<td><code><skill></code> <code>--brief</code> <code>--json</code> <code>--site</code> <code>--dir</code></td>
 <td>文本 / JSON / 站点 (31 文件)</td>
 </tr>
 <tr>
 <td><code>demo</code></td>
 <td>demo 列表与详情</td>
-<td>—</td>
-<td>`list\</td>
-<td><name><code> </code>--json<code> </code>--all<code> </code>--open<code> </code>--rebuild`</td>
 <td>文本 / JSON</td>
 </tr>
 </tbody></table>
+<blockquote><strong>参数（必填 / 可选 / 默认 / env 兜底）不在本文档枚举</strong> —— 单一事实源是</blockquote>
+<blockquote><code>html-gen help &lt;type&gt;</code> 的「CLI 参数」段（实现: <code>html-gen.py</code> 的 <code>TEMPLATE_CONTRACT[type]['cli']</code>，</blockquote>
+<blockquote>由 <code>tests/test_help_contract.py</code> 对 argparse 实测提取做双向守卫）。复制到本文档即漂移。</blockquote>
 <h2 id="3-参数惯例-对齐-cli-args-reference-md">3. 参数惯例（对齐 cli-args-reference.md）</h2>
-<table><thead><tr>
-<th>功能</th>
-<th>参数名</th>
-<th>缩写</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td>输入文件</td>
-<td><code>--input</code></td>
-<td><code>-i</code></td>
-<td>doc/slide 必填</td>
-</tr>
-<tr>
-<td>数据文件</td>
-<td><code>--data</code></td>
-<td><code>-d</code></td>
-<td>table/knowledge 必填</td>
-</tr>
-<tr>
-<td>输出文件</td>
-<td><code>--output</code></td>
-<td><code>-o</code></td>
-<td>必填（CLI <code>-o</code> 或 JSON 顶层 <code>output</code> 二选一；table/knowledge）</td>
-</tr>
-<tr>
-<td>标题</td>
-<td><code>--title</code></td>
-<td>—</td>
-<td>页面标题</td>
-</tr>
-<tr>
-<td>副标题</td>
-<td><code>--subtitle</code></td>
-<td>—</td>
-<td>页面副标题</td>
-</tr>
-<tr>
-<td>分组</td>
-<td><code>--groups</code></td>
-<td><code>-g</code></td>
-<td>knowledge 分组文件</td>
-</tr>
-<tr>
-<td>JSON 输出</td>
-<td><code>--json</code></td>
-<td>—</td>
-<td>checkpoint 信封（见 §4）</td>
-</tr>
-<tr>
-<td>摘要</td>
-<td><code>--brief</code></td>
-<td>—</td>
-<td>prompt 仅输出摘要</td>
-</tr>
-<tr>
-<td>帮助</td>
-<td><code>--help</code></td>
-<td><code>-h</code></td>
-<td>argparse 内置</td>
-</tr>
-</tbody></table>
-<p>注: <code>--version</code> 未实现（版本硬编码在 docstring「版本: 3.1(2026-07-23)」,</p>
-<p>2026-08-19 观察项, 后续可补 argparse <code>--version</code>）。</p>
+<ul>
+<li>长形 flag 是键（如 <code>--data</code> / <code>--output</code> / <code>--input</code> / <code>--groups</code>），短形仅为别名：</li>
+</ul>
+<p>  <code>-d</code> / <code>-o</code> / <code>-i</code> / <code>-g</code>（短形不计入契约 <code>cli</code> 键集）。</p>
+<ul>
+<li>逐模板长形 flag 清单、默认值、<code>HTML_GEN_*</code> env 兜底与「显式空串禁用」约定:</li>
+</ul>
+<p>  <code>html-gen help doc|slide|table|knowledge</code> 的「CLI 参数」段。</p>
+<ul>
+<li><code>--json</code> / <code>--brief</code> / <code>--site</code> / <code>--dir</code>（prompt）与 <code>--json</code> / <code>--all</code> / <code>--open</code> /</li>
+</ul>
+<p>  <code>--rebuild</code>（demo）属<strong>手写帮助主题</strong>（描述 CLI 子命令而非数据契约），见 <code>html-gen help prompt|demo</code>。</p>
 <h2 id="4-json-统一信封-checkpoint-协议">4. --json 统一信封（checkpoint 协议）</h2>
 <p><code>prompt</code> / <code>demo</code> 子指令的 <code>--json</code> 输出统一使用 checkpoint 信封:</p>
 <pre><code class="language-json">{"status": "ok", "error": "", "data": ...}        // 成功

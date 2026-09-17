@@ -20,6 +20,15 @@
 html-gen slide -i lecture.md -o lecture.slide.html --title "课件标题" --subtitle "副标题"
 ```
 
+> 逐 flag 清单、默认值与 env 兜底见 **`html-gen help slide`** 的「CLI 参数」段
+> （单一事实源: `html-gen.py` 的 `TEMPLATE_CONTRACT['slide']`；slide 无 `--metadata`）。
+
+## URL 状态
+
+**slide 无 URL 状态** —— 不使用 URL 查询参数，阅读位置只由 localStorage 记忆
+（`html-gen help slide` 的「URL 状态」段如实写明此点）。交互能力总览同样见
+`html-gen help slide` 的「交互行为」段（8 项）。
+
 ## 分页规则
 
 - **封面页**（Page 1）：h1 标题 + 副标题 + 元信息 + 节数统计

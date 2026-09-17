@@ -935,32 +935,28 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 
 ## 2. 子指令表
 
-| 子指令 | 用途 | 必填参数 | 可选参数 | 输出 |
-|:-------|:-----|:---------|:---------|:-----|
-| `help` | 显示帮助 | — | — | 文本 |
-| `doc` | Markdown → B 型文档页 | `-i/--input` | `-o/--output` `--title` `--subtitle` `--metadata` | HTML 文件 |
-| `slide` | Markdown → 幻灯片 | `-i/--input` | `-o/--output` `--title` `--subtitle` | HTML 文件 |
-| `table` | JSON → A 型数据表格 | `-d/--data` | `--title` `-o/--output` | HTML 文件 |
-| `knowledge` | JSON → C 型知识库 | `-d/--data` | `-g/--groups` `--title` `--subtitle` `--welcome` `-o/--output` | HTML 文件 |
-| `prompt` | 输出项目 skills 内容 / 生成 prompts/ 在线阅读站点 | — | `<skill>` `--brief` `--json` `--site` `--dir` | 文本 / JSON / 站点 (31 文件) |
-| `demo` | demo 列表与详情 | — | `list\|<name>` `--json` `--all` `--open` `--rebuild` | 文本 / JSON |
+| 子指令 | 用途 | 输出 |
+|:-------|:-----|:-----|
+| `help` | 显示帮助 | 文本 |
+| `doc` | Markdown → B 型文档页 | HTML 文件 |
+| `slide` | Markdown → 幻灯片 | HTML 文件 |
+| `table` | JSON → A 型数据表格 | HTML 文件 |
+| `knowledge` | JSON → C 型知识库 | HTML 文件 |
+| `prompt` | 输出项目 skills 内容 / 生成 prompts/ 在线阅读站点 | 文本 / JSON / 站点 (31 文件) |
+| `demo` | demo 列表与详情 | 文本 / JSON |
+
+> **参数（必填 / 可选 / 默认 / env 兜底）不在本文档枚举** —— 单一事实源是
+> `html-gen help <type>` 的「CLI 参数」段（实现: `html-gen.py` 的 `TEMPLATE_CONTRACT[type]['cli']`，
+> 由 `tests/test_help_contract.py` 对 argparse 实测提取做双向守卫）。复制到本文档即漂移。
 
 ## 3. 参数惯例（对齐 cli-args-reference.md）
 
-| 功能 | 参数名 | 缩写 | 说明 |
-|:-----|:-------|:-----|:-----|
-| 输入文件 | `--input` | `-i` | doc/slide 必填 |
-| 数据文件 | `--data` | `-d` | table/knowledge 必填 |
-| 输出文件 | `--output` | `-o` | 必填（CLI `-o` 或 JSON 顶层 `output` 二选一；table/knowledge） |
-| 标题 | `--title` | — | 页面标题 |
-| 副标题 | `--subtitle` | — | 页面副标题 |
-| 分组 | `--groups` | `-g` | knowledge 分组文件 |
-| JSON 输出 | `--json` | — | checkpoint 信封（见 §4） |
-| 摘要 | `--brief` | — | prompt 仅输出摘要 |
-| 帮助 | `--help` | `-h` | argparse 内置 |
-
-注: `--version` 未实现（版本硬编码在 docstring「版本: 3.1(2026-07-23)」,
-2026-08-19 观察项, 后续可补 argparse `--version`）。
+- 长形 flag 是键（如 `--data` / `--output` / `--input` / `--groups`），短形仅为别名：
+  `-d` / `-o` / `-i` / `-g`（短形不计入契约 `cli` 键集）。
+- 逐模板长形 flag 清单、默认值、`HTML_GEN_*` env 兜底与「显式空串禁用」约定:
+  `html-gen help doc|slide|table|knowledge` 的「CLI 参数」段。
+- `--json` / `--brief` / `--site` / `--dir`（prompt）与 `--json` / `--all` / `--open` /
+  `--rebuild`（demo）属**手写帮助主题**（描述 CLI 子命令而非数据契约），见 `html-gen help prompt|demo`。
 
 ## 4. --json 统一信封（checkpoint 协议）
 
@@ -1026,9 +1022,21 @@ B 型文档模板从 Markdown 生成完整的文档页面。自动剥离 YAML fr
 html-gen doc -i report.md -o report.html [--title "标题"] [--subtitle "副标题"]
 ```
 
+> 逐 flag 清单、默认值与 env 兜底见 **`html-gen help doc`** 的「CLI 参数」段
+> （单一事实源: `html-gen.py` 的 `TEMPLATE_CONTRACT['doc']`）。
+
 自动剥离 YAML frontmatter。标题优先级: `--title` > fm title > body h1 > stem。
 
+## URL 状态
+
+Bare 模式（默认隐藏侧边栏/工具栏，URL 参数可显式展示）与正文宽度三级
+（窄/中/宽，默认 960px）的参数键与取值口径见 **`html-gen help doc`** 的「URL 状态」段
+（`?sidebar` / `?toolbar` / `?width`）。
+
 ## Markdown 语法规范
+
+> 完整语法子集（块级 / 行内 / Callout / 不支持项）见 **`html-gen help doc`** 的语法说明段。
+
 - h1-h3: 自动加 id 锚点
 - **加粗** / *斜体* / `代码` / [链接](url)
 - 围栏代码块 (变长 fence 嵌套)
@@ -1075,7 +1083,14 @@ C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构�
 html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "欢迎语"] [-o kb.html]
 ```
 
+> 逐 flag 清单、默认值（`--title` 默认「知识库」、`--welcome` 默认欢迎文案）与输出目标三态
+> 见 **`html-gen help knowledge`** 的「CLI 参数」段。
+
 ## 数据格式
+
+条目 schema（item 7 键: title / group / section / badge / desc / url / icon，含必填与
+`url`|`desc` 二选一语义）与数据源三态（数组 / `{items|data}` / 顶层 `output`）见
+**`html-gen help knowledge`** 的「item 条目键」「数据源与输出目标」段。示例：
 
 ```json
 [
@@ -1084,13 +1099,13 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ]
 ```
 
-- `title` 必填, `group` 必填, `section` 可选
-- `url` 与 `desc` 二选一 (iframe vs 内联渲染)
-- `badge` 可选 (自定义标记)
 - title 与 section 同名时自动跳过 item 行 (K2 rule)
-- 输出目标: 结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）；优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)
+- 输出目标: 结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）；
+  优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)
 
 ## groups 格式
+
+类目键（key / label / icon）见 `html-gen help knowledge` 的「groups 类目键」段。示例：
 
 ```json
 [{"key": "类目key", "label": "显示名", "icon": "🏛️"}]
@@ -1136,6 +1151,15 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ```shell
 html-gen slide -i lecture.md -o lecture.slide.html --title "课件标题" --subtitle "副标题"
 ```
+
+> 逐 flag 清单、默认值与 env 兜底见 **`html-gen help slide`** 的「CLI 参数」段
+> （单一事实源: `html-gen.py` 的 `TEMPLATE_CONTRACT['slide']`；slide 无 `--metadata`）。
+
+## URL 状态
+
+**slide 无 URL 状态** —— 不使用 URL 查询参数，阅读位置只由 localStorage 记忆
+（`html-gen help slide` 的「URL 状态」段如实写明此点）。交互能力总览同样见
+`html-gen help slide` 的「交互行为」段（8 项）。
 
 ## 分页规则
 
@@ -1518,50 +1542,45 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 ## 列配置 (COLUMNS)
 
-| 字段 | 类型 | 必填 | 说明 |
-|:---|:---|:---:|:---|
-| `key` | string | ✅ | 数据字段名 |
-| `label` | string | ✅ | 表头显示名 |
-| `sortable` | bool | | 是否可排序（默认 true） |
-| `type` | string | | `string`(默认) / `number` / `datetime` / `pills` / `actions` |
-| `locale` | string | | 排序 locale，如 `"zh"` |
-| `width` | string | | CSS 宽度，如 `"120px"`。**仅作初始值**——列宽拖拽会记忆到 localStorage（`html-gen:table:col-widths`）并在刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效 |
-| `freeze` | bool | | 列冻结 (sticky left) |
-| `quickFilter` | bool | | 点击单元格值精确筛选，**默认关**，显式 `true` 才启用 |
-| `pillFilter` | bool | | pills 列标签点击筛选（contains 匹配），默认开，`false` 关闭 |
-| `onCellClick` | string | | 单元格点击行为：`"split"` 分栏预览 / `"modal"` 弹出详情 |
-| `preview` | bool | | 分栏模式下显示的列（split 预览/表格仅显示 preview 列，未配 preview 列则全显） |
-| `class` | string | | 单元格 CSS class |
-| `escape` | bool | | 是否 HTML 转义值（安全） |
-| `render` | func | | 自定义渲染函数 |
-| `onClick` | string | | 行点击行为（`"url"` 跳转到 row.url） |
-| `actions` | array | | 仅 `type: "actions"`，操作按钮数组 |
+> **键规范单一事实源**: 列属性（22 键）、列类型（6 类）及其取值/默认值的完整定义只在
+> **`html-gen help table`** 的「列属性」「列类型」段（实现: `html-gen.py` 的
+> `TEMPLATE_CONTRACT['table']`，由 `tests/test_help_contract.py` 对 `layout-table.html`
+> 实测消费做双向守卫）。本篇不再维护键表 —— 复制即漂移（CL013 起因: 「默认收起」列属性
+> 长期未被任何面向人的文档收录，下游据旧文档把正确写法判成「臆造属性」）。
 
-### 列类型详情
+### 用法要点（键名与取值以 `html-gen help table` 为准）
 
-**type: "string"** (默认) — 文本排序，使用 `localeCompare`；配合 `locale: "zh"` 实现中文拼音排序
+- **列宽** `width` 仅作初始值：列宽拖拽会记忆到 localStorage（`html-gen:table:col-widths`），
+  刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效。
+- **两种「隐藏」语义不同**：一种**永不可见**（表格/筛选/分栏详情全部排除），另一种是
+  **默认收起**且 ⚙️ 面板可开启、分栏详情仍全列渲染 —— 语义与键名对照见 help（此差异是 CL013 的直接动因）。
+- **点击筛选默认关**：单元格点击筛选必须显式开启；标签列（pills）的标签点击筛选默认开、可关。
+- **HTML 转义默认开启**（CL010 起）：只有显式关闭才豁免，不要把它当成 opt-in。
+- **分栏模式列集**：任一列标记为「分栏可见」时，分栏表只显示这些列；也可用选项显式指定分栏列集。
+- **数字列**务必设 `type: "number"`（JSON 注入后数字可能变字符串，否则按文本排序）。
+- **中文排序**设 `locale: "zh"`（走 `localeCompare(text, 'zh')`）。
 
-**type: "number"** — 数值排序，使用 `parseFloat` 比较，空值视为 0
+### 操作按钮 (actions)
 
-**type: "datetime"** — 日期排序，使用 `Date.parse` 比较，空值视为 0；渲染原样展示 ISO 日期字符串
-
-**type: "pills"** — 标签样式，逗号/顿号/中文逗号分隔字符串渲染为 tag pills（分隔符 `[,，、]+`）；标签点击筛选默认开（`pillFilter: false` 关闭）
-
-**type: "actions"** — 操作按钮列，每个按钮支持三种模式：
+操作按钮列（`type: "actions"`）的按钮子键与优先级（`copyKey` > `hrefKey` > `handler`/`desc`）
+见 `html-gen help table` 的「actions[] 操作按钮子键」段。示例：
 
 ```json
 {
   "icon": "📋",        // Emoji 图标
   "label": "复制",     // title 提示文本
-  "copyKey": "name",  // 模式1: 复制字段值到剪贴板
-  "hrefKey": "url",   // 模式2: 新标签页打开 URL
+  "copyKey": "name",   // 模式1: 复制字段值到剪贴板
+  "hrefKey": "url",    // 模式2: 新标签页打开 URL
   "desc": "复制名称"   // 模式3: 点击弹 Toast 展示描述（演示用）
 }
 ```
 
-优先级：`copyKey` > `hrefKey` > `desc`，只生效第一个匹配的。
+只生效第一个匹配的模式；`handler` 为自定义 JS 函数名（模板调 `window.{handler}(event, row)`）。
 
 ## Tab 分类过滤 (TABS)
+
+Tab 键（`key` / `label` / `field` / `match` / `contains` / `value`）、匹配语义与默认字段见
+`html-gen help table` 的「Tab 属性」段。示例：
 
 ```json
 [
@@ -1571,45 +1590,33 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 ]
 ```
 
-- `key`: Tab 标识，第一个 Tab 的 key 用于"全部"
-- `label`: 显示文本（可含 Emoji）
-- `field`: 匹配的数据字段名（默认 `group` 或 `category`）
-- `contains`: 数组字段包含匹配（值用逗号/顿号分隔时，如 `"field": "region_tags", "contains": true`）
-- `value`: contains 模式下匹配的目标值（不配则用 key 匹配）；Tab 计数 = 匹配行数
-- Tab 选择自动保存到 localStorage
+- 第一个 Tab 的 key 用于「全部」；`contains: true` 走逗号/顿号分隔的包含匹配；Tab 计数 = 匹配行数。
+- Tab 选择自动保存到 localStorage。
 
 ## 单元格点击行为（默认）
 
 点击行为优先级链（从高到低）：
-1. `col.onCellClick: 'split'` / `'modal'`（显式配置）
-2. `col.quickFilter: true`（显式筛选）
+1. 列上的显式单元格点击行为（分栏 / 弹窗）
+2. 列上的点击筛选开关（显式 true）
 3. **第 1 列（首个有 key 的数据列）→ 默认打开分栏预览**（展示该行元信息）
 4. 其余列 → 无操作
 
-即：普通单元格默认无筛选；需要按值筛选的列显式配 `quickFilter: true`；标签列默认可点筛选（pillFilter）。
+即：普通单元格默认无筛选；需要按值筛选的列显式开启；标签列默认可点筛选。
 
 ## 全局选项 (OPTIONS)
 
-| 选项 | 类型 | 默认 | 说明 |
-|:---|:---|:---:|:---|
-| `pageSize` | int | 30 | 每页条数 |
-| `exportCSV` | bool | false | 显示 CSV 导出按钮 |
-| `rowSelect` | bool | false | 启用行选择（checkbox） |
-| `search` | bool | true | 显示搜索框 |
-| `clickModes` | array | `["tab"]` | 允许的点击模式 `"tab"`/`"modal"`/`"split"`/`"expand"`; 兼容单数 `clickMode` |
+13 个 options 顶层键（含 `searchFields` / `showIndex` / `defaultFilter` / `feedback` /
+`clickMode` 单数兼容别名）及其默认值见 `html-gen help table` 的「选项」段；
+`options.feedback` 子键（5 项）见「options.feedback 子键」段。
 
 ## URL 状态分享 (🔗)
 
-表格支持通过 URL 查询参数同步并分享当前视图状态（`?tab&q&split`）：
-
-- `?tab=<key>` — 当前 Tab（白名单校验，无效忽略）
-- `?q=<关键字>` — 搜索词（随 300ms debounce 同步）
-- `?split=<行号>` — 分栏预览行（越界忽略；有 quickFilter 时下标语义失效跳过）
-
+URL 状态键（`?tab` / `?q` / `?split`）的取值口径见 `html-gen help table` 的「URL 状态」段。
 行为：
-- 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空 tab/q/split）自动剔除
+
+- 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空值）自动剔除
 - **tabs 行居右按钮区 `.tabs-actions`**（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（`--home-url` 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）
-- 排序 / 快速过滤（quickFilter）触发时自动 closeSplit（下标语义失效保护）
+- 排序 / 快速过滤触发时自动 closeSplit（下标语义失效保护）
 - 加载时按 tab → q → split 顺序恢复（HG-SEC-076）
 
 ## 操作按钮 Emoji 参考
@@ -1689,22 +1696,26 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 ## 数据规范
 
+四个顶层分区: `columns`（列定义）/ `data`（数据行, 别名 `rows`）/ `tabs`（标签页）/ `options`（选项）。
+**键名、取值与默认值一律以 `html-gen help table` 的键规范段为准**（单一事实源: `html-gen.py` 的
+`TEMPLATE_CONTRACT['table']`）。下列仅为写法示例 —— 示例可含键名, 规范以 help 为准:
+
 ```
-columns: [{key, label, sortable, type, width, freeze, preview, quickFilter, onCellClick}]
-data:    [{key: value}]
+columns: [{key, label, type, width, preview, onCellClick}]
+data:    [{<字段名>: <值>}]
 tabs:    [{key, label, field}]
-options: {pageSize, exportCSV, rowSelect, search, clickModes, columnsSplit}
+options: {pageSize, exportCSV, search, columnsSplit}
 ```
 
 ## 列类型
 
-`string`(默认) / `number` / `datetime`(Date.parse) / `pills`(逗号分隔 tag) / `actions`(按钮)
+文本(默认) / 数值 / 日期 / 标签 / 视频 / 操作按钮 六类; 取值名与排序口径见
+`html-gen help table` 的「列类型」段。
 
 ## 默认行为须知
 
-- quickFilter 默认关 (`col.quickFilter: true` 显式启用)
-- pillFilter 默认开 (`col.pillFilter: false` 关闭)
-- 第 1 列默认分栏 (无显式 onclick 时打开 split)
+- 标签点击筛选默认开、单元格快速筛选默认关（两者均可在列属性覆盖, 键名与默认值见 help「列属性」段）
+- 第 1 列默认分栏预览（无显式单元格点击配置时）
 
 ## 生成命令
 
@@ -1714,9 +1725,8 @@ html-gen table -d data.json --title "标题" -o index.html
 
 ## 质量要求
 
-- 所有数据列设 `width`
-- 操作列 `type: "actions"`
-- 标签列 `type: "pills"`
+- 所有数据列显式设列宽（Cinema 宽度模型要求; 默认值见 help「列属性」段）
+- 操作列表取 `actions`、标签列表取 `pills`（列类型取值见 help）
 
 ## pages-index
 

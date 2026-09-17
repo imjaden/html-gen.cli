@@ -17,32 +17,28 @@
 
 ## 2. 子指令表
 
-| 子指令 | 用途 | 必填参数 | 可选参数 | 输出 |
-|:-------|:-----|:---------|:---------|:-----|
-| `help` | 显示帮助 | — | — | 文本 |
-| `doc` | Markdown → B 型文档页 | `-i/--input` | `-o/--output` `--title` `--subtitle` `--metadata` | HTML 文件 |
-| `slide` | Markdown → 幻灯片 | `-i/--input` | `-o/--output` `--title` `--subtitle` | HTML 文件 |
-| `table` | JSON → A 型数据表格 | `-d/--data` | `--title` `-o/--output` | HTML 文件 |
-| `knowledge` | JSON → C 型知识库 | `-d/--data` | `-g/--groups` `--title` `--subtitle` `--welcome` `-o/--output` | HTML 文件 |
-| `prompt` | 输出项目 skills 内容 / 生成 prompts/ 在线阅读站点 | — | `<skill>` `--brief` `--json` `--site` `--dir` | 文本 / JSON / 站点 (31 文件) |
-| `demo` | demo 列表与详情 | — | `list\|<name>` `--json` `--all` `--open` `--rebuild` | 文本 / JSON |
+| 子指令 | 用途 | 输出 |
+|:-------|:-----|:-----|
+| `help` | 显示帮助 | 文本 |
+| `doc` | Markdown → B 型文档页 | HTML 文件 |
+| `slide` | Markdown → 幻灯片 | HTML 文件 |
+| `table` | JSON → A 型数据表格 | HTML 文件 |
+| `knowledge` | JSON → C 型知识库 | HTML 文件 |
+| `prompt` | 输出项目 skills 内容 / 生成 prompts/ 在线阅读站点 | 文本 / JSON / 站点 (31 文件) |
+| `demo` | demo 列表与详情 | 文本 / JSON |
+
+> **参数（必填 / 可选 / 默认 / env 兜底）不在本文档枚举** —— 单一事实源是
+> `html-gen help <type>` 的「CLI 参数」段（实现: `html-gen.py` 的 `TEMPLATE_CONTRACT[type]['cli']`，
+> 由 `tests/test_help_contract.py` 对 argparse 实测提取做双向守卫）。复制到本文档即漂移。
 
 ## 3. 参数惯例（对齐 cli-args-reference.md）
 
-| 功能 | 参数名 | 缩写 | 说明 |
-|:-----|:-------|:-----|:-----|
-| 输入文件 | `--input` | `-i` | doc/slide 必填 |
-| 数据文件 | `--data` | `-d` | table/knowledge 必填 |
-| 输出文件 | `--output` | `-o` | 必填（CLI `-o` 或 JSON 顶层 `output` 二选一；table/knowledge） |
-| 标题 | `--title` | — | 页面标题 |
-| 副标题 | `--subtitle` | — | 页面副标题 |
-| 分组 | `--groups` | `-g` | knowledge 分组文件 |
-| JSON 输出 | `--json` | — | checkpoint 信封（见 §4） |
-| 摘要 | `--brief` | — | prompt 仅输出摘要 |
-| 帮助 | `--help` | `-h` | argparse 内置 |
-
-注: `--version` 未实现（版本硬编码在 docstring「版本: 3.1(2026-07-23)」,
-2026-08-19 观察项, 后续可补 argparse `--version`）。
+- 长形 flag 是键（如 `--data` / `--output` / `--input` / `--groups`），短形仅为别名：
+  `-d` / `-o` / `-i` / `-g`（短形不计入契约 `cli` 键集）。
+- 逐模板长形 flag 清单、默认值、`HTML_GEN_*` env 兜底与「显式空串禁用」约定:
+  `html-gen help doc|slide|table|knowledge` 的「CLI 参数」段。
+- `--json` / `--brief` / `--site` / `--dir`（prompt）与 `--json` / `--all` / `--open` /
+  `--rebuild`（demo）属**手写帮助主题**（描述 CLI 子命令而非数据契约），见 `html-gen help prompt|demo`。
 
 ## 4. --json 统一信封（checkpoint 协议）
 
