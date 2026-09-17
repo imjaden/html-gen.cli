@@ -481,6 +481,52 @@ def cmd_slide(args):
         print(f"✅ 已生成: {out}")
 
 
+def _contract_keys(dim):
+    """table 契约某维度的键清单 (校验复用契约源, 避免第二份键表)。"""
+    return [e[0] for e in TEMPLATE_CONTRACT['table']['data'][dim]]
+
+
+def warn_unknown_table_keys(raw):
+    """CL012: 未知配置键提示 — 仅写 stderr, 不阻断、不改退出码。
+
+    校验对象 (仅配置键): columns[] 属性名 / columns[].type 取值 / options 顶层键 /
+    options.feedback 子键。显式不校验: data[] 行内字段名 (业务字段任意命名)、简单数组
+    推导出的列名、render/handler 等指向函数名的值 (是值不是键); col.actions[] 与
+    col.videos 嵌套项不在本 CL 校验范围 (设计 §E 四项之外)。
+    """
+    if not isinstance(raw, dict):
+        return  # 简单数组: 列名由数据字段推导, 非配置键, 不校验
+    cols = _contract_keys('columns')
+    types = _contract_keys('column_types')
+    opts = _contract_keys('options')
+    fbs = _contract_keys('feedback')
+    found = []
+    for i, col in enumerate(raw.get('columns') or []):
+        if not isinstance(col, dict):
+            continue
+        for k in col:
+            if k not in cols:
+                found.append(('未知列属性', k, f'columns[{i}]'))
+        if 'type' in col and col['type'] not in types:
+            found.append(('未知列类型', col['type'], f'columns[{i}].type'))
+    options = raw.get('options')
+    if isinstance(options, dict):
+        for k in options:
+            if k not in opts:
+                found.append(('未知选项', k, 'options'))
+        fb = options.get('feedback')
+        if isinstance(fb, dict):
+            for k in fb:
+                if k not in fbs:
+                    found.append(('未知反馈子键', k, 'options.feedback'))
+    seen = set()
+    for kind, key, loc in found:                   # 同一键只提示一次 (保留首个位置)
+        if (kind, key) in seen:
+            continue
+        seen.add((kind, key))
+        print(f'⚠️ {kind}: {key} ({loc})（见 html-gen help table）', file=sys.stderr)
+
+
 def cmd_table(args):
     t0 = time.perf_counter()
     data_path = Path(args.data)
@@ -511,6 +557,9 @@ def cmd_table(args):
         json_title = raw.get('title')
         json_subtitle = raw.get('subtitle')
         json_output = raw.get('output')
+
+    # CL012: 未知配置键提示 (仅 stderr, 不阻断不改退出码)
+    warn_unknown_table_keys(raw)
 
     # title/subtitle 优先级: CLI 显式入参 > JSON 顶层字段 > 默认值
     title = args.title if args.title is not None else (json_title or '数据表格')
@@ -601,7 +650,180 @@ def cmd_knowledge(args):
         print(f"✅ 已生成: {out}")
 
 
+# ═══ 模板契约 (CL012) ═══
+# help 契约的单一事实源: help 渲染 / 守卫测试 (tests/test_help_contract.py) / 文档引用
+# 均以本结构为准 (help 文本 = 本契约的渲染结果, 不再手抄键清单)。
+# 条目格式: (键名, 语义说明, 默认值) —— 默认值 '' 表示无默认; 说明文本不得含 ASCII "word:" 片段。
+# CL012 仅 table 维度全量; doc/slide/knowledge 为骨架节点 ('legacy' 指向现况 help 文案常量,
+# 键模型 / CLI 参数段留 CL013 补齐)。
+TEMPLATE_CONTRACT = {
+    'table': {
+        'label': 'A 型 · 数据表格 JSON 格式',
+        'tagline': 'Cinema 纪律化宽度模型',
+        'overview': 'JSON 数据格式 (A 型)',
+        'rule': 37,                      # 标题下 ━ 分隔线长度 (沿用现状观感)
+        'examples': 'HELP_TABLE_EXAMPLES',   # ② 手写示例段常量名 (见 §B.3 三段式)
+        'cli': [],                       # CL013: -d/--title/--subtitle/-o/--github-url/--home-url/--favicon/--feedback-repo/--quiet
+        'data': {
+            'top_level': [
+                ('columns', '列定义数组 (列属性见下)', ''),
+                ('data', '数据行数组 (别名 rows, 二选一)', ''),
+                ('tabs', '标签页数组 (属性见下)', ''),
+                ('options', '选项开关对象 (键见下)', ''),
+                ('title', '页面标题 (CLI --title > 顶层 title > 默认)', ''),
+                ('subtitle', '标题下段落描述, 纯文本, 换行用换行符 (显式空串清空)', ''),
+                ('output', '渲染目标 (CLI -o > 顶层 output > 均无则中断 exit 1)', ''),
+            ],
+            'column_types': [
+                ('string', '文本列 (列类型缺省值)', ''),
+                ('number', '数值列 (按数值排序)', ''),
+                ('pills', '标签列 (逗号/顿号分隔值渲染为 pill)', ''),
+                ('videos', '视频列 (字段为对象数组, 每视频一个 pill)', ''),
+                ('actions', '操作按钮列 (按钮由 col.actions 定义)', ''),
+                ('datetime', '日期列 (按 Date.parse 排序)', ''),
+            ],
+            'columns': [
+                ('key', '数据字段名 (必填)', ''),
+                ('label', '表头显示名 (缺省用 key)', ''),
+                ('type', '列类型 (取值见列类型段)', 'string'),
+                ('width', '列宽 (Cinema 模型下必设; actions 列为 100px)', '120px'),
+                ('sortable', '是否可排序', 'true'),
+                ('locale', '排序语言 (如 zh 按中文排序)', ''),
+                ('freeze', '列冻结 (sticky, left 偏移按前列宽累计)', ''),
+                ('stickyRight', '右侧固定列 (水平滚动时贴视口右侧)', ''),
+                ('preview', '分栏模式可见; 任一列 preview 为 true 时, 分栏表只显 preview 列', ''),
+                ('hide', '永不可见 (表格/筛选/分栏详情 全部排除)', ''),
+                ('initialHidden', '默认收起, ⚙️ 面板可开启; 分栏详情仍全列渲染 (与 hide 语义不同)', ''),
+                ('splitFull', '分栏详情中该字段独占整行并可换行', ''),
+                ('quickFilter', '单元格值点击即按该列筛选', 'false'),
+                ('pillFilter', '标签点击筛选 (false 关闭)', 'true'),
+                ('onCellClick', '单元格点击行为 (split 直接打开分栏预览)', ''),
+                ('onClick', '整行点击行为 (url 点击行跳转 row.url)', ''),
+                ('escape', 'HTML 转义 (自 CL010 起默认开启, escape 显式 false 是唯一豁免口)', 'true'),
+                ('render', '自定义渲染函数名 (是值不是键; 新配置优先用 type)', ''),
+                ('class', '单元格附加 CSS 类名', ''),
+                ('format', '数值格式化 (thousands 千分位)', ''),
+                ('videos', '视频列配置对象 (子键见 videos 段; type 为 videos 时生效)', ''),
+                ('actions', '操作按钮数组 (子键见 actions 段; type 为 actions 时生效)', ''),
+            ],
+            'tabs': [
+                ('key', '标签唯一标识 (匹配基准值)', ''),
+                ('label', '标签显示名 (可含 emoji)', ''),
+                ('field', '匹配字段 (row[field] 与 key 全等)', ''),
+                ('match', '精确匹配字段 (优先于 field)', ''),
+                ('contains', '逗号分隔包含匹配 (true 时按分隔符切分 field 值查找)', ''),
+                ('value', '匹配目标值 (缺省取 key)', ''),
+            ],
+            'options': [
+                ('pageSize', '每页条数', '30'),
+                ('exportCSV', '导出 CSV 按钮', 'false'),
+                ('rowSelect', '行选择复选框与批量操作栏', 'false'),
+                ('search', '搜索框显隐', 'true'),
+                ('searchFields', '限定搜索字段 (列 key 数组; 缺省全部文本列, videos 列始终排除)', ''),
+                ('showIndex', '显示序号列', 'false'),
+                ('clickModes', '允许的点击模式数组 ["tab","modal","split","expand"]', "['tab']"),
+                ('clickMode', '单数兼容别名 (clickModes 优先, 缺 clickModes 时等价单元素数组)', ''),
+                ('columnResize', '列宽拖拽 (false 时隐藏 resize handle)', 'true'),
+                ('columnsSplit', '分栏模式专用列集 (如 ["name","actions"]; 缺省按 preview 过滤)', ''),
+                ('modalRenderer', '自定义模态框渲染器 (如 skills 结构化详情)', ''),
+                ('defaultFilter', '初始筛选 {key,value,mode} 加载后自动按该列筛选', ''),
+                ('feedback', 'GitHub Issue 反馈通道配置对象 (子键见下)', ''),
+            ],
+            'feedback': [
+                ('repo', '目标仓 owner/repo (缺失则整条反馈通道不渲染)', ''),
+                ('dataset', '数据集标识 (随 issue 回传)', ''),
+                ('key', '主键字段名', 'name'),
+                ('altKey', '备用主键字段名 (主键为空时兜底)', ''),
+                ('template', 'Issue 模板名', 'data-fix.yml'),
+            ],
+            'actions': [
+                ('label', '按钮文案', ''),
+                ('icon', '按钮图标 (emoji)', ''),
+                ('copyKey', '点击复制该字段值', ''),
+                ('hrefKey', '点击新标签页打开该字段 URL', ''),
+                ('handler', '自定义 JS 函数名, 模板调 window.{handler}(event,row)', ''),
+                ('desc', '兜底提示文案 (无其他动作时点击弹出)', ''),
+                ('class', '按钮附加 CSS 类名', ''),
+            ],
+            'videos': [
+                ('url', '视频地址 (videos 列行值对象数组的必填字段)', ''),
+                ('title', '视频标题 (pill 文案, 缺省用 platform)', ''),
+                ('duration', '时长 (渲染在标题后的小括号内)', ''),
+                ('platform', '平台 (douyin/抖音/bilibili/B站/youtube, 其他用默认图标)', ''),
+                ('maxShow', '折叠前最多显示条数, 超出折叠 +N (点击展开不收回)', '3'),
+            ],
+        },
+        'section_order': ['top_level', 'column_types', 'columns', 'tabs', 'options', 'url_state'],
+        'url_state': [
+            ('?tab', '当前标签页 key (白名单校验, 非法忽略)', ''),
+            ('?q', '搜索关键字 (仅恢复输入框值)', ''),
+            ('?split', '分栏预览行下标 (越界忽略)', ''),
+        ],
+        'behaviors': [
+            ('tab', '🔗 新标签页打开 (window.open, noopener)'),
+            ('modal', '📋 居中弹出面板 (键值列表/Esc关闭/自定义渲染器)'),
+            ('split', '📑 分栏预览 (表格+详情, 拖拽分栏线, ▦ 比例预设, ▲▼ 导航)'),
+            ('expand', '📂 行内手风琴展开 (网格布局)'),
+        ],
+    },
+    # ── 骨架节点 (CL013 补齐维度): 内容 = 现况 help 文案, 不新增键模型 ──
+    'doc': {
+        'label': 'B/D 型 · Markdown 语法规范',
+        'tagline': '',
+        'overview': 'Markdown 语法规范 (B/D 型)',
+        'rule': 24,
+        'legacy': 'HELP_DOC',
+    },
+    'slide': {
+        'label': 'D 型 · 幻灯片功能说明',
+        'tagline': '',
+        'overview': 'slide 特有功能说明',
+        'rule': 19,
+        'legacy': 'HELP_SLIDE',
+    },
+    'knowledge': {
+        'label': 'C 型 · 知识库 JSON 格式',
+        'tagline': '',
+        'overview': 'JSON 数据格式 (C 型)',
+        'rule': 20,
+        'legacy': 'HELP_KNOWLEDGE',
+    },
+}
+
+# 键规范段的小节标题 (节点 data 顺序 = section_order 顺序, 不在此表内的维度不渲染)
+_SPEC_TITLES = {
+    'top_level': '顶层键 (JSON 对象)',
+    'column_types': '列类型',
+    'columns': '列属性',
+    'tabs': 'Tab 属性',
+    'options': '选项',
+    'url_state': 'URL 状态',
+    'feedback': 'options.feedback 子键',
+    'actions': 'actions[] 操作按钮子键',
+    'videos': 'videos 子键',
+}
+# 嵌套维度: 父维度 → 紧随其后的子维度 (缩进渲染)
+_SPEC_NESTED = {'columns': ['actions', 'videos'], 'options': ['feedback']}
+
 # ═══ Help System ═══
+
+# 主题清单顺序 (契约键 + 手写主题合并生成, 防新增模板漏列); 未列出者按契约顺序兜底追加
+_HELP_TOPIC_ORDER = ['doc', 'table', 'knowledge', 'slide']
+_HELP_MANUAL_TOPICS = [('prompt', 'prompt 指令说明'), ('demo', 'demo 指令与 demo 规范')]
+
+
+def _help_topics():
+    """(topic, 一句话说明) 列表: 契约键按既定顺序 + 契约新增兜底 + 手写主题。"""
+    rows = [(k, TEMPLATE_CONTRACT[k]['overview']) for k in _HELP_TOPIC_ORDER if k in TEMPLATE_CONTRACT]
+    rows += [(k, n['overview']) for k, n in TEMPLATE_CONTRACT.items() if k not in _HELP_TOPIC_ORDER]
+    return rows + _HELP_MANUAL_TOPICS
+
+
+def _help_detail_lines():
+    rows = _help_topics()
+    w = max(len(k) for k, _ in rows) + 1      # 与既有观感一致: 最长主题名后留 2 空格
+    return '\n'.join(f"  html-gen help {k.ljust(w)} {d}" for k, d in rows)
+
 
 HELP_OVERVIEW = f"""\
 html-gen — HTML 模板 CLI 生成器 v{__version__}({__release_date__})
@@ -623,12 +845,7 @@ html-gen — HTML 模板 CLI 生成器 v{__version__}({__release_date__})
   html-gen knowledge -d data.json -o kb.html
 
 详细帮助:
-  html-gen help doc        Markdown 语法规范 (B/D 型)
-  html-gen help table      JSON 数据格式 (A 型)
-  html-gen help knowledge  JSON 数据格式 (C 型)
-  html-gen help slide      slide 特有功能说明
-  html-gen help prompt     prompt 指令说明
-  html-gen help demo       demo 指令与 demo 规范
+{_help_detail_lines()}
 
 零外部依赖，输出自包含单文件 HTML。"""
 
@@ -662,9 +879,9 @@ Callout 提示框:
   ✗ ![图片](url) (用 <img> 标签)
   ✗ HTML 标签 (会被转义)"""
 
-HELP_TABLE = """\
-A 型 · 数据表格 JSON 格式 (Cinema 纪律化宽度模型)
-━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+# ② 教程/示例段 (手写, §B.3): 示例允许含键名, 但键名以契约渲染的键规范段为准
+HELP_TABLE_EXAMPLES = """\
+以下为示例, 键名以键规范段 (顶层键/列类型/列属性/选项) 为准。
 
 简单格式 (JSON 数组):
   [{"名称": "A", "数量": 10}, {"名称": "B", "数量": 20}]
@@ -708,36 +925,7 @@ A 型 · 数据表格 JSON 格式 (Cinema 纪律化宽度模型)
   }
 }
 
-列类型:
-  string(默认) / number(数值排序) / actions(操作按钮) / pills(标签样式)
-
-列属性:
-  width:     列宽 (Cinema 模型下必设, 默认 120px, actions 100px)
-  sortable:  是否可排序 / locale: 排序语言(zh)
-  freeze:    列冻结 (sticky, left 偏移基于 col.width 动态计算)
-  stickyRight: 右侧固定列 (水平滚动时粘在视口右侧)
-  preview:   分栏模式可见 / hide: 列隐藏
-  quickFilter: false 禁用点击筛选
-  onCellClick: "split" 单元格点击直接打开分栏
-  onClick:   "url" 行点击跳转
-  escape:    HTML转义 / render: 自定义渲染 / class: CSS类
-
-Tab 属性:
-  field: 匹配字段 / match: 精确匹配字段 / contains: 逗号分隔包含匹配
-
-选项:
-  pageSize:      分页大小(默认30) / exportCSV: 导出按钮
-  rowSelect:     行选择复选框 / search: 搜索框显隐(默认true)
-  clickModes:    允许的点击模式 ["tab","modal","split","expand"]
-  columnResize:  列宽拖拽 (默认true, false时隐藏 resize handle)
-  columnsSplit:  分栏模式专用列集 (如 ["name","actions"])
-  modalRenderer: 自定义模态框渲染器 (如 "skills" 结构化详情)
-
-点击模式:
-  tab      — 🔗 新标签页打开 (window.open, noopener)
-  modal    — 📋 居中弹出面板 (键值列表/Esc关闭/自定义渲染器)
-  split    — 📑 分栏预览 (表格+详情, 拖拽分栏线, ▦ 比例预设, ▲▼ 导航)
-  expand   — 📂 行内手风琴展开 (网格布局)"""
+"""
 
 HELP_KNOWLEDGE = """\
 C 型 · 知识库 JSON 格式
@@ -825,18 +1013,92 @@ demo 规范:
   name 唯一: 根级=文件名; 子目录页={子目录}-{文件名} (避免跨主题撞名)
   目录约定: 根级=独立案例 (URL 扁平 /demos/{name}.html); 子目录=知识库引用子页/主题分组"""
 
+# 手写主题 (不进契约: 描述 CLI 子命令而非数据契约)
 HELP_MAP = {
-    'doc': HELP_DOC,
-    'slide': HELP_SLIDE,
-    'table': HELP_TABLE,
-    'knowledge': HELP_KNOWLEDGE,
     'prompt': HELP_PROMPT,
     'demo': HELP_DEMO,
 }
 
 
+def _help_const(name):
+    """按名取手写 help 文案常量 (契约节点以常量名引用, 规避前向定义)。"""
+    text = globals().get(name)
+    if not isinstance(text, str):
+        raise RuntimeError(f'help 契约引用的常量不存在: {name}')
+    return text
+
+
+def _fmt_entries(entries, indent='  ', width=78):
+    """键规范条目 → `key: 说明 (默认: x)` 行式排版 (同小节按宽度折行, 条目间 ' / ' 分隔)。"""
+    parts = []
+    for key, desc, default in entries:
+        text = f'{key}: {desc}' if desc else key
+        if default:
+            text += f' (默认: {default})'
+        parts.append(text)
+    lines, cur = [], ''
+    for part in parts:
+        if not cur:
+            cur = part
+        elif len(indent) + len(cur) + 3 + len(part) <= width:
+            cur += ' / ' + part
+        else:
+            lines.append(indent + cur)
+            cur = part
+    if cur:
+        lines.append(indent + cur)
+    return lines
+
+
+def _spec_block(title, entries, indent=0):
+    """单小节: 标题 (顶格/嵌套缩进) + 条目行 (条目恒缩进两级于标题)。"""
+    return [f'{" " * indent}{title}:'] + _fmt_entries(entries, indent=' ' * (indent + 2))
+
+
+def render_help_spec(topic):
+    """① 键规范段 (契约渲染): help 中键清单的唯一来源 (§B.3)。骨架节点返回空串。"""
+    node = TEMPLATE_CONTRACT[topic]
+    data = node.get('data') or {}
+    if not data:
+        return ''
+    blocks = []
+    for dim in node.get('section_order') or list(data):
+        if dim == 'url_state':
+            blocks.append(_spec_block(_SPEC_TITLES[dim], node['url_state']))
+            continue
+        if dim not in data:
+            continue
+        blocks.append(_spec_block(_SPEC_TITLES[dim], data[dim]))
+        for sub in _SPEC_NESTED.get(dim, []):     # 嵌套子键紧随父小节 (缩进一级)
+            if sub in data:
+                blocks.append(_spec_block(_SPEC_TITLES[sub], data[sub], indent=4))
+    if node.get('behaviors'):
+        rows = node['behaviors']
+        w = max(len(k) for k, _ in rows) + 3
+        blocks.append(['点击模式:'] + [f'  {k.ljust(w)}— {d}' for k, d in rows])
+    return '\n\n'.join('\n'.join(b) for b in blocks)
+
+
+def render_help(topic):
+    """主题 help 正文: label/tagline → ② 手写示例段 → ① 契约键规范段 (顺序沿用现状观感)。"""
+    node = TEMPLATE_CONTRACT[topic]
+    if node.get('legacy'):                        # 骨架节点 (CL013 补维度前原样输出)
+        return _help_const(node['legacy'])
+    header = node['label'] + (f" ({node['tagline']})" if node.get('tagline') else '')
+    lines = [header, '━' * node['rule'], '']
+    if node.get('examples'):
+        lines.append(_help_const(node['examples']).rstrip('\n'))
+    spec = render_help_spec(topic)
+    if spec:
+        lines.append('')
+        lines.append(spec)
+    return '\n'.join(lines)
+
+
 def cmd_help(args):
-    if args.topic and args.topic in HELP_MAP:
+    if args.topic in TEMPLATE_CONTRACT:           # 契约主题 → 契约渲染
+        print(render_help(args.topic))
+    elif args.topic in HELP_MAP:                  # prompt/demo → 手写
         print(HELP_MAP[args.topic])
     else:
         print(HELP_OVERVIEW)
