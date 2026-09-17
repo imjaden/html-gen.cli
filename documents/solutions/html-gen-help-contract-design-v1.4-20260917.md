@@ -1,16 +1,20 @@
-# html-gen help 契约治理设计 v1.3（help 单一事实源）
+# html-gen help 契约治理设计 v1.4（help 单一事实源）
 
 > 日期: 2026-09-17
-> 状态: 设计（CL012 已实现并审计 PASS；v1.3 = 审计 finding 直接订正）
-> 闭环: HTML-GEN-CL012（契约源 + 渲染 + 守卫）/ HTML-GEN-CL013（四模板补齐 + 文档面）
+> 状态: 设计（CL012/CL013 已实现并审计 PASS；**v1.4 = CL014 口径扩容订正 + 事实卡**）
+> 闭环: HTML-GEN-CL012（契约源 + 渲染 + 守卫）/ HTML-GEN-CL013（四模板补齐 + 文档面）/
+> **HTML-GEN-CL014（`?show-md` 纳入 doc URL 契约守卫）**
 > 决策（全量，用户定稿）: T1-C T2-A T3-B T4-B T5-A T6-A T7-A · U1-C U2-A U3-A U4-B U5-B
-> 基线链: v1.0（`4649053`，CONDITIONAL PASS 80/B）→ v1.1（`ba7b547`，折入 HG-SEC-161..167，复审 CONDITIONAL PASS 85/B）→ v1.2（`a7cdc24`，折入 HG-SEC-168..171）→ **v1.3（折入 HG-SEC-178/179 订正）**
-> 评审报告: v1.0 / v1.1 设计评审报告（push 至 `2ed8078`）；**CL012 实现审计** `documents/review/help-contract-impl-audit-v1.0-20260917.md`（`68b7c4b`，PASS 93/100）
-> 说明: v1.3 = CL012 实现审计 3 条 finding 的**直接订正**（HG-SEC-178/179 属本档表述订正；HG-SEC-177 属测试侧，
-> 已同批修复并验证），按用户指示「直接修正，不走 1A 协议」，不另开评审轮次。
+> 基线链: v1.0（`4649053`，CONDITIONAL PASS 80/B）→ v1.1（`ba7b547`，折入 HG-SEC-161..167，复审 CONDITIONAL PASS 85/B）→ v1.2（`a7cdc24`，折入 HG-SEC-168..171）→ v1.3（折入 HG-SEC-178/179 订正）→ **v1.4（折入 HG-SEC-180 口径扩容，CL014）**
+> 评审报告: v1.0 / v1.1 设计评审报告（push 至 `2ed8078`）；**CL012 实现审计** `documents/review/help-contract-impl-audit-v1.0-20260917.md`（`68b7c4b`，PASS 93/100）；
+> **CL013 实现审计** `documents/review/help-contract-cl013-impl-audit-v1.0-20260917.md`（`15caf87`，PASS 94/100）
+> 说明: v1.3 = CL012 实现审计 3 条 finding 的**直接订正**（按用户指示「直接修正，不走 1A 协议」）。
+> **v1.4 = CL013 实现审计 HG-SEC-180（🟢 记录类）+ CL013 [4/6] 观察项 O1 的处置**：doc URL 状态
+> **3 → 4 项**（补 `?show-md`）+ §D 提取正则**容忍连字符键**。属**口径扩容** ⇒ 按 CL013 审计结论与
+> 本档 §G 口径，**另批（CL014）+ 走设计评审**（不适用「直接修正」）。
 > 开放决策项: 无
 > 触发事件: 他项目依 `html-gen help table` 改造前端 → 列默认隐藏不生效 + 被判定「属性名臆造」
-> 前置: CL010 实现已落地（`5f447fc`，审计/推送另计）；CL011 ✅
+> 前置: CL010 实现已落地（`5f447fc`，审计/推送另计）；CL011 ✅；CL013 [6/6] 已收口（`15caf87`，PASS 94/100）
 
 ## 0. 变更摘要
 
@@ -51,6 +55,17 @@
 > 已同批直接修复：`test_08` 改为与 `test_09` 共用 `spec_key_tokens()`（`key:` 词元提取，含 `?tab` 等前缀键；
 > 并单列 behaviors 的 `key … — 说明` 形态），经变异测试验证 —— `section_order` 删 `options` 段时
 > `test_08` 转红并指名全部 18 键，还原后 `14 passed, 7 subtests`。
+
+### v1.3 → v1.4（CL014: HG-SEC-180 口径扩容订正）
+
+| Finding | 严重度 | v1.3 缺陷 | v1.4 订正 |
+|:---|:---|:---|:---|
+| HG-SEC-180 | 🟢（记录类；处置 = 口径扩容另批） | §D 表的 doc URL 提取规则 `params\.get\('([a-z]+)'\)` **不匹配含连字符的键** ⇒ `layout-doc.html:273` 的真实 URL 键 `?show-md` **无守卫覆盖**（实测提取恒为 3 项，见 §9 F2）；§3.2 URL 清单亦缺该项 | §D 表 doc URL 行正则放宽为 `params\.get\('([a-z-]+)'\)`；§3.2 补 `?show-md=1`（实测 4 项，见 §9 F3）；§4 矩阵 doc「URL 特性」2 → **3**；§9 新增事实卡（A1）/ §10 端到端与验收（A2）/ §11 提交计划 |
+| — | — | CL013 [4/6] 观察项 O1 与 HG-SEC-180 同源（同一事实的两处登记） | 本批（CL014）**就地闭合 O1**：口径扩容后守卫覆盖 4 项；`.review-level.yaml` 的 `findings_open` 由审计侧按本批结论归零 |
+
+> 口径说明（本版订正边界）：只**扩容 doc 维度的 URL 键集合 + 放宽该维度提取正则**，不动 table/slide/knowledge
+> 任何维度，不改渲染器形状（`render_help_spec` / `_SPEC_TITLES` / `section_order` 零改动），不改模板（`layout-doc.html` 仅被读取）。
+> 影响面 = 契约 1 条 + 守卫测试 2 处（正则 / doc 维度断言）+ 文档面 1 处（`demos/doc-guide.md` 及其生成物）。
 
 ## 1. 问题
 
@@ -250,7 +265,7 @@ TEMPLATE_CONTRACT = {
 | table 嵌套子键 | `layout-table.html` | actions 项字段 / videos 项字段（按模板变量名提取；无法提取时降级为**显式清单 + 存在性断言**） | CL012 |
 | table CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`t = sub.add_parser('table')` 块内；短形 `-d/-o` 为别名不计） | CL013 |
 | doc CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`d = sub.add_parser('doc')` 块内） | CL013 |
-| doc URL | `layout-doc.html` | `params\.get\('([a-z]+)'\)` | CL013 |
+| doc URL | `layout-doc.html` | `params\.get\('([a-z-]+)'\)`（**v1.4 放宽**：容忍连字符键；实测 4 项，见 §9 F2/F3） | CL013 / CL014 |
 | slide 行为项 | `layout-slide.html` | 正则不可提取 → **显式清单 + 模板特征串存在性断言**（如 `.slide-toc-search`） | CL013 |
 | slide CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`s = sub.add_parser('slide')` 块内） | CL013 |
 | knowledge CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`k = sub.add_parser('knowledge')` 块内） | CL013 |
@@ -347,7 +362,9 @@ URL 状态：`?tab` `?q` `?split`
 CLI：`-i --input`（必填）、`-o --output`、`--title`、`--subtitle`、`--metadata`、
 `--github-url`、`--home-url`、`--favicon`、`--quiet`
 
-URL：`?sidebar=0` / `?toolbar=0`（Bare 模式）、`?width=narrow|medium|wide`（默认 medium=960px）
+URL：`?sidebar=0` / `?toolbar=0`（Bare 模式）、`?width=narrow|medium|wide`（默认 medium=960px）、
+`?show-md=1`（**v1.4 补**：meta 区源文件名显示开关；默认隐藏，显式 `show-md=1` 时仅显示 basename 脱敏文件名，
+不显示完整路径 —— 模板消费点 `layout-doc.html:273`，见 §9 F1）
 
 另：Markdown 语法子集沿用现有 `HELP_DOC` 内容（块级/行内/Callout/不支持项）→ 按 §B.3 归入 ③ 段。
 
@@ -384,7 +401,7 @@ groups（3）：`key` `label` `icon`
 | table | 顶层键 | 2 | 7 | title subtitle rows 别名 |
 | table | CLI 参数 | 0 | 9 | 全缺 |
 | doc | CLI 参数 | 0 | 9 | 全缺 |
-| doc | URL 特性 | 0 | 2 | Bare / 宽度 |
+| doc | URL 特性 | 0 | 3 | Bare / 宽度 / **show-md（v1.4 扩容）** |
 | slide | CLI 参数 | 0 | 8 | 全缺 |
 | slide | 行为项 | 7 | 8 | 侧栏搜索 |
 | knowledge | CLI 参数 | 0 | 10 | 全缺 |
@@ -460,6 +477,7 @@ echo "(预期：无裸键表；demos/table-guide.* 允许保留功能叙述但�
 ```
 CL012  feat@cli: help 契约单一事实源 — TEMPLATE_CONTRACT + render_help + 双向守卫测试 + 未知键 warn
 CL013  docs@help: 四模板 help 补齐（initialHidden/datetime/CLI 参数/Bare/侧栏搜索）+ 文档面改为引用契约
+CL014  feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4 + §D 正则容忍连字符 + 文档面同步
 ```
 
 文件变更（预期）：
@@ -467,4 +485,152 @@ CL013  docs@help: 四模板 help 补齐（initialHidden/datetime/CLI 参数/Bare
 - CL012：`html-gen.py`、`tests/test_help_contract.py`（新增）、`AGENTS.md`（测试计数）
 - CL013：`html-gen.py`（契约补齐）、`AGENTS.md`、`features.md`、`README.md`、`README.zh.md`、
   `demos/table-guide.md` / `.html`、`skills/html-gen-cli-spec` 与四个模板 skill、
-  `documents/solutions/html-gen-help-contract-design-v1.1-20260917.md`（本文件）
+  `documents/solutions/html-gen-help-contract-design-v1.1-20260917.md`（历史行）
+- CL014：`html-gen.py`（契约 1 条）、`tests/test_help_contract.py`（提取正则 + doc 维度断言）、
+  `demos/doc-guide.md` + `demos/doc-guide.html`（URL 入参表补 `show-md` 行 + 重生成）、本档（v1.4）
+
+---
+
+## 9. 事实卡（CL014 · A1 门禁：机制类断言就地附实测）
+
+> 格式：`断言 / 核实（可复跑命令）/ 实测（原始输出关键行）/ 结论`。
+> 全部取证于 2026-09-17，仓库锚点 `4e58407`（= `github/main`），工作树干净。
+
+**F1 — doc URL 状态的真实键集合 = 4 项（含 `show-md`）**
+
+- 断言: 模板 `layout-doc.html` 消费 4 个 URL 键，其中 `show-md` 在 L273。
+- 核实: `grep -n "params.get(" layout-doc.html`
+- 实测:
+  ```
+  L263: if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
+  L264: if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
+  L267: var w = params.get('width');
+  L273: if (params.get('show-md') === '1') document.body.classList.add('show-md');
+  ```
+- 结论: 成立 —— 键集合 = {sidebar, toolbar, width, show-md}。
+
+**F2 — v1.3 的 §D 正则漏捕 `show-md`（HG-SEC-180 的机制根因）**
+
+- 断言: `params\.get\('([a-z]+)'\)` 在本仓提取恒为 **3** 项。
+- 核实: `python3 -c "import re,pathlib;print(sorted(set(re.findall(r\"params\.get\('([a-z]+)'\)\", pathlib.Path('layout-doc.html').read_text()))))"`
+- 实测: `['sidebar', 'toolbar', 'width']`（3 项）
+- 结论: 成立 —— 连字符使 `[a-z]+` 在 `show` 后要求 `'` 而实得 `-` ⇒ **该键无守卫覆盖**。
+
+**F3 — 放宽为 `[a-z-]+` 后提取 = 4 项（守卫等式成立）**
+
+- 断言: `params\.get\('([a-z-]+)'\)` 提取 = 契约目标 4 项。
+- 核实: 同 F2，正则换 `[a-z-]+`
+- 实测: `['show-md', 'sidebar', 'toolbar', 'width']`（4 项）
+- 结论: 成立。
+
+**F4 — 契约 doc 现状 = 3 项**
+
+- 断言: `TEMPLATE_CONTRACT['doc']['url_state']` 现为 `?sidebar` / `?toolbar` / `?width`。
+- 核实: `python3 -c "…;print([e[0] for e in m.TEMPLATE_CONTRACT['doc']['url_state']])"`
+- 实测: `['?sidebar', '?toolbar', '?width']`
+- 结论: 成立（缺 `?show-md`）。
+
+**F5 — 节点顶层与 `data.url_state` 是同一 list 对象**
+
+- 断言: 追加 1 条即**两处同时生效**（渲染 + 判据单次取用；`html-gen.py` L896-897 别名循环）。
+- 核实: `python3 -c "…;print(m.TEMPLATE_CONTRACT['doc']['url_state'] is m.TEMPLATE_CONTRACT['doc']['data']['url_state'])"`
+- 实测: `True`
+- 结论: 成立。
+
+**F6 — help 现状无 `show-md`**
+
+- 断言: `html-gen help doc` 的「URL 状态」段 3 行、`show-md` 命中 0。
+- 核实: `html-gen help doc | grep -c 'show-md'`
+- 实测: `0`；URL 状态段原文（3 行）:
+  ```
+    ?sidebar: Bare 模式: sidebar=0 隐藏侧边栏 (默认隐藏, 知识库嵌入自动降级)
+    ?toolbar: Bare 模式: toolbar=0 隐藏工具栏 (默认隐藏)
+    ?width: 正文宽度三级 width=narrow|medium|wide (默认 medium 即 960px; 不持久化)
+  ```
+- 结论: 成立。
+
+**F7 — 机制可达性：契约追加 ⇒ help 自动渲染 + 等式成立；不放宽正则则必红**
+
+- 断言: 真源是契约（help 无需手改）；且「加契约条目」与「放宽正则」是**同一变更的两半**（缺任一 ⇒ 守卫红）。
+- 核实（**纯内存探针，零写盘**；`node['url_state'].append(…)` 后调 `render_help` + 重跑两种正则）:
+  ```
+  [P1] 追加前 url_state: ['?sidebar', '?toolbar', '?width']
+  [P2] 追加后 url_state: ['?sidebar', '?toolbar', '?width', '?show-md']
+  [P3] render_help("doc") URL 状态段（内存态）:
+    ?sidebar: …
+    ?toolbar: …
+    ?width: …
+    ?show-md: meta 区源文件名显示开关 show-md=1 (默认隐藏, 仅显示 basename 脱敏文件名)
+  [P4] 守卫等式: 消费键 ['show-md','sidebar','toolbar','width'] == 契约键 ['show-md','sidebar','toolbar','width'] -> True
+  [P5] 老正则 [a-z]+ 对追加后契约: ['sidebar','toolbar','width'] != 契约 -> 会红（证明放宽必要）
+  ```
+- 结论: 成立 —— [P4] 为能力可达性证据，[P5] 为「放宽正则」的必要性反证。
+
+**F8 — 语义一致（默认隐藏 + 仅 basename 脱敏）**
+
+- 断言: 契约 `?show-md` 的语义描述与模板/生成器实际行为逐条对应。
+- 核实: `grep -n "meta-path\|show-md" layout-doc.html` + `grep -n "basename" html-gen.py`
+- 实测: L82 `.meta-path { display: none; }` / L83 `body.show-md .meta-path { display: inline; }` / L273
+  `params.get('show-md') === '1'`；生成器 L385/L388 与 L455/L458 注入 `os.path.basename(str(md))`
+- 结论: 成立 —— 「默认隐藏」+「只显示 basename（不显示完整路径）」两点均由实测支撑。
+
+**F9 — 文档面现状（`demos/doc-guide.md`）缺 `show-md`**
+
+- 断言: B 型 guide 的「URL 入参控制展示设置」表 3 行，无 `show-md`。
+- 核实: `grep -c 'show-md' demos/doc-guide.md`
+- 实测: `0`
+- 结论: 成立（需补 1 行；`.html` 为生成物，随 md 重生成）。
+
+**F10 — 渲染器零改动即可（`section_order` / `_SPEC_TITLES` 已含 url_state）**
+
+- 断言: doc 节点 `section_order = ['url_state','cli']` 且 `_SPEC_TITLES['url_state']` 已登记 ⇒ 追加条目即渲染。
+- 核实: `grep -n "section_order\|'url_state':" html-gen.py | head`
+- 实测: L814 `'section_order': ['url_state', 'cli']`；L908 `'url_state': 'URL 状态'`
+- 结论: 成立（本批**不碰** `render_help` / `render_help_spec` / `_SPEC_TITLES` / `section_order` —— 回归面最小）。
+
+**F11 — 测试基线 334**
+
+- 断言: 全量用例数 = 334（与 CL013 审计基线同值）。
+- 核实: `/usr/bin/python3 -m pytest tests/ -q -n0 --collect-only 2>&1 | tail -1`
+- 实测: `334 tests collected in 0.11s`
+- 结论: 成立 ⇒ 本批**只改既有守卫用例**（不新增用例 ⇒ 计数不变 ⇒ 无需改 `AGENTS.md`）。
+
+## 10. 端到端命令与验收（CL014 · A2 门禁）
+
+**E2E（真实使用路径，覆盖「能力可达性」）**
+
+```bash
+cd /Users/jadenli/CodeSpace/html-gen.cli \
+  && html-gen help doc | sed -n '/URL 状态:/,/^$/p' | grep -n 'show-md' \
+  && /usr/bin/python3 -m pytest tests/test_help_contract.py -q -n0
+```
+
+期望：第一条打印 `?show-md: …（默认隐藏, 仅显示 basename 脱敏文件名）` 行（退出码 0），
+第二条全绿 —— 即「用户视角：读 help 能拿到该键」且「守护该键的断言同时成立」。
+
+**验收（V1–V6，均可复跑）**
+
+| # | 命令 | 期望 |
+|:--|:--|:--|
+| V1 | `html-gen help doc \| grep -E '\?show-md'` | 命中且语义与 `layout-doc.html:82/83/273` 一致（默认隐藏 / 仅 basename） |
+| V2 | `/usr/bin/python3 -m pytest tests/test_help_contract.py -q -n0` | `test_17` + `_assert_topic_dim('doc','url_state')` 全绿（提取 4 == 契约 4） |
+| V3 | 变异：临时删契约 `?show-md` → 跑 V2 → 还原 | 转红并**指名** `show-md`（判据非恒真） |
+| V4 | `/usr/bin/python3 -m pytest tests/ -q -n0` | `0 failed` 且 `passed >= 334` |
+| V5 | `grep -n 'show-md' demos/doc-guide.md` + 重生成 `demos/doc-guide.html` | md 表含该行；生成物 diff = 新增行 + meta 时间戳（无其他漂移） |
+| V6 | 设计评审 + 实现审计 | 均 PASS；经 review 通道 push `github`（**不推 gitee**） |
+
+## 11. 分级放行与提交（CL014）
+
+**分级（`loop-batch-gates.md` §C2）**：**低风险 ⇒ 单评审轮**
+
+- 判据: 纯口径收敛 + 文档类；不触碰 授权面 / `~/.hermes/**` runtime / 他 profile 数据 /
+  **AGENTS.md 等受保护指令文件**（本批测试计数不变 334 ⇒ 无需改 AGENTS.md）。
+- 唯一需声明项: 本档版本推进用 `git mv`（v1.3 → v1.4，项目既有约定「删旧留新」），属**本档自身**版本管理，
+  非数据/产物删除。
+- 仍保留 `[5/6] 实现审计`（§C2 明确「分级只调评审轮次，不取消审计」）。
+- **缺口优先**: 若 `[2/6]` 首评出现**机制类 ❌** ⇒ 立即转三关（复审 + 审计不可省）。
+
+**提交**: `feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4 + §D 正则容忍连字符 + 文档面同步 (HTML-GEN-CL014)`
+
+**出口判据（A3）**: 本批观察项全部**就地闭合**（O1 = HG-SEC-180 即本批唯一项，见 §0），预期
+`遗留率 = 0/6`；若实施中发现新观察项，须在 `[6/6]` 复盘逐条给出「就地闭合 / 显式升级（编号 + 归属批 + 理由）」。
