@@ -2270,3 +2270,41 @@ v1.0 的 7 条 findings（4 🟡 + 3 🟢）全部闭合或部分闭合：HG-SEC
 
 - ✅ PASS → 一次性提交本轮产出（审计报告 + review-log + .review-level.yaml）并 push github main（ff-only，含本地领先 741a7f2 / a7cdc24）
 - 报告: `documents/review/table-text-xss-escape-impl-audit-v1.0-20260917.md`
+
+## 2026-09-17 — 表格文本列 XSS 转义设计评审（CONDITIONAL PASS 90/100，HTML-GEN-CL010 [2/6] 补做）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review，补做)
+- **Scope**: `documents/solutions/table-text-xss-escape-design-v1.0-20260911.md`（决策 A2+B1+C1+D1+E1+F2；commit `5f447fc`）；设计随实现同 commit 落地，本轮补做独立设计评审；聚焦「设计是否会在设计阶段正确设闸」，不重复实现审计（72e76f4 PASS 100/100）
+- **Verdict**: ✅ CONDITIONAL PASS 90/100（非阻断，🟡 2 + 🟢 3，0 🔴）
+- **Score**: 90 / 100
+- **Tracking**: HG-SEC-172..176（全部非阻断，设计已冻结于 5f447fc 不改写历史，留痕备查）
+
+### Summary
+
+问题陈述 §1 四项事实（opt-in / countries 18 列未设 / 三路径已转义 / 唯一 HTML 列）经 `git show 5f447fc^` 独立核实全部成立；决策 A2/B1/C1/D1/E1/F2 自洽（A2 最小完备、C1 覆盖 string/--value/数值列/实体绕过、E1 与 --feedback-repo 解耦、F2 验收够）；四渲染路径矩阵（主格 render L504 / split L1119 / modal L873 / expand L622）修复前后判定与当前代码吻合。
+
+核心缺陷 1 处（HG-SEC-172）：设计 §6 文件清单把 `data/_demos-data.json` 当 demos-index「文档链接」列修复目标，实为 `html-gen demo --rebuild` 生成物，真正生成源是 `html-gen.py cmd_demo idx_columns`（L1366）；字面执行 → 修复不持久、`--rebuild` 静默回退。实现已正确多做 `html-gen.py:1366`。次要 overclaim 1 处（HG-SEC-173）：§5.1「四路径均断言」，expand 路径 test_06 仅等效覆盖（IIFE 闭包不可触发）非直接断言。
+
+### Findings
+
+- 🔴 0 / 🟡 2 / 🟢 3（新增，全部非阻断）：
+  - HG-SEC-172（🟡）：§4/§6 漏列生成源 `html-gen.py cmd_demo idx_columns`，误把生成物 `_demos-data.json` 当修复目标（实现已补 L1366，属「设计漏列 + 实现多做」）
+  - HG-SEC-173（🟡）：§5.1 四路径断言 overclaim，expand 路径 test_06 仅 no-JS-error + split 等效论证
+  - HG-SEC-174（🟢）：D1 未声明 `escape:false` 仅主单元格豁免，不传导 split/modal/expand（恒转义）
+  - HG-SEC-175（🟢）：§1/§3 行号引用父提交，render() 起点 529 vs 实际 504（529≈tbody 块起点）
+  - HG-SEC-176（🟢）：B1 扫描「均不含 < 字符」准确，但未注记 skills/user-skills description 孤立 `>` 字符
+
+### Positives
+
+- 事实性核实以 `5f447fc^` 父提交逐行对照（非引用上轮结论），opt-in 分支 / 三路径 escapeHtml / 18 列未设全部实测成立
+- 安全机制设计正确且最小：A2 默认转义 + `escape===false` 唯一豁免口，语义收敛精确（undefined raw→escape、true 冗余无害、false 新豁免）
+- 决策自洽性六项逐项判定，含 C1 不漏拦论证（string/--value/数值列/实体编码绕过四类）与 E1 解耦论证
+- 设计 §5.3「重建后链接仍可点」验收项构成兜底闸门，可捕获 HG-SEC-172 的生成源遗漏
+- 测试断言无假阳性（`&lt;img` 存在 + 剥离实体后无 `<img` 判据，转义失效必失败）
+
+### 处理
+
+- ✅ 非阻断 CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，按任务约定提交并 push github main（ff-only）：commit `audit@review: XSS 转义设计评审 PASS (HTML-GEN-CL010)`
+- 5 条 findings（2 🟡 + 3 🟢）非阻断，设计已冻结于 5f447fc（不改写历史），留痕备查，不触发再评审循环
+- 报告: `documents/review/table-text-xss-escape-design-review-v1.0-20260917.md`
