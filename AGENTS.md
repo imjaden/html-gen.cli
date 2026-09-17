@@ -175,7 +175,7 @@ python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建�
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
 - 左侧章节列表（按 section 分组，badge 标记显式）
 - 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏）
-- **Bare 模式**：默认隐藏侧边栏/工具栏（URL 参数显式展示）；知识库嵌入自动降级
+- **嵌入降级**：条目带 `url` 时以 iframe 加载详情页，并在该 URL 追加 `sidebar=0&toolbar=0` 使其进入 Bare 模式（知识库页自身无 sidebar/toolbar URL 状态；键口径见 `html-gen help doc` 的「URL 状态」段）
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 双内容模式：条目带详情页地址 → iframe 加载；带正文 HTML → 内联渲染（键名见 `html-gen help knowledge`）
 - section 标题可点击：单条目 section 点击标题直接加载 (K2)
