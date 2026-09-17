@@ -66,6 +66,12 @@
 > 口径说明（本版订正边界）：只**扩容 doc 维度的 URL 键集合 + 放宽该维度提取正则**，不动 table/slide/knowledge
 > 任何维度，不改渲染器形状（`render_help_spec` / `_SPEC_TITLES` / `section_order` 零改动），不改模板（`layout-doc.html` 仅被读取）。
 > 影响面 = 契约 1 条 + 守卫测试 2 处（正则 / doc 维度断言）+ 文档面 1 处（`demos/doc-guide.md` 及其生成物）。
+>
+> **v1.4 内部补记（`e6933aa` 之后的实测补卡，不另开版本）**：动笔时 §10 V5 对生成物 diff 写的是**未实测的乐观预期**
+> （「= 新增行 + 时间戳」）。按 A1 纪律实测后订正：`demos/doc-guide.html` 重生成实带 **5+8+2 行既有漂移**
+> （`home-link` CSS / 硬编码 corner 元素 / `<title>` 行序）⇒ 新增 **§9 F12（漂移分类）** 与 **F13（全 guide 集同代性抽检）**、
+> 重写 **§10 V5**（要求归类 diff，禁止「仅新增行」表述）、并在 **§11 出口判据**登记 **O-CL014-1**
+> （其余三份 guide 的生成物刷新 → 显式升级至「生成物刷新批」）。决策与口径**未变**，只把「预期」换成实测值。
 
 ## 1. 问题
 
@@ -595,6 +601,37 @@ CL014  feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4
 - 实测: `334 tests collected in 0.11s`
 - 结论: 成立 ⇒ 本批**只改既有守卫用例**（不新增用例 ⇒ 计数不变 ⇒ 无需改 `AGENTS.md`）。
 
+**F12 — `demos/doc-guide.html` 存在「既有模板漂移」（本批**实测**得，非预期）**
+
+- 断言（订正前，属**未实测的乐观预期**）: 生成物 diff = 新增行 + meta 时间戳。
+- 核实（只写到 `/tmp`，零污染库内产物）:
+  ```bash
+  python3 html-gen.py doc -i demos/doc-guide.md -o /tmp/cl014-regen-baseline.html    # 用**未改**的 md 重生成
+  # 与库内产物归一化时间戳后 diff
+  ```
+- 实测: **增 8 行 / 删 11 行**，其中
+  - `CSS(.home-link 等)` **5 行**（模板演进: `home-link` 样式与 print/bare 隐藏规则）
+  - `github-corner 元素` **8 行**（库内产物仍带**硬编码** `imjaden/html-gen.cli` corner 与 `.github-corner-hit`；当前生成器在无
+    `--github-url` 时**不再输出**该元素 —— 即 2026-08-28 `af81183`「corner 隐私参数化」之后的产物刷新）
+  - `<title>` 行序 **2 行**（head 内 `<title>` 与 `<link rel=icon>` 顺序，与 CL013 D7 同类）
+  - 新增的 `show-md` 表格行**不含**在上述基线内（这是本批 md 改动带来的新增行）
+- 结论: **部分成立（须按实测收窄）** —— 重生成会带出**与本批内容无关的既有漂移**，全部可归因于
+  「库内产物落后于当前模板」（同族: CL013 观察项 O3/O4「生成物刷新」）。**属预期产物同步，不是本批引入的回归**；
+  §10 V5 据此订正（要求 dev 出**归类 diff**，而非声称「仅新增行」）。
+
+**F13 — 其余 guide 产物同代性抽检（界定 F12 的归属）**
+
+- 断言: F12 的漂移是**该产物个体落后**，非本批引入。
+- 核实: `grep -c "home-link" demos/*-guide.html` / `grep -c 'class="github-corner"' demos/*-guide.html`
+- 实测（2026-09-17, 锚点 `4e58407`）:
+  ```
+  home-link            : doc-guide 0 · table-guide 4 · knowledge-guide 4 · slide-guide 0
+  class="github-corner": doc-guide 1 · table-guide 1 · knowledge-guide 1 · slide-guide 1
+  ```
+- 结论: 成立 —— 四份 guide **全部**仍带硬编码 `imjaden` corner（= 均在 `af81183` 之前生成），`doc-guide` / `slide-guide`
+  连 `home-link` 亦缺 ⇒ F12 的漂移属**全 guide 集共有的产物落后**，**不是**本批引入的偏移。
+  本批只重生成 `doc-guide.html`（最小面、且顺带修正该页隐私面）；其余三份的刷新**显式升级**为后续批（§11）。
+
 ## 10. 端到端命令与验收（CL014 · A2 门禁）
 
 **E2E（真实使用路径，覆盖「能力可达性」）**
@@ -616,7 +653,7 @@ cd /Users/jadenli/CodeSpace/html-gen.cli \
 | V2 | `/usr/bin/python3 -m pytest tests/test_help_contract.py -q -n0` | `test_17` + `_assert_topic_dim('doc','url_state')` 全绿（提取 4 == 契约 4） |
 | V3 | 变异：临时删契约 `?show-md` → 跑 V2 → 还原 | 转红并**指名** `show-md`（判据非恒真） |
 | V4 | `/usr/bin/python3 -m pytest tests/ -q -n0` | `0 failed` 且 `passed >= 334` |
-| V5 | `grep -n 'show-md' demos/doc-guide.md` + 重生成 `demos/doc-guide.html` | md 表含该行；生成物 diff = 新增行 + meta 时间戳（无其他漂移） |
+| V5 | `grep -n 'show-md' demos/doc-guide.md` + 重生成 `demos/doc-guide.html` → **出归类 diff**（F12） | md 表含该行；生成物 diff 须**逐类归因**（预期 = 本批新增行 + 既有漂移 CSS 5 行 + corner 元素 8 行 + title 行序 2 行）；**不得**声称「仅新增行」 |
 | V6 | 设计评审 + 实现审计 | 均 PASS；经 review 通道 push `github`（**不推 gitee**） |
 
 ## 11. 分级放行与提交（CL014）
@@ -632,5 +669,11 @@ cd /Users/jadenli/CodeSpace/html-gen.cli \
 
 **提交**: `feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4 + §D 正则容忍连字符 + 文档面同步 (HTML-GEN-CL014)`
 
-**出口判据（A3）**: 本批观察项全部**就地闭合**（O1 = HG-SEC-180 即本批唯一项，见 §0），预期
-`遗留率 = 0/6`；若实施中发现新观察项，须在 `[6/6]` 复盘逐条给出「就地闭合 / 显式升级（编号 + 归属批 + 理由）」。
+**出口判据（A3）**（2026-09-17 按 [1/6] 实测补记，非预期）：
+
+| # | 观察项 | 处置 | 依据 |
+|:--|:--|:--|:--|
+| O1（上游 HG-SEC-180） | `?show-md` 守卫盲区 | **就地闭合** | 本批 F1–F8 + §10 V1–V3（契约声明 / 守卫等式 / 变异转红 / help 可见 四项齐） |
+| O-CL014-1（本批实测新增） | guide 生成物落后于当前模板: `table-guide.html` / `knowledge-guide.html` / `slide-guide.html` 缺 `home-link`，**四份 guide 全部**仍带硬编码 `imjaden` corner（F12/F13） | **显式升级** → 归属批 =「生成物刷新批」（建议与 CL013 观察项 O3 `prompts/` / O4 `src/` 合并为同一小批）；理由 = 与本批口径无耦合、属全量产物重建（面大宜单批）；优先级 low；**无需授权**（纯生成物重建，无删除/权限面） | F12/F13 实测 |
+
+`遗留率 = 1/6 ≈ 0.17`（观察用，不设阈值）。实施期若再发现观察项，须在 `[6/6]` 复盘逐条沿用本表形态给出归宿。
