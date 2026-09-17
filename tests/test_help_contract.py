@@ -51,6 +51,15 @@ def all_contract_keys():
     return keys
 
 
+def spec_key_tokens():
+    """① 键规范段 (render_help_spec) 渲染出的 `key:` 词元集合 (含 `?tab` 等带前缀的 URL 状态键)。
+
+    test_08 (契约→help) 与 test_09 (help→契约) 必须共用同一提取口径 ——
+    否则某一方向的假阴性会掩盖另一方向 (HG-SEC-177)。
+    """
+    return set(re.findall(r'(?:^|\s/\s)\s*(\??[a-zA-Z_]\w*)\s*:', SPEC_TEXT, re.M))
+
+
 def extract(pattern, text=TMPL_TEXT, flags=0):
     """按维度正则提取模板实际消费的标识符 (调用形式可用 (?!\\s*\\() 排除原生方法)。"""
     return set(re.findall(pattern, text, flags))
@@ -147,27 +156,34 @@ class TestHelpContract(unittest.TestCase):
         self._assert_dim('videos')
 
     # ── ② 契约 → help ────────────────────────────────────────────────────
-    def test_08_contract_keys_present_in_help(self):
-        """契约每个键都出现在 render_help('table') 输出 (词边界匹配, 防 clickMode ⊂ clickModes 假阳性)。"""
+    def test_08_contract_keys_present_in_spec(self):
+        """契约每个键都出现在 ① 键规范段 (`key:` 词元)，**不得**退化为全文词边界匹配。
+
+        HG-SEC-177: 若对整篇 help 做词边界匹配，键名可能命中 ② 手写示例段的 JSON
+        或作为通用英文词出现 → 「契约删键 / 渲染漏段」时测试仍绿 (假阴性)。
+        behaviors 渲染形态不同 (`key … — 说明`)，单独断言。
+        """
+        tokens = spec_key_tokens()
         missing = []
         for dim, entries in NODE['data'].items():
             for key, desc, default in entries:
-                if not self._key_in_help(key):
+                if key not in tokens:
                     missing.append(f'{dim}.{key} (说明: {desc!r})')
         for key, *_ in NODE['url_state']:
-            if key not in HELP_TEXT:
+            if key not in tokens:
                 missing.append(f'url_state.{key}')
         for key, *_ in NODE['behaviors']:
-            if not re.search(rf'\b{re.escape(key)}\b', HELP_TEXT):
+            if not re.search(rf'^\s*{re.escape(key)}\s+—', SPEC_TEXT, re.M):
                 missing.append(f'behaviors.{key}')
         self.assertFalse(missing,
-                         f'契约键未出现在 html-gen help table 输出: {missing}; '
-                         f'修复: 检查 TEMPLATE_CONTRACT["table"] 对应条目是否被 render_help_spec 渲染')
+                         f'契约键未出现在 ① 键规范段 (render_help_spec): {missing}; '
+                         f'来源 html-gen.py TEMPLATE_CONTRACT["table"]; '
+                         f'修复: 确认该维度在 section_order / _SPEC_NESTED 内且条目已渲染')
 
     # ── ③ help → 契约 ────────────────────────────────────────────────────
     def test_09_help_spec_keys_subset_of_contract(self):
         """键规范段渲染出的 `key:` 词元 ⊆ 契约键 (help 不得出现契约未声明的键)。"""
-        tokens = set(re.findall(r'(?:^|\s/\s)\s*([a-zA-Z_]\w*)\s*:', SPEC_TEXT, re.M))
+        tokens = spec_key_tokens()
         extra = tokens - all_contract_keys()
         self.assertFalse(extra,
                          f'help 键规范段出现契约未声明的键 {sorted(extra)}; 来源 render_help_spec("table"); '
@@ -272,11 +288,6 @@ class TestHelpContract(unittest.TestCase):
             extra,
             f'{dim}: 模板消费但契约未声明的键 {sorted(extra)} — 来源 {TABLE_TMPL_NAME}; 修复: {fix}')
         self.assertTrue(consumed, f'{dim}: 未从 {TABLE_TMPL_NAME} 提取到任何键 — 提取正则可能已失效')
-
-    def _key_in_help(self, key):
-        if re.match(r'^\W', key):                 # ?tab/?q/?split 等带前缀的 URL 状态键
-            return key in HELP_TEXT
-        return bool(re.search(rf'\b{re.escape(key)}\b', HELP_TEXT))
 
     def _run_table(self, payload):
         """写临时 JSON 跑 html-gen table, 返回 CompletedProcess。"""
