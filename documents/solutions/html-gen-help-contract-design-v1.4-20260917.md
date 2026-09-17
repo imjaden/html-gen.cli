@@ -72,6 +72,14 @@
 > （`home-link` CSS / 硬编码 corner 元素 / `<title>` 行序）⇒ 新增 **§9 F12（漂移分类）** 与 **F13（全 guide 集同代性抽检）**、
 > 重写 **§10 V5**（要求归类 diff，禁止「仅新增行」表述）、并在 **§11 出口判据**登记 **O-CL014-1**
 > （其余三份 guide 的生成物刷新 → 显式升级至「生成物刷新批」）。决策与口径**未变**，只把「预期」换成实测值。
+>
+> **v1.4 二次补记（`[2/6]` 评审后，`HG-SEC-182` 最小闭合集 + `HG-SEC-184` 折入）**：
+> ① **F13 订正**：原版把 glob 手打成 4 个文件名（实匹配 **5** 份 guide），且「缺 `home-link`」列表与实测**相反**
+> —— 已改为 glob 口径实测（五份 guide；缺者为 `doc-guide`/`slide-guide`；「生成物刷新批」真实范围 = 全量
+> **16/18** `demos/*.html`）；② **O-CL014-1 订正** + 新增 **HG-SEC-183 / HG-SEC-185** 两条显式升级项（§11）；
+> ③ 评审 🟢 **`HG-SEC-184` 就地折入本批**：§D 与测试正则钉定为 `[a-z][a-z0-9-]*`（原 `[a-z-]+` 对含数字键漏捕）。
+> 评审结论 = **CONDITIONAL PASS（非阻断）88/100，无机制类 ❌ ⇒ 维持单评审轮（不转三关）**
+> （报告: `documents/review/html-gen-help-contract-design-review-v1.4-20260917.md`）。
 
 ## 1. 问题
 
@@ -271,7 +279,7 @@ TEMPLATE_CONTRACT = {
 | table 嵌套子键 | `layout-table.html` | actions 项字段 / videos 项字段（按模板变量名提取；无法提取时降级为**显式清单 + 存在性断言**） | CL012 |
 | table CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`t = sub.add_parser('table')` 块内；短形 `-d/-o` 为别名不计） | CL013 |
 | doc CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`d = sub.add_parser('doc')` 块内） | CL013 |
-| doc URL | `layout-doc.html` | `params\.get\('([a-z-]+)'\)`（**v1.4 放宽**：容忍连字符键；实测 4 项，见 §9 F2/F3） | CL013 / CL014 |
+| doc URL | `layout-doc.html` | `params\.get\('([a-z][a-z0-9-]*)'\)`（**v1.4 放宽 + `HG-SEC-184` 收窄**：容忍连字符**并**允许数字键；实测 4 项，见 §9 F2/F3/F3b） | CL013 / CL014 |
 | slide 行为项 | `layout-slide.html` | 正则不可提取 → **显式清单 + 模板特征串存在性断言**（如 `.slide-toc-search`） | CL013 |
 | slide CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`s = sub.add_parser('slide')` 块内） | CL013 |
 | knowledge CLI | `html-gen.py` | `add_argument\([^)]*'(--[a-z-]+)'`（`k = sub.add_parser('knowledge')` 块内） | CL013 |
@@ -522,12 +530,24 @@ CL014  feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4
 - 实测: `['sidebar', 'toolbar', 'width']`（3 项）
 - 结论: 成立 —— 连字符使 `[a-z]+` 在 `show` 后要求 `'` 而实得 `-` ⇒ **该键无守卫覆盖**。
 
-**F3 — 放宽为 `[a-z-]+` 后提取 = 4 项（守卫等式成立）**
+**F3 — 放宽后提取 = 4 项（守卫等式成立）**
 
-- 断言: `params\.get\('([a-z-]+)'\)` 提取 = 契约目标 4 项。
-- 核实: 同 F2，正则换 `[a-z-]+`
+- 断言: 放宽正则提取 = 契约目标 4 项。
+- 核实: 同 F2，正则换 `[a-z-]+`（`[2/6]` 评审后**钉定为 `[a-z][a-z0-9-]*`**，见 F3b）
 - 实测: `['show-md', 'sidebar', 'toolbar', 'width']`（4 项）
-- 结论: 成立。
+- 结论: 成立（两种写法在本仓等价：当前 4 键均为 lowercase + 连字符）。
+
+**F3b — 钉定 `[a-z][a-z0-9-]*`（`HG-SEC-184` 折入）**
+
+- 断言: `[a-z-]+` 对**含数字的键**（如 `?tab2`）会整体漏捕（同族静默失效）；收窄写法可覆盖且对现有 4 键等价。
+- 核实（合成文本，纯计算，零写盘）:
+  ```
+  txt = "params.get('show-md'); params.get('tab2');"
+  [a-z-]+        → ['show-md']            # 漏 tab2
+  [a-z][a-z0-9-]* → ['show-md', 'tab2']   # 覆盖
+  本仓 layout-doc.html 实文本: 两者均得 4 项（等价）
+  ```
+- 结论: 成立 ⇒ **本批钉定 `[a-z][a-z0-9-]*`**（设计 §2 D + 测试 `TOPIC_DIMENSIONS` 同步；属同一处正则的一行收窄）。
 
 **F4 — 契约 doc 现状 = 3 项**
 
@@ -619,18 +639,29 @@ CL014  feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4
   「库内产物落后于当前模板」（同族: CL013 观察项 O3/O4「生成物刷新」）。**属预期产物同步，不是本批引入的回归**；
   §10 V5 据此订正（要求 dev 出**归类 diff**，而非声称「仅新增行」）。
 
-**F13 — 其余 guide 产物同代性抽检（界定 F12 的归属）**
+**F13 — 全量 guide / demos 产物同代性实测（界定 F12 的归属；**HG-SEC-182 订正版**）**
 
-- 断言: F12 的漂移是**该产物个体落后**，非本批引入。
-- 核实: `grep -c "home-link" demos/*-guide.html` / `grep -c 'class="github-corner"' demos/*-guide.html`
-- 实测（2026-09-17, 锚点 `4e58407`）:
+- 断言: F12 的漂移属**产物集共有**的落后，非本批引入。
+- 核实（**glob 口径，勿手打文件名**）:
+  ```bash
+  grep -c "home-link" demos/*-guide.html
+  grep -c 'github.com/imjaden/html-gen.cli' demos/*-guide.html
+  grep -c 'github.com/imjaden/html-gen.cli' demos/*.html | grep -v ':0$' | wc -l
   ```
-  home-link            : doc-guide 0 · table-guide 4 · knowledge-guide 4 · slide-guide 0
-  class="github-corner": doc-guide 1 · table-guide 1 · knowledge-guide 1 · slide-guide 1
+- 实测（2026-09-17, 锚点 `4e58407`；`[2/6]` 评审独立复跑同值）:
   ```
-- 结论: 成立 —— 四份 guide **全部**仍带硬编码 `imjaden` corner（= 均在 `af81183` 之前生成），`doc-guide` / `slide-guide`
-  连 `home-link` 亦缺 ⇒ F12 的漂移属**全 guide 集共有的产物落后**，**不是**本批引入的偏移。
-  本批只重生成 `doc-guide.html`（最小面、且顺带修正该页隐私面）；其余三份的刷新**显式升级**为后续批（§11）。
+  guide 文件数（glob 实匹配）: 5 —— doc-guide / knowledge-guide / slide-guide / table-guide / usage-guide
+  home-link             : doc-guide 0 · knowledge-guide 4 · slide-guide 0 · table-guide 4 · usage-guide 4
+  github.com/imjaden/…  : 5 份 guide 全部 2（硬编码 corner 双元素各一次）
+  全量 demos/*.html     : 16 / 18 文件带硬编码 imjaden corner
+  ```
+- 结论: 成立 —— **五份 guide 全部**仍带硬编码 `imjaden` corner（均在 `af81183` 之前生成）；
+  「缺 `home-link`」的集合 = **`{doc-guide, slide-guide}`**（table/knowledge/usage 三份已有 4 处）；
+  「生成物刷新批」的真实范围 = **全量 16/18 `demos/*.html`**（不止 guide 族，详见 §11 O-CL014-1）。
+  本批只重生成 `doc-guide.html`（最小面、且顺带修正该页隐私面）。
+- **订正留痕（HG-SEC-182）**: 本卡原版（`1e473c2`）把 glob 仅列 4 文件、并把「缺 `home-link`」列表写成
+  `table-guide / knowledge-guide / slide-guide`（与实测**相反**）——根因 = **手打文件名替代 glob 口径**；
+  已按 `[2/6]` 评审的最小闭合集订正（本节 + §11 O-CL014-1）。
 
 ## 10. 端到端命令与验收（CL014 · A2 门禁）
 
@@ -669,11 +700,14 @@ cd /Users/jadenli/CodeSpace/html-gen.cli \
 
 **提交**: `feat@cli: ?show-md 纳入 doc URL 契约守卫 — 契约 url_state 3→4 + §D 正则容忍连字符 + 文档面同步 (HTML-GEN-CL014)`
 
-**出口判据（A3）**（2026-09-17 按 [1/6] 实测补记，非预期）：
+**出口判据（A3）**（2026-09-17 按 [1/6] 实测 + [2/6] 评审 `HG-SEC-182` 订正）：
 
 | # | 观察项 | 处置 | 依据 |
 |:--|:--|:--|:--|
 | O1（上游 HG-SEC-180） | `?show-md` 守卫盲区 | **就地闭合** | 本批 F1–F8 + §10 V1–V3（契约声明 / 守卫等式 / 变异转红 / help 可见 四项齐） |
-| O-CL014-1（本批实测新增） | guide 生成物落后于当前模板: `table-guide.html` / `knowledge-guide.html` / `slide-guide.html` 缺 `home-link`，**四份 guide 全部**仍带硬编码 `imjaden` corner（F12/F13） | **显式升级** → 归属批 =「生成物刷新批」（建议与 CL013 观察项 O3 `prompts/` / O4 `src/` 合并为同一小批）；理由 = 与本批口径无耦合、属全量产物重建（面大宜单批）；优先级 low；**无需授权**（纯生成物重建，无删除/权限面） | F12/F13 实测 |
+| O-CL014-1（本批实测新增） | 生成物落后于当前模板: **五份 guide 全部**带硬编码 `imjaden` corner（`home-link` 缺者为 `doc-guide` / `slide-guide` 两份）；**全量 16/18 `demos/*.html`** 亦带硬编码 corner（F13 订正版） | **显式升级** → 归属批 =「生成物刷新批」（建议与 CL013 观察项 O3 `prompts/` / O4 `src/` 合并）；理由 = 与本批口径无耦合、属全量产物重建（16/18 文件，面大宜单批）；优先级 low；**无需授权**（纯生成物重建，无删除/权限面） | F12/F13 实测 |
+| HG-SEC-183（[2/6] 评审 🟢） | table `?tab/?q/?split` 无**模板→契约提取守卫**（同族盲区，弱一档: 键已在契约且已渲染） | **显式升级** → 归属批 =「守卫面补全批」（可与 O5 `table-demo-prompt.md`、O3 `prompts/` 合并）；理由 = pre-existing（CL012/CL013 期），非 CL014 口径；优先级 normal；需评审（触碰测试断言面） | 评审报告 §④ |
+| HG-SEC-184（[2/6] 评审 🟢） | doc URL 提取正则对**未来含数字键**（如 `?tab2`）整体漏捕 | **就地折入本批**（决策）: §D 与 `TOPIC_DIMENSIONS` 正则由 `[a-z-]+` **收窄为 `[a-z][a-z0-9-]*`** —— 同属本批正在改的那一处正则，一行改动即闭合同族静默失效模式 | 评审报告 §④ + 本档 §2 D（`HG-SEC-184`） |
+| HG-SEC-185（[2/6] 评审 🟢） | 标题点击复制为「第三行为面」（`textContent` 不受 `display:none` 影响 ⇒ 隐藏时仍可复制 basename），doc 契约无 `behaviors` 段登记 | **显式升级** → 归属批 =「doc behaviors 段补齐」（可选，低优先级）；理由 = pre-existing，且本批 url_state 条目语义不受影响 | 评审报告 §④ |
 
-`遗留率 = 1/6 ≈ 0.17`（观察用，不设阈值）。实施期若再发现观察项，须在 `[6/6]` 复盘逐条沿用本表形态给出归宿。
+`遗留率 = 升级项 3 / 本批步数 6 = 0.50`（观察用，不设阈值）。实施期若再发现观察项，须沿用本表形态给出归宿。
