@@ -771,4 +771,15 @@ review_history:
     findings_open: 2
     tracking: "HG-SEC-180..181 (🟢 records 非阻断: 180=O1 ?show-md 守卫盲区需口径扩容另批 / 181=O5 table-demo-prompt.md 键名骨架残留真缺口; 另 O2/O3/O4/O6 观察项登记随批处置)"
     report: documents/review/help-contract-cl013-impl-audit-v1.0-20260917.md
+  - date: 2026-09-17
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen help 契约治理设计 v1.4 (HTML-GEN-CL014 [2/6] 设计评审; commit e6933aa v1.4 口径扩容订正 + 1e473c2 F12/F13 实测补记; 上游 CL013 审计 HG-SEC-180 ?show-md 守卫盲区口径扩容另批)"
+    verdict: CONDITIONAL_PASS
+    score: 88
+    findings_total: 4
+    findings_open: 4
+    tracking: "HG-SEC-182 (🟡 open: F13 四份→五份漏 usage-guide + O-CL014-1 缺 home-link 列表自相矛盾 + 生成物刷新批范围低估 16/18) + HG-SEC-183..185 (🟢 records: table url_state 无提取守卫另批 / doc 正则健壮性 / 标题点击复制第三行为面另批)"
+    report: documents/review/html-gen-help-contract-design-review-v1.4-20260917.md
 

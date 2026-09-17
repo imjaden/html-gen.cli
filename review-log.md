@@ -2374,3 +2374,37 @@ v1.0 的 7 条 findings（4 🟡 + 3 🟢）全部闭合或部分闭合：HG-SEC
 - ✅ PASS → 单笔提交 `audit@review: help 契约四模板补齐实现审计 PASS (HTML-GEN-CL013)`（仅审计报告 + review-log + .review-level.yaml），push github main（ff-only，不推 gitee，不 force）
 - 0 阻断 finding；HG-SEC-180..181 🟢 观察项另立批处置，不触发再评审循环
 - 报告: `documents/review/help-contract-cl013-impl-audit-v1.0-20260917.md`
+
+## 2026-09-17 — help 契约治理设计 v1.4 设计评审（CONDITIONAL PASS 88/100，HTML-GEN-CL014）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `e6933aa`（docs@design: v1.4 口径扩容订正 + 事实卡）+ `1e473c2`（docs@design: F12/F13 实测补记）；设计基线 `html-gen-help-contract-design-v1.4-20260917.md`（v1.3 `git mv` 推进，rename R072）；需求源 cache/draft/TODO-20260917.md CL014 条目（gitignored）
+- **Verdict**: ⚠️ CONDITIONAL PASS（非阻断）88/100（F1–F11 全成立 · F12/F13 部分成立 · 1 🟡 + 3 🟢）
+- **Score**: 88 / 100
+- **Tracking**: HG-SEC-182..185（182 🟡 F13/O-CL014-1 计数归因错误 / 183 🟢 table url_state 无提取守卫另批 / 184 🟢 doc 正则健壮性 / 185 🟢 标题点击复制第三行为面另批）
+
+### Summary
+
+F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 show-md / 新正则 4 项 / 契约 3 项 / url_state 别名 True / help show-md 0 / F7 纯内存可达性 P1–P5 全吻合 / 语义 L81-83+L273+basename L385/455 吻合 / doc-guide.md 0 / section_order+_SPEC_TITLES 齐备 / 基线 334）；维度隔离成立（doc=params、knowledge=urlParams、table=_params，文件隔离不影响他维）；F12 重生成到 /tmp 独立复算漂移 = CSS 5 + corner 8 + title 2（增 8 删 11，无 meta 时间戳漂移，因 doc meta 取 md stat 非生成时刻）；F13 独立 grep 得 5 文件（home-link: doc 0/knowledge 4/slide 0/table 4/usage 4；5 文件全带硬编码 corner）—— 计数 4≠5 与 O-CL014-1「缺 home-link」列表自相矛盾。§0 errata 独立复核如实（v1.3→v1.4 覆盖 §D/§3.2/§4/§9-§11 全改动面）；A2（E2E cmd1&&cmd2 + V1-V6 可证伪）、A3（O1 就地闭合 + O-CL014-1 显式升级 + 遗留率 1/6）、§11 低风险分级（git mv 可接受 + 无需改 AGENTS.md + 只改既有 test_17 用例）均成立；无机制类 ❌ ⇒ 维持单轮不转三关。
+
+### Findings
+
+- 🔴 0 / 🟡 1 / 🟢 3（均非阻断）:
+  - HG-SEC-182（🟡）: F13「四份 guide」实为五份（漏 usage-guide.html，home-link=4/硬编码 corner=1）；O-CL014-1「table/knowledge/slide 缺 home-link」与 F13 自身实测（table=4/knowledge=4 不缺）自相矛盾，实际缺 = doc/slide；「生成物刷新批」范围低估（全量 16/18 demos/*.html 带硬编码 corner）。最小闭合集见报告 §④
+  - HG-SEC-183（🟢）: table url_state（?tab/?q/?split）无模板→契约提取守卫（同族 HG-SEC-180 弱一档），另批「守卫面补全批」
+  - HG-SEC-184（🟢）: doc 正则 [a-z-]+ 对含数字键会漏捕（模板漏改契约场景下静默），建议 [a-z][a-z0-9-]*，折 dev 可选
+  - HG-SEC-185（🟢）: 标题点击复制为第三行为面（textContent 恒复制 basename，doc 无 behaviors 段），另批
+
+### Positives
+
+- A1 事实卡 11 条 + F12/F13 补记全部独立复跑（不采信 §9 自报），F7 纯内存探针零写盘复现「契约 append→render→新正则==契约、老正则!=契约」双重证据
+- 维度隔离独立验证（params/urlParams/_params 三变量名文件隔离），证 doc 正则放宽不误吞他维键
+- F12 独立重生成到 /tmp 并逐类归因（CSS 5/corner 8/title 2），与设计补记逐字吻合；F13 独立 grep 反而暴露设计计数 4≠5 的缺陷（评审增值点）
+- §11「只改既有守卫用例」前提经读 test_17 源码独立验证（等式断言已存在，无新增用例 ⇒ 计数不变）
+
+### 处理
+
+- ⚠️ 非阻断 CONDITIONAL PASS → 单笔提交 `audit@review: help 契约设计 v1.4 评审 PASS (HTML-GEN-CL014)`（仅报告 + review-log + .review-level.yaml），push github main（ff-only，不推 gitee，不 force）
+- HG-SEC-182 🟡 由 ops 在 [3/6] dev 前折入设计 v1.4 补记（不重开评审轮）；HG-SEC-183..185 🟢 另立批处置
+- 报告: `documents/review/html-gen-help-contract-design-review-v1.4-20260917.md`
