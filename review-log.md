@@ -2341,3 +2341,36 @@ v1.0 的 7 条 findings（4 🟡 + 3 🟢）全部闭合或部分闭合：HG-SEC
 - ✅ PASS → 一次性提交本轮产出（审计报告 + review-log + .review-level.yaml）并 push github main（ff-only，含本地领先 92ff7d9/0e85fd0/21c9569）
 - 3 findings 非阻断：HG-SEC-177 折 CL013 加固守卫，HG-SEC-178/179 折设计 v1.3 订正，留痕备查，不触发再评审循环
 - 报告: `documents/review/help-contract-impl-audit-v1.0-20260917.md`
+
+## 2026-09-17 — help 契约四模板补齐实现审计（PASS 94/100，HTML-GEN-CL013）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `7b99701`（docs@help: 四模板 help 补齐 + 文档面引用契约, 12 文件）+ `3044139`（docs@sync: AGENTS.md 计数 326→334 + 键表改引用契约, ops 交互落地）+ `98a2e4d`（docs@verify: ops 核查 PASS 56 项）；设计基线 `html-gen-help-contract-design-v1.3-20260917.md`（v1.3 审计 finding 直接订正不另开评审）；累积 90e6bef..HEAD 3 笔 / 14 文件
+- **Verdict**: ✅ PASS 94/100（0 阻断 finding；🟢 观察 2 真缺口 + 2 脚本脆弱依赖）
+- **Score**: 94 / 100
+- **Tracking**: HG-SEC-180..181（🟢 records 非阻断: 180=O1 ?show-md 守卫盲区需口径扩容另批 / 181=O5 table-demo-prompt.md 键名骨架残留真缺口；另 O2/O3/O4/O6 观察项登记随批处置）
+
+### Summary
+
+8 项逐条复跑全独立执行（不采信 ops 自报）：harness 全量 RESULT PASS（57 PASS / 0 FAIL / 1 N-A，与 ops 56 差异 = 笔③ 提交后 T03b 累积面多 1 文件）；判据非恒真反证 31 FAIL（30 内容 + 1 副本无 git 噪音，ops 口径 29 FAIL 为完整工作树）；d7-fidelity Q1/Q2 True + Q3 实质独立复算 110 = meta2 + head2 + 键名改写 106（与 ops 逐字吻合）；t51 双态独立复算 26/0；全量 334 passed 独立复跑（135.50s）；既有断言 0 改动（tests/ 仅 test_help_contract.py +306/-33）；范围合规 14 文件全落白名单；契约口径逐条吻合设计 §C/§3（table 9/doc 9/slide 8/knowledge 10 + doc url_state 3 + slide behaviors 8 如实无 URL + knowledge item 7/groups 3/数据源三态 + table 22/13/6/6/5/7/5 未削弱）；断言强度独立变异 2 项（删 doc ?width → test_17 红指名 width；删 knowledge icon → test_19 红指名 icon）。D1–D7 全成立（D2 设计 errata 正则恒空集、D3 任务书字面误、D5 AGENTS.md sha256 逐字节匹配补丁产物）；X1(b) 判据强化论据经独立验证成立（非为过放宽）；X2 不损害 ops 独立性（T40-T44 独立重提取）；X3 knowledge Bare 语义疑漂移登记观察项。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 2（观察项转 record，均非阻断、另立批处置）:
+  - HG-SEC-180（🟢，O1）: `layout-doc.html:273` `?show-md` 真实 URL 键未被设计 §D 正则 `params\.get\('([a-z]+)'\)` 覆盖（连字符不匹配）⇒ 无守卫。补它 = doc 契约 URL 3→4（口径扩容）⇒ 另批 + 评审
+  - HG-SEC-181（🟢，O5）: `skills/html-gen-table/references/table-demo-prompt.md` L10/L12/L13/L18/L22-23 仍枚举键名骨架（且不完整：列类型漏 videos、列属性漏 hide/initialHidden/splitFull/pillFilter 等）无 help 指针。裁定真缺口（低危），最小闭合集 = 骨架块加「完整键表见 html-gen help table」指针，可与 O3 prompts 重建合并小批
+- 观察项（不占编号，登记随批）: O2 skills 镜像/真源跨 profile 同步（需授权）/ O3 prompts 生成物漂移 / O4 src 构建产物（设计明确不做）/ O6 knowledge Bare 模式语义订正（同 X3）
+
+### Positives
+
+- 判据非恒真反证由 review 独立复跑（副本跑同一 harness 31 FAIL），非引用 ops 的「29 FAIL」
+- 断言强度抽查独立做 doc/knowledge 两维度变异（非仅复用 harness 的 table 变异），证 doc/slide/knowledge 新维度断言真会红并指名键/来源/修复动作
+- Q3 实质与 T51 双态在发现两专项脚本对 HEAD 位置脆弱依赖后，改用 `git show 90e6bef:...` 独立复算，得到与 ops 逐字吻合的结果（110 = 2+2+106 / 26/0），既验证了判定又暴露了脚本缺陷
+- 契约口径逐条对照设计 §C/§3 实测（非采信任务书数字），D2/D3 均独立复算（正则命中空集 / feedback_repo_args 唯一调用点）
+
+### 处理
+
+- ✅ PASS → 单笔提交 `audit@review: help 契约四模板补齐实现审计 PASS (HTML-GEN-CL013)`（仅审计报告 + review-log + .review-level.yaml），push github main（ff-only，不推 gitee，不 force）
+- 0 阻断 finding；HG-SEC-180..181 🟢 观察项另立批处置，不触发再评审循环
+- 报告: `documents/review/help-contract-cl013-impl-audit-v1.0-20260917.md`
