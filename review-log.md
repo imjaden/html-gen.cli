@@ -2308,3 +2308,36 @@ v1.0 的 7 条 findings（4 🟡 + 3 🟢）全部闭合或部分闭合：HG-SEC
 - ✅ 非阻断 CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，按任务约定提交并 push github main（ff-only）：commit `audit@review: XSS 转义设计评审 PASS (HTML-GEN-CL010)`
 - 5 条 findings（2 🟡 + 3 🟢）非阻断，设计已冻结于 5f447fc（不改写历史），留痕备查，不触发再评审循环
 - 报告: `documents/review/table-text-xss-escape-design-review-v1.0-20260917.md`
+
+## 2026-09-17 — help 契约基础设施实现审计（PASS 93/100，HTML-GEN-CL012）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `92ff7d9`（feat@cli: TEMPLATE_CONTRACT + render_help + table 双向守卫 + 未知键 warn, CL012）+ `0e85fd0`（ops 核查 PASS 12 项）+ `21c9569`（AGENTS.md 计数 312→326/30→31）；设计基线 `html-gen-help-contract-design-v1.2-20260917.md`（评审 PASS 2ed8078）；本地领先 github/main（0645a29）三笔随本轮一并推送
+- **Verdict**: ✅ PASS 93/100（🟡 1 + 🟢 2，全部非阻断）
+- **Score**: 93 / 100
+- **Tracking**: HG-SEC-177..179（新增，非阻断，折 CL013/设计 v1.3 处置）
+
+### Summary
+
+契约完整性程序化计数与设计 §3.1 逐项吻合（top_level 7 / column_types 6 / columns 22 / tabs 6 / options 13 / feedback 5 / url_state 3）；actions=7（补 class）、videos=5（补 url/title/duration/platform）经模板消费路径逐行核实为真实 schema（videoPillLabel L669-675 / renderVideoPill L677-681 / renderVideoListHtml L693-699 / act.class L646）。渲染真实性正向实证（改契约 hide 描述 → 输出随动）+ 3 项变异测试全红且指名键/来源/修复（M1 模板加 col.zzProbe / M2 契约删 format / M3 section_order 删 options 段）。doc/slide/knowledge 确为骨架（legacy 指针），prompt/demo 手写，HELP_OVERVIEW 合并生成。warn 严格限 §E 四项（L508-521）+ 排除简单数组/data 行字段（L497-498）+ stderr 不改退出码（实测 exit 0，countries 195 行重建零误报）。回归：test_help_contract 14 passed + 7 subtests；全量 326 passed + 7 subtests；countries 重建字节一致（231082B，sha256 556d5883…）；git 零残留；AGENTS.md L299/L326 已同步 326，无 312/30 残留；imports 仅标准库、未触 src/、未触 script-miner。
+
+### Findings
+
+- 🔴 0 / 🟡 1 / 🟢 2（新增，全部非阻断）：
+  - HG-SEC-177（🟡）：test_08「契约→help」用 `\b key \b` 词边界匹配，对「键名出现在②示例 JSON」或「通用英文词」的键产生假阴性，未达设计 §D「真正双向闭合」。M3 删 options 段时 8/18 键漏捕（7 options 键在示例 JSON + feedback.key 通用词）。建议折 CL013 改为对 render_help_spec 输出匹配 `key:` 词元形式
+  - HG-SEC-178（🟢）：设计 §B.3「拼接顺序 label→①→②→③，与现状段落顺序一致」自相矛盾（现状实为 ②→①）。实现遵从 §B.2 渲染 ②→① 正确，ops 澄清「拼接顺序=内容来源归属，不重排段落」成立；建议 v1.3 订正措辞
+  - HG-SEC-179（🟢）：设计 §3.1 低估嵌套 schema（videos 只写 {maxShow}，actions 只写 6 键），模板实消费 videos.url/title/duration/platform + actions.class。实现据模板补全契约正确，非塞键变绿；建议 v1.3 订正键清单
+
+### Positives
+
+- 契约计数、渲染随动、3 项变异、warn 作用域、回归、产物字节全部由 review 独立实测，非引用 ops/dev 自报
+- videos/actions 扩展键逐一回溯到模板消费函数与行号，证为固定 schema 而非白名单兜底或断言凑绿
+- 观感判定（§B.2）给出逐行对照事实：━━━/两空格缩进/key: 说明 行式/既有段序全保留，新增段与默认标注属「补内容」必然重排，非风格回归
+- 守卫①模板⊆契约方向 airtight（M1/M2 精确指名），白名单 0 项 + test_10 反向断言纪律达标
+
+### 处理
+
+- ✅ PASS → 一次性提交本轮产出（审计报告 + review-log + .review-level.yaml）并 push github main（ff-only，含本地领先 92ff7d9/0e85fd0/21c9569）
+- 3 findings 非阻断：HG-SEC-177 折 CL013 加固守卫，HG-SEC-178/179 折设计 v1.3 订正，留痕备查，不触发再评审循环
+- 报告: `documents/review/help-contract-impl-audit-v1.0-20260917.md`

@@ -749,4 +749,15 @@ review_history:
     findings_open: 5
     tracking: "HG-SEC-172..176 (全部非阻断: 172 🟡 漏列生成源 html-gen.py idx_columns / 173 🟡 四路径断言 overclaim / 174..176 🟢 records; 设计已冻结不改写历史, 留痕备查)"
     report: documents/review/table-text-xss-escape-design-review-v1.0-20260917.md
+  - date: 2026-09-17
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "help 契约基础设施实现审计 (HTML-GEN-CL012 [5/6]; commit 92ff7d9 feat@cli + 0e85fd0 ops 核查 + 21c9569 docs@sync; 设计基线 html-gen-help-contract-design-v1.2-20260917.md PASS 2ed8078; 本地领先 github/main 0645a29 三笔随本轮一并推送)"
+    verdict: PASS
+    score: 93
+    findings_total: 3
+    findings_open: 3
+    tracking: "HG-SEC-177..179 (非阻断: 177 🟡 test_08 词边界盲区折 CL013 / 178..179 🟢 设计 §B.3 拼接顺序自相矛盾·§3.1 videos/actions 键模型欠详, 折设计 v1.3)"
+    report: documents/review/help-contract-impl-audit-v1.0-20260917.md
 
