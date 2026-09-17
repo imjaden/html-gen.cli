@@ -74,19 +74,21 @@ tags: [html-gen, cli, spec, json, governance]
 2. no-match 返回 `[]` 非 `null`
 3. doc/slide/table/knowledge 输出 HTML 文件, 无 --json
 
-## 5. skills/ 同步约定
+## 5. skills/ 与 profile 运行时 skill 的关系（2026-09-17 实测订正）
 
-- **真源**: `~/.hermes/profiles/dev/skills/software-development/html-gen*/`
-  （skill_manage 写入位置, agent 会话加载处）
-- **项目副本**: `html-gen/skills/`（已 git 提交）
-- **同步**: 编辑 dev profile skill 后必须拷贝项目副本:
-  ```bash
-  cp -R ~/.hermes/profiles/dev/skills/software-development/html-gen*/ ~/CodeSpace/html-gen/skills/
-  cd ~/CodeSpace/html-gen && git add skills/ && git commit -m "docs@skills: sync html-gen 项目副本"
-  ```
-- 拷贝整目录时清掉 `__pycache__/`
-- 2026-08-19 当前项目副本: html-gen / html-gen-doc / html-gen-knowledge /
-  html-gen-table / html-gen-slide / test-speed-optimization
+> ⚠️ 旧表述（「真源 = dev profile，编辑后 `cp -R` 覆盖项目副本」）**已作废** —— 与实测不符。
+
+- 两侧是**命名相同的两套独立文档**（内容 / 版本 / 语言均不同）。实测: `html-gen-table` 仓内 209 行·中文·v2.4.0
+  vs dev profile 544 行·英文·v4.0.0；`html-gen-doc` 68 行 vs 143 行；ops 侧 `html-gen-knowledge` 102 行（含「工作流 / 踩坑」段）。
+  仓内副本被 `html-gen prompt` / `--site` 消费（生成 `prompts/`），profile 侧是 agent 运行时加载处。
+- **同步纪律**（任何方向都必须先逐文件 diff 分类）:
+  - 单向缺行（副本零独有行）= **陈旧** → 可定向 `cp`（改前 `tar` 备份 + 改后双侧 `sha256` 比对）
+  - 含副本独有行 = **变体** → **禁止强行对齐**（会抹掉 profile 定制内容）
+  - 副本无该文件 = 缺失 → **不新建**（除非确认该 profile 确实需要）
+- 实测分布（2026-09-17）: 副本存在于 `dev` / `ops` / `summarizer` 三个 profile；`html-gen-slide/SKILL.md` 属陈旧（已同步），
+  `html-gen-{table,doc}` 与 ops 的 `html-gen-knowledge` 属变体（不同步），`references/table-demo-prompt.md` 在 profile 侧不存在（不新建）；
+  `~/.hermes/skills/`（default 运行时）无副本。
+- ⇒ **本仓 `skills/**` 的改动不会自动传播到 profile（反之亦然）**；「两侧一致」不是不变式，勿按旧命令盲抄。
 
 ## 6. 审计入口
 
