@@ -705,4 +705,26 @@ review_history:
     findings_open: 0
     tracking: "HG-SEC-158..160 (✅ closed, 逐条实测核销: kb 页内容修复 / 19 项表头 / 设计基线三处订正 + §3.4 勘误补记); 产物一致性 31 文件零内容漂移; 312 passed"
     report: documents/review/github-issue-feedback-skill-impl-audit-v1.2-20260912.md
+  - date: 2026-09-17
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen help 契约治理设计 v1.0 (HTML-GEN-CL012/CL013; commit 4649053 docs@design; 0 代码改动, 设计尚未实施)"
+    verdict: CONDITIONAL_PASS
+    score: 80
+    findings_total: 7
+    findings_open: 4
+    tracking: "HG-SEC-161..164 (🟡×4, open: 键清单漏 datetime/clickMode/feedback.template 致 B1 在 CL012 即红 / B1 提取规则覆盖不完整 / warn 作用域未定义 / 契约手写拼接边界未定义) + HG-SEC-165..167 (🟢 records, 随 v1.1)"
+    report: documents/review/html-gen-help-contract-design-review-v1.0-20260917.md
+  - date: 2026-09-17
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen help 契约治理设计 v1.1 复审 (HTML-GEN-CL012/CL013; commit ba7b547; 折入 v1.0 findings HG-SEC-161..167; 0 代码改动)"
+    verdict: CONDITIONAL_PASS
+    score: 85
+    findings_total: 4
+    findings_open: 3
+    tracking: "HG-SEC-161..167 (✅ closed: 161/163/164/165/166/167 全闭合, 162 部分闭合) + HG-SEC-168..170 (🟡×3 新, 折入 CL012/CL013 实施: CLI 正则漏捕 short-form 别名·缺 table CLI 行 / knowledge item 正则误捕 CSS+漏捕 icon / 列类型取值漏捕 string) + HG-SEC-171 (🟢 record: §3.1 L484 行号微瑕)"
+    report: documents/review/html-gen-help-contract-design-review-v1.1-20260917.md
 

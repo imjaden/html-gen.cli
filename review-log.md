@@ -2166,3 +2166,82 @@ ee85686 对上一轮 CONDITIONAL PASS 遗留 5 项 finding 全部真实修复闭
 - ✅ PASS → 写报告 + review-log + .review-level.yaml，commit 全部审计记录 + push `github` main（ff-only，不推 gitee、不 force）
 - 同步 v1.0/v1.1 两条 CONDITIONAL_PASS 的 findings_open 归零 + 追加本条 PASS 记录
 - 报告: `documents/review/github-issue-feedback-skill-impl-audit-v1.2-20260912.md`
+
+---
+
+## 2026-09-17 — html-gen help 契约治理设计评审 v1.0（CONDITIONAL PASS 80/B）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `documents/solutions/html-gen-help-contract-design-v1.0-20260917.md`（commit 4649053，docs@design；0 代码改动，设计尚未实施）；HTML-GEN-CL012（契约源+渲染+守卫）/ CL013（四模板补齐+文档面）
+- **Verdict**: ⏳ CONDITIONAL PASS 80/B（🟡 4 / 🟢 3）— 非 PASS，不生成 dev 实施 prompt
+- **Score**: 80 / 100
+- **Tracking**: HG-SEC-161..164（🟡×4, open）+ HG-SEC-165..167（🟢 records, 随 v1.1）
+
+### Summary
+
+诊断根因（help 不及时/不完整/多层漂移/一次正确写法被判臆造）的事实根基 **12 条断言全部实测成立**（11 全成立 + 1 部分）：help table 输出实测不含 initialHidden/splitFull/pillFilter/format/videos 且列类型仅 4 项（无 videos）无 CLI 参数段；HELP_* 常量 L606-834 硬编码、cmd_help L838 直接 print；时效经 `-S'列类型'`=7297a9c(07-23)/`-S'缩进子列表'`·`-S'底部圆点'`·`-S'条目数据'`=8c67e8b(07-14) 证实；initialHidden 真实存在 L373-374/38bdc9f(08-12)/countries 6 处·drama 5 处·test 5 用例·table-guide.md:100；五处面向人文档 grep initialHidden 零命中；hide(L397/L1144 双排除) vs initialHidden(默认收起可开启) 语义差异成立；列属性 22 键对账吻合；doc/slide/knowledge 缺口（URLSearchParams/?width/.slide-toc-search/-g/--welcome/默认文案）全成立；src/html_gen 为 build-package.py runpy 产物（.gitignore:37）契约随构建传播；测试基数 312/30 文件；help 测试零命中。
+
+方案方向（契约单一事实源+渲染+双向守卫+未知键 warn+文档面引用+拆分）自洽可落地、安全面无新增风险。但 4 🟡：HG-SEC-161 键清单三处枚举遗漏（漏 datetime 列类型/clickMode 单数选项/feedback.template 子键）致 §4「列类型 4→5」「options 8→12」对账错误（实 6/13），且直接致 B1「模板→契约 ⊆」在 CL012 即红（拆分缺陷）；HG-SEC-162 B1 提取规则只覆盖 table 顶层 col./c./OPTIONS. 键，抓不到列类型取值/FB_CFG.*/tab.*/嵌套子键，三模板键维度无提取规则；HG-SEC-163 未知键 warn 作用域未定义（未排除 data 行字段/简单数组推导列名），§7 第 5 项测试数据与作用域不对应；HG-SEC-164 契约渲染段 vs 手写示例段（JSON 示例块/点击模式/tab 示例块含键名字面量）拼接边界未定义。
+
+### Findings
+
+- 🔴 0 / 🟡 4 / 🟢 3：
+  - HG-SEC-161（🟡 open）：§3.1/§4 键清单漏 datetime/clickMode/feedback.template；§4 计数「列类型 4→5」「options 8→12」应为 4→6、8→13
+  - HG-SEC-162（🟡 open）：§D B1 提取规则覆盖不完整（只抓顶层 col./c./OPTIONS. 键，漏列类型取值/feedback 子键/tabs 键/嵌套子键 + 三模板键维度无规则）
+  - HG-SEC-163（🟡 open）：§E 未知键 warn 作用域未定义 + §7 第 5 项测试数据不对应
+  - HG-SEC-164（🟡 open）：§B/§3.2 契约/手写示例段拼接边界未定义
+  - HG-SEC-165（🟢 record）：§1.1「drama history 4 处」实为 5 处
+  - HG-SEC-166（🟢 record）：§7 第 2 项 grep -c 缺期望值 / 第 3 项 `grep -c '--'` 断言语义弱
+  - HG-SEC-167（🟢 record）：断言#3「分栏模式可见」探针 last change 实为 07-19 非 07-23（结论仍成立）
+
+### Positives
+
+- 12 条断言逐条实测（help 输出 grep + git log -S + read_file 源码对照），非文字接受；诊断根因事实根基坚实
+- 列属性 22 键对账精确吻合（设计 §3.1 清单与模板实际消费 22 键逐项一致）
+- 方案方向正确且自洽：契约单一事实源、B1 双向守卫、未知键 warn、文档面引用、CL012/CL013 拆分逻辑均合理
+- 安全面无新增风险（纯文档/契约重构，零模板/渲染/参数语义变更）
+- src/html_gen 构建传播论断核实成立（build-package.py runpy 加载根 html-gen.py，模块级常量自动随构建传播）
+
+### 处理
+
+- ⏳ CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，**不 commit / 不 push**（待 ops 出设计 v1.1 闭合 HG-SEC-161..164 后复审转 PASS）
+- 最小修正方向：①§3.1 补 3 键（datetime/clickMode/feedback.template）+ §4 计数订正；②§D 明确 B1 分维度提取规则（含三模板键维度）；③§E 明确 warn 作用域（排除 data 行字段）；④§B 定义拼接规则；⑤§7 修正第 2/3/5 项
+- 报告: `documents/review/html-gen-help-contract-design-review-v1.0-20260917.md`
+
+## 2026-09-17 — html-gen help 契约治理设计复审 v1.1（CONDITIONAL PASS 85/B 非阻断）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review, re-review)
+- **Scope**: `documents/solutions/html-gen-help-contract-design-v1.1-20260917.md`（commit ba7b547，折入 v1.0 findings HG-SEC-161..167）；0 代码改动，设计尚未实施；HTML-GEN-CL012/CL013
+- **Verdict**: ✅ CONDITIONAL PASS 85/B（🟡 3 新 + 🟢 1）— 非阻断，按任务约定提交 + 推送本轮审计产物
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-161..167（✅ 闭合：161/163/164/165/166/167 全闭合，162 部分闭合）+ HG-SEC-168..170（🟡×3 新，折入 CL012/CL013 实施）+ HG-SEC-171（🟢 record，行号微瑕）
+
+### Summary
+
+v1.0 的 7 条 findings（4 🟡 + 3 🟢）全部闭合或部分闭合：HG-SEC-161 键清单三处遗漏已补（实测 `type === 'datetime'` L471/475、`OPTIONS.*`=13 键、`FB_CFG.*`=5 子键，§4 计数订正 4→6/8→13）；HG-SEC-162 分维度规则表已重写覆盖 table 6 维 + doc 2 + slide 2 + knowledge 3；HG-SEC-163 §E 明确 warn 作用域+排除项+§7 第 5 项双用例；HG-SEC-164 §B.3 三段式+键名字面量口径；HG-SEC-165 §1.1「5 处 L55/64/74/91/100」实测吻合；HG-SEC-166 §7 逐键/逐 flag 断言；HG-SEC-167 §1.2 探针口径（分栏模式可见=07-19/列类型=07-23）。§0 附注词边界自查实测成立（`grep -qE '\bclickMode\b'` 对 clickModes 无匹配、对 clickMode 匹配）。
+
+§D 分维度正则实跑对账：列属性 22✓ / options 13✓ / feedback 5✓ / tabs 6✓ / doc URL 3✓ / groups 3✓ 全部可靠且与 §3 清单吻合；但 3 处不可靠——CLI 正则 `X\.add_argument\('--…'` 漏捕 short-form 别名（-i/--input/-o/--output/-d/--data/-g/--groups，实测 doc 7/slide 6/knowledge 7 vs 9/8/10）、列类型取值正则漏捕默认 string（`type === '…'` 仅 5 项）、knowledge item 正则误捕 CSS 类名（active/filtered）+ 漏捕 icon。改进正则 `X\.add_argument\([^)]*'--([a-z-]+)'` 实测 9/8/9/10 与 §3 清单逐项吻合。
+
+### Findings
+
+- 🔴 0 / 🟡 3 / 🟢 1（新增）：
+  - HG-SEC-168（🟡 新）：§D CLI 提取正则漏捕 short-form 别名 + §D 缺 table CLI 行（§3.1 table CLI 9 项无对应规则）
+  - HG-SEC-169（🟡 新）：§D knowledge item 正则误捕 CSS 类名 active/filtered + 漏捕 icon（CL013 新增未实现）
+  - HG-SEC-170（🟡 新，HG-SEC-162 残留）：§D 列类型取值正则漏捕默认 string（=== 正则仅 5 项）
+  - HG-SEC-171（🟢 record）：§3.1「L471/475/484」行号微瑕（isDate 使用分支在 L485，L484 为 var cmp）
+
+### Positives
+
+- 7 项 must-test 断言逐条实测（grep + Python re.findall 逐正则实跑 + 源码对照），非文字接受；§0 附注词边界自查独立复核成立
+- §3.1-3.4 键清单经本轮源码对账完整且正确（列属性 22/options 13/feedback 5/tabs 6/doc URL 3/groups 3/CLI 9/8/9/10），较 v1.0 的三处枚举遗漏显著改进
+- §B.3 三段式 / §E 作用域+排除项 / §G 分期边界 / §D 白名单纪律（注释理由+反向断言）均明确定义，可落地
+- 安全面无新增风险（纯文档/契约重构，零模板/渲染/参数语义变更）
+- 三处正则缺陷均给出实测验证的改进正则（`add_argument\([^)]*'--…'` 实测 9/8/9/10），修正方向极小且明确
+
+### 处理
+
+- ✅ 非阻断 CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，按任务约定一次性提交本轮审计产物（v1.0 报告 + v1.1 报告 + review-log.md + .review-level.yaml）并 push github main（ff-only）
+- 三处 🟡（HG-SEC-168/169/170）折入 CL012/CL013 实施：CLI 正则改 `add_argument\([^)]*'--…'`；列类型维度注明 string 为隐式默认由契约手工登记；knowledge item 维度改「显式清单 + 存在性断言」
+- 报告: `documents/review/html-gen-help-contract-design-review-v1.1-20260917.md`
