@@ -129,9 +129,7 @@ python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建�
 - 左侧粘性侧边栏 + 右侧内容区
 - 自动生成 TOC（h2/h3），实时高亮当前章节
 - TOC 搜索（🔍 按钮，150ms debounce，≥2 字符触发过滤）
-- **Bare 模式**：默认隐藏侧边栏/工具栏，`?sidebar=1&toolbar=1` 展示；知识库嵌入自动降级
-- **正文宽度三级**：`?width=narrow|medium|wide`（默认 960px，不持久化）
-- **md 路径行**：meta 区显示源文件名（`basename` 脱敏），默认 CSS 隐藏，`?show-md=1` 显示
+- **Bare 模式 / 正文宽度三级 / md 路径行**：URL 状态键与取值口径见 `html-gen help doc` 的「URL 状态」段（默认展示侧边栏/工具栏，URL 参数显式隐藏；宽度窄/中/宽默认 960px 不持久化；md 路径行默认 CSS 隐藏，basename 脱敏）
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 侧边栏宽度拖拽（200-400px，localStorage 持久化）
 - H3 子项开关，中/英双语，🌙/☀️ 主题切换
@@ -139,46 +137,47 @@ python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建�
 - 代码复制（剪贴板 + fallback）、行号、Callout 提示框、阅读进度条、图片灯箱
 
 ### layout-table.html（A 型表格）
+- **键规范**（列类型 6 / 列属性 22 / Tab 6 / 选项 13 / options.feedback 5 / actions 7 / videos 5 / URL 状态 3 / CLI 参数 9）见 `html-gen help table` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['table']`，由 `tests/test_help_contract.py` 双向守卫）
 - **页面级段落描述**：`--subtitle` / JSON 顶层 `subtitle`（优先级 CLI > JSON），h1 下方段落区，纯文本安全转义 + `\n` → `<br>`，显式传空串清空；无 subtitle 不渲染
 - **Cinema 纪律化宽度模型**：`table-layout:fixed`，每列强制显式 width（默认 120px，actions 100px），无 colgroup，td `max-width:0` 强制截断
 - 实时搜索（300ms debounce）+ Cmd+F Spotlight 弹窗搜索
 - 多字段排序（Shift+点击二级排序），数字/中文 locale 排序
 - 客户端分页（默认 30 条/页，可配置）
 - **密度切换**：紧凑(28px) / 标准(34px) / 舒适(42px)，设置面板横向展示
-- **五种点击模式**（`options.clickModes` 控制）：
+- **五种点击模式**（由选项控制）：
   - 🔗 新标签页：`window.open(url, '_blank', 'noopener,noreferrer')`
   - 📋 弹出面板：居中 overlay，键值列表（textContent 安全渲染）；支持自定义渲染器（`options.modalRenderer: 'skills'`）
   - 📑 分栏预览：表格 + 预览并排，拖拽分栏线，比例预设 (▦)，▲▼ 导航；支持 SKILL.md 加载
   - 📂 行内展开：手风琴模式，点击展开详情网格
   - 🎯 单元格点击：`col.onCellClick: 'split'` 直接打开分栏
-- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭；`col.quickFilter: true` 启用 (默认关)
-- **列冻结**：`col.freeze: true` → sticky 列，动态计算 left 偏移（基于 `col.width`）
-- **右侧固定列**：`col.stickyRight: true` → 水平滚动时保持在视口右侧
-- **分栏模式列过滤**：`col.preview: true` → 仅预览列显示于分栏表格；`options.columnsSplit` 指定分栏列集
-- **列隐藏**：`col.hide: true` → 永不可见
+- **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭；列属性启用（默认关，键名见 help）
+- **列冻结**：sticky 列，动态计算 left 偏移（基于该列 width 配置）
+- **右侧固定列**：水平滚动时保持在视口右侧
+- **分栏模式列过滤**：标记为「分栏可见」的列显示于分栏表格；可用选项显式指定分栏列集
+- **列隐藏双语义**：「永不可见」vs「默认收起·可开启·分栏仍全列」—— 语义与键名对照见 `html-gen help table`
 - **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
 - **批量操作**：选中行出现工具栏（全选/取消/导出 CSV）
 - **URL 状态分享**（CL004/CL005）：`?tab&q&split` 参数 replaceState 同步 + 加载恢复（tab 白名单 / split 越界忽略 / q 仅 input.value）；tabs 行居右按钮区 `.tabs-actions`：↗ 拷贝分享链接（clipboard + execCommand fallback）+ 🏠 home 入口（`--home-url` 注入, 与 share 同容器 36px 圆角深底）；排序/quickFilter 变化自动 closeSplit
 - **视图预设**：保存/加载/删除设置（密度/模式/排序/列可见性，最多 10 个，≤2KB）
 - 列名从 JSON 首条 key 自动推导
 - 支持单元格 HTML（`<a>`、`<code>` 等）
-- 支持操作按钮列（`copyKey` / `hrefKey` / `desc` / `handler`）、多标签页、CSV 导出
+- 支持操作按钮列（复制字段值 / 打开链接 / 描述兜底 / 自定义 handler 四种模式）、多标签页、CSV 导出
 - `handler` 模式：自定义 JS 函数名，由模板 `window.{handler}(event, row)` 调用
-- 列可见性 localStorage 持久化（`html-gen:table:col-visibility`）
-- 列宽度 localStorage 持久化（`html-gen:table:col-widths`），拖拽 resize 直接操作 DOM
-- 列宽拖拽可禁用（`options.columnResize: false`）
+- 列可见性 / 列宽度 localStorage 持久化（`html-gen:table:col-visibility` / `html-gen:table:col-widths`），拖拽 resize 直接操作 DOM
+- 列宽拖拽可禁用（选项关闭）
 - 设置面板：⚙️ 下拉，密度/点击模式/列可见性/视图预设，内部点击不关闭，✕ 关闭按钮
 - `printColWidths()` 控制台调试函数
 - 安全：`copyAction()` 含 execCommand fallback（headless Chrome 兼容）
-- **Videos 视频列**：`col.type: "videos"`，行字段为对象数组 `[{url,title,duration,platform}]`，每视频一个 pill（图标+标题+时长）；`col.videos.maxShow` 折叠 "+N" 点击展开（不折叠回，re-render 重置）；平台图标映射 douyin/抖音🎵 bilibili/B站/b站📺 youtube▶️ 其他📹；pill 点击新标签页（noopener,noreferrer）；默认搜索排除 videos；split/expand 数组特判渲染
+- **Videos 视频列**：行字段为对象数组 `[{url,title,duration,platform}]`，每视频一个 pill（图标+标题+时长）；`col.videos.maxShow` 折叠 "+N" 点击展开（不折叠回，re-render 重置）；平台图标映射 douyin/抖音🎵 bilibili/B站/b站📺 youtube▶️ 其他📹；pill 点击新标签页（noopener,noreferrer）；默认搜索排除 videos；split/expand 数组特判渲染
 
 ### layout-knowledge.html（C 型知识库）
+- **键规范**（item 7 / groups 3 / 数据源与输出目标 / CLI 参数 10）见 `html-gen help knowledge` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['knowledge']`）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
 - 左侧章节列表（按 section 分组，badge 标记显式）
 - 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏）
-- **Bare 模式**：默认隐藏侧边栏/工具栏，`?sidebar=1&toolbar=1` 展示；知识库嵌入自动降级
+- **Bare 模式**：默认隐藏侧边栏/工具栏（URL 参数显式展示）；知识库嵌入自动降级
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
-- 双内容模式：有 `url` → iframe 加载，有 `desc` → 内联渲染
+- 双内容模式：条目带详情页地址 → iframe 加载；带正文 HTML → 内联渲染（键名见 `html-gen help knowledge`）
 - section 标题可点击：单条目 section 点击标题直接加载 (K2)
 - 空状态显示欢迎面板
 - 上次选择状态 localStorage 恢复（group + item）
@@ -227,42 +226,22 @@ python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建�
 }
 ```
 
-列类型 (`col.type`)：
-- `string`（默认）：文本排序
-- `number`：数值排序（parseFloat 比较）
-- `actions`：操作按钮列，支持 `copyKey`（复制）和 `hrefKey`（跳转）
-- `pills`：标签样式渲染，逗号分隔值转 tag pills
-- `videos`：视频列，行字段为对象数组（url 必填 + title/duration/platform 可选），每视频渲染 pill `[平台图标] title (duration)`；`col.videos.maxShow`（默认 3）折叠 "+N" 点击展开全部（不折叠回，re-render 重置）；平台图标映射（归一化 trim().toLowerCase()）：douyin/抖音→🎵、bilibili/B站/b站→📺、youtube→▶️、其他→📹；点击 pill 新标签页打开（window.open noopener,noreferrer，onclick 转义 JSON.stringify+&quot;）；默认搜索排除 videos 列；split 预览 / expand 展开对 videos 数组 Array.isArray 特判逐条渲染 + url 链接（勿 String(v) → [object Object]）
+> **键表不在本文档**：列类型（6）/ 列属性（22）/ Tab 属性（6）/ 选项（13）/ `options.feedback`（5）/
+> `actions[]`（7）/ `videos`（5）的完整定义（取值、默认值、语义差异）见 `html-gen help table` 的键规范段
+> （单一事实源：`TEMPLATE_CONTRACT['table']`）。以下仅保留渲染要点，键名以 help 为准：
 
-列属性：
-- `col.sortable`：是否可排序（默认 true）
-- `col.locale`：排序 locale（如 `"zh"` 用于中文排序）
-- `col.freeze`：列冻结（sticky，动态计算 left 偏移基于 col.width）
-- `col.stickyRight`：右侧固定列（水平滚动时粘在视口右侧）
-- `col.preview`：分栏模式下是否显示（默认 false）
-- `col.hide`：永远隐藏（默认 false）
-- `col.onClick`：`"url"` 使整行可点击跳转到 row.url
-- `col.onCellClick`：`"split"` 点击单元格直接打开分栏预览
-- `col.quickFilter`：true 启用点击筛选 (默认关)
-- `col.pillFilter`：false 禁用标签筛选 (默认开)
-- `col.width`：列宽（如 `"150px"`），影院模型下必设，默认 fallback 120px
-- `col.escape`：HTML 转义（默认 false）
-- `col.render`：自定义渲染函数（已废弃，优先用 type 或 onCellClick）
-
-Tab 定义：`field` 指定匹配的数据字段（默认 `group` 或 `category`）
-- `tab.contains`：逗号分隔包含匹配（如 `"field": "profiles", "contains": true`）
-
-Options（均可选）：
-- `pageSize`：每页条数（默认 30）
-- `exportCSV`：显示导出按钮（默认 false）
-- `rowSelect`：行选择 + 批量操作工具栏（默认 false）
-- `search`：搜索框可见性（默认 true）
-- `clickModes`：允许的点击模式 `["tab", "modal", "split", "expand"]`（默认 `["tab"]`）
-- `columnResize`：列宽拖拽（默认 true，false 时隐藏 resize handle）
-- `columnsSplit`：分栏模式专用列集（如 `["name", "actions"]`）
-- `modalRenderer`：自定义模态框渲染器（如 `"skills"` 激活结构化详情面板）
+- **Videos 视频列**：行字段为对象数组（地址必填 + 标题/时长/平台可选），每视频渲染 pill `[平台图标] 标题 (时长)`；
+  超出条数折叠 "+N" 点击展开全部（不折叠回，re-render 重置）；平台图标映射（归一化 trim().toLowerCase()）：
+  douyin/抖音→🎵、bilibili/B站/b站→📺、youtube→▶️、其他→📹；点击 pill 新标签页打开
+  （window.open noopener,noreferrer，onclick 转义 JSON.stringify+&quot;）；默认搜索排除 videos 列；
+  split 预览 / expand 展开对 videos 数组 Array.isArray 特判逐条渲染 + url 链接（勿 String(v) → [object Object]）
+- **转义默认开启**（CL010）：列级关闭转义是唯一豁免口（键名见 help「列属性」段）
+- **两种隐藏语义**不可混用：「永不可见」与「默认收起·可开启」—— help「列属性」段并列写明
 
 ### knowledge 输入（JSON 数组）
+
+> item / groups 键与数据源三态见 `html-gen help knowledge` 的键规范段。
+
 ```json
 [{
   "title": "条目名称",      // 必填
@@ -277,6 +256,9 @@ Options（均可选）：
 输出目标：结构化 dict 顶层可带 `"output"`（渲染目标；仅 data 文件识别，groups 文件忽略；CLI `-o` 覆盖；均无 → 中断 exit 1）
 
 ### groups 输入（JSON 数组）
+
+> 类目键见 `html-gen help knowledge` 的「groups 类目键」段。
+
 ```json
 [{"key": "类目key", "label": "显示名", "icon": "🏢"}]
 ```
@@ -296,7 +278,7 @@ Options（均可选）：
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 326 tests（31 文件，含 test_help_contract 14 + 7 subtests；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 37 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_help_contract 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_xss_escape 6 / test_prompt_cmd 6 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 当前 334 tests（31 文件，含契约守卫 22 用例 + 80 subtests；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 37 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_help_contract 22 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_xss_escape 6 / test_prompt_cmd 6 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -323,7 +305,7 @@ html-gen.cli/
 ├── layout-knowledge.html       # Layer 2 C 型知识库模板
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json, _cloudwise-news.json 公众号文章库）
-├── tests/                      # Selenium + 回归测试 (326 tests)
+├── tests/                      # Selenium + 回归测试 (334 tests)
 ├── prompts/                    # prompt --site 生成物（在线阅读站点: index.html 合集 + {skill}.md/.json + all.md; 勿手改, 由 --site 重新生成）
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md
