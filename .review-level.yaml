@@ -768,9 +768,10 @@ review_history:
     verdict: PASS
     score: 94
     findings_total: 2
-    findings_open: 2
+    findings_open: 1
     tracking: "HG-SEC-180..181 (🟢 records 非阻断: 180=O1 ?show-md 守卫盲区需口径扩容另批 / 181=O5 table-demo-prompt.md 键名骨架残留真缺口; 另 O2/O3/O4/O6 观察项登记随批处置)"
     report: documents/review/help-contract-cl013-impl-audit-v1.0-20260917.md
+    resolved_by: "HTML-GEN-CL014 [5/6] impl audit (2026-09-17) — HG-SEC-180 (O1) closed; HG-SEC-181 (O5) remains open (另批「守卫面补全批」)"
   - date: 2026-09-17
     reviewer: Security Reviewer
     review_type: design-document-review
@@ -779,7 +780,20 @@ review_history:
     verdict: CONDITIONAL_PASS
     score: 88
     findings_total: 4
-    findings_open: 4
+    findings_open: 2
     tracking: "HG-SEC-182 (🟡 open: F13 四份→五份漏 usage-guide + O-CL014-1 缺 home-link 列表自相矛盾 + 生成物刷新批范围低估 16/18) + HG-SEC-183..185 (🟢 records: table url_state 无提取守卫另批 / doc 正则健壮性 / 标题点击复制第三行为面另批)"
     report: documents/review/html-gen-help-contract-design-review-v1.4-20260917.md
+    resolved_by: "HG-SEC-182 closed 5b95469 (二次补记 F13/O-CL014-1 订正) + HG-SEC-184 closed 5b95469/0b387ca (正则钉定 [a-z][a-z0-9-]*); HG-SEC-183/185 remain open (另批)"
+
+  - date: 2026-09-17
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "help 契约 ?show-md 纳入 doc URL 守卫实现审计 (HTML-GEN-CL014 [5/6]; commit 0463e39 docs@verify + 0b387ca feat@cli + 5b95469 docs@design 二次补记; 设计基线 html-gen-help-contract-design-v1.4-20260917.md CONDITIONAL_PASS 88; 起点 4e58407, 累积 6 笔)"
+    verdict: PASS
+    score: 95
+    findings_total: 1
+    findings_open: 1
+    tracking: "HG-SEC-186 (🟢 record 非阻断: ops harness T51/报告 §4 弱代理标注词义混淆 '内联 7 处' 实为 '内联 5/全文 7'; 判据仍正确零行为影响, 修正可选随未来 harness 修订)"
+    report: documents/review/help-contract-cl014-impl-audit-v1.0-20260917.md
 

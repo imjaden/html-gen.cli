@@ -2408,3 +2408,35 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - ⚠️ 非阻断 CONDITIONAL PASS → 单笔提交 `audit@review: help 契约设计 v1.4 评审 PASS (HTML-GEN-CL014)`（仅报告 + review-log + .review-level.yaml），push github main（ff-only，不推 gitee，不 force）
 - HG-SEC-182 🟡 由 ops 在 [3/6] dev 前折入设计 v1.4 补记（不重开评审轮）；HG-SEC-183..185 🟢 另立批处置
 - 报告: `documents/review/html-gen-help-contract-design-review-v1.4-20260917.md`
+
+## 2026-09-17 — help 契约 ?show-md 纳入 doc URL 守卫实现审计（PASS 95/100，HTML-GEN-CL014）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `0b387ca`（feat@cli [3/6] dev 实施）+ 设计链 `e6933aa`/`1e473c2`/`5b95469` + 评审 `d9a0e29` + 核查 `0463e39`；累积 `4e58407..HEAD` 6 笔；设计基线 v1.4 CONDITIONAL_PASS 88；上游 CL013 审计 HG-SEC-180 + O1
+- **Verdict**: ✅ PASS 95/100（D1–D5 全成立 · HG-SEC-180/O1 就地闭合 · 0 阻断 · 1 🟢 record）
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-186（🟢 record 非阻断: ops harness T51/报告 §4 弱代理标注「内联 7 处」实为「内联 5/全文 7」，判据正确零行为影响）
+
+### Summary
+
+8 项逐条复跑全独立执行（不采信 ops/dev 自报）：harness 全量 RESULT PASS（44 PASS / 0 FAIL / 0 N-A / 0 WARN）；判据非恒真反证经 `git show 5b95469:<file>` 独立复算（契约 url_state 3 键 / 测试正则 `[a-z]+` / 文档面 0 行，三面齐红 → 修后全绿）；fixture 5 条（FX-1..FX-5，任务书 §2.3「3 条」为 HG-SEC-184 折入前口径，属超集）先跑再判实现；全量 334 passed 独立直跑（132.08s）；独立变异（my /tmp 副本）转红指名 show-md + 来源 + 修复动作，live 零污染；机制断言（契约 4 == 模板 4、help 逐字、table 22/13/6/6/5/7/5 · slide behaviors 8 · knowledge 7/3 零扰动）逐条复算；范围合规 9 文件全落白名单（含 R061 rename）；生成物重生成 BYTE-IDENTICAL（原始 diff 0 行）。
+
+### Findings
+
+- 🔴 0 / 🟡 0 / 🟢 1（record，非阻断）:
+  - HG-SEC-186（🟢）: ops 核查报告 §4 与 harness T51 把「全文 show-md 子串 7 处」误标为「模板 JS 内联 7 处」（实为内联 5 / 全文 7 = 内容单元格 1 + 描述单元格 1 + 内联 5）。判据（`<code>show-md</code>` 精确 ≥1 + T53 逐字节）正确，零行为影响。归属批 = 未来 harness 修订（可选，cache/ gitignored）
+
+### Positives
+
+- 判据非恒真反证未采信 ops 留档，改用 `git show 5b95469:<file>` 独立复算三面（契约/测试/文档），与 ops 的 9 FAIL 结论独立印证
+- 独立变异用 my /tmp 路径（非 harness 的 /tmp/cl014-mut），rsync 副本删契约条目，转红并指名 show-md + 来源 + 修复动作
+- 弱代理陷阱独立实测：全文 show-md 子串 7 = 内容单元格 1 + 描述单元格 1 + 内联 5，暴露 ops 报告「内联 7」标注瑕疵（HG-SEC-186）
+- `html-gen` 命令解析独立核实为 bash wrapper → 跑库内 html-gen.py（非 stale 副本），help 面判据真实覆盖库内真源
+
+### 处理
+
+- ✅ PASS → 单笔提交 `audit@review: ?show-md 纳入 doc URL 契约守卫实现审计 PASS (HTML-GEN-CL014)`（仅报告 + review-log + .review-level.yaml），push github main（ff-only，不推 gitee，不 force）
+- HG-SEC-180/O1 就地闭合（四项判据齐）；HG-SEC-181/183/185 + O-CL014-1 另立批处置；HG-SEC-186 🟢 留档（未来 harness 修订可选）
+- .review-level.yaml：CL013 条目 findings_open 2→1（180 闭合）、设计评审 v1.4 条目 4→2（182/184 闭合）+ 新增本审计条目
+- 报告: `documents/review/help-contract-cl014-impl-audit-v1.0-20260917.md`
