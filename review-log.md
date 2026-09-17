@@ -2245,3 +2245,28 @@ v1.0 的 7 条 findings（4 🟡 + 3 🟢）全部闭合或部分闭合：HG-SEC
 - ✅ 非阻断 CONDITIONAL PASS → 写报告 + review-log + .review-level.yaml，按任务约定一次性提交本轮审计产物（v1.0 报告 + v1.1 报告 + review-log.md + .review-level.yaml）并 push github main（ff-only）
 - 三处 🟡（HG-SEC-168/169/170）折入 CL012/CL013 实施：CLI 正则改 `add_argument\([^)]*'--…'`；列类型维度注明 string 为隐式默认由契约手工登记；knowledge item 维度改「显式清单 + 存在性断言」
 - 报告: `documents/review/html-gen-help-contract-design-review-v1.1-20260917.md`
+
+## 2026-09-17 — 表格文本列 XSS 转义实现审计（PASS 100/100，HTML-GEN-CL010）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: `5f447fc`（feat@table: default HTML escape for text cells, HG-SEC-134, CL010）+ 设计 `documents/solutions/table-text-xss-escape-design-v1.0-20260911.md`（决策 A2+B1+C1+D1+E1+F2）；设计随实现同 commit 落地（无独立 docs@design 评审，流程偏差留痕）
+- **Verdict**: ✅ PASS 100/100（0 新增 finding）
+- **Score**: 100 / 100
+- **Tracking**: HG-SEC-134（stored XSS，✅ closed 5f447fc）+ 无新 HG-SEC 续号
+
+### 复核证据
+
+- A2 默认转义：layout-table.html:586-590 分支顺序逐字吻合设计（豁免先于默认；render/thousands 优先级未破坏）
+- B1 全仓扫描（review 独立自跑，非引用 ops）：唯一 HTML 依赖 text 列 = `_demos-data.json:28`「文档链接」`escape:false` + `html-gen.py:1366` 同列 `escape:False`；知识库 desc `<p>`（cloudwise 13 / demo 98）属 C 型内联非表列；其余 A 型 text 列 `<`/`>` 数 = 0；`_skills/_user-skills` description 仅孤立 `>`（`>-`）转义后视觉不变
+- C1 入库防护最小复现（importlib 直调 plan_issues，零写盘/零网络）：issue-body 路径 `<script>` 拒绝 + `--value` 覆盖路径 `<img onerror>` 拒绝 + 数值列 `area_km2=<script>` 走 to_number 拒绝 + 正常值 `北京` 放行（actions=1）
+- D1 唯一豁免口 = escape:false；全仓 data 无 render 列（col.render 废弃零使用），无「既无 escape 又需 HTML」遗漏
+- E1 防御性：默认转义在模板 render()，与 --feedback-repo 解耦，无反馈通道页面同样受保护
+- F2 回归：test_xss_escape 6 passed（3.32s）+ 全量 312 passed（-n 0 串行 132.34s）+ demos-index 文档链接 escape:false 可点（test_02）
+- 产物：countries 按 feedback-targets.yaml rebuild.args 复跑 /tmp → 与入库产物字节一致（sha256 556d5883…）；git status 零残留
+- 安全面：escapeHtml（textContent→innerHTML）无旁路；四渲染路径（主格/split/modal/expand）均转义；无新增依赖/凭证/外部资源/新 innerHTML 注入面
+
+### 处理
+
+- ✅ PASS → 一次性提交本轮产出（审计报告 + review-log + .review-level.yaml）并 push github main（ff-only，含本地领先 741a7f2 / a7cdc24）
+- 报告: `documents/review/table-text-xss-escape-impl-audit-v1.0-20260917.md`

@@ -727,4 +727,15 @@ review_history:
     findings_open: 3
     tracking: "HG-SEC-161..167 (✅ closed: 161/163/164/165/166/167 全闭合, 162 部分闭合) + HG-SEC-168..170 (🟡×3 新, 折入 CL012/CL013 实施: CLI 正则漏捕 short-form 别名·缺 table CLI 行 / knowledge item 正则误捕 CSS+漏捕 icon / 列类型取值漏捕 string) + HG-SEC-171 (🟢 record: §3.1 L484 行号微瑕)"
     report: documents/review/html-gen-help-contract-design-review-v1.1-20260917.md
+  - date: 2026-09-17
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "表格文本列 XSS 转义实现审计 (HTML-GEN-CL010 [5/6]; commit 5f447fc feat@table default HTML escape; 设计 table-text-xss-escape-design-v1.0-20260911.md 决策 A2+B1+C1+D1+E1+F2; 设计随实现同 commit 落地无独立 docs@design 评审)"
+    verdict: PASS
+    score: 100
+    findings_total: 0
+    findings_open: 0
+    tracking: "HG-SEC-134 (✅ closed 5f447fc: 默认转义 + escape:false 豁免 + C1 入库防护) + 无新 HG-SEC 续号"
+    report: documents/review/table-text-xss-escape-impl-audit-v1.0-20260917.md
 
