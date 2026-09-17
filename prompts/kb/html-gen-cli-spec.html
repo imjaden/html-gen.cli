@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-cli-spec</h1>
-      <div class="meta">创建: 2026-09-17 16:11 · 编辑: 2026-09-17 16:11<br>字数: 448 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
+      <div class="meta">创建: 2026-09-17 16:32 · 编辑: 2026-09-17 16:32<br>字数: 504 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><blockquote>本文档定义 html-gen 项目的 CLI 规范（对齐 hermes-manager 治理规范</blockquote>
 <blockquote>「CLI 规范」条目 + cli-args-reference.md 统一 JSON 信封）。</blockquote>
@@ -582,24 +582,27 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <li>no-match 返回 <code>[]</code> 非 <code>null</code></li>
 <li>doc/slide/table/knowledge 输出 HTML 文件, 无 --json</li>
 </ul>
-<h2 id="5-skills-同步约定">5. skills/ 同步约定</h2>
+<h2 id="5-skills-与-profile-运行时-skill-的关系-2026-09-17-实测订正">5. skills/ 与 profile 运行时 skill 的关系（2026-09-17 实测订正）</h2>
+<blockquote>⚠️ 旧表述（「真源 = dev profile，编辑后 <code>cp -R</code> 覆盖项目副本」）<strong>已作废</strong> —— 与实测不符。</blockquote>
 <ul>
-<li><strong>真源</strong>: <code>~/.hermes/profiles/dev/skills/software-development/html-gen*/</code></li>
+<li>两侧是<strong>命名相同的两套独立文档</strong>（内容 / 版本 / 语言均不同）。实测: <code>html-gen-table</code> 仓内 209 行·中文·v2.4.0</li>
 </ul>
-<p>  （skill_manage 写入位置, agent 会话加载处）</p>
+<p>  vs dev profile 544 行·英文·v4.0.0；<code>html-gen-doc</code> 68 行 vs 143 行；ops 侧 <code>html-gen-knowledge</code> 102 行（含「工作流 / 踩坑」段）。</p>
+<p>  仓内副本被 <code>html-gen prompt</code> / <code>--site</code> 消费（生成 <code>prompts/</code>），profile 侧是 agent 运行时加载处。</p>
 <ul>
-<li><strong>项目副本</strong>: <code>html-gen/skills/</code>（已 git 提交）</li>
-<li><strong>同步</strong>: 编辑 dev profile skill 后必须拷贝项目副本:</li>
+<li><strong>同步纪律</strong>（任何方向都必须先逐文件 diff 分类）:</li>
 </ul>
-<p>  <code>`</code>bash</p>
-<p>  cp -R ~/.hermes/profiles/dev/skills/software-development/html-gen*/ ~/CodeSpace/html-gen/skills/</p>
-<p>  cd ~/CodeSpace/html-gen &amp;&amp; git add skills/ &amp;&amp; git commit -m "docs@skills: sync html-gen 项目副本"</p>
-<p>  <code>`</code></p>
+<p>  - 单向缺行（副本零独有行）= <strong>陈旧</strong> → 可定向 <code>cp</code>（改前 <code>tar</code> 备份 + 改后双侧 <code>sha256</code> 比对）</p>
+<p>  - 含副本独有行 = <strong>变体</strong> → <strong>禁止强行对齐</strong>（会抹掉 profile 定制内容）</p>
+<p>  - 副本无该文件 = 缺失 → <strong>不新建</strong>（除非确认该 profile 确实需要）</p>
 <ul>
-<li>拷贝整目录时清掉 <code>__pycache__/</code></li>
-<li>2026-08-19 当前项目副本: html-gen / html-gen-doc / html-gen-knowledge /</li>
+<li>实测分布（2026-09-17）: 副本存在于 <code>dev</code> / <code>ops</code> / <code>summarizer</code> 三个 profile；<code>html-gen-slide/SKILL.md</code> 属陈旧（已同步），</li>
 </ul>
-<p>  html-gen-table / html-gen-slide / test-speed-optimization</p>
+<p>  <code>html-gen-{table,doc}</code> 与 ops 的 <code>html-gen-knowledge</code> 属变体（不同步），<code>references/table-demo-prompt.md</code> 在 profile 侧不存在（不新建）；</p>
+<p>  <code>~/.hermes/skills/</code>（default 运行时）无副本。</p>
+<ul>
+<li>⇒ <strong>本仓 <code>skills/</strong></code> 的改动不会自动传播到 profile（反之亦然）**；「两侧一致」不是不变式，勿按旧命令盲抄。</li>
+</ul>
 <h2 id="6-审计入口">6. 审计入口</h2>
 <ul>
 <li><code>hm check cli &lt;path&gt;</code>（治理规范 CLI 规范条目）: 检查 --json 检出 +</li>
