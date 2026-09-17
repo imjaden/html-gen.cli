@@ -70,6 +70,12 @@ html-gen knowledge -d kb.json -g groups.json -o kb.html
 
 > Output: `table`/`knowledge` `-o/--output` is **required** — pass CLI `-o` or a top-level JSON `output` field (both missing → error + exit 1)
 
+> **Key spec — single source of truth**: every data-contract key (column attrs / column types / tabs /
+> options / `options.feedback` / actions / videos / knowledge item & groups / URL state / CLI flags)
+> is defined **only** in `html-gen help <type>` (implemented as `TEMPLATE_CONTRACT` in `html-gen.py`
+> and guarded by `tests/test_help_contract.py`). Other documents reference it instead of copying key
+> tables — copies drift.
+
 ## AI Interchange
 
 ```bash
@@ -128,5 +134,5 @@ python3 -m pytest tests/ -q -n 4
 
 ## Testing
 
-- Selenium headless Chrome regression suite (`tests/test_*.py`, 246 cases)
+- Selenium headless Chrome regression suite (`tests/test_*.py`, 334 cases — see AGENTS.md for the authoritative count)
 - Every test asserts zero JS errors on page load

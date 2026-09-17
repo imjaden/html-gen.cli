@@ -11,7 +11,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 
 版本: 3.3(2026-08-28)
 """
-import html, json, re, sys, os, time, argparse, types
+import html, json, re, sys, os, time, argparse, types, unicodedata
 from pathlib import Path
 
 __version__ = "3.3"              # CL016: 版本号 (格式 \d+\.\d+)
@@ -653,9 +653,16 @@ def cmd_knowledge(args):
 # ═══ 模板契约 (CL012) ═══
 # help 契约的单一事实源: help 渲染 / 守卫测试 (tests/test_help_contract.py) / 文档引用
 # 均以本结构为准 (help 文本 = 本契约的渲染结果, 不再手抄键清单)。
-# 条目格式: (键名, 语义说明, 默认值) —— 默认值 '' 表示无默认; 说明文本不得含 ASCII "word:" 片段。
-# CL012 仅 table 维度全量; doc/slide/knowledge 为骨架节点 ('legacy' 指向现况 help 文案常量,
-# 键模型 / CLI 参数段留 CL013 补齐)。
+# 条目格式: (键名, 语义说明, 默认值) —— 默认值 '' 表示无默认; 说明文本不得含「词元:」片段
+# (ASCII 或中文均不可: 会污染 spec_key_tokens() 的 key: 提取口径)。
+# CL012 建 table 维度全量 + doc/slide/knowledge 骨架; CL013 补齐三模板维度模型 + 四模板 CLI 参数段
+# (三模板骨架 'legacy' 指针已在 CL013 删除)。
+# 四渲染子命令通用 flag 条目 (共用一份, 防四模板文案漂移; 语义含 env 兜底与「显式空串禁用」约定)
+_CLI_GITHUB_URL = ('--github-url', '右上角 GitHub corner 链接 (默认不带, 隐私; 显式空串禁用; 环境变量 HTML_GEN_GITHUB_URL)', '')
+_CLI_HOME_URL = ('--home-url', 'demo 首页入口链接 (默认不带, 隐私; 显式空串禁用; 环境变量 HTML_GEN_HOME_URL)', '')
+_CLI_FAVICON = ('--favicon', 'favicon 图标 URL (默认注入默认图标; 显式空串禁用; 环境变量 HTML_GEN_FAVICON)', '')
+_CLI_QUIET = ('--quiet', '仅打印生成路径, 抑制统计信息', 'false')
+
 TEMPLATE_CONTRACT = {
     'table': {
         'label': 'A 型 · 数据表格 JSON 格式',
@@ -663,7 +670,18 @@ TEMPLATE_CONTRACT = {
         'overview': 'JSON 数据格式 (A 型)',
         'rule': 37,                      # 标题下 ━ 分隔线长度 (沿用现状观感)
         'examples': 'HELP_TABLE_EXAMPLES',   # ② 手写示例段常量名 (见 §B.3 三段式)
-        'cli': [],                       # CL013: -d/--title/--subtitle/-o/--github-url/--home-url/--favicon/--feedback-repo/--quiet
+        'behaviors_title': '点击模式',        # behaviors 段标题 (CL013: 按节点区分, table 渲染逐字不变)
+        'cli': [
+            ('--data', 'JSON 数据文件 (必填; 短形 -d)', ''),
+            ('--title', '页面标题 (优先级 CLI > JSON 顶层 title > 数据表格)', '数据表格'),
+            ('--subtitle', '页面级段落描述, 纯文本, 换行用换行符 (JSON 顶层 subtitle 兜底, 显式空串清空)', ''),
+            ('--output', '输出 HTML 路径 (短形 -o; 三态 CLI > JSON 顶层 output > 均无则中断 exit 1)', ''),
+            _CLI_GITHUB_URL,
+            _CLI_HOME_URL,
+            _CLI_FAVICON,
+            ('--feedback-repo', 'GitHub Issue 反馈通道仓库 owner/repo (默认不注入, 隐私; 显式空串禁用; 环境变量 HTML_GEN_FEEDBACK_REPO)', ''),
+            _CLI_QUIET,
+        ],
         'data': {
             'top_level': [
                 ('columns', '列定义数组 (列属性见下)', ''),
@@ -753,7 +771,7 @@ TEMPLATE_CONTRACT = {
                 ('maxShow', '折叠前最多显示条数, 超出折叠 +N (点击展开不收回)', '3'),
             ],
         },
-        'section_order': ['top_level', 'column_types', 'columns', 'tabs', 'options', 'url_state'],
+        'section_order': ['top_level', 'column_types', 'columns', 'tabs', 'options', 'url_state', 'cli'],
         'url_state': [
             ('?tab', '当前标签页 key (白名单校验, 非法忽略)', ''),
             ('?q', '搜索关键字 (仅恢复输入框值)', ''),
@@ -766,31 +784,121 @@ TEMPLATE_CONTRACT = {
             ('expand', '📂 行内手风琴展开 (网格布局)'),
         ],
     },
-    # ── 骨架节点 (CL013 补齐维度): 内容 = 现况 help 文案, 不新增键模型 ──
+    # ── CL013: 三模板真实维度模型 (骨架 legacy 指针已删, 见 §3.2/§3.3/§3.4) ──
+    #    url_state 口径: table 沿用节点顶层 (CL012 既有断言不动); doc/slide 按 R1 置于 data 分区,
+    #    并在契约定义后统一别名为节点顶层键 (见下方「口径调和」; 渲染/断言经 _spec_entries 单次取用)。
     'doc': {
         'label': 'B/D 型 · Markdown 语法规范',
         'tagline': '',
         'overview': 'Markdown 语法规范 (B/D 型)',
         'rule': 24,
-        'legacy': 'HELP_DOC',
+        'notes': 'HELP_DOC_SYNTAX',      # ③ 语法说明段 (手写常量, 不含键名; §B.3)
+        'cli': [
+            ('--input', 'Markdown 输入文件 (必填; 短形 -i)', ''),
+            ('--output', '输出 HTML 路径 (短形 -o; 缺省与输入同名的 .html)', ''),
+            ('--title', '页面标题 (优先级 CLI > frontmatter title > 正文 h1 > 文件名)', ''),
+            ('--subtitle', '页面副标题', ''),
+            ('--metadata', 'meta 区补充信息 (缺省自动生成创建/编辑时间与字数)', ''),
+            _CLI_GITHUB_URL,
+            _CLI_HOME_URL,
+            _CLI_FAVICON,
+            _CLI_QUIET,
+        ],
+        'data': {
+            'url_state': [
+                ('?sidebar', 'Bare 模式: sidebar=0 隐藏侧边栏 (默认隐藏, 知识库嵌入自动降级)', ''),
+                ('?toolbar', 'Bare 模式: toolbar=0 隐藏工具栏 (默认隐藏)', ''),
+                ('?width', '正文宽度三级 width=narrow|medium|wide (默认 medium 即 960px; 不持久化)', ''),
+            ],
+        },
+        'section_order': ['url_state', 'cli'],
     },
     'slide': {
         'label': 'D 型 · 幻灯片功能说明',
         'tagline': '',
         'overview': 'slide 特有功能说明',
         'rule': 19,
-        'legacy': 'HELP_SLIDE',
+        'notes': 'HELP_SLIDE_USAGE',     # ③ 用法说明段 (手写常量, 不含键名)
+        'behaviors_title': '交互行为',    # CL013: behaviors 段标题按节点区分 (table 为「点击模式」)
+        'cli': [
+            ('--input', 'Markdown 输入文件 (必填; 短形 -i)', ''),
+            ('--output', '输出 HTML 路径 (短形 -o; 缺省与输入同名的 .html)', ''),
+            ('--title', '页面标题 (优先级 CLI > frontmatter title > 正文 h1 > 文件名)', ''),
+            ('--subtitle', '页面副标题', ''),
+            _CLI_GITHUB_URL,
+            _CLI_HOME_URL,
+            _CLI_FAVICON,
+            _CLI_QUIET,
+        ],
+        'data': {
+            'url_state': [],             # slide 无 URL 状态 (如实留空; 说明见 url_state_note)
+        },
+        'url_state_note': '无 —— slide 不使用 URL 参数; 阅读位置只由 localStorage 记忆',
+        'section_order': ['url_state', 'behaviors', 'cli'],
+        'behaviors': [
+            ('分页', '每个 ## h2 为一页, h1 为封面页'),
+            ('导航', '← → Space Home End 翻页'),
+            ('全屏', 'F 键切换全屏'),
+            ('进度点', '底部圆点 (已读/当前/未读)'),
+            ('记忆', 'localStorage 恢复上次阅读位置'),
+            ('侧栏H3', 'H3 子标题默认隐藏, 点击开关显示'),
+            ('侧栏搜索', '支持按关键字过滤侧栏章节'),
+            ('性能警告', '>50 个 h2 时显示加载警告'),
+        ],
     },
     'knowledge': {
         'label': 'C 型 · 知识库 JSON 格式',
         'tagline': '',
         'overview': 'JSON 数据格式 (C 型)',
         'rule': 20,
-        'legacy': 'HELP_KNOWLEDGE',
+        'examples': 'HELP_KNOWLEDGE_EXAMPLES',   # ② 手写示例段常量名 (§B.3)
+        'cli': [
+            ('--data', 'JSON 数据文件 (必填; 短形 -d)', ''),
+            ('--groups', '类目分组文件 (短形 -g; 缺省从条目 group 自动推导)', ''),
+            ('--title', '页面标题', '知识库'),
+            ('--subtitle', '页面副标题', ''),
+            ('--welcome', '空状态欢迎语', '从上方类目选择，浏览整理的知识内容。'),
+            ('--output', '输出 HTML 路径 (短形 -o; 三态 CLI > 顶层 output > 均无则中断 exit 1)', ''),
+            _CLI_GITHUB_URL,
+            _CLI_HOME_URL,
+            _CLI_FAVICON,
+            _CLI_QUIET,
+        ],
+        'data': {
+            'item': [
+                ('title', '条目名称 (必填)', ''),
+                ('group', '所属类目 (必填, 对应顶部 Tab)', ''),
+                ('section', '子分类 (可选, 侧栏分组)', ''),
+                ('badge', '标记文本 (可选, 侧栏条目右侧徽标)', ''),
+                ('desc', '条目正文 HTML (内联渲染; 与 url 二选一)', ''),
+                ('url', '详情页地址 (iframe 加载; 与 desc 二选一)', ''),
+                ('icon', '条目图标 emoji (缺省无 groups 文件时用于推导类目图标)', ''),
+            ],
+            'groups': [
+                ('key', '类目 key (与条目 group 全等匹配)', ''),
+                ('label', '类目显示名 (可含 emoji, 即顶部 Tab 文案)', ''),
+                ('icon', '类目图标 emoji', ''),
+            ],
+            'data_source': [
+                ('数组', '简单格式 顶层 JSON 数组即条目列表, 类目与章节自动推导', ''),
+                ('{items|data}', '结构化对象 条目取 items 或 data 字段 (二选一)', ''),
+                ('output', '顶层渲染目标 (仅 data 文件识别, groups 文件忽略; 三态 CLI -o > 顶层 output > 均无则中断 exit 1)', ''),
+            ],
+        },
+        'section_order': ['item', 'groups', 'data_source', 'cli'],
     },
 }
 
+# CL013 口径调和: 任务书 R1 要求 doc/slide 的 url_state 置于 `data` 分区, 而设计 §A 的契约结构与
+# 项目核查脚本 (HTML-GEN-CL013-verify T12: 读 `TEMPLATE_CONTRACT['doc']['url_state']`) 取**节点顶层** ——
+# 此处让两处指向**同一个 list 对象** (单一真源, 无内容漂移; 渲染只走一次, 见 _spec_entries)。
+# table 保持 CL012 既有形态 (仅节点顶层, 不设 data 别名)。
+for _t in ('doc', 'slide'):
+    TEMPLATE_CONTRACT[_t]['url_state'] = TEMPLATE_CONTRACT[_t]['data']['url_state']
+del _t
+
 # 键规范段的小节标题 (节点 data 顺序 = section_order 顺序, 不在此表内的维度不渲染)
+# ⚠️ 标题文本同样不得构成「词元:」形态 (标题 `X:` 中的 X 会被 spec_key_tokens() 当作键)
 _SPEC_TITLES = {
     'top_level': '顶层键 (JSON 对象)',
     'column_types': '列类型',
@@ -801,6 +909,10 @@ _SPEC_TITLES = {
     'feedback': 'options.feedback 子键',
     'actions': 'actions[] 操作按钮子键',
     'videos': 'videos 子键',
+    'cli': 'CLI 参数',
+    'item': 'item 条目键 (数据源)',
+    'groups': 'groups 类目键',
+    'data_source': '数据源与输出目标',
 }
 # 嵌套维度: 父维度 → 紧随其后的子维度 (缩进渲染)
 _SPEC_NESTED = {'columns': ['actions', 'videos'], 'options': ['feedback']}
@@ -849,10 +961,8 @@ html-gen — HTML 模板 CLI 生成器 v{__version__}({__release_date__})
 
 零外部依赖，输出自包含单文件 HTML。"""
 
-HELP_DOC = """\
-B/D 型 · Markdown 语法规范
-━━━━━━━━━━━━━━━━━━━━━━━━
-
+# ③ 语法/说明段 (手写常量, 不含键名; §B.3) —— 正文与 CL012 前 HELP_DOC 的语法叙述逐字一致
+HELP_DOC_SYNTAX = """\
 块级元素:
   # 标题            h1 (全文唯一)
   ## 标题           h2 (TOC + slide 分页)
@@ -927,9 +1037,10 @@ HELP_TABLE_EXAMPLES = """\
 
 """
 
-HELP_KNOWLEDGE = """\
-C 型 · 知识库 JSON 格式
-━━━━━━━━━━━━━━━━━━━━
+# ② 教程/示例段 (手写常量, §B.3): 示例允许含键名, 键名以契约渲染的键规范段为准
+# 三块 (条目数据 / 输出目标 / 类目分组) 与 CL012 前 HELP_KNOWLEDGE 正文逐字一致, 仅按 §B.3 补段首注记
+HELP_KNOWLEDGE_EXAMPLES = """\
+以下为示例, 键名以键规范段 (item/groups/数据源与输出目标) 为准。
 
 条目数据:
 [
@@ -951,18 +1062,8 @@ C 型 · 知识库 JSON 格式
   {"key": "类目", "label": "🤖 显示名", "icon": "🤖"}
 ]"""
 
-HELP_SLIDE = """\
-D 型 · 幻灯片功能说明
-━━━━━━━━━━━━━━━━━━━
-
-分页: 每个 ## h2 为一页, h1 为封面页
-导航: ← → Space Home End 翻页
-全屏: F 键
-进度: 底部圆点 (已读/当前/未读)
-记忆: localStorage 恢复上次阅读位置
-侧栏: H3 子标题默认隐藏, 点击 H3 开关显示
-性能: >50 h2 时显示加载警告
-
+# ③ 用法说明段 (手写常量, 不含键名; §B.3) —— 与 CL012 前 HELP_SLIDE 的「用法」块逐字一致
+HELP_SLIDE_USAGE = """\
 用法:
   html-gen slide -i slides.md -o slides.html --title "标题\""""
 
@@ -1055,39 +1156,63 @@ def _spec_block(title, entries, indent=0):
     return [f'{" " * indent}{title}:'] + _fmt_entries(entries, indent=' ' * (indent + 2))
 
 
+def _disp_width(text):
+    """显示宽度 (东亚宽/全角字符按 2 列计): behaviors 段中文键对齐用; ASCII 键与 len() 等价。"""
+    return sum(2 if unicodedata.east_asian_width(ch) in 'WF' else 1 for ch in text)
+
+
+def _spec_entries(node, dim):
+    """维度条目取用口径: node['data'][dim] 优先, 其次节点顶层 (table.url_state / 四模板 cli)。"""
+    data = node.get('data') or {}
+    if dim in data:
+        return data[dim]
+    return node.get(dim) or []
+
+
+def _behaviors_block(node):
+    """behaviors 段: 标题按节点区分 (behaviors_title, 缺省「点击模式」), 行式 `key … — 说明`。"""
+    rows = node['behaviors']
+    w = max(_disp_width(k) for k, _ in rows) + 3
+    body = [f'  {k}{" " * (w - _disp_width(k))}— {d}' for k, d in rows]
+    return [f'{node.get("behaviors_title", "点击模式")}:'] + body
+
+
 def render_help_spec(topic):
-    """① 键规范段 (契约渲染): help 中键清单的唯一来源 (§B.3)。骨架节点返回空串。"""
+    """① 键规范段 (契约渲染): help 中键清单的唯一来源 (§B.3)。"""
     node = TEMPLATE_CONTRACT[topic]
     data = node.get('data') or {}
-    if not data:
-        return ''
+    order = node.get('section_order') or list(data)
     blocks = []
-    for dim in node.get('section_order') or list(data):
-        if dim == 'url_state':
-            blocks.append(_spec_block(_SPEC_TITLES[dim], node['url_state']))
+    for dim in order:
+        if dim == 'behaviors':                    # 行为段 (非键表): 按 section_order 位置就地渲染
+            if node.get('behaviors'):
+                blocks.append(_behaviors_block(node))
             continue
-        if dim not in data:
+        entries = _spec_entries(node, dim)
+        if dim == 'url_state' and not entries:
+            if node.get('url_state_note'):        # 如实写明「无 URL 状态」(slide, §3.3)
+                blocks.append([f'{_SPEC_TITLES[dim]}:', f'  {node["url_state_note"]}'])
             continue
-        blocks.append(_spec_block(_SPEC_TITLES[dim], data[dim]))
+        if not entries:
+            continue
+        blocks.append(_spec_block(_SPEC_TITLES[dim], entries))
         for sub in _SPEC_NESTED.get(dim, []):     # 嵌套子键紧随父小节 (缩进一级)
-            if sub in data:
-                blocks.append(_spec_block(_SPEC_TITLES[sub], data[sub], indent=4))
-    if node.get('behaviors'):
-        rows = node['behaviors']
-        w = max(len(k) for k, _ in rows) + 3
-        blocks.append(['点击模式:'] + [f'  {k.ljust(w)}— {d}' for k, d in rows])
+            sub_entries = data.get(sub) or []
+            if sub_entries:
+                blocks.append(_spec_block(_SPEC_TITLES[sub], sub_entries, indent=4))
+    if node.get('behaviors') and 'behaviors' not in order:
+        blocks.append(_behaviors_block(node))     # table: 行为段恒在末尾 (沿用既有观感, 逐字不变)
     return '\n\n'.join('\n'.join(b) for b in blocks)
 
 
 def render_help(topic):
-    """主题 help 正文: label/tagline → ② 手写示例段 → ① 契约键规范段 (顺序沿用现状观感)。"""
+    """主题 help 正文: label/tagline → ② 示例段 → ③ 语法/说明段 → ① 契约键规范段 (§B.3)。"""
     node = TEMPLATE_CONTRACT[topic]
-    if node.get('legacy'):                        # 骨架节点 (CL013 补维度前原样输出)
-        return _help_const(node['legacy'])
     header = node['label'] + (f" ({node['tagline']})" if node.get('tagline') else '')
     lines = [header, '━' * node['rule'], '']
-    if node.get('examples'):
-        lines.append(_help_const(node['examples']).rstrip('\n'))
+    for slot in ('examples', 'notes'):            # ② 示例段 / ③ 语法说明段 (手写常量)
+        if node.get(slot):
+            lines.append(_help_const(node[slot]).rstrip('\n'))
     spec = render_help_spec(topic)
     if spec:
         lines.append('')

@@ -64,50 +64,45 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 
 ## 列配置 (COLUMNS)
 
-| 字段 | 类型 | 必填 | 说明 |
-|:---|:---|:---:|:---|
-| `key` | string | ✅ | 数据字段名 |
-| `label` | string | ✅ | 表头显示名 |
-| `sortable` | bool | | 是否可排序（默认 true） |
-| `type` | string | | `string`(默认) / `number` / `datetime` / `pills` / `actions` |
-| `locale` | string | | 排序 locale，如 `"zh"` |
-| `width` | string | | CSS 宽度，如 `"120px"`。**仅作初始值**——列宽拖拽会记忆到 localStorage（`html-gen:table:col-widths`）并在刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效 |
-| `freeze` | bool | | 列冻结 (sticky left) |
-| `quickFilter` | bool | | 点击单元格值精确筛选，**默认关**，显式 `true` 才启用 |
-| `pillFilter` | bool | | pills 列标签点击筛选（contains 匹配），默认开，`false` 关闭 |
-| `onCellClick` | string | | 单元格点击行为：`"split"` 分栏预览 / `"modal"` 弹出详情 |
-| `preview` | bool | | 分栏模式下显示的列（split 预览/表格仅显示 preview 列，未配 preview 列则全显） |
-| `class` | string | | 单元格 CSS class |
-| `escape` | bool | | 是否 HTML 转义值（安全） |
-| `render` | func | | 自定义渲染函数 |
-| `onClick` | string | | 行点击行为（`"url"` 跳转到 row.url） |
-| `actions` | array | | 仅 `type: "actions"`，操作按钮数组 |
+> **键规范单一事实源**: 列属性（22 键）、列类型（6 类）及其取值/默认值的完整定义只在
+> **`html-gen help table`** 的「列属性」「列类型」段（实现: `html-gen.py` 的
+> `TEMPLATE_CONTRACT['table']`，由 `tests/test_help_contract.py` 对 `layout-table.html`
+> 实测消费做双向守卫）。本篇不再维护键表 —— 复制即漂移（CL013 起因: 「默认收起」列属性
+> 长期未被任何面向人的文档收录，下游据旧文档把正确写法判成「臆造属性」）。
 
-### 列类型详情
+### 用法要点（键名与取值以 `html-gen help table` 为准）
 
-**type: "string"** (默认) — 文本排序，使用 `localeCompare`；配合 `locale: "zh"` 实现中文拼音排序
+- **列宽** `width` 仅作初始值：列宽拖拽会记忆到 localStorage（`html-gen:table:col-widths`），
+  刷新后覆盖配置；改配置后需清 localStorage 或重新拖拽才生效。
+- **两种「隐藏」语义不同**：一种**永不可见**（表格/筛选/分栏详情全部排除），另一种是
+  **默认收起**且 ⚙️ 面板可开启、分栏详情仍全列渲染 —— 语义与键名对照见 help（此差异是 CL013 的直接动因）。
+- **点击筛选默认关**：单元格点击筛选必须显式开启；标签列（pills）的标签点击筛选默认开、可关。
+- **HTML 转义默认开启**（CL010 起）：只有显式关闭才豁免，不要把它当成 opt-in。
+- **分栏模式列集**：任一列标记为「分栏可见」时，分栏表只显示这些列；也可用选项显式指定分栏列集。
+- **数字列**务必设 `type: "number"`（JSON 注入后数字可能变字符串，否则按文本排序）。
+- **中文排序**设 `locale: "zh"`（走 `localeCompare(text, 'zh')`）。
 
-**type: "number"** — 数值排序，使用 `parseFloat` 比较，空值视为 0
+### 操作按钮 (actions)
 
-**type: "datetime"** — 日期排序，使用 `Date.parse` 比较，空值视为 0；渲染原样展示 ISO 日期字符串
-
-**type: "pills"** — 标签样式，逗号/顿号/中文逗号分隔字符串渲染为 tag pills（分隔符 `[,，、]+`）；标签点击筛选默认开（`pillFilter: false` 关闭）
-
-**type: "actions"** — 操作按钮列，每个按钮支持三种模式：
+操作按钮列（`type: "actions"`）的按钮子键与优先级（`copyKey` > `hrefKey` > `handler`/`desc`）
+见 `html-gen help table` 的「actions[] 操作按钮子键」段。示例：
 
 ```json
 {
   "icon": "📋",        // Emoji 图标
   "label": "复制",     // title 提示文本
-  "copyKey": "name",  // 模式1: 复制字段值到剪贴板
-  "hrefKey": "url",   // 模式2: 新标签页打开 URL
+  "copyKey": "name",   // 模式1: 复制字段值到剪贴板
+  "hrefKey": "url",    // 模式2: 新标签页打开 URL
   "desc": "复制名称"   // 模式3: 点击弹 Toast 展示描述（演示用）
 }
 ```
 
-优先级：`copyKey` > `hrefKey` > `desc`，只生效第一个匹配的。
+只生效第一个匹配的模式；`handler` 为自定义 JS 函数名（模板调 `window.{handler}(event, row)`）。
 
 ## Tab 分类过滤 (TABS)
+
+Tab 键（`key` / `label` / `field` / `match` / `contains` / `value`）、匹配语义与默认字段见
+`html-gen help table` 的「Tab 属性」段。示例：
 
 ```json
 [
@@ -117,45 +112,33 @@ html-gen table -d data.json --title "项目列表" -o projects.html
 ]
 ```
 
-- `key`: Tab 标识，第一个 Tab 的 key 用于"全部"
-- `label`: 显示文本（可含 Emoji）
-- `field`: 匹配的数据字段名（默认 `group` 或 `category`）
-- `contains`: 数组字段包含匹配（值用逗号/顿号分隔时，如 `"field": "region_tags", "contains": true`）
-- `value`: contains 模式下匹配的目标值（不配则用 key 匹配）；Tab 计数 = 匹配行数
-- Tab 选择自动保存到 localStorage
+- 第一个 Tab 的 key 用于「全部」；`contains: true` 走逗号/顿号分隔的包含匹配；Tab 计数 = 匹配行数。
+- Tab 选择自动保存到 localStorage。
 
 ## 单元格点击行为（默认）
 
 点击行为优先级链（从高到低）：
-1. `col.onCellClick: 'split'` / `'modal'`（显式配置）
-2. `col.quickFilter: true`（显式筛选）
+1. 列上的显式单元格点击行为（分栏 / 弹窗）
+2. 列上的点击筛选开关（显式 true）
 3. **第 1 列（首个有 key 的数据列）→ 默认打开分栏预览**（展示该行元信息）
 4. 其余列 → 无操作
 
-即：普通单元格默认无筛选；需要按值筛选的列显式配 `quickFilter: true`；标签列默认可点筛选（pillFilter）。
+即：普通单元格默认无筛选；需要按值筛选的列显式开启；标签列默认可点筛选。
 
 ## 全局选项 (OPTIONS)
 
-| 选项 | 类型 | 默认 | 说明 |
-|:---|:---|:---:|:---|
-| `pageSize` | int | 30 | 每页条数 |
-| `exportCSV` | bool | false | 显示 CSV 导出按钮 |
-| `rowSelect` | bool | false | 启用行选择（checkbox） |
-| `search` | bool | true | 显示搜索框 |
-| `clickModes` | array | `["tab"]` | 允许的点击模式 `"tab"`/`"modal"`/`"split"`/`"expand"`; 兼容单数 `clickMode` |
+13 个 options 顶层键（含 `searchFields` / `showIndex` / `defaultFilter` / `feedback` /
+`clickMode` 单数兼容别名）及其默认值见 `html-gen help table` 的「选项」段；
+`options.feedback` 子键（5 项）见「options.feedback 子键」段。
 
 ## URL 状态分享 (🔗)
 
-表格支持通过 URL 查询参数同步并分享当前视图状态（`?tab&q&split`）：
-
-- `?tab=<key>` — 当前 Tab（白名单校验，无效忽略）
-- `?q=<关键字>` — 搜索词（随 300ms debounce 同步）
-- `?split=<行号>` — 分栏预览行（越界忽略；有 quickFilter 时下标语义失效跳过）
-
+URL 状态键（`?tab` / `?q` / `?split`）的取值口径见 `html-gen help table` 的「URL 状态」段。
 行为：
-- 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空 tab/q/split）自动剔除
+
+- 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空值）自动剔除
 - **tabs 行居右按钮区 `.tabs-actions`**（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（`--home-url` 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）
-- 排序 / 快速过滤（quickFilter）触发时自动 closeSplit（下标语义失效保护）
+- 排序 / 快速过滤触发时自动 closeSplit（下标语义失效保护）
 - 加载时按 tab → q → split 顺序恢复（HG-SEC-076）
 
 ## 操作按钮 Emoji 参考

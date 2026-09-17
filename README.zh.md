@@ -70,6 +70,11 @@ html-gen knowledge -d kb.json -g groups.json -o kb.html
 
 > 输出: table/knowledge 的 `-o/--output` **必填**（CLI `-o` 或 JSON 顶层 `output` 二选一；均无 → 提示中断 exit 1）
 
+> **键规范单一事实源**: 所有数据契约键（列属性 / 列类型 / Tab 属性 / 选项 / `options.feedback` /
+> actions / videos / knowledge item 与 groups / URL 状态 / CLI 参数）**只在** `html-gen help <type>`
+> 中枚举（实现: `html-gen.py` 的 `TEMPLATE_CONTRACT`，由 `tests/test_help_contract.py` 双向守卫）。
+> 其余文档改为引用，不再复制键表 —— 复制即漂移。
+
 ## AI 对接
 
 ```bash
@@ -127,5 +132,5 @@ python3 -m pytest tests/ -q -n 4
 
 ## 测试
 
-- Selenium headless Chrome 回归套件（`tests/test_*.py`，246 用例）
+- Selenium headless Chrome 回归套件（`tests/test_*.py`，334 用例；权威计数见 AGENTS.md）
 - 每个用例断言页面加载零 JS 错误

@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <title>A 型 · 数据表格方案</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -490,7 +490,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>A 型 · 数据表格方案</h1>
-      <div class="meta">创建: 2026-08-29 10:32 · 编辑: 2026-08-29 10:32<br>字数: 1,333 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>table-guide.md</code></span></div>
+      <div class="meta">创建: 2026-09-17 14:48 · 编辑: 2026-09-17 14:48<br>字数: 1,274 · 阅读约 6 分钟<span class="meta-path"> · 路径: <code>table-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
@@ -659,6 +659,9 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 <p><strong>核心差异</strong>：A 型追求极简和零依赖，适合作为 CI/CD 产物、静态站点的一部分或临时数据查看工具。不是 Notion/Airtable 的替代品，而是在「需要快速展示结构化数据」场景下的轻量级补充。</p>
 <hr>
 <h2 id="功能清单">功能清单</h2>
+<blockquote>键规范（列属性 / 列类型 / options / Tab / actions / videos）<strong>只在</strong></blockquote>
+<blockquote><code>html-gen help table</code> 的键规范段（实现: <code>html-gen.py</code> 的 <code>TEMPLATE_CONTRACT['table']</code>）。</blockquote>
+<blockquote>本清单只记<strong>能力</strong>，不枚举键名。</blockquote>
 <h3 id="已实现">已实现 ✅</h3>
 <table><thead><tr>
 <th>功能</th>
@@ -711,18 +714,18 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 <td>P0</td>
 </tr>
 <tr>
-<td>序号列 (showIndex)</td>
-<td>OPTIONS.showIndex 渲染首列序号，Cinema 模型 42px 显式宽度</td>
+<td>序号列</td>
+<td>渲染首列序号，Cinema 模型 42px 显式宽度</td>
 <td>P0</td>
 </tr>
 <tr>
-<td>整行详情字段 (splitFull)</td>
-<td>字段在分栏详情占整行宽，<code>\n</code>→<code><br></code> 段落渲染（原文/白话/历任皇帝）</td>
+<td>整行详情字段</td>
+<td>字段在分栏详情占整行宽，换行转段落渲染（原文/白话/历任皇帝）</td>
 <td>P0</td>
 </tr>
 <tr>
-<td>默认筛选 (defaultFilter)</td>
-<td>options.defaultFilter {key,value} 加载后自动筛选（大明时间轴默认嘉靖）</td>
+<td>默认筛选</td>
+<td>加载后自动按指定列筛选（大明时间轴默认嘉靖）</td>
 <td>P0</td>
 </tr>
 <tr>
@@ -736,18 +739,18 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 <td>P0</td>
 </tr>
 <tr>
-<td>列隐藏 (initialHidden/hide)</td>
-<td>默认隐藏列（设置面板可开）；永不可见列</td>
+<td>列隐藏双语义</td>
+<td>默认收起（设置面板可开启） vs 永不可见（键名与语义差异见 help）</td>
 <td>P1</td>
 </tr>
 <tr>
 <td>列冻结 / 右侧固定</td>
-<td>col.freeze sticky 左列；col.stickyRight 视口右侧固定</td>
+<td>sticky 左列；视口右侧固定列</td>
 <td>P1</td>
 </tr>
 <tr>
 <td>分栏模式列过滤</td>
-<td>col.preview 仅预览列显示于分栏；options.columnsSplit 指定列集</td>
+<td>仅预览列显示于分栏；可显式指定分栏列集</td>
 <td>P1</td>
 </tr>
 <tr>
@@ -757,7 +760,7 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 </tr>
 <tr>
 <td>操作按钮列</td>
-<td>actions 列：copyKey/hrefKey/desc/handler 四种按钮</td>
+<td>actions 列：复制字段 / 打开链接 / 描述 / 自定义 handler 四种按钮</td>
 <td>P1</td>
 </tr>
 <tr>
@@ -767,7 +770,7 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 </tr>
 <tr>
 <td>CSV 导出 / 批量操作</td>
-<td>exportCSV / rowSelect 工具栏（全选/取消/导出）</td>
+<td>导出按钮 / 行选择工具栏（全选/取消/导出）</td>
 <td>P2</td>
 </tr>
 <tr>
@@ -873,73 +876,14 @@ open index.html</code></pre>
     { "strategy": "瞒天过海", "category": "胜战计" }
   ]
 }</code></pre>
-<p>列属性速查（对应 COLUMNS 元素属性）：</p>
-<table><thead><tr>
-<th>字段</th>
-<th>说明</th>
-</tr></thead><tbody>
-<tr>
-<td><code>key</code></td>
-<td>必填，列标识，与 <code>data</code> 行内字段名一致</td>
-</tr>
-<tr>
-<td><code>label</code></td>
-<td>表头显示名</td>
-</tr>
-<tr>
-<td><code>type</code></td>
-<td><code>string</code>（默认）/ <code>number</code> / <code>pills</code> / <code>actions</code></td>
-</tr>
-<tr>
-<td><code>sortable</code></td>
-<td>是否可排序（默认 true）</td>
-</tr>
-<tr>
-<td><code>locale</code></td>
-<td>排序 locale，如 <code>"zh"</code> 中文排序</td>
-</tr>
-<tr>
-<td><code>width</code></td>
-<td>必填（影院宽度模型，默认 fallback 120px）</td>
-</tr>
-<tr>
-<td><code>freeze</code></td>
-<td>sticky 冻结列</td>
-</tr>
-<tr>
-<td><code>stickyRight</code></td>
-<td>右侧固定列</td>
-</tr>
-<tr>
-<td><code>preview</code></td>
-<td>分栏模式是否显示</td>
-</tr>
-<tr>
-<td><code>hide</code></td>
-<td>永远隐藏（数据保留）</td>
-</tr>
-<tr>
-<td><code>initialHidden</code></td>
-<td>表格默认隐藏，仅预览可见</td>
-</tr>
-<tr>
-<td><code>splitFull</code></td>
-<td>分栏预览整行宽 + <code>\n</code> 转 <code><br></code>（多行文本用这个）</td>
-</tr>
-<tr>
-<td><code>onCellClick</code></td>
-<td><code>"split"</code> 点击单元格直接开分栏</td>
-</tr>
-<tr>
-<td><code>quickFilter</code> / <code>pillFilter</code></td>
-<td>点击筛选相关</td>
-</tr>
-</tbody></table>
+<p>列属性 / 列类型 / options / Tab 属性的<strong>完整键表</strong>见 <code>html-gen help table</code> 的键规范段</p>
+<p>（单一事实源: <code>html-gen.py</code> 的 <code>TEMPLATE_CONTRACT['table']</code>）—— 本指南不再复制键表，</p>
+<p>只保留上述「数据 JSON 是唯一事实源、产物勿手改」的维护纪律与示例。</p>
 <h4 id="字段操作三路径">字段操作三路径</h4>
 <p><strong>修改字段内容</strong>：改 <code>data</code> 数组 → 目标行对象 → 对应 key 的值 → 重新生成。</p>
 <p><strong>添加字段（新增一列）</strong>：</p>
 <ul>
-<li><code>columns</code> 数组 push 一个对象（必给 <code>key</code>/<code>label</code>/<code>width</code>，按需 <code>preview</code>/<code>initialHidden</code>/<code>splitFull</code>）</li>
+<li><code>columns</code> 数组 push 一个对象（必给 <code>key</code>/<code>label</code>/<code>width</code>，其余按需，键名与默认值见 <code>html-gen help table</code>）</li>
 <li><code>data</code> 数组<strong>每一行</strong>都要补该 key（缺失渲染空单元格）</li>
 <li>重新生成</li>
 </ul>

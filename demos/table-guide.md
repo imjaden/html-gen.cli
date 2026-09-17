@@ -79,6 +79,10 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 
 ## 功能清单
 
+> 键规范（列属性 / 列类型 / options / Tab / actions / videos）**只在**
+> `html-gen help table` 的键规范段（实现: `html-gen.py` 的 `TEMPLATE_CONTRACT['table']`）。
+> 本清单只记**能力**，不枚举键名。
+
 ### 已实现 ✅
 
 | 功能 | 说明 | 优先级 |
@@ -92,18 +96,18 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 | 显示 N/M 计数 | 工具栏显示 "显示 X / Y 条" | P0 |
 | 列自动宽度 | 表头固定，内容自适应 | P0 |
 | 零外部依赖 | 单文件 HTML，无需加载 CDN 脚本 | P0 |
-| 序号列 (showIndex) | OPTIONS.showIndex 渲染首列序号，Cinema 模型 42px 显式宽度 | P0 |
-| 整行详情字段 (splitFull) | 字段在分栏详情占整行宽，`\n`→`<br>` 段落渲染（原文/白话/历任皇帝） | P0 |
-| 默认筛选 (defaultFilter) | options.defaultFilter {key,value} 加载后自动筛选（大明时间轴默认嘉靖） | P0 |
+| 序号列 | 渲染首列序号，Cinema 模型 42px 显式宽度 | P0 |
+| 整行详情字段 | 字段在分栏详情占整行宽，换行转段落渲染（原文/白话/历任皇帝） | P0 |
+| 默认筛选 | 加载后自动按指定列筛选（大明时间轴默认嘉靖） | P0 |
 | pills 列整格 split | 标签列整格点击开分栏，pill 点击筛选 stopPropagation 共存 | P0 |
 | 行高统一 | td 7px 8px + cell-pill vertical-align:middle → 全类型表 34-35px | P0 |
-| 列隐藏 (initialHidden/hide) | 默认隐藏列（设置面板可开）；永不可见列 | P1 |
-| 列冻结 / 右侧固定 | col.freeze sticky 左列；col.stickyRight 视口右侧固定 | P1 |
-| 分栏模式列过滤 | col.preview 仅预览列显示于分栏；options.columnsSplit 指定列集 | P1 |
+| 列隐藏双语义 | 默认收起（设置面板可开启） vs 永不可见（键名与语义差异见 help） | P1 |
+| 列冻结 / 右侧固定 | sticky 左列；视口右侧固定列 | P1 |
+| 分栏模式列过滤 | 仅预览列显示于分栏；可显式指定分栏列集 | P1 |
 | 视图预设 | 保存/加载/删除设置（密度/模式/排序/列可见性，≤2KB×10） | P1 |
-| 操作按钮列 | actions 列：copyKey/hrefKey/desc/handler 四种按钮 | P1 |
+| 操作按钮列 | actions 列：复制字段 / 打开链接 / 描述 / 自定义 handler 四种按钮 | P1 |
 | 多标签页 | TABS 定义标签切换 + count | P1 |
-| CSV 导出 / 批量操作 | exportCSV / rowSelect 工具栏（全选/取消/导出） | P2 |
+| CSV 导出 / 批量操作 | 导出按钮 / 行选择工具栏（全选/取消/导出） | P2 |
 | 列宽拖拽记忆 | 拖拽 resize 直接操作 DOM，localStorage 持久化 (html-gen:table:col-widths) | P2 |
 | 快捷搜索 (Cmd+F) | Spotlight 弹窗搜索 (150ms debounce) | P2 |
 | 密度切换 / 设置面板 | 紧凑/标准/舒适 + ⚙️ 下拉（列可见性/视图预设） | P2 |
@@ -179,31 +183,16 @@ HTML 里的 `const COLUMNS` 与数据 JSON 的 `columns` 数组一一对应，�
 }
 ```
 
-列属性速查（对应 COLUMNS 元素属性）：
-
-| 字段 | 说明 |
-|:---|:---|
-| `key` | 必填，列标识，与 `data` 行内字段名一致 |
-| `label` | 表头显示名 |
-| `type` | `string`（默认）/ `number` / `pills` / `actions` |
-| `sortable` | 是否可排序（默认 true） |
-| `locale` | 排序 locale，如 `"zh"` 中文排序 |
-| `width` | 必填（影院宽度模型，默认 fallback 120px） |
-| `freeze` | sticky 冻结列 |
-| `stickyRight` | 右侧固定列 |
-| `preview` | 分栏模式是否显示 |
-| `hide` | 永远隐藏（数据保留） |
-| `initialHidden` | 表格默认隐藏，仅预览可见 |
-| `splitFull` | 分栏预览整行宽 + `\n` 转 `<br>`（多行文本用这个） |
-| `onCellClick` | `"split"` 点击单元格直接开分栏 |
-| `quickFilter` / `pillFilter` | 点击筛选相关 |
+列属性 / 列类型 / options / Tab 属性的**完整键表**见 `html-gen help table` 的键规范段
+（单一事实源: `html-gen.py` 的 `TEMPLATE_CONTRACT['table']`）—— 本指南不再复制键表，
+只保留上述「数据 JSON 是唯一事实源、产物勿手改」的维护纪律与示例。
 
 #### 字段操作三路径
 
 **修改字段内容**：改 `data` 数组 → 目标行对象 → 对应 key 的值 → 重新生成。
 
 **添加字段（新增一列）**：
-1. `columns` 数组 push 一个对象（必给 `key`/`label`/`width`，按需 `preview`/`initialHidden`/`splitFull`）
+1. `columns` 数组 push 一个对象（必给 `key`/`label`/`width`，其余按需，键名与默认值见 `html-gen help table`）
 2. `data` 数组**每一行**都要补该 key（缺失渲染空单元格）
 3. 重新生成
 
