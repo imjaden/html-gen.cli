@@ -173,6 +173,7 @@ html-gen doc -h
 | `width` | `wide` / `narrow` | 内容区宽度：wide=1280px 宽屏 / narrow=720px 窄栏（默认 960px） |
 | `sidebar` | `0` / `1` | 侧边栏显示：`sidebar=0` 隐藏（默认显示） |
 | `toolbar` | `0` / `1` | 工具栏显示：`toolbar=0` 隐藏（默认显示） |
+| `show-md` | `1` | meta 区显示 Markdown 源文件名：`show-md=1` 显示（**默认隐藏**；只显示 basename 文件名，不显示完整路径） |
 
 示例：
 

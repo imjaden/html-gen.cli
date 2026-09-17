@@ -163,7 +163,7 @@ WHITELIST = {
 
 # CL013: 三模板维度白名单 (同样只排除正则误捕的运行时状态, 不得排除真实键)
 WHITELIST_TOPIC = {
-    'doc': {},                       # doc URL 状态 3 项全部为真实键, 无白名单
+    'doc': {},                       # doc URL 状态 4 项全部为真实键, 无白名单 (CL014: 3 → 4, 补 ?show-md)
     'slide': {},                     # slide 行为项为显式清单, 不走提取正则
     'knowledge': {
         # layout-knowledge.html 中 item.active / item.filtered 是模板渲染用的运行时状态字段
@@ -190,8 +190,10 @@ DIMENSIONS = {
 
 # CL013: (主题, 维度) → (提取正则列表, 契约维度, 修复动作)
 # doc.url_state 的契约键带 `?` 前缀 (与 table 同口径), 比对时统一去前缀 (见 _assert_topic_dim)。
+# CL014: doc URL 正则**不得**写作 `[a-z]+` —— 连字符键 `show-md` (layout-doc.html:273) 会被静默漏捕
+# (HG-SEC-180); 钉定 `[a-z][a-z0-9-]*`: 容忍连字符**并**覆盖含数字键 (HG-SEC-184, 如日后的 `?tab2`)。
 TOPIC_DIMENSIONS = {
-    ('doc', 'url_state'): ([r"params\.get\('([a-z]+)'\)"], 'url_state',
+    ('doc', 'url_state'): ([r"params\.get\('([a-z][a-z0-9-]*)'\)"], 'url_state',
                            '在 TEMPLATE_CONTRACT["doc"]["data"]["url_state"] 补该键 '
                            '(键名口径与 table 一致, 带 ? 前缀)'),
     ('knowledge', 'item'): ([r'item\.([a-zA-Z_]\w*)'], 'item',
@@ -450,8 +452,15 @@ class TestHelpContract(unittest.TestCase):
                         f'修复: 确认 behaviors 在 section_order 内 (或为节点末尾默认段)')
 
     def test_17_doc_url_state_matches_template(self):
-        """doc URL 状态: 模板 params.get('x') 消费键 == 契约 url_state 键 (去 ? 前缀; 3 项)。"""
+        """doc URL 状态: 模板 params.get('x') 消费键 == 契约 url_state 键 (去 ? 前缀; 4 项)。
+
+        CL014: 正则容忍连字符键 ⇒ `show-md` (layout-doc.html:273) 从「无守卫覆盖」转为受守;
+        显式键集断言使「提取 4 == 契约 4」在测试文本上可读 (等式本身由 _assert_topic_dim 强制)。
+        """
         self._assert_topic_dim('doc', 'url_state')
+        self.assertEqual(dim_keys('url_state', 'doc'),
+                         {'?sidebar', '?toolbar', '?width', '?show-md'},
+                         'doc url_state 契约键集应为 4 项 (CL014 补 ?show-md)')
         for key in dim_keys('url_state', 'doc'):
             self.assertTrue(key.startswith('?'),
                             f'doc url_state 键名口径应与 table 一致 (带 ? 前缀): {key!r}')

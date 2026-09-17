@@ -809,6 +809,9 @@ TEMPLATE_CONTRACT = {
                 ('?sidebar', 'Bare 模式: sidebar=0 隐藏侧边栏 (默认隐藏, 知识库嵌入自动降级)', ''),
                 ('?toolbar', 'Bare 模式: toolbar=0 隐藏工具栏 (默认隐藏)', ''),
                 ('?width', '正文宽度三级 width=narrow|medium|wide (默认 medium 即 960px; 不持久化)', ''),
+                # CL014: 模板真实消费的 URL 键 (layout-doc.html L81-83/L272-273), 与上三条同一渲染清单;
+                # 说明文本只用等号/裸词形态 (勿含 ASCII「词元:」片段, 免污染 spec_key_tokens() 口径)。
+                ('?show-md', 'meta 区源文件名显示开关 show-md=1 (默认隐藏, 仅显示 basename 脱敏文件名)', ''),
             ],
         },
         'section_order': ['url_state', 'cli'],
