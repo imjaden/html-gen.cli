@@ -2440,3 +2440,45 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - HG-SEC-180/O1 就地闭合（四项判据齐）；HG-SEC-181/183/185 + O-CL014-1 另立批处置；HG-SEC-186 🟢 留档（未来 harness 修订可选）
 - .review-level.yaml：CL013 条目 findings_open 2→1（180 闭合）、设计评审 v1.4 条目 4→2（182/184 闭合）+ 新增本审计条目
 - 报告: `documents/review/help-contract-cl014-impl-audit-v1.0-20260917.md`
+
+## 2026-09-27 — 剪贴板回退统一设计 v1.1 设计评审（PASS 85/100，HTML-GEN-CL015）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md`（`dc14a38`，决策已定稿 T1+D1..D10，v1.0 `0c6acdb`）；上游跨仓交接件 SCRIPT-MINER-CL042；未推 5 笔中 3 笔属本批（`0c6acdb`/`dc14a38`/`d5da78f`）
+- **Verdict**: ✅ PASS 85/100（机制经 scratch 原型 + 真非 localhost origin 端到端实证 · 0 🔴 · 8 🟡 非阻断折入 [3/6] · 7 🟢 record）
+- **Score**: 85 / 100
+- **Tracking**: HG-SEC-187..194（🟡×8 非阻断）+ HG-SEC-195..201（🟢×7 record）
+
+### Summary
+
+设计核心机制**成立且已实证**：在 scratch 副本（仓库零改动）内把 §3 canonical 块原文插入 `layout-doc.html` 并按 §4 改写 2 个调用点，用项目自带 headless Chrome 实跑 —— 非安全上下文走 `execCommand` 回退（spy 被调用）、`execCommand→false` 出失败文案、D5 `onOk` 的 `✓` 仅在真成功出现，4/4 断言通过。**问题定性在真 origin 复现**：`python3 -m http.server --bind 0.0.0.0` + `http://192.168.31.178:8917/demos/usage-guide.html`（`isSecureContext=false`、`navigator.clipboard=undefined`）点击标题 → toast 仍报「已复制: usage-guide.md」（假成功端到端坐实，A/B 负例成立）。事实卡 F1–F14 独立复算：11 条逐字成立（F2 含 OK 88/WARN 47/FAIL 38 与「34 处产物 FAIL」分布逐字吻合；F12 `demo --rebuild` 副本实跑 3 产物 byte-IDENTICAL、`demos/index.html` 未变），3 条表述/枚举偏差（F9/F10/F7）。§7 验收全部可复跑且**只读探针零写他仓**（`git -C ../script-miner status --short` 空）。扣分集中在 **§5 重生成矩阵可复跑性**：命令集未记录各产物实际注入参数（按原文执行 knowledge 4/4 标题退化为「知识库」、10/25 doc 丢 corner、14/14 table 缺 title；补参后 countries/cloudwise 反证 byte-IDENTICAL），且 43 个 demos 产物中 22 个（51%）补齐参数后仍有 10–728 行历史陈旧差异（`.home-link`/`--text-primary` 等基座）⇒「只差 canonical 块 + meta 时间戳」纪律前提对半数不成立；78 数经复算去重为 77（`demos-index.html` 被 table 行与 demo 行重复计）。
+
+### Findings
+
+- 🔴 0 / 🟡 8（非阻断）/ 🟢 7（record）:
+  - **HG-SEC-187**（🟡 非阻断）§5 命令集缺参不可复现（knowledge 缺 `--title/--subtitle/--welcome`；doc 缺 `--github-url`；table 缺 `--title/--github-url/--home-url`）→ 处置：§5 增「逐产物实测参数集」表（报告 §5 已回收）
+  - **HG-SEC-188**（🟡 非阻断）§5 纪律 1 前提与实测不符（22/43 陈旧，10–728 行）→ 处置：先做零改动基线重生成单独成笔，或登记差异白名单
+  - **HG-SEC-189**（🟡 非阻断）A3/T4「产物面 0 FAIL/0 WARN」在 `demos/usage-guide.html:961`（md 正文，源 `demos/usage-guide.md:274`）不可达 → 改写为含 `document.execCommand('copy')` 字面量表述 + 行号订正
+  - **HG-SEC-190**（🟡 非阻断）T9① 夹具固定 `isSecureContext=false` ⇒ 不触达 `writeText().catch()` 路径，用例空转 → 补 `secure` 变体夹具
+  - **HG-SEC-191**（🟡 非阻断）canonical 块插入锚点未定义 ⇒ 落点错时 toast 解析降级 `console.log`，静态守卫不可见 → §3 规定锚点
+  - **HG-SEC-192**（🟡 非阻断）`readonly` + `select()` 移动 Safari 兼容未验证（现行实现无 `readonly`）→ 登记未验证面或加兼容分支
+  - **HG-SEC-193**（🟡 非阻断）版本同步面漏 `html-gen.py:12` docstring（D7「4 处常量」实为 5）
+  - **HG-SEC-194**（🟡 非阻断）文档同步面漏 `skills/html-gen-doc|table/SKILL.md` 2 行 + `features.md:44/120/190` 三行订正；help 契约段（`TEMPLATE_CONTRACT` 无剪贴板键）应显式标注「不动」
+  - **HG-SEC-195..201**（🟢 record）78→77 重复计 / prompts 枚举漏 2 文件 + table 行「顶层 output 已带」不实（8/8 无 output）/ §1.2 doc:424「无条件 ✓」上下文混写 + table 行号 1262 错位 / §2.A「1 个出现位置」vs「块内 3 次」措辞 / `src/` 打包源未重建（已装 CLI v3.3 仍产旧代码，非本批 git 面）/ CL016 编号双语义 / doc 行 `--subtitle` 未评估 + 9 产物 favicon 位置差异
+
+### Positives
+
+- 未采信设计自报：F2 判级分布用只读探针独立复跑，得 **同一组数**（OK 88/WARN 47/FAIL 38，173 调用点，FAIL 34 处产物分布逐条吻合）
+- **机制不靠推断靠实跑**：canonical 块 + 调用点改写做成 scratch 原型，headless Chrome 观察 spy 计数与 toast 文本，D5 `onOk` 语义（成功 `✓` / 失败 `¶` + 失败文案）实证
+- **用户在意的 bug 在真 origin 复现**：LAN + `http.server` 下 `isSecureContext=false`、`clipboard=undefined`，修前页面仍报「已复制」⇒ A2 验收路径与 T5 负例均可判
+- 补记设计的「未核实项」：headless `file://` 下真实 `document.execCommand('copy')` 返回 **`false`**（同环境 `isSecureContext=True`、`clipboard=[object Clipboard]`）⇒ 设计「用 spy 断言行可达」的取舍正确且必要
+- 实证 T11 的 SKIP 分支必要：复算期间 **8899 端口被他人进程占用**（`lsof` PID 56788 非本会话），换 8917 才可跑
+- 只读探针「零写他仓」经 `git -C ../script-miner status --short` 空断言成立；`demo --rebuild` 的 featured 集稳定性前提（`demos/index.html` 只读入不写出，`html-gen.py:1716`）经副本实跑 byte-IDENTICAL 证实
+
+### 处理
+
+- ✅ PASS → 单笔提交 `audit@review: 剪贴板回退统一设计 v1.1 评审 PASS (HTML-GEN-CL015)`（仅报告 + review-log + .review-level.yaml），push github main（ff-only；不推 origin/gitee；不 force）
+- HG-SEC-187..194 🟡 非阻断 → 归属 [3/6] dev 折入实施（不重开评审轮）；HG-SEC-195..201 🟢 → 归属同批笔 4/6/7 文档与计数订正；HG-SEC-199 → 发版流程（非本批提交面）
+- 本批 push 一并推出他线 2 笔既有产物（`92fcd04` ops handoff 文档 / `cb52b50` cloudwise 周报同步），按任务书要求不回退、不改写
+- 报告: `documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md`

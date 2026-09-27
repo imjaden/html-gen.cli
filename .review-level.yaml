@@ -796,4 +796,15 @@ review_history:
     findings_open: 1
     tracking: "HG-SEC-186 (🟢 record 非阻断: ops harness T51/报告 §4 弱代理标注词义混淆 '内联 7 处' 实为 '内联 5/全文 7'; 判据仍正确零行为影响, 修正可选随未来 harness 修订)"
     report: documents/review/help-contract-cl014-impl-audit-v1.0-20260917.md
+  - date: 2026-09-27
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "html-gen 剪贴板回退统一设计 v1.1 (HTML-GEN-CL015 [2/6]; 基线 dc14a38 决策定稿 T1+D1..D10; v1.0 0c6acdb; 4 模板 8 调用点收敛 canonical copyText + 77 tracked 产物重生成 + 守卫 T1-T11; 上游跨仓交接件 SCRIPT-MINER-CL042)"
+    verdict: PASS
+    score: 85
+    findings_total: 15
+    findings_open: 15
+    tracking: "HG-SEC-187..194 (🟡×8 全部非阻断, 折入 [3/6] dev: §5 命令集缺参/§5 陈旧前提 22-43/A3 prose 判级不可达/T9 夹具/T11 锚点/readonly 移动端/版本面 html-gen.py:12/skills·features 文档面) + HG-SEC-195..201 (🟢×7 record: 78→77/prompts 枚举·table output/§1.2 上下文混写/src 打包 CLI 陈旧/CL016 双语义); 0 🔴 阻塞, 机制经 scratch 原型 + 真 LAN origin 端到端实证"
+    report: documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md
 
