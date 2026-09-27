@@ -11,7 +11,7 @@
 
 | 编号 | 标题 | 状态 | kind | prio | 方案文档 | 备注 |
 |:--|:--|:--|:--|:--|:--|:--|
-| **HTML-GEN-CL015** | html-gen 剪贴板回退统一 · 跨仓转交 SCRIPT-MINER-CL042 | READY（[1/6] 设计已定稿，[2/6] 评审已派发） | independent | P2 | `documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md` | 起点 commit `dc14a38`；决策 T1 + D1..D10 已 pin |
+| **HTML-GEN-CL015** | html-gen 剪贴板回退统一 · 跨仓转交 SCRIPT-MINER-CL042 | READY（[1/6] 设计定稿 · **[2/6] 评审 PASS 85/100 + 已 push**） | independent | P2 | `documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md` | 起点 `dc14a38`；评审记录 `4db7089`；findings HG-SEC-187..201（0 阻塞，折入 [3/6]） |
 
 > 取号核对：CL015 = 本仓新式序列 max(CL014) + 1；`hm loop next-code` 回 `HTML-GEN-CL016` ⇒ CL015 已绑定。
 
@@ -24,8 +24,8 @@
 | T1 | 需求核实与澄清：交接件 3 处偏差（P1 范围少算 / P2 漏算本仓产物 / P3 验收条款越界）+ T1 验收口径裁定 | — | ✅ 已定案（用户 `1 采用推荐`） |
 | T2 | 申请编号 + draft 登记（HTML-GEN-CL015；`hm loop check .` 6/6） | T1 | ✅ 已完成 |
 | T3 | 设计方案 v1.0 / v1.1（含 commit：`0c6acdb` / `dc14a38`；决策定稿 T1+D1..D10） | T2 | ✅ 已完成 |
-| T4 | **[2/6] 设计评审**（review role；**评审 PASS 后由该会话 push**，用户 2026-09-27 授权） | T3 | 🔄 已派发（`cache/closed-loop/cl015-design-review-dispatch.log`） |
-| T5 | **[3/6] dev 实施**：① 四模板 canonical `copyText` 块 + 8 调用点收敛 ② 78 产物全量重生成 ③ 版本 3.4 + README ④ `tests/test_clipboard_fallback.py`（T1–T11）⑤ features/AGENTS 同步（AGENTS 受保护: 分小步 patch 逐次审批 + sha256 比对） | T4 PASS | ⏸ 待放行 |
+| T4 | **[2/6] 设计评审**（review role；**评审 PASS 后由该会话 push**，用户 2026-09-27 授权） | T3 | ✅ 已完成（**PASS 85/100 · B**，0 阻塞；`4db7089` + push github ff-only `5df590a..4db7089`） |
+| T5 | **[3/6] dev 实施**：① 四模板 canonical `copyText` 块 + 8 调用点收敛 ② 78 产物全量重生成 ③ 版本 3.4 + README ④ `tests/test_clipboard_fallback.py`（T1–T11）⑤ features/AGENTS 同步（AGENTS 受保护: 分小步 patch 逐次审批 + sha256 比对）**⑥ 折入评审 findings HG-SEC-187..194** | T4 ✅ | ⏸ 待放行 |
 | T6 | **[4/6] ops 核查**：只读探针复算「源面+产物面 0 FAIL / 0 WARN」+ A/B 负例成立 + 非 localhost origin（192.168.31.178）实机复制 | T5 | ⏸ |
 | T7 | **[5/6] 审计**（review role）：逐 finding 独立复算 + 「新增项 = 0」显式回答 | T6 | ⏸ |
 | T8 | **[6/6] 复盘 + 收尾**：review-log + 给 script-miner 的转交回执（O2/O3） | T7 | ⏸ |
@@ -53,6 +53,9 @@
 
 - 待办真值: `cache/draft/TODO-20260927.md` · 队列视图: `hm loop list` · 单号状态: `hm loop status HTML-GEN-CL015`
 - 设计稿: `documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md`（§0.2 决策定稿表 / §9 事实卡 F1–F14）
+- 评审记录: `documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md`（**PASS 85/100 · B**，0 阻塞，
+  findings HG-SEC-187..201 = 8 🟡 折入 [3/6] + 7 🟢 折入文档笔）+ `review-log.md` / `.review-level.yaml` 同步
+  （同笔 commit `4db7089`，已 push）
 - 跨仓来源件: `~/CodeSpace/script-miner/cache/handoff/prompt-dev-html-gen-doc-clipboard-fallback-20260927.md`（只读）
 - 派发留档（`cache/**` gitignored）: `cache/review-prep/prompt-html-gen-cl015-design-review-20260927.md`
   + `cache/review-prep/dispatch-html-gen-cl015-design-review-20260927.sh` + `cache/closed-loop/cl015-design-review-dispatch.log`
@@ -66,6 +69,10 @@
 
 ## 五、历史
 
+- 2026-09-27 [2/6] 评审 **PASS 85/100 · B**（0 阻塞）→ `4db7089` 已 push（`5df590a..4db7089`，ff-only，
+  未推 gitee，未 force）。评审增值实证：canonical 块原型实跑（headless Chrome 4/4 断言）+
+  **真非 localhost origin 端到端**（`http://192.168.31.178:8917/demos/usage-guide.html`，修前实机坐实假成功）。
+  折入项：HG-SEC-187..194 → [3/6] dev；195..201 → 同批文档笔；199 → 发版流程（非本批提交面）。
 - 本页**首次建立**（2026-09-27）：CL015 批的会话轮转入口。此前本仓无 TODO-handoff.md，交接靠
   `cache/handoff/` 与 `documents/handoff/` 快照；如需追溯更早批次的执行明细，见
   `git log --oneline`、`cache/closed-loop/2026*` 步骤 JSON 与 `review-log.md`。
