@@ -1,7 +1,7 @@
-# html-gen 剪贴板回退统一设计 v1.0（canonical copyText）
+# html-gen 剪贴板回退统一设计 v1.1（canonical copyText）
 
 > 日期: 2026-09-27
-> 状态: 设计 v1.0 —— **待评审**；决策 D1..D10 附推荐项，待用户逐项 pin
+> 状态: 设计 v1.1 —— **决策已定稿（用户 2026-09-27 pin: T1=采用推荐、D1..D10=全采推荐）；待评审**
 > 闭环: **HTML-GEN-CL015**（kind=independent；编号已就位，见 §9 F1）
 > 来源: 跨仓转交件 `~/CodeSpace/script-miner/cache/handoff/prompt-dev-html-gen-doc-clipboard-fallback-20260927.md`
 >       （2026-09-27 20:45 CST，源自 SCRIPT-MINER-CL042 全仓巡检 `efficiency/clipboard-fallback-check.py`）
@@ -9,13 +9,15 @@
 > **与交接件的偏差**: 交接件只列 2 处（`layout-doc.html:315` / `layout-slide.html:590`）且验收要求
 >   修改 script-miner 仓文件；**本设计按本仓实测把范围校正为 4 模板 8 处 + 78 个产物**，并把验收口径
 >   改回「本仓可达」（§1.3 / T1）。偏离处均显式标注，供评审逐条裁定。
-> 开放决策项: D1..D10 + **T1（与交接件验收条款冲突，须裁定）**
+>   注: **T1 定稿 = 采用推荐**（改口径），即上述偏差已被用户认可为设计基线。
+> 开放决策项: **无**（T1 + D1..D10 已于 2026-09-27 全部 pin，见 §0.2 / §0.3）
+> 基线链: v1.0（`0c6acdb`，`docs@design`，设计初稿）→ **v1.1（决策定稿，本版）**
 
 ---
 
 ## 0. 变更摘要
 
-### 0.1 本版（v1.0）要点
+### 0.1 本版要点（v1.0 立论；v1.1 = 决策定稿，内容不变）
 
 1. **问题定性**：`navigator.clipboard` 仅在安全上下文（https / localhost / file://）存在；`http://<局域网 IP
    或自定义域名>` 下它是 `undefined`，调用处直接抛 `TypeError`。写在 `try/catch` / `.catch()` 里的兜底
@@ -28,9 +30,12 @@
 4. **产物**：模板 JS 逐页内嵌 ⇒ 需重生成 **78 个 tracked 产物**（§5）；其中 `demos/slide-demo.html`
    无 md 源（手工同步）、`prompts/` 走 `prompt --site`。
 
-### 0.2 决策待 pin 表
+### 0.2 决策定稿表（用户 2026-09-27 pin：T1 = 采用推荐；D1..D10 = 全采推荐）
 
-| 编号 | 决策 | 推荐 | 备选 | 影响面 |
+> 定稿纪律：**已 pin 项即设计基线，[3/6] dev 按本表逐条落地**；另有偏离须在设计稿登记 ⚠️ 并说明理由，
+> 不得静默更换（无澄清条款）。未采纳备选列仅作留痕。
+
+| 编号 | 决策 | **定稿（pin）** | 未采纳备选 | 影响面 |
 |:--|:--|:--|:--|:--|
 | **T1** | 交接件验收条款（script-miner 巡检 `--only skills/ --only tool-nav-manager/` FAIL 归零）与「只改本仓」边界**冲突**（那 9 个文件全在他仓） | **改口径**：本仓侧以同款巡检（只读探针 / `--root`）验收；他仓 9 文件转交 script-miner（其 CL043 已登记）+ 回执 | 保持交接件原文（= 必须改他仓，越界） | 验收定义 |
 | **D1** | 收敛范围 | **四模板 8 处全部收敛**（含当前判级 OK 的 4 处，换取「块外零出现」不变量） | 仅修 4 处不合格点 | 模板改写面 |
@@ -43,6 +48,12 @@
 | **D8** | 「changelog」落点 | 本仓**无 CHANGELOG 文件**（实测）；落 `features.md` 一行 + commit message | 新建 `CHANGELOG.md` | 文档面 |
 | **D9** | 产物重生成范围 | **全量**（78 tracked 产物，§5 矩阵） | 仅重生成「有 FAIL/WARN」的产物（= 全部，结果相同） | 提交体积 |
 | **D10** | `layout-knowledge.html` 标题复制**闸门正则**缺陷（`^(https?:\|/\|~/)` 不匹配脱敏 basename ⇒ 静默无反应；doc 侧已有 `[\w.\- ]+$` 兜底） | **纳入本批**（同函数、同批、低风险） | 折入另批 | 功能面 |
+
+### 0.3 修订记录
+
+| 版本 | 触发 | 处理 |
+|:--|:--|:--|
+| v1.0 → **v1.1** | 用户 2026-09-27 pin 回合：`1 采用推荐`（T1）+ `2 全采推荐`（D1..D10）+ `4 押后`（script-miner 转交回执） | ① T1 定稿为「改口径」，§1.3 三处偏差随之成为**设计基线**（不再是待裁定项）；② D1..D10 全部按推荐项定稿（§0.2 表头改「定稿（pin）」+ 新增定稿纪律条）；③ 状态行改「决策已定稿，待评审」；④ 开项清空；⑤ **内容零变更**（仅决策状态与修订记录）——[2/6] 评审基线 = 本版 `git rev` |
 
 ---
 
@@ -360,6 +371,7 @@ PY
 | F11 | 本机非 localhost origin 可用 | `ipconfig getifaddr en0` | `192.168.31.178`（T11 可用） |
 | F12 | 重生成覆盖面锚点 | `grep -n 'rebuild' -A 60 html-gen.py` | `demo --rebuild` 只写 `_registry.json` + `data/_demos-data.json` + `demos-index.html`；`demos/index.html` 仅**读入**作 featured 源 |
 | F13 | `node --check` 可用 | `node --version` | `v26.0.0` |
+| F14 | 设计两笔提交可复核 | `git log --oneline -- documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md` | v1.0 = `0c6acdb`（1 file, +389）；v1.1 = **本版自身提交**（hash 取该命令首行 —— 自指 hash 不写入正文，避免 amend 循环） |
 
 **未核实（禁止据此写验收断言）**：巡检脚本对「回退返回值 / 失败反馈」不判（仅机制推断，未行级核实）；
 headless Chrome `file://` 下 `execCommand('copy')` 真实返回值；`hs` 是否默认绑定 `0.0.0.0`（故 T11 用
@@ -367,16 +379,17 @@ headless Chrome `file://` 下 `execCommand('copy')` 真实返回值；`hs` 是�
 
 ---
 
-## 10. 提交计划（拟 6 笔，串行）
+## 10. 提交计划（拟 7 笔，串行；第 1、2 笔今日已完成）
 
 | 序 | commit（subject 前缀带完整编号） | 内容 |
 |:--|:--|:--|
-| 1 | `docs@design: 剪贴板回退统一设计 v1.0 (HTML-GEN-CL015)` | 本文档（**今日已 commit**） |
-| 2 | `feat@templates: canonical copyText 块 + 8 调用点收敛 (HTML-GEN-CL015)` | 四模板（`layout-{doc,slide,table,knowledge}.html`） |
-| 3 | `sync@demos: 模板产物全量重生成 78 文件 (HTML-GEN-CL015)` | §5 矩阵（doc 25 / knowledge 4 / table 14 / demo 3 / slide-demo 1 / prompts 31） |
-| 4 | `test@templates: 剪贴板回退守卫 T1-T11 + 版本断言同步 (HTML-GEN-CL015)` | 新增 `tests/test_clipboard_fallback.py` + 5 处版本断言 |
-| 5 | `feat@cli: 版本 3.4 (2026-09-27) + README 同步 (HTML-GEN-CL015)` | `html-gen.py` 常量 + 两 README |
-| 6 | `docs@html-gen: features/AGENTS 同步 + review-log (HTML-GEN-CL015)` | `features.md` + `AGENTS.md`（**受保护：分小步 patch 逐次审批 + sha256 比对**）+ 评审记录 |
+| 1 | `docs@design: 剪贴板回退统一设计 v1.0 (HTML-GEN-CL015)` | 设计初稿 —— **已完成** `0c6acdb` |
+| 2 | `docs@design: 剪贴板回退统一设计 v1.1 — 决策定稿 T1+D1..D10 (HTML-GEN-CL015)` | 本版（`git mv` v1.0→v1.1，决策定稿） —— **已完成**（见 §9 F14） |
+| 3 | `feat@templates: canonical copyText 块 + 8 调用点收敛 (HTML-GEN-CL015)` | 四模板（`layout-{doc,slide,table,knowledge}.html`） |
+| 4 | `sync@demos: 模板产物全量重生成 78 文件 (HTML-GEN-CL015)` | §5 矩阵（doc 25 / knowledge 4 / table 14 / demo 3 / slide-demo 1 / prompts 31） |
+| 5 | `test@templates: 剪贴板回退守卫 T1-T11 + 版本断言同步 (HTML-GEN-CL015)` | 新增 `tests/test_clipboard_fallback.py` + 5 处版本断言 |
+| 6 | `feat@cli: 版本 3.4 (2026-09-27) + README 同步 (HTML-GEN-CL015)` | `html-gen.py` 常量 + 两 README |
+| 7 | `docs@html-gen: features/AGENTS 同步 + review-log (HTML-GEN-CL015)` | `features.md` + `AGENTS.md`（**受保护：分小步 patch 逐次审批 + sha256 比对**）+ 评审记录 |
 
 > 纪律：每笔 `git add` **显式 pathspec**（防夹带并行 WIP）；`cache/**` 整树 gitignore ⇒ draft 回写/步骤产物
 > 不产生提交需求；**只 commit 不 push**（推送待用户放行）。
@@ -385,5 +398,7 @@ headless Chrome `file://` 下 `execCommand('copy')` 真实返回值；`hs` 是�
 
 ## 11. 下一步（今日范围外，等指示）
 
-1. **[2/6] 设计评审**（review role）：审定 T1 + D1..D10，重点核 §1.3 三处偏差与 §9 事实卡可复算性。
-2. 评审 PASS/条件通过后按 §10 推进 [3/6] dev → [4/6] ops 核查 → [5/6] 审计 → [6/6] 复盘。
+1. **[2/6] 设计评审**（review role）：以 **v1.1** 为基线（§0.3），重点核 §1.3 三处偏差（已 pin 为设计基线）
+   与 §9 事实卡的可复算性；决策项已定稿 ⇒ 评审聚焦**机制/判据/遗漏面**，不再裁定选项。
+2. 评审 PASS/条件通过后按 §10 第 3~7 笔推进 [3/6] dev → [4/6] ops 核查 → [5/6] 审计 → [6/6] 复盘。
+3. 用户 `4 押后` 项（script-miner 转交回执 O2/O3）：转交件**暂缓发出**，待本批 [3/6] 落地后重提。
