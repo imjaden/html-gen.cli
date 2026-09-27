@@ -20,4 +20,4 @@ sessions:
 handoff:
   enabled: true
   doc: documents/handoff/handoff-html-gen.cli-ops.md
-  updated_at: '2026-08-27'
+  updated_at: '2026-09-27'

@@ -1,68 +1,74 @@
 ---
-title: Handoff - ops/20260824_164950_9
-date: 2026-08-27
-source_session: 20260824_164950_97d04e
-generated_by: hermes-0.19.1
-summary: 摘要开始
-next: 通知对应 session 完成 2 文件提交；模板二期走设计管线排期；如需 gitee 同步可 git push ori
-risk: 工作区 2 文件未提交（countries-table、history-strategy-table，其他 sessio
+title: Handoff - ops/20260917_222643_c
+date: 2026-09-27
+source_session: 20260917_222643_ce7e33
+generated_by: hermes-0.21.3
+topic: html-gen
+type: handoff
+version: 1.0
+author: ops
+summary: CL005 六步闭环（设计三版→评审 78/86/93→dev→ops 核查 21/21→审计 v1.0 90 分 CONDITIONAL→修 SEC-1→v1
+next: 试用新版 `hs`（重点：目录级启动锁、`--json` 通道、`set`/`search`/`dashboard`/`
+risk: PyPI 1.4.0 + 1.4.1 未发布（你自试用验证后再定）；无其他未结项。
 ---
 
 # Handoff: html-gen-ops
 
 📌 语义摘要
 
-摘要开始
 **已完成**
-落地页两轮迭代+http-server 建议采纳+字体修复全部闭环：github/main=b0d4256 已同步，185/185 全绿，pages-index skill 沉淀，review 审计链完整（HG-SEC 系列全部关闭）。
+CL005 六步闭环（设计三版→评审 78/86/93→dev→ops 核查 21/21→审计 v1.0 90 分 CONDITIONAL→修 SEC-1→v1.1 PASS 100/100→收尾）；O 系列五项（O7/O8/O9/O10/O11）直接修正；全部已 push，`origin/main == 30c6260`，工作树干净，605 passed，无残留孤儿/锁，draft 已核实入完成节。
 
 **未完成**
-工作区 2 文件未提交（countries-table、history-strategy-table，其他 session 内容扩充）；D8 模板二期（html-gen index 子命令）未启动；gitee origin 未同步（按惯例仅推 github）。
+PyPI 1.4.0 + 1.4.1 未发布（你自试用验证后再定）；无其他未结项。
 
 **下一步建议**
-通知对应 session 完成 2 文件提交；模板二期走设计管线排期；如需 gitee 同步可 git push origin main。
-摘要结束
+试用新版 `hs`（重点：目录级启动锁、`--json` 通道、`set`/`search`/`dashboard`/`mcp` 退出码），确认无误后一句「发布」走 `release-pypi.sh`；如再发现观察项按「直接修正」快修。
 
 ## 目标
-hi
+only response: init
 
 ## 输入
 - profile: ops
-- session: 20260824_164950_97d04e
-- 消息数: 459
+- session: 20260917_222643_ce7e33
+- 消息数: 317
 
 ## 输出 / 关键路径
-- /Users/jadenli/CodeSpace/html-gen.cli
-- /Users/jadenli/CodeSpace/html-gen.cli/documents/archive/review-20260908/html-gen-index-optimize-review-v1.0-20260825.…
-- /Users/jadenli/CodeSpace/html-gen.cli/skills
-- /Users/jadenli/CodeSpace/http-server.cli/documents/review/html-gen-optimize-suggestions-20260825.md
+- /Users/jadenli/CodeSpace/hermes-manager/scripts/hermes-projects.yaml
+- /Users/jadenli/CodeSpace/http-server.cli
+- /Users/jadenli/CodeSpace/http-server.cli/src/http_server_cli/cli.py
+- ~/.http-server.cli/config.json
+- ~/.http-server.cli/logs/8085.log
+- ~/.http-server.cli/registry.json
+- ~/CodeSpace/hermes-manager/web
+- ~/CodeSpace/http-server.cli
 
 ## 边界
-- started: 1787561390.99266, messages: 459
+- started: 1789655204.0004869, messages: 317
 
 ## 确认点
-- [ ] 基于以上决策，复核整体需求及方案，罗列待决策清单（若有）
-- [ ] [P3] HG-SEC-036 🟢 html-gen.py 行数漂移 — AGENTS.md 记 569、demos 页记 546、实际 958（待确认以哪个为准，同步两处）。
-- [ ] 证据: 实测 :root.light 下 body=#f5f5f5，h2 计算色 #e0e0e0（≈1.25:1 近乎不可见）、p #9ca3af（≈2.3:1）、Layer 卡文字 #9ca3af …
-- [ ] 建议: 与根页对齐补 rel="noopener"；并考虑纳入 test_05 双源一致性 features（当前 11 项子串断言未覆盖 rel/pointer-events 差异）。
-- [ ] 审计交付（3 文件，已落盘未提交）
+- [ ] 基于以上决策，复述整体需求及解决方案，罗列待决策清单（若有，附推荐项）、下一步行动计划（不要直接执行）
+- [ ] 3 申请任务编号，使用独立模式实施1A闭环流程，等待指示实施
+- [ ] - [ ] s3. Step 3 dev 实施：-p 面 / 未知参数 helper+exit2 / dashboard restart+web --port / tests / docs 四同步 (…
+- [ ] - **独立模式 + 逐步放行**：用户原话「使用独立模式实施1A闭环流程，等待指示实施」；现授权「按推荐A，实施完整的1A闭环流程」。
+- [ ] 40. TERM `hm loop list --pending` → 「HTTP-SERVER-CL003 | ⏳ 待办」+「📌 本项目编号前缀: HTTP-SERVER-CL(新式; 存量兼容 C…
 
 ## 权限
 - [无]
 
 ## 来源
-- e1add13 feat@index: landing theme toggle + copy bu
-- 0b015a4 feat@demos-index: sync theme/copy/footer/2
-- 25f299a test@index: theme/copy/footer cases + dual
-- 5e9508a feat@index: light github-corner white octo
-- 775d27f test@index: hero dynamic/scroll-hint/githu
+- d9a0e29 audit@review: help 契约设计 v1.4 评审 PASS (HTML
+- 3044139 docs@sync: AGENTS.md 测试计数 326→334 + 键表改引用契
+- 15caf87 audit@review: help 契约四模板补齐实现审计 PASS (HTML-
+- 0645a29 audit@review: XSS 转义设计评审 PASS (HTML-GEN-CL
+- 2ed8078 audit@review: help 契约设计 v1.1 复审 PASS (HTML
 
 ## 下一步清单
-1. 继续: hi
-2. 基于以上决策，复核整体需求及方案，罗列待决策清单（若有）
-3. [P3] HG-SEC-036 🟢 html-gen.py 行数漂移 — AGENTS.md 记 569、demos 页记 546、实际 958（待确认以哪个为准，同步两处）。
-4. 证据: 实测 :root.light 下 body=#f5f5f5，h2 计算色 #e0e0e0（≈1.25:1 近乎不可见）、p #9ca3af（≈2.3:1）、Layer 卡文字 #9ca3af …
-5. 建议: 与根页对齐补 rel="noopener"；并考虑纳入 test_05 双源一致性 features（当前 11 项子串断言未覆盖 rel/pointer-events 差异）。
+1. 继续: only response: init
+2. 基于以上决策，复述整体需求及解决方案，罗列待决策清单（若有，附推荐项）、下一步行动计划（不要直接执行）
+3. 3 申请任务编号，使用独立模式实施1A闭环流程，等待指示实施
+4. - [ ] s3. Step 3 dev 实施：-p 面 / 未知参数 helper+exit2 / dashboard restart+web --port / tests / docs 四同步 (…
+5. - **独立模式 + 逐步放行**：用户原话「使用独立模式实施1A闭环流程，等待指示实施」；现授权「按推荐A，实施完整的1A闭环流程」。
 
 ## 建议技能
-(未检测到)
+daily-tracker, git-cloner, github, references, scripts
