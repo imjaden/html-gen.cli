@@ -11,7 +11,7 @@
 
 | 编号 | 标题 | 状态 | kind | prio | 方案文档 | 备注 |
 |:--|:--|:--|:--|:--|:--|:--|
-| **HTML-GEN-CL015** | html-gen 剪贴板回退统一 · 跨仓转交 SCRIPT-MINER-CL042 | READY（[1/6] 设计定稿 · **[2/6] 评审 PASS 85/100 + 已 push**） | independent | P2 | `documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md` | 起点 `dc14a38`；评审记录 `4db7089`；findings HG-SEC-187..201（0 阻塞，折入 [3/6]） |
+| **HTML-GEN-CL015** | html-gen 剪贴板回退统一 · 跨仓转交 SCRIPT-MINER-CL042 | READY（[1/6] 设计定稿 · [2/6] 评审 PASS 85/100 + push · **[3/6] dev 落地 6 笔** · **[4/6] ops 核查 18/18 PASS**） | independent | P2 | `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md` | 起点 `dc14a38`；基线笔 `83c4e2c`；dev 头 `bf61484`；评审记录 `4db7089`；findings HG-SEC-187..201（0 阻塞，已折入 v1.2 §0.4） |
 
 > 取号核对：CL015 = 本仓新式序列 max(CL014) + 1；`hm loop next-code` 回 `HTML-GEN-CL016` ⇒ CL015 已绑定。
 
@@ -25,9 +25,9 @@
 | T2 | 申请编号 + draft 登记（HTML-GEN-CL015；`hm loop check .` 6/6） | T1 | ✅ 已完成 |
 | T3 | 设计方案 v1.0 / v1.1（含 commit：`0c6acdb` / `dc14a38`；决策定稿 T1+D1..D10） | T2 | ✅ 已完成 |
 | T4 | **[2/6] 设计评审**（review role；**评审 PASS 后由该会话 push**，用户 2026-09-27 授权） | T3 | ✅ 已完成（**PASS 85/100 · B**，0 阻塞；`4db7089` + push github ff-only `5df590a..4db7089`） |
-| T5 | **[3/6] dev 实施**：① 四模板 canonical `copyText` 块 + 8 调用点收敛 ② 78 产物全量重生成 ③ 版本 3.4 + README ④ `tests/test_clipboard_fallback.py`（T1–T11）⑤ features/AGENTS 同步（AGENTS 受保护: 分小步 patch 逐次审批 + sha256 比对）**⑥ 折入评审 findings HG-SEC-187..194** | T4 ✅ | ⏸ 待放行 |
-| T6 | **[4/6] ops 核查**：只读探针复算「源面+产物面 0 FAIL / 0 WARN」+ A/B 负例成立 + 非 localhost origin（192.168.31.178）实机复制 | T5 | ⏸ |
-| T7 | **[5/6] 审计**（review role）：逐 finding 独立复算 + 「新增项 = 0」显式回答 | T6 | ⏸ |
+| T5 | **[3/6] dev 实施**：① 四模板 canonical `copyText` 块 + 8 调用点收敛 ② 产物全量重生成 ③ 版本 3.4 + README ④ `tests/test_clipboard_fallback.py`（T1–T11）⑤ features/skills 同步 ⑥ 折入评审 findings HG-SEC-187..194 | T4 ✅ | ✅ 已完成（dev 6 笔 `b4afd4e`→`bf61484`，74 文件，12m22s；基线笔 `83c4e2c`；AGENTS 本批零改动） |
+| T6 | **[4/6] ops 核查**：只读探针复算 + A/B 负例成立 + 非 localhost origin 实机复制 | T5 ✅ | ✅ 已完成（**18/18 PASS**，FAIL 0 / N-A 0；报告 `documents/review/html-gen-clipboard-fallback-ops-verify-v1.0-20260928.md`；反证 3 PASS/7 FAIL） |
+| T7 | **[5/6] 审计**（review role）：逐 finding 独立复算 + 「新增项 = 0」显式回答 | T6 ✅ | 🔄 进行中（2026-09-28 12:2x 派发） |
 | T8 | **[6/6] 复盘 + 收尾**：review-log + 给 script-miner 的转交回执（O2/O3） | T7 | ⏸ |
 | T9 | 仓外（**本会话不做**）：script-miner CL043 手写页修复 + 7 个 vendor 副本重新拷贝 | 本批 [3/6] 落地 | ⏸ 用户押后（`4 押后`） |
 
@@ -52,7 +52,11 @@
 ## 四、指针与状态
 
 - 待办真值: `cache/draft/TODO-20260927.md` · 队列视图: `hm loop list` · 单号状态: `hm loop status HTML-GEN-CL015`
-- 设计稿: `documents/solutions/html-gen-clipboard-fallback-design-v1.1-20260927.md`（§0.2 决策定稿表 / §9 事实卡 F1–F14）
+- 设计稿: `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md`（§0.2 决策定稿表 / §0.4 **v1.2 补记 = [3/6] 唯一口径源** / §5 逐产物参数集 / §9 事实卡 F1–F14）
+- 产物基线笔: `83c4e2c`（"零改动基线重生成 29 文件"，消除模板历史漂移 22 陈旧 + 2 favicon）⇒ [4/6] 起 diff 可比
+- ops 核查: `documents/review/html-gen-clipboard-fallback-ops-verify-v1.0-20260928.md`（**18/18 PASS**；harness
+  `cache/closed-loop/HTML-GEN-CL015-verify.py`，输出存档 `cache/closed-loop/cl015-ops-check.txt`，
+  反证存档 `cache/closed-loop/cl015-harness-reverse.log`）
 - 评审记录: `documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md`（**PASS 85/100 · B**，0 阻塞，
   findings HG-SEC-187..201 = 8 🟡 折入 [3/6] + 7 🟢 折入文档笔）+ `review-log.md` / `.review-level.yaml` 同步
   （同笔 commit `4db7089`，已 push）
@@ -69,6 +73,15 @@
 
 ## 五、历史
 
+- 2026-09-28 [3/6] dev 落地（`b4afd4e`→`bf61484` 6 笔，74 文件）→ [4/6] ops 核查 **18/18 PASS**。
+  关键实测：四模板 canonical 块逐字节一致（sha `e4adb3b7…`）/ 块外 0 / 调用点 8；
+  产物 56 个 `<script>` 区间 2252 行 + 文档面 10 行为唯一差异（零数据层）；
+  只读探针 OK 130 / WARN 0 / FAIL 0（基线笔时 104/47/38）；全量回归 346 passed；
+  真非 localhost（`192.168.31.178`）端到端：`isSecureContext=False` + 真实点击 → `已复制: document.pdf`
+  + **CDP 粘贴回读 = `document.pdf`（真复制实证）** + 无激活 JS 直调 → `复制失败`（禁假成功）。
+  反证：同一 harness 指向基线笔 = 3 PASS / 7 FAIL（判据非恒真）。
+  例外登记：4 个 drama strategy 表不可重生成（JSON 列集落后产物）⇒ 手工同步；`AGENTS.md` 受保护未获审批
+  ⇒ 本批零改动；移动端 Safari `readonly`+`select()` 仍未验证（D4 登记）。
 - 2026-09-27 [2/6] 评审 **PASS 85/100 · B**（0 阻塞）→ `4db7089` 已 push（`5df590a..4db7089`，ff-only，
   未推 gitee，未 force）。评审增值实证：canonical 块原型实跑（headless Chrome 4/4 断言）+
   **真非 localhost origin 端到端**（`http://192.168.31.178:8917/demos/usage-guide.html`，修前实机坐实假成功）。
