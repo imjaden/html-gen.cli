@@ -293,8 +293,17 @@ class TestDocShowMd(unittest.TestCase):
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
     def test_doc_title_click_copy_path(self):
-        """点击侧边栏标题 → toast 复制内容 = 脱敏文件名 (非 URL)."""
+        """点击侧边栏标题 → toast 复制内容 = 脱敏文件名 (非 URL).
+
+        CL015 夹具说明: headless Chrome 在 `file://` 下 `writeText` 抛 NotAllowedError 且
+        `execCommand('copy')` 返回 false ⇒ 真实复制不可用。修前实现「无条件 showToast('已复制: …')」
+        使该用例恒绿（= 假成功断言）；canonical copyText 如实报失败后，须注入可用 clipboard
+        才能观测到成功路径的 toast 文案（本用例真正要断言的是「文案 = 脱敏文件名而非 URL」）。
+        """
         self._load()
+        self.driver.execute_script(
+            "Object.defineProperty(navigator, 'clipboard', { value: {"
+            " writeText: function () { return Promise.resolve(); } }, configurable: true });")
         el = self.driver.find_element(By.ID, 'sidebarTitle')
         self.driver.execute_script("arguments[0].click();", el)
         # 等 toast 出现并含"已复制"文本 (异步动画, 固定 sleep 会偶发 flaky)

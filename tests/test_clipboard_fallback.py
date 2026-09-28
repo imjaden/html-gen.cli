@@ -318,7 +318,7 @@ class TestClipboardBehavior(unittest.TestCase):
 
     # ── T5 A/B 负例：修前形态（旧 snippet）在同夹具下「假成功」──
 
-    def test_11_ab_negative_prefix_snippet_fake_success(self):
+    def test_05b_ab_negative_prefix_snippet_fake_success(self):
         legacy = """<!DOCTYPE html><html><head><meta charset="utf-8"><title>legacy</title></head><body>
 <div id="docToast"></div>
 <button id="b">copy</button>
