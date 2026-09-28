@@ -1484,45 +1484,17 @@ pre code { background: none; padding: 0; }
 
   /* ── Actions ── */
   window.copyAction = function(text) {
-    try {
-      if (navigator.clipboard) {
-        navigator.clipboard.writeText(text).then(function(){showToast('已复制: '+text);});
-      } else {
-        var ta = document.createElement('textarea');
-        ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
-        document.body.appendChild(ta); ta.select();
-        document.execCommand('copy'); document.body.removeChild(ta);
-        showToast('已复制: '+text);
-      }
-    } catch(e) { showToast('复制失败'); }
+    copyText(text, '已复制: ' + text, '复制失败');
   };
 
-  /* ── Share link (CL004: 🔗 拷贝规范化分享 URL; clipboard + execCommand fallback) ── */
-  function fallbackCopyUrl(text) {
-    try {
-      var ta = document.createElement('textarea');
-      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
-      document.body.appendChild(ta); ta.select();
-      document.execCommand('copy'); document.body.removeChild(ta);
-      showToast('已复制链接');
-    } catch(e) { showToast('复制失败'); }
-  }
+  /* ── Share link (CL004: 🔗 拷贝规范化分享 URL; 剪贴板回退由 canonical copyText 承接) ── */
   function buildShareUrl() {
     syncUrlState();  // 确保 URL 与当前状态一致 (默认/空参数已剔除)
     return location.href;
   }
   window.buildShareUrl = buildShareUrl;
   window.shareLink = function() {
-    var url = buildShareUrl();
-    if (navigator.clipboard && navigator.clipboard.writeText) {
-      navigator.clipboard.writeText(url).then(function() {
-        showToast('已复制链接');
-      }).catch(function() {
-        fallbackCopyUrl(url);  // headless/权限受限 → execCommand fallback
-      });
-    } else {
-      fallbackCopyUrl(url);
-    }
+    copyText(buildShareUrl(), '已复制链接', '复制失败');
   };
 
   /* ── Column visibility ── */
@@ -1682,6 +1654,34 @@ pre code { background: none; padding: 0; }
     _toastTimer = setTimeout(function(){el.classList.remove('show');}, 2500);
   }
   window.showToast = showToast;
+
+  /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
+  function copyText(text, okMsg, failMsg, onOk) {
+    var _toast = (typeof showToast === 'function') ? showToast
+      : (typeof showKwToast === 'function') ? showKwToast
+      : function (m) { try { console.log('[html-gen] ' + m); } catch (e) {} };
+    var done = function () { if (onOk) onOk(); if (okMsg) _toast(okMsg); };
+    var fail = function () { _toast(failMsg || '复制失败，请手动选中文本复制'); };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); } else { fail(); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();                       /* 非安全上下文 ⇒ 直接回退, 不得依赖 catch */
+    }
+  }
+  /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
 
   /* ── Column resize ── */
   var COL_WIDTHS_KEY = 'html-gen:table:col-widths';

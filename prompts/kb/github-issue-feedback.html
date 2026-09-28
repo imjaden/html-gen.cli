@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>github-issue-feedback</h1>
-      <div class="meta">创建: 2026-09-28 11:48 · 编辑: 2026-09-28 11:48<br>字数: 2,812 · 阅读约 14 分钟<span class="meta-path"> · 路径: <code>github-issue-feedback.md</code></span></div>
+      <div class="meta">创建: 2026-09-28 11:57 · 编辑: 2026-09-28 11:57<br>字数: 2,812 · 阅读约 14 分钟<span class="meta-path"> · 路径: <code>github-issue-feedback.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><p>把「读者发现数据错误 → 提 Issue → 维护者一键写回数据 JSON → 重建静态页 → 回评」的闭环，</p>
 <p>做成<strong>配置驱动、可跨项目复制</strong>的能力。已在 html-gen 的 countries 表案例落地（CL009 + CL010）。</p>
@@ -1583,8 +1583,7 @@ contact_links:
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
     var target = m ? m[1].trim() : decodeURI(window.location.href);
     if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
-      try { navigator.clipboard.writeText(target).catch(function(){}); } catch(e) {}
-      showToast('已复制: ' + target);
+      copyText(target, '已复制: ' + target);
     }
   });
 
@@ -1593,6 +1592,34 @@ contact_links:
     el.textContent = msg; el.style.opacity = '1';
     clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
   }
+
+  /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
+  function copyText(text, okMsg, failMsg, onOk) {
+    var _toast = (typeof showToast === 'function') ? showToast
+      : (typeof showKwToast === 'function') ? showKwToast
+      : function (m) { try { console.log('[html-gen] ' + m); } catch (e) {} };
+    var done = function () { if (onOk) onOk(); if (okMsg) _toast(okMsg); };
+    var fail = function () { _toast(failMsg || '复制失败，请手动选中文本复制'); };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); } else { fail(); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();                       /* 非安全上下文 ⇒ 直接回退, 不得依赖 catch */
+    }
+  }
+  /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
 
   // Section count
   var _h2Count = body.querySelectorAll('h2').length;
@@ -1692,7 +1719,7 @@ contact_links:
   headings.forEach(function(h, i) {
     if (!h.id) h.id = 'section-' + i;
     var anchor = document.createElement('a'); anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
-    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; navigator.clipboard.writeText(url); anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); });
+    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; copyText(url, null, '复制失败，请手动复制链接', function() { anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); }); });
     h.appendChild(anchor);
     var level = h.tagName.toLowerCase().replace('h', '');
     var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
@@ -1720,9 +1747,7 @@ contact_links:
     var btn = document.createElement('button'); btn.className = 'copy-btn'; btn.textContent = '复制';
     btn.addEventListener('click', function() {
       var code = pre.querySelector('code'); var text = code ? code.textContent : pre.textContent;
-      function done() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); }
-      if (navigator.clipboard && window.isSecureContext) { navigator.clipboard.writeText(text).then(done).catch(fallback); } else { fallback(); }
-      function fallback() { var ta = document.createElement('textarea'); ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0'; ta.style.pointerEvents = 'none'; document.body.appendChild(ta); ta.select(); document.execCommand('copy'); document.body.removeChild(ta); done(); }
+      copyText(text, null, null, function() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); });
     });
     pre.appendChild(btn);
   });

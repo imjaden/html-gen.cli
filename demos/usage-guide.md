@@ -271,7 +271,7 @@ hs ~/CodeSpace/script-miner/skills --index html-demos/index.html -o
 
 ### Q: 复制按钮点了没反应？
 
-`navigator.clipboard` 在 `http://` 非安全上下文中不可用。v1.1+ 用 `execCommand` 兜底。
+复制按钮在 `http://` 等非安全上下文下不可用：`window.isSecureContext` 为 false 时 `navigator.clipboard` 为 `undefined`，调用即抛 `TypeError`。v3.4+ 统一走 canonical `copyText`（先做安全上下文前置判断，回退用 `document.execCommand('copy')` 并检查返回值，失败给可见提示），不再「假成功」。
 
 ### Q: 代码行号显示不正常？
 

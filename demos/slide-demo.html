@@ -1065,20 +1065,8 @@ def hello():
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
     var path = m ? m[1].trim() : document.title;
     path = path.replace(/^\/Users\/[^/]+/, '~').replace(/^\/home\/[^/]+/, '~');
-    var done = function() { showToast('已复制: ' + path); };
-    if (navigator.clipboard && window.isSecureContext) {
-      navigator.clipboard.writeText(path).then(done).catch(function() {
-        fallbackCopy(path); done();
-      });
-    } else { fallbackCopy(path); done(); }
+    copyText(path, '已复制: ' + path);
   });
-
-  function fallbackCopy(text) {
-    var ta = document.createElement('textarea');
-    ta.value = text; ta.style.position = 'fixed'; ta.style.opacity = '0';
-    document.body.appendChild(ta); ta.select();
-    document.execCommand('copy'); document.body.removeChild(ta);
-  }
 
   function showToast(msg) {
     var el = document.getElementById('slideToast');
@@ -1092,6 +1080,34 @@ def hello():
     clearTimeout(el._hide);
     el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
   }
+
+  /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
+  function copyText(text, okMsg, failMsg, onOk) {
+    var _toast = (typeof showToast === 'function') ? showToast
+      : (typeof showKwToast === 'function') ? showKwToast
+      : function (m) { try { console.log('[html-gen] ' + m); } catch (e) {} };
+    var done = function () { if (onOk) onOk(); if (okMsg) _toast(okMsg); };
+    var fail = function () { _toast(failMsg || '复制失败，请手动选中文本复制'); };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); } else { fail(); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();                       /* 非安全上下文 ⇒ 直接回退, 不得依赖 catch */
+    }
+  }
+  /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
 
   /* ═══════ Slide Mode ═══════ */
   var slide = {
@@ -1325,9 +1341,10 @@ def hello():
     anchor.addEventListener('click', function(e) {
       e.preventDefault();
       var url = window.location.href.split('#')[0] + '#' + h.id;
-      navigator.clipboard.writeText(url);
-      anchor.textContent = '\u2713';
-      setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+      copyText(url, null, '复制失败，请手动复制链接', function() {
+        anchor.textContent = '\u2713';
+        setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+      });
     });
     h.appendChild(anchor);
     var level = h.tagName.toLowerCase().replace('h', '');
