@@ -1,7 +1,7 @@
-# html-gen 剪贴板回退统一设计 v1.1（canonical copyText）
+# html-gen 剪贴板回退统一设计 v1.2（canonical copyText）
 
-> 日期: 2026-09-27
-> 状态: 设计 v1.1 —— **决策已定稿（用户 2026-09-27 pin: T1=采用推荐、D1..D10=全采推荐）；待评审**
+> 日期: 2026-09-27（v1.2 补记 2026-09-28）
+> 状态: 设计 v1.2 —— **决策已定稿 + [2/6] 评审 PASS 85/100·B（`4db7089`，0 阻塞）；[3/6] dev 待放行**
 > 闭环: **HTML-GEN-CL015**（kind=independent；编号已就位，见 §9 F1）
 > 来源: 跨仓转交件 `~/CodeSpace/script-miner/cache/handoff/prompt-dev-html-gen-doc-clipboard-fallback-20260927.md`
 >       （2026-09-27 20:45 CST，源自 SCRIPT-MINER-CL042 全仓巡检 `efficiency/clipboard-fallback-check.py`）
@@ -11,7 +11,7 @@
 >   改回「本仓可达」（§1.3 / T1）。偏离处均显式标注，供评审逐条裁定。
 >   注: **T1 定稿 = 采用推荐**（改口径），即上述偏差已被用户认可为设计基线。
 > 开放决策项: **无**（T1 + D1..D10 已于 2026-09-27 全部 pin，见 §0.2 / §0.3）
-> 基线链: v1.0（`0c6acdb`，`docs@design`，设计初稿）→ **v1.1（决策定稿，本版）**
+> 基线链: v1.0（`0c6acdb`，`docs@design`，设计初稿）→ v1.1（`dc14a38`，决策定稿）→ **v1.2（评审 findings 折入，本版；§0.4 为 [3/6] 唯一口径源）**
 
 ---
 
@@ -54,6 +54,73 @@
 | 版本 | 触发 | 处理 |
 |:--|:--|:--|
 | v1.0 → **v1.1** | 用户 2026-09-27 pin 回合：`1 采用推荐`（T1）+ `2 全采推荐`（D1..D10）+ `4 押后`（script-miner 转交回执） | ① T1 定稿为「改口径」，§1.3 三处偏差随之成为**设计基线**（不再是待裁定项）；② D1..D10 全部按推荐项定稿（§0.2 表头改「定稿（pin）」+ 新增定稿纪律条）；③ 状态行改「决策已定稿，待评审」；④ 开项清空；⑤ **内容零变更**（仅决策状态与修订记录）——[2/6] 评审基线 = 本版 `git rev` |
+| v1.1 → **v1.2** | [2/6] 设计评审（review role，`4db7089`）**PASS 85/100·B**，0 🔴 / 8 🟡（187–194）/ 7 🟢（195–201）；用户 2026-09-28 回合 `2 全采推荐` 授权全自动落地 | ① 新增 **§0.4 补记**为 [3/6] 唯一口径源（§5 逐产物实测参数集 + 4 个 strategy 表例外 + 零改动基线实测 + 其余 10 条规格补记）；② 头部状态与基线链更新；③ **决策定稿表（§0.2）零变更**，不重开评审轮；④ §5 纪律 2 升格（补「参数最全的 1 个」试跑）|
+
+### 0.4 v1.2 补记 —— [2/6] 评审 findings 187–201 折入（PASS 85/100 · `4db7089`）
+
+> 触发：design-review v1.1 **PASS 85/100·B**（0 🔴 / 8 🟡 / 7 🟢）。**不重开评审轮**：🟡 187–194 折入 [3/6] 实施；
+> 🟢 195–201 折入同批文档/计数笔；199 属发版流程（非本批 git 面）。
+> **冲突条款：本节与 §1–§11 不一致时，一律以本节为准。**
+
+#### A. §5「逐产物实测参数集」（answer HG-SEC-187；★ = v1.1 缺项，按原命令执行即回归）
+
+| 生成器 | 实测命令 | 数 |
+|:--|:--|:--|
+| doc | `html-gen doc -i demos/<x>.md -o demos/<x>.html` + `[--subtitle "<sidebar sub>"]` + `[--github-url <corner href>]` | 25 |
+| knowledge | `html-gen knowledge -d data/_<x>-kb-data.json -g data/_<x>-groups.json -o demos/<x>.html ★--title "<title>" [★--subtitle] [★--welcome] [--github-url]` | 4 |
+| table | `html-gen table -d data/_<x>.json -o demos/<x>.html ★--title "<h1>" [--subtitle "<table-desc>"] [--github-url] [--home-url]` | 13 |
+| demo | `html-gen demo --rebuild` | 3 |
+| slide | **无 md 源** ⇒ 手工同步 canonical 块 | 1 |
+| prompt | `html-gen prompt --site` | 31 |
+| 打包 | `scripts/build-package.py`（`.gitignore:37` ⇒ 0 tracked） | 0 |
+
+- **参数回收纪律**：参数**只能从产物自身回收**（`<title>` / `<h1>` / `.table-desc` / `div.sub` / `.w-sub` /
+  `github-corner` href / `.home-link` href），禁凭记忆拼；`data/_*.json` 顶层 **8/8 无 `output`** ⇒
+  table 一律显式 `-o`（订正 §5 括注与 table 行枚举，HG-SEC-196）。
+- **表 → 数据源映射**：`demos/<x>-table.html` ← `data/_<x>-data.json`；
+  `demos/drama/<stem>-table.html` ← `data/_drama-table-<stem>.json`；
+  4 个 KB ← `data/_<x>-kb-data.json` + `data/_<x>-groups.json`。
+- ⚠️ **例外（实测不可重生成，须手工同步）**：4 个 drama strategy 表
+  （`daming/history/yongzheng/zhuyuanzhang-strategy-table.html`）—— 产物为 **11 列**结构
+  （`衍生词/同源意象/近义词/反义词`），而 `data/_drama-table-*-strategy.json` 为**旧 7–8 字段**口径
+  （`衍生成语`）；`8b0dcc6`（2026-08-24「rebuild strategy tables to 11-col structure」）**只改了产物、未改 JSON**。
+  按 §5 重生成即**内容回归**（丢 4 列），实测使 `tests/test_history_tables.py::test_07_daming_strategy`
+  与 `tests/test_drama_knowledge.py::test_18_yongzheng_group` 转红 ⇒ 这 4 表本批**保持现状 + 手工同步 canonical 块**
+  （与 slide 同口径）；JSON 补列另立他批。
+- **纪律 2 升格**：试跑对象 = 「每种生成器 1 个 + **参数最全的 1 个**」；A3 前**逐文件**跑只读探针并记录。
+
+#### B. 零改动基线重生成（HG-SEC-188 处置①；已在 [3/6] 前单独成笔）
+
+阶段一实测（`cache/closed-loop/cl015-baseline-regen.py`：scratch 生成 → 逐字节 diff，零写仓）：
+
+| 面 | 实测 | 与评审比对 |
+|:--|:--|:--|
+| 42 产物（25 doc + 4 kb + 13 tbl） | **IDENTICAL 18 / favicon 位置 2 / STALE-DIFF 22** | 与评审 §5 分类**逐条一致**（独立复算） |
+| `prompts/` 31 | IDENTICAL 22 / DIFF 9（各 2 行 = meta 创建/编辑日期） | 一致（元数据时间戳差异） |
+| `demo --rebuild` 3 产物 | **byte-IDENTICAL** | 一致（featured 集稳定） |
+
+- **STALE 差异性质**（抽样实证）：doc 缺 `.home-link` CSS 基座（10 行）；table/kb 缺 `--text-primary` 等
+  CSS 变量基座（168–728 行）；favicon `<link>` 位置前移（2 行，字节长度不变）——**全部为样式/资源层，
+  零数据层差异**（数据层差异仅出现在上面 4 个 exception 表）。
+- 基线笔实收 **29 tracked**（20 demos + 9 prompts）；4 个 strategy 表按 A 例外**不入基线**。
+- 只读探针复算（源面 + 产物面）：**OK 104 / WARN 47 / FAIL 38**；FAIL 分布与 §9 F2 **逐条一致**
+  （`layout-doc.html:424` / `layout-slide.html:590` / 产物 34 处），OK 88→104 系产物收敛到现行模板所致 —— 
+  即「基线笔不改变判级口径，只消除历史漂移」，[5/6] 审计据此可区分 canonical 改动与顺带漂移。
+
+#### C. 其余规格补记
+
+| finding | 本批规格（覆盖原文） |
+|:--|:--|
+| 191 | canonical 块插入锚点 = **主 IIFE 内、toast 函数声明之后**（或 IIFE 顶层），缩进 2 空格；T3 增「解析链命中」断言（防落点错致 toast 静默降级而静态守卫全绿） |
+| 190 | §6 增第二套夹具 `secure` 变体（`isSecureContext=true` + `writeText` 返回 reject Promise），T9① 用之（原夹具固定 `false` ⇒ 该用例空转） |
+| 192 | 本批**保留** `readonly`；显式登记「**移动 Safari 未验证面**」，T11 SKIP 说明中注明移动端不在覆盖范围 |
+| 193 | 版本同步面补 `html-gen.py:12` docstring ⇒ 本批**删除写死的版本行**（根治：5 处 → 4 处，`__version__`/`__release_date__` 为唯一来源） |
+| 194 | 文档同步面补：`skills/html-gen-doc/SKILL.md` `skills/html-gen-table/SKILL.md` 剪贴板表述 2 行（会流入 `prompts/`，改后须重跑 `prompt --site`）+ `features.md:44/120/190` 三行按 canonical 口径订正 + `html-gen help <type>` 契约段（实测无剪贴板键）**显式标注「本批不动」** |
+| 195/196 | 产物数 **78 → 77**（`demos/demos-index.html` 在 table 行与 demo 行重复计 1）；prompts 枚举补 `_kb-data.json` / `_kb-groups.json`；table 行括注改「全部无 `output`，须显式 `-o`」 |
+| 197/198 | §1.2 doc:424 拆写两句（非安全上下文 = **静默无反应**；「无条件 ✓」仅见于安全上下文 + `writeText` reject 异步路径）+ table 行号订正（函数体 1261-1270 / 调用点 1281）；§2.A 措辞统一为「**块内 3 次（2 守卫 + 1 调用）**」 |
+| 189 | A3/T4「产物面 0 FAIL/0 WARN」在 `demos/usage-guide.html:961` 不可达（该处是 md 正文 prose）⇒ 改写 `demos/usage-guide.md:274` 为含 `document.execCommand('copy')` 字面量的表述（判级可达）+ 行号订正 |
+| 199 | `src/html_gen/` 打包源未重建（已装 CLI 仍产旧代码）⇒ **发版流程**：发版前重跑 `build-package.py` + 重装；非本批 git 交付面 |
+| 200 | `CL016` 编号双语义（`next-code` vs `html-gen.py` 版本子命令内注释）⇒ 留档；[3/6] 如需取号显式区分 |
 
 ---
 
