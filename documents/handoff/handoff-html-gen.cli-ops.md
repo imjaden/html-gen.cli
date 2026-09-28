@@ -1,15 +1,15 @@
 ---
-title: Handoff - ops/20260917_222643_c
-date: 2026-09-27
-source_session: 20260917_222643_ce7e33
+title: Handoff - ops/20260927_211823_a
+date: 2026-09-28
+source_session: 20260927_211823_aabbb7
 generated_by: hermes-0.21.3
 topic: html-gen
 type: handoff
 version: 1.0
 author: ops
-summary: CL005 六步闭环（设计三版→评审 78/86/93→dev→ops 核查 21/21→审计 v1.0 90 分 CONDITIONAL→修 SEC-1→v1
-next: 试用新版 `hs`（重点：目录级启动锁、`--json` 通道、`set`/`search`/`dashboard`/`
-risk: PyPI 1.4.0 + 1.4.1 未发布（你自试用验证后再定）；无其他未结项。
+summary: CL015 设计 v1.1 定稿（0c6acdb/dc14a38）；[2/6] 评审 PASS 85/100，4db7089 已 push github（ff-
+next: 先推 5818de9；再补「零改动基线重生成」单独一笔；随后放行 [3/6] dev 实施。
+risk: 5818de9 待推（ahead 1）；[3/6] dev 未放行，须折入 findings 187–194 与 188
 ---
 
 # Handoff: html-gen-ops
@@ -17,58 +17,50 @@ risk: PyPI 1.4.0 + 1.4.1 未发布（你自试用验证后再定）；无其他�
 📌 语义摘要
 
 **已完成**
-CL005 六步闭环（设计三版→评审 78/86/93→dev→ops 核查 21/21→审计 v1.0 90 分 CONDITIONAL→修 SEC-1→v1.1 PASS 100/100→收尾）；O 系列五项（O7/O8/O9/O10/O11）直接修正；全部已 push，`origin/main == 30c6260`，工作树干净，605 passed，无残留孤儿/锁，draft 已核实入完成节。
-
+CL015 设计 v1.1 定稿（0c6acdb/dc14a38）；[2/6] 评审 PASS 85/100，4db7089 已 push github（ff-only）；TODO-handoff.md 入口页建立并刷新（5818de9）。
 **未完成**
-PyPI 1.4.0 + 1.4.1 未发布（你自试用验证后再定）；无其他未结项。
-
+5818de9 待推（ahead 1）；[3/6] dev 未放行，须折入 findings 187–194 与 188 基线重生成笔；[4/6]–[6/6] 未启动；script-miner 转交押后。
 **下一步建议**
-试用新版 `hs`（重点：目录级启动锁、`--json` 通道、`set`/`search`/`dashboard`/`mcp` 退出码），确认无误后一句「发布」走 `release-pypi.sh`；如再发现观察项按「直接修正」快修。
+先推 5818de9；再补「零改动基线重生成」单独一笔；随后放行 [3/6] dev 实施。
 
 ## 目标
-only response: init
+理解并核实文档中的需求清单 /Users/jadenli/CodeSpace/script-miner/cache/handoff/prompt-dev-html-gen-doc-clipboard-fallback-20260927.md
+
+打印今天的日期时间，今天只讨论与澄清需求、申请任务编号与编写设计方案（含 c
 
 ## 输入
 - profile: ops
-- session: 20260917_222643_ce7e33
-- 消息数: 317
+- session: 20260927_211823_aabbb7
+- 消息数: 71
 
 ## 输出 / 关键路径
-- /Users/jadenli/CodeSpace/hermes-manager/scripts/hermes-projects.yaml
-- /Users/jadenli/CodeSpace/http-server.cli
-- /Users/jadenli/CodeSpace/http-server.cli/src/http_server_cli/cli.py
-- ~/.http-server.cli/config.json
-- ~/.http-server.cli/logs/8085.log
-- ~/.http-server.cli/registry.json
-- ~/CodeSpace/hermes-manager/web
-- ~/CodeSpace/http-server.cli
+- /Users/jadenli/CodeSpace/html-gen.cli
+- ~/CodeSpace/hermes-manager/scripts/lib_loop.py
+- ~/CodeSpace/script-miner/efficiency/clipboard-fallback-check.py
 
 ## 边界
-- started: 1789655204.0004869, messages: 317
+- started: 1790515104.0493739, messages: 71
 
 ## 确认点
-- [ ] 基于以上决策，复述整体需求及解决方案，罗列待决策清单（若有，附推荐项）、下一步行动计划（不要直接执行）
-- [ ] 3 申请任务编号，使用独立模式实施1A闭环流程，等待指示实施
-- [ ] - [ ] s3. Step 3 dev 实施：-p 面 / 未知参数 helper+exit2 / dashboard restart+web --port / tests / docs 四同步 (…
-- [ ] - **独立模式 + 逐步放行**：用户原话「使用独立模式实施1A闭环流程，等待指示实施」；现授权「按推荐A，实施完整的1A闭环流程」。
-- [ ] 40. TERM `hm loop list --pending` → 「HTTP-SERVER-CL003 | ⏳ 待办」+「📌 本项目编号前缀: HTTP-SERVER-CL(新式; 存量兼容 C…
+- [ ] 1 清空  TODO-handoff.md；然后写入当前澄清待串行执行的任务清单，以便新会话读取并执行
+- [ ] [guard] review 派发在跑 (1) → 等待 30s…（上限 120min）
+- [ ] [guard] review 无在跑派发 → 放行（已等待 360s, 上限 120min）
 
 ## 权限
 - [无]
 
 ## 来源
-- d9a0e29 audit@review: help 契约设计 v1.4 评审 PASS (HTML
-- 3044139 docs@sync: AGENTS.md 测试计数 326→334 + 键表改引用契
-- 15caf87 audit@review: help 契约四模板补齐实现审计 PASS (HTML-
-- 0645a29 audit@review: XSS 转义设计评审 PASS (HTML-GEN-CL
-- 2ed8078 audit@review: help 契约设计 v1.1 复审 PASS (HTML
+- 0c6acdb docs@design: 剪贴板回退统一设计 v1.0 (HTML-GEN-CL01
+- dc14a38 docs@design: 剪贴板回退统一设计 v1.1 — 决策定稿 T1+D1..
+- d5da78f docs@handoff: CL015 会话轮转入口页 TODO-handoff.m
+- 92fcd04 docs@handoff: auto generate ops handoff do
+- cb52b50 sync@html-gen: cloudwise news weekly - 1 n
 
 ## 下一步清单
-1. 继续: only response: init
-2. 基于以上决策，复述整体需求及解决方案，罗列待决策清单（若有，附推荐项）、下一步行动计划（不要直接执行）
-3. 3 申请任务编号，使用独立模式实施1A闭环流程，等待指示实施
-4. - [ ] s3. Step 3 dev 实施：-p 面 / 未知参数 helper+exit2 / dashboard restart+web --port / tests / docs 四同步 (…
-5. - **独立模式 + 逐步放行**：用户原话「使用独立模式实施1A闭环流程，等待指示实施」；现授权「按推荐A，实施完整的1A闭环流程」。
+1. 继续: 理解并核实文档中的需求清单 /Users/jadenli/CodeSpace/script-mine
+2. 1 清空  TODO-handoff.md；然后写入当前澄清待串行执行的任务清单，以便新会话读取并执行
+3. [guard] review 派发在跑 (1) → 等待 30s…（上限 120min）
+4. [guard] review 无在跑派发 → 放行（已等待 360s, 上限 120min）
 
 ## 建议技能
-daily-tracker, git-cloner, github, references, scripts
+github, references, scripts
