@@ -47,10 +47,10 @@
 | O5 | 落地页 `index.html` / `demos/index.html` 的 `copyText` 与 canonical 块**同名不同签名** | 设计稿 §8 O5 | D6 定稿: 本批不动，另批可选 |
 | O6 | `demos/usage-guide.md` 既有表述「v1.1+ 用 execCommand 兜底」 | 设计稿 §8 O6 | 本批订正 + 重生成 |
 | O7 | 他仓 vendor 副本缺源 commit 注释（版本可追溯性） | 设计稿 §8 O7 | 记录（他仓决定） |
-| O8 | `AGENTS.md:352` 索引路径 patch —— 用户 2026-09-28 回「done」但 **ops 实测未落**（sha256 仍 = 前值 `6d6a324276205e74…`、`git diff` 空、工作树 clean）；补丁在 `cache/handoff/agents-md-index-path-20260928.patch`（`git apply --check` 通过），套后应得 `2658f832135f4592…` | 本会话 [6/6] 收尾 | ⚠️ 待确认意图（套用 / 忽略） |
+| O8 | `AGENTS.md:352` 索引路径 patch —— ✅ **已落**（2026-09-28，用户手工套用后 ops 复算核实：sha256 = `2658f832135f4592…` == 预期后值、`git diff` 1+/1−；补丁留档 `cache/handoff/agents-md-index-path-20260928.patch`） | 本会话 [6/6] 收尾 | ✅ 完成 |
 | O9 | script-miner 转交件（O2 vendor 重拷贝 + O3 `--root` + A4 条款订正）—— 转交 prompt 已备 `cache/handoff/prompt-script-miner-cl042-o2-o3-20260928.md`（gitignored，7.4KB） | 用户 2026-09-28 决定 | ⏸ **按用户决定忽略**（不转交） |
 | O10 | 数据面两项（云智慧系 4 篇 `author` 空 / drama 4 表 JSON 列集落后） | 本会话登记 | ⏸ **按用户决定暂忽略** |
-| **HG-SEC-202..206** | [5/6] 审计**新增 5 项 🟢 record**（全为文档/报告/注释口径，0 代码回炉）：202 设计 §0.4-A「4 表 11 列」措辞+history 例外归因；203 ops 回执 TC11/TC8 计数口径；204 设计 §7 A4「status 空」条款措辞（**审计归因写作 ops 回执，ops 侧勘误已改归设计 §7 A4**）；205 `bf61484` 夹具 docstring 注释；206 审计侧 harness 自证 | 审计报告 §④ | 另批 errata（不阻断；ops §8 已回填 E1–E3） |
+| **HG-SEC-202..206** | [5/6] 审计**新增 5 项 🟢 record**（全为文档/报告/注释口径，0 代码回炉）：202 设计 §0.4-A「4 表 11 列」措辞+history 例外归因；203 ops 回执 TC11/TC8 计数口径；204 设计 §7 A4「status 空」条款措辞（**审计归因写作 ops 回执，ops 侧勘误已改归设计 §7 A4**）；205 `bf61484` 夹具 docstring 注释；206 两侧 harness 判据自检 | 审计报告 §④ + `documents/review/html-gen-clipboard-fallback-errata-analysis-v1.0-20260928.md`（场景/成因/不修后果） | ✅ **202/204/205 已直接修正**（设计 §0.4-A + §7 A4 + tests docstring；346 tests 全绿）+ 203 已就地勘误（ops 报告 §8）+ **206 已落规范层**（skill `todo-driven-execution/references/ops-check-harness-authoring.md`「CL015 加固七条 + 报告定稿前自检 4 问」） |
 
 ---
 
@@ -78,6 +78,14 @@
 
 ## 五、历史
 
+- 2026-09-28 **收尾追加笔：errata 直接修正 + AGENTS.md 落地 + 规范层落条**（用户指令 `1 我手工执行失败，你执行` / `2 落` / `3 直接修正`）。
+  AGENTS.md:352 索引路径 → 候选链（sha256 `6d6a3242…` → `2658f832…`，ops 复算核实 == 预期）；
+  202 设计 §0.4-A 改写（分表列数 3×10 + history 11；`history` 归因改「样式基座漂移 212 行」）；
+  204 设计 §7 A4 条款改写（源码零写操作扫描 + mtime 取证，原「他仓 `git status` 空」标注不可满足已弃用）+ 审计台账来源标注订正；
+  205 `tests/test_templates.py` 夹具 docstring 环境前提订正（`execCommand('copy')` 仅无激活时 false）；
+  206 落规范层：skill `todo-driven-execution/references/ops-check-harness-authoring.md` 增「CL015 加固七条 + 报告定稿前自检 4 问」，SKILL.md 引用行同步。
+  验证：`pytest tests/test_templates.py -q -n 0` 18 passed · 全量 **346 passed / 82 subtests**（零源码/零产物改动）。
+  errata 分析件（场景/成因/不修后果）: `documents/review/html-gen-clipboard-fallback-errata-analysis-v1.0-20260928.md`。
 - 2026-09-28 **[5/6] 审计 PASS 95/100·A**（review role，`4a3c4a0`）→ **已 push github `69ec665..4a3c4a0`**（推后
   `ls-remote == 本地 HEAD`；`origin`/gitee 仍 `7821427`；未 force）→ **[6/6] 复盘**（本笔）。
   15 条 finding 全闭合（已处置 13 / N-A 199 / 部分 0 / 未处置 0）；新增 202-206 全 🟢 record（另批 errata）。

@@ -349,5 +349,5 @@ html-gen.cli/
 - `company-report.py` 调用同目录的 `html-gen.py knowledge`，通过 subprocess 运行；items 含 `content`（正文 md）+ `metrics`（数据卡表格）时自动生成内容页（doc 产物）
 - 内容页数据卡模式：schema items.metrics → 内容页顶部"核心数据"表格（6 卡对齐：成立/客户/产品/专利/融资/荣誉）
 - 数据采集：`scripts/qcc-cloudwise.py`（企查查 selenium 采集，登录态 30s 手工窗口）
-- 公众号动态管线（2026-09-01 上线）：人工发现新文章 → `scripts/cloudwise-fetch.py <URL> --sync --rebuild-kb` → web2md 处理 → 每周六 10:00 cron（cloudwise-news-weekly，deliver 飞书）自动同步 → 知识库「📰新闻动态」组；文章源为 web2md 索引 `~/Documents/10-DataDrived/web2md_index.json`（script-miner 项目，只读不修改）
+- 公众号动态管线（2026-09-01 上线）：人工发现新文章 → `scripts/cloudwise-fetch.py <URL> --sync --rebuild-kb` → web2md 处理 → 每周六 10:00 cron（cloudwise-news-weekly，deliver 飞书）自动同步 → 知识库「📰新闻动态」组；文章源为 web2md 索引（候选链：env `WEB2MD_INDEX` > `~/CodeSpace/script-miner/cache/web2md/web2md_index.json`（现行）> 旧 `~/Documents/10-DataDrived/web2md_index.json`（已空置）；script-miner 项目，只读不修改）
 - 输出均为自包含单文件 HTML，无外部资源引用

@@ -190,10 +190,27 @@ TC8 报「文档面（声明项）10 行」。
 最小必要动作 = 206 的准则落规范层 + 205/204/202 三处小改（合计约 6 行文本），203 已部分就地完成。
 
 
-## 五、另批 errata 批次可直接取用的修法清单
+## 五、另批 errata 批次可直接取用的修法清单（202/204/205 已于 2026-09-28 直接修正，见 §六）
 
 1. `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md` §0.4-A：4 表列数分列（3×10 + history 11）+ history 归因改「样式基座漂移（212 行）」（202）
 2. 同上 §7 验收表 A4：改「探针源码零写操作扫描 + mtime 取证」（204）
 3. `tests/test_templates.py` `TestDocShowMd` 夹具 docstring：按 205 修法订正环境前提
 4. `documents/review/html-gen-clipboard-fallback-ops-verify-v1.0-20260928.md` §8：**本批已就地回填 E1–E3**（203/204）
 5. 审计报告 §④ 204 行来源标注：ops 回执 → 设计 §7 A4 条款（204 附）
+
+---
+
+## 六、修正状态（2026-09-28 直接修正，用户指令「直接修正」）
+
+| 项 | 状态 | 落点（实测） |
+|:--|:--|:--|
+| 202 | ✅ 已修正 | `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md` §0.4-A 例外块：改写为**分表列数**（`daming/yongzheng/zhuyuanzhang` 10 列 / `history` 11 列）+ **两表两因**（前三表 = JSON 旧 7–8 字段口径；`history` = 列集已同步 11/11，212 行差属**样式基座漂移**） |
+| 204 | ✅ 已修正 | 同上 **§7 验收表 A4 行**：判据改为「① 探针**源码零写操作**扫描（命中 0）+ ② 目标文件 **mtime 取证**」，原「他仓 `git status` 无新增」标注为**不可满足已弃用**；另 `documents/review/html-gen-clipboard-fallback-impl-audit-v1.0-20260928.md` §④ 204 行**来源标注订正**（ops 回执 → 设计 §7 A4 条款） |
+| 205 | ✅ 已修正 | `tests/test_templates.py::TestDocShowMd::test_doc_title_click_copy_path` docstring 环境前提订正：`execCommand('copy')` **仅在无用户激活时**返回 false（有可信点击激活时返回 True）；并写明「桩仅用于稳定观测成功分支」 |
+| 203 | ✅ 已就地 | ops 核查报告 §8 勘误 E1–E3（本批内完成） |
+| 206 | 🟡 部分 | 准则待落规范层（用户 2026-09-28 指令「落」）——见分工：ops 侧 skill（harness 证据纪律）；两项自证已留档（审计报告 §④ / 本件 §二） |
+
+**验证**（修正后实测）：
+- `python3 -m pytest tests/test_templates.py -q -n 0` → **18 passed**（3.29s）
+- `python3 -m pytest tests/ -q -n 0` → **346 passed / 82 subtests / 0 failed**（139.12s）
+- 修正仅涉**文档措辞 + 测试注释**（零源码、零产物改动）⇒ 不影响 CL015 的 18/18 + 95/100 双 PASS 结论

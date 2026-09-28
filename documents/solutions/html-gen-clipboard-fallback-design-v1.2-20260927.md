@@ -81,12 +81,15 @@
   `demos/drama/<stem>-table.html` ← `data/_drama-table-<stem>.json`；
   4 个 KB ← `data/_<x>-kb-data.json` + `data/_<x>-groups.json`。
 - ⚠️ **例外（实测不可重生成，须手工同步）**：4 个 drama strategy 表
-  （`daming/history/yongzheng/zhuyuanzhang-strategy-table.html`）—— 产物为 **11 列**结构
-  （`衍生词/同源意象/近义词/反义词`），而 `data/_drama-table-*-strategy.json` 为**旧 7–8 字段**口径
-  （`衍生成语`）；`8b0dcc6`（2026-08-24「rebuild strategy tables to 11-col structure」）**只改了产物、未改 JSON**。
-  按 §5 重生成即**内容回归**（丢 4 列），实测使 `tests/test_history_tables.py::test_07_daming_strategy`
-  与 `tests/test_drama_knowledge.py::test_18_yongzheng_group` 转红 ⇒ 这 4 表本批**保持现状 + 手工同步 canonical 块**
-  （与 slide 同口径）；JSON 补列另立他批。
+  （`daming/history/yongzheng/zhuyuanzhang-strategy-table.html`）—— **列数分表**：`daming/yongzheng/zhuyuanzhang` = **10 列**，
+  `history` = **11 列**（`衍生词/同源意象/近义词/反义词` 仅前三表具备）。**两表两因（HG-SEC-202 勘误，2026-09-28）**：
+  ① 前三表：产物 10 列结构 vs `data/_drama-table-*-strategy.json` 为**旧 7–8 字段**口径（`衍生成语`）；
+     `8b0dcc6`（2026-08-24「rebuild strategy tables to 11-col structure」）**只改了产物、未改 JSON**
+     ⇒ 按 §5 重生成即**内容回归**（丢列）。
+  ② `history`：其 JSON 与产物**列集已同步（11/11，非列集落后）**——按 §5 重生成仍差 **212 行**，
+     性质为**样式基座漂移**（`.tabs-row` / `.tabs-actions` / `.home-link` 等 CL005 基座），属「模板历史漂移」类。
+  实测使 `tests/test_history_tables.py::test_07_daming_strategy` 与 `tests/test_drama_knowledge.py::test_18_yongzheng_group`
+  转红 ⇒ 这 4 表本批**保持现状 + 手工同步 canonical 块**（与 slide 同口径）；JSON 补列 / 基座漂移口径另立他批。
 - **纪律 2 升格**：试跑对象 = 「每种生成器 1 个 + **参数最全的 1 个**」；A3 前**逐文件**跑只读探针并记录。
 
 #### B. 零改动基线重生成（HG-SEC-188 处置①；已在 [3/6] 前单独成笔）
@@ -383,7 +386,7 @@ document.execCommand = function () { window.__execCalled++; return true; };
 | **A1 事实卡** | §9 每条机制类断言附命令 + 原始输出 | §9 |
 | **A2 端到端** | 真实使用路径：非 localhost origin 打开产物 → 点击 → 真复制（用户实机）+ T11 | `python3 -m http.server 8899 --bind 0.0.0.0` → `http://192.168.31.178:8899/demos/usage-guide.html` |
 | **A3 出口判据** | 源面 0 FAIL/0 WARN + 产物面 0 FAIL/0 WARN + 全量 pytest 全绿 + 遗留项逐条归宿（§8） | 见下 |
-| **A4 harness 自检** | 只读探针**不写他仓**（断言 `git -C ../script-miner status --short` 无新增）+ 巡检脚本 `--self-test` 5 例通过 | `python3 efficiency/clipboard-fallback-check.py --self-test` |
+| **A4 harness 自检** | 只读探针**不写他仓**——判据（HG-SEC-204 勘误, 2026-09-28 修订）：① 探针**源码零写操作**扫描（`write_text\|open(...,'w')\|.write(\|shutil\|mkdir\|unlink\|rename` 命中 **0**）+ ② 目标文件 **mtime 取证**（早于本步开始即非本步所致）。⚠️ 原判据「断言 `git -C ../script-miner status --short` 无新增」**不可满足**（他仓并发脏文件使其恒假，实测 ` M efficiency/workflow-prompt.md` mtime 早于本步）已弃用；+ 巡检脚本 `--self-test` 5 例通过 | `python3 efficiency/clipboard-fallback-check.py --self-test` |
 
 ```bash
 # A3-1 源面 + 产物面（只读探针: 仅改内存 REPO, 零写盘）
