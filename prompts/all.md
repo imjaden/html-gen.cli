@@ -1054,7 +1054,7 @@ Bare 模式（默认隐藏侧边栏/工具栏，URL 参数可显式展示）与�
 - 折叠/展开侧边栏 (48px, `[` 快捷键)
 - 侧边栏宽度拖拽 (200-400px, localStorage)
 - H3 子项开关 / 中英双语 / 🌙☀️ 主题切换
-- 标题点击复制路径 / 代码复制 (clipboard + fallback)
+- 标题点击复制路径 / 代码复制 (canonical copyText: isSecureContext 前置 + execCommand('copy') 回退 + 失败反馈)
 - 行号 / Callout 提示框 / 阅读进度条 / 图片灯箱
 
 ## 验证清单
@@ -1617,7 +1617,7 @@ URL 状态键（`?tab` / `?q` / `?split`）的取值口径见 `html-gen help tab
 行为：
 
 - 状态变化用 `history.replaceState` 静默同步（不产生历史记录），默认参数（空值）自动剔除
-- **tabs 行居右按钮区 `.tabs-actions`**（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（`--home-url` 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）
+- **tabs 行居右按钮区 `.tabs-actions`**（CL005）：↗ 分享按钮拷贝规范化 URL（canonical copyText：execCommand('copy') 回退 + 失败反馈，headless 兼容）；🏠 home 入口（`--home-url` 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）
 - 排序 / 快速过滤触发时自动 closeSplit（下标语义失效保护）
 - 加载时按 tab → q → split 顺序恢复（HG-SEC-076）
 

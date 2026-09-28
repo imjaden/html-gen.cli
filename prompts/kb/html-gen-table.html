@@ -483,7 +483,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-table</h1>
-      <div class="meta">创建: 2026-09-28 11:57 · 编辑: 2026-09-28 11:57<br>字数: 873 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>html-gen-table.md</code></span></div>
+      <div class="meta">创建: 2026-09-28 12:00 · 编辑: 2026-09-28 12:00<br>字数: 874 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>html-gen-table.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p><code>layout-table.html</code> 是 html-gen 的 A 型模板 — 将 JSON 数据渲染为可交互的数据表格。支持搜索、排序、分页、Tab 分类过滤、操作列按钮、行选择、CSV 导出、列可见性控制和列宽拖拽。生成自包含单文件 HTML，零外部依赖。</p>
@@ -582,7 +582,7 @@ html-gen table -d data.json --title "项目列表" -o projects.html</code></pre>
 <p>行为：</p>
 <ul>
 <li>状态变化用 <code>history.replaceState</code> 静默同步（不产生历史记录），默认参数（空值）自动剔除</li>
-<li><strong>tabs 行居右按钮区 <code>.tabs-actions</code></strong>（CL005）：↗ 分享按钮拷贝规范化 URL（clipboard + execCommand fallback，headless 兼容）；🏠 home 入口（<code>--home-url</code> 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）</li>
+<li><strong>tabs 行居右按钮区 <code>.tabs-actions</code></strong>（CL005）：↗ 分享按钮拷贝规范化 URL（canonical copyText：execCommand('copy') 回退 + 失败反馈，headless 兼容）；🏠 home 入口（<code>--home-url</code> 注入，与 share 同容器 36px 圆角深底，font-size 1rem 图标同尺寸）</li>
 <li>排序 / 快速过滤触发时自动 closeSplit（下标语义失效保护）</li>
 <li>加载时按 tab → q → split 顺序恢复（HG-SEC-076）</li>
 </ul>

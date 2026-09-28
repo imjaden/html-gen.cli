@@ -45,7 +45,7 @@ Bare 模式（默认隐藏侧边栏/工具栏，URL 参数可显式展示）与�
 - 折叠/展开侧边栏 (48px, `[` 快捷键)
 - 侧边栏宽度拖拽 (200-400px, localStorage)
 - H3 子项开关 / 中英双语 / 🌙☀️ 主题切换
-- 标题点击复制路径 / 代码复制 (clipboard + fallback)
+- 标题点击复制路径 / 代码复制 (canonical copyText: isSecureContext 前置 + execCommand('copy') 回退 + 失败反馈)
 - 行号 / Callout 提示框 / 阅读进度条 / 图片灯箱
 
 ## 验证清单

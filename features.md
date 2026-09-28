@@ -41,7 +41,7 @@ md 源路径行 (URL 参数开启时显示, 默认隐藏, basename 脱敏) ✅ �
 H3 子项开关 (显示/隐藏 TOC 中 h3 条目) ✅ — layout-doc.html
 中/英双语界面切换 (🇨🇳/🇺🇸) ✅ — layout-doc.html
 🌙/☀️ 深色/浅色主题切换 (20+ 组件覆盖) ✅ — layout-doc.html
-代码块复制按钮 (剪贴板 API + fallback execCommand) ✅ — layout-doc.html
+代码块复制按钮 (canonical copyText: isSecureContext 前置 + execCommand('copy') 回退 + 返回值检查) ✅ — layout-doc.html
 代码行号 (Counter CSS) ✅ — layout-doc.html
 Callout 提示框 (Note/Tip/Warning/Danger / 注意/警告/提示/危险) ✅ — layout-doc.html
 Markdown pipe table 渲染 ✅ — layout-doc.html
@@ -117,7 +117,7 @@ Datetime 排序 (日期列专用, Date.parse 比较) ✅ — layout-table.html
 SKILL.md 加载 (split 面板 fetch + 简单 Markdown 渲染) ✅ — layout-table.html
 设置面板 UX (密度横向/内部点击不关闭/✕关闭按钮) ✅ — layout-table.html
 printColWidths() 调试函数 ✅ — layout-table.html
-copyAction() clipboard fallback (execCommand, headless Chrome 兼容) ✅ — layout-table.html
+copyAction() / shareLink() 走 canonical copyText (execCommand('copy') 回退 + 返回值检查 + 失败反馈, headless Chrome 兼容) ✅ — layout-table.html
 
 ### layout-knowledge.html (C 型知识库) — 477 行
 条目 / 类目键规范 (item 7 / groups 3) ✅ — html-gen help knowledge
@@ -187,7 +187,8 @@ URL 白名单 (https?/ / ~/) ✅ — layout-doc.html/layout-slide.html
 iframe sandbox (allow-same-origin, 无脚本) ✅ — layout-table.html
 window.open noopener,noreferrer ✅ — layout-table.html
 textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-knowledge.html
-clipboard API try/catch fallback ✅ — layout-table.html
+剪贴板回退 canonical copyText (isSecureContext 前置 / execCommand('copy') 检查返回值 / 失败可见反馈 / 禁假成功) ✅ — layout-{doc,slide,table,knowledge}.html
+剪贴板回退统一 CL015 (v3.4, 2026-09-27) — 四模板 canonical copyText 逐字节一致 + 8 调用点收敛 + 产物全量重生成 + 守卫测试 T1-T11 ✅ — documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md
 localStorage try/catch + 类型校验 ✅ — layout-*.html
 path traversal 校验 (_safe_path) ✅ — scripts/company-report.py
 script 上下文 </ 转义 (inject) ✅ — html-gen.py
