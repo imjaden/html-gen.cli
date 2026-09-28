@@ -121,3 +121,22 @@ TC3/TC8/TC15 在基线因「无差异/无文件」平凡通过，**已识别为�
 2. 云智慧系 4 篇 `author` 空条目（索引面）—— 上游 script-miner 数据面，本批仅登记证据不代做。
 3. 4 个 drama strategy 表 JSON 列集落后产物（`8b0dcc6` 只改产物侧）—— 另批修，本批按 v1.2 §0.4-A 例外手工同步 canonical 块。
 4. 推送面: 本批 `github` 远端 FF-only 推送待放行（`origin`/gitee 不推）；dev 5 笔 + ops 笔未推。
+
+---
+
+## 8. 勘误（[5/6] 审计 HG-SEC-203/204 回填, 2026-09-28）
+
+> 来源: `documents/review/html-gen-clipboard-fallback-impl-audit-v1.0-20260928.md` §④ 新增项台账（该轮审计 **PASS 95/100·A**，0 回炉项）。
+> 本节为**本报告自身**的勘误回填，**不影响** §1 结论（18/18 PASS）与任何处置判定。
+
+| # | 对应 | 本报告原文（不实/口径差） | 实测更正 | 结论影响 |
+|:--|:--|:--|:--|:--|
+| E1 | HG-SEC-203 | §3 TC11「daming/history/yongzheng/zhuyuanzhang 基线列 **10** / HEAD 10」 | `history` 实为 **11 / 11**（另 3 表 10/10 正确）。根因：TC11 判据取 `<th>` 文本 ∪ `label:` 值的**去重并集**，history 表存在同值项被并集吞掉 1 列 ⇒ **计数口径差，非列丢失** | 无（4 表列集零丢失的判定双方独立一致） |
+| E2 | HG-SEC-203 | §3 TC8「文档面（声明项）**10 行**」 | 口径差：本 harness 按 `git diff -U0` 的 `+/-` **物理行**计；审计按**逻辑行**计 = **20**（文案类 9 + meta 类 11，逐文件清单见审计报告） | 无（「区间外未声明改动 0」双方独立一致） |
+| E3 | HG-SEC-204 | 审计指「**ops 回执 A4/T1**『`git -C ../script-miner status --short` 空』证据行不实」 | **归因有误**：`grep -rn "script-miner status\|零写他仓" documents/ review-log.md TODO-handoff.md` 实证 —— 该断言**不在本报告**（本报告仅 §7-2 提及 script-miner 为上游数据面，无 status 断言）；其**真实来源 = 设计 v1.2 §7 验收表 A4 行**（`documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md:386`）。条款本身应改为「探针**源码零写操作**扫描 + 目标文件 mtime 取证」（`git status` 会因 script-miner 自身无关脏文件 `efficiency/workflow-prompt.md`, mtime 11:58 而恒不空） | 无（「探针只读」结论双方独立成立；设计条款措辞归另批 errata） |
+
+**另记**（非本报告面, 登记为另批）：
+
+- HG-SEC-202: 设计 v1.2 §0.4-A 例外表「4 表 11 列」措辞不实（实为 3×10 + history 11），且 `history` 例外归因应为「样式基座漂移（212 行）」而非「JSON 列集落后」—— §0.4-A 需出 errata。
+- HG-SEC-205: `bf61484` 既存用例夹具 docstring 的环境前提（`execCommand('copy')` 在 `file://` 恒 false）与实测不符（**有用户激活时返回 True**）⇒ 注释需订正（夹具无害、断言未削弱）。
+- HG-SEC-206: 审计侧自证其 harness 两次恒真/误报（已自留档）—— 与本 harness 侧 3 轮误判（§4）同类，纪律记录。
