@@ -808,3 +808,14 @@ review_history:
     tracking: "HG-SEC-187..194 (🟡×8 全部非阻断, 折入 [3/6] dev: §5 命令集缺参/§5 陈旧前提 22-43/A3 prose 判级不可达/T9 夹具/T11 锚点/readonly 移动端/版本面 html-gen.py:12/skills·features 文档面) + HG-SEC-195..201 (🟢×7 record: 78→77/prompts 枚举·table output/§1.2 上下文混写/src 打包 CLI 陈旧/CL016 双语义); 0 🔴 阻塞, 机制经 scratch 原型 + 真 LAN origin 端到端实证"
     report: documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md
 
+  - date: 2026-09-28
+    reviewer: Security Reviewer
+    review_type: implementation-audit
+    review_level: L2
+    scope: "html-gen 剪贴板回退统一实现审计 (HTML-GEN-CL015 [5/6]; dev 6 笔 74 文件 b4afd4e..bf61484 + ops 笔 dfd5d71; 比对基线 83c4e2c; 规格源 设计 v1.2 §0.4; 4 模板 canonical copyText 逐字节 + 8 调用点 + 产物全量重生成 + 守卫 T1-T11 + 版本 3.4)"
+    verdict: PASS
+    score: 95
+    findings_total: 20
+    findings_open: 5
+    tracking: "被审 HG-SEC-187..201 ×15 全数闭合 (已处置 13 + N-A 1 (199 发版流程) + 未处置 0): 187 参数集重生成 38/38 byte-IDENTICAL / 188 产物 diff 区间外未声明 0 + 4 strategy 表列集与 DATA 逐行无损 / 189 usage-guide.md:274 判级可达 + 探针 OK130·WARN0·FAIL0 / 190 secure 夹具已用 / 191 插入锚点 + T3 解析链命中 / 192 readonly 保留 + 双处登记 / 193 docstring 写死版本行已删 / 194 skills·features·prompts 三面同步 / 195·196 计数与 output 口径核实 / 197·198 补记定性复算成立 / 200 CL016 双语义留档 / 201 --subtitle 已评估 + favicon 差异消除; 新增 HG-SEC-202..206 (🟢×5 record 另批 errata/勘误, 0 代码回炉): 202 设计补记 11 列措辞 + history 例外归因 / 203 ops TC11 列数 (history 11) + TC8 行数口径 / 204 ops A4 script-miner status 证据行不实 (探针只读结论经源码+mtime 仍成立) / 205 bf61484 夹具 docstring 环境前提与实测不符 (execCommand 有用户激活时返回 True) / 206 本审计 harness 自身两次恒真·误报已自证"
+    report: documents/review/html-gen-clipboard-fallback-impl-audit-v1.0-20260928.md

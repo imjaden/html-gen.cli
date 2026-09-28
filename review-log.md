@@ -2482,3 +2482,31 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - HG-SEC-187..194 🟡 非阻断 → 归属 [3/6] dev 折入实施（不重开评审轮）；HG-SEC-195..201 🟢 → 归属同批笔 4/6/7 文档与计数订正；HG-SEC-199 → 发版流程（非本批提交面）
 - 本批 push 一并推出他线 2 笔既有产物（`92fcd04` ops handoff 文档 / `cb52b50` cloudwise 周报同步），按任务书要求不回退、不改写
 - 报告: `documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md`
+
+## 2026-09-28 — 剪贴板回退统一实现审计（PASS 95/100，HTML-GEN-CL015）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (implementation-audit)
+- **Scope**: dev 6 笔 74 文件 `b4afd4e`(canonical 块 + 8 调用点) → `d4f0ca9`(产物全量重生成) → `3d6bfff`(守卫 T1-T11) → `c5c4e02`(版本 3.4 + README) → `8e99f24`(features/skills 同步) → `bf61484`(用例命名 + 既存用例去假成功断言) + ops 笔 `dfd5d71`（[4/6] 回执 2 文件）；比对基线 `83c4e2c`；规格源 `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md` §0.4
+- **Verdict**: ✅ PASS 95/100（15 条 finding 全数处置或 N-A · 0 🔴 / 0 🟡 · 新增 5 🟢 record）
+- **Score**: 95 / 100
+- **Tracking**: HG-SEC-187..201（被审 15 条：已处置 13 · N-A 1(199) · 部分 0 · 未处置 0）+ HG-SEC-202..206（🟢×5 新增 record：202 设计补记 11 列措辞/history 例外归因 · 203 ops TC11 列数 + TC8 行数口径 · 204 ops A4「script-miner status 空」证据行不实（探针只读结论仍成立）· 205 `bf61484` 夹具 docstring 环境前提与实测不符 · 206 本审计 harness 自身两次恒真/误报已自证）
+
+### Summary
+
+**1A 口径独立复算全部成立。** canonical 块经**自建提取器**（设计 §3 围栏块 vs 四模板标记锚点）比对：唯一 sha256 `eb5431669eca36b4…` = 规格原文逐字节，块内 27 行，四模板 100% 一致；块内 `navigator.clipboard` 恒 3（2 守卫 + 1 调用）、`execCommand` 1，**块外 0/0**，`copyText(` 调用 3+2+2+1 = 8 与 §4 矩阵逐条吻合。**产物面 67 文件自建区域分类**：IN_BLOCK 216 · IN_SCRIPT **5（全部落 D6 保护面 `demos/index.html`，设计已声明）** · IN_PROSE 10（正文/示例，判级口径一致）· 死代码 `fallbackCopyUrl`/`fallbackCopy(` 残留 **0**。**188 可判性**：60 产物对基线逐行 diff 分类 = SCRIPT 2252 + 文档面 20 逻辑行（声明项：189/194 文案 9 + meta 11）+ **区间外未声明 0**，产物面新增 0、保护面（根 `index.html`/`demos/index.html`/`AGENTS.md`/`data/**`）零改动。**187 可复跑**：参数**只从产物自身回收**重生成 **38/38 byte-IDENTICAL**（doc 25 / knowledge 4 / table 9）+ `demo --rebuild` **3/3 IDENTICAL**、featured 源 `demos/index.html` 未变。**188 例外**：4 个 drama strategy 表 COLUMNS/DATA 区域与基线**逐行全等**、列集丢失 0（daming 10 / history 11 / yongzheng 10 / zhuyuanzhang 10）；JSON 源对 3 表确为旧口径（摘要丢 `derivative/homology/synonym/antonym` 4 列）。**回归**：`-n 0` 单线程 **346 passed / 82 subtests / 0 failed / 137.11s**，基线 334 → Δ+12 全为新文件用例，既有用例数逐一不变。**端到端**：真非 localhost `http://192.168.31.178:8931/table-actions-demo.html`（`isSecureContext=False`、`clipboard=undefined`）真实点击 → `已复制: document.pdf`、JS 错误 0；**headless 与系统 pasteboard 未打通（哨兵法实证）⇒ 改以有头 Chrome 实证：`pbpaste` 回读 == `document.pdf`（真复制）**；干净页无用户激活直调 → `复制失败`（不静默/不假成功）。**判据非恒真**：我的 A1/B2 扫描器指向基线副本全红（块缺失、块外调用 13/`execCommand` 6、IN_BLOCK 0→216、IN_SCRIPT 286→0）+ **变异测试 3 态**（BASE 绿 / M1 模板变异红且指名「0 != 1 BEGIN 标记」/ M2 产物变异红指名文件 / M3 保块 + 块外裸调用红指名 `demos/usage-guide.html:1253 脚本内裸调用` / RESTORE 复绿，live 树零污染）+ **基线假成功 A/B**。**测试削弱核查（E）**：`bf61484` 对既存用例 `tests/test_templates.py::TestDocShowMd::test_doc_title_click_copy_path` 仅 +11/-2（`navigator.clipboard.writeText` 桩 + docstring + 1 方法改名），**断言逐字未变** ⇒ 判为**无关**（非强化非削弱）；**原用例修前确为恒绿（假成功断言）已实证** —— 基线产物 + `isSecureContext=false` + `clipboard=undefined` + `execCommand→false`（复制彻底失败）下 `execCalled=0` 而 toast 仍报「已复制」；HEAD 同夹具报「复制失败」。仅其 docstring 的环境前提与实测不符（登记 205）。
+
+### Positives
+
+- **不采信转述**：ops 回执 18/18 PASS 仅作引用，15 条 finding 全部以我自己的命令复算，逐条钉到源码行/产物字节/命令输出
+- **真实复制实证方法升级**：ops 用 headless CDP 粘贴回读，我实证 headless 剪贴板与系统 pasteboard **隔离**（哨兵 `CL015-SENTINEL-*` 点击后仍在），改走**有头浏览器 + `pbpaste` 回读**取得更强证据（含剪贴板备份与恢复，测后 `pbpaste == 备份`）
+- **例外面双证**：4 strategy 表既做「与基线逐行全等」无损证明，又用「按 JSON 重生成 diff = 212 行」独立坐实例外必要
+- **判据强度自查**：主动记录并自证本审计 harness 的两次缺陷（静态 `<table>` 解析恒真、数据源说明 md 同名碰撞误报），避免以恒真判据给出 PASS
+- **零污染**：全程 `git status --porcelain` 收尾为空；基线/变异均用 `git archive` 副本（不写 `.git`，不建 worktree）
+
+### 处理
+
+- ✅ PASS → 单笔提交 `audit@review: 剪贴板回退统一实现审计 PASS (HTML-GEN-CL015)`（仅审计报告 + `review-log.md` + `.review-level.yaml`，显式 pathspec），随后 `git push github main`（ff-only，先 `ls-remote` 复核；不推 origin/gitee；不 force）
+- HG-SEC-202..206（🟢 record）→ 归属「另批 errata/勘误」（设计补记 1 · ops 回执 2 · tests 注释 1 · 无需处置 1）；**均不阻断**，本批 0 代码回炉项
+- 遗留未验证面（承接 192，本批登记）：移动 Safari `readonly` + `select()`/`execCommand`；`src/` 打包源未重建（199 = 发版流程，N-A）
+- 报告: `documents/review/html-gen-clipboard-fallback-impl-audit-v1.0-20260928.md`
