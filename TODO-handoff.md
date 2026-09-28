@@ -47,6 +47,7 @@
 | O5 | 落地页 `index.html` / `demos/index.html` 的 `copyText` 与 canonical 块**同名不同签名** | 设计稿 §8 O5 | D6 定稿: 本批不动，另批可选 |
 | O6 | `demos/usage-guide.md` 既有表述「v1.1+ 用 execCommand 兜底」 | 设计稿 §8 O6 | 本批订正 + 重生成 |
 | O7 | 他仓 vendor 副本缺源 commit 注释（版本可追溯性） | 设计稿 §8 O7 | 记录（他仓决定） |
+| O8 | `AGENTS.md:352` 索引路径 patch **待落**（受保护文件写入被拦 = 审批超时未获同意, 未重试未绕道）；补丁已备 `cache/handoff/agents-md-index-path-20260928.patch`（`git apply --check` 通过）；sha256 `6d6a324276205e74…` → 预期 `2658f832135f4592…` | 本会话 [6/6] 收尾 | ⏸ 待用户套用（`git apply` 或交互式审批） |
 | **HG-SEC-202..206** | [5/6] 审计**新增 5 项 🟢 record**（全为文档/报告/注释口径，0 代码回炉）：202 设计 §0.4-A「4 表 11 列」措辞+history 例外归因；203 ops 回执 TC11/TC8 计数口径；204 设计 §7 A4「status 空」条款措辞（**审计归因写作 ops 回执，ops 侧勘误已改归设计 §7 A4**）；205 `bf61484` 夹具 docstring 注释；206 审计侧 harness 自证 | 审计报告 §④ | 另批 errata（不阻断；ops §8 已回填 E1–E3） |
 
 ---
