@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <title>雍正王朝 · 时间轴</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -30,6 +30,19 @@
   --surface-850: #181825;
   --surface-900: #11111b;
   --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius-sm: 4px;
@@ -39,17 +52,51 @@
   --radius-full: 9999px;
 }
 
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-sans);
   background: var(--surface-950);
-  color: #e0e0e0;
+  color: var(--text-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
-h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
 h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
 p  { margin-bottom: 0.6rem; }
 a { color: var(--cobalt-400); text-decoration: none; }
@@ -194,8 +241,16 @@ pre code { background: none; padding: 0; }
 </style>
 <style>
 /* ── Tabs ── */
-.table-tabs { display:flex; gap:4px; margin-bottom:10px; overflow-x:auto; flex-wrap:nowrap; }
+.tabs-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+.table-tabs { display:flex; gap:4px; overflow-x:auto; flex-wrap:nowrap; flex:1; min-width:0; }
 .table-tabs:empty { display:none; }
+.tabs-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.tabs-actions:empty { display:none; }
+/* 居右分享/Home 按钮（CL005）: 同尺寸 36px 圆角深底, 图标 emoji 全尺寸 font-size 1rem */
+.home-link, .share-link { display:flex; align-items:center; justify-content:center; width:36px; height:36px;
+  border-radius:8px; background:rgba(0,0,0,0.41); text-decoration:none; font-size:1rem; cursor:pointer;
+  border:none; color:inherit; font-family:inherit; flex-shrink:0; line-height:1; }
+.home-link:hover, .share-link:hover { background:rgba(0,0,0,0.6); }
 .tab-btn {
   padding:5px 14px; border-radius:6px 6px 0 0; cursor:pointer; font-size:0.72rem; font-weight:500;
   background:var(--surface-900); color:#6b7280; border:1px solid #1a1a2e; border-bottom:none;
@@ -210,6 +265,8 @@ pre code { background: none; padding: 0; }
 /* ── Header bar ── */
 .table-header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
 .table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
+.table-desc { margin:-4px 0 10px; font-size:0.78rem; line-height:1.7; color:#9ca3af; word-break:break-word; }
+.table-desc:empty { display:none; }
 .stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
   background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
 .stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
@@ -223,6 +280,10 @@ pre code { background: none; padding: 0; }
 .data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
 .data-table .cell-pill.pill-clickable { cursor:pointer; }
 .data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
+/* ── Videos 视频列 pill（独立类：max-width 不换行 + ellipsis 缩略） ── */
+.data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
+.data-table .video-pill:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
+.data-table .video-pill.video-more { color:var(--cobalt-300); border-style:dashed; }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -246,7 +307,7 @@ pre code { background: none; padding: 0; }
 .ratio-wrap { position:relative; display:inline-block; }
 
 @media print {
-  .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
+  .table-tabs, .tabs-actions, .table-header, .table-desc, .pager, .toast, .modal-overlay, .qs-overlay,
   .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
   .data-table th, .data-table td { color: #000; border-color: #ccc; }
   .data-table th { background: #f5f5f5; }
@@ -336,12 +397,11 @@ pre code { background: none; padding: 0; }
   grid-template-columns: var(--spl-ratio, 40%) 5px 1fr;
   grid-template-rows: auto auto 1fr;
 }
-.wrapper.split-mode .table-tabs { grid-column: 1 / -1; }
+.wrapper.split-mode .tabs-row { grid-column: 1 / -1; }
 .wrapper.split-mode .batch-bar { grid-column: 1 / -1; }
 .wrapper.split-mode .table-main { overflow: auto; min-width: 200px; }
 .wrapper.split-mode .split-drag { display: block !important; grid-column: 2; }
 .wrapper.split-mode .split-preview { display: flex; }
-.wrapper.split-mode .toast { display: none !important; }
 .split-preview { display:none; flex-direction:column; background:var(--surface-900); border-left:1px solid #2a2a3e;
   min-width:200px; position:relative; }
 .wrapper.split-mode .split-preview { display:flex; }
@@ -352,6 +412,8 @@ pre code { background: none; padding: 0; }
 .split-preview-header .sp-nav { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.7rem; font-family:inherit; }
 .split-preview-header .sp-nav:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 .split-preview-header .sp-nav:disabled { opacity:0.3; cursor:default; }
+.split-preview-header .sp-feedback { display:inline-flex; align-items:center; justify-content:center; height:24px; padding:0 6px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.75rem; font-family:inherit; }
+.split-preview-header .sp-feedback:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 .split-preview-body { flex:1; overflow:auto; padding:14px; }
 .split-preview-body iframe { width:100%; height:70vh; border:none; }
 .split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
@@ -414,12 +476,26 @@ pre code { background: none; padding: 0; }
 }
 .qs-close-btn:hover { background:#2a2a3e; color:#e0e0e0; }
 .qs-hint { display:flex; justify-content:space-between; padding:4px 18px 12px; font-size:0.62rem; color:#6b7280; }
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  
+
 </style>
 </head>
 <body>
+
 <div class="wrapper">
 
-<div class="table-tabs" id="tabsBar"></div>
+<div class="tabs-row">
+  <div class="table-tabs" id="tabsBar"></div>
+  <div class="tabs-actions">
+    
+    <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>
+  </div>
+</div>
 
 <div class="batch-bar" id="batchBar">
   <span class="bb-text" id="batchCount">已选 0 条</span>
@@ -449,6 +525,7 @@ pre code { background: none; padding: 0; }
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
   </div>
 </div>
+<div class="table-desc"></div>
 
 <div class="table-wrap">
   <table class="data-table">
@@ -509,6 +586,11 @@ pre code { background: none; padding: 0; }
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
   }
+
+  // CL009: GitHub Issue 反馈通道 — options.feedback={repo,dataset,key,altKey,template}
+  // 未配置 repo（或显式空串）→ 不渲染反馈按钮（既有页面零变更）
+  const FB_CFG  = (OPTIONS && OPTIONS.feedback) || null;
+  const FB_REPO = (FB_CFG && FB_CFG.repo) ? String(FB_CFG.repo) : '';
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
@@ -594,10 +676,10 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容；videos 列排除：数组 String() 噪音 + title 误命中）
     if (q) {
       var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
-        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
         return searchKeys.some(function(k) {
           return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
@@ -707,14 +789,38 @@ pre code { background: none; padding: 0; }
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
               // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
-              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              // CL009: 携带列 key，反馈链接可预填 field
+              var pillsKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+pillsKey+')"' : '';
               rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
+              return;
+            }
+            if (col.type === 'videos') {
+              // 视频列：每视频一个 pill [图标] title (duration)；maxShow 折叠 "+N"，点击展开全部（不折叠回，re-render 重置）
+              var videos = val;
+              var vMaxShow = (col.videos && typeof col.videos.maxShow === 'number') ? col.videos.maxShow : 3;
+              var vCount = Array.isArray(videos) ? videos.length : 0;
+              var vVisible = Math.min(vCount, vMaxShow);
+              var vHtml = '';
+              for (var vi = 0; vi < vVisible; vi++) vHtml += renderVideoPill(videos[vi]);
+              var vRestHtml = '';
+              if (vCount > vVisible) {
+                vRestHtml = '<span class="video-rest" style="display:none">';
+                for (var vj = vVisible; vj < vCount; vj++) vRestHtml += renderVideoPill(videos[vj]);
+                vRestHtml += '</span>';
+              }
+              var vMoreHtml = vCount > vVisible ? '<span class="video-pill video-more" onclick="event.stopPropagation();expandVideos(this)" title="展开全部">+' + (vCount - vVisible) + '</span>' : '';
+              var freezeClsV = col.freeze ? ' frozen-col' : '';
+              var stickyClsV = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyleV = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeClsV+stickyClsV+'"'+freezeStyleV+'>'+vHtml+vRestHtml+vMoreHtml+'</td>';
               return;
             }
             if (col.render) val = col.render(val, row);
           else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
-          else if (col.escape) val = escapeHtml(String(val));
+          else if (col.escape === false) { /* 显式豁免: raw HTML（如 <a> 链接列） */ }
           else if (val === undefined || val === null) val = '';
+          else val = escapeHtml(String(val));  // HG-SEC-134: 默认转义，防止 stored XSS
           var freezeCls = col.freeze ? ' frozen-col' : '';
           var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
@@ -722,13 +828,13 @@ pre code { background: none; padding: 0; }
           var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
-            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
           } else if (col.quickFilter === true) {
             // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
           } else if (col === firstKeyCol) {
             // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
-            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
@@ -741,7 +847,14 @@ pre code { background: none; padding: 0; }
         rowHtml += '<div class="expand-grid">';
         detailCols.forEach(function(c) {
           var v = row[c.key]; if (v === null || v === undefined) v = '';
-          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + escapeHtml(String(v)) + '</div></div>';
+          var valHtml;
+          if (Array.isArray(v) && c.type === 'videos') {
+            // videos 数组特判：逐条渲染 [图标] title (duration) + url 链接（勿 String(v) → [object Object]）
+            valHtml = renderVideoListHtml(v);
+          } else {
+            valHtml = escapeHtml(String(v));
+          }
+          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + valHtml + '</div></div>';
         });
         rowHtml += '</div></td></tr>';
       }
@@ -773,6 +886,57 @@ pre code { background: none; padding: 0; }
   };
 
   function escapeAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+  /* ── Videos column (col.type === 'videos') ── */
+  // 平台图标映射：归一化 String(platform).trim().toLowerCase() 后匹配别名（抖音→douyin、B站→bilibili、YouTube→youtube）
+  var VIDEO_PLATFORM_ICONS = {
+    'douyin': '🎵', '抖音': '🎵',
+    'bilibili': '📺', 'b站': '📺',
+    'youtube': '▶️'
+  };
+  function videoPlatformIcon(platform) {
+    var p = String(platform === undefined || platform === null ? '' : platform).trim().toLowerCase();
+    return VIDEO_PLATFORM_ICONS[p] || '📹';
+  }
+  // pill 文案：[图标] title (duration)；title 缺省 → [图标] platform (duration)；均缺省 → [📹] (duration)
+  function videoPillLabel(v) {
+    var icon = videoPlatformIcon(v.platform);
+    var dur = v.duration ? ' (' + v.duration + ')' : '';
+    if (v.title) return icon + ' ' + v.title + dur;
+    if (v.platform) return icon + ' ' + String(v.platform) + dur;
+    return icon + dur;
+  }
+  // 单元格视频 pill：点击新标签页打开 url（noopener,noreferrer；onclick 转义沿用 actions 先例 JSON.stringify + &quot;）
+  function renderVideoPill(v) {
+    if (!v || typeof v !== 'object') return '';
+    var url = v.url;
+    if (url === undefined || url === null) return '';
+    var label = videoPillLabel(v);
+    var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
+    return '<span class="video-pill" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
+  }
+  // 折叠 "+N"：点击展开全部（DOM 显示剩余 pill），不折叠回；跨 re-render 重置折叠态
+  window.expandVideos = function(el) {
+    var td = el.parentNode;
+    var rest = td.querySelector('.video-rest');
+    if (rest) rest.style.display = '';
+    el.style.display = 'none';
+  };
+  // split 预览 / expand 行内展开：markdown 链接风格 [图标 title (duration)] —— label 为链接文本（点击打开 url），url 仅 hover title 可见
+  function renderVideoListHtml(videos) {
+    if (!Array.isArray(videos) || !videos.length) return '';
+    return videos.map(function(v) {
+      if (!v || typeof v !== 'object') return '';
+      var url = v.url;
+      var label = videoPillLabel(v);
+      if (url) {
+        var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
+        return '<div style="margin:2px 0;line-height:1.6">' +
+          '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+      }
+      return '<div style="margin:2px 0;line-height:1.6">' + escapeHtml(label) + '</div>';
+    }).join('');
+  }
 
   function getRowClickCol() {
     return COLUMNS.find(function(c){return c.onClick;});
@@ -814,6 +978,7 @@ pre code { background: none; padding: 0; }
   }
 
   window.quickFilterBy = function(key, value, mode) {
+    if (splitActive) closeSplit();  // HG-SEC-075: quickFilter 设置/清除 → 关闭分栏 (split 下标仅对默认排序+无 quickFilter 有效)
     mode = mode || 'exact';
     if (quickFilter && quickFilter.key === key && quickFilter.value === value && (quickFilter.mode || 'exact') === mode) {
       quickFilter = null;  // toggle off
@@ -826,6 +991,7 @@ pre code { background: none; padding: 0; }
   };
 
   window.clearQuickFilter = function() {
+    if (splitActive) closeSplit();  // HG-SEC-075
     quickFilter = null;
     currentPage = 1;
     render();
@@ -881,6 +1047,7 @@ pre code { background: none; padding: 0; }
 
   var sortKey2 = '', sortAsc2 = true;
   window.sortBy = function(key, event) {
+    if (splitActive) closeSplit();  // HG-SEC-075: sort 变化 → 关闭分栏 (split 下标仅对默认排序有效)
     if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
     else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
     expandedIdx = -1; initThead(); render();
@@ -1097,10 +1264,25 @@ pre code { background: none; padding: 0; }
   });
 
   /* ── Split View ── */
-  var splitRow = null, splitIdx = -1;
-  function activateSplit(row, idx) {
-    splitRow = row; splitIdx = idx;
+  var splitRow = null, splitIdx = -1, splitField = '';  // CL009: splitField = 触发分栏的列 key（'' = 未知）
+
+  /* ── URL 状态同步 (CL004: ?tab&q&split replaceState; HG-SEC-074 统一 URLSearchParams) ── */
+  function syncUrlState() {
+    var p = new URLSearchParams();
+    if (TABS && TABS.length && activeTab && activeTab !== TABS[0].key) p.set('tab', activeTab);
+    var q = document.getElementById('searchInput').value;
+    if (q) p.set('q', q);
+    if (splitActive && splitIdx >= 0) p.set('split', String(splitIdx));
+    var qs = p.toString();
+    var url = location.pathname + (qs ? '?' + qs : '');
+    try { history.replaceState(null, '', url); } catch(e) {}
+  }
+  window.syncUrlState = syncUrlState;
+
+  function activateSplit(row, idx, colKey) {
+    splitRow = row; splitIdx = idx; splitField = colKey || '';  // CL009
     splitActive = true;
+    window.splitActive = true; window.splitIdx = idx; window.splitRow = row;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.add('split-mode');
     initThead();
@@ -1111,24 +1293,60 @@ pre code { background: none; padding: 0; }
     var rows = tbody.querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
     if (rows[idx]) rows[idx].classList.add('split-active');
+    syncUrlState();
   }
   window.activateSplit = activateSplit;
-  window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
+  window.openSplitAt = function(idx, colKey) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx, colKey); };
   window.splitNav = function(dir) {
     var newIdx = splitIdx + dir;
     if (newIdx < 0 || newIdx >= filtered.length) return;
-    activateSplit(filtered[newIdx], newIdx);
+    activateSplit(filtered[newIdx], newIdx, '');
   };
   window.closeSplit = function() {
     splitActive = false;
+    window.splitActive = false; window.splitIdx = -1; window.splitRow = null;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.remove('split-mode');
-    splitRow = null; splitIdx = -1;
+    splitRow = null; splitIdx = -1; splitField = '';
     initThead();
     render();
     // clear highlight
     var rows = document.getElementById('tbody').querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
+    syncUrlState();
+  };
+
+  /* ── CL009: GitHub Issue 反馈链接（Issue Form 预填，全部 encodeURIComponent） ── */
+  function buildFeedbackUrl(row) {
+    if (!FB_REPO || !row) return '';
+    var keyField = (FB_CFG && FB_CFG.key) || 'name';
+    var altField = (FB_CFG && FB_CFG.altKey) || '';
+    var rowId = (row[keyField] === null || row[keyField] === undefined) ? '' : String(row[keyField]);
+    if (!rowId) return '';
+    var parts = [];
+    function add(k, v) {
+      if (v === null || v === undefined) return;
+      v = String(v);
+      if (!v) return;
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+    }
+    // v1.3 (CL009): 模板名来自 options.feedback.template（案例自描述）
+    add('template', (FB_CFG && FB_CFG.template) || 'data-fix.yml');
+    var bits = [];
+    if (FB_CFG && FB_CFG.dataset) bits.push(String(FB_CFG.dataset));
+    bits.push(rowId);
+    add('title', '[数据反馈] ' + bits.join(' · '));
+    add('page', (location.pathname || '').replace(/^\/+/, ''));
+    add('dataset', FB_CFG && FB_CFG.dataset);
+    add('row', rowId);
+    add('row_en', altField ? row[altField] : '');
+    // v1.3 (D1): 不再预填 field / current —— 字段由表单下拉选择（dropdown 不可 URL 预填）
+    return 'https://github.com/' + FB_REPO + '/issues/new?' + parts.join('&');
+  }
+  window.buildFeedbackUrl = buildFeedbackUrl;
+  window.openFeedbackIssue = function() {
+    var url = buildFeedbackUrl(splitRow);
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
   };
 
   function renderSplitPreview(row) {
@@ -1136,9 +1354,14 @@ pre code { background: none; padding: 0; }
     var body = document.getElementById('splitPreviewBody');
     // title from first column
     var titleCol = visibleCols({requireKey: true})[0];
+    // CL009: 反馈按钮仅当 options.feedback.repo 配置时渲染
+    var fbBtn = FB_REPO
+      ? '<button class="sp-feedback" id="spFeedbackBtn" onclick="openFeedbackIssue()" title="反馈数据">✏️</button>'
+      : '';
     header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
       '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
       ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+      fbBtn +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
     // render: url → iframe, desc → textContent, else kv-list
@@ -1155,7 +1378,13 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
         var v = row[c.key]; if (v === null || v === undefined) v = '';
         var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
-        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        var valHtml;
+        if (Array.isArray(v) && c.type === 'videos') {
+          // videos 数组特判：逐条渲染 + url 链接（勿 String(v) → [object Object]）
+          valHtml = renderVideoListHtml(v);
+        } else {
+          valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+        }
         return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
       }).join('')+'</div>';
     }
@@ -1259,6 +1488,34 @@ pre code { background: none; padding: 0; }
         showToast('已复制: '+text);
       }
     } catch(e) { showToast('复制失败'); }
+  };
+
+  /* ── Share link (CL004: 🔗 拷贝规范化分享 URL; clipboard + execCommand fallback) ── */
+  function fallbackCopyUrl(text) {
+    try {
+      var ta = document.createElement('textarea');
+      ta.value = text; ta.style.position='fixed'; ta.style.opacity='0';
+      document.body.appendChild(ta); ta.select();
+      document.execCommand('copy'); document.body.removeChild(ta);
+      showToast('已复制链接');
+    } catch(e) { showToast('复制失败'); }
+  }
+  function buildShareUrl() {
+    syncUrlState();  // 确保 URL 与当前状态一致 (默认/空参数已剔除)
+    return location.href;
+  }
+  window.buildShareUrl = buildShareUrl;
+  window.shareLink = function() {
+    var url = buildShareUrl();
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).then(function() {
+        showToast('已复制链接');
+      }).catch(function() {
+        fallbackCopyUrl(url);  // headless/权限受限 → execCommand fallback
+      });
+    } else {
+      fallbackCopyUrl(url);
+    }
   };
 
   /* ── Column visibility ── */
@@ -1370,9 +1627,9 @@ pre code { background: none; padding: 0; }
   var searchTimer;
   document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); }, 300);
+    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); syncUrlState(); }, 300);  // H1: q 随 debounce 同步
   });
-  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); };
+  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); syncUrlState(); };
 
   /* ── Tab switch ── */
   window.switchTab = function(key) {
@@ -1382,6 +1639,7 @@ pre code { background: none; padding: 0; }
     buildTabs();
     currentPage = 1;
     render();
+    syncUrlState();
   };
 
   /* ── CSV Export ── */
@@ -1470,6 +1728,18 @@ pre code { background: none; padding: 0; }
 
   /* ── Init ── */
   function init() {
+    // CL004: URL 状态恢复 — 顺序 tab(buildTabs 前) → q(render 前) → split(render 后) (HG-SEC-076)
+    var _params = new URLSearchParams(location.search);
+    var _urlTab = _params.get('tab');
+    if (_urlTab && TABS && TABS.find(function(t){ return t.key === _urlTab; })) {
+      activeTab = _urlTab;  // 白名单校验, 无效忽略
+    }
+    var _urlQ = _params.get('q');
+    if (_urlQ !== null) {
+      // 仅 value 赋值 (无 innerHTML 注入面), URLSearchParams 自动解码 (HG-SEC-074)
+      document.getElementById('searchInput').value = _urlQ;
+    }
+    var _urlSplit = _params.get('split');
     // Restore saved column widths
     try {
       var savedWidths = localStorage.getItem(COL_WIDTHS_KEY);
@@ -1495,6 +1765,13 @@ pre code { background: none; padding: 0; }
     var _df = OPTIONS && OPTIONS.defaultFilter;
     if (_df && _df.key && _df.value) {
       quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
+    // CL004: split 恢复 (render 后; filtered 已按 tab+q 重建; 越界忽略; 有 quickFilter 时下标语义失效跳过)
+    if (_urlSplit !== null && !quickFilter) {
+      var n = parseInt(_urlSplit, 10);
+      if (!isNaN(n) && n >= 0 && n < filtered.length) {
+        activateSplit(filtered[n], n);
+      }
     }
   }
   init();
@@ -1531,6 +1808,7 @@ pre code { background: none; padding: 0; }
       this.active = false;
       currentPage = 1;
       render();
+      syncUrlState();
     },
 
     updateMatchCount: function() {

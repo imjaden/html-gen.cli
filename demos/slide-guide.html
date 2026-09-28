@@ -3,8 +3,8 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <title>D 型 · 幻灯片方案</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -423,7 +423,7 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 }
 
 @media print {
-  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit { display: none !important; }
+  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
   .doc-body { color: #000; }
   .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
   .doc-body code { background: #f0f0f0; color: #000; }
@@ -432,9 +432,12 @@ h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .a
 /* ── GitHub Corner ── */
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
-body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit { display: none; }
+body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
+  .home-link:hover { background: rgba(0,0,0,0.6); }
+  
 
 </style>
 </head>
@@ -460,6 +463,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   </svg>
 </a>
 <a class="github-corner-hit" href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener" aria-label="GitHub"></a>
+
 
 <div class="doc-wrapper">
   <aside class="doc-sidebar" id="sidebar">
