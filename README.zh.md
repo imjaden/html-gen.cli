@@ -36,7 +36,7 @@ pip install html-gen-cli        # 安装 `html-gen` 命令
 ```bash
 git clone https://github.com/imjaden/html-gen.cli
 cd html-gen.cli
-python3 html-gen.py version     # html-gen v3.3 (2026-08-28)
+python3 html-gen.py version     # html-gen v3.4 (2026-09-27)
 ```
 
 ## 快速开始

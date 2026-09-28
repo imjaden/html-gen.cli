@@ -36,7 +36,7 @@ Or run from source (no install):
 ```bash
 git clone https://github.com/imjaden/html-gen.cli
 cd html-gen.cli
-python3 html-gen.py version     # html-gen v3.3 (2026-08-28)
+python3 html-gen.py version     # html-gen v3.4 (2026-09-27)
 ```
 
 ## Quick Start

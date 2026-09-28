@@ -8,14 +8,12 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
   html-gen slide --input report.md --output report.html [--title "xxx"]
   html-gen table --data data.json [-o out.html]  # 输出: CLI -o 或 JSON 顶层 output 必填其一
   html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [-o out.html]
-
-版本: 3.3(2026-08-28)
 """
 import html, json, re, sys, os, time, argparse, types, unicodedata
 from pathlib import Path
 
-__version__ = "3.3"              # CL016: 版本号 (格式 \d+\.\d+)
-__release_date__ = "2026-08-28"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
+__version__ = "3.4"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
+__release_date__ = "2026-09-27"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent
 TEMPLATE_DOC   = SKILLS_DIR / 'layout-doc.html'
