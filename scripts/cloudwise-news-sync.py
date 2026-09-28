@@ -12,6 +12,9 @@
   python3 scripts/cloudwise-news-sync.py --no-commit     # 重建但不 commit
 
 输出: 周报文本（stdout）— 供 cron 投递飞书
+
+索引位置（按序取第一个存在者）: env `WEB2MD_INDEX` > `~/CodeSpace/script-miner/cache/web2md/web2md_index.json`
+（现行）> `~/Documents/10-DataDrived/web2md_index.json`（旧位置，iCloud 同步范围，已空置）。
 """
 
 import argparse
@@ -26,7 +29,27 @@ from pathlib import Path
 
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 NEWS_FILE = PROJECT_ROOT / 'data' / '_cloudwise-news.json'
-INDEX_FILE = Path(os.environ.get('WEB2MD_INDEX', '/Users/jadenli/Documents/10-DataDrived/web2md_index.json'))
+
+# web2md 索引位置候选（按序取第一个存在者）——
+# 2026-09-26 cron rc=1 复盘: 索引已从 iCloud (~/Documents/10-DataDrived) 迁至 script-miner/cache/web2md/，
+# 硬编码单点路径随之失效 ⇒ 改为候选链 + 环境变量覆盖（wrapper 亦可注入 WEB2MD_INDEX）。
+INDEX_CANDIDATES = [
+    Path(os.environ['WEB2MD_INDEX']) if os.environ.get('WEB2MD_INDEX') else None,
+    Path('/Users/jadenli/CodeSpace/script-miner/cache/web2md/web2md_index.json'),
+    Path('/Users/jadenli/Documents/10-DataDrived/web2md_index.json'),
+]
+
+
+def resolve_index_file():
+    env = os.environ.get('WEB2MD_INDEX')
+    if env:
+        return Path(env)        # 显式覆盖优先, 且不静默回退（防拼写错误悄悄换文件）
+    for cand in INDEX_CANDIDATES[1:]:
+        if cand.exists():
+            return cand
+    return INDEX_CANDIDATES[1]      # 均不存在: 返回现行位置, 供报错信息指明期望路径
+
+INDEX_FILE = resolve_index_file()
 AUTHOR = '云智慧'
 
 SUMMARY_LEN = 200  # 摘要长度（字符）
@@ -35,6 +58,8 @@ SUMMARY_LEN = 200  # 摘要长度（字符）
 def load_index():
     if not INDEX_FILE.exists():
         print(f'❌ web2md 索引不存在: {INDEX_FILE}', file=sys.stderr)
+        print('   候选（按序）: ' + ' | '.join(str(c) for c in INDEX_CANDIDATES if c), file=sys.stderr)
+        print('   提示: 可用 env WEB2MD_INDEX=<path> 覆盖', file=sys.stderr)
         sys.exit(1)
     with open(INDEX_FILE, encoding='utf-8') as f:
         return json.load(f)
@@ -105,10 +130,12 @@ def resolve_step1(idx_item):
         return p
     aid = idx_item.get('article_id') or ''
     if aid:
-        # 兜底: web2md/{id}/step1-article.md（web2md 偶发索引路径带日期前缀但实际目录无前缀）
-        alt = INDEX_FILE.parent / 'web2md' / aid / 'step1-article.md'
-        if alt.exists():
-            return str(alt)
+        # 兜底: web2md/{articles,web2md}/{id}/step1-article.md
+        # （web2md 偶发索引路径带日期前缀但实际目录无前缀；2026-09 起布局为 cache/web2md/articles/<id>/）
+        for sub in ('articles', 'web2md'):
+            alt = INDEX_FILE.parent / sub / aid / 'step1-article.md'
+            if alt.exists():
+                return str(alt)
     return p
 
 
