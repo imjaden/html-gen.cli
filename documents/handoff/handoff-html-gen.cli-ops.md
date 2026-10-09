@@ -1,15 +1,15 @@
 ---
-title: Handoff - ops/20260927_211823_a
-date: 2026-09-28
-source_session: 20260927_211823_aabbb7
+title: Handoff - ops/20260928_113655_1
+date: 2026-10-09
+source_session: 20260928_113655_1002ce
 generated_by: hermes-0.21.3
 topic: html-gen
 type: handoff
 version: 1.0
 author: ops
-summary: CL015 设计 v1.1 定稿（0c6acdb/dc14a38）；[2/6] 评审 PASS 85/100，4db7089 已 push github（ff-
-next: 先推 5818de9；再补「零改动基线重生成」单独一笔；随后放行 [3/6] dev 实施。
-risk: 5818de9 待推（ahead 1）；[3/6] dev 未放行，须折入 findings 187–194 与 188
+summary: CL015 六步全完成：dev 6 笔、ops 核查 18/18、审计 95/100·A。errata 202/204/205 已修正、206 已落 skill
+next: 可直接归档。若求零告警，补 design 步骤 session_id；需要时另开新批处理 drama 表 JSON 列集
+risk: 无阻塞项。仅 `hm loop artifacts` 第④项 design 步骤 JSON 为占位（09-27 旧会话无
 ---
 
 # Handoff: html-gen-ops
@@ -17,50 +17,44 @@ risk: 5818de9 待推（ahead 1）；[3/6] dev 未放行，须折入 findings 187
 📌 语义摘要
 
 **已完成**
-CL015 设计 v1.1 定稿（0c6acdb/dc14a38）；[2/6] 评审 PASS 85/100，4db7089 已 push github（ff-only）；TODO-handoff.md 入口页建立并刷新（5818de9）。
+CL015 六步全完成：dev 6 笔、ops 核查 18/18、审计 95/100·A。errata 202/204/205 已修正、206 已落 skill、AGENTS.md 候选链已落。346 tests 全绿，工作树 clean，github 已同步 6612e0f（gitee 未推）。
 **未完成**
-5818de9 待推（ahead 1）；[3/6] dev 未放行，须折入 findings 187–194 与 188 基线重生成笔；[4/6]–[6/6] 未启动；script-miner 转交押后。
+无阻塞项。仅 `hm loop artifacts` 第④项 design 步骤 JSON 为占位（09-27 旧会话无 session_id）；script-miner 转交件与数据面两项按你指示忽略/暂忽略。
 **下一步建议**
-先推 5818de9；再补「零改动基线重生成」单独一笔；随后放行 [3/6] dev 实施。
+可直接归档。若求零告警，补 design 步骤 session_id；需要时另开新批处理 drama 表 JSON 列集与样式基座漂移（212 行）。
 
 ## 目标
-理解并核实文档中的需求清单 /Users/jadenli/CodeSpace/script-miner/cache/handoff/prompt-dev-html-gen-doc-clipboard-fallback-20260927.md
-
-打印今天的日期时间，今天只讨论与澄清需求、申请任务编号与编写设计方案（含 c
+读取交接文档内容 TODO-handoff.md, 罗列下一步行动计划、决策清单（按需）
 
 ## 输入
 - profile: ops
-- session: 20260927_211823_aabbb7
-- 消息数: 71
+- session: 20260928_113655_1002ce
+- 消息数: 285
 
 ## 输出 / 关键路径
 - /Users/jadenli/CodeSpace/html-gen.cli
-- ~/CodeSpace/hermes-manager/scripts/lib_loop.py
-- ~/CodeSpace/script-miner/efficiency/clipboard-fallback-check.py
+- ~/CodeSpace/html-gen.cli
 
 ## 边界
-- started: 1790515104.0493739, messages: 71
+- started: 1790566615.7204962, messages: 285
 
-## 确认点
-- [ ] 1 清空  TODO-handoff.md；然后写入当前澄清待串行执行的任务清单，以便新会话读取并执行
-- [ ] [guard] review 派发在跑 (1) → 等待 30s…（上限 120min）
-- [ ] [guard] review 无在跑派发 → 放行（已等待 360s, 上限 120min）
+## 确认点（历史输入, 非待办）
+- 读取交接文档内容 TODO-handoff.md, 罗列下一步行动计划、决策清单（按需）
+- [guard] dev 无在跑派发 → 放行（已等待 0s, 上限 180min）
+- [guard] review 无在跑派发 → 放行（已等待 0s, 上限 120min）
 
 ## 权限
 - [无]
 
 ## 来源
+- 5818de9 docs@handoff: CL015 [2/6] 评审 PASS 回执 + 入口页
+- 69ec665 docs@handoff: auto generate demo handoff d
+- 5d6ab4a docs@handoff: auto generate ops handoff do
+- 4db7089 audit@review: 剪贴板回退统一设计 v1.1 评审 PASS (HTML
 - 0c6acdb docs@design: 剪贴板回退统一设计 v1.0 (HTML-GEN-CL01
-- dc14a38 docs@design: 剪贴板回退统一设计 v1.1 — 决策定稿 T1+D1..
-- d5da78f docs@handoff: CL015 会话轮转入口页 TODO-handoff.m
-- 92fcd04 docs@handoff: auto generate ops handoff do
-- cb52b50 sync@html-gen: cloudwise news weekly - 1 n
 
 ## 下一步清单
-1. 继续: 理解并核实文档中的需求清单 /Users/jadenli/CodeSpace/script-mine
-2. 1 清空  TODO-handoff.md；然后写入当前澄清待串行执行的任务清单，以便新会话读取并执行
-3. [guard] review 派发在跑 (1) → 等待 30s…（上限 120min）
-4. [guard] review 无在跑派发 → 放行（已等待 360s, 上限 120min）
+1. 真值见 live draft 待办节（cache/draft/TODO-YYYYMMDD.md · 入口页机器段）
 
 ## 建议技能
-github, references, scripts
+agents, github, references, scripts
