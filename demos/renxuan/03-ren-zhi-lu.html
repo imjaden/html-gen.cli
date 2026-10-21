@@ -1,0 +1,898 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第二章·走向觉醒的“人之路”</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+  transition: width 0.25s, min-width 0.25s;
+}
+
+/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
+.doc-sidebar { display: none; }
+.top-toolbar { display: none; }
+body.show-sidebar .doc-sidebar { display: flex; }
+body.show-toolbar .top-toolbar { display: flex; }
+.doc-sidebar.collapsed { width: 48px; min-width: 48px; }
+.doc-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.doc-sidebar-resize:hover, .doc-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+.doc-sidebar.collapsed .doc-sidebar-header,
+.doc-sidebar.collapsed .doc-toc,
+.doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
+.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
+.doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
+.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .sidebar-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.doc-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
+.doc-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
+.doc-h3-toggle:hover { color: #9ca3af; }
+.doc-h3-toggle.on { color: var(--cobalt-400); }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; display: none; }
+.doc-toc .toc-h3.show { display: block; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
+.doc-header {
+  padding: 0 80px;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-950);
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+/* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
+.meta-path { display: none; }
+body.show-md .meta-path { display: inline; }
+.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
+/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
+body.width-narrow .doc-body { max-width: 720px; }
+body.width-wide .doc-body { max-width: 1280px; }
+
+.doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
+.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
+.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+.doc-body pre { position: relative; background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+.progress-bar { position: fixed; top: 0; left: 0; width: 0; height: 2px; background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear; }
+
+.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; cursor: zoom-out; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }
+.lightbox .lb-close { position: fixed; top: 16px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }
+.lightbox .lb-close:hover { color: #fff; }
+.doc-body img { cursor: zoom-in; }
+
+.anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
+h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2.5em; min-width: 2.5em; text-align: right; padding-right: 1em; color: #4a5568; user-select: none; }
+
+.doc-body blockquote.callout { border-left-width: 4px; padding: 10px 16px; margin: 0.75rem 0; }
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note { border-left-color: var(--cobalt-500); background: rgba(79,70,229,0.08); color: #c0c4f0; }
+.doc-body blockquote.callout.tip { border-left-color: #34d399; background: rgba(52,211,153,0.08); color: #a7f3d0; }
+.doc-body blockquote.callout.warning { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); color: #fde68a; }
+.doc-body blockquote.callout.danger { border-left-color: #f87171; background: rgba(248,113,113,0.08); color: #fecaca; }
+
+/* ── Sidebar Footer ── */
+.doc-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
+.doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+
+/* ── TOC Search ── */
+.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.doc-toc-search.active { display: block; }
+.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.doc-toc-search input:focus { border-color: var(--cobalt-600); }
+.doc-toc-search input::placeholder { color: #555; }
+:root.light .doc-toc-search { border-color: #e5e5e5; }
+:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
+.doc-toc a.filtered-out { display: none; }
+
+/* ── Top-Right Toolbar ── */
+.top-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .doc-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .doc-sidebar-header { border-color: #e5e5e5; }
+:root.light .doc-sidebar-footer { border-color: #e5e5e5; }
+:root.light .doc-toc a { color: #666; }
+:root.light .doc-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
+:root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
+:root.light .doc-body h2 { color: #222; }
+:root.light .doc-body h3 { color: #333; }
+:root.light .doc-body h4 { color: #444; }
+:root.light .doc-body h5 { color: #555; }
+:root.light .doc-body h6 { color: #666; }
+:root.light .doc-body p, :root.light .doc-body li { color: #444; }
+:root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
+:root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
+:root.light .doc-body blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
+:root.light .doc-body table th { background: #f0f0f0; color: #555; }
+:root.light .doc-body table td { border-color: #ddd; }
+:root.light .doc-body hr { border-color: #ddd; }
+:root.light .doc-header { background: #f5f5f5; }
+:root.light .doc-header h1 { color: #222; }
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 0 16px 40px; }
+  .doc-header { padding: 0 16px; }
+}
+
+@media print {
+  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
+  .doc-body { color: #000; }
+  .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
+  .doc-body code { background: #f0f0f0; color: #000; }
+  .doc-body a { color: #000; text-decoration: underline; }
+}
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
+  .home-link:hover { background: rgba(0,0,0,0.6); }
+  
+
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Top-Right Toolbar -->
+<div class="top-toolbar" id="topToolbar">
+  <button class="tb-btn active" id="langZh" onclick="setLang('zh')" title="中文">🇨🇳</button>
+  <button class="tb-btn" id="langEn" onclick="setLang('en')" title="English">🇺🇸</button>
+  <span class="tb-divider"></span>
+  <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
+</div>
+
+
+
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-resize" id="sbResize"></div>
+    <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
+    <div class="doc-sidebar-header">
+      <div class="sidebar-title" title="第二章·走向觉醒的“人之路”" id="sidebarTitle">📄 第二章·走向觉醒的“人之路”</div>
+      <div class="sub-row">
+        <div class="sub">《人选天选论》连载版 · 姜蓝（路飞）</div>
+        <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
+      </div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+    <!-- TOC Search -->
+    <div class="doc-toc-search" id="tocSearchWrap">
+      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    </div>
+    <div class="doc-sidebar-footer">
+      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
+  </aside>
+  <div class="doc-main" id="docMain">
+    <div class="doc-header">
+      <h1>第二章·走向觉醒的“人之路”</h1>
+      <div class="meta">创建: 2026-10-21 22:58 · 编辑: 2026-10-21 22:58<br>字数: 149 · 阅读约 1 分钟<span class="meta-path"> · 路径: <code>03-ren-zhi-lu.md</code></span></div>
+    </div>
+    <div class="doc-body" id="docBody"><p><em>来源: https://www.guohen.com/zh/chapters/ren-zhi-lu ｜ 发布: 2026-03-09 ｜ 4790 字 ｜ 选自《人选天选论》连载版</em></p>
+<p>第二天一早，我和文杰又去了那条小溪边，我明明知道那块石头就在下面，可我就是看不清它真正的样子。前一天我就想去捞它，因为它在水里会闪一种很奇怪的光，不是普通石头那种干巴巴的反光，而是一种幽幽的蓝，很像月光石。黑白底子里，透出一点冷冷的蓝，我那时候甚至觉得，那可能是一块很特别的石头。和和氏璧一样的石头。我蹲下来，把手伸进水里，刚一碰到水，我就立刻缩了回来，太冷了。</p>
+<p>我很想得到它，但我不愿意付那个代价，所以我没有捞，第二天文杰看我还盯着它，对我打了个鄙视的表情，笑着一步跳下水中，然后他就真的蹲下去，把手伸进水里，摸了几下，把那块石头捞了起来，石头拿到我面前的那一刻，我整个人愣住了，因为它根本不是我想象中的样子。</p>
+<p>没有蓝光，没有神秘感，没有那种“好像藏着什么东西”的感觉，它只是一个很普通的石头，灰白色的底，上面有一些细细的云母片，闪着一点碎光。</p>
+<p>我当时站在那条小溪边的一条腐烂的松木边，盯着那块石头，看了很久，第一反应不是失望。而是开始思考理由，我在想，是不是因为水的折射，是不是因为水流在晃动，是不是因为阳光从某个角度照下来，是不是这些云母片在水里的时候，被水面和流动拉成了蓝色。我越想越觉得这些解释很合理，于是我小心翼翼地过草坪来到水边，把石头又放回水里，我想看看它是不是还会重新发出那种蓝光，但它没有。</p>
+<p>它回到水里以后，也没有再变成我第一眼看到的样子。我站在那里，突然一下子明白了一件事。<span class="rx-hl" id="hl-03-ren-zhi-lu-1">那道蓝光，好像从来就不在石头上，也不在水里，它只在我心里。</span></p>
+<p>我前面那些拼命找出来的解释，并不是为了寻找真相。而是在努力证明，我刚才看到的那个因果关系是对的。后来我越来越明白，人平时就是这样，我们先看见一个结果，然后拼命给它找原因，再给这个原因找证据。</p>
+<p>最后让自己相信：我没看错，我想对了，这个世界就是这样。可很多时候，你只要把石头再放回水里看一眼，那些理由就会自己碎掉。</p>
+<p>我发现了反复观察对比意义，才有了这本人选天选论。</p>
+<p>记录非常重要，因为只有记录，才能把你“当时真的是怎么想的”留下来。过一段时间再回头看，你才知道你当时看到的，到底是河底的石头，还是水面上的波纹。后来我把那块石头带回了家。因为这个石头，还搞丢了文杰送我的索尼二手音乐手机，我清晰地记得型号，索尼爱立信 w800c。到今天，它还在我书桌上。看起来只是一块很普通的石头。但对我来说，它比很多东西都重要。因为我后来很多关于人的思考，其实都从那条小溪开始。如果有一天你们见到它，大概也不会觉得它有什么特别。</p>
+<blockquote>但对我来说，它是一切的起点。</blockquote>
+<p>也是从那时候开始，我第一次认真地想一件事：如果人的思想真的是一条河，那我们到底要怎么观察自己的河底？</p>
+<p>后来那段时间，我开始天天写日记，我写得很认真，认真到写完以后，还会拿给文杰看。我希望他看完以后，会给我一些很真实的反应。我甚至会期待，他看完之后会更理解我一点。</p>
+<p><strong>但有一天，他突然跟我说：“你以后不要再把日记给我看了”</strong></p>
+<p>那天我们正在丹江口市第一人民医院楼梯下那个十字路口，我们正在走向神通网吧打魔兽世界的路上，我当时愣了一下，问他为什么。他说了一段话，我后来记了很多年。</p>
+<p><strong>他说：“人对他人的表达其实都是很虚伪的。”</strong></p>
+<p>我当时很不理解，他说他小时候父母离婚，从小跟爷爷奶奶长大。他爸爸经常跟他说，他妈妈不好。他妈妈又经常跟他说，他爸爸很好。</p>
+<p><strong>他说：“每个人说的都不完全是假话，但也不完全是真话，因为每个人说话的时候，心里都有自己的目的，都有自己想保留的东西，也都有自己想让别人相信的版本。”</strong></p>
+<p><strong>然后他看着我说：“所以你只要是写给别人看的，那它就已经不真实了。”</strong></p>
+<p>我当时听完其实很愤怒，我真心想把我对生命的思考发给他看，我觉得他是在否定我。我写这些东西，是很认真的，我甚至觉得那是我很真实的一部分。结果他说一句“都是虚伪的”</p>
+<p>我当时完全不能接受，后来我们因为这件事吵了一次。再后来，大概有 2 个月，我们几乎赌气不再联系。那段时间，我也没有再给任何人看我的日记。后来我经常翻看我自己以前写过的东西，我发现他是对的，以前我写的时候，是想给他看见，我会不自觉地安排语言。会不自觉地强调某些情绪。也会不自觉地隐藏一些东西。</p>
+<p>而现在，如果再写一次。我已经不会那样写了。那一刻我才突然明白。他说的其实是对的。<span class="rx-hl" id="hl-03-ren-zhi-lu-2">只要是写给别人看的东西，它就已经开始变形了。</span>从那天以后，我的日记就再也没有给任何人看过。但今天写给你们，其实也会有一些变化，我尽力地在控制这种变化，但尽力也只会使得变化继续变化。</p>
+<blockquote>好了，你们准备好了进入我的河流世界，走一条自己思想觉醒的人之路了吗？</blockquote>
+<p>我们现在开始：</p>
+<p>如果人的思想是一条河，那想看清河底，其实是一件很难的事，因为水一直在流。</p>
+<blockquote>信息在流</blockquote>
+<blockquote>情绪在流</blockquote>
+<blockquote>欲望在流</blockquote>
+<p>很多人一辈子都只看见水面的这些借口、理由、伪装，却从来没有看见河底。慢慢地，我总结出，想看见河底的石头，大概有三种办法。</p>
+<blockquote>第一种，叫捞石头，每天记录道痕，写日记。</blockquote>
+<blockquote>第二种，叫潜水，深度思考冥想。</blockquote>
+<blockquote>第三种，叫改河道，彻底泯灭过去的自己。</blockquote>
+<p>但对于绝大多数人来说，我只建议先坚持去做第一种。不小看人之路，它的尽头和天之路，殊途同归。它就是：捞石头，因为它最慢，但也最安全，最小代价。</p>
+<p>捞石头是什么意思？就是你不急着把整条河都看穿，你只捞一块，今天捞一块，明天再捞一块，捞起来，看一眼，再放回去，再看一眼，记下来。</p>
+<p>你要的不是一下子看遍整条河里每一块石头，你也不是今天就要彻底改变自己，你要的，只是慢慢建立一种能力：</p>
+<blockquote>看到水面上的样子，就知道下面大概压着什么。</blockquote>
+<p>这就是天机的种子。这不是神秘，更不是算命，而是你下意识看自己的河底，看得越来越准。那怎么捞？</p>
+<p>我后来给自己找到一个很简单的方法，就是每天在自己最累的时候，去写日记，我那时候本来就很喜欢运动，每天健身、跑步，身体状态也很好。后来我发现，跑步之后的那段时间特别适合捞石头。因为你跑完步以后，身体已经很累了，血液和供氧都在往四肢和全身走，脑子反而不会像平时那样高速运转。</p>
+<p>这个时候，河流会慢下来，不是彻底停，但会明显变慢，而水一慢，水面就会平静一些。平静一些，就更容易看到底。所以我后来给自己的方法就是：</p>
+<blockquote>跑步</blockquote>
+<blockquote>洗澡</blockquote>
+<blockquote>然后写</blockquote>
+<p>怎么写非常重要，我之前指导我徒弟们写日记，他们大都在写一些：今天很累，今天不开心，今天谁让我失望，今天我想明白了什么？这些都是记录意义很低的，这些都是水面的波纹，我们要记录的是：道痕。</p>
+<p>不是记录生活。</p>
+<p>不是记录感受。</p>
+<p>不是记录故事。</p>
+<p>而是每天从河里捞一块石头上来。每天怎么写，才不是写水面。我建议每一篇“道痕”都固定按这个顺序写：</p>
+<blockquote>第一层，事实</blockquote>
+<p>先只写发生了什么，不许解释，不许评价，不许打情。比如：“今天他说我变了”，“今天我看到别人赚钱很快”，“今天我本来想回消息，后来没回”，“今天我看到一个人炫耀，我心里很不舒服”。这一层的作用，是把石头所在的位置先圈出来。很多人一上来就写道理，那样很容易把石头盖住。</p>
+<blockquote>第二层，第一反应</blockquote>
+<p>写你当时最直接的感觉，不是正确答案，是第一反应。比如：“我当时很想反驳”，“我很酸”，“我有点怕”，“我突然很想证明自己”，“我一下子想逃”。这一层很重要，因为第一反应，往往最接近石头。</p>
+<blockquote>第三层，我想得到什么，这一步，是找贪梦。</blockquote>
+<p>你必须逼自己回答一句：如果我顺着这股劲往前走，我到底想得到什么。注意，不要写大词，不要写“尊严”“幸福”“意义”，要写具体的。比如：“我想让他承认我没错”，“我想比那个人强”，“我想让别人高看我”，“我想保住这段关系”，“我想拿到这个机会”，“我想确认自己不是失败者”。这一步一写，贪梦通常就出来了。</p>
+<blockquote>第四层，我在害怕什么</blockquote>
+<p>这一步，是找恐惧。同样也不能写空话。要写最丑、最小、最直接的那个怕。比如：“我怕被看不起”，“我怕我其实没那么厉害”，“我怕失去他”，“我怕我选错了”，“我怕承认以后自己很蠢”，“我怕我其实一直在骗自己”。这一步特别重要，因为很多人只会写想得到什么，不会写自己在怕什么，可真正让人缩手的，往往是这里。</p>
+<blockquote>第五层，我给自己找了什么理由</blockquote>
+<p>这一步是最关键的，这是找水面的波纹。你要问自己：为了让自己舒服一点，我给这件事找了哪些解释。比如：“我不是嫉妒，我只是客观分析”，“我不是害怕，我只是在等等”，“我不是不想要，我只是看得更远”，“我不是生气，我只是觉得不值得”，“我不是想证明自己，我只是说句公道话”。这一层，写的是：你是怎么自洽的。很多人日记写到第三层就停了，所以永远摸不到石头。因为<span class="rx-hl" id="hl-03-ren-zhi-lu-3">真正的石头，往往藏在你最会讲的那些理由后面。</span></p>
+<blockquote>第六层，今天捞出来的石头是什么</blockquote>
+<p>最后只允许写一句定论：今天我捞出来的石头是：______。只写一个主石头，不要又贪又怕写一堆。比如：“今天主石头是：怕被看轻”，“今天主石头是：想证明自己更强”，“今天主石头是：怕失去关系”，“今天主石头是：想要确定性”，“今天主石头是：怕承认自己错了”。这一步非常关键。因为它逼你从一堆水面，落到一块石头。</p>
+<hr>
+<p>为什么很多人写日记没用？因为他们只写前三层：发生了什么，我什么感觉。</p>
+<p>我今天很委屈，这当然也有价值，但那只是“看见了水面”，真正能学会看自己的人，一定会多写两层：我到底想得到什么，我到底在害怕什么。</p>
+<p>然后再加一层：我为了保护自己，编了什么解释。</p>
+<p>写到这里，你才开始真的摸到石头。为什么一定要回看？这个点你前面自己已经悟到了，也是最厉害的地方，石头捞上来，不是为了收藏，而是为了对比。</p>
+<p>你今天捞起来看，明天再放回去看，过一周再看，过一个月再看，你会发现三件事：</p>
+<blockquote>第一，你当时以为很大的事，后来根本不是那块石头。</blockquote>
+<blockquote>第二，你当时以为自己看得很准，其实全是自洽。</blockquote>
+<blockquote>第三，某些石头会反复出现。</blockquote>
+<p>这第三点最重要，如果一块石头一再出现，说明它不是偶发情绪，它是你河底的大石头。所以我建议你：每天写，每周回看一次，每月只找“重复出现的三块石头”。一个月后你会非常震惊。因为你会发现：<span class="rx-hl" id="hl-03-ren-zhi-lu-4">你以为自己每天活得很复杂，其实翻来覆去，可能就被那几块石头推着走。</span></p>
+<p>怎么通过日记学会人选？这个地方才是重点，很多人以为“看见石头”就够了，其实不够。<span class="rx-hl" id="hl-03-ren-zhi-lu-5">看见石头，只是第一步，真正的人选，是当你下一次又遇到同样的波纹时，你知道下面是哪块石头。</span></p>
+<p>比如以前你看到别人成功，会起波澜，你只会觉得自己难受，写了十天道痕以后，你会知道：“哦，这不是单纯难受，这下面是想证明自己更强。”又或者：“哦，这不是理性犹豫，这下面是怕承担代价。”</p>
+<p>这时候你就慢慢开始有“选”的资格了，但如何选大概还要写到 30 章以后了。最近发表了原文第一章开始，很多人就迫不及待地开始选，让我真的害怕。他们愿意打基础，不愿意听原理，只想去抄答案，把模糊变成确定。</p>
+<blockquote>“道痕”模板，你们可以直接用这个，每天写一页：</blockquote>
+<blockquote>1. 今天最起波澜的一件事是什么。</blockquote>
+<blockquote>2. 当时我的第一反应是什么。</blockquote>
+<blockquote>3. 我其实想得到什么。</blockquote>
+<blockquote>4. 我其实在害怕什么。</blockquote>
+<blockquote>5. 我给自己找了什么理由。</blockquote>
+<blockquote>6. 今天捞出来的主石头是什么。</blockquote>
+<blockquote>7. 如果明天再遇到同样的事，我准备怎么选。</blockquote>
+<p>因为前六句是在看石头，第七句，才开始接近模拟人选。有人批判我的人选天选论是玄学，看完了序他发现不是，现在开始批判说是废话，不可证明不可证伪，看完了这章，我们拭目以待，人选天选论是很实用的行动指南。</p>
+<p>坚持捞下去吧，捞久了，你就会慢慢知道，什么是水，什么是波纹，什么是石头，什么是你自己。而当你开始知道这些的时候，你才算真正开始有了学习人选天选论的入场券。</p>
+<blockquote>第二种方法，是潜水。</blockquote>
+<p>也就是深度思考，这种方法很快，也很危险，我一定要把危险讲清楚，因为很多人一听到“深度思考”，就觉得那是一件特别高级的事。其实不是，它很容易把人带进虚无。我人生里有过两次很接近抑郁的经历，都和“潜水”有关。</p>
+<p>第一次，是我一个陪伴我很多年的朋友，后来得了肝癌。我那段时间不停地想死亡，想得太深，想得太久，差点走不出来。</p>
+<p>第二次，是我后来研究人类基因结构的时候，我看见了一些很底层的东西，然后开始往下挖。挖着挖着，人就会掉进一种很空的地方。</p>
+<p>所以我后来越来越确信：深度思考不是所有人都适合立刻做的，如果你还不会看自己的河，还不会捞石头，还不会判断自己现在的状态。你一上来就潜水，很容易先把自己搞乱。所以这一章我不教你潜水。最多只是告诉你：它存在，很快，很危险。等把前面的结构慢慢看清楚了，再去潜，会安全很多。</p>
+<blockquote>第三种方法，是改河道。</blockquote>
+<p>这个最厉害，也最难，改河道，不是去看石头，而是直接改变河的流向。一条河一旦真的改道，原来的河床会有一段时间露出来，那时候，你看河底会看得非常清楚。所以改河道之前，其实你最好先知道自己原来的河底是什么。改道之后，再看一次，前后对照，那会非常震撼。</p>
+<p>但这种方法的代价很大，这里先不展开，因为一展开，很多人又会把它听成玄学。你只要先记住一句话就行：改河道很强，但不是普通人该轻易碰的东西。</p>
+<p>如果一个人真的想认识自己，第一步不是深度思考，也不是改变结构，第一步就是先看清：自己的河是什么样，然后每天捞一块石头。一点一点地看，一点一点地对照，一点一点地校正自己那些看似合理，其实只是自洽的判断。</p>
+<p>你会慢慢发现：你为什么伸手，你为什么缩手，你为什么总是看上同一种“蓝光”，又为什么每次拿起来以后，都发现那不过是一块普通的石头。当你开始做到这一点的时候，你才算真正开始认识自己的内心。</p>
+<p>20 年过去了，那块石头，它一直放在我的桌上的紫砂壶边，它旁边还有一块蓝色的斯里兰卡月光石。有时候我会拿起来看看对比对比，它其实一点也不特别。灰白色，带一点云母的闪光。人如果在网上看到它，大概不会多看一眼。但我每次抬头看到它，都会想起那条小溪，想起当年站在水边的那个自己。</p>
+<blockquote>引起这一切的都只是：贪梦，恐惧。</blockquote>
+<p>下一章我带你们进入我一体两面的“硬币世界”，你准备好了吗？在恐惧和贪梦中，万花丛中过片叶不沾身。</p></div>
+  </div>
+</div>
+<script>
+(function() {
+  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
+  var params = new URLSearchParams(location.search);
+  // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
+  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
+
+  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
+  var w = params.get('width');
+  if (w === 'narrow') document.body.classList.add('width-narrow');
+  else if (w === 'wide') document.body.classList.add('width-wide');
+  // medium 或未指定: 不加 class, 用默认 960px
+
+  // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──
+  if (params.get('show-md') === '1') document.body.classList.add('show-md');
+
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _lang = localStorage.getItem('html-gen:doc_lang');
+  _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
+  var L = { zh: { pages: '共 {n} 节' }, en: { pages: '{n} sections' } };
+  function t(key, params) { var s = L[_lang][key]; Object.keys(params).forEach(function(k) { s = s.replace('{'+k+'}', params[k]); }); return s; }
+  document.getElementById('langZh').classList.toggle('active', _lang === 'zh');
+  document.getElementById('langEn').classList.toggle('active', _lang === 'en');
+
+  window.setLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _lang = lang;
+    try { localStorage.setItem('html-gen:doc_lang', lang); } catch(e) {}
+    document.getElementById('langZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    updateSub();
+  };
+
+  var _theme = localStorage.getItem('html-gen:doc_theme');
+  if (_theme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
+
+  window.toggleTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    try { localStorage.setItem('html-gen:doc_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  // Title click → copy path (via meta text)
+  document.getElementById('sidebarTitle').addEventListener('click', function() {
+    var metaEl = document.querySelector('.doc-header .meta');
+    var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
+      copyText(target, '已复制: ' + target);
+    }
+  });
+
+  function showToast(msg) {
+    var el = document.getElementById('docToast'); if (!el) { el = document.createElement('div'); el.id = 'docToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
+
+  /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
+  function copyText(text, okMsg, failMsg, onOk) {
+    var _toast = (typeof showToast === 'function') ? showToast
+      : (typeof showKwToast === 'function') ? showKwToast
+      : function (m) { try { console.log('[html-gen] ' + m); } catch (e) {} };
+    var done = function () { if (onOk) onOk(); if (okMsg) _toast(okMsg); };
+    var fail = function () { _toast(failMsg || '复制失败，请手动选中文本复制'); };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); } else { fail(); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();                       /* 非安全上下文 ⇒ 直接回退, 不得依赖 catch */
+    }
+  }
+  /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
+
+  // Section count
+  var _h2Count = body.querySelectorAll('h2').length;
+  function updateSub() {
+    var subEl = document.querySelector('.doc-sidebar-header .sub');
+    if (!subEl) return;
+    var base = (subEl.textContent || '').replace(/\s*共\s*\d+\s*节.*|\s*\d+\s*sections.*/, '').trim();
+    var text = t('pages', {n: _h2Count});
+    subEl.textContent = (base ? base + ' · ' : '') + text;
+  }
+  updateSub();
+
+  /* ═══════ H3 Toggle ═══════ */
+  var _h3Visible = false;
+  window.toggleH3 = function() {
+    _h3Visible = !_h3Visible;
+    var btn = document.getElementById('h3Toggle');
+    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
+    try { localStorage.setItem('html-gen:doc:h3-visible', _h3Visible); } catch(e) {}
+    var h3s = document.querySelectorAll('.toc-h3');
+    for (var i = 0; i < h3s.length; i++) h3s[i].classList.toggle('show', _h3Visible);
+  };
+  try { if (localStorage.getItem('html-gen:doc:h3-visible') === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; } } catch(e) {}
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _sidebarCollapsed = false;
+  window.toggleSidebar = function() {
+    _sidebarCollapsed = !_sidebarCollapsed;
+    var sb = document.getElementById('sidebar'); var btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
+    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
+    setTimeout(function() { updateProgress(); }, 300);
+  };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
+  try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+    }
+  });
+
+  /* ═══════ TOC Search ═══════ */
+  var _tocSearchActive = false, _tocSearchTimer;
+  window.toggleTocSearch = function() {
+    _tocSearchActive = !_tocSearchActive;
+    var wrap = document.getElementById('tocSearchWrap');
+    var input = document.getElementById('tocSearchInput');
+    var btn = document.getElementById('tocSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _tocSearchActive);
+    if (btn) btn.style.color = _tocSearchActive ? 'var(--cobalt-400)' : '';
+    if (_tocSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doTocFilter('');
+    }
+  };
+
+  function doTocFilter(q) {
+    tocItems.forEach(function(a) {
+      a.classList.toggle('filtered-out', q.length >= 2 && a.textContent.toLowerCase().indexOf(q) === -1);
+    });
+  }
+
+  document.getElementById('tocSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_tocSearchTimer);
+    _tocSearchTimer = setTimeout(function() { doTocFilter(q); }, 150);
+  });
+
+  window.tocSearchKey = function(e) {
+    if (e.key === 'Escape') {
+      _tocSearchActive = true; toggleTocSearch(); // force close
+    } else if (e.key === 'Enter') {
+      var q = document.getElementById('tocSearchInput').value.toLowerCase().trim();
+      if (q.length >= 2) {
+        var match = tocItems.find(function(a){ return !a.classList.contains('filtered-out'); });
+        if (match) match.click();
+        toggleTocSearch();
+      }
+    }
+  };
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
+      _tocSearchActive = true; toggleTocSearch();
+    }
+  });
+
+  /* ═══════ TOC ═══════ */
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a'); anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; copyText(url, null, '复制失败，请手动复制链接', function() { anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); }); });
+    h.appendChild(anchor);
+    var level = h.tagName.toLowerCase().replace('h', '');
+    var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link); tocItems.push(link);
+  });
+
+  // h4-h6 anchors (not in TOC)
+  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.href = '#' + h.id;
+    anchor.textContent = '\u00b6';
+    h.appendChild(anchor);
+  });
+
+  function onScroll() {
+    var current = ''; headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  body.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button'); btn.className = 'copy-btn'; btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code'); var text = code ? code.textContent : pre.textContent;
+      copyText(text, null, null, function() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); });
+    });
+    pre.appendChild(btn);
+  });
+
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent; var lines = text.split('\n'); if (lines.length > 0 && lines[lines.length-1] === '') lines.pop(); if (lines.length < 2) return;
+    code.textContent = ''; lines.forEach(function(line, idx) { var span = document.createElement('span'); span.className = 'line'; span.textContent = line; code.appendChild(span); if (idx < lines.length-1) code.appendChild(document.createTextNode('\n')); });
+    code.classList.add('code-with-lines');
+  });
+
+  var main = document.getElementById('docMain'); var bar = document.getElementById('progressBar');
+  function updateProgress() { var p = main.scrollTop / (main.scrollHeight - main.clientHeight); bar.style.width = (p * 100) + '%'; }
+  main.addEventListener('scroll', updateProgress, { passive: true }); updateProgress();
+
+  var lb = document.getElementById('lightbox'); var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function(e) { e.stopPropagation(); lbImg.src = this.src; lb.classList.add('active'); }); });
+  window.closeLightbox = function(e) { if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) lb.classList.remove('active'); };
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active'); });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('sidebar');
+    var handle = document.getElementById('sbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:doc:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:doc:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
+})();
+</script>
+<!-- rx-patch:v1 -->
+<style>
+/* rx-hl: 亮点句标亮（注入层，模板未提供 <u>/高亮语法） */
+.rx-hl { border-bottom: 2px solid rgba(250, 204, 21, .55); background: rgba(250, 204, 21, .12);
+         border-radius: 2px; padding: 0 1px; }
+.rx-hl-flash { animation: rx-flash 1.6s ease-out 1; }
+@keyframes rx-flash {
+  0%   { background: rgba(250, 204, 21, .55); }
+  100% { background: rgba(250, 204, 21, .12); }
+}
+</style>
+<script>
+(function () {
+  // 1) 默认最宽：模板 ?width 不持久化，未显式指定时按最宽渲染
+  var q = new URLSearchParams(location.search);
+  if (!q.get('width') && document.body && !document.body.classList.contains('width-wide')) {
+    document.body.classList.add('width-wide');
+  }
+  // 2) 页头字数：模板按空格分词统计，中文严重偏小 → 按汉字重算（不含首行来源行）
+  var body = document.getElementById('docBody');
+  var meta = document.querySelector('.doc-header .meta');
+  if (body && meta) {
+    var nodes = Array.prototype.slice.call(body.children);
+    if (nodes.length && nodes[0].textContent.indexOf('来源:') !== -1) nodes = nodes.slice(1);
+    var text = nodes.map(function (n) { return n.textContent; }).join('');
+    var zh = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    var minutes = Math.max(1, Math.round(zh / 300));
+    meta.innerHTML = meta.innerHTML
+      .replace(/字数: [\d,]+/, '字数: ' + zh)
+      .replace(/阅读约 \d+ 分钟/, '阅读约 ' + minutes + ' 分钟');
+  }
+  // 3) 从目录页带 #hl-<slug>-<n> 进来：滚到该句并闪一下
+  var h = location.hash || '';
+  if (h.indexOf('#hl-') === 0) {
+    var el = document.querySelector(h);
+    if (el) {
+      el.scrollIntoView({ block: 'center' });
+      el.classList.add('rx-hl-flash');
+      setTimeout(function () { el.classList.remove('rx-hl-flash'); }, 1800);
+    }
+  }
+})();
+</script>
+</body>
+</html>

@@ -1,0 +1,914 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>第五章·天权是如何被发现的</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+.doc-wrapper { display: flex; min-height: 100vh; }
+.doc-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  flex-direction: column;
+  position: sticky; top: 0; height: 100vh;
+  overflow-y: auto;
+  transition: width 0.25s, min-width 0.25s;
+}
+
+/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
+.doc-sidebar { display: none; }
+.top-toolbar { display: none; }
+body.show-sidebar .doc-sidebar { display: flex; }
+body.show-toolbar .top-toolbar { display: flex; }
+.doc-sidebar.collapsed { width: 48px; min-width: 48px; }
+.doc-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.doc-sidebar-resize:hover, .doc-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+.doc-sidebar.collapsed .doc-sidebar-header,
+.doc-sidebar.collapsed .doc-toc,
+.doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
+.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
+.doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
+.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
+.doc-sidebar-header {
+  padding: 16px 18px 12px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.doc-sidebar-header .sidebar-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.doc-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
+.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.doc-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
+.doc-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
+.doc-h3-toggle:hover { color: #9ca3af; }
+.doc-h3-toggle.on { color: var(--cobalt-400); }
+.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.doc-toc ul { list-style: none; padding: 0; margin: 0; }
+.doc-toc a {
+  display: block;
+  padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af;
+  text-decoration: none;
+  border-left: 3px solid transparent;
+  transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.doc-toc a.active {
+  background: rgba(79,70,229,0.1);
+  color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; display: none; }
+.doc-toc .toc-h3.show { display: block; }
+
+.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
+.doc-header {
+  padding: 0 80px;
+  margin-top: 30px;
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-950);
+}
+.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
+.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
+.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+/* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
+.meta-path { display: none; }
+body.show-md .meta-path { display: inline; }
+.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
+/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
+body.width-narrow .doc-body { max-width: 720px; }
+body.width-wide .doc-body { max-width: 1280px; }
+
+.doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
+.doc-body h1:first-child { margin-top: 0; }
+.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
+.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
+.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
+.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
+.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.doc-body li { line-height: 1.8; margin: 3px 0; }
+.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.doc-body th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.doc-body tr:hover { background: rgba(79,70,229,0.06); }
+.doc-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+.doc-body pre { position: relative; background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
+.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
+.copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }
+pre:hover .copy-btn { opacity: 1; }
+.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
+.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
+
+.progress-bar { position: fixed; top: 0; left: 0; width: 0; height: 2px; background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear; }
+
+.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; cursor: zoom-out; }
+.lightbox.active { display: flex; }
+.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }
+.lightbox .lb-close { position: fixed; top: 16px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }
+.lightbox .lb-close:hover { color: #fff; }
+.doc-body img { cursor: zoom-in; }
+
+.anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
+h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
+.anchor-link:hover { color: var(--cobalt-400); }
+
+.code-with-lines { counter-reset: line; padding-left: 0; }
+.code-with-lines .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2.5em; min-width: 2.5em; text-align: right; padding-right: 1em; color: #4a5568; user-select: none; }
+
+.doc-body blockquote.callout { border-left-width: 4px; padding: 10px 16px; margin: 0.75rem 0; }
+.doc-body blockquote.callout strong { font-weight: 700; }
+.doc-body blockquote.callout.note { border-left-color: var(--cobalt-500); background: rgba(79,70,229,0.08); color: #c0c4f0; }
+.doc-body blockquote.callout.tip { border-left-color: #34d399; background: rgba(52,211,153,0.08); color: #a7f3d0; }
+.doc-body blockquote.callout.warning { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); color: #fde68a; }
+.doc-body blockquote.callout.danger { border-left-color: #f87171; background: rgba(248,113,113,0.08); color: #fecaca; }
+
+/* ── Sidebar Footer ── */
+.doc-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
+.doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+
+/* ── TOC Search ── */
+.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.doc-toc-search.active { display: block; }
+.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.doc-toc-search input:focus { border-color: var(--cobalt-600); }
+.doc-toc-search input::placeholder { color: #555; }
+:root.light .doc-toc-search { border-color: #e5e5e5; }
+:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
+.doc-toc a.filtered-out { display: none; }
+
+/* ── Top-Right Toolbar ── */
+.top-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .doc-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .doc-sidebar-header { border-color: #e5e5e5; }
+:root.light .doc-sidebar-footer { border-color: #e5e5e5; }
+:root.light .doc-toc a { color: #666; }
+:root.light .doc-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
+:root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
+:root.light .doc-body h2 { color: #222; }
+:root.light .doc-body h3 { color: #333; }
+:root.light .doc-body h4 { color: #444; }
+:root.light .doc-body h5 { color: #555; }
+:root.light .doc-body h6 { color: #666; }
+:root.light .doc-body p, :root.light .doc-body li { color: #444; }
+:root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
+:root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
+:root.light .doc-body blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
+:root.light .doc-body table th { background: #f0f0f0; color: #555; }
+:root.light .doc-body table td { border-color: #ddd; }
+:root.light .doc-body hr { border-color: #ddd; }
+:root.light .doc-header { background: #f5f5f5; }
+:root.light .doc-header h1 { color: #222; }
+
+@media (max-width: 768px) {
+  .doc-sidebar { display: none; }
+  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .doc-body { padding: 0 16px 40px; }
+  .doc-header { padding: 0 16px; }
+}
+
+@media print {
+  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
+  .doc-body { color: #000; }
+  .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
+  .doc-body code { background: #f0f0f0; color: #000; }
+  .doc-body a { color: #000; text-decoration: underline; }
+}
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
+  .home-link:hover { background: rgba(0,0,0,0.6); }
+  
+
+</style>
+</head>
+<body>
+<div class="progress-bar" id="progressBar"></div>
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
+<!-- Top-Right Toolbar -->
+<div class="top-toolbar" id="topToolbar">
+  <button class="tb-btn active" id="langZh" onclick="setLang('zh')" title="中文">🇨🇳</button>
+  <button class="tb-btn" id="langEn" onclick="setLang('en')" title="English">🇺🇸</button>
+  <span class="tb-divider"></span>
+  <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
+</div>
+
+
+
+<div class="doc-wrapper">
+  <aside class="doc-sidebar" id="sidebar">
+    <div class="doc-sidebar-resize" id="sbResize"></div>
+    <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
+    <div class="doc-sidebar-header">
+      <div class="sidebar-title" title="第五章·天权是如何被发现的" id="sidebarTitle">📄 第五章·天权是如何被发现的</div>
+      <div class="sub-row">
+        <div class="sub">《人选天选论》连载版 · 姜蓝（路飞）</div>
+        <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
+      </div>
+    </div>
+    <nav class="doc-toc" id="toc"></nav>
+    <!-- TOC Search -->
+    <div class="doc-toc-search" id="tocSearchWrap">
+      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    </div>
+    <div class="doc-sidebar-footer">
+      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
+  </aside>
+  <div class="doc-main" id="docMain">
+    <div class="doc-header">
+      <h1>第五章·天权是如何被发现的</h1>
+      <div class="meta">创建: 2026-10-21 22:58 · 编辑: 2026-10-21 22:58<br>字数: 168 · 阅读约 1 分钟<span class="meta-path"> · 路径: <code>06-tianquan-shi-ruhe-bei-faxian.md</code></span></div>
+    </div>
+    <div class="doc-body" id="docBody"><p><em>来源: https://www.guohen.com/zh/chapters/tianquan-shi-ruhe-bei-faxian ｜ 发布: 2026-03-31 ｜ 4021 字 ｜ 选自《人选天选论》连载版</em></p>
+<blockquote>天权</blockquote>
+<p>直到很多年以后，你回头去看，才发现它原来一直都在那里。天权对我来说，就是这样被发现的。我很早就和很多人的节律不一样，这也就是我一直说我可能“活不了太长”的原因。</p>
+<p>初二的时候，我没有读初三，我觉得那一整套太慢了，于是直接去读高中。后来到了高二，我又没有走高三那一套，直接去考大学。再后来，到了大二，我又不读了，出来做生意。</p>
+<p>一路看起来都很顺，别人要走三年的路，我一年就走完了。别人要熬的阶段，我直接跳过去了。那个时候，我觉得这是能力，是智慧，之后觉得是“运气”，后来我才慢慢意识到，这里面有一个更深的东西，就是我一直在加速。但我之所以能这样加速，并不只是因为我自己比别人更敢，也不只是因为我运气更好。</p>
+<h2 id="我借了先贤留下来的眼睛">我借了先贤留下来的眼睛</h2>
+<p>更大的原因是，我在很早的时候，就读了很多不属于我那个年纪该读的书。《易》《道德经》《庄子》《孙子兵法》，还有很多东西方哲学，这些东西，本来不是拿来让一个年轻人抄近路的。它们本来是让人</p>
+<ul>
+<li>看见结构的</li>
+<li>看见边界的</li>
+<li>看见代价的</li>
+<li>看见节律的</li>
+</ul>
+<p>可我在那个年纪，确实用了它们的另一种方式。我拿它们来判断，来取舍，来提前走，来跨阶段，来加速人生。</p>
+<p>也就是说，我不是纯靠自己走得快，我是借了先贤留下来的眼睛。借了他们对世界的理解，借了他们对节律和结构的洞察，所以我才能更早看见，也才能更早跨过去。这当然让我得到了很多东西，也让我在很年轻的时候，比很多同龄人更早赚到了钱，更早进入了别人还没有进入的阶段。</p>
+<p>但借来的东西，终归是借来的。你用了它，它就会在别的地方留下痕迹，它不是白来的。这件事我最早感觉到，不是在书里，而是在做生意的时候。</p>
+<h2 id="快过了节律-周期就会被烧掉">快过了节律，周期就会被烧掉</h2>
+<p>那大概是 2008 年到 2009 年，我在武汉卖碧玺。一开始很顺，我不停地卖，卖给批发市场里的商贩。他们来拿货，我就不断往他们手里压更多的货。卖得越快，我越兴奋；钱回得越快，我越觉得自己是对的。</p>
+<p>表面上看，一切都很好，可很快问题就出现了。不是我卖不动了，是他们手里的需求，被我自己提前满足了。</p>
+<p>他们拿到手里的碧玺，其实还没有真正卖出去，我却已经在着急地把新的货再往他们那里推。这种着急，一开始像能力，后来就开始像破坏。因为当货越来越多，而市场的消化没有跟上，他们不会先觉得自己拿多了，他们会先开始怀疑，这个东西是不是没有价值了，这个市场是不是有问题了，这条路是不是不对了。</p>
+<p>那一刻我第一次很具体地看见了一件事：不是这个生意不行，是我把一个本来可以慢慢走完的周期，用一种过于着急的方式，提前烧掉了。</p>
+<p>我第一次很具体地感觉到：</p>
+<p><strong><span class="rx-hl" id="hl-06-tianquan-shi-ruhe-bei-faxian-1">有些东西不是不能快，而是快过了它本来的节律，它就会坏。</strong></span></p>
+<h2 id="仙女潭边-我第一次拆开长期欲望">仙女潭边，我第一次拆开长期欲望</h2>
+<p>但那个时候，我还没有把这件事想透。真正把它往下想的，是在更后面。2011 年，文杰毕业来四会找我，准备和我一起做打拼。我们差不多有一年多没见了。我带着他去了我最喜欢的四会秘密聚集地，六祖寺后面的仙女潭。那是个荒无人烟的地方，像极了 16 岁时的神龙架，水清澈见底。</p>
+<p>那个地方我一直记得很清楚，不只是因为安静，也不只是因为山和水，而是因为那天我们坐的那条溪，中间有一道堤坝。上游的水蓄得很多，平静、厚、沉；下游的水却细细地流。我们就坐在那里，看了很久，然后开始聊一个问题。</p>
+<p>为什么人对吃饭、睡觉、做爱这些事情的欲望，一旦满足，它就不想再要。吃饱了，山珍海味也索然无味。睡够了，再睡会头痛欲裂。可钱不一样，权力不一样，资源不一样，安全感不一样。</p>
+<p>这些东西为什么总是没有尽头？</p>
+<p>那天我们就坐在那条溪边，一点一点往下拆。文杰开摩托带我下山的路上，我写下了日记。吃饭、睡觉、做爱，这些是短期欲望，它们来自身体，来自激素，来自本能。来了，就要；满足了，就退。它们不是不会回来，但每一次回来，都是新的回来，不是永远悬在心里的那个东西。</p>
+<p>可长期欲望不是这样。长期欲望并不是真正存在的一种欲望，它更像一种恐惧，是恐惧短期欲望日后还能不能够持续被满足。</p>
+<p><strong>怕以后没有，怕失去。</strong> <strong>今天能满足，那以后呢？</strong> <strong>今天有条件，以后还会不会有？</strong></p>
+<p>正是这种“以后怎么办”的感觉，把人从短期欲望里，推到了长期欲望里。</p>
+<p><strong>所以人后来追逐的</strong> <strong>常常不是钱本身</strong> <strong>也不是权力本身</strong> <strong>而是一种保障</strong></p>
+<p>一种让自己以后无论什么时候想要什么，都还有能力去满足它的保障。</p>
+<p>那道堤坝也是一样。它拦住水，不是因为现在没水喝，而是因为人怕以后少雨的季节没水。可问题也就在这里，你拦得越多，风险就越大。</p>
+<p>一旦冲垮，下面的人根本没有缓冲，一切就都毁了。权力和金钱也一样，你积攒了无数的堤坝，越多堤坝，在洪水来的时候你就越凄惨，死得越彻底。你有 100 万，亏完了就再挣；但你有 100 亿，你的堤坝垮了，你就会像许家印一样，不是彻底失去了生的机会，而是连死的机会也一并失去了。</p>
+<h2 id="人真正的问题-是怎么处理欲望">人真正的问题，是怎么处理欲望</h2>
+<p>那天我坐在仙女潭边，第一次真正意识到一件事：</p>
+<p><strong><span class="rx-hl" id="hl-06-tianquan-shi-ruhe-bei-faxian-2">人真正的问题</strong> <strong>从来不是有没有欲望</strong> <strong>而是怎么处理欲望</strong></span></p>
+<p>更准确一点说，是怎么处理短期欲望和长期欲望之间的关系。</p>
+<p>也是从那时候开始，“天权”这个东西，才慢慢在我心里有了雏形。一开始它不是一个词，也不是一个概念，只是一种模模糊糊的感觉。我越来越意识到，人不是不会选，人是不会平衡。</p>
+<p><strong>想要的时候不会收。</strong> <strong>害怕的时候不会放。</strong> <strong>快的时候不知道该停。</strong> <strong>停的时候又不知道什么时候该重新动。</strong></p>
+<h2 id="人有思想-但不是思想本身">人有思想，但不是思想本身</h2>
+<p>后来我又继续往下想，人和动物的区别到底是什么。动物也有欲望，也会找食物，也会繁衍，也会躲避危险。越复杂的动物，也越会有一些简单的等待和储存。但动物很少因为“未来”而痛苦，它不会因为“也许以后会没有”，就无限地往前推。</p>
+<p>人不一样。人一旦意识到未来，长期欲望就开始膨胀。正是这个东西，让人类建立了文明，让我们会储存，会规划，会构建体系，会建立秩序。也是这个东西，让人开始焦虑，开始不安，开始抑郁，开始在还没有发生的事情上提前消耗自己。</p>
+<p>也就是说：</p>
+<p><strong><span class="rx-hl" id="hl-06-tianquan-shi-ruhe-bei-faxian-3">让人类成为人类的东西</strong> <strong>同时也是让人痛苦的来源</strong></span></p>
+<p>这个结构，是切不开的。你不能既要它带来的文明和能力，又完全不要它带来的代价。</p>
+<p>想到这里的时候，我又把问题继续往下压了一层。人到底能不能凭借思想，完全脱离身体？我后来给自己的答案是，不能。至少在我现在这个年纪的理解里，我不相信。</p>
+<p>思考本身，不是你创造的。思考能力是身体赋予的，是基因给你的，是天选先给了你这样一副能思考的器官和结构，你才有了后面那些复杂的理性和分析。你可以修行，可以克制，可以让自己看得很清楚，可只要一针麻醉剂打下去，老子也要倒下，孔子也要倒下。人可以避免的，只是不给针来扎我，或者控制、引导针什么时候来扎我。这不是思想的问题，这是自然法。</p>
+<ul>
+<li>激素会分泌</li>
+<li>身体会反应</li>
+<li>欲望会产生</li>
+<li>情绪会波动</li>
+</ul>
+<p>这些东西不会因为你想通了就消失，所以人真正的处境是：</p>
+<p><span class="rx-hl" id="hl-06-tianquan-shi-ruhe-bei-faxian-5">你有思想，但你不是思想本身。</span></p>
+<p>你有理性，但你不活在纯理性里。</p>
+<p>你有身体，但你永远无法控制身体的全部。</p>
+<h2 id="天权-是贪婪与恐惧之间那座桥">天权，是贪婪与恐惧之间那座桥</h2>
+<p>到这里，我才真正把天权看清楚了一点。以前我总以为，问题在于贪婪和恐惧本身。后来我才知道，不是，问题从来不在贪婪，也不在恐惧。人活着，一定会贪，也一定会怕。</p>
+<ul>
+<li>想得到</li>
+<li>是贪</li>
+<li>怕失去</li>
+<li>是惧</li>
+<li>想伸手</li>
+<li>是贪</li>
+<li>想缩手</li>
+<li>是惧。</li>
+</ul>
+<p>这两边，一定都在。真正的问题是，这两边之间，还有没有桥。</p>
+<p>一座桥，不是把贪婪消灭掉，也不是把恐惧消灭掉，而是让贪婪能走过去，看见恐惧；让恐惧也能走过去，看见贪婪。如果这座桥还在，人就还能稳。</p>
+<p>贪婪不会一路加码到失控，因为它还能走到恐惧那边，看见代价。恐惧也不会一路退缩到麻木，因为它还能走到贪婪那边，看见自己真正想要什么。可如果这座桥断了，一切就会开始走极端。</p>
+<p>贪婪那边的人，会一路往前扑，一路透支，一路加码。恐惧那边的人，会一路后退，一路解释，一路把自己缩到最后连动都不敢动。</p>
+<p>所以后来我才真正明白，天权不是权力，不是控制，也不是超脱。</p>
+<p><strong><span class="rx-hl" id="hl-06-tianquan-shi-ruhe-bei-faxian-4">天权就是，贪婪与恐惧之间，那座还没有断掉的桥。</strong></span></p>
+<p>那座桥，不是让你没有欲望，也不是让你不再害怕。它只是让你在两边都同时存在的时候，还能够过去，回来，再过去，再回来，还能够在两边之间调。</p>
+<p><strong>贪的时候，能走过去，看见怕。</strong></p>
+<p><strong>怕的时候，也能走回来，看见自己还想要。</strong></p>
+<p><strong>这就是桥，也是权。</strong></p>
+<p>天指的是天选，权指的是走过去的权利。如果没有这座桥，你不是不会思考，也不是没有脑子。你只是不能选了，因为你已经被其中一边彻底带走了。</p>
+<h2 id="我为什么要把这段路写下来">我为什么要把这段路写下来</h2>
+<p>后来，我再回头去看我自己这些年的路，才真正知道问题在哪里。</p>
+<p>我一直会起势，会往前，会加速，但我不会收。我有春天，有夏天，有秋天，却很少有冬天。而四季一旦不平衡，生命体质就会偏。所以到了 2019 年，我把公司卖了。不是因为做不下去，也不是因为没有机会，更深的原因是：</p>
+<p>我的人生是不平衡的。</p>
+<p>广东没有冬天，我就去日本，去新疆，去喀纳斯，去西藏。不是去旅游，我是去补冬天。因为我知道，如果冬天始终缺席，我的四季就始终不完整。</p>
+<p>而我今天之所以能意识到这件事，也不是因为我自己忽然比从前高明了，还是因为那些先贤，还是因为《易经》《道德经》《庄子》《孙子兵法》。是他们更早地看见了这些东西，我只是很早就借来用了。我借他们的视角，借他们的判断，借他们对结构的理解，所以我才能更早看到，也才能更早走到今天。</p>
+<p>可也正因为这样，我越来越清楚地感觉到，我欠着。不是欠某一个人，也不是欠一句话，是欠一整条被我提前借来走过的路。</p>
+<p>所以后来我才越来越明白，我为什么要写这本书。不是为了证明什么，也不是为了让别人认可。只是因为，我用了太多前人的东西，现在轮到我，把我自己走过的这段路，尽量不歪地再放回去。</p>
+<p>至于它会被怎么理解，我其实一开始就知道。会有人完全看不懂，会有人反感，会有人直接否定，会有人骂。这些都很正常，也都在我意料之中。当然，意料之中，不代表我一定能完全承受。</p>
+<p>我也会有情绪，也会有波动，也会在某些时候觉得这些声音很吵。</p>
+<p>但即便这样，我还是想在现在这个阶段，把这些东西写出来。因为我知道一件事：再过一些年，我可能就不想说了，也不再觉得有说的必要了。所以现在还有温度的时候，还有表达欲望的时候，我就把它说出来。</p>
+<h2 id="让它进入它自己的节律">让它进入它自己的节律</h2>
+<p>写到这里的时候，我其实也很清楚一件事：这本书一旦写出来，它也会走自己的节律。</p>
+<ul>
+<li>起始</li>
+<li>发展</li>
+<li>对抗</li>
+<li>稳定</li>
+<li>衰退</li>
+<li>崩溃</li>
+</ul>
+<p>它不会因为我愿不愿意，就不走。一开始，会有人完全看不懂，会排斥，会喷；有些人能看懂一点，会讨论，会试图解释，会用自己的语言去拆；还有一类人，是真正能看懂的，他们反而不会来问，也不会参与太多讨论，只是看一眼，然后就过去了。最后一类人，看懂了，觉得和我有一样的债，参与进来，大家一起还。</p>
+<p>这些事情，现在已经在发生，而且基本都在我意料之中。不是因为我能控制，而是因为它本来就会这样走。</p>
+<p>所以我现在写这本书，不是为了让它立刻被理解，也不是为了让所有人都接受。我只是把它写出来，让它进入它自己的节律。</p>
+<p>有一天，我会离开这个平台，也会慢慢从很多人的视野里消失。这不是失败，只是阶段。剩下的，交给时间。我能做的，只是把我借来的东西，尽量还回去，然后让它自己走。</p>
+<h2 id="天权真正被我发现的地方">天权真正被我发现的地方</h2>
+<p>所以天权真正被我发现的地方，不是某一本书里，也不是某一句经文里。</p>
+<p>它是在我不断加速自己的人生以后，终于开始意识到失衡，意识到冬天的缺失，意识到短期欲望和长期欲望之间那道堤坝的危险，意识到贪婪和恐惧之间必须有一座桥，意识到自己一路借了太多先贤的眼睛，也终究要把自己的这点东西还回去之后，它才慢慢长出来的。</p></div>
+  </div>
+</div>
+<script>
+(function() {
+  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
+  var params = new URLSearchParams(location.search);
+  // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
+  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
+  if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
+
+  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
+  var w = params.get('width');
+  if (w === 'narrow') document.body.classList.add('width-narrow');
+  else if (w === 'wide') document.body.classList.add('width-wide');
+  // medium 或未指定: 不加 class, 用默认 960px
+
+  // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──
+  if (params.get('show-md') === '1') document.body.classList.add('show-md');
+
+  const body = document.getElementById('docBody');
+  const toc  = document.getElementById('toc');
+  const headings = body.querySelectorAll('h2, h3');
+  const tocItems = [];
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _lang = localStorage.getItem('html-gen:doc_lang');
+  _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
+  var L = { zh: { pages: '共 {n} 节' }, en: { pages: '{n} sections' } };
+  function t(key, params) { var s = L[_lang][key]; Object.keys(params).forEach(function(k) { s = s.replace('{'+k+'}', params[k]); }); return s; }
+  document.getElementById('langZh').classList.toggle('active', _lang === 'zh');
+  document.getElementById('langEn').classList.toggle('active', _lang === 'en');
+
+  window.setLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _lang = lang;
+    try { localStorage.setItem('html-gen:doc_lang', lang); } catch(e) {}
+    document.getElementById('langZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('langEn').classList.toggle('active', lang === 'en');
+    updateSub();
+  };
+
+  var _theme = localStorage.getItem('html-gen:doc_theme');
+  if (_theme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
+
+  window.toggleTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    try { localStorage.setItem('html-gen:doc_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  // Title click → copy path (via meta text)
+  document.getElementById('sidebarTitle').addEventListener('click', function() {
+    var metaEl = document.querySelector('.doc-header .meta');
+    var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
+      copyText(target, '已复制: ' + target);
+    }
+  });
+
+  function showToast(msg) {
+    var el = document.getElementById('docToast'); if (!el) { el = document.createElement('div'); el.id = 'docToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
+
+  /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
+  function copyText(text, okMsg, failMsg, onOk) {
+    var _toast = (typeof showToast === 'function') ? showToast
+      : (typeof showKwToast === 'function') ? showKwToast
+      : function (m) { try { console.log('[html-gen] ' + m); } catch (e) {} };
+    var done = function () { if (onOk) onOk(); if (okMsg) _toast(okMsg); };
+    var fail = function () { _toast(failMsg || '复制失败，请手动选中文本复制'); };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); } else { fail(); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();                       /* 非安全上下文 ⇒ 直接回退, 不得依赖 catch */
+    }
+  }
+  /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
+
+  // Section count
+  var _h2Count = body.querySelectorAll('h2').length;
+  function updateSub() {
+    var subEl = document.querySelector('.doc-sidebar-header .sub');
+    if (!subEl) return;
+    var base = (subEl.textContent || '').replace(/\s*共\s*\d+\s*节.*|\s*\d+\s*sections.*/, '').trim();
+    var text = t('pages', {n: _h2Count});
+    subEl.textContent = (base ? base + ' · ' : '') + text;
+  }
+  updateSub();
+
+  /* ═══════ H3 Toggle ═══════ */
+  var _h3Visible = false;
+  window.toggleH3 = function() {
+    _h3Visible = !_h3Visible;
+    var btn = document.getElementById('h3Toggle');
+    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
+    try { localStorage.setItem('html-gen:doc:h3-visible', _h3Visible); } catch(e) {}
+    var h3s = document.querySelectorAll('.toc-h3');
+    for (var i = 0; i < h3s.length; i++) h3s[i].classList.toggle('show', _h3Visible);
+  };
+  try { if (localStorage.getItem('html-gen:doc:h3-visible') === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; } } catch(e) {}
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _sidebarCollapsed = false;
+  window.toggleSidebar = function() {
+    _sidebarCollapsed = !_sidebarCollapsed;
+    var sb = document.getElementById('sidebar'); var btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
+    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
+    setTimeout(function() { updateProgress(); }, 300);
+  };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
+  try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+    }
+  });
+
+  /* ═══════ TOC Search ═══════ */
+  var _tocSearchActive = false, _tocSearchTimer;
+  window.toggleTocSearch = function() {
+    _tocSearchActive = !_tocSearchActive;
+    var wrap = document.getElementById('tocSearchWrap');
+    var input = document.getElementById('tocSearchInput');
+    var btn = document.getElementById('tocSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _tocSearchActive);
+    if (btn) btn.style.color = _tocSearchActive ? 'var(--cobalt-400)' : '';
+    if (_tocSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doTocFilter('');
+    }
+  };
+
+  function doTocFilter(q) {
+    tocItems.forEach(function(a) {
+      a.classList.toggle('filtered-out', q.length >= 2 && a.textContent.toLowerCase().indexOf(q) === -1);
+    });
+  }
+
+  document.getElementById('tocSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_tocSearchTimer);
+    _tocSearchTimer = setTimeout(function() { doTocFilter(q); }, 150);
+  });
+
+  window.tocSearchKey = function(e) {
+    if (e.key === 'Escape') {
+      _tocSearchActive = true; toggleTocSearch(); // force close
+    } else if (e.key === 'Enter') {
+      var q = document.getElementById('tocSearchInput').value.toLowerCase().trim();
+      if (q.length >= 2) {
+        var match = tocItems.find(function(a){ return !a.classList.contains('filtered-out'); });
+        if (match) match.click();
+        toggleTocSearch();
+      }
+    }
+  };
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
+      _tocSearchActive = true; toggleTocSearch();
+    }
+  });
+
+  /* ═══════ TOC ═══════ */
+  headings.forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a'); anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; copyText(url, null, '复制失败，请手动复制链接', function() { anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); }); });
+    h.appendChild(anchor);
+    var level = h.tagName.toLowerCase().replace('h', '');
+    var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
+    link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
+    toc.appendChild(link); tocItems.push(link);
+  });
+
+  // h4-h6 anchors (not in TOC)
+  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
+    if (!h.id) h.id = 'section-' + i;
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link';
+    anchor.href = '#' + h.id;
+    anchor.textContent = '\u00b6';
+    h.appendChild(anchor);
+  });
+
+  function onScroll() {
+    var current = ''; headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
+    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
+  }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  body.querySelectorAll('pre').forEach(function(pre) {
+    var btn = document.createElement('button'); btn.className = 'copy-btn'; btn.textContent = '复制';
+    btn.addEventListener('click', function() {
+      var code = pre.querySelector('code'); var text = code ? code.textContent : pre.textContent;
+      copyText(text, null, null, function() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); });
+    });
+    pre.appendChild(btn);
+  });
+
+  body.querySelectorAll('pre code').forEach(function(code) {
+    var text = code.textContent; var lines = text.split('\n'); if (lines.length > 0 && lines[lines.length-1] === '') lines.pop(); if (lines.length < 2) return;
+    code.textContent = ''; lines.forEach(function(line, idx) { var span = document.createElement('span'); span.className = 'line'; span.textContent = line; code.appendChild(span); if (idx < lines.length-1) code.appendChild(document.createTextNode('\n')); });
+    code.classList.add('code-with-lines');
+  });
+
+  var main = document.getElementById('docMain'); var bar = document.getElementById('progressBar');
+  function updateProgress() { var p = main.scrollTop / (main.scrollHeight - main.clientHeight); bar.style.width = (p * 100) + '%'; }
+  main.addEventListener('scroll', updateProgress, { passive: true }); updateProgress();
+
+  var lb = document.getElementById('lightbox'); var lbImg = document.getElementById('lightboxImg');
+  body.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function(e) { e.stopPropagation(); lbImg.src = this.src; lb.classList.add('active'); }); });
+  window.closeLightbox = function(e) { if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) lb.classList.remove('active'); };
+  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active'); });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('sidebar');
+    var handle = document.getElementById('sbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:doc:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:doc:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
+})();
+</script>
+<!-- rx-patch:v1 -->
+<style>
+/* rx-hl: 亮点句标亮（注入层，模板未提供 <u>/高亮语法） */
+.rx-hl { border-bottom: 2px solid rgba(250, 204, 21, .55); background: rgba(250, 204, 21, .12);
+         border-radius: 2px; padding: 0 1px; }
+.rx-hl-flash { animation: rx-flash 1.6s ease-out 1; }
+@keyframes rx-flash {
+  0%   { background: rgba(250, 204, 21, .55); }
+  100% { background: rgba(250, 204, 21, .12); }
+}
+</style>
+<script>
+(function () {
+  // 1) 默认最宽：模板 ?width 不持久化，未显式指定时按最宽渲染
+  var q = new URLSearchParams(location.search);
+  if (!q.get('width') && document.body && !document.body.classList.contains('width-wide')) {
+    document.body.classList.add('width-wide');
+  }
+  // 2) 页头字数：模板按空格分词统计，中文严重偏小 → 按汉字重算（不含首行来源行）
+  var body = document.getElementById('docBody');
+  var meta = document.querySelector('.doc-header .meta');
+  if (body && meta) {
+    var nodes = Array.prototype.slice.call(body.children);
+    if (nodes.length && nodes[0].textContent.indexOf('来源:') !== -1) nodes = nodes.slice(1);
+    var text = nodes.map(function (n) { return n.textContent; }).join('');
+    var zh = (text.match(/[\u4e00-\u9fa5]/g) || []).length;
+    var minutes = Math.max(1, Math.round(zh / 300));
+    meta.innerHTML = meta.innerHTML
+      .replace(/字数: [\d,]+/, '字数: ' + zh)
+      .replace(/阅读约 \d+ 分钟/, '阅读约 ' + minutes + ' 分钟');
+  }
+  // 3) 从目录页带 #hl-<slug>-<n> 进来：滚到该句并闪一下
+  var h = location.hash || '';
+  if (h.indexOf('#hl-') === 0) {
+    var el = document.querySelector(h);
+    if (el) {
+      el.scrollIntoView({ block: 'center' });
+      el.classList.add('rx-hl-flash');
+      setTimeout(function () { el.classList.remove('rx-hl-flash'); }, 1800);
+    }
+  }
+})();
+</script>
+</body>
+</html>

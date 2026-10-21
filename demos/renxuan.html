@@ -1,0 +1,828 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>人选天选论 · 在线阅读</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<style>
+/* ═══════════════════════════════════════════
+   style-guide.css
+   Layer 1 — CSS 变量 + 基础组件
+   来源：favorite-manager/index.html 深色主题
+   版本：1.0(2026-07-01)
+   ═══════════════════════════════════════════ */
+
+:root {
+  --cobalt-50: #eef2ff;
+  --cobalt-100: #e0e7ff;
+  --cobalt-400: #818cf8;
+  --cobalt-500: #6366f1;
+  --cobalt-600: #4f46e5;
+  --cobalt-700: #4338ca;
+  --cobalt-800: #3730a3;
+  --cobalt-900: #312e81;
+  --cobalt-950: #1e1b4b;
+  --accent-400: #facc15;
+  --accent-500: #eab308;
+  --accent-600: #ca8a04;
+  --surface-800: #1e1e2e;
+  --surface-850: #181825;
+  --surface-900: #11111b;
+  --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+  --font-mono: 'JetBrains Mono', monospace;
+  --radius-sm: 4px;
+  --radius-md: 6px;
+  --radius-lg: 8px;
+  --radius-xl: 12px;
+  --radius-full: 9999px;
+}
+
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+body {
+  font-family: var(--font-sans);
+  background: var(--surface-950);
+  color: var(--text-body);
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
+h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
+p  { margin-bottom: 0.6rem; }
+a { color: var(--cobalt-400); text-decoration: none; }
+a:hover { color: var(--cobalt-500); text-decoration: underline; }
+code {
+  font-family: var(--font-mono);
+  font-size: 0.8rem;
+  background: rgba(255,255,255,0.06);
+  padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+pre {
+  background: #0d0d1a;
+  border: 1px solid #2a2a3e;
+  border-radius: var(--radius-md);
+  padding: 12px 16px;
+  overflow-x: auto;
+  margin: 0.75rem 0;
+}
+pre code { background: none; padding: 0; }
+
+/* ── Data Table ── */
+.data-table { width: 100%; border-collapse: collapse; }
+.data-table th {
+  position: sticky; top: 0; z-index: 10;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  padding: 8px 10px; text-align: left; font-size: 0.7rem; font-weight: 600;
+  color: #9ca3af; text-transform: uppercase; letter-spacing: 0.05em;
+  white-space: nowrap; user-select: none;
+}
+.data-table th.sortable { cursor: pointer; }
+.data-table th.sortable::after { content: ' \25bc'; font-size: 10px; color: #555; }
+.data-table th.sort-asc::after { content: ' \25b2'; color: var(--cobalt-400); }
+.data-table th.sort-desc::after { content: ' \25bc'; color: var(--cobalt-400); }
+.data-table td {
+  padding: 8px 10px; border-bottom: 1px solid #1a1a2e;
+  font-size: 0.8rem; vertical-align: middle;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.data-table tr { transition: background 0.15s; }
+.data-table tbody tr:hover { background: rgba(79,70,229,0.08); }
+.data-table tbody tr.selected { background: rgba(79,70,229,0.15); }
+
+/* ── Badges ── */
+.badge-red    { background: #3b1f1f; color: #f87171; }
+.badge-yellow { background: #3b351f; color: #fbbf24; }
+.badge-blue   { background: #1e3a5f; color: #60a5fa; }
+.badge-black  { background: #1a1a1a; color: #9ca3af; border: 1px solid #333; }
+.badge { display: inline-block; padding: 1px 8px; border-radius: var(--radius-full); font-size: 0.7rem; margin: 1px; }
+
+/* ── Tag Pill ── */
+.tag-pill {
+  display: inline-block; padding: 1px 8px;
+  border-radius: var(--radius-full);
+  font-size: 0.7rem; margin: 1px;
+  cursor: pointer; transition: opacity 0.15s;
+}
+.tag-pill:hover { opacity: 0.8; }
+
+/* ── Input ── */
+.input-dark {
+  background: #0f0f1a;
+  border: 1px solid #2a2a3e;
+  color: #e0e0e0;
+  padding: 6px 12px;
+  border-radius: var(--radius-md);
+  outline: none;
+  font-size: 0.85rem;
+  font-family: inherit;
+}
+.input-dark:focus { border-color: var(--cobalt-600); box-shadow: 0 0 0 2px rgba(79,70,229,0.2); }
+.input-dark::placeholder { color: #555; }
+
+/* ── Buttons ── */
+.btn {
+  padding: 6px 14px; border-radius: var(--radius-md);
+  border: none; cursor: pointer; font-size: 0.8rem;
+  font-family: inherit;
+  transition: all 0.15s;
+}
+.btn-primary { background: var(--cobalt-600); color: white; }
+.btn-primary:hover { background: var(--cobalt-700); }
+.btn-danger { background: #dc2626; color: white; }
+.btn-danger:hover { background: #b91c1c; }
+.btn-ghost {
+  background: transparent; color: #9ca3af;
+  border: 1px solid #2a2a3e;
+}
+.btn-ghost:hover { color: #e0e0e0; border-color: #555; }
+.btn-sm { padding: 3px 10px; font-size: 0.72rem; }
+
+/* ── Pager ── */
+.pager { display: flex; gap: 4px; justify-content: center; align-items: center; margin-top: 16px; }
+.pager button { min-width: 32px; }
+
+/* ── Batch Bar ── */
+.batch-bar {
+  display: none;
+  background: var(--cobalt-950);
+  border: 1px solid var(--cobalt-700);
+  border-radius: var(--radius-lg);
+  padding: 10px 16px; margin-bottom: 12px;
+  align-items: center; gap: 12px;
+}
+.batch-bar.active { display: flex; }
+
+/* ── Modal ── */
+.modal-overlay {
+  position: fixed; inset: 0;
+  background: rgba(0,0,0,0.6);
+  display: none; align-items: center; justify-content: center;
+  z-index: 100;
+}
+.modal-overlay.active { display: flex; }
+.modal-box {
+  background: var(--surface-900);
+  border-radius: var(--radius-xl);
+  padding: 20px 24px;
+  width: 420px; max-width: 90vw;
+  border: 1px solid #2a2a3e;
+}
+.modal-box h3 { font-size: 0.9rem; font-weight: 700; color: #f0f0f0; margin-bottom: 12px; }
+.modal-actions { display: flex; gap: 8px; justify-content: flex-end; margin-top: 16px; }
+
+/* ── Utility ── */
+.card { background: var(--surface-900); border: 1px solid #1a1a2e; border-radius: var(--radius-lg); overflow: hidden; }
+.wrapper { max-width: 1400px; margin: 0 auto; padding: 16px 20px; }
+.flex { display: flex; }
+.flex-1 { flex: 1; }
+.gap-2 { gap: 8px; }
+.gap-3 { gap: 12px; }
+.mb-3 { margin-bottom: 12px; }
+.text-xs { font-size: 0.75rem; }
+.text-gray { color: #9ca3af; }
+.w-full { width: 100%; }
+::-webkit-scrollbar { width: 6px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 3px; }
+::-webkit-scrollbar-thumb:hover { background: #3a3a5e; }
+
+</style>
+<style>
+/* ── Layout ── */
+.kw-wrapper { display: flex; height: 100vh; overflow: hidden; }
+
+/* ── Sidebar ── */
+.kw-sidebar {
+  width: 260px; min-width: 260px;
+  background: var(--surface-900);
+  border-right: 1px solid #2a2a3e;
+  display: flex; flex-direction: column;
+  overflow-y: auto;
+  transition: width 0.25s, min-width 0.25s;
+}
+.kw-sidebar.collapsed { width: 48px; min-width: 48px; }
+.kw-sidebar.collapsed .kw-sidebar-header,
+.kw-sidebar.collapsed .kw-sections,
+.kw-sidebar.collapsed .kw-sidebar-footer { display: none; }
+.kw-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; padding: 14px 0 8px; }
+.kw-sidebar.collapsed .kw-sidebar-icon { display: flex; }
+.kw-sidebar-header {
+  padding: 14px 16px 10px;
+  border-bottom: 1px solid #2a2a3e;
+  flex-shrink: 0;
+}
+.kw-sidebar-header .sidebar-title { font-size: 0.82rem; font-weight: 700; color: var(--cobalt-400); cursor: pointer; }
+.kw-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
+.kw-sidebar-header .sub { font-size: 0.7rem; color: #6b7280; margin-top: 2px; }
+.kw-sections { flex: 1; overflow-y: auto; padding: 6px 0; display: none; }
+.kw-sections.active { display: block; }
+.kw-section-title {
+  display: flex; align-items: center; gap: 8px;
+  padding: 10px 16px 4px; font-size: 0.82rem; font-weight: 700;
+  text-transform: uppercase; letter-spacing: 0.06em;
+  color: #6b7280; cursor: pointer; user-select: none;
+}
+.kw-section-title:hover { color: #e0e0e0; }
+.kw-section-title.active { color: var(--cobalt-400); }
+.kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
+.kw-section-title .kw-section-icon { font-size: 0.9rem; flex-shrink: 0; }
+/* 搜索/折叠功能隐藏（与顶部菜单同高同字体；按钮功能保留但不再展示） */
+#kwSearchBtn, #collapseBtn { display: none !important; }
+.kw-item {
+  display: flex; align-items: center; gap: 8px;
+  padding: 8px 16px 8px 28px; cursor: pointer; transition: all 0.12s;
+  border-left: 3px solid transparent; color: #9ca3af; font-size: 0.82rem;
+}
+.kw-item:hover { background: rgba(79,70,229,0.04); color: #e0e0e0; }
+.kw-item.active { background: rgba(79,70,229,0.08); color: var(--cobalt-400); border-left-color: var(--cobalt-600); }
+.kw-item .kw-item-text { flex: 1; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kw-item .kw-item-badge { font-size: 0.62rem; padding: 1px 6px; border-radius: 8px; font-weight: 600; letter-spacing: 0.02em; flex-shrink: 0; }
+
+/* ── Sidebar Footer ── */
+.kw-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.kw-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
+.kw-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+
+/* ── Sidebar Search ── */
+.kw-search-wrap { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.kw-search-wrap.active { display: block; }
+.kw-search-wrap input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.kw-search-wrap input:focus { border-color: var(--cobalt-600); }
+.kw-search-wrap input::placeholder { color: #555; }
+.kw-item.filtered-out { display: none; }
+.kw-section-title.filtered-out { display: none; }
+
+/* ── Sidebar Resize ── */
+.kw-sidebar { position: relative; }
+.kw-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
+}
+.kw-sidebar-resize:hover, .kw-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+
+/* ── Top-Right Toolbar ── */
+.kw-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; display: flex; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+:root.light .kw-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
+.kw-tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.kw-tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
+.kw-tb-btn.active { background: var(--cobalt-600); color: #fff; }
+.kw-tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
+
+/* ── Light Theme ── */
+:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light body { color: #333; background: #f5f5f5; }
+:root.light .kw-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-sidebar-header { border-color: #e5e5e5; }
+:root.light .kw-sidebar-footer { border-color: #e5e5e5; }
+:root.light .kw-sidebar-header .sidebar-title { color: #333; }
+:root.light .kw-sidebar-header .sub { color: #999; }
+:root.light .kw-item { color: #555; }
+:root.light .kw-item:hover { background: rgba(79,70,229,0.03); color: #333; }
+:root.light .kw-item.active { background: rgba(79,70,229,0.06); color: var(--cobalt-600); }
+:root.light .kw-tab-bar { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-tab { color: #666; }
+:root.light .kw-tab:hover { color: #333; }
+:root.light .kw-tab.active { color: var(--cobalt-600); }
+:root.light .kw-content { background: #f5f5f5; }
+:root.light .kw-search-wrap { border-color: #e5e5e5; }
+:root.light .kw-search-wrap input { background: #f5f5f5; border-color: #ddd; color: #333; }
+:root.light .kw-welcome .w-title { color: #333; }
+
+/* ── Main ── */
+.kw-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; }
+
+/* ── Tab Bar (aligned with sidebar title) ── */
+.kw-tab-bar {
+  height: 48px; min-height: 48px;
+  display: flex; align-items: stretch;
+  background: var(--surface-900);
+  border-bottom: 1px solid #2a2a3e;
+  overflow-x: auto; overflow-y: hidden;
+  flex-shrink: 0;
+}
+.kw-tab-bar::-webkit-scrollbar { height: 0; }
+.kw-tab {
+  display: flex; align-items: center; gap: 6px;
+  padding: 0 20px; cursor: pointer; white-space: nowrap;
+  font-size: 0.82rem; font-weight: 500;
+  color: #9ca3af; border-bottom: 2px solid transparent;
+  transition: all 0.15s; flex-shrink: 0; user-select: none;
+}
+.kw-tab:hover { background: rgba(79,70,229,0.04); color: #e0e0e0; }
+.kw-tab.active { color: var(--cobalt-400); border-bottom-color: var(--cobalt-600); }
+.kw-tab .kw-tab-icon { font-size: 0.9rem; }
+
+/* ── Content area ── */
+.kw-content { flex: 1; display: flex; flex-direction: column; overflow: hidden; background: var(--surface-950); }
+.kw-body { flex: 1; overflow-y: auto; padding: 24px 32px; }
+
+/* ── Welcome ── */
+.kw-welcome { display: none; flex: 1; flex-direction: column; align-items: center; justify-content: center; gap: 12px; padding: 40px 20px; text-align: center; }
+.kw-welcome.active { display: flex; }
+.kw-welcome .w-title { font-size: 1.3rem; font-weight: 700; color: #e0e0e0; }
+.kw-welcome .w-sub { font-size: 0.85rem; color: #6b7280; max-width: 440px; line-height: 1.7; }
+.kw-welcome .w-legend { display: flex; gap: 16px; flex-wrap: wrap; justify-content: center; margin-top: 10px; }
+.kw-welcome .w-legend-item { display: flex; align-items: center; gap: 5px; font-size: 0.78rem; color: #9ca3af; }
+.kw-welcome .w-legend-item .ldot { width: 8px; height: 8px; border-radius: 50%; }
+
+/* ── Content iframe ── */
+.kw-frame-wrap { display: none; flex: 1; flex-direction: column; }
+.kw-frame-wrap.active { display: flex; }
+.kw-frame-wrap iframe { width: 100%; flex: 1; border: none; background: var(--surface-950); }
+
+@media (max-width: 768px) {
+  .kw-sidebar { display: none; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 100; }
+  .kw-sidebar.open { display: flex; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
+  .kw-body { padding: 16px; }
+}
+
+@media print {
+  .kw-sidebar, .kw-tab-bar, .kw-toolbar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
+  .kw-body { color: #000; }
+  .kw-welcome { display: none !important; }
+  body { background: #fff; }
+}
+
+/* ── GitHub Corner ── */
+.github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
+.github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
+.github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
+@keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
+  .home-link:hover { background: rgba(0,0,0,0.6); }
+  
+.kw-sidebar::-webkit-scrollbar { width: 4px; }
+.kw-sidebar::-webkit-scrollbar-thumb { background: #2a2a3e; border-radius: 2px; }
+</style>
+</head>
+<body>
+<!-- Top-Right Toolbar -->
+<div class="kw-toolbar" id="kwToolbar">
+  <button class="kw-tb-btn active" id="kwLangZh" onclick="setKwLang('zh')" title="中文">🇨🇳</button>
+  <button class="kw-tb-btn" id="kwLangEn" onclick="setKwLang('en')" title="English">🇺🇸</button>
+  <span class="kw-tb-divider"></span>
+  <button class="kw-tb-btn" id="kwThemeBtn" onclick="toggleKwTheme()" title="切换主题">🌙</button>
+</div>
+
+
+
+<div class="kw-wrapper">
+
+  <aside class="kw-sidebar" id="kwSidebar">
+    <div class="kw-sidebar-resize" id="kwSbResize"></div>
+    <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
+    <div class="kw-sidebar-header">
+      <div class="sidebar-title" title="人选天选论 · 在线阅读">📚 人选天选论 · 在线阅读</div>
+      <div class="sub"></div>
+    </div>
+    <div id="kwSectionsContainer"></div>
+    <!-- Sidebar Search -->
+    <div class="kw-search-wrap" id="kwSearchWrap">
+      <input type="text" id="kwSearchInput" placeholder="搜索...">
+    </div>
+    <div class="kw-sidebar-footer">
+      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
+  </aside>
+
+  <div class="kw-main">
+    <div class="kw-tab-bar" id="kwTabBar"></div>
+    <div class="kw-content">
+      <div class="kw-welcome active" id="welcomePanel">
+        <div class="w-title">📚 人选天选论 · 在线阅读</div>
+        <div class="w-sub">姜蓝（路飞）《人选天选论》连载版，8 篇：序 + 七章。左侧按章进入正文，点章节标题即可阅读；「亮点句」页收录全书 45 句，点句子直达正文标亮处。点左上角标题可清空浏览记录回到首页。</div>
+        <div class="w-legend" id="wLegend"></div>
+      </div>
+      <div class="kw-frame-wrap" id="frameWrap">
+        <iframe id="contentFrame" src="about:blank" style="width:100%;flex:1;border:none;background:var(--surface-950);display:none;"></iframe>
+        <div class="kw-body" id="kwBody"></div>
+      </div>
+    </div>
+  </div>
+
+</div>
+
+<script>
+(function() {
+  const GROUPS = [{"key": "xu", "label": "序", "icon": "📖"}, {"key": "renzhilu", "label": "人之路（第一至四章）", "icon": "🌊"}, {"key": "tianquan", "label": "天权（第五至七章）", "icon": "🌉"}, {"key": "highlights", "label": "亮点句（45 条）", "icon": "✨"}];  // [{key, label, icon}]
+  const ITEMS  = [{"title": "人选天选论-序", "group": "xu", "section": "序篇", "badge": "2026-03-06", "desc": "从唯物与唯心两面切入，提出“人选、祸、天选”的结构观，讨论代价、痛苦与选择。", "url": "renxuan/01-xu.html"}, {"title": "第一章·河流世界", "group": "renzhilu", "section": "第一章·河流世界", "badge": "2026-03-08", "desc": "以“思想像河”为核心比喻，解释信息、经历、欲望与知识如何塑造一个人的内在世界。", "url": "renxuan/02-heliu-shijie.html"}, {"title": "第二章·走向觉醒的“人之路”", "group": "renzhilu", "section": "第二章·走向觉醒的“人之路”", "badge": "2026-03-09", "desc": "从神农架石头的误认出发，提出通过“捞石头”记录道痕、识别贪梦与恐惧的自我观察方法。", "url": "renxuan/03-ren-zhi-lu.html"}, {"title": "第三章·硬币世界", "group": "renzhilu", "section": "第三章·硬币世界", "badge": "2026-03-14", "desc": "以硬币两面比喻贪梦与恐惧，讨论迷茫、抑郁、拖延与思想之河堵塞的形成。", "url": "renxuan/04-yingbi-shijie.html"}, {"title": "第四章·破执 见势 定心", "group": "renzhilu", "section": "第四章·破执 见势 定心", "badge": "2026-03-25", "desc": "将迷茫重新放回“阶段”之中，提出天选六段与人选三剑，讨论如何少制造额外的问题。", "url": "renxuan/05-pozhi-jian-shi-dingxin.html"}, {"title": "第五章·天权是如何被发现的", "group": "tianquan", "section": "第五章·天权是如何被发现的", "badge": "2026-03-31", "desc": "从人生加速、商业失衡与欲望结构的观察中，逐步看见“天权”其实是贪婪与恐惧之间那座尚未断掉的桥。", "url": "renxuan/06-tianquan-shi-ruhe-bei-faxian.html"}, {"title": "第六章·天权的裂痕", "group": "tianquan", "section": "第六章·天权的裂痕", "badge": "2026-05-12", "desc": "从阿湘与自己的经历里，逐步看见天权之桥如何在恐惧与贪婪的单边停留中慢慢开裂，并理解“解释世界”何时会变成自我安慰的牢笼。", "url": "renxuan/07-tianquan-de-liehen.html"}, {"title": "第七章·自成人间", "group": "tianquan", "section": "第七章·自成人间", "badge": "2026-06-03", "desc": "从午睡时误把马蜂当作苍蝇的一瞬间出发，重新理解经验、心中世界、福祸执着与“自成人间收日月”的真正含义。", "url": "renxuan/08-zicheng-renjian.html"}, {"title": "人选天选论-序（6 句）", "group": "highlights", "section": "人选天选论-序", "badge": "6 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-1\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-1')\">世界从来不奖励谁。世界只收代价。<\/a><span class=\"rx-hl-tag\">全书基座<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-2\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-2')\">祸和福之间，没有可以回头核对的账本。<\/a><span class=\"rx-hl-tag\">反「因果账单」<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-3\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-3')\">这个世界没有运气，只有选择。<\/a><span class=\"rx-hl-tag\">最像口号的一句<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-4\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-4')\">贪梦让人伸手，恐惧让人缩手。想得到，是贪梦；怕失去，是恐惧。<\/a><span class=\"rx-hl-tag\">两块石头的动力学<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-5\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-5')\">人无法追求永恒，因为永恒本身就是幻觉。真正稳定的东西，从来不是不变，而是能够承受变化。<\/a><span class=\"rx-hl-tag\">稳定观<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-6\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-6')\">人生无法决定结果，但可以选择承担什么代价。<\/a><span class=\"rx-hl-tag\">全书的可操作定义<\/span><\/div><\/div>"}, {"title": "第一章·河流世界（6 句）", "group": "highlights", "section": "第一章·河流世界", "badge": "6 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-1\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-1')\">你能看见底，却看不清底。<\/a><span class=\"rx-hl-tag\">一句写尽「看自己」的难<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-2\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-2')\">空有知识宽度，没有知识密度。<\/a><span class=\"rx-hl-tag\">判词：宽而无密度<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-3\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-3')\">河里的水，就是一个人流动的思想。水源，就是外界不断流入的信息。河床，就是一个人的天性、经历、性格底色。<\/a><span class=\"rx-hl-tag\">河流三要素的定义（原文引用块，三行）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-4\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-4')\">决定你水面形状的，不是水面，而是河。<\/a><span class=\"rx-hl-tag\">治情绪先看结构<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-5\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-5')\">当一个人开始表达的时候，他并不是在消耗自己的河水。<\/a><span class=\"rx-hl-tag\">反「输出即损耗」<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-6\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-6')\">我知道我得到了巨大的礼物，于是也欠下了巨额的债务。<\/a><span class=\"rx-hl-tag\">作者的写作动机<\/span><\/div><\/div>"}, {"title": "第二章·走向觉醒的“人之路”（5 句）", "group": "highlights", "section": "第二章·走向觉醒的“人之路”", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-1\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-1')\">那道蓝光，好像从来就不在石头上，也不在水里，它只在我心里。<\/a><span class=\"rx-hl-tag\">全书最好的一处自证<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-2\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-2')\">只要是写给别人看的东西，它就已经开始变形了。<\/a><span class=\"rx-hl-tag\">日记为何变形<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-3\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-3')\">真正的石头，往往藏在你最会讲的那些理由后面。<\/a><span class=\"rx-hl-tag\">点破自洽<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-4\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-4')\">你以为自己每天活得很复杂，其实翻来覆去，可能就被那几块石头推着走。<\/a><span class=\"rx-hl-tag\">重复的模式<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-5\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-5')\">看见石头，只是第一步，真正的人选，是当你下一次又遇到同样的波纹时，你知道下面是哪块石头。<\/a><span class=\"rx-hl-tag\">「人选」的定义<\/span><\/div><\/div>"}, {"title": "第三章·硬币世界（5 句）", "group": "highlights", "section": "第三章·硬币世界", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-1\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-1')\">人很多时候不是不知道自己想做什么。而是不愿意承担这一句：这是我自己决定的<\/a><span class=\"rx-hl-tag\">硬币的背面<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-2\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-2')\">不是没有路，是河堵了。<\/a><span class=\"rx-hl-tag\">迷茫与抑郁的机械解释<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-3\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-3')\">恐惧更像小石头，小，碎，不显眼，更会藏。它很少说：我害怕。它更常说的是：再等等，还没准备好<\/a><span class=\"rx-hl-tag\">恐惧的语态<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-4\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-4')\">人真正的问题，从来不是有没有贪梦，也不是有没有恐惧。而是：当它们同时存在的时候，你看不看得见，哪一面硬币正在朝上。<\/a><span class=\"rx-hl-tag\">把问题重述一遍（原文跨段，分两行标亮）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-5\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-5')\">很多人一生都在讨论世界，讨论命运，讨论别人，讨论机会。却从来没有低头看过，自己手里那枚硬币，到底翻到了哪一面。<\/a><span class=\"rx-hl-tag\">全书最锋利的一刀<\/span><\/div><\/div>"}, {"title": "第四章·破执 见势 定心（5 句）", "group": "highlights", "section": "第四章·破执 见势 定心", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-1\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-1')\">冬天不是问题，你非要在冬天里活成夏天，这才是问题。<\/a><span class=\"rx-hl-tag\">周期观：冬天不是问题<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-2\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-2')\">第一步永远不是解决，第一步永远是：尽量减少额外制造的问题。<\/a><span class=\"rx-hl-tag\">止损先行<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-3\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-3')\">破执的核心，是缩小自己，放大世界。<\/a><span class=\"rx-hl-tag\">破执的定义<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-4\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-4')\">人最危险的状态，不是疼，而是不疼。<\/a><span class=\"rx-hl-tag\">最危险的状态<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-5\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-5')\">雪里的那种“暖”，是你在失去感觉；火边的那种“暖”，是你在恢复感觉。<\/a><span class=\"rx-hl-tag\">冻伤与火边的对照<\/span><\/div><\/div>"}, {"title": "第五章·天权是如何被发现的（5 句）", "group": "highlights", "section": "第五章·天权是如何被发现的", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-1\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-1')\">有些东西不是不能快，而是快过了它本来的节律，它就会坏。<\/a><span class=\"rx-hl-tag\">节律：快过了就会坏<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-2\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-2')\">人真正的问题 从来不是有没有欲望 而是怎么处理欲望<\/a><span class=\"rx-hl-tag\">欲望观<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-3\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-3')\">让人类成为人类的东西 同时也是让人痛苦的来源<\/a><span class=\"rx-hl-tag\">切不开的结构<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-4\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-4')\">天权就是，贪婪与恐惧之间，那座还没有断掉的桥。<\/a><span class=\"rx-hl-tag\">「天权」的定义句<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-5\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-5')\">你有思想，但你不是思想本身。<\/a><span class=\"rx-hl-tag\">反「想通就能做到」<\/span><\/div><\/div>"}, {"title": "第六章·天权的裂痕（6 句）", "group": "highlights", "section": "第六章·天权的裂痕", "badge": "6 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-1\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-1')\">说不怕死的人，往往最怕死。<\/a><span class=\"rx-hl-tag\">阿湘：说不怕死的人<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-2\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-2')\">一个总是笑的人未必真的轻松。有时候，只是因为他已经没有表达别的表情的办法了。<\/a><span class=\"rx-hl-tag\">表情只剩一种（原文跨段，分两行标亮）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-3\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-3')\">一个正常的人，应该是矛盾的。他应该既自信，又自卑；既勇敢，又懦弱；既想活，又怕死。<\/a><span class=\"rx-hl-tag\">桥还在的证据<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-4\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-4')\">因为一个人用来安慰自己的解释，最后会变成他行动的逻辑。<\/a><span class=\"rx-hl-tag\">最狠的机制句<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-5\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-5')\">最后，解释变成牢笼，桥也就慢慢裂了。<\/a><span class=\"rx-hl-tag\">裂痕如何成形<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-6\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-6')\">只要你还能问，桥就还没断。<\/a><span class=\"rx-hl-tag\">自救的最低标准<\/span><\/div><\/div>"}, {"title": "第七章·自成人间（7 句）", "group": "highlights", "section": "第七章·自成人间", "badge": "7 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-1\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-1')\">人的智慧始于知识，也常常毁于知识。<\/a><span class=\"rx-hl-tag\">马蜂当苍蝇<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-2\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-2')\">人间不是单纯的街道、房子、山河、城市，人间是在心中慢慢形成的。<\/a><span class=\"rx-hl-tag\">人间在心中成形<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-3\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-3')\">因为克制的目的是为了更长久的挥霍。<\/a><span class=\"rx-hl-tag\">拆穿「把酒留到明天」<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-4\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-4')\">今朝有酒明日醉，不如倾与九天杯。<\/a><span class=\"rx-hl-tag\">诗（第一至二句）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-5\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-5')\">自成人间收日月，才知此身亦微微。<\/a><span class=\"rx-hl-tag\">诗（第三至四句）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-6\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-6')\">人不是靠一次顿悟改变的，一次顿悟，只是在心里留下一个回声。<\/a><span class=\"rx-hl-tag\">改变观：顿悟只留回声<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-7\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-7')\">原来人这一生，不是为了赢过天地，也不是为了掌控福祸。只是为了在一次又一次误认世界之后，还能重新睁开眼。<\/a><span class=\"rx-hl-tag\">全书收束<\/span><\/div><\/div>"}];   // [{title, group, section?, badge?, url?, desc?}]
+
+  let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
+  let activeItem = null;
+  const COLORS = ['#38bdf8','#34d399','#c084fc','#fb923c','#f472b6','#fbbf24','#818cf8'];
+  const BADGE_COLORS = {
+    '知道':{bg:'rgba(56,189,248,0.12)',color:'#38bdf8',border:'rgba(56,189,248,0.25)'},
+    '理解':{bg:'rgba(52,211,153,0.12)',color:'#34d399',border:'rgba(52,211,153,0.25)'},
+    '能讲':{bg:'rgba(192,132,252,0.12)',color:'#c084fc',border:'rgba(192,132,252,0.25)'},
+    '能输出':{bg:'rgba(251,146,60,0.12)',color:'#fb923c',border:'rgba(251,146,60,0.25)'},
+  };
+
+  /* ═══════ i18n & Theme ═══════ */
+  var _kwLang = (function() { try { var v = localStorage.getItem('html-gen:kw_lang'); return (v === 'zh' || v === 'en') ? v : 'zh'; } catch(e) { return 'zh'; } })();
+  document.getElementById('kwLangZh').classList.toggle('active', _kwLang === 'zh');
+  document.getElementById('kwLangEn').classList.toggle('active', _kwLang === 'en');
+
+  window.setKwLang = function(lang) {
+    if (lang !== 'zh' && lang !== 'en') return;
+    _kwLang = lang;
+    try { localStorage.setItem('html-gen:kw_lang', lang); } catch(e) {}
+    document.getElementById('kwLangZh').classList.toggle('active', lang === 'zh');
+    document.getElementById('kwLangEn').classList.toggle('active', lang === 'en');
+    updateSub();
+  };
+
+  var _kwTheme = (function() { try { return localStorage.getItem('html-gen:kw_theme') || 'dark'; } catch(e) { return 'dark'; } })();
+  if (_kwTheme === 'light') document.documentElement.classList.add('light');
+  document.getElementById('kwThemeBtn').textContent = _kwTheme === 'light' ? '☀️' : '🌙';
+
+  window.toggleKwTheme = function() {
+    var r = document.documentElement;
+    var isLight = !r.classList.contains('light');
+    r.classList.toggle('light', isLight);
+    try { localStorage.setItem('html-gen:kw_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    document.getElementById('kwThemeBtn').textContent = isLight ? '☀️' : '🌙';
+  };
+
+  function updateSub() {
+    var sub = document.querySelector('.kw-sidebar-header .sub');
+    if (sub) {
+      var base = (sub.textContent || '').replace(/\s*共\s+\d+\s*条目.*/, '').trim();
+      var label = _kwLang === 'en' ? ' items' : ' 条目';
+      sub.textContent = (base ? base + ' · ' : '') + '共 ' + ITEMS.length + label;
+    }
+  }
+  updateSub();
+
+  // Title click → copy full URL（中文参数解码为原文，如 ?group=大明王朝1566）
+  document.querySelector('.kw-sidebar-header .sidebar-title').addEventListener('click', function() {
+    var m = this.title.match(/路径:\s*(.+)/);
+    var target = m ? m[1].trim() : decodeURI(window.location.href);
+    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
+      copyText(target, '已复制: ' + target);
+    }
+  });
+
+  function showKwToast(msg) {
+    var el = document.getElementById('kwToast');
+    if (!el) { el = document.createElement('div'); el.id = 'kwToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    el.textContent = msg; el.style.opacity = '1';
+    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+  }
+
+  /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
+  function copyText(text, okMsg, failMsg, onOk) {
+    var _toast = (typeof showToast === 'function') ? showToast
+      : (typeof showKwToast === 'function') ? showKwToast
+      : function (m) { try { console.log('[html-gen] ' + m); } catch (e) {} };
+    var done = function () { if (onOk) onOk(); if (okMsg) _toast(okMsg); };
+    var fail = function () { _toast(failMsg || '复制失败，请手动选中文本复制'); };
+    var fallback = function () {
+      var ta = document.createElement('textarea');
+      ta.value = text;
+      ta.setAttribute('readonly', '');
+      ta.style.cssText = 'position:fixed;top:-1000px;left:-1000px;opacity:0';
+      document.body.appendChild(ta);
+      ta.select();
+      ta.setSelectionRange(0, text.length);
+      var ok = false;
+      try { ok = document.execCommand('copy'); } catch (e) { ok = false; }
+      document.body.removeChild(ta);
+      if (ok) { done(); } else { fail(); }
+    };
+    if (navigator.clipboard && navigator.clipboard.writeText && window.isSecureContext) {
+      navigator.clipboard.writeText(text).then(done).catch(fallback);
+    } else {
+      fallback();                       /* 非安全上下文 ⇒ 直接回退, 不得依赖 catch */
+    }
+  }
+  /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
+
+  // ── Render tabs ──
+  function renderTabs() {
+    var bar = document.getElementById('kwTabBar');
+    bar.innerHTML = (GROUPS || []).map(function(g, i) {
+      var c = COLORS[i % COLORS.length];
+      return '<div class="kw-tab' + (g.key === activeGroup ? ' active' : '') + '" data-key="' + g.key + '" onclick="switchGroup(\'' + g.key + '\')">' +
+        (g.icon ? '<span class="kw-tab-icon">' + g.icon + '</span>' : '<span class="kw-tab-icon" style="color:' + c + '">●</span>') +
+        g.label + '</div>';
+    }).join('');
+    renderSidebar();
+  }
+
+  window.switchGroup = function(key) {
+    activeGroup = key;
+    try { localStorage.setItem('html-gen:kw_group', key); } catch(e) {}
+    document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
+    renderSidebar();
+    // 跨组保持：优先选中当前 section 在同组同名 item（如 36计策 跨组跟随），否则第一个 item
+    var targetItem = null;
+    if (activeItem) {
+      var secName = (function(){ var it = ITEMS.find(function(i){ return i.group === key && i.title === activeItem; }); return it ? it.title : null; })();
+      targetItem = secName ? ITEMS.find(function(i) { return i.group === key && i.title === secName; }) : null;
+    }
+    if (!targetItem) {
+      var curItem = ITEMS.find(function(i) { return i.group !== key && i.title === activeItem; });
+      if (curItem) targetItem = ITEMS.find(function(i) { return i.group === key && i.title === curItem.title; });
+    }
+    var firstItem = targetItem || ITEMS.find(function(i) { return i.group === key; });
+    if (firstItem) selectItem(activeGroup, firstItem.title);
+  };
+
+  // ── Render sidebar sections ──
+  function renderSidebar() {
+    var container = document.getElementById('kwSectionsContainer');
+    var groupItems = ITEMS.filter(function(item) { return item.group === activeGroup; });
+    var sections = {};
+    groupItems.forEach(function(item) {
+      var sec = item.section || item.group || 'default';
+      if (!sections[sec]) sections[sec] = [];
+      sections[sec].push(item);
+    });
+    var html = '';
+    var keys = Object.keys(sections);
+    keys.forEach(function(sec) {
+      var ci = GROUPS.findIndex(function(g) { return g.key === activeGroup; });
+      var c = COLORS[Math.max(0, ci) % COLORS.length];
+      if (keys.length > 1) {
+        var secIcon = sections[sec][0] && sections[sec][0].section_icon;
+        html += '<div class="kw-section-title" onclick="selectSection(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + sec.replace(/'/g,"\\'") + '\')">' +
+          (secIcon ? '<span class="kw-section-icon">' + secIcon + '</span>' : '<span class="dot" style="background:' + c + '"></span>') + sec + '</div>';
+      }
+      // Single-item section matching section name: skip kw-item row (section title itself is the click target)
+      var isSingleItem = sections[sec].length === 1 && sections[sec][0].title === sec;
+      if (!isSingleItem) {
+        sections[sec].forEach(function(item) {
+        var badgeHtml = '';
+        if (item.badge) {
+          var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
+          badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
+        }
+        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+      });
+      }
+    });
+    container.innerHTML = html || '<div style="padding:20px;text-align:center;color:#6b7280;font-size:0.78rem;">暂无内容</div>';
+  }
+
+  // ── Select section (click section title) ──
+  window.selectSection = function(group, sec) {
+    var item = ITEMS.find(function(i) { return i.group === group && i.section === sec; });
+    if (!item) return;
+    selectItem(group, item.title);
+  };
+
+  // ── Select item ──
+  // URL 参数同步（拷贝 URL 可定位指定页签/条目）
+  function syncUrl() {
+    try {
+      var u = new URL(window.location.href);
+      if (activeGroup) u.searchParams.set('group', activeGroup);
+      else u.searchParams.delete('group');
+      if (activeItem && ITEMS.some(function(i){ return i.group === activeGroup && i.title === activeItem; }))
+        u.searchParams.set('item', activeItem);
+      else u.searchParams.delete('item');
+      history.replaceState(null, '', u.toString());
+    } catch(e) {}
+  }
+
+  window.selectItem = function(group, title) {
+    activeItem = title;
+    try { localStorage.setItem('html-gen:kw_item', title); } catch(e) {}
+    document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.toggle('active', el.querySelector('.kw-item-text').textContent === title); });
+    var item = ITEMS.find(function(i) { return i.group === group && i.title === title; });
+    if (!item) return;
+    // 高亮所属 section（section-as-menu 单 item 模式无 kw-item 行，靠 section-title 呈现）
+    var secName = item.section || item.title;
+    document.querySelectorAll('.kw-section-title').forEach(function(el) {
+      el.classList.toggle('active', el.textContent.indexOf(secName) !== -1);
+    });
+    document.getElementById('welcomePanel').classList.remove('active');
+    document.getElementById('frameWrap').classList.add('active');
+    var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + 'width=wide&' + 'sidebar=0&toolbar=0&t=' + Date.now(); }
+    else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
+    else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
+    syncUrl();
+  };
+
+  function renderLegend() {
+    var el = document.getElementById('wLegend');
+    el.innerHTML = (GROUPS || []).map(function(g, i) { var c = COLORS[i % COLORS.length]; return '<span class="w-legend-item"><span class="ldot" style="background:' + c + '"></span> ' + g.label + '</span>'; }).join('');
+  }
+
+  // Restore last state: URL 参数优先 > localStorage > 默认
+  var urlParams = new URLSearchParams(location.search);
+  var savedGroup = urlParams.get('group') || localStorage.getItem('html-gen:kw_group');
+  var savedItem = urlParams.get('item') || localStorage.getItem('html-gen:kw_item');
+  var groupValid = savedGroup && GROUPS.some(function(g) { return g.key === savedGroup; });
+  var itemValid = savedItem && ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
+  if (groupValid) {
+    activeGroup = savedGroup; renderTabs();
+    if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
+    else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
+  } else {
+    renderTabs();
+    renderLegend();
+  }
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _collapsed = false;
+  window.toggleSidebar = function() {
+    _collapsed = !_collapsed;
+    var sb = document.getElementById('kwSidebar'), btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _collapsed);
+    if (btn) btn.textContent = _collapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:kw:collapsed', _collapsed); } catch(e) {}
+  };
+  try { if (localStorage.getItem('html-gen:kw:collapsed') === 'true') toggleSidebar(); } catch(e) {}
+
+  document.addEventListener('keydown', function(e) {
+    if (e.key === '[' && document.activeElement.tagName !== 'INPUT' && document.activeElement.tagName !== 'TEXTAREA' && document.activeElement.tagName !== 'IFRAME') {
+      if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
+    }
+  });
+
+  /* ── Sidebar Search ── */
+  var _kwSearchActive = false, _kwSearchTimer;
+  window.toggleKwSearch = function() {
+    _kwSearchActive = !_kwSearchActive;
+    var wrap = document.getElementById('kwSearchWrap');
+    var input = document.getElementById('kwSearchInput');
+    var btn = document.getElementById('kwSearchBtn');
+    if (wrap) wrap.classList.toggle('active', _kwSearchActive);
+    if (btn) btn.style.color = _kwSearchActive ? 'var(--cobalt-400)' : '';
+    if (_kwSearchActive) {
+      setTimeout(function() { input.focus(); input.select(); }, 50);
+    } else {
+      input.value = '';
+      doKwFilter('');
+    }
+  };
+
+  function doKwFilter(q) {
+    var items = document.querySelectorAll('.kw-item');
+    var titles = document.querySelectorAll('.kw-section-title');
+    var hasMatch = false;
+    items.forEach(function(el) {
+      var text = (el.querySelector('.kw-item-text') || {}).textContent || '';
+      var match = q.length < 2 || text.toLowerCase().indexOf(q) !== -1;
+      el.classList.toggle('filtered-out', !match);
+      if (match) hasMatch = true;
+    });
+    // Hide section titles if all their items are filtered out
+    titles.forEach(function(title) {
+      var next = title.nextElementSibling;
+      var allHidden = true;
+      while (next && !next.classList.contains('kw-section-title')) {
+        if (!next.classList.contains('filtered-out')) { allHidden = false; break; }
+        next = next.nextElementSibling;
+      }
+      title.classList.toggle('filtered-out', allHidden);
+    });
+  }
+
+  document.getElementById('kwSearchInput').addEventListener('input', function() {
+    var q = this.value.toLowerCase().trim();
+    clearTimeout(_kwSearchTimer);
+    _kwSearchTimer = setTimeout(function() { doKwFilter(q); }, 150);
+  });
+
+  document.getElementById('kwSearchInput').addEventListener('keydown', function(e) {
+    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); }
+    else if (e.key === 'Enter') {
+      var firstVisible = document.querySelector('.kw-item:not(.filtered-out)');
+      if (firstVisible) firstVisible.click();
+      _kwSearchActive = true; toggleKwSearch();
+    }
+  });
+
+  // Click away to close
+  document.addEventListener('click', function(e) {
+    if (_kwSearchActive && !e.target.closest('.kw-search-wrap') && e.target !== document.getElementById('kwSearchBtn')) {
+      _kwSearchActive = true; toggleKwSearch();
+    }
+  });
+
+  /* ── Sidebar Resize ── */
+  (function() {
+    var sb = document.getElementById('kwSidebar');
+    var handle = document.getElementById('kwSbResize');
+    var dragging = false;
+    handle.addEventListener('mousedown', function(e) {
+      e.preventDefault();
+      dragging = true;
+      handle.classList.add('active');
+    });
+    document.addEventListener('mousemove', function(e) {
+      if (!dragging) return;
+      var w = e.clientX;
+      w = Math.max(200, Math.min(400, w));
+      sb.style.width = w + 'px';
+      sb.style.minWidth = w + 'px';
+    });
+    document.addEventListener('mouseup', function() {
+      if (dragging) {
+        dragging = false;
+        handle.classList.remove('active');
+        try { localStorage.setItem('html-gen:kw:sidebar-width', sb.style.width); } catch(e) {}
+      }
+    });
+    try { var sw = localStorage.getItem('html-gen:kw:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+  })();
+})();
+</script>
+<!-- rx-patch:v1 -->
+<style>
+/* rx-hl: 目录页「亮点句」条目 */
+.rx-hl-list { display: flex; flex-direction: column; gap: 10px; }
+.rx-hl-row { display: flex; flex-direction: column; gap: 2px; padding-left: 10px;
+             border-left: 2px solid rgba(250, 204, 21, .45); }
+.rx-hl-row a { color: #f2f2f2; text-decoration: none; line-height: 1.75; font-size: .86rem;
+               border-bottom: 1px dashed rgba(250, 204, 21, .5); }
+.rx-hl-row a:hover { color: #fde68a; border-bottom-color: #fde68a; }
+.rx-hl-tag { font-size: .7rem; color: #8b8b9e; }
+.kw-sidebar-header .sidebar-title:hover::after { content: ' ⏎ 首页'; font-weight: 400; opacity: .75; }
+</style>
+<script>
+(function () {
+  // 1) 侧栏标题点击 → 清浏览记录（当前类目/条目/折叠态）→ 回首页
+  var title = document.querySelector('.kw-sidebar-header .sidebar-title');
+  if (title && !title.dataset.rxBound) {
+    title.dataset.rxBound = '1';
+    title.addEventListener('click', function () {
+      ['html-gen:kw_group', 'html-gen:kw_item', 'html-gen:kw:collapsed'].forEach(function (k) {
+        try { localStorage.removeItem(k); } catch (e) {}
+      });
+      location.replace(location.pathname);
+    });
+  }
+  // 2) 亮点句跳正文锚点（固定最宽 + 隐藏侧栏/工具栏）
+  window.rxJump = function (file, id) {
+    var f = document.getElementById('contentFrame'),
+        w = document.getElementById('frameWrap'),
+        b = document.getElementById('kwBody');
+    if (!f) return false;
+    f.src = file + '?width=wide&sidebar=0&toolbar=0&t=' + Date.now() + '#' + id;
+    f.style.display = 'block';
+    if (b) b.style.display = 'none';
+    if (w) w.classList.add('active');
+    return false;
+  };
+})();
+</script>
+</body>
+</html>

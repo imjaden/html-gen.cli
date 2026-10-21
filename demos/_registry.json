@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "count": 56,
+  "count": 65,
   "demos": [
     {
       "name": "chaitin-business-model",
@@ -525,6 +525,103 @@
       "type": "table",
       "entry": "provinces-table.html",
       "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "renxuan-01-xu",
+      "title": "人选天选论-序",
+      "type": "doc",
+      "entry": "renxuan/01-xu.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-02-heliu-shijie",
+      "title": "第一章·河流世界",
+      "type": "doc",
+      "entry": "renxuan/02-heliu-shijie.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-03-ren-zhi-lu",
+      "title": "第二章·走向觉醒的“人之路”",
+      "type": "doc",
+      "entry": "renxuan/03-ren-zhi-lu.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-04-yingbi-shijie",
+      "title": "第三章·硬币世界",
+      "type": "doc",
+      "entry": "renxuan/04-yingbi-shijie.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-05-pozhi-jian-shi-dingxin",
+      "title": "第四章·破执 见势 定心",
+      "type": "doc",
+      "entry": "renxuan/05-pozhi-jian-shi-dingxin.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-06-tianquan-shi-ruhe-bei-faxian",
+      "title": "第五章·天权是如何被发现的",
+      "type": "doc",
+      "entry": "renxuan/06-tianquan-shi-ruhe-bei-faxian.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-07-tianquan-de-liehen",
+      "title": "第六章·天权的裂痕",
+      "type": "doc",
+      "entry": "renxuan/07-tianquan-de-liehen.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan-08-zicheng-renjian",
+      "title": "第七章·自成人间",
+      "type": "doc",
+      "entry": "renxuan/08-zicheng-renjian.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_renxuan-kb-data"
+      ]
+    },
+    {
+      "name": "renxuan",
+      "title": "人选天选论 · 在线阅读",
+      "type": "knowledge",
+      "entry": "renxuan.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
