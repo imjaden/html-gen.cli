@@ -172,6 +172,15 @@ class TestRenxuanDemo(unittest.TestCase):
 
     # ── 源件完整性 ──
 
+    def test_08_copyright_notice(self):
+        """硬约束：demo 页保留来源与「连载版、非出版本」声明。"""
+        panel = self.driver.find_element(By.ID, 'welcomePanel').text
+        self.assertIn('连载版', panel)
+        self.assertIn('非出版本', panel)
+        self.assertIn('姜蓝', panel)
+        self.assertIn('guohen.com', panel)
+        self.assertEqual(self._errors(), [])
+
     def test_06_source_registry_matches_files(self):
         import hashlib
         reg = json.loads((PROJECT / 'data' / '_renxuan-source.json').read_text(encoding='utf-8'))

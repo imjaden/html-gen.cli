@@ -7,6 +7,10 @@
   "landing": "demos/renxuan.html",
   "chapter_dir": "demos/renxuan/",
   "copyright": "正文 © 姜蓝／路飞; 来源 https://www.guohen.com/zh/chapters; 站长校对自抖音图片版，非出版本",
+  "landing_modifications": [
+    "98 处相对引用加 renxuan/ 前缀（8 条目 url + 45 desc 内 href + 45 onclick rxJump）",
+    "welcome 面板追加「非出版本」版权声明一行（正文未改）"
+  ],
   "files": {
     "01-xu.html": "b12b626c4644e38d976977e36c4b599971eb7a3cee372dfd239731f9c7ffb749",
     "02-heliu-shijie.html": "28f48267ab8eca2425d96a3ac01efb15b2793fa1bd3db95126b196aa6cbbddb8",
