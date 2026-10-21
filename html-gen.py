@@ -339,6 +339,24 @@ def extract_title(md_text):
     return m.group(1).strip() if m else ''
 
 
+# 中文字数口径（CL017）：CJK 逐字 + 西文按词
+_CJK_CHAR = re.compile(r'[\u3400-\u4dbf\u4e00-\u9fff\uf900-\ufaff]')
+_LATIN_WORD = re.compile(r"[A-Za-z0-9]+(?:['’\-][A-Za-z0-9]+)*")
+
+
+def _word_stats(text):
+    """返回 (字数, 阅读分钟)。
+
+    旧实现 len(text.split()) 按空格分词：中文无空格，3265 汉字的章节只算出
+    几十个「词」，阅读时长恒为 1 分钟。新口径：
+      字数 = 汉字数 + 西文词数
+      阅读时长 = 汉字/400 + 西文词/200（取整，最小 1 分钟）
+    """
+    cjk = len(_CJK_CHAR.findall(text))
+    latin = len(_LATIN_WORD.findall(text))
+    return cjk + latin, max(1, round(cjk / 400 + latin / 200))
+
+
 # ═══ Commands ═══
 def cmd_doc(args):
     from datetime import datetime
@@ -376,8 +394,7 @@ def cmd_doc(args):
     except ValueError:
         rel = str(md.resolve())
     stat = md.stat()
-    wc = len(text.split())
-    rt = max(1, round(wc / 200))
+    wc, rt = _word_stats(text)
     ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
     et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
     md_name = os.path.basename(str(md))
@@ -446,8 +463,7 @@ def cmd_slide(args):
     except ValueError:
         rel = str(md.resolve())
     stat = md.stat()
-    wc = len(text.split())
-    rt = max(1, round(wc / 200))
+    wc, rt = _word_stats(text)
     ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
     et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
     md_name = os.path.basename(str(md))
