@@ -1,117 +1,60 @@
 # 会话轮转入口 — html-gen.cli
 
-> 新会话开场**只读本页**即可加载：① 已登记待执行编号 ② 当前澄清后的串行执行清单 ③ 指针与状态。
-> **条目真值不在本页** —— 真值 = live draft（`cache/draft/TODO-<date>.md`）与 `hm loop list` / `hm loop status <编号>`。
-> 本页 = 会话轮转入口页（hermes-manager 同构实践；当前为**手工维护版**，首次建立 2026-09-27）。
-> 维护纪律：状态变化时**改本页对应格**，不复制真值（禁第二真值）。
+> 新会话开场只读本页：① 当前批次状态 ② 待执行清单（**串行，按序做**） ③ 关键指针。
+> 维护纪律：状态变化只改本页对应格；条目真值仍以 `git log` / `cache/draft/` / `hm loop` 为准。
+> 本页于 2026-10-15 CL017 收尾时**清空重写**（CL015 批的完整记录见本文件上一版，即 `491c844` 之前的历史版本）。
 
 ---
 
-## 一、已登记待执行（来源: `hm loop list`，本仓 1 条）
+## 〇、当前状态（一句话）
 
-| 编号 | 标题 | 状态 | kind | prio | 方案文档 | 备注 |
-|:--|:--|:--|:--|:--|:--|:--|
-| **HTML-GEN-CL015** | html-gen 剪贴板回退统一 · 跨仓转交 SCRIPT-MINER-CL042 | READY（[1/6] 设计定稿 · [2/6] 评审 PASS 85/100 + push · [3/6] dev 落地 6 笔 · [4/6] ops 核查 18/18 PASS · **[5/6] 审计 PASS 95/100·A + 已 push** · [6/6] 复盘） | independent | P2 | `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md` | 起点 `dc14a38`；基线笔 `83c4e2c`；dev 头 `bf61484`；审计头 `4a3c4a0`（= github/main）；findings 187-201 全闭合 + 新增 202-206 全 🟢 另批 errata |
-
-> 取号核对：CL015 = 本仓新式序列 max(CL014) + 1；`hm loop next-code` 回 `HTML-GEN-CL016` ⇒ CL015 已绑定。
+CL017 已收尾并 push github：`08c1b08..491c844`（5 笔），工作树 clean，`ahead=0`，gitee(`origin`) 未推。
 
 ---
 
-## 二、当前串行执行清单（2026-09-27 澄清定案 · 逐步放行）
+## 一、待执行清单（串行，按序执行；上一项不完成不开下一项）
 
-| 步 | 内容 | 前置 | 状态 |
-|:--|:--|:--|:--|
-| T1 | 需求核实与澄清：交接件 3 处偏差（P1 范围少算 / P2 漏算本仓产物 / P3 验收条款越界）+ T1 验收口径裁定 | — | ✅ 已定案（用户 `1 采用推荐`） |
-| T2 | 申请编号 + draft 登记（HTML-GEN-CL015；`hm loop check .` 6/6） | T1 | ✅ 已完成 |
-| T3 | 设计方案 v1.0 / v1.1（含 commit：`0c6acdb` / `dc14a38`；决策定稿 T1+D1..D10） | T2 | ✅ 已完成 |
-| T4 | **[2/6] 设计评审**（review role；**评审 PASS 后由该会话 push**，用户 2026-09-27 授权） | T3 | ✅ 已完成（**PASS 85/100 · B**，0 阻塞；`4db7089` + push github ff-only `5df590a..4db7089`） |
-| T5 | **[3/6] dev 实施**：① 四模板 canonical `copyText` 块 + 8 调用点收敛 ② 产物全量重生成 ③ 版本 3.4 + README ④ `tests/test_clipboard_fallback.py`（T1–T11）⑤ features/skills 同步 ⑥ 折入评审 findings HG-SEC-187..194 | T4 ✅ | ✅ 已完成（dev 6 笔 `b4afd4e`→`bf61484`，74 文件，12m22s；基线笔 `83c4e2c`；AGENTS 本批零改动） |
-| T6 | **[4/6] ops 核查**：只读探针复算 + A/B 负例成立 + 非 localhost origin 实机复制 | T5 ✅ | ✅ 已完成（**18/18 PASS**，FAIL 0 / N-A 0；报告 `documents/review/html-gen-clipboard-fallback-ops-verify-v1.0-20260928.md`；反证 3 PASS/7 FAIL） |
-| T7 | **[5/6] 审计**（review role）：逐 finding 独立复算 + 「新增项 = 0」显式回答 | T6 ✅ | ✅ 已完成（**PASS 95/100·A**，15 条全闭合=已处置 13 / N-A 1 / 0 未闭合；新增 202-206 全 🟢；`4a3c4a0` + push github `69ec665..4a3c4a0` ff-only） |
-| T8 | **[6/6] 复盘 + 收尾**：review-log + 给 script-miner 的转交回执（O2/O3） | T7 ✅ | ✅ 复盘完成（ops 报告 §8 勘误回填 + 入口页刷新 + 202-206 登记）；抄送 script-miner 回执 ⏸ 用户押后（`5 押后`） |
-| T9 | 仓外（**本会话不做**）：script-miner CL043 手写页修复 + 7 个 vendor 副本重新拷贝 | 本批 [3/6] 落地 | ⏸ 用户押后（`4 押后`） |
+| 序 | 任务 | 仓 | 前置 | 状态 |
+|:--|:--|:--|:--|:--|
+| **T1** | **AC2① md 高亮/下划线语法**：`md_to_html` 支持 `==文字==` → `<mark class="hl">`；`style-guide.css` 加 `--hl-*` 变量；新增 `tests/test_md_highlight.py`（3 例：单段 / 多段 / 转义不误伤） | html-gen.cli | **用户先定语法定稿**（`==…==` vs `<u>` vs `!!…!!`） | 待排期 |
+| **T2** | **AC2② 条目级宽度声明**（可选）：knowledge 数据 items 增 `width: narrow\|medium\|wide`，模板拼到 iframe src；缺省行为不变（向后兼容）。现状靠数据侧 url 带 `?width=wide` 代偿（renxuan 8 页已如此） | html-gen.cli | T1 之后（同属模板小改，勿混批） | 待排期 |
+| **T3** | **AC2③ 转交 script-miner / site-patch**：注入层把 `.sidebar-title` 点击覆盖成「清记忆+回首页」，覆盖了 `layout-knowledge.html:278` 的「复制路径」语义 ⇒ 建议改为新增按钮（`.kw-sidebar-footer` 已有 `sb-btn` 位）；同时转达 T2 宽度约定与 AC2④ 字数客户端重算双源问题。**prompt 已备**：`cache/handoff/prompt-script-miner-site-patch-20261015.md`（gitignored） | script-miner（他仓） | 用户手工转交 / 派发 | 待转交 |
+| **T4** | **gitee 同步**：`git push origin main`（`origin`=gitee，现落后）。仓惯例 origin 不推，须明确授权后执行 | html-gen.cli | 用户授权 | 待授权 |
+| **T5** | **源站漂移复查**（条件触发，非主动）：比对 `data/_renxuan-source.json` 的 `source_index_sha256`（`d4c030ff…`）与 8 页哈希；若 script-miner 侧更新 → 重放 `landing_modifications`（98 处 `renxuan/` 前缀 + 版权声明一行）并更新 source json | 双仓 | T3 有结论后 | 长期维护 |
 
-**批内提交计划（拟 7 笔，见设计稿 §10）**：**实际 11 笔**已落地（`f7fcf82` 设计 v1.2 / `ee2c39f` D7 云智慧索引旁支
-/ `83c4e2c` 零改动基线笔 / dev 6 笔 `b4afd4e`→`bf61484` / `dfd5d71` ops 回执 / `4a3c4a0` 审计件），
-每笔 `git add` **显式 pathspec**；push 由 review 审计 PASS 后 ff-only 执行（`origin`/gitee 不推、不 force）。
+> 串行理由：T1/T2 同属模板层小改，先定 T1 语法可一次性把样式基座（CSS 变量）改到位，T2 复用同一批；T3 是他仓依赖，不阻塞 T1/T2；T4/T5 属发布与维护面，最后做。
 
 ---
 
-## 三、未定案观察项（无编号；随批处置或另立批）
+## 二、本批（CL017）已完成 —— 仅供追溯，勿重做
 
-| # | 诉求 | 出处 | 状态 |
-|:--|:--|:--|:--|
-| O2 | script-miner 9 文件：7 个本仓模板/产物 vendor 副本（重新 vendor）+ 2 个他仓手写页（他仓自修） | 设计稿 §8 O2 | 转交，用户**押后** |
-| O3 | 巡检脚本缺 `--root` 参数 ⇒ 本仓自检只能用内存探针 | 设计稿 §8 O3 | 转交建议（他仓 CL042/CL044 面） |
-| O4 | 本仓巡检未接入提交门禁 | 设计稿 §8 O4 | 本批以 `tests/test_clipboard_fallback.py` T1–T4 常驻守卫承接 |
-| O5 | 落地页 `index.html` / `demos/index.html` 的 `copyText` 与 canonical 块**同名不同签名** | 设计稿 §8 O5 | D6 定稿: 本批不动，另批可选 |
-| O6 | `demos/usage-guide.md` 既有表述「v1.1+ 用 execCommand 兜底」 | 设计稿 §8 O6 | 本批订正 + 重生成 |
-| O7 | 他仓 vendor 副本缺源 commit 注释（版本可追溯性） | 设计稿 §8 O7 | 记录（他仓决定） |
-| O8 | `AGENTS.md:352` 索引路径 patch —— ✅ **已落**（2026-09-28，用户手工套用后 ops 复算核实：sha256 = `2658f832135f4592…` == 预期后值、`git diff` 1+/1−；补丁留档 `cache/handoff/agents-md-index-path-20260928.patch`） | 本会话 [6/6] 收尾 | ✅ 完成 |
-| O9 | script-miner 转交件（O2 vendor 重拷贝 + O3 `--root` + A4 条款订正）—— 转交 prompt 已备 `cache/handoff/prompt-script-miner-cl042-o2-o3-20260928.md`（gitignored，7.4KB） | 用户 2026-09-28 决定 | ⏸ **按用户决定忽略**（不转交） |
-| O10 | 数据面两项（云智慧系 4 篇 `author` 空 / drama 4 表 JSON 列集落后） | 本会话登记 | ⏸ **按用户决定暂忽略** |
-| **HG-SEC-202..206** | [5/6] 审计**新增 5 项 🟢 record**（全为文档/报告/注释口径，0 代码回炉）：202 设计 §0.4-A「4 表 11 列」措辞+history 例外归因；203 ops 回执 TC11/TC8 计数口径；204 设计 §7 A4「status 空」条款措辞（**审计归因写作 ops 回执，ops 侧勘误已改归设计 §7 A4**）；205 `bf61484` 夹具 docstring 注释；206 两侧 harness 判据自检 | 审计报告 §④ + `documents/review/html-gen-clipboard-fallback-errata-analysis-v1.0-20260928.md`（场景/成因/不修后果） | ✅ **202/204/205 已直接修正**（设计 §0.4-A + §7 A4 + tests docstring；346 tests 全绿）+ 203 已就地勘误（ops 报告 §8）+ **206 已落规范层**（skill `todo-driven-execution/references/ops-check-harness-authoring.md`「CL015 加固七条 + 报告定稿前自检 4 问」） |
+- 案例纳入：`demos/renxuan.html`（目录页）+ `demos/renxuan/`（8 正文页）；清单行由 `demo --rebuild` 自动生成（📚 C 型）。
+- 登记：`data/_renxuan-kb-data.json`（8 条 url → 标记 referenced）、`data/_renxuan-source.json`（源 sha / 8 页哈希 / landing_modifications）。
+- 计数：registry 56→65（referenced 38→46，独立 18→19）；`data/_demos-data.json` 与 `demos-index.html` 各 18→19 行。
+- AC2④ 已实现（独立 commit）：字数 = 汉字 + 西文词；阅读时长 = 汉字/400 + 西文/200。
+- `demo --rebuild` 形状防护：非数组 / 混合数组 `*kb-data.json` 不再崩（`_collect_demo_refs`）。
+- AGENTS.md 同步：367 tests / 35 文件 + renxuan 目录条目。
+- 提交：`32ffd60` 案例 / `b7f7b8b` 字数 / `b54f005` rebuild 防护 / `6862606` 版权声明 / `491c844` AGENTS 同步。
 
 ---
 
-## 四、指针与状态
+## 三、关键指针与判据（复跑用）
 
-- 待办真值: `cache/draft/TODO-20260927.md` · 队列视图: `hm loop list` · 单号状态: `hm loop status HTML-GEN-CL015`
-- 设计稿: `documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md`（§0.2 决策定稿表 / §0.4 **v1.2 补记 = [3/6] 唯一口径源** / §5 逐产物参数集 / §9 事实卡 F1–F14）
-- 产物基线笔: `83c4e2c`（"零改动基线重生成 29 文件"，消除模板历史漂移 22 陈旧 + 2 favicon）⇒ [4/6] 起 diff 可比
-- ops 核查: `documents/review/html-gen-clipboard-fallback-ops-verify-v1.0-20260928.md`（**18/18 PASS**；harness
-  `cache/closed-loop/HTML-GEN-CL015-verify.py`，输出存档 `cache/closed-loop/cl015-ops-check.txt`，
-  反证存档 `cache/closed-loop/cl015-harness-reverse.log`）
-- 评审记录: `documents/review/html-gen-clipboard-fallback-design-review-v1.1-20260927.md`（**PASS 85/100 · B**，0 阻塞，
-  findings HG-SEC-187..201 = 8 🟡 折入 [3/6] + 7 🟢 折入文档笔）+ `review-log.md` / `.review-level.yaml` 同步
-  （同笔 commit `4db7089`，已 push）
-- 跨仓来源件: `~/CodeSpace/script-miner/cache/handoff/prompt-dev-html-gen-doc-clipboard-fallback-20260927.md`（只读）
-- 派发留档（`cache/**` gitignored）: `cache/review-prep/prompt-html-gen-cl015-design-review-20260927.md`
-  + `cache/review-prep/dispatch-html-gen-cl015-design-review-20260927.sh` + `cache/closed-loop/cl015-design-review-dispatch.log`
-- 推送面: 远端 `github`（`imjaden/html-gen.cli`）为发布面；`origin` = gitee（本批**不推**）；push 一律 ff-only、不 force
-- 项目规范: `AGENTS.md`（受保护指令文件：落地须分小步 patch 逐次审批 + sha256 逐字节比对）·
-  `features.md`（能力清单）· `review-log.md` + `.review-level.yaml`（审计链与 findings 台账）
-- **本仓无** `skills-governance/loop-batch-gates.md` / `documents/1A-closed-loop-protocol-*.md`（实测不存在，
-  那些是 hermes-manager 的规范文件）⇒ 本仓 1A 口径以设计稿 §7 验收清单（A0–A4）+ `hm loop check .` 为准
+- 全量测试：`python3 -m pytest tests/ -q -n 4` → **367 passed / 82 subtests**（~49s）
+- 案例回归：`python3 -m pytest tests/test_renxuan_demo.py -q -n 0` → 7 passed（测试内自起 http，勿用 file:// 读 iframe）
+- 清单重建幂等：`html-gen demo --rebuild && git diff --stat` → 输出为空
+- 判据：亮点句 45 行（每章 6/6/5/5/5/5/6/7）、正文 `.rx-hl` span 合计 49（含 4 处跨行续行）、正文汉字 30696（按 docBody 文本节点复算 30706，差 +10，口径待写死）
+- 入口页改写的 98 处 = 8 条目 url + 45 desc 内 href + 45 onclick `rxJump`；`demo --rebuild` 按 basename 跳过所有 `index.html`（`f.name in ('index.html','_registry.json')`）⇒ 案例入口必须在根级、不能叫 index.html
+- 源件（只读）：`~/CodeSpace/script-miner/projects/人选天选论/`（README / build.sh / site-patch.py / catalog.json / html/）
+- 发布面：`github`=`imjaden/html-gen.cli`（发布面）；`origin`=gitee（本批未推）；push 一律 ff-only、不 force
 
 ---
 
-## 五、历史
+## 四、未定案观察项（无编号，随批处置）
 
-- 2026-09-28 **收尾追加笔：errata 直接修正 + AGENTS.md 落地 + 规范层落条**（用户指令 `1 我手工执行失败，你执行` / `2 落` / `3 直接修正`）。
-  AGENTS.md:352 索引路径 → 候选链（sha256 `6d6a3242…` → `2658f832…`，ops 复算核实 == 预期）；
-  202 设计 §0.4-A 改写（分表列数 3×10 + history 11；`history` 归因改「样式基座漂移 212 行」）；
-  204 设计 §7 A4 条款改写（源码零写操作扫描 + mtime 取证，原「他仓 `git status` 空」标注不可满足已弃用）+ 审计台账来源标注订正；
-  205 `tests/test_templates.py` 夹具 docstring 环境前提订正（`execCommand('copy')` 仅无激活时 false）；
-  206 落规范层：skill `todo-driven-execution/references/ops-check-harness-authoring.md` 增「CL015 加固七条 + 报告定稿前自检 4 问」，SKILL.md 引用行同步。
-  验证：`pytest tests/test_templates.py -q -n 0` 18 passed · 全量 **346 passed / 82 subtests**（零源码/零产物改动）。
-  errata 分析件（场景/成因/不修后果）: `documents/review/html-gen-clipboard-fallback-errata-analysis-v1.0-20260928.md`。
-- 2026-09-28 **[5/6] 审计 PASS 95/100·A**（review role，`4a3c4a0`）→ **已 push github `69ec665..4a3c4a0`**（推后
-  `ls-remote == 本地 HEAD`；`origin`/gitee 仍 `7821427`；未 force）→ **[6/6] 复盘**（本笔）。
-  15 条 finding 全闭合（已处置 13 / N-A 199 / 部分 0 / 未处置 0）；新增 202-206 全 🟢 record（另批 errata）。
-  审计增值实证（独立于 ops）：块 sha256 `eb5431669eca36b4…` **== 设计 §3 原文逐字节**（与 ops 的 `e4adb3b7…`
-  数值相异系提取边界口径不同：ops 取「BEGIN/END 标记**之间**文本」，审计口径见其报告；两侧各自自证
-  「四模板块唯一值 / == 原文」，判定一致）；
-  参数回收重生成 **38/38 byte-IDENTICAL** + `demo --rebuild` 3/3；变异测试 3 态（M3 指名
-  `demos/usage-guide.html:1253 脚本内裸调用`）；**有头 Chrome + `pbpaste` 回读 == `document.pdf`（真复制实证，
-  且证 headless 与系统 pasteboard 隔离——ops 的 headless CDP 回读法未被复现，方法差异已双方登记）**；
-  基线 × 复制彻底失败仍 toast `已复制` ⇒ 坐实原用例「恒绿=假成功断言」。
-  审计对 ops 回执 2 处口径/归因提出勘误（203/204）⇒ ops §8 已回填 E1–E3（其中 E3 = **审计归因有误**：
-  `status 空` 条款真实来源是设计 §7 A4 行，非 ops 回执；grep 实证）。
-- 2026-09-28 [3/6] dev 落地（`b4afd4e`→`bf61484` 6 笔，74 文件）→ [4/6] ops 核查 **18/18 PASS**。
-  关键实测：四模板 canonical 块逐字节一致（sha `e4adb3b7…`）/ 块外 0 / 调用点 8；
-  产物 56 个 `<script>` 区间 2252 行 + 文档面 10 行为唯一差异（零数据层）；
-  只读探针 OK 130 / WARN 0 / FAIL 0（基线笔时 104/47/38）；全量回归 346 passed；
-  真非 localhost（`192.168.31.178`）端到端：`isSecureContext=False` + 真实点击 → `已复制: document.pdf`
-  + **CDP 粘贴回读 = `document.pdf`（真复制实证）** + 无激活 JS 直调 → `复制失败`（禁假成功）。
-  反证：同一 harness 指向基线笔 = 3 PASS / 7 FAIL（判据非恒真）。
-  例外登记：4 个 drama strategy 表不可重生成（JSON 列集落后产物）⇒ 手工同步；`AGENTS.md` 受保护未获审批
-  ⇒ 本批零改动；移动端 Safari `readonly`+`select()` 仍未验证（D4 登记）。
-- 2026-09-27 [2/6] 评审 **PASS 85/100 · B**（0 阻塞）→ `4db7089` 已 push（`5df590a..4db7089`，ff-only，
-  未推 gitee，未 force）。评审增值实证：canonical 块原型实跑（headless Chrome 4/4 断言）+
-  **真非 localhost origin 端到端**（`http://192.168.31.178:8917/demos/usage-guide.html`，修前实机坐实假成功）。
-  折入项：HG-SEC-187..194 → [3/6] dev；195..201 → 同批文档笔；199 → 发版流程（非本批提交面）。
-- 本页**首次建立**（2026-09-27）：CL015 批的会话轮转入口。此前本仓无 TODO-handoff.md，交接靠
-  `cache/handoff/` 与 `documents/handoff/` 快照；如需追溯更早批次的执行明细，见
-  `git log --oneline`、`cache/closed-loop/2026*` 步骤 JSON 与 `review-log.md`。
-- 已完成编号（--done）: HTML-GEN-CL001 ~ CL014 ✅（清单 `hm loop list --done`；审计链见 `review-log.md` 与 `.review-level.yaml`）。
+| # | 观察 | 处置建议 |
+|:--|:--|:--|
+| O1 | 正文汉字判据 30696 vs 复算 30706（+10，逐章 ±9） | 口径写死为「docBody 文本节点 CJK 计数」，避免回执无法精确对账 |
+| O2 | AC2④ 修好后，renxuan 页内 site-patch 的客户端字数重算仍在覆盖显示值（如 3443） | 随 T3 转达：模板已给正确值，注入层可退化为「仅在不一致时修正」 |
+| O3 | 交接单原写 `demos/renxuan/index.html` 不可行（rebuild 跳过 index.html） | 已按 D2(A) 落地根级入口；后续案例沿用此结论 |
+| O4 | gitee（gitee.com/imjaden/html-gen.cli）落后 github 多笔 | 见 T4 |
