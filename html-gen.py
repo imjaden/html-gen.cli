@@ -357,6 +357,30 @@ def _word_stats(text):
     return cjk + latin, max(1, round(cjk / 400 + latin / 200))
 
 
+def _collect_demo_refs(data_dir):
+    """收集 *kb-data.json 里的 url → 引用来源（demo --rebuild 用）。
+
+    形状防护（CL017）：数据目录下的 *kb-data.json 必须是「对象数组」。
+    历史实现直接 `for it in items: it.get('url')`，一旦该文件是 dict（如
+    knowledge 的 catalog）或数组里混入字符串，rebuild 会 AttributeError 崩溃。
+    """
+    refs = {}
+    for kb in Path(data_dir).glob('*kb-data.json'):
+        try:
+            items = json.loads(kb.read_text(encoding='utf-8'))
+        except Exception:
+            continue
+        if not isinstance(items, list):
+            continue
+        for it in items:
+            if not isinstance(it, dict):
+                continue
+            u = it.get('url')
+            if isinstance(u, str) and u:
+                refs.setdefault(u, []).append(kb.stem)
+    return refs
+
+
 # ═══ Commands ═══
 def cmd_doc(args):
     from datetime import datetime
@@ -1715,16 +1739,7 @@ def cmd_demo(args):
     # --rebuild: 重新扫描 demos/ 生成 registry
     if getattr(args, 'rebuild', False):
         import re as _re
-        refs = {}
-        for kb in DATA_DIR.glob('*kb-data.json'):
-            try:
-                items = _json.loads(kb.read_text(encoding='utf-8'))
-            except Exception:
-                continue
-            for it in items:
-                u = it.get('url')
-                if u:
-                    refs.setdefault(u, []).append(kb.stem)
+        refs = _collect_demo_refs(DATA_DIR)
         featured = set()
         try:
             idx = (DEMOS_DIR / 'index.html').read_text(encoding='utf-8')
