@@ -278,7 +278,7 @@ python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建�
 - Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
-- 当前 334 tests（31 文件，含契约守卫 22 用例 + 80 subtests；test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_issue_feedback 37 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_help_contract 22 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_history_tables 7 / test_render_summary 7 / test_doc_sidebar 7 / test_url_state 6 / test_sticky_width 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_xss_escape 6 / test_prompt_cmd 6 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 当前 367 tests（35 文件，含契约守卫 22 用例 + 82 subtests；test_issue_feedback 37 / test_help_contract 22 / test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_clipboard_fallback 12 / test_demo_cmd 10 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_word_count 7 / test_renxuan_demo 7 / test_render_summary 7 / test_rebuild_refs 7 / test_history_tables 7 / test_doc_sidebar 7 / test_xss_escape 6 / test_url_state 6 / test_sticky_width 6 / test_prompt_cmd 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_initial_hidden_split 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~26s)
@@ -334,8 +334,10 @@ html-gen.cli/
     ├── drama-knowledge.html    # 以剧读史影视历史知识库（中国历史 + 大明王朝1566）
     ├── chaitin-business-analysis.html  # 长亭科技商业分析知识库
     ├── cloudwise-business-analysis.html # 云智慧商业分析知识库
+    ├── renxuan.html            # 人选天选论 · 在线阅读（目录页；正文 demos/renxuan/ 8 页 + data/_renxuan-kb-data.json 引用登记 + data/_renxuan-source.json 源件 sha）
     ├── chaitin/                # 长亭内容子页（知识库引用）+ menu-design 菜单方案
     ├── cloudwise/              # 云智慧内容子页（知识库引用）
+    ├── renxuan/                # 人选天选论正文子页（8 页，由 _renxuan-kb-data.json 标记 referenced）
     └── drama/                  # 以剧读史内容子页（知识库引用；时间轴 + 36计策，md 源 + html）
 
 > **双源漂移（1C 决策，2026-08-23）**：根 `index.html`（落地页）与 `demos/index.html`（模板展示首页）为**两份独立副本**，非同一文件。改动落地页结构时需同步两处；`demos/index.html` 是 `html-gen demo --rebuild` 的 featured 数据源，根 index.html 不参与。github-corner 模式亦不同：layout 模板层（demo 页）用「pointer-events:none 穿透 + hit 36px」防遮挡右上角工具栏；根落地页无工具栏，用全图标可点 + hover 波浪动画（HG-SEC-014 文档化，2026-08-23）。两页共用主题按钮（right:88px 避让 corner，`html-gen:index_theme` localStorage key）与复制按钮/断点/footer；github-corner 浅色模式用深三角+白 octocat（`--gh-corner-fill`/`--gh-octocat` 变量，`:root.light .github-corner` 覆盖全局 a 链接色）；根页 hero 为**动态两屏**（JS: hero 高 = 视口高−55px，第二屏标题露出首屏底部；scroll-hint fixed 底部、滚动淡出），demos 页无 hero。**防漂移测试**：`tests/test_demos_index.py::test_05_dual_source_consistency` 断言双源关键功能特征一致（2026-08-24）。
