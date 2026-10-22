@@ -130,6 +130,10 @@
     "pageSize": 30,
     "exportCSV": true,
     "search": true,
-    "showIndex": true
+    "showIndex": true,
+    "clickMode": "split",
+    "columnsSplit": [
+      "标题"
+    ]
   }
 }

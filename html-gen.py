@@ -381,6 +381,156 @@ def _collect_demo_refs(data_dir):
     return refs
 
 
+# ── 根级短链别名（CL018 D5/D6）─────────────────────────────
+SITE_ORIGIN = 'https://html-gen.cli.jaden.tech/'
+ALIAS_MARKER = '<!-- html-gen:alias auto -->'
+CANON_MARKER = '<!-- html-gen:canonical auto -->'
+ALIAS_NAME_RE = re.compile(r'^[a-z0-9][a-z0-9._-]*$')
+
+
+def _load_alias_config(data_dir):
+    """读 data/_aliases.json；缺省 = mode none（不生成桩）。
+
+    形状: {"mode": "list|all|none", "entries": [{"demo": "renxuan", "alias": "renxuan"}]}
+    """
+    p = Path(data_dir) / '_aliases.json'
+    if not p.exists():
+        return {'mode': 'none', 'entries': []}
+    cfg = json.loads(p.read_text(encoding='utf-8'))
+    if not isinstance(cfg, dict):
+        raise ValueError('data/_aliases.json 必须是对象')
+    mode = cfg.get('mode', 'none')
+    if mode not in ('list', 'all', 'none'):
+        raise ValueError(f'_aliases.json: mode 非法 ({mode!r})，取值 list|all|none')
+    entries = cfg.get('entries') or []
+    if not isinstance(entries, list):
+        raise ValueError('_aliases.json: entries 必须是数组')
+    return {'mode': mode, 'entries': entries}
+
+
+def _resolve_aliases(cfg, demos, root_dir):
+    """算出本次要生成的 (alias, entry_rel) 清单；冲突 fail-closed。
+
+    规则（CL018 D6c/D6d）：
+      · mode=list → 只取 entries；all → 全部根级独立案例；none → 空
+      · alias 默认取 entry 的 stem；同名 alias 或与既有根级手写页撞名 → ValueError
+    """
+    root_dir = Path(root_dir)
+    by_entry = {d['entry']: d for d in demos if not d.get('referenced')}
+    out, seen = [], set()
+    if cfg['mode'] == 'none':
+        return out
+    if cfg['mode'] == 'all':
+        for entry in sorted(by_entry):
+            if '/' not in entry:            # 只给根级案例（子页不做别名）
+                out.append((Path(entry).stem, entry))
+    else:
+        for ent in cfg['entries']:
+            if not isinstance(ent, dict) or not ent.get('demo'):
+                raise ValueError('_aliases.json: entries 每项需含 demo')
+            demo = str(ent['demo'])
+            entry = demo if demo.endswith('.html') else demo + '.html'
+            if entry not in by_entry:
+                raise ValueError(f'_aliases.json: demo 不存在或非独立案例 ({demo})')
+            alias = str(ent.get('alias') or Path(entry).stem)
+            if not ALIAS_NAME_RE.match(alias):
+                raise ValueError(f'_aliases.json: alias 非法 ({alias!r})')
+            out.append((alias, entry))
+    for alias, entry in out:
+        if alias in seen:
+            raise ValueError(f'别名冲突: {alias} 出现多次')
+        seen.add(alias)
+        target = root_dir / f'{alias}.html'
+        if target.exists():
+            text = target.read_text(encoding='utf-8', errors='ignore')
+            if ALIAS_MARKER not in text:     # 手写页 → 拒绝覆盖
+                raise ValueError(f'别名冲突: 根级已存在手写页 {alias}.html')
+    return out
+
+
+def _alias_stub(alias, entry):
+    rel = 'demos/' + entry
+    return f'''<!DOCTYPE html>
+{ALIAS_MARKER}
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>跳转中… · {alias}</title>
+<meta http-equiv="refresh" content="0;url={rel}">
+<link rel="canonical" href="{SITE_ORIGIN}{alias}.html">
+<meta name="robots" content="noindex,follow">
+<script>location.replace({rel!r} + location.search + location.hash);</script>
+</head>
+<body>
+<p>正在跳转到 <a href="{rel}">/{rel}</a>…</p>
+</body>
+</html>
+'''
+
+
+def _sync_canonical(page, canon_url):
+    """在页面 <head> 注入/移除 canonical 标记块（幂等）。返回 'add'/'del'/'none'。
+
+    标记块形如 `\\n<!-- html-gen:canonical auto --><link rel="canonical" href="…">`；
+    剥离时吃掉我们自己加的那个换行，保证与原文逐字节可逆（多次 rebuild 不增长空行）。
+    """
+    page = Path(page)
+    text = page.read_text(encoding='utf-8')
+    stripped = re.sub(r'\n?' + re.escape(CANON_MARKER) + r'<link rel="canonical"[^>]*>', '', text)
+    if not canon_url:
+        if stripped == text:
+            return 'none'
+        page.write_text(stripped, encoding='utf-8')
+        return 'del'
+    m = re.search(r'<head[^>]*>', stripped, re.I)
+    if not m:
+        return 'none'
+    new = (stripped[:m.end()] + '\n' + CANON_MARKER +
+           f'<link rel="canonical" href="{canon_url}">' + stripped[m.end():])
+    if new == text:                       # 已是目标值 → 零写盘（rebuild 幂等）
+        return 'none'
+    page.write_text(new, encoding='utf-8')
+    return 'add'
+
+
+def _sync_aliases(cfg, demos, demos_dir, root_dir):
+    """按配置生成根级桩 + 目标页 canonical，并清理孤儿桩。返回统计 dict。"""
+    root_dir, demos_dir = Path(root_dir), Path(demos_dir)
+    pairs = _resolve_aliases(cfg, demos, root_dir)
+    want = {alias: entry for alias, entry in pairs}
+    created = removed = canon_add = canon_del = 0
+    for alias, entry in pairs:
+        target = root_dir / f'{alias}.html'
+        text = _alias_stub(alias, entry)
+        if not target.exists() or target.read_text(encoding='utf-8', errors='ignore') != text:
+            target.write_text(text, encoding='utf-8')
+            created += 1
+        if _sync_canonical(demos_dir / entry, f'{SITE_ORIGIN}{alias}.html') == 'add':
+            canon_add += 1
+    # 孤儿桩：带标记但配置里已不存在
+    for f in sorted(root_dir.glob('*.html')):
+        if f.name in ('index.html',) or f.stem in want:
+            continue
+        try:
+            text = f.read_text(encoding='utf-8', errors='ignore')
+        except Exception:
+            continue
+        if ALIAS_MARKER in text:
+            f.unlink()
+            removed += 1
+    # 取消别名 → 移除目标页 canonical
+    for d in demos:
+        if d.get('referenced') or '/' in d['entry']:
+            continue
+        if Path(d['entry']).stem in want:
+            continue
+        if _sync_canonical(demos_dir / d['entry'], None) == 'del':
+            canon_del += 1
+    return {'aliases': len(pairs), 'created': created, 'removed': removed,
+            'canon_add': canon_add, 'canon_del': canon_del}
+
+
 # ═══ Commands ═══
 def cmd_doc(args):
     from datetime import datetime
@@ -1794,7 +1944,9 @@ def cmd_demo(args):
                 '文档链接': f'<a href="{d["entry"]}" target="_blank" rel="noopener">{fname} ↗</a>',
             })
         idx_data = {'columns': idx_columns, 'data': idx_rows, 'tabs': [],
-                    'options': {'pageSize': 30, 'exportCSV': True, 'search': True, 'showIndex': True}}
+                    # CL018: 默认分栏预览 + 分栏左表只显标题列（D1/D9）
+                    'options': {'pageSize': 30, 'exportCSV': True, 'search': True, 'showIndex': True,
+                                'clickMode': 'split', 'columnsSplit': ['标题']}}
         idx_file = DATA_DIR / '_demos-data.json'
         idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',
@@ -1804,6 +1956,16 @@ def cmd_demo(args):
                                   output=str(DEMOS_DIR / 'demos-index.html'))
         cmd_table(a)
         print(f"📇 索引重建: {len(idx_rows)} 独立案例 → demos-index.html")
+
+        # 根级短链别名（data/_aliases.json；CL018）
+        try:
+            cfg_alias = _load_alias_config(DATA_DIR)
+            st = _sync_aliases(cfg_alias, demos, DEMOS_DIR, DEMOS_DIR.parent)
+        except ValueError as e:
+            print(f'❌ 别名配置错误: {e}', file=sys.stderr)
+            sys.exit(2)
+        print(f"🔗 别名桩: mode={cfg_alias['mode']} 目标 {st['aliases']} / 新建 {st['created']} / "
+              f"清理 {st['removed']} / canonical +{st['canon_add']} -{st['canon_del']}")
         return
 
     if not reg_file.exists():
