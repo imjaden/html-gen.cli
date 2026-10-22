@@ -329,6 +329,7 @@ def _md_escape(text):
 def inline_format(text):
     text = re.sub(r'\*\*(.+?)\*\*', r'<strong>\1</strong>', text)
     text = re.sub(r'\*(.+?)\*', r'<em>\1</em>', text)
+    text = re.sub(r'==(.+?)==', r'<mark class="hl">\1</mark>', text)   # CL018: 行内高亮
     text = re.sub(r'`(.+?)`', r'<code>\1</code>', text)
     text = re.sub(r'\[(.+?)\]\((.+?)\)', r'<a href="\2" target="_blank" rel="noopener">\1</a>', text)
     return text
@@ -1064,6 +1065,7 @@ TEMPLATE_CONTRACT = {
                 ('desc', '条目正文 HTML (内联渲染; 与 url 二选一)', ''),
                 ('url', '详情页地址 (iframe 加载; 与 desc 二选一)', ''),
                 ('icon', '条目图标 emoji (缺省无 groups 文件时用于推导类目图标)', ''),
+                ('width', '详情页宽度 narrow|medium|wide (iframe 追加 ?width=; 缺省 medium, url 含 overview 时默认 wide)', ''),
             ],
             'groups': [
                 ('key', '类目 key (与条目 group 全等匹配)', ''),
@@ -1166,7 +1168,7 @@ HELP_DOC_SYNTAX = """\
   ---               分隔线 (3+ 短横)
 
 行内元素:
-  **加粗**  *斜体*  `代码`  [文字](url)
+  **加粗**  *斜体*  ==高亮==  `代码`  [文字](url)
 
 Callout 提示框:
   > **Note:** ...     > **注意**：...
@@ -1303,7 +1305,10 @@ demo 规范:
   featured: 首页精选 (index.html 链接项)
   referenced: 被 knowledge 主库引用 → 默认 list 不单列 (--all 查看)
   name 唯一: 根级=文件名; 子目录页={子目录}-{文件名} (避免跨主题撞名)
-  目录约定: 根级=独立案例 (URL 扁平 /demos/{name}.html); 子目录=知识库引用子页/主题分组"""
+  目录约定: 根级=独立案例 (URL 扁平 /demos/{name}.html); 子目录=知识库引用子页/主题分组
+  根级短链: data/_aliases.json (mode=list|all|none, entries[{demo,alias}]) → --rebuild 为指定
+            案例生成 /{alias}.html 跳转桩 (meta refresh + canonical), 并给目标页注入 canonical;
+            桩带 <!-- html-gen:alias auto --> 标记, 只清理带标记的桩, 撞手写页/重名 exit 2"""
 
 # 手写主题 (不进契约: 描述 CLI 子命令而非数据契约)
 HELP_MAP = {

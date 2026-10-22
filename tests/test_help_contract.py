@@ -491,15 +491,16 @@ class TestHelpContract(unittest.TestCase):
         self.assertEqual(len(keys), 8, f'slide 行为项应为 8 项: {keys}')
 
     def test_19_knowledge_item_keys_dual_source(self):
-        """knowledge item: 双源 (模板 item.* ∪ 生成器 item.get) 消费键 == 契约 item (7 键)。
+        """knowledge item: 双源 (模板 item.* ∪ 生成器 item.get) 消费键 == 契约 item (8 键)。
 
         layout-knowledge.html 的 item.active / item.filtered 是运行时状态 (白名单),
-        item.icon 只在生成器 (cmd_knowledge 自动分组推导) 消费 ⇒ 必须双源合并 (HG-SEC-169)。
+        item.icon 只在生成器 (cmd_knowledge 自动分组推导) 消费 ⇒ 必须双源合并 (HG-SEC-169);
+        item.width 由 CL018 新增 (条目级 iframe 宽度)。
         """
         self._assert_topic_dim('knowledge', 'item')
         self.assertEqual(dim_keys('item', 'knowledge'),
-                         {'title', 'group', 'section', 'badge', 'desc', 'url', 'icon'},
-                         'knowledge item 契约键集应为 7 项 (含 icon)')
+                         {'title', 'group', 'section', 'badge', 'desc', 'url', 'icon', 'width'},
+                         'knowledge item 契约键集应为 8 项 (含 icon/width)')
 
     def test_20_knowledge_groups_keys(self):
         """knowledge groups: 模板 g.* 消费键 == 契约 groups (3 键: key/label/icon)。"""
