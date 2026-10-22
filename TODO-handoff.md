@@ -8,7 +8,7 @@
 
 ## 〇、当前状态（一句话）
 
-CL017（案例接入）+ CL018（分栏/短链/md 高亮/item.width）+ CL019（案例如更名 The Price You Choose 重构接入 + 产物 CSS 同步）全部收尾；**github 与 gitee 双远端均同步**（`5f7fce5`），工作树 clean，`github_ahead=0 gitee_ahead=0`。
+CL017（案例接入）+ CL018（分栏/短链/md 高亮/item.width）+ CL019（更名重构接入 + 产物 CSS 同步）+ CL020（消费上游回执 bb3ae6e）全部收尾；**github 与 gitee 双远端同步**，工作树 clean。
 
 ---
 
@@ -17,9 +17,9 @@ CL017（案例接入）+ CL018（分栏/短链/md 高亮/item.width）+ CL019（
 | 序 | 任务 | 仓 | 前置 | 状态 |
 |:--|:--|:--|:--|:--|
 | **T1** | **site-patch 转交收尾**：把 `cache/handoff/prompt-script-miner-site-patch-20261015.md` 发给 script-miner（三问：侧栏标题点击语义 / 宽度口径 / 字数双源）。注意该 prompt 里的案例名仍是旧 `renxuan`，发送前把标题与路径改为 `the-price-you-choose` | script-miner（他仓） | 用户手工转交 | 待转交 |
-| **T2** | **源站漂移复查**（条件触发）：`data/_the-price-you-choose-source.json` 记 `upstream_commit=57e191a`、`source_index_sha256=31fa7ac7…` + 17 个子页哈希；上游再变 → 重放 35 处前缀改写 + 版权声明 + canonical，并换哈希 | 双仓 | T1 有结论后 | 长期维护 |
-| **T3** | **`demos/index.html` 样式未同步**（可选）：该页是手写双源页，无 `--accent-600` 锚点，`--hl-*` / `mark.hl` 未注入（当前无页面使用 `==高亮==`，无功能影响） | html-gen.cli | 用户决定 | 待定 |
-| **T4** | **本轮新增文档口径回填**（可选）：`documents/pages-content-handbook` 未记录 `the-price-you-choose` 的接入参数（前缀 35 处、18 文件哈希、旧 slug 桩语义） | html-gen.cli | — | 待定 |
+| **T2** | **源站漂移复查**（条件触发）：`data/_the-price-you-choose-source.json` 记 `upstream_commit=bb3ae6e`、`source_index_sha256=10bb35e4…` + 17 个子页哈希；上游再变 → 重拷 9 页 + 重放 35 处前缀 + 版权声明 + canonical，并换哈希 | 双仓 | 上游有新提交时 | 长期维护 |
+| **T3** | ~~`demos/index.html` 样式同步~~ | html-gen.cli | — | ✅ 已办结：该页**外链** `../style-guide.css`，新变量/规则自动生效，无需注入 |
+| **T4** | ~~handbook 补本案接入参数~~ | html-gen.cli | — | ✅ 已办结：`documents/pages-content-handbook` 新增 4.3 段 + registry 计数漂移记录 |
 
 ---
 
@@ -46,6 +46,13 @@ CL017（案例接入）+ CL018（分栏/短链/md 高亮/item.width）+ CL019（
 - 测试：`test_renxuan_demo.py`（7）→ `test_the_price_you_choose_demo.py`（8，含旧 slug 桩跳转 + 亮点文章页 45 回链/8 h2 + 来源行尾部）；`test_aliases.py` 16→17；`test_split_detail.py` 断言改新名。
 - 产物 CSS 同步：16 个既有 demo 页内联样式 +10 行（`--hl-*` + `mark.hl`），幂等。
 - 提交 `03401c8`（接入）/ `5f7fce5`（CSS 同步）；401 passed / 83 subtests；双远端同步。
+
+### CL020（消费 script-miner 回执 bb3ae6e）
+- 重拷 9 页（`chapter00..07` + `highlights`），8 个旧 slug 桩字节未变、未重拷；入口页重做 35 处前缀 + 版权声明，canonical 重新注入（count 1）。
+- 台账：`upstream_commit=bb3ae6e`、`source_index_sha256=10bb35e4…`、17 子页哈希全换（本地与台账逐项校验一致）。
+- 上游三项结论：A1 侧栏标题**无绑定**（回首页在 `#rxHomeBtn`）；A2 已切 `item.width`（catalog url 去 `?width`，本仓模板自动拼 `?width=wide`）；A3 字数写死 **正文 30586 / docBody 30706**（本仓复算 30942 含 body 内其它文本，非来源行 120）。
+- 实测：序 item → `chapter00.html?width=wide&sidebar=0&toolbar=0`（宽度来源于 item.width）· 正文 `width-wide` + `.rx-hl` 6 · 亮点页 45 回链 / 8 h2 / 末段来源行 · 旧链落 `hl-chapter00-1` · 0 SEVERE。
+- 提交 `c2e890d`；全量 **401 passed / 83 subtests**（一次 `-n 4` 出现过 `test_index_landing::test_14` scroll-hint 时序 flake，串行 18 passed、复跑全量绿）。
 
 ---
 
