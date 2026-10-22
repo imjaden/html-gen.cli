@@ -8,7 +8,7 @@
 
 ## 〇、当前状态（一句话）
 
-CL017 已收尾并 push github：`08c1b08..491c844`（5 笔），工作树 clean，`ahead=0`，gitee(`origin`) 未推。
+CL017（renxuan 案例）+ CL018（分栏 UI 单列/链接可点/高亮 + 根级短链别名）已收尾；`github/main` 已推至 `491c844`，本地 `ahead=1`（CL018 未推），工作树 clean。
 
 ---
 
@@ -21,6 +21,7 @@ CL017 已收尾并 push github：`08c1b08..491c844`（5 笔），工作树 clean
 | **T3** | **AC2③ 转交 script-miner / site-patch**：注入层把 `.sidebar-title` 点击覆盖成「清记忆+回首页」，覆盖了 `layout-knowledge.html:278` 的「复制路径」语义 ⇒ 建议改为新增按钮（`.kw-sidebar-footer` 已有 `sb-btn` 位）；同时转达 T2 宽度约定与 AC2④ 字数客户端重算双源问题。**prompt 已备**：`cache/handoff/prompt-script-miner-site-patch-20261015.md`（gitignored） | script-miner（他仓） | 用户手工转交 / 派发 | 待转交 |
 | **T4** | **gitee 同步**：`git push origin main`（`origin`=gitee，现落后）。仓惯例 origin 不推，须明确授权后执行 | html-gen.cli | 用户授权 | 待授权 |
 | **T5** | **源站漂移复查**（条件触发，非主动）：比对 `data/_renxuan-source.json` 的 `source_index_sha256`（`d4c030ff…`）与 8 页哈希；若 script-miner 侧更新 → 重放 `landing_modifications`（98 处 `renxuan/` 前缀 + 版权声明一行）并更新 source json | 双仓 | T3 有结论后 | 长期维护 |
+| **T6** | **文档同步（CL018 面）**：AGENTS.md 测试计数 367→388、文件 35→37；补 `data/_aliases.json` 与短链口径（`/renxuan.html` 桩 + canonical）；`html-gen help demo` 增一段别名说明 | html-gen.cli | **AGENTS 受保护，需用户批** | 待授权 |
 
 > 串行理由：T1/T2 同属模板层小改，先定 T1 语法可一次性把样式基座（CSS 变量）改到位，T2 复用同一批；T3 是他仓依赖，不阻塞 T1/T2；T4/T5 属发布与维护面，最后做。
 
@@ -36,11 +37,22 @@ CL017 已收尾并 push github：`08c1b08..491c844`（5 笔），工作树 clean
 - AGENTS.md 同步：367 tests / 35 文件 + renxuan 目录条目。
 - 提交：`32ffd60` 案例 / `b7f7b8b` 字数 / `b54f005` rebuild 防护 / `6862606` 版权声明 / `491c844` AGENTS 同步。
 
+### CL018（同日，分栏 UI + 短链别名）
+
+- 分栏左表：`options.columnsSplit:['标题']`（`序号` 为行号工具列，仍显示）；`options.clickMode:'split'` 固化，新访客也默认分栏（此前只对本地有 localStorage 的老用户生效）。
+- 详情面板：kv-list 尊重列级 `escape:false` ⇒ 文档链接可点（与 help「escape 显式 false 是唯一豁免口」一致）。
+- 行高亮：`tr[data-idx]` 定位替代 `rows[idx]`，分页 ≥2 页不再错位。
+- 短链：`data/_aliases.json`（`mode=list`，entries=[renxuan]）→ `demo --rebuild` 生成 `/renxuan.html`（200 + meta refresh + canonical + noindex），并给 `demos/renxuan.html` 注入 canonical；`mode=all` 可一次给全部 19 个案例开短链。
+- 实测：短链 → `/demos/renxuan.html`；tab 4 / 亮点句 45 / 控制台 0 错；分栏 thead = 序号+标题、详情链接可点、高亮行 `data-idx=17`。
+- 提交：`c606e88`；全量 **388 passed / 82 subtests**。
+
 ---
 
 ## 三、关键指针与判据（复跑用）
 
-- 全量测试：`python3 -m pytest tests/ -q -n 4` → **367 passed / 82 subtests**（~49s）
+- 全量测试：`python3 -m pytest tests/ -q -n 4` → **388 passed / 82 subtests**（~49s）
+- 分栏/短链回归：`python3 -m pytest tests/test_split_detail.py tests/test_aliases.py -q -n 0` → 21 passed
+- 短链生成口径：`data/_aliases.json`（mode=list|all|none）；桩带 `<!-- html-gen:alias auto -->`，重建只清理带标记的桩；冲突（撞手写页/重名）exit 2
 - 案例回归：`python3 -m pytest tests/test_renxuan_demo.py -q -n 0` → 7 passed（测试内自起 http，勿用 file:// 读 iframe）
 - 清单重建幂等：`html-gen demo --rebuild && git diff --stat` → 输出为空
 - 判据：亮点句 45 行（每章 6/6/5/5/5/5/6/7）、正文 `.rx-hl` span 合计 49（含 4 处跨行续行）、正文汉字 30696（按 docBody 文本节点复算 30706，差 +10，口径待写死）
