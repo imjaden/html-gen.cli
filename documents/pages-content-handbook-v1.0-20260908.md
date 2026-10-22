@@ -83,6 +83,26 @@ demos/drama-knowledge.html（knowledge 入口，C 型：groups + kb-data items�
 - source 标注纪律：虚构事件（剧中设定）与史实/演义/史载有争议必须分列（D2-1）。
 - 列宽双写：生成物 COLUMNS 列宽压缩后必须回填 data JSON，否则重新生成回退旧宽度（HG-SEC-005）。
 
+### 4.3 the-price-you-choose 案例（CL019，2026-10-22）
+
+```
+demos/the-price-you-choose.html（knowledge 入口，C 型；成品拷贝自 script-miner 57e191a）
+  ├─ demos/the-price-you-choose/chapter00..07.html（8 篇正文 doc，?width=wide）
+  ├─ demos/the-price-you-choose/highlights.html（亮点文章页：45 条回链 + 8 个 h2）
+  └─ demos/the-price-you-choose/01-xu..08-zicheng-renjian.html（8 个旧 slug 跳转桩）
+```
+
+- 上游：`~/CodeSpace/script-miner/projects/the-price-you-choose/`（commit `57e191a`）；本仓只拷成品，不改他仓。
+- 结构：3 tab（序 / 人之路 1~4章 / 天权 5~7章）· 9 条目（8 章 + 亮点句文章）· 首页 8 章 grid + 5 条精选 + `#rxHomeBtn`。
+- 落点改写：入口页 35 处相对引用加 `the-price-you-choose/` 前缀（22 处双引号 + 13 处 `rxOpen` 单引号）；追加「非出版本」版权声明；canonical 由 `demo --rebuild` 注入。
+- 登记：`data/_the-price-you-choose-kb-data.json` 17 条（9 内容 + 8 桩，全部 referenced → 清单只显入口一行）；`…-source.json` 记 upstream commit + 17 个子页哈希（逐个校验）。
+- 别名：`data/_aliases.json` 主短链 `/the-price-you-choose.html`（持 canonical）+ 遗留 `/renxuan.html`（`canonical:false`，只跳转）。
+- 旧 slug 映射：01-xu→chapter00 … 08-zicheng-renjian→chapter07；桩保留查询串并把 `#hl-<oldslug>-n` 重写为 `#hl-chapterNN-n`（救缓存里的旧 index）。
+- 判据：正文 8 页 `.rx-hl` 合计 49（含 4 处续行）；`.rx-hl-row` 首页为 0；旧深链 `01-xu.html#hl-01-xu-1` 落 `hl-chapter00-1`。
+- 回归：`tests/test_the_price_you_choose_demo.py`（8 例，自起 http）。
+- 坑：案例入口必须根级且不叫 `index.html`（`demo --rebuild` 按 basename 跳过）；子页 / 桩必须进 kb-data，否则会被当独立 demo 列出。
+- 汉字口径差：上游正文 30696 vs 按 docBody 复算 30942（+246 = 来源行已移到 docBody 末尾），对账时以「排除来源行」为准。
+
 ## 5. provinces/countries 数据案例（族 C）
 
 ### 5.1 形态
@@ -180,7 +200,7 @@ scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双�
 
 - 国家表列序：design 14+3 = 15/16/17 位 → 现仓 18 列（provinces 3 列在 14/15/16，videos 17，note 18）。
 - provinces 产物路径：demos/provinces/provinces-table.html（子目录）→ 现仓平铺 demos/provinces-table.html + .md。
-- registry 计数 59/60 → 56（过期 demo 清理后）。
+- registry 计数 59/60 → 56（过期 demo 清理后）→ 65（CL017 案例）→ 74（CL019 更名 + 9 内容 + 8 桩）。
 - drama kb 组数 2 → 4（文案滞后：根 index.html C 卡 desc「3 组」、AGENTS.md「2 组」）。
 - 落地页 hero 常量 −110 → −55（三处同步）。
 - drama 表列结构多次演进（现仓 7-11 列分剧分化，含 videos/source/defaultFilter）。
