@@ -27,6 +27,8 @@
   --accent-400: #facc15;
   --accent-500: #eab308;
   --accent-600: #ca8a04;
+  --hl-bg: rgba(250, 204, 21, .18);
+  --hl-fg: #fde68a;
   --surface-800: #1e1e2e;
   --surface-850: #181825;
   --surface-900: #11111b;
@@ -74,6 +76,8 @@
   --code-bg: #f6f8fa;
   --code-text: #57606a;
   --code-cmd: #1f2328;
+  --hl-bg: rgba(250, 204, 21, .45);
+  --hl-fg: #5a4600;
   --hero-title-from: #1f2328;
   --gh-corner-fill: rgba(0,0,0,0.75);
   --gh-octocat: #ffffff;
@@ -107,6 +111,12 @@ code {
   font-size: 0.8rem;
   background: rgba(255,255,255,0.06);
   padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+mark.hl {
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+  padding: 0 2px;
   border-radius: var(--radius-sm);
 }
 pre {
@@ -461,7 +471,7 @@ pre code { background: none; padding: 0; }
 <script>
 (function() {
   const GROUPS = [{"key": "xu", "label": "序", "icon": "📖"}, {"key": "renzhilu", "label": "人之路（1~4章）", "icon": "🌊"}, {"key": "tianquan", "label": "天权（5~7章）", "icon": "🌉"}];  // [{key, label, icon}]
-  const ITEMS  = [{"title": "人选天选论-序", "group": "xu", "section": "序篇", "badge": "2026-03-06", "desc": "从唯物与唯心两面切入，提出“人选、祸、天选”的结构观，讨论代价、痛苦与选择。", "url": "the-price-you-choose/01-xu.html?width=wide"}, {"title": "亮点句（45 句）", "group": "xu", "section": "序篇", "badge": "45 句", "desc": "全书 45 句原文摘录，按章分组；点句尾 ↗ 回到原文位置。", "url": "the-price-you-choose/highlights.html?width=wide"}, {"title": "第一章·河流世界", "group": "renzhilu", "section": "第一章·河流世界", "badge": "2026-03-08", "desc": "以“思想像河”为核心比喻，解释信息、经历、欲望与知识如何塑造一个人的内在世界。", "url": "the-price-you-choose/02-heliu-shijie.html?width=wide"}, {"title": "第二章·走向觉醒的“人之路”", "group": "renzhilu", "section": "第二章·走向觉醒的“人之路”", "badge": "2026-03-09", "desc": "从神农架石头的误认出发，提出通过“捞石头”记录道痕、识别贪梦与恐惧的自我观察方法。", "url": "the-price-you-choose/03-ren-zhi-lu.html?width=wide"}, {"title": "第三章·硬币世界", "group": "renzhilu", "section": "第三章·硬币世界", "badge": "2026-03-14", "desc": "以硬币两面比喻贪梦与恐惧，讨论迷茫、抑郁、拖延与思想之河堵塞的形成。", "url": "the-price-you-choose/04-yingbi-shijie.html?width=wide"}, {"title": "第四章·破执 见势 定心", "group": "renzhilu", "section": "第四章·破执 见势 定心", "badge": "2026-03-25", "desc": "将迷茫重新放回“阶段”之中，提出天选六段与人选三剑，讨论如何少制造额外的问题。", "url": "the-price-you-choose/05-pozhi-jian-shi-dingxin.html?width=wide"}, {"title": "第五章·天权是如何被发现的", "group": "tianquan", "section": "第五章·天权是如何被发现的", "badge": "2026-03-31", "desc": "从人生加速、商业失衡与欲望结构的观察中，逐步看见“天权”其实是贪婪与恐惧之间那座尚未断掉的桥。", "url": "the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html?width=wide"}, {"title": "第六章·天权的裂痕", "group": "tianquan", "section": "第六章·天权的裂痕", "badge": "2026-05-12", "desc": "从阿湘与自己的经历里，逐步看见天权之桥如何在恐惧与贪婪的单边停留中慢慢开裂，并理解“解释世界”何时会变成自我安慰的牢笼。", "url": "the-price-you-choose/07-tianquan-de-liehen.html?width=wide"}, {"title": "第七章·自成人间", "group": "tianquan", "section": "第七章·自成人间", "badge": "2026-06-03", "desc": "从午睡时误把马蜂当作苍蝇的一瞬间出发，重新理解经验、心中世界、福祸执着与“自成人间收日月”的真正含义。", "url": "the-price-you-choose/08-zicheng-renjian.html?width=wide"}];   // [{title, group, section?, badge?, url?, desc?}]
+  const ITEMS  = [{"title": "人选天选论-序", "group": "xu", "section": "序篇", "badge": "2026-03-06", "desc": "从唯物与唯心两面切入，提出“人选、祸、天选”的结构观，讨论代价、痛苦与选择。", "url": "the-price-you-choose/chapter00.html", "width": "wide"}, {"title": "亮点句（45 句）", "group": "xu", "section": "序篇", "badge": "45 句", "desc": "全书 45 句原文摘录，按章分组；点句尾 ↗ 回到原文位置。", "url": "the-price-you-choose/highlights.html", "width": "wide"}, {"title": "第一章·河流世界", "group": "renzhilu", "section": "第一章·河流世界", "badge": "2026-03-08", "desc": "以“思想像河”为核心比喻，解释信息、经历、欲望与知识如何塑造一个人的内在世界。", "url": "the-price-you-choose/chapter01.html", "width": "wide"}, {"title": "第二章·走向觉醒的“人之路”", "group": "renzhilu", "section": "第二章·走向觉醒的“人之路”", "badge": "2026-03-09", "desc": "从神农架石头的误认出发，提出通过“捞石头”记录道痕、识别贪梦与恐惧的自我观察方法。", "url": "the-price-you-choose/chapter02.html", "width": "wide"}, {"title": "第三章·硬币世界", "group": "renzhilu", "section": "第三章·硬币世界", "badge": "2026-03-14", "desc": "以硬币两面比喻贪梦与恐惧，讨论迷茫、抑郁、拖延与思想之河堵塞的形成。", "url": "the-price-you-choose/chapter03.html", "width": "wide"}, {"title": "第四章·破执 见势 定心", "group": "renzhilu", "section": "第四章·破执 见势 定心", "badge": "2026-03-25", "desc": "将迷茫重新放回“阶段”之中，提出天选六段与人选三剑，讨论如何少制造额外的问题。", "url": "the-price-you-choose/chapter04.html", "width": "wide"}, {"title": "第五章·天权是如何被发现的", "group": "tianquan", "section": "第五章·天权是如何被发现的", "badge": "2026-03-31", "desc": "从人生加速、商业失衡与欲望结构的观察中，逐步看见“天权”其实是贪婪与恐惧之间那座尚未断掉的桥。", "url": "the-price-you-choose/chapter05.html", "width": "wide"}, {"title": "第六章·天权的裂痕", "group": "tianquan", "section": "第六章·天权的裂痕", "badge": "2026-05-12", "desc": "从阿湘与自己的经历里，逐步看见天权之桥如何在恐惧与贪婪的单边停留中慢慢开裂，并理解“解释世界”何时会变成自我安慰的牢笼。", "url": "the-price-you-choose/chapter06.html", "width": "wide"}, {"title": "第七章·自成人间", "group": "tianquan", "section": "第七章·自成人间", "badge": "2026-06-03", "desc": "从午睡时误把马蜂当作苍蝇的一瞬间出发，重新理解经验、心中世界、福祸执着与“自成人间收日月”的真正含义。", "url": "the-price-you-choose/chapter07.html", "width": "wide"}];   // [{title, group, section?, badge?, url?, desc?}]
 
   let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
   let activeItem = null;
@@ -655,7 +665,11 @@ pre code { background: none; padding: 0; }
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
     var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
-    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (item.url.indexOf('overview') !== -1 ? 'width=wide&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block';
+      // CL018: 条目级宽度声明 width=narrow|medium|wide（缺省 medium；url 含 overview 时默认 wide）
+      var _rxW = (item.width === 'narrow' || item.width === 'medium' || item.width === 'wide') ? item.width
+               : (item.url.indexOf('overview') !== -1 ? 'wide' : '');
+      frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (_rxW ? 'width=' + _rxW + '&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
     syncUrl();
@@ -857,20 +871,21 @@ a.rx-feat .rx-feat-meta { font-size: .7rem; color: #8b8b9e; }
     var box = document.createElement('div');
     box.id = 'rxHome';
     box.className = 'rx-home';
-    box.innerHTML = "<div class=\"rx-home-title\">人选天选论</div><div class=\"rx-home-en\">The Price You Choose</div><div class=\"rx-home-meta\">姜蓝（路飞）· 连载版 8 篇（序 + 七章）｜ 45 句亮点摘录</div><div class=\"rx-home-sec\">整体章节</div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">📖 序</div><a class=\"rx-ch\" href=\"the-price-you-choose/01-xu.html\" onclick=\"return rxOpen('the-price-you-choose/01-xu.html')\"><span>人选天选论-序</span><span class=\"rx-ch-d\">2026-03-06</span></a></div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">🌊 人之路（1~4章）</div><a class=\"rx-ch\" href=\"the-price-you-choose/02-heliu-shijie.html\" onclick=\"return rxOpen('the-price-you-choose/02-heliu-shijie.html')\"><span>第一章·河流世界</span><span class=\"rx-ch-d\">2026-03-08</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/03-ren-zhi-lu.html\" onclick=\"return rxOpen('the-price-you-choose/03-ren-zhi-lu.html')\"><span>第二章·走向觉醒的“人之路”</span><span class=\"rx-ch-d\">2026-03-09</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/04-yingbi-shijie.html\" onclick=\"return rxOpen('the-price-you-choose/04-yingbi-shijie.html')\"><span>第三章·硬币世界</span><span class=\"rx-ch-d\">2026-03-14</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/05-pozhi-jian-shi-dingxin.html\" onclick=\"return rxOpen('the-price-you-choose/05-pozhi-jian-shi-dingxin.html')\"><span>第四章·破执 见势 定心</span><span class=\"rx-ch-d\">2026-03-25</span></a></div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">🌉 天权（5~7章）</div><a class=\"rx-ch\" href=\"the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html\" onclick=\"return rxOpen('the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html')\"><span>第五章·天权是如何被发现的</span><span class=\"rx-ch-d\">2026-03-31</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/07-tianquan-de-liehen.html\" onclick=\"return rxOpen('the-price-you-choose/07-tianquan-de-liehen.html')\"><span>第六章·天权的裂痕</span><span class=\"rx-ch-d\">2026-05-12</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/08-zicheng-renjian.html\" onclick=\"return rxOpen('the-price-you-choose/08-zicheng-renjian.html')\"><span>第七章·自成人间</span><span class=\"rx-ch-d\">2026-06-03</span></a></div><div class=\"rx-home-sec\">精选 5 句</div><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter00.html#hl-chapter00-1\" onclick=\"return rxOpen('the-price-you-choose/chapter00.html','hl-chapter00-1')\"><span class=\"rx-feat-text\">世界从来不奖励谁。世界只收代价。</span><span class=\"rx-feat-meta\">人选天选论-序 · 全书基座</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter01.html#hl-chapter01-4\" onclick=\"return rxOpen('the-price-you-choose/chapter01.html','hl-chapter01-4')\"><span class=\"rx-feat-text\">决定你水面形状的，不是水面，而是河。</span><span class=\"rx-feat-meta\">第一章·河流世界 · 治情绪先看结构</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter03.html#hl-chapter03-2\" onclick=\"return rxOpen('the-price-you-choose/chapter03.html','hl-chapter03-2')\"><span class=\"rx-feat-text\">不是没有路，是河堵了。</span><span class=\"rx-feat-meta\">第三章·硬币世界 · 迷茫与抑郁的机械解释</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter04.html#hl-chapter04-3\" onclick=\"return rxOpen('the-price-you-choose/chapter04.html','hl-chapter04-3')\"><span class=\"rx-feat-text\">破执的核心，是缩小自己，放大世界。</span><span class=\"rx-feat-meta\">第四章·破执 见势 定心 · 破执的定义</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter06.html#hl-chapter06-6\" onclick=\"return rxOpen('the-price-you-choose/chapter06.html','hl-chapter06-6')\"><span class=\"rx-feat-text\">只要你还能问，桥就还没断。</span><span class=\"rx-feat-meta\">第六章·天权的裂痕 · 自救的最低标准</span></a>";
+    box.innerHTML = "<div class=\"rx-home-title\">人选天选论</div><div class=\"rx-home-en\">The Price You Choose</div><div class=\"rx-home-meta\">姜蓝（路飞）· 连载版 8 篇（序 + 七章）｜ 45 句亮点摘录</div><div class=\"rx-home-sec\">整体章节</div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">📖 序</div><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter00.html\" onclick=\"return rxOpen('the-price-you-choose/chapter00.html',null,'wide')\"><span>人选天选论-序</span><span class=\"rx-ch-d\">2026-03-06</span></a></div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">🌊 人之路（1~4章）</div><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter01.html\" onclick=\"return rxOpen('the-price-you-choose/chapter01.html',null,'wide')\"><span>第一章·河流世界</span><span class=\"rx-ch-d\">2026-03-08</span></a><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter02.html\" onclick=\"return rxOpen('the-price-you-choose/chapter02.html',null,'wide')\"><span>第二章·走向觉醒的“人之路”</span><span class=\"rx-ch-d\">2026-03-09</span></a><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter03.html\" onclick=\"return rxOpen('the-price-you-choose/chapter03.html',null,'wide')\"><span>第三章·硬币世界</span><span class=\"rx-ch-d\">2026-03-14</span></a><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter04.html\" onclick=\"return rxOpen('the-price-you-choose/chapter04.html',null,'wide')\"><span>第四章·破执 见势 定心</span><span class=\"rx-ch-d\">2026-03-25</span></a></div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">🌉 天权（5~7章）</div><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter05.html\" onclick=\"return rxOpen('the-price-you-choose/chapter05.html',null,'wide')\"><span>第五章·天权是如何被发现的</span><span class=\"rx-ch-d\">2026-03-31</span></a><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter06.html\" onclick=\"return rxOpen('the-price-you-choose/chapter06.html',null,'wide')\"><span>第六章·天权的裂痕</span><span class=\"rx-ch-d\">2026-05-12</span></a><a class=\"rx-ch\" data-rx-w=\"wide\" href=\"the-price-you-choose/chapter07.html\" onclick=\"return rxOpen('the-price-you-choose/chapter07.html',null,'wide')\"><span>第七章·自成人间</span><span class=\"rx-ch-d\">2026-06-03</span></a></div><div class=\"rx-home-sec\">精选 5 句</div><a class=\"rx-feat\" data-rx-feat data-rx-w=\"wide\" href=\"the-price-you-choose/chapter00.html#hl-chapter00-1\" onclick=\"return rxOpen('the-price-you-choose/chapter00.html','hl-chapter00-1','wide')\"><span class=\"rx-feat-text\">世界从来不奖励谁。世界只收代价。</span><span class=\"rx-feat-meta\">人选天选论-序 · 全书基座</span></a><a class=\"rx-feat\" data-rx-feat data-rx-w=\"wide\" href=\"the-price-you-choose/chapter01.html#hl-chapter01-4\" onclick=\"return rxOpen('the-price-you-choose/chapter01.html','hl-chapter01-4','wide')\"><span class=\"rx-feat-text\">决定你水面形状的，不是水面，而是河。</span><span class=\"rx-feat-meta\">第一章·河流世界 · 治情绪先看结构</span></a><a class=\"rx-feat\" data-rx-feat data-rx-w=\"wide\" href=\"the-price-you-choose/chapter03.html#hl-chapter03-2\" onclick=\"return rxOpen('the-price-you-choose/chapter03.html','hl-chapter03-2','wide')\"><span class=\"rx-feat-text\">不是没有路，是河堵了。</span><span class=\"rx-feat-meta\">第三章·硬币世界 · 迷茫与抑郁的机械解释</span></a><a class=\"rx-feat\" data-rx-feat data-rx-w=\"wide\" href=\"the-price-you-choose/chapter04.html#hl-chapter04-3\" onclick=\"return rxOpen('the-price-you-choose/chapter04.html','hl-chapter04-3','wide')\"><span class=\"rx-feat-text\">破执的核心，是缩小自己，放大世界。</span><span class=\"rx-feat-meta\">第四章·破执 见势 定心 · 破执的定义</span></a><a class=\"rx-feat\" data-rx-feat data-rx-w=\"wide\" href=\"the-price-you-choose/chapter06.html#hl-chapter06-6\" onclick=\"return rxOpen('the-price-you-choose/chapter06.html','hl-chapter06-6','wide')\"><span class=\"rx-feat-text\">只要你还能问，桥就还没断。</span><span class=\"rx-feat-meta\">第六章·天权的裂痕 · 自救的最低标准</span></a>";
     panel.appendChild(box);
     panel.classList.add('rx-has-home');
   }
-  // 4) 章节 / 精选句 → iframe（宽度由数据侧 url 的 ?width=wide 决定）
-  window.rxOpen = function (file, id) {
+  // 4) 章节 / 精选句 → iframe；宽度取自条目级 item.width（与模板同源，宿主页不再叠 ?width）
+  window.rxOpen = function (file, id, w) {
     var f = document.getElementById('contentFrame'),
-        w = document.getElementById('frameWrap'),
+        w2 = document.getElementById('frameWrap'),
         b = document.getElementById('kwBody');
     if (!f) return false;
-    f.src = file + '?width=wide&sidebar=0&toolbar=0&t=' + Date.now() + (id ? '#' + id : '');
+    var width = (w === 'narrow' || w === 'medium' || w === 'wide') ? w : 'wide';
+    f.src = file + '?width=' + width + '&sidebar=0&toolbar=0&t=' + Date.now() + (id ? '#' + id : '');
     f.style.display = 'block';
     if (b) b.style.display = 'none';
-    if (w) w.classList.add('active');
+    if (w2) w2.classList.add('active');
     return false;
   };
   window.rxJump = window.rxOpen;

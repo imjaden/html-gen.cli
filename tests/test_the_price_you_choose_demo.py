@@ -202,8 +202,8 @@ class TestThePriceYouChoose(unittest.TestCase):
         import hashlib
         reg = json.loads((PROJECT / 'data' / '_the-price-you-choose-source.json')
                          .read_text(encoding='utf-8'))
-        self.assertEqual(reg['upstream_commit'], '57e191a')
-        self.assertTrue(reg['source_index_sha256'].startswith('31fa7ac7'))
+        self.assertEqual(reg['upstream_commit'], 'bb3ae6e')
+        self.assertTrue(reg['source_index_sha256'].startswith('10bb35e4'))
         for name, sha in reg['files'].items():
             f = DEMOS / 'the-price-you-choose' / name
             self.assertTrue(f.exists(), name)
