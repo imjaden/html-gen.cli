@@ -76,7 +76,7 @@ class TestSplitDetail(unittest.TestCase):
         body = self.driver.find_element(By.ID, 'splitPreviewBody')
         links = body.find_elements(By.CSS_SELECTOR, 'a')
         self.assertTrue(links, '详情面板应有可点击链接')
-        self.assertTrue(any(l.get_attribute('href').endswith('renxuan.html') for l in links))
+        self.assertTrue(any(l.get_attribute('href').endswith('the-price-you-choose.html') for l in links))
         # 不应出现被转义的字面 <a
         self.assertNotIn('<a ', body.text)
         # 标签仍成对渲染（标题/模板/文档链接 全字段）

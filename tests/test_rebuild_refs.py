@@ -72,7 +72,7 @@ class TestRebuildIntegration(unittest.TestCase):
         self.assertIn('registry 重建', r.stdout)
         reg = json.loads((GEN.parent / 'demos' / '_registry.json').read_text(encoding='utf-8'))
         self.assertGreaterEqual(reg['count'], 65)
-        entry = [d for d in reg['demos'] if d['entry'] == 'renxuan.html']
+        entry = [d for d in reg['demos'] if d['entry'] == 'the-price-you-choose.html']
         self.assertEqual(len(entry), 1)
         self.assertFalse(entry[0]['referenced'])
 

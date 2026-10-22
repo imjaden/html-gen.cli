@@ -424,7 +424,7 @@ def _resolve_aliases(cfg, demos, root_dir):
     if cfg['mode'] == 'all':
         for entry in sorted(by_entry):
             if '/' not in entry:            # 只给根级案例（子页不做别名）
-                out.append((Path(entry).stem, entry))
+                out.append((Path(entry).stem, entry, True))
     else:
         for ent in cfg['entries']:
             if not isinstance(ent, dict) or not ent.get('demo'):
@@ -436,8 +436,9 @@ def _resolve_aliases(cfg, demos, root_dir):
             alias = str(ent.get('alias') or Path(entry).stem)
             if not ALIAS_NAME_RE.match(alias):
                 raise ValueError(f'_aliases.json: alias 非法 ({alias!r})')
-            out.append((alias, entry))
-    for alias, entry in out:
+            # canonical=false: 遗留别名只做跳转，不抢目标页 canonical（CL019）
+            out.append((alias, entry, bool(ent.get('canonical', True))))
+    for alias, entry, _canon in out:
         if alias in seen:
             raise ValueError(f'别名冲突: {alias} 出现多次')
         seen.add(alias)
@@ -499,15 +500,16 @@ def _sync_aliases(cfg, demos, demos_dir, root_dir):
     """按配置生成根级桩 + 目标页 canonical，并清理孤儿桩。返回统计 dict。"""
     root_dir, demos_dir = Path(root_dir), Path(demos_dir)
     pairs = _resolve_aliases(cfg, demos, root_dir)
-    want = {alias: entry for alias, entry in pairs}
+    want = {alias: entry for alias, entry, _c in pairs}
+    want_canon = {entry for _a, entry, canon in pairs if canon}
     created = removed = canon_add = canon_del = 0
-    for alias, entry in pairs:
+    for alias, entry, canon in pairs:
         target = root_dir / f'{alias}.html'
         text = _alias_stub(alias, entry)
         if not target.exists() or target.read_text(encoding='utf-8', errors='ignore') != text:
             target.write_text(text, encoding='utf-8')
             created += 1
-        if _sync_canonical(demos_dir / entry, f'{SITE_ORIGIN}{alias}.html') == 'add':
+        if canon and _sync_canonical(demos_dir / entry, f'{SITE_ORIGIN}{alias}.html') == 'add':
             canon_add += 1
     # 孤儿桩：带标记但配置里已不存在
     for f in sorted(root_dir.glob('*.html')):
@@ -524,7 +526,7 @@ def _sync_aliases(cfg, demos, demos_dir, root_dir):
     for d in demos:
         if d.get('referenced') or '/' in d['entry']:
             continue
-        if Path(d['entry']).stem in want:
+        if d['entry'] in want_canon:
             continue
         if _sync_canonical(demos_dir / d['entry'], None) == 'del':
             canon_del += 1

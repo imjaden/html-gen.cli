@@ -2,8 +2,13 @@
   "mode": "list",
   "entries": [
     {
-      "demo": "renxuan",
-      "alias": "renxuan"
+      "demo": "the-price-you-choose",
+      "alias": "the-price-you-choose"
+    },
+    {
+      "demo": "the-price-you-choose",
+      "alias": "renxuan",
+      "canonical": false
     }
   ]
 }

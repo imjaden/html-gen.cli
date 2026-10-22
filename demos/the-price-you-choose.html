@@ -1,10 +1,10 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<!-- html-gen:canonical auto --><link rel="canonical" href="https://html-gen.cli.jaden.tech/renxuan.html">
+<!-- html-gen:canonical auto --><link rel="canonical" href="https://html-gen.cli.jaden.tech/the-price-you-choose.html">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>人选天选论 · 在线阅读</title>
+<title>人选天选论</title>
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
@@ -425,7 +425,7 @@ pre code { background: none; padding: 0; }
     <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
-      <div class="sidebar-title" title="人选天选论 · 在线阅读">📚 人选天选论 · 在线阅读</div>
+      <div class="sidebar-title" title="人选天选论">📚 人选天选论</div>
       <div class="sub"></div>
     </div>
     <div id="kwSectionsContainer"></div>
@@ -444,8 +444,8 @@ pre code { background: none; padding: 0; }
     <div class="kw-tab-bar" id="kwTabBar"></div>
     <div class="kw-content">
       <div class="kw-welcome active" id="welcomePanel">
-        <div class="w-title">📚 人选天选论 · 在线阅读</div>
-        <div class="w-sub">姜蓝（路飞）《人选天选论》连载版，8 篇：序 + 七章。左侧按章进入正文，点章节标题即可阅读；「亮点句」页收录全书 45 句，点句子直达正文标亮处。点左上角标题可清空浏览记录回到首页。</div>
+        <div class="w-title">📚 人选天选论</div>
+        <div class="w-sub">姜蓝（路飞）《人选天选论》The Price You Choose 连载版：序 + 七章 + 亮点句 45 句。</div>
         <div class="w-note" style="font-size:0.72rem;color:#6b7280;max-width:440px;line-height:1.6;margin-top:10px;">正文来源 guohen.com，由站长校对自作者抖音图片版，<b>非出版本</b>；版权归作者姜蓝（路飞），本页仅作阅读演示。</div>
         <div class="w-legend" id="wLegend"></div>
       </div>
@@ -460,8 +460,8 @@ pre code { background: none; padding: 0; }
 
 <script>
 (function() {
-  const GROUPS = [{"key": "xu", "label": "序", "icon": "📖"}, {"key": "renzhilu", "label": "人之路（第一至四章）", "icon": "🌊"}, {"key": "tianquan", "label": "天权（第五至七章）", "icon": "🌉"}, {"key": "highlights", "label": "亮点句（45 条）", "icon": "✨"}];  // [{key, label, icon}]
-  const ITEMS  = [{"title": "人选天选论-序", "group": "xu", "section": "序篇", "badge": "2026-03-06", "desc": "从唯物与唯心两面切入，提出“人选、祸、天选”的结构观，讨论代价、痛苦与选择。", "url": "renxuan/01-xu.html"}, {"title": "第一章·河流世界", "group": "renzhilu", "section": "第一章·河流世界", "badge": "2026-03-08", "desc": "以“思想像河”为核心比喻，解释信息、经历、欲望与知识如何塑造一个人的内在世界。", "url": "renxuan/02-heliu-shijie.html"}, {"title": "第二章·走向觉醒的“人之路”", "group": "renzhilu", "section": "第二章·走向觉醒的“人之路”", "badge": "2026-03-09", "desc": "从神农架石头的误认出发，提出通过“捞石头”记录道痕、识别贪梦与恐惧的自我观察方法。", "url": "renxuan/03-ren-zhi-lu.html"}, {"title": "第三章·硬币世界", "group": "renzhilu", "section": "第三章·硬币世界", "badge": "2026-03-14", "desc": "以硬币两面比喻贪梦与恐惧，讨论迷茫、抑郁、拖延与思想之河堵塞的形成。", "url": "renxuan/04-yingbi-shijie.html"}, {"title": "第四章·破执 见势 定心", "group": "renzhilu", "section": "第四章·破执 见势 定心", "badge": "2026-03-25", "desc": "将迷茫重新放回“阶段”之中，提出天选六段与人选三剑，讨论如何少制造额外的问题。", "url": "renxuan/05-pozhi-jian-shi-dingxin.html"}, {"title": "第五章·天权是如何被发现的", "group": "tianquan", "section": "第五章·天权是如何被发现的", "badge": "2026-03-31", "desc": "从人生加速、商业失衡与欲望结构的观察中，逐步看见“天权”其实是贪婪与恐惧之间那座尚未断掉的桥。", "url": "renxuan/06-tianquan-shi-ruhe-bei-faxian.html"}, {"title": "第六章·天权的裂痕", "group": "tianquan", "section": "第六章·天权的裂痕", "badge": "2026-05-12", "desc": "从阿湘与自己的经历里，逐步看见天权之桥如何在恐惧与贪婪的单边停留中慢慢开裂，并理解“解释世界”何时会变成自我安慰的牢笼。", "url": "renxuan/07-tianquan-de-liehen.html"}, {"title": "第七章·自成人间", "group": "tianquan", "section": "第七章·自成人间", "badge": "2026-06-03", "desc": "从午睡时误把马蜂当作苍蝇的一瞬间出发，重新理解经验、心中世界、福祸执着与“自成人间收日月”的真正含义。", "url": "renxuan/08-zicheng-renjian.html"}, {"title": "人选天选论-序（6 句）", "group": "highlights", "section": "人选天选论-序", "badge": "6 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-1\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-1')\">世界从来不奖励谁。世界只收代价。<\/a><span class=\"rx-hl-tag\">全书基座<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-2\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-2')\">祸和福之间，没有可以回头核对的账本。<\/a><span class=\"rx-hl-tag\">反「因果账单」<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-3\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-3')\">这个世界没有运气，只有选择。<\/a><span class=\"rx-hl-tag\">最像口号的一句<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-4\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-4')\">贪梦让人伸手，恐惧让人缩手。想得到，是贪梦；怕失去，是恐惧。<\/a><span class=\"rx-hl-tag\">两块石头的动力学<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-5\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-5')\">人无法追求永恒，因为永恒本身就是幻觉。真正稳定的东西，从来不是不变，而是能够承受变化。<\/a><span class=\"rx-hl-tag\">稳定观<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/01-xu.html#hl-01-xu-6\" onclick=\"return rxJump('renxuan/01-xu.html','hl-01-xu-6')\">人生无法决定结果，但可以选择承担什么代价。<\/a><span class=\"rx-hl-tag\">全书的可操作定义<\/span><\/div><\/div>"}, {"title": "第一章·河流世界（6 句）", "group": "highlights", "section": "第一章·河流世界", "badge": "6 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-1\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-1')\">你能看见底，却看不清底。<\/a><span class=\"rx-hl-tag\">一句写尽「看自己」的难<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-2\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-2')\">空有知识宽度，没有知识密度。<\/a><span class=\"rx-hl-tag\">判词：宽而无密度<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-3\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-3')\">河里的水，就是一个人流动的思想。水源，就是外界不断流入的信息。河床，就是一个人的天性、经历、性格底色。<\/a><span class=\"rx-hl-tag\">河流三要素的定义（原文引用块，三行）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-4\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-4')\">决定你水面形状的，不是水面，而是河。<\/a><span class=\"rx-hl-tag\">治情绪先看结构<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-5\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-5')\">当一个人开始表达的时候，他并不是在消耗自己的河水。<\/a><span class=\"rx-hl-tag\">反「输出即损耗」<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/02-heliu-shijie.html#hl-02-heliu-shijie-6\" onclick=\"return rxJump('renxuan/02-heliu-shijie.html','hl-02-heliu-shijie-6')\">我知道我得到了巨大的礼物，于是也欠下了巨额的债务。<\/a><span class=\"rx-hl-tag\">作者的写作动机<\/span><\/div><\/div>"}, {"title": "第二章·走向觉醒的“人之路”（5 句）", "group": "highlights", "section": "第二章·走向觉醒的“人之路”", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-1\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-1')\">那道蓝光，好像从来就不在石头上，也不在水里，它只在我心里。<\/a><span class=\"rx-hl-tag\">全书最好的一处自证<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-2\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-2')\">只要是写给别人看的东西，它就已经开始变形了。<\/a><span class=\"rx-hl-tag\">日记为何变形<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-3\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-3')\">真正的石头，往往藏在你最会讲的那些理由后面。<\/a><span class=\"rx-hl-tag\">点破自洽<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-4\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-4')\">你以为自己每天活得很复杂，其实翻来覆去，可能就被那几块石头推着走。<\/a><span class=\"rx-hl-tag\">重复的模式<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/03-ren-zhi-lu.html#hl-03-ren-zhi-lu-5\" onclick=\"return rxJump('renxuan/03-ren-zhi-lu.html','hl-03-ren-zhi-lu-5')\">看见石头，只是第一步，真正的人选，是当你下一次又遇到同样的波纹时，你知道下面是哪块石头。<\/a><span class=\"rx-hl-tag\">「人选」的定义<\/span><\/div><\/div>"}, {"title": "第三章·硬币世界（5 句）", "group": "highlights", "section": "第三章·硬币世界", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-1\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-1')\">人很多时候不是不知道自己想做什么。而是不愿意承担这一句：这是我自己决定的<\/a><span class=\"rx-hl-tag\">硬币的背面<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-2\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-2')\">不是没有路，是河堵了。<\/a><span class=\"rx-hl-tag\">迷茫与抑郁的机械解释<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-3\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-3')\">恐惧更像小石头，小，碎，不显眼，更会藏。它很少说：我害怕。它更常说的是：再等等，还没准备好<\/a><span class=\"rx-hl-tag\">恐惧的语态<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-4\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-4')\">人真正的问题，从来不是有没有贪梦，也不是有没有恐惧。而是：当它们同时存在的时候，你看不看得见，哪一面硬币正在朝上。<\/a><span class=\"rx-hl-tag\">把问题重述一遍（原文跨段，分两行标亮）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/04-yingbi-shijie.html#hl-04-yingbi-shijie-5\" onclick=\"return rxJump('renxuan/04-yingbi-shijie.html','hl-04-yingbi-shijie-5')\">很多人一生都在讨论世界，讨论命运，讨论别人，讨论机会。却从来没有低头看过，自己手里那枚硬币，到底翻到了哪一面。<\/a><span class=\"rx-hl-tag\">全书最锋利的一刀<\/span><\/div><\/div>"}, {"title": "第四章·破执 见势 定心（5 句）", "group": "highlights", "section": "第四章·破执 见势 定心", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-1\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-1')\">冬天不是问题，你非要在冬天里活成夏天，这才是问题。<\/a><span class=\"rx-hl-tag\">周期观：冬天不是问题<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-2\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-2')\">第一步永远不是解决，第一步永远是：尽量减少额外制造的问题。<\/a><span class=\"rx-hl-tag\">止损先行<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-3\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-3')\">破执的核心，是缩小自己，放大世界。<\/a><span class=\"rx-hl-tag\">破执的定义<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-4\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-4')\">人最危险的状态，不是疼，而是不疼。<\/a><span class=\"rx-hl-tag\">最危险的状态<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/05-pozhi-jian-shi-dingxin.html#hl-05-pozhi-jian-shi-dingxin-5\" onclick=\"return rxJump('renxuan/05-pozhi-jian-shi-dingxin.html','hl-05-pozhi-jian-shi-dingxin-5')\">雪里的那种“暖”，是你在失去感觉；火边的那种“暖”，是你在恢复感觉。<\/a><span class=\"rx-hl-tag\">冻伤与火边的对照<\/span><\/div><\/div>"}, {"title": "第五章·天权是如何被发现的（5 句）", "group": "highlights", "section": "第五章·天权是如何被发现的", "badge": "5 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-1\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-1')\">有些东西不是不能快，而是快过了它本来的节律，它就会坏。<\/a><span class=\"rx-hl-tag\">节律：快过了就会坏<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-2\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-2')\">人真正的问题 从来不是有没有欲望 而是怎么处理欲望<\/a><span class=\"rx-hl-tag\">欲望观<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-3\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-3')\">让人类成为人类的东西 同时也是让人痛苦的来源<\/a><span class=\"rx-hl-tag\">切不开的结构<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-4\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-4')\">天权就是，贪婪与恐惧之间，那座还没有断掉的桥。<\/a><span class=\"rx-hl-tag\">「天权」的定义句<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/06-tianquan-shi-ruhe-bei-faxian.html#hl-06-tianquan-shi-ruhe-bei-faxian-5\" onclick=\"return rxJump('renxuan/06-tianquan-shi-ruhe-bei-faxian.html','hl-06-tianquan-shi-ruhe-bei-faxian-5')\">你有思想，但你不是思想本身。<\/a><span class=\"rx-hl-tag\">反「想通就能做到」<\/span><\/div><\/div>"}, {"title": "第六章·天权的裂痕（6 句）", "group": "highlights", "section": "第六章·天权的裂痕", "badge": "6 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-1\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-1')\">说不怕死的人，往往最怕死。<\/a><span class=\"rx-hl-tag\">阿湘：说不怕死的人<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-2\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-2')\">一个总是笑的人未必真的轻松。有时候，只是因为他已经没有表达别的表情的办法了。<\/a><span class=\"rx-hl-tag\">表情只剩一种（原文跨段，分两行标亮）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-3\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-3')\">一个正常的人，应该是矛盾的。他应该既自信，又自卑；既勇敢，又懦弱；既想活，又怕死。<\/a><span class=\"rx-hl-tag\">桥还在的证据<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-4\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-4')\">因为一个人用来安慰自己的解释，最后会变成他行动的逻辑。<\/a><span class=\"rx-hl-tag\">最狠的机制句<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-5\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-5')\">最后，解释变成牢笼，桥也就慢慢裂了。<\/a><span class=\"rx-hl-tag\">裂痕如何成形<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/07-tianquan-de-liehen.html#hl-07-tianquan-de-liehen-6\" onclick=\"return rxJump('renxuan/07-tianquan-de-liehen.html','hl-07-tianquan-de-liehen-6')\">只要你还能问，桥就还没断。<\/a><span class=\"rx-hl-tag\">自救的最低标准<\/span><\/div><\/div>"}, {"title": "第七章·自成人间（7 句）", "group": "highlights", "section": "第七章·自成人间", "badge": "7 句", "desc": "<div class=\"rx-hl-list\"><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-1\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-1')\">人的智慧始于知识，也常常毁于知识。<\/a><span class=\"rx-hl-tag\">马蜂当苍蝇<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-2\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-2')\">人间不是单纯的街道、房子、山河、城市，人间是在心中慢慢形成的。<\/a><span class=\"rx-hl-tag\">人间在心中成形<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-3\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-3')\">因为克制的目的是为了更长久的挥霍。<\/a><span class=\"rx-hl-tag\">拆穿「把酒留到明天」<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-4\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-4')\">今朝有酒明日醉，不如倾与九天杯。<\/a><span class=\"rx-hl-tag\">诗（第一至二句）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-5\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-5')\">自成人间收日月，才知此身亦微微。<\/a><span class=\"rx-hl-tag\">诗（第三至四句）<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-6\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-6')\">人不是靠一次顿悟改变的，一次顿悟，只是在心里留下一个回声。<\/a><span class=\"rx-hl-tag\">改变观：顿悟只留回声<\/span><\/div><div class=\"rx-hl-row\"><a href=\"renxuan/08-zicheng-renjian.html#hl-08-zicheng-renjian-7\" onclick=\"return rxJump('renxuan/08-zicheng-renjian.html','hl-08-zicheng-renjian-7')\">原来人这一生，不是为了赢过天地，也不是为了掌控福祸。只是为了在一次又一次误认世界之后，还能重新睁开眼。<\/a><span class=\"rx-hl-tag\">全书收束<\/span><\/div><\/div>"}];   // [{title, group, section?, badge?, url?, desc?}]
+  const GROUPS = [{"key": "xu", "label": "序", "icon": "📖"}, {"key": "renzhilu", "label": "人之路（1~4章）", "icon": "🌊"}, {"key": "tianquan", "label": "天权（5~7章）", "icon": "🌉"}];  // [{key, label, icon}]
+  const ITEMS  = [{"title": "人选天选论-序", "group": "xu", "section": "序篇", "badge": "2026-03-06", "desc": "从唯物与唯心两面切入，提出“人选、祸、天选”的结构观，讨论代价、痛苦与选择。", "url": "the-price-you-choose/01-xu.html?width=wide"}, {"title": "亮点句（45 句）", "group": "xu", "section": "序篇", "badge": "45 句", "desc": "全书 45 句原文摘录，按章分组；点句尾 ↗ 回到原文位置。", "url": "the-price-you-choose/highlights.html?width=wide"}, {"title": "第一章·河流世界", "group": "renzhilu", "section": "第一章·河流世界", "badge": "2026-03-08", "desc": "以“思想像河”为核心比喻，解释信息、经历、欲望与知识如何塑造一个人的内在世界。", "url": "the-price-you-choose/02-heliu-shijie.html?width=wide"}, {"title": "第二章·走向觉醒的“人之路”", "group": "renzhilu", "section": "第二章·走向觉醒的“人之路”", "badge": "2026-03-09", "desc": "从神农架石头的误认出发，提出通过“捞石头”记录道痕、识别贪梦与恐惧的自我观察方法。", "url": "the-price-you-choose/03-ren-zhi-lu.html?width=wide"}, {"title": "第三章·硬币世界", "group": "renzhilu", "section": "第三章·硬币世界", "badge": "2026-03-14", "desc": "以硬币两面比喻贪梦与恐惧，讨论迷茫、抑郁、拖延与思想之河堵塞的形成。", "url": "the-price-you-choose/04-yingbi-shijie.html?width=wide"}, {"title": "第四章·破执 见势 定心", "group": "renzhilu", "section": "第四章·破执 见势 定心", "badge": "2026-03-25", "desc": "将迷茫重新放回“阶段”之中，提出天选六段与人选三剑，讨论如何少制造额外的问题。", "url": "the-price-you-choose/05-pozhi-jian-shi-dingxin.html?width=wide"}, {"title": "第五章·天权是如何被发现的", "group": "tianquan", "section": "第五章·天权是如何被发现的", "badge": "2026-03-31", "desc": "从人生加速、商业失衡与欲望结构的观察中，逐步看见“天权”其实是贪婪与恐惧之间那座尚未断掉的桥。", "url": "the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html?width=wide"}, {"title": "第六章·天权的裂痕", "group": "tianquan", "section": "第六章·天权的裂痕", "badge": "2026-05-12", "desc": "从阿湘与自己的经历里，逐步看见天权之桥如何在恐惧与贪婪的单边停留中慢慢开裂，并理解“解释世界”何时会变成自我安慰的牢笼。", "url": "the-price-you-choose/07-tianquan-de-liehen.html?width=wide"}, {"title": "第七章·自成人间", "group": "tianquan", "section": "第七章·自成人间", "badge": "2026-06-03", "desc": "从午睡时误把马蜂当作苍蝇的一瞬间出发，重新理解经验、心中世界、福祸执着与“自成人间收日月”的真正含义。", "url": "the-price-you-choose/08-zicheng-renjian.html?width=wide"}];   // [{title, group, section?, badge?, url?, desc?}]
 
   let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
   let activeItem = null;
@@ -655,7 +655,7 @@ pre code { background: none; padding: 0; }
     document.getElementById('welcomePanel').classList.remove('active');
     document.getElementById('frameWrap').classList.add('active');
     var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
-    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + 'width=wide&' + 'sidebar=0&toolbar=0&t=' + Date.now(); }
+    if (item.url) { body.style.display = 'none'; frame.style.display = 'block'; frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (item.url.indexOf('overview') !== -1 ? 'width=wide&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
     syncUrl();
@@ -789,41 +789,91 @@ pre code { background: none; padding: 0; }
 </script>
 <!-- rx-patch:v1 -->
 <style>
-/* rx-hl: 目录页「亮点句」条目 */
-.rx-hl-list { display: flex; flex-direction: column; gap: 10px; }
-.rx-hl-row { display: flex; flex-direction: column; gap: 2px; padding-left: 10px;
-             border-left: 2px solid rgba(250, 204, 21, .45); }
-.rx-hl-row a { color: #f2f2f2; text-decoration: none; line-height: 1.75; font-size: .86rem;
-               border-bottom: 1px dashed rgba(250, 204, 21, .5); }
-.rx-hl-row a:hover { color: #fde68a; border-bottom-color: #fde68a; }
-.rx-hl-tag { font-size: .7rem; color: #8b8b9e; }
-.kw-sidebar-header .sidebar-title:hover::after { content: ' ⏎ 首页'; font-weight: 400; opacity: .75; }
+/* ── rx-home: 首页三段（双语标题 / 整体章节 / 精选 5 句） ── */
+#welcomePanel.rx-has-home { align-items: stretch; justify-content: flex-start; text-align: left;
+                            padding: 28px 36px; overflow-y: auto; }
+#welcomePanel.rx-has-home > .w-title,
+#welcomePanel.rx-has-home > .w-sub,
+#welcomePanel.rx-has-home > .w-legend { display: none; }
+.rx-home { width: 100%; max-width: 900px; margin: 0 auto; text-align: left; }
+.rx-home { margin-top: 4px; }
+.rx-home-title { font-size: 1.5rem; font-weight: 800; color: #f4f4f6; letter-spacing: .02em; }
+.rx-home-en { font-size: 1.02rem; color: var(--cobalt-400, #8b9dfa); font-weight: 600; margin-top: 2px; }
+.rx-home-meta { font-size: .74rem; color: #7d7d90; margin-top: 6px; }
+.rx-home-sec { font-size: .8rem; font-weight: 700; color: #c9c9d6; margin: 22px 0 8px;
+               padding-left: 8px; border-left: 3px solid var(--cobalt-600, #5468e6); }
+.rx-home-group { margin-bottom: 12px; }
+.rx-home-glabel { font-size: .72rem; color: #8b8b9e; margin: 8px 0 4px; }
+a.rx-ch { display: flex; align-items: baseline; gap: 10px; padding: 4px 8px; border-radius: 4px;
+          text-decoration: none; color: #e6e6ea; font-size: .86rem; }
+a.rx-ch:hover { background: rgba(79, 70, 229, .12); color: #fff; }
+a.rx-ch .rx-ch-d { font-size: .7rem; color: #75758a; margin-left: auto; }
+a.rx-feat { display: flex; flex-direction: column; gap: 2px; padding: 8px 10px; margin-bottom: 8px;
+            border-left: 2px solid rgba(250, 204, 21, .55); border-radius: 4px;
+            text-decoration: none; background: rgba(250, 204, 21, .05); }
+a.rx-feat:hover { background: rgba(250, 204, 21, .12); }
+a.rx-feat .rx-feat-text { color: #f2f2f4; font-size: .88rem; line-height: 1.7;
+            border-bottom: 1px dashed rgba(250, 204, 21, .45); }
+a.rx-feat .rx-feat-meta { font-size: .7rem; color: #8b8b9e; }
+.rx-side-en { font-size: .66rem; color: #6f6f85; margin-top: 2px; letter-spacing: .02em; }
 </style>
 <script>
 (function () {
-  // 1) 侧栏标题点击 → 清浏览记录（当前类目/条目/折叠态）→ 回首页
-  var title = document.querySelector('.kw-sidebar-header .sidebar-title');
-  if (title && !title.dataset.rxBound) {
-    title.dataset.rxBound = '1';
-    title.addEventListener('click', function () {
+  // 1) 「清空浏览记录并回首页」做成侧栏底栏独立按钮（🏠）。
+  //    不动 .sidebar-title —— 模板 CL017 版对它有 click 语义（复制完整路径）。
+  var footer = document.querySelector('.kw-sidebar-footer');
+  if (footer && !document.getElementById('rxHomeBtn')) {
+    var home = document.createElement('button');
+    home.className = 'sb-btn';
+    home.id = 'rxHomeBtn';
+    home.title = '清空浏览记录并回首页';
+    home.textContent = '🏠';
+    home.addEventListener('click', function () {
       ['html-gen:kw_group', 'html-gen:kw_item', 'html-gen:kw:collapsed'].forEach(function (k) {
         try { localStorage.removeItem(k); } catch (e) {}
       });
       location.replace(location.pathname);
     });
+    var searchBtn = document.getElementById('kwSearchBtn');
+    if (searchBtn && searchBtn.parentNode === footer) {
+      footer.insertBefore(home, searchBtn.nextSibling);
+    } else {
+      footer.insertBefore(home, footer.firstChild);
+    }
   }
-  // 2) 亮点句跳正文锚点（固定最宽 + 隐藏侧栏/工具栏）
-  window.rxJump = function (file, id) {
+  // 2) 侧栏标题下补英文副行（只加兄弟节点，不动 .sidebar-title 本身）
+  var head = document.querySelector('.kw-sidebar-header');
+  var titleEl = head && head.querySelector('.sidebar-title');
+  if (head && titleEl && !head.querySelector('.rx-side-en')) {
+    var en = document.createElement('div');
+    en.className = 'rx-side-en';
+    en.textContent = "The Price You Choose";
+    if (titleEl.nextSibling) head.insertBefore(en, titleEl.nextSibling);
+    else head.appendChild(en);
+  }
+  // 3) 首页三段：模板自带的 w-title / w-sub 隐藏，追加 rx-home 块
+  var panel = document.getElementById('welcomePanel');
+  if (panel && !document.getElementById('rxHome')) {
+    var box = document.createElement('div');
+    box.id = 'rxHome';
+    box.className = 'rx-home';
+    box.innerHTML = "<div class=\"rx-home-title\">人选天选论</div><div class=\"rx-home-en\">The Price You Choose</div><div class=\"rx-home-meta\">姜蓝（路飞）· 连载版 8 篇（序 + 七章）｜ 45 句亮点摘录</div><div class=\"rx-home-sec\">整体章节</div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">📖 序</div><a class=\"rx-ch\" href=\"the-price-you-choose/01-xu.html\" onclick=\"return rxOpen('the-price-you-choose/01-xu.html')\"><span>人选天选论-序</span><span class=\"rx-ch-d\">2026-03-06</span></a></div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">🌊 人之路（1~4章）</div><a class=\"rx-ch\" href=\"the-price-you-choose/02-heliu-shijie.html\" onclick=\"return rxOpen('the-price-you-choose/02-heliu-shijie.html')\"><span>第一章·河流世界</span><span class=\"rx-ch-d\">2026-03-08</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/03-ren-zhi-lu.html\" onclick=\"return rxOpen('the-price-you-choose/03-ren-zhi-lu.html')\"><span>第二章·走向觉醒的“人之路”</span><span class=\"rx-ch-d\">2026-03-09</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/04-yingbi-shijie.html\" onclick=\"return rxOpen('the-price-you-choose/04-yingbi-shijie.html')\"><span>第三章·硬币世界</span><span class=\"rx-ch-d\">2026-03-14</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/05-pozhi-jian-shi-dingxin.html\" onclick=\"return rxOpen('the-price-you-choose/05-pozhi-jian-shi-dingxin.html')\"><span>第四章·破执 见势 定心</span><span class=\"rx-ch-d\">2026-03-25</span></a></div><div class=\"rx-home-group\"><div class=\"rx-home-glabel\">🌉 天权（5~7章）</div><a class=\"rx-ch\" href=\"the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html\" onclick=\"return rxOpen('the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html')\"><span>第五章·天权是如何被发现的</span><span class=\"rx-ch-d\">2026-03-31</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/07-tianquan-de-liehen.html\" onclick=\"return rxOpen('the-price-you-choose/07-tianquan-de-liehen.html')\"><span>第六章·天权的裂痕</span><span class=\"rx-ch-d\">2026-05-12</span></a><a class=\"rx-ch\" href=\"the-price-you-choose/08-zicheng-renjian.html\" onclick=\"return rxOpen('the-price-you-choose/08-zicheng-renjian.html')\"><span>第七章·自成人间</span><span class=\"rx-ch-d\">2026-06-03</span></a></div><div class=\"rx-home-sec\">精选 5 句</div><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter00.html#hl-chapter00-1\" onclick=\"return rxOpen('the-price-you-choose/chapter00.html','hl-chapter00-1')\"><span class=\"rx-feat-text\">世界从来不奖励谁。世界只收代价。</span><span class=\"rx-feat-meta\">人选天选论-序 · 全书基座</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter01.html#hl-chapter01-4\" onclick=\"return rxOpen('the-price-you-choose/chapter01.html','hl-chapter01-4')\"><span class=\"rx-feat-text\">决定你水面形状的，不是水面，而是河。</span><span class=\"rx-feat-meta\">第一章·河流世界 · 治情绪先看结构</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter03.html#hl-chapter03-2\" onclick=\"return rxOpen('the-price-you-choose/chapter03.html','hl-chapter03-2')\"><span class=\"rx-feat-text\">不是没有路，是河堵了。</span><span class=\"rx-feat-meta\">第三章·硬币世界 · 迷茫与抑郁的机械解释</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter04.html#hl-chapter04-3\" onclick=\"return rxOpen('the-price-you-choose/chapter04.html','hl-chapter04-3')\"><span class=\"rx-feat-text\">破执的核心，是缩小自己，放大世界。</span><span class=\"rx-feat-meta\">第四章·破执 见势 定心 · 破执的定义</span></a><a class=\"rx-feat\" data-rx-feat href=\"the-price-you-choose/chapter06.html#hl-chapter06-6\" onclick=\"return rxOpen('the-price-you-choose/chapter06.html','hl-chapter06-6')\"><span class=\"rx-feat-text\">只要你还能问，桥就还没断。</span><span class=\"rx-feat-meta\">第六章·天权的裂痕 · 自救的最低标准</span></a>";
+    panel.appendChild(box);
+    panel.classList.add('rx-has-home');
+  }
+  // 4) 章节 / 精选句 → iframe（宽度由数据侧 url 的 ?width=wide 决定）
+  window.rxOpen = function (file, id) {
     var f = document.getElementById('contentFrame'),
         w = document.getElementById('frameWrap'),
         b = document.getElementById('kwBody');
     if (!f) return false;
-    f.src = file + '?width=wide&sidebar=0&toolbar=0&t=' + Date.now() + '#' + id;
+    f.src = file + '?width=wide&sidebar=0&toolbar=0&t=' + Date.now() + (id ? '#' + id : '');
     f.style.display = 'block';
     if (b) b.style.display = 'none';
     if (w) w.classList.add('active');
     return false;
   };
+  window.rxJump = window.rxOpen;
 })();
 </script>
 </body>

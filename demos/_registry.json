@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "count": 65,
+  "count": 74,
   "demos": [
     {
       "name": "chaitin-business-model",
@@ -529,103 +529,6 @@
       "referenced_by": []
     },
     {
-      "name": "renxuan-01-xu",
-      "title": "人选天选论-序",
-      "type": "doc",
-      "entry": "renxuan/01-xu.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-02-heliu-shijie",
-      "title": "第一章·河流世界",
-      "type": "doc",
-      "entry": "renxuan/02-heliu-shijie.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-03-ren-zhi-lu",
-      "title": "第二章·走向觉醒的“人之路”",
-      "type": "doc",
-      "entry": "renxuan/03-ren-zhi-lu.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-04-yingbi-shijie",
-      "title": "第三章·硬币世界",
-      "type": "doc",
-      "entry": "renxuan/04-yingbi-shijie.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-05-pozhi-jian-shi-dingxin",
-      "title": "第四章·破执 见势 定心",
-      "type": "doc",
-      "entry": "renxuan/05-pozhi-jian-shi-dingxin.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-06-tianquan-shi-ruhe-bei-faxian",
-      "title": "第五章·天权是如何被发现的",
-      "type": "doc",
-      "entry": "renxuan/06-tianquan-shi-ruhe-bei-faxian.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-07-tianquan-de-liehen",
-      "title": "第六章·天权的裂痕",
-      "type": "doc",
-      "entry": "renxuan/07-tianquan-de-liehen.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan-08-zicheng-renjian",
-      "title": "第七章·自成人间",
-      "type": "doc",
-      "entry": "renxuan/08-zicheng-renjian.html",
-      "featured": false,
-      "referenced": true,
-      "referenced_by": [
-        "_renxuan-kb-data"
-      ]
-    },
-    {
-      "name": "renxuan",
-      "title": "人选天选论 · 在线阅读",
-      "type": "knowledge",
-      "entry": "renxuan.html",
-      "featured": false,
-      "referenced": false,
-      "referenced_by": []
-    },
-    {
       "name": "slide-demo",
       "title": "D 型幻灯片演示",
       "type": "doc",
@@ -667,6 +570,202 @@
       "type": "doc",
       "entry": "table-guide.html",
       "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "the-price-you-choose-01-xu",
+      "title": "已更名 → chapter00",
+      "type": "html",
+      "entry": "the-price-you-choose/01-xu.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-02-heliu-shijie",
+      "title": "已更名 → chapter01",
+      "type": "html",
+      "entry": "the-price-you-choose/02-heliu-shijie.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-03-ren-zhi-lu",
+      "title": "已更名 → chapter02",
+      "type": "html",
+      "entry": "the-price-you-choose/03-ren-zhi-lu.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-04-yingbi-shijie",
+      "title": "已更名 → chapter03",
+      "type": "html",
+      "entry": "the-price-you-choose/04-yingbi-shijie.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-05-pozhi-jian-shi-dingxin",
+      "title": "已更名 → chapter04",
+      "type": "html",
+      "entry": "the-price-you-choose/05-pozhi-jian-shi-dingxin.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-06-tianquan-shi-ruhe-bei-faxian",
+      "title": "已更名 → chapter05",
+      "type": "html",
+      "entry": "the-price-you-choose/06-tianquan-shi-ruhe-bei-faxian.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-07-tianquan-de-liehen",
+      "title": "已更名 → chapter06",
+      "type": "html",
+      "entry": "the-price-you-choose/07-tianquan-de-liehen.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-08-zicheng-renjian",
+      "title": "已更名 → chapter07",
+      "type": "html",
+      "entry": "the-price-you-choose/08-zicheng-renjian.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter00",
+      "title": "人选天选论-序",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter00.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter01",
+      "title": "第一章·河流世界",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter01.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter02",
+      "title": "第二章·走向觉醒的“人之路”",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter02.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter03",
+      "title": "第三章·硬币世界",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter03.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter04",
+      "title": "第四章·破执 见势 定心",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter04.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter05",
+      "title": "第五章·天权是如何被发现的",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter05.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter06",
+      "title": "第六章·天权的裂痕",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter06.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-chapter07",
+      "title": "第七章·自成人间",
+      "type": "doc",
+      "entry": "the-price-you-choose/chapter07.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose-highlights",
+      "title": "亮点句 · 45 句",
+      "type": "doc",
+      "entry": "the-price-you-choose/highlights.html",
+      "featured": false,
+      "referenced": true,
+      "referenced_by": [
+        "_the-price-you-choose-kb-data"
+      ]
+    },
+    {
+      "name": "the-price-you-choose",
+      "title": "人选天选论",
+      "type": "knowledge",
+      "entry": "the-price-you-choose.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },

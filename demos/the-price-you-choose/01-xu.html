@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<title>已更名 → chapter00</title>
+<script>
+  // 旧 slug 跳转桩：保留查询参数（?width=wide&sidebar=0…），并把旧锚点 hl-<oldslug>-<n>
+  // 映射到 hl-<newslug>-<n>；无 JS 时退化为 meta refresh
+  var m = (location.hash || '').match(/^#hl-.+-(\d+)$/);
+  location.replace('chapter00.html' + location.search + (m ? '#hl-chapter00-' + m[1] : ''));
+</script>
+<noscript><meta http-equiv="refresh" content="0;url=chapter00.html"></noscript>
+</head>
+<body>本章已更名为 <a href="chapter00.html">chapter00.html</a></body>
+</html>

@@ -1,4 +1,4 @@
-"""回归测试: demo 根级短链别名（data/_aliases.json + rebuild 生成/清理/canonical，CL018）。"""
+"""回归测试: demo 根级短链别名（data/_aliases.json + rebuild 生成/清理/canonical，CL018/CL019）。"""
 import importlib.util
 import json
 import subprocess
@@ -8,8 +8,9 @@ from pathlib import Path
 
 PROJECT = Path(__file__).resolve().parent.parent
 GEN = PROJECT / 'html-gen.py'
-ROOT_STUB = PROJECT / 'renxuan.html'
-TARGET = PROJECT / 'demos' / 'renxuan.html'
+ROOT_STUB = PROJECT / 'the-price-you-choose.html'
+LEGACY_STUB = PROJECT / 'renxuan.html'
+TARGET = PROJECT / 'demos' / 'the-price-you-choose.html'
 CFG = PROJECT / 'data' / '_aliases.json'
 
 
@@ -61,7 +62,7 @@ class TestResolveAliases(unittest.TestCase):
         cls.g = load_gen()
         cls.demos = [
             {'entry': 'a.html', 'referenced': False},
-            {'entry': 'renxuan.html', 'referenced': False},
+            {'entry': 'tp.html', 'referenced': False},
             {'entry': 'sub/b.html', 'referenced': True},
         ]
 
@@ -73,23 +74,22 @@ class TestResolveAliases(unittest.TestCase):
         shutil.rmtree(self.root, ignore_errors=True)
 
     def test_10_list_mode(self):
-        cfg = {'mode': 'list', 'entries': [{'demo': 'renxuan'}]}
-        self.assertEqual(self.g._resolve_aliases(cfg, self.demos, self.root),
-                         [('renxuan', 'renxuan.html')])
+        cfg = {'mode': 'list', 'entries': [{'demo': 'tp'}]}
+        self.assertEqual(self.g._resolve_aliases(cfg, self.demos, self.root), [('tp', 'tp.html', True)])
 
     def test_11_custom_alias(self):
-        cfg = {'mode': 'list', 'entries': [{'demo': 'renxuan', 'alias': 'book'}]}
-        self.assertEqual(self.g._resolve_aliases(cfg, self.demos, self.root), [('book', 'renxuan.html')])
+        cfg = {'mode': 'list', 'entries': [{'demo': 'tp', 'alias': 'book'}]}
+        self.assertEqual(self.g._resolve_aliases(cfg, self.demos, self.root), [('book', 'tp.html', True)])
 
     def test_12_all_mode_skips_subdirs_and_referenced(self):
         out = self.g._resolve_aliases({'mode': 'all', 'entries': []}, self.demos, self.root)
-        self.assertEqual(sorted(out), [('a', 'a.html'), ('renxuan', 'renxuan.html')])
+        self.assertEqual(sorted(out), [('a', 'a.html', True), ('tp', 'tp.html', True)])
 
     def test_13_none_mode(self):
         self.assertEqual(self.g._resolve_aliases({'mode': 'none', 'entries': []}, self.demos, self.root), [])
 
     def test_14_duplicate_alias_rejected(self):
-        cfg = {'mode': 'list', 'entries': [{'demo': 'a', 'alias': 'x'}, {'demo': 'renxuan', 'alias': 'x'}]}
+        cfg = {'mode': 'list', 'entries': [{'demo': 'a', 'alias': 'x'}, {'demo': 'tp', 'alias': 'x'}]}
         with self.assertRaises(ValueError):
             self.g._resolve_aliases(cfg, self.demos, self.root)
 
@@ -99,16 +99,23 @@ class TestResolveAliases(unittest.TestCase):
             self.g._resolve_aliases(cfg, self.demos, self.root)
 
     def test_16_handwritten_page_not_overwritten(self):
-        (self.root / 'renxuan.html').write_text('<html>手写页</html>', encoding='utf-8')
-        cfg = {'mode': 'list', 'entries': [{'demo': 'renxuan'}]}
+        (self.root / 'tp.html').write_text('<html>手写页</html>', encoding='utf-8')
+        cfg = {'mode': 'list', 'entries': [{'demo': 'tp'}]}
         with self.assertRaises(ValueError):
             self.g._resolve_aliases(cfg, self.demos, self.root)
 
     def test_17_previous_stub_is_overwritable(self):
-        (self.root / 'renxuan.html').write_text(
+        (self.root / 'tp.html').write_text(
             self.g.ALIAS_MARKER + '<html>old</html>', encoding='utf-8')
-        cfg = {'mode': 'list', 'entries': [{'demo': 'renxuan'}]}
+        cfg = {'mode': 'list', 'entries': [{'demo': 'tp'}]}
         self.assertEqual(len(self.g._resolve_aliases(cfg, self.demos, self.root)), 1)
+
+    def test_18_legacy_alias_can_skip_canonical(self):
+        cfg = {'mode': 'list', 'entries': [
+            {'demo': 'tp', 'alias': 'tp'},
+            {'demo': 'tp', 'alias': 'old', 'canonical': False}]}
+        self.assertEqual(self.g._resolve_aliases(cfg, self.demos, self.root),
+                         [('tp', 'tp.html', True), ('old', 'tp.html', False)])
 
 
 class TestCanonicalSync(unittest.TestCase):
@@ -142,7 +149,11 @@ class TestAliasIntegration(unittest.TestCase):
     def test_30_config_present(self):
         cfg = json.loads(CFG.read_text(encoding='utf-8'))
         self.assertEqual(cfg['mode'], 'list')
-        self.assertIn('renxuan', [e.get('demo') for e in cfg['entries']])
+        demos = [e.get('demo') for e in cfg['entries']]
+        self.assertIn('the-price-you-choose', demos)
+        legacy = [e for e in cfg['entries'] if e.get('alias') == 'renxuan']
+        self.assertEqual(len(legacy), 1)
+        self.assertFalse(legacy[0].get('canonical', True))
 
     def test_31_root_stub_and_canonical(self):
         r = self._rebuild()
@@ -150,11 +161,14 @@ class TestAliasIntegration(unittest.TestCase):
         self.assertIn('别名桩', r.stdout)
         stub = ROOT_STUB.read_text(encoding='utf-8')
         self.assertIn('<!-- html-gen:alias auto -->', stub)
-        self.assertIn('content="0;url=demos/renxuan.html"', stub)
-        self.assertIn('https://html-gen.cli.jaden.tech/renxuan.html', stub)
+        self.assertIn('content="0;url=demos/the-price-you-choose.html"', stub)
+        self.assertIn('https://html-gen.cli.jaden.tech/the-price-you-choose.html', stub)
         target = TARGET.read_text(encoding='utf-8')
         self.assertEqual(target.count('<!-- html-gen:canonical auto -->'), 1)
-        self.assertIn('<link rel="canonical" href="https://html-gen.cli.jaden.tech/renxuan.html">', target)
+        self.assertIn('<link rel="canonical" href="https://html-gen.cli.jaden.tech/the-price-you-choose.html">',
+                      target)
+        legacy = LEGACY_STUB.read_text(encoding='utf-8')
+        self.assertIn('content="0;url=demos/the-price-you-choose.html"', legacy)
 
     def test_32_rebuild_idempotent(self):
         self._rebuild()
