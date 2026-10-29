@@ -137,7 +137,7 @@ python3 scripts/countries-issue-sync.py --apply --no-commit  # 只写盘重建�
 - 代码复制（剪贴板 + fallback）、行号、Callout 提示框、阅读进度条、图片灯箱
 
 ### layout-table.html（A 型表格）
-- **键规范**（列类型 6 / 列属性 22 / Tab 6 / 选项 13 / options.feedback 5 / actions 7 / videos 5 / URL 状态 3 / CLI 参数 9）见 `html-gen help table` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['table']`，由 `tests/test_help_contract.py` 双向守卫）
+- **键规范**（列类型 6 / 列属性 22 / Tab 6 / 选项 16 / options.feedback 5 / actions 7 / videos 5 / URL 状态 3 / CLI 参数 9）见 `html-gen help table` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['table']`，由 `tests/test_help_contract.py` 双向守卫）
 - **页面级段落描述**：`--subtitle` / JSON 顶层 `subtitle`（优先级 CLI > JSON），h1 下方段落区，纯文本安全转义 + `\n` → `<br>`，显式传空串清空；无 subtitle 不渲染
 - **Cinema 纪律化宽度模型**：`table-layout:fixed`，每列强制显式 width（默认 120px，actions 100px），无 colgroup，td `max-width:0` 强制截断
 - 实时搜索（300ms debounce）+ Cmd+F Spotlight 弹窗搜索
