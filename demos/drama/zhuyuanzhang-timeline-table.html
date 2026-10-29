@@ -26,6 +26,8 @@
   --accent-400: #facc15;
   --accent-500: #eab308;
   --accent-600: #ca8a04;
+  --hl-bg: rgba(250, 204, 21, .18);
+  --hl-fg: #fde68a;
   --surface-800: #1e1e2e;
   --surface-850: #181825;
   --surface-900: #11111b;
@@ -73,6 +75,8 @@
   --code-bg: #f6f8fa;
   --code-text: #57606a;
   --code-cmd: #1f2328;
+  --hl-bg: rgba(250, 204, 21, .45);
+  --hl-fg: #5a4600;
   --hero-title-from: #1f2328;
   --gh-corner-fill: rgba(0,0,0,0.75);
   --gh-octocat: #ffffff;
@@ -106,6 +110,12 @@ code {
   font-size: 0.8rem;
   background: rgba(255,255,255,0.06);
   padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+mark.hl {
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+  padding: 0 2px;
   border-radius: var(--radius-sm);
 }
 pre {
@@ -486,14 +496,7 @@ pre code { background: none; padding: 0; }
 </style>
 </head>
 <body>
-<a href="https://github.com/imjaden/html-gen.cli" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
-  <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
-    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
-    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-  </svg>
-</a>
-<a class="github-corner-hit" href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener" aria-label="GitHub"></a>
+
 <div class="wrapper">
 
 <div class="tabs-row">
@@ -771,7 +774,7 @@ pre code { background: none; padding: 0; }
       var rowClass = [];
       if (selectedRows[rowIdx]) rowClass.push('selected');
       if (isRowClickable(row)) rowClass.push('clickable');
-      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
+      var rowHtml = '<tr data-idx="'+rowIdx+'" class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
@@ -1109,6 +1112,15 @@ pre code { background: none; padding: 0; }
   }
   window.handleRowClick = handleRowClick;
 
+  /* CL018: 分栏行高亮 —— 按 data-idx 定位（分页/排序下用 filtered 下标会错位） */
+  function highlightSplitRow(idx) {
+    var tbody = document.getElementById('tbody');
+    if (!tbody) return;
+    tbody.querySelectorAll('tr.split-active').forEach(function(r){ r.classList.remove('split-active'); });
+    var tr = tbody.querySelector('tr[data-idx="'+idx+'"]');
+    if (tr) tr.classList.add('split-active');
+  }
+
   /* ── Modal Panel ── */
   function showModal(row) {
     var cols = visibleCols({requireKey: true, excludeActions: true});
@@ -1256,10 +1268,7 @@ pre code { background: none; padding: 0; }
         body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:0.75rem">⚠ 无法加载 SKILL.md<br><span style="font-size:0.62rem">'+escapeHtml(mdUrl)+'</span><br><span style="font-size:0.62rem">'+escapeHtml(err.message)+'</span></div>';
       });
       // Highlight
-      var tbody = document.getElementById('tbody');
-      var rows = tbody.querySelectorAll('tr');
-      rows.forEach(function(r){ r.classList.remove('split-active'); });
-      if (rows[idx]) rows[idx].classList.add('split-active');
+      highlightSplitRow(idx);
     }
   }
 
@@ -1296,10 +1305,7 @@ pre code { background: none; padding: 0; }
     render();  // re-render with preview-only cols
     renderSplitPreview(row);
     // highlight active row
-    var tbody = document.getElementById('tbody');
-    var rows = tbody.querySelectorAll('tr');
-    rows.forEach(function(r){ r.classList.remove('split-active'); });
-    if (rows[idx]) rows[idx].classList.add('split-active');
+    highlightSplitRow(idx);
     syncUrlState();
   }
   window.activateSplit = activateSplit;
@@ -1389,6 +1395,9 @@ pre code { background: none; padding: 0; }
         if (Array.isArray(v) && c.type === 'videos') {
           // videos 数组特判：逐条渲染 + url 链接（勿 String(v) → [object Object]）
           valHtml = renderVideoListHtml(v);
+        } else if (c.escape === false) {
+          // CL018: 与表格单元格同口径 —— 列级 escape:false 是唯一豁免口，分栏详情同样放行
+          valHtml = c.splitFull ? String(v).replace(/\n/g,'<br>') : String(v);
         } else {
           valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
         }
