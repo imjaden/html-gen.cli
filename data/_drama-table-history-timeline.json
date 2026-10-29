@@ -420,6 +420,7 @@
     "pageSize": 30,
     "exportCSV": true,
     "search": true,
-    "showIndex": true
+    "showIndex": true,
+    "share": false
   }
 }

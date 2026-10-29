@@ -70,11 +70,15 @@ H3 子项开关 (localStorage 记忆, 载入恢复) ✅ — layout-slide.html
 右上角工具栏 (语言/主题, glass-morphism) ✅ — layout-slide.html
 键盘翻页 (← → PageUp PageDown Home End) ✅ — layout-slide.html
 
-### layout-table.html (A 型表格) — 1440 行
-键规范 (列类型 6 / 列属性 22 / Tab 6 / options 13 / feedback 5 / actions 7 / videos 5 / URL 状态 3 / CLI 9) ✅ — html-gen help table
+### layout-table.html (A 型表格) — 1751 行
+键规范 (列类型 6 / 列属性 22 / Tab 6 / options 16 / feedback 5 / actions 7 / videos 5 / URL 状态 3 / CLI 9) ✅ — html-gen help table
 实时搜索 (300ms debounce) ✅ — layout-table.html
 Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.html
 多字段排序 (locale/数字/日期/字符串, Shift+点击二级排序) ✅ — layout-table.html
+默认排序 (options.defaultSort {key,asc}, 加载即排序 + 表头箭头点亮; 数值列按起始年 + 稳定序) ✅ — layout-table.html
+常驻行高亮 (options.highlight {key,values}, tr.hl-row 只高亮不筛选; 冻结列/右侧固定列背景同步覆盖) ✅ — layout-table.html
+默认筛选 (options.defaultFilter {key,value,mode}, 加载后自动筛选 + filter pill) ✅ — layout-table.html
+分享按钮开关 (options.share=false 不渲染 ↗️ 拷贝分享链接) ✅ — layout-table.html
 客户端分页 (默认 30 条/页, 页大小可配) ✅ — layout-table.html
 密度切换 (紧凑 28px / 标准 34px / 舒适 42px, localStorage) ✅ — layout-table.html
 弹出面板模式 (Modal overlay, 键值列表, Esc 关闭, textContent) ✅ — layout-table.html

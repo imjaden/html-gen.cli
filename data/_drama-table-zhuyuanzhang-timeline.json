@@ -36,7 +36,8 @@
       "sortable": true,
       "locale": "zh",
       "width": "100px",
-      "preview": true
+      "preview": true,
+      "type": "number"
     },
     {
       "key": "figures",
@@ -136,9 +137,16 @@
     "exportCSV": true,
     "search": true,
     "showIndex": true,
-    "defaultFilter": {
+    "share": false,
+    "highlight": {
       "key": "era",
-      "value": "洪武"
+      "values": [
+        "洪武"
+      ]
+    },
+    "defaultSort": {
+      "key": "period",
+      "asc": true
     }
   }
 }

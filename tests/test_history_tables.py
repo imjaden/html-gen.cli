@@ -124,19 +124,19 @@ class TestHistoryTables(unittest.TestCase):
         self.assertEqual(self._headers(),
                          ['序号', '年号', '皇帝', '庙号', '起止年份', '关键人物', '主要事件', '出处'],
                          f"大明时间轴表头: {self._headers()}")
-        # 默认筛选嘉靖（总览 + 7 剧情事件 = 8 行）
+        # CL021: 取消默认年号筛选 → 全量 24 行；嘉靖 8 行改常驻高亮 (tr.hl-row, 不筛选)
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 8, f"默认应筛选嘉靖 8 行: {len(rows)}")
+        self.assertEqual(len(rows), 24, f"应全量 24 行（默认不再筛选）: {len(rows)}")
+        hl = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr.hl-row')
+        self.assertEqual(len(hl), 8, f"嘉靖 8 行应常驻高亮: {len(hl)}")
+        self.assertTrue(all('嘉靖' in r.text for r in hl), "高亮行应全为嘉靖年号")
+        # CL021: 默认排序 = 起止年份升序 → 首行为最早年号
+        self.assertEqual(rows[0].find_elements(By.TAG_NAME, 'td')[4].text, '1368—1398',
+                         f"首行应为最早年份: {rows[0].find_elements(By.TAG_NAME, 'td')[4].text}")
         text = ' '.join(r.text for r in rows)
         self.assertIn('改稻为桑', text, "嘉靖拆分应含改稻为桑")
         self.assertIn('毁堤淹田', text, "嘉靖拆分应含毁堤淹田")
         self.assertIn('治安疏', text, "嘉靖拆分应含治安疏")
-        # 清筛选 24 行（16 年号 + 嘉靖 8）
-        self.driver.execute_script("clearQuickFilter();")
-        time.sleep(0.3)  # [speedup]
-
-        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')), 24,
-                         "应 24 行（16 年号 + 嘉靖拆分 8）")
         # 嘉靖 split 详情（pills 格子整格点击）
         jia = self._row_by_text(1, '嘉靖')
         jtd = jia.find_elements(By.TAG_NAME, 'td')
@@ -148,6 +148,7 @@ class TestHistoryTables(unittest.TestCase):
         pv = self.driver.find_element(By.ID, 'splitPreviewBody').text
         self.assertIn('严嵩专权', pv, "嘉靖详情应含主要事件")
         self.assertIn('本剧主线', pv, "嘉靖出处应标本剧主线")
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
 
     def test_07_daming_strategy(self):
         self._load('daming-strategy-table.html')

@@ -93,6 +93,18 @@ def home_link_html(url):
     return f'<a class="home-link" href="{url}" aria-label="Demo 首页">🏠</a>'
 
 
+# CL021: 分享按钮占位符注入 (options.share, 默认开启; false → 空串不渲染)。
+# 走 inject() 而非运行时删 DOM —— 产物自包含、Selenium 可静态断言。
+SHARE_BUTTON_TMPL = '<button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>'
+
+
+def share_button_html(options):
+    """options.share 显式 false → 不渲染分享按钮 (默认 open)。"""
+    if isinstance(options, dict) and options.get('share') is False:
+        return ''
+    return SHARE_BUTTON_TMPL
+
+
 def corner_args(args):
     """--github-url/--home-url 入参 + env 兜底 (CLI 优先; 显式空串禁用, 同 favicon HG-SEC-073).
 
@@ -772,7 +784,8 @@ def cmd_table(args):
                     tabs=json.dumps(tabs, ensure_ascii=False),
                     options=json.dumps(options, ensure_ascii=False),
                     filters='', search_placeholder='搜索...',
-                    github_corner=gc, home_link=hl, favicon=favicon_args(args))
+                    github_corner=gc, home_link=hl, favicon=favicon_args(args),
+                    share_button=share_button_html(options))
     # CL003: 输出目标三态 — CLI -o 非空 > JSON 顶层 output > 中断 (写盘前)
     out = args.output or json_output
     if not out:
@@ -936,6 +949,9 @@ TEMPLATE_CONTRACT = {
                 ('columnsSplit', '分栏模式专用列集 (如 ["name","actions"]; 缺省按 preview 过滤)', ''),
                 ('modalRenderer', '自定义模态框渲染器 (如 skills 结构化详情)', ''),
                 ('defaultFilter', '初始筛选 {key,value,mode} 加载后自动按该列筛选', ''),
+                ('defaultSort', '初始排序 {key,asc} 加载即按该列排序 (asc 缺省 true; 缺省保持数据原序)', ''),
+                ('highlight', '常驻行高亮 {key,values,mode} 命中行的 row 加 hl-row 类 (mode 缺省 exact, contains 按标签切分匹配; 不筛选)', ''),
+                ('share', '右上角分享按钮 (↗️ 拷贝带 URL 状态的链接; false 不渲染)', 'true'),
                 ('feedback', 'GitHub Issue 反馈通道配置对象 (子键见下)', ''),
             ],
             'feedback': [

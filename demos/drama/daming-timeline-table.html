@@ -357,6 +357,12 @@ pre code { background: none; padding: 0; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
 .data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
 .data-table tbody tr.clickable { cursor:pointer; }
+/* CL021: 常驻行高亮 (options.highlight) —— 冻结列/右侧固定列是不透明背景, 必须同步覆盖 */
+.data-table tbody tr.hl-row { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row:hover { background:rgba(250,204,21,0.12); }
+.data-table tbody tr.hl-row > td.frozen-col,
+.data-table tbody tr.hl-row > td.sticky-right { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row > td:first-child { box-shadow:inset 3px 0 0 var(--hl-fg, #fde68a); }
 .col-checkbox { width:32px; text-align:center; }
 .col-checkbox input { cursor:pointer; accent-color:var(--cobalt-500); }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
@@ -503,7 +509,7 @@ pre code { background: none; padding: 0; }
   <div class="table-tabs" id="tabsBar"></div>
   <div class="tabs-actions">
     
-    <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>
+    
   </div>
 </div>
 
@@ -588,10 +594,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "era", "label": "年号", "type": "pills", "sortable": true, "locale": "zh", "width": "80px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "emperor", "label": "皇帝", "sortable": true, "locale": "zh", "width": "130px", "preview": true, "onCellClick": "split"}, {"key": "temple", "label": "庙号", "type": "pills", "sortable": true, "locale": "zh", "width": "70px", "preview": true, "onCellClick": "split"}, {"key": "period", "label": "起止年份", "sortable": true, "locale": "zh", "width": "100px", "preview": true}, {"key": "figures", "label": "关键人物", "sortable": true, "locale": "zh", "width": "180px", "preview": true, "splitFull": true}, {"key": "events", "label": "主要事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "splitFull": true}, {"key": "source", "label": "出处", "sortable": true, "locale": "zh", "width": "160px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const COLUMNS = [{"key": "era", "label": "年号", "type": "pills", "sortable": true, "locale": "zh", "width": "80px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "emperor", "label": "皇帝", "sortable": true, "locale": "zh", "width": "130px", "preview": true, "onCellClick": "split"}, {"key": "temple", "label": "庙号", "type": "pills", "sortable": true, "locale": "zh", "width": "70px", "preview": true, "onCellClick": "split"}, {"key": "period", "label": "起止年份", "sortable": true, "locale": "zh", "width": "100px", "preview": true, "type": "number"}, {"key": "figures", "label": "关键人物", "sortable": true, "locale": "zh", "width": "180px", "preview": true, "splitFull": true}, {"key": "events", "label": "主要事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "splitFull": true}, {"key": "source", "label": "出处", "sortable": true, "locale": "zh", "width": "160px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
   const DATA    = [{"era": "洪武", "emperor": "朱元璋", "temple": "明太祖", "period": "1368—1398", "figures": "徐达、常遇春、刘伯温", "events": "开国，废丞相，设锦衣卫，八股取士", "source": "《明史》"}, {"era": "建文", "emperor": "朱允炆", "temple": "明惠帝", "period": "1399—1402", "figures": "方孝孺、齐泰、朱棣", "events": "削藩引发靖难之役，成祖夺位", "source": "《明史》"}, {"era": "永乐", "emperor": "朱棣", "temple": "明成祖", "period": "1403—1424", "figures": "郑和、解缙、姚广孝", "events": "迁都北京，郑和下西洋，编《永乐大典》", "source": "《明史》"}, {"era": "洪熙", "emperor": "朱高炽", "temple": "明仁宗", "period": "1425", "figures": "杨士奇、杨荣", "events": "仁宣之治开端（在位仅 10 个月）", "source": "《明史》"}, {"era": "宣德", "emperor": "朱瞻基", "temple": "明宣宗", "period": "1426—1435", "figures": "杨士奇、杨溥、于谦", "events": "仁宣之治，宣德炉，平汉王叛乱", "source": "《明史》"}, {"era": "正统", "emperor": "朱祁镇", "temple": "明英宗", "period": "1436—1449", "figures": "王振、于谦", "events": "土木堡之变，英宗被瓦剌俘虏", "source": "《明史》"}, {"era": "景泰", "emperor": "朱祁钰", "temple": "明代宗", "period": "1450—1457", "figures": "于谦", "events": "北京保卫战退瓦剌，夺门之变被废", "source": "《明史》"}, {"era": "天顺", "emperor": "朱祁镇", "temple": "明英宗", "period": "1457—1464", "figures": "李贤、石亨、徐有贞", "events": "夺门复辟，冤杀于谦", "source": "《明史》"}, {"era": "成化", "emperor": "朱见深", "temple": "明宪宗", "period": "1465—1487", "figures": "万贵妃、汪直", "events": "设西厂，传奉官泛滥", "source": "《明史》"}, {"era": "弘治", "emperor": "朱祐樘", "temple": "明孝宗", "period": "1488—1505", "figures": "刘健、谢迁、李东阳", "events": "弘治中兴，一夫一妻", "source": "《明史》"}, {"era": "正德", "emperor": "朱厚照", "temple": "明武宗", "period": "1506—1521", "figures": "刘瑾、江彬", "events": "刘瑾专权，应州大捷御驾亲征", "source": "《明史》"}, {"era": "隆庆", "emperor": "朱载坖", "temple": "明穆宗", "period": "1567—1572", "figures": "高拱、张居正", "events": "隆庆开关，俺答封贡", "source": "《明史》"}, {"era": "万历", "emperor": "朱翊钧", "temple": "明神宗", "period": "1573—1620", "figures": "张居正、戚继光、李成梁", "events": "张居正改革，万历三大征", "source": "《明史》"}, {"era": "泰昌", "emperor": "朱常洛", "temple": "明光宗", "period": "1620", "figures": "东林党诸臣", "events": "红丸案，'一月天子'", "source": "《明史》"}, {"era": "天启", "emperor": "朱由校", "temple": "明熹宗", "period": "1621—1627", "figures": "魏忠贤、孙承宗、袁崇焕", "events": "阉党专权，东林党争", "source": "《明史》"}, {"era": "崇祯", "emperor": "朱由检", "temple": "明思宗", "period": "1628—1644", "figures": "袁崇焕、李自成、洪承畴", "events": "辽事、农民起义，1644 明亡", "source": "《明史》"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1522—1566", "figures": "严嵩、徐阶、海瑞、张居正", "events": "严嵩专权、改稻为桑、海瑞上《治安疏》", "source": "《明史》·本剧主线"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1560", "figures": "严嵩、严世蕃、吕芳", "events": "改稻为桑：国策出台，浙江推行引发灾变", "source": "剧中设定（嘉靖三十九年）"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1560", "figures": "严世蕃、郑泌昌、何茂才", "events": "毁堤淹田：毁九县堤坝，逼农民贱卖田地", "source": "剧中设定（嘉靖三十九年）"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1561", "figures": "海瑞、王用汲", "events": "海瑞赴任淳安知县，整饬吏治、抗上护民", "source": "剧中设定"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1561", "figures": "海瑞、郑泌昌、何茂才", "events": "审通倭案：顺藤摸瓜，牵出毁堤淹田真相", "source": "剧中设定"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1561", "figures": "徐阶、严嵩、严世蕃", "events": "严嵩倒台：徐阶联合清流倒严，严党覆灭", "source": "剧中设定（史实为 1562）"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1565", "figures": "海瑞、嘉靖", "events": "海瑞上《治安疏》：直言天下第一疏，下狱", "source": "史实（嘉靖四十四年）"}, {"era": "嘉靖", "emperor": "朱厚熜", "temple": "明世宗", "period": "1567", "figures": "嘉靖、裕王朱载坖", "events": "嘉靖驾崩：隆庆即位，海瑞获释复职", "source": "史实（1567 年 1 月）"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true, "defaultFilter": {"key": "era", "value": "嘉靖"}};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true, "share": false, "highlight": {"key": "era", "values": ["嘉靖"]}, "defaultSort": {"key": "period", "asc": true}};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
@@ -609,7 +615,33 @@ pre code { background: none; padding: 0; }
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
-  let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
+  /* CL021: 默认排序 — options.defaultSort {key, asc}; 缺省不改数据原序。初始化在 initThead() 之前,
+     表头箭头随之点亮; 用户点表头仍可覆盖 (首次点击变反序, 属预期) */
+  const DEFAULT_SORT = (OPTIONS && OPTIONS.defaultSort) || null;
+  /* CL021: 常驻行高亮 — options.highlight {key, values[], mode}; 由数据派生, 每帧 render 重算,
+     筛选/搜索/排序/翻页/re-render 后自动保持 (与 tr.selected / tr.split-active 各自独立) */
+  const HL_CFG = (OPTIONS && OPTIONS.highlight) || null;
+  function rowHighlighted(row) {
+    if (!HL_CFG || !HL_CFG.key) return false;
+    var vals = Array.isArray(HL_CFG.values) ? HL_CFG.values
+             : (HL_CFG.value !== undefined && HL_CFG.value !== null ? [HL_CFG.value] : []);
+    if (!vals.length) return false;
+    var raw = row[HL_CFG.key];
+    if (raw === undefined || raw === null) return false;
+    var s = String(raw);
+    // mode=contains: 与 pill 列同口径 (逗号/顿号/斜杠切分后整值比对)
+    var parts = HL_CFG.mode === 'contains'
+      ? s.split(/[,，、/]+/).map(function(x){ return x.trim(); })
+      : [s];
+    for (var i = 0; i < vals.length; i++) {
+      if (parts.indexOf(String(vals[i])) !== -1) return true;
+    }
+    return false;
+  }
+
+  let filtered = DATA.slice(), currentPage = 1, activeTab = '',
+      sortKey = (DEFAULT_SORT && DEFAULT_SORT.key) ? String(DEFAULT_SORT.key) : '',
+      sortAsc = DEFAULT_SORT ? DEFAULT_SORT.asc !== false : true;
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
@@ -773,6 +805,7 @@ pre code { background: none; padding: 0; }
       var rowIdx = start + pi;
       var rowClass = [];
       if (selectedRows[rowIdx]) rowClass.push('selected');
+      if (rowHighlighted(row)) rowClass.push('hl-row');   // CL021: 常驻高亮 (options.highlight)
       if (isRowClickable(row)) rowClass.push('clickable');
       var rowHtml = '<tr data-idx="'+rowIdx+'" class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {

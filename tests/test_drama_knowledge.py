@@ -162,7 +162,7 @@ class TestDramaKnowledge(unittest.TestCase):
     # ── T6: Table content pages ──
 
     def test_08_daming_timeline_single_table(self):
-        """大明时间轴 table 应为单表 17 年号，默认筛选嘉靖（本剧年号）."""
+        """大明时间轴 table 应为单表 24 行；不再默认筛选嘉靖，改嘉靖 8 行常驻高亮 (CL021)."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()
         time.sleep(0.15)  # [speedup]
 
@@ -176,8 +176,13 @@ class TestDramaKnowledge(unittest.TestCase):
                          ['序号', '年号', '皇帝', '庙号', '起止年份', '关键人物', '主要事件', '出处'],
                          f"大明时间轴表头: {heads}")
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 8, f"默认应筛选嘉靖拆分 8 行: {len(rows)}")
-        self.assertIn('嘉靖', rows[0].text, f"默认行应为嘉靖: {rows[0].text[:40]}")
+        self.assertEqual(len(rows), 24, f"应全量 24 行（默认不再筛选）: {len(rows)}")
+        hl = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr.hl-row')
+        self.assertEqual(len(hl), 8, f"嘉靖 8 行应常驻高亮: {len(hl)}")
+        self.assertIn('嘉靖', hl[0].text, f"高亮行应为嘉靖: {hl[0].text[:40]}")
+        self.assertEqual(rows[0].find_elements(By.TAG_NAME, 'td')[4].text, '1368—1398',
+                         "默认排序首行应为最早年份")
+        self.assertFalse(self.driver.find_elements(By.ID, 'shareBtn'), "时间轴页应隐藏分享按钮")
         self.driver.switch_to.default_content()
 
     def test_17_section_follows_group_switch(self):
@@ -201,7 +206,7 @@ class TestDramaKnowledge(unittest.TestCase):
                       f"iframe 应为中国历史 36计策: {(frame.get_attribute('src') or '')[:70]}")
 
     def test_18_yongzheng_group(self):
-        """新增雍正王朝 group：3 tab + 时间轴默认雍正 9 行 + 36计策 8 行."""
+        """新增雍正王朝 group：3 tab + 时间轴全量 21 行（雍正 9 行常驻高亮）+ 36计策 26 行."""
         tabs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')
         self.assertEqual(len(tabs), 4, f"应有 4 个 tab: {[t.text for t in tabs]}")
         tabs[3].click()
@@ -209,21 +214,23 @@ class TestDramaKnowledge(unittest.TestCase):
 
         secs = self.driver.find_elements(By.CSS_SELECTOR, '.kw-section-title')
         self.assertEqual(len(secs), 3, f"雍正应有 3 个 section: {[s.text for s in secs]}")
-        # 时间轴：默认筛选雍正 9 行（总览+8 剧情），清筛选 11 行（含康熙前史）
+        # 时间轴：全量 21 行（15/页 → 第 1 页 15 行）+ 雍正 9 行常驻高亮（CL021 取消默认筛选）
         next(s for s in secs if '时间轴' in s.text).click()
         time.sleep(0.4)  # [speedup]
 
         frame = self.driver.find_element(By.ID, 'contentFrame')
         self.driver.switch_to.frame(frame)
         rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
-        self.assertEqual(len(rows), 9, f"默认应筛选雍正 9 行: {len(rows)}")
+        self.assertEqual(len(rows), 15, f"第 1 页应 15 行: {len(rows)}")
+        hl_rows = self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr.hl-row')
+        self.assertEqual(len(hl_rows), 9, f"雍正 9 行应常驻高亮: {len(hl_rows)}")
         self.assertIn('追缴国库', ' '.join(r.text for r in rows), "应含追缴欠款剧情")
-        self.driver.execute_script("clearQuickFilter();")
-        time.sleep(0.25)  # [speedup]
-
         self.assertEqual(self.driver.execute_script(
             "return document.getElementById('statTotal').textContent;"), '21',
-            "清筛选后总行数应 21（清朝 12 帝 + 本剧剧情 9）")
+            "总行数应 21（清朝 12 帝 + 本剧剧情 9）")
+        # 数值排序 + 稳定序：雍正总览行（1723—1735）居该年号块首位，不在 1723 细节行之后
+        self.assertEqual(hl_rows[0].find_elements(By.TAG_NAME, 'td')[4].text, '1723—1735',
+                         "雍正总览行应居年号块首位")
         # 皇帝姓名 + 清庙号（第 1 页内康熙行）
         kang = next(r for r in self.driver.find_elements(By.CSS_SELECTOR, 'tbody tr')
                     if r.find_elements(By.TAG_NAME, 'td')[1].text == '康熙'

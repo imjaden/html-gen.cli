@@ -36,7 +36,8 @@
       "sortable": true,
       "locale": "zh",
       "width": "100px",
-      "preview": true
+      "preview": true,
+      "type": "number"
     },
     {
       "key": "figures",
@@ -262,9 +263,16 @@
     "exportCSV": true,
     "search": true,
     "showIndex": true,
-    "defaultFilter": {
+    "share": false,
+    "highlight": {
       "key": "era",
-      "value": "雍正"
+      "values": [
+        "雍正"
+      ]
+    },
+    "defaultSort": {
+      "key": "period",
+      "asc": true
     }
   }
 }

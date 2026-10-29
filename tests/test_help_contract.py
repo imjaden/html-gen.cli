@@ -240,7 +240,7 @@ class TestHelpContract(unittest.TestCase):
         self._assert_dim('columns')
 
     def test_03_template_options_subset_of_contract(self):
-        """options 顶层: OPTIONS. 消费键 ⊆ 契约 options (13 项)。"""
+        """options 顶层: OPTIONS. 消费键 ⊆ 契约 options (16 项)。"""
         self._assert_dim('options')
 
     def test_04_template_feedback_subset_of_contract(self):

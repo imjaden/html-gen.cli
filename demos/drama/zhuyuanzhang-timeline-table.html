@@ -357,6 +357,12 @@ pre code { background: none; padding: 0; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
 .data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
 .data-table tbody tr.clickable { cursor:pointer; }
+/* CL021: 常驻行高亮 (options.highlight) —— 冻结列/右侧固定列是不透明背景, 必须同步覆盖 */
+.data-table tbody tr.hl-row { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row:hover { background:rgba(250,204,21,0.12); }
+.data-table tbody tr.hl-row > td.frozen-col,
+.data-table tbody tr.hl-row > td.sticky-right { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row > td:first-child { box-shadow:inset 3px 0 0 var(--hl-fg, #fde68a); }
 .col-checkbox { width:32px; text-align:center; }
 .col-checkbox input { cursor:pointer; accent-color:var(--cobalt-500); }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
@@ -503,7 +509,7 @@ pre code { background: none; padding: 0; }
   <div class="table-tabs" id="tabsBar"></div>
   <div class="tabs-actions">
     
-    <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>
+    
   </div>
 </div>
 
@@ -588,10 +594,10 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [{"key": "era", "label": "年号", "type": "pills", "sortable": true, "locale": "zh", "width": "80px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "emperor", "label": "皇帝", "sortable": true, "locale": "zh", "width": "130px", "preview": true, "onCellClick": "split"}, {"key": "temple", "label": "庙号", "type": "pills", "sortable": true, "locale": "zh", "width": "70px", "preview": true, "onCellClick": "split"}, {"key": "period", "label": "起止年份", "sortable": true, "locale": "zh", "width": "100px", "preview": true}, {"key": "figures", "label": "关键人物", "sortable": true, "locale": "zh", "width": "180px", "preview": true, "splitFull": true}, {"key": "events", "label": "主要事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "splitFull": true}, {"key": "source", "label": "出处", "sortable": true, "locale": "zh", "width": "170px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const COLUMNS = [{"key": "era", "label": "年号", "type": "pills", "sortable": true, "locale": "zh", "width": "80px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "emperor", "label": "皇帝", "sortable": true, "locale": "zh", "width": "130px", "preview": true, "onCellClick": "split"}, {"key": "temple", "label": "庙号", "type": "pills", "sortable": true, "locale": "zh", "width": "70px", "preview": true, "onCellClick": "split"}, {"key": "period", "label": "起止年份", "sortable": true, "locale": "zh", "width": "100px", "preview": true, "type": "number"}, {"key": "figures", "label": "关键人物", "sortable": true, "locale": "zh", "width": "180px", "preview": true, "splitFull": true}, {"key": "events", "label": "主要事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "splitFull": true}, {"key": "source", "label": "出处", "sortable": true, "locale": "zh", "width": "170px", "preview": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
   const DATA    = [{"era": "至正", "emperor": "元顺帝", "temple": "元惠宗", "period": "1328—1368", "figures": "朱元璋、郭子兴、刘福通", "events": "红巾军起义，朱元璋投濠州义军", "source": "《明史》·本剧前史"}, {"era": "至正", "emperor": "元顺帝", "temple": "元惠宗", "period": "1352—1356", "figures": "朱元璋、马皇后、常遇春", "events": "投郭子兴，克集庆（应天府）", "source": "剧中设定（史实 1356 克集庆）"}, {"era": "至正", "emperor": "元顺帝", "temple": "元惠宗", "period": "1363—1368", "figures": "朱元璋、徐达、陈友谅、张士诚", "events": "鄱阳湖大败陈友谅，灭张士诚，北伐灭元", "source": "史实·本剧主线"}, {"era": "洪武", "emperor": "朱元璋", "temple": "明太祖", "period": "1368—1398", "figures": "朱元璋、马皇后、刘基、李善长", "events": "开国建明，废丞相，设锦衣卫，八股取士", "source": "《明史》·本剧主线"}, {"era": "洪武", "emperor": "朱元璋", "temple": "明太祖", "period": "1376—1393", "figures": "胡惟庸、蓝玉、空印案涉案官员", "events": "四大案：空印案、胡惟庸案、郭桓案、蓝玉案", "source": "史实"}, {"era": "洪武", "emperor": "朱元璋", "temple": "明太祖", "period": "1392—1398", "figures": "朱标、朱允炆、朱棣", "events": "太子朱标早逝，立皇太孙允炆，朱元璋驾崩", "source": "《明史》·本剧余波"}, {"era": "建文", "emperor": "朱允炆", "temple": "明惠帝", "period": "1399—1402", "figures": "朱允炆、方孝孺、朱棣", "events": "削藩引发靖难之役，成祖夺位", "source": "《明史》·剧后"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
-  const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true, "defaultFilter": {"key": "era", "value": "洪武"}};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
+  const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true, "share": false, "highlight": {"key": "era", "values": ["洪武"]}, "defaultSort": {"key": "period", "asc": true}};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
@@ -609,7 +615,33 @@ pre code { background: none; padding: 0; }
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
-  let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
+  /* CL021: 默认排序 — options.defaultSort {key, asc}; 缺省不改数据原序。初始化在 initThead() 之前,
+     表头箭头随之点亮; 用户点表头仍可覆盖 (首次点击变反序, 属预期) */
+  const DEFAULT_SORT = (OPTIONS && OPTIONS.defaultSort) || null;
+  /* CL021: 常驻行高亮 — options.highlight {key, values[], mode}; 由数据派生, 每帧 render 重算,
+     筛选/搜索/排序/翻页/re-render 后自动保持 (与 tr.selected / tr.split-active 各自独立) */
+  const HL_CFG = (OPTIONS && OPTIONS.highlight) || null;
+  function rowHighlighted(row) {
+    if (!HL_CFG || !HL_CFG.key) return false;
+    var vals = Array.isArray(HL_CFG.values) ? HL_CFG.values
+             : (HL_CFG.value !== undefined && HL_CFG.value !== null ? [HL_CFG.value] : []);
+    if (!vals.length) return false;
+    var raw = row[HL_CFG.key];
+    if (raw === undefined || raw === null) return false;
+    var s = String(raw);
+    // mode=contains: 与 pill 列同口径 (逗号/顿号/斜杠切分后整值比对)
+    var parts = HL_CFG.mode === 'contains'
+      ? s.split(/[,，、/]+/).map(function(x){ return x.trim(); })
+      : [s];
+    for (var i = 0; i < vals.length; i++) {
+      if (parts.indexOf(String(vals[i])) !== -1) return true;
+    }
+    return false;
+  }
+
+  let filtered = DATA.slice(), currentPage = 1, activeTab = '',
+      sortKey = (DEFAULT_SORT && DEFAULT_SORT.key) ? String(DEFAULT_SORT.key) : '',
+      sortAsc = DEFAULT_SORT ? DEFAULT_SORT.asc !== false : true;
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
@@ -773,6 +805,7 @@ pre code { background: none; padding: 0; }
       var rowIdx = start + pi;
       var rowClass = [];
       if (selectedRows[rowIdx]) rowClass.push('selected');
+      if (rowHighlighted(row)) rowClass.push('hl-row');   // CL021: 常驻高亮 (options.highlight)
       if (isRowClickable(row)) rowClass.push('clickable');
       var rowHtml = '<tr data-idx="'+rowIdx+'" class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
