@@ -200,7 +200,7 @@ script 上下文 </ 转义 (inject) ✅ — html-gen.py
 ### 测试
 test_help_contract.py (22 个: 契约结构/双向闭合/白名单纪律/CLI 参数/模板维度/变异) ✅ — tests/test_help_contract.py
 test_templates.py (doc/slide/table/knowledge 回归) ✅ — tests/test_templates.py
-pytest 全量绿 ✅ — CI/提交前置（计数见 AGENTS.md 测试治理节）
+pytest 全量绿 ✅ — CI/提交前置（计数见 AGENTS.md「测试计数」子节）
 
 ---
 
@@ -239,13 +239,13 @@ pytest 全量绿 ✅ — CI/提交前置（计数见 AGENTS.md 测试治理节�
 
 | 指标 | 数值 |
 |:---|---:|
-| Python 文件 | 5 (html-gen / company-report / countries-issue-sync / test×2；行数见 AGENTS.md) |
+| Python 文件 | 5 (html-gen / company-report / countries-issue-sync / test×2；行数见 `documents/cli-reference.md`) |
 | 模板文件 | 4 (doc 444行 / slide 681行 / table 1143行 / knowledge 342行) |
 | CSS 基座 | 1 (style-guide.css) |
 | 数据文件 | 7 |
 | Demo 文件 | 56 (registry: 21 独立 + 35 引用子页) |
 | 设计文档 | 4 |
-| 测试用例 | 见 AGENTS.md「测试治理」节 (唯一计数源; 此处不再复制) |
+| 测试用例 | 见 AGENTS.md「测试计数」子节 (唯一计数源; 此处不再复制) |
 | CLI 子命令 | 7 (doc/slide/table/knowledge/prompt/demo/help) |
 | CLI 长形参数 | 36 (table 9 / doc 9 / slide 8 / knowledge 10; 见 `html-gen help <type>`) |
 | localStorage keys | 24 |
