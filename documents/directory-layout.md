@@ -28,7 +28,7 @@ html-gen.cli/
 
 ├── data/                       # 数据文件（*_data.json, *_groups.json, _cloudwise-news.json 公众号文章库,
 │                                #   _aliases.json 根级短链配置, _*-kb-data.json 引用登记, _*-source.json 源件台账）
-├── tests/                      # Selenium + 回归测试 (401 tests)
+├── tests/                      # Selenium + 回归测试 (计数见 AGENTS.md 测试计数)
 ├── prompts/                    # prompt --site 生成物（在线阅读站点: index.html 合集 + {skill}.md/.json + all.md; 勿手改, 由 --site 重新生成）
 ├── skills/                    # 项目 skills prompt
     │   ├── html-gen/SKILL.md

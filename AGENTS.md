@@ -3,7 +3,7 @@
 ## Always Do
 
 - 提交一律 path-scoped：`git add <path>` + `git commit -q -m "type@scope: subject" --only -- <path>`；绝不 `git add -A`。
-- 改完跑全量回归：`python3 -m pytest tests/ -q -n 4`（期望 401 passed）；调试用 `-n 0`。
+- 改完跑全量回归：`python3 -m pytest tests/ -q -n 4`（期望 411 passed）；调试用 `-n 0`。
 - 改 CLI 参数或模板键时同步三面：`html-gen help <theme>` 键规范段、`TEMPLATE_CONTRACT`、`tests/test_help_contract.py`。
 - 数据/模板改动后重建产物：`python3 html-gen.py demo --rebuild`；同步脚本先 `--dry-run` 再 `--apply`。
 - 改本文件前先量 `wc -c AGENTS.md` ≤ 4,000B，改完跑三条自查（见 `### 引用与维护`）。

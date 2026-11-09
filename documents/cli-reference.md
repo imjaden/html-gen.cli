@@ -115,11 +115,11 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 
 | 文件 | 用途 |
 |:---|:---|
-| `html-gen.py` | 主 CLI，8 个子命令，1078 行 |
+| `html-gen.py` | 主 CLI，8 个子命令，2079 行 |
 | `scripts/company-report.py` | 公司调研报告生成器，从 schema JSON 生成完整 C 型知识库（groups/data/html + content/metrics 内容页自动生成 + 📰新闻动态组自动附加，数据源 data/_cloudwise-news.json） |
 | `scripts/cloudwise-news-sync.py` | 云智慧公众号周报同步器：读 web2md 索引 → 增量更新 data/_cloudwise-news.json → 重建知识库 → commit（每周六 10:00 cron 驱动；--dry-run/--rebuild/--no-rebuild/--no-commit） |
 | `scripts/cloudwise-fetch.py` | 云智慧公众号新文章处理入口：web2md <URL> 自动 step1 全文+step2 智读，--sync 可选立即入库 |
-| `style-guide.css` | Layer 1 深色主题 CSS 基座，183 行 |
+| `style-guide.css` | Layer 1 深色主题 CSS 基座，241 行 |
 | `layout-doc.html` | B 型文档模板：侧边栏 TOC + 内容区 |
 | `layout-table.html` | A 型表格模板：搜索 + 排序 + 分页 |
 | `layout-knowledge.html` | C 型知识库模板：顶部标签栏 + 左侧章节 + iframe/内联内容 |
