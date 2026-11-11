@@ -294,6 +294,9 @@ pre code { background: none; padding: 0; }
 .data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
 .data-table .video-pill:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table .video-pill.video-more { color:var(--cobalt-300); border-style:dashed; }
+/* CL030 (评审 🟢-1): 目标非法的降级 pill 不可点，别给手型 */
+.data-table .video-pill.video-pill-nolink { cursor:default; opacity:0.75; }
+.data-table .video-pill.video-pill-nolink:hover { background:rgba(79,70,229,0.12); border-color:rgba(79,70,229,0.2); color:var(--cobalt-400); }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -372,6 +375,9 @@ pre code { background: none; padding: 0; }
   border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.62rem; color:#6b7280;
   background:transparent; transition:all 0.15s; margin:0 1px; }
 .action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
+/* CL030 (评审 SEC-5): 目标非法的操作按钮 —— 不可点，别给手型/hover 高亮 */
+.action-btn.action-btn-disabled { cursor:not-allowed; opacity:0.45; }
+.action-btn.action-btn-disabled:hover { background:transparent; border-color:#2a2a3e; color:#6b7280; }
 
 /* ── Column toggle ── */
 .col-toggle-wrap { position:relative; display:inline-block; }
@@ -944,20 +950,34 @@ pre code { background: none; padding: 0; }
     renderPager(totalPages);
   }
 
+  // CL030 (评审 SEC-5): onclick 属性由单引号包裹 —— 注入的 JSON 里 " 与 ' 都必须转义，
+  // 否则数据含引号即可跳出属性注入事件处理器（旧写法只处理了 "）。
+  function jsAttr(v) {
+    return JSON.stringify(v === undefined || v === null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function renderActions(col, row) {
     if (!col.actions) return '';
     return col.actions.map(function(act) {
       var onclick = '';
       if (act.copyKey) {
-        onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
+        onclick = 'event.stopPropagation();copyAction(' + jsAttr(row[act.copyKey] || '') + ')';
       } else if (act.hrefKey) {
-        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '').replace(/"/g, '&quot;') + ',"_blank","noopener,noreferrer")';
+        // CL030 SEC-5: 外链目标同样只放行 http(s)（与 linkSafe 同口径）；非法 ⇒ 渲染不可点按钮
+        var hrefSafe = linkSafe(row[act.hrefKey] || '');
+        if (hrefSafe) {
+          onclick = 'event.stopPropagation();window.open(' + jsAttr(hrefSafe) + ',"_blank","noopener,noreferrer")';
+        }
       } else if (act.handler) {
-        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + jsAttr(row) + ')';
       } else if (act.desc) {
-        onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
+        onclick = 'event.stopPropagation();showDemoAction(' + jsAttr((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
       }
-      return '<button class="action-btn ' + (act.class||'') + '" onclick=\'' + onclick + '\' title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
+      return '<button class="action-btn ' + (act.class||'') + (onclick ? '' : ' action-btn-disabled') + '"'
+        + (onclick ? ' onclick=\'' + onclick + '\'' : '')
+        + ' title="' + escapeHtmlAttr(act.label||'') + '">' + (act.icon || act.label) + '</button>';
     }).join('');
   }
 
@@ -996,10 +1016,11 @@ pre code { background: none; padding: 0; }
     var safeUrl = linkSafe(url);   // CL028 SEC-1: 目标只放行 http(s)
     if (!safeUrl) {
       // 目标非法 ⇒ 保留可读文案但不给点击入口（不改数据，只降级展示）
-      return '<span class="video-pill video-pill-nolink" title="' + escapeHtml(String(url)) + '">' + escapeHtml(label) + '</span>';
+      // CL030 (评审 SEC-4): title 是属性上下文，必须用 escapeHtmlAttr（escapeHtml 不转义双引号 ⇒ 属性可逃逸）
+      return '<span class="video-pill video-pill-nolink" title="' + escapeHtmlAttr(String(url)) + '">' + escapeHtml(label) + '</span>';
     }
     var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
-    return '<span class="video-pill" title="' + escapeHtml(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
+    return '<span class="video-pill" title="' + escapeHtmlAttr(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
   }
   // 折叠 "+N"：点击展开全部（DOM 显示剩余 pill），不折叠回；跨 re-render 重置折叠态
   window.expandVideos = function(el) {
@@ -1025,7 +1046,7 @@ pre code { background: none; padding: 0; }
             ? '<img class="kv-video-cover" src="' + escapeHtmlAttr(coverSrc) + '" alt="' + escapeHtmlAttr(label) + '" loading="lazy" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">'
             : '';
           return '<div style="margin:2px 0;line-height:1.6">' + coverHtml +
-            '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+            '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtmlAttr(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
         }
         // 目标非 http(s) ⇒ 纯文本（不给可点面）
       }
@@ -1256,7 +1277,9 @@ pre code { background: none; padding: 0; }
     if (clickMode === 'tab') {
       var col = getRowClickCol();
       if (!col || col.onClick !== 'url' || !row.url) return;
-      window.open(row.url, '_blank', 'noopener,noreferrer');
+      var safeTarget = linkSafe(row.url);   // CL030 (评审 SEC-5): 外链目标只放行 http(s)
+      if (!safeTarget) return;
+      window.open(safeTarget, '_blank', 'noopener,noreferrer');
       return;
     }
     // modal mode: show popup
@@ -1579,9 +1602,10 @@ pre code { background: none; padding: 0; }
         if (v === null || v === undefined) v = '';
         var span = c.splitSpan;
         if (typeof span === 'string') {
-          // CL028 (评审 FR-9): "2" 与 2 等价 —— 早前只认 typeof number，字符串权重会静默失效
-          var spanTrim = span.trim();
-          if (/^\d+$/.test(spanTrim)) span = parseInt(spanTrim, 10);
+          // CL030 (评审 🟢-2): 数字字符串等价 —— 用 Number() 全额容错（"2.0"/"+2"/"2e0" 也认），
+          // 全角 "０２" 不认（收益低，不做，help 已写「数字或数字字符串」）
+          var spanNum = Number(span.trim());
+          if (span.trim() !== '' && Number.isInteger(spanNum) && spanNum > 0) span = spanNum;
         }
         var full = (span === 'full' || span === true || (!span && !!c.splitFull));
         var spanN = 0;

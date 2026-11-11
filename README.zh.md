@@ -132,5 +132,5 @@ python3 -m pytest tests/ -q -n 4
 
 ## 测试
 
-- Selenium headless Chrome 回归套件（`tests/test_*.py`，435 tests；权威计数见 AGENTS.md）
+- Selenium headless Chrome 回归套件（`tests/test_*.py`，440 tests；权威计数见 AGENTS.md）
 - 每个用例断言页面加载零 JS 错误

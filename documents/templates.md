@@ -51,6 +51,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - **媒体列**（CL026）：`type: 'image'`（值为图片 URL 或 `{src|alt}`，单元格出缩略图、点击灯箱放大，分栏详情出大图；`src` 仅放行 http(s)/file/data:image(png|jpeg|gif|webp|svg+xml)，其余伪协议不渲染）与 `videos` 项可选 `cover`（有封面时单元格/分栏先出封面图，点击外链到该视频）。缩略图高度随密度走（紧凑 18 / 标准 22 / 舒适 30px），不撑行。
   - CL028 加固：外链**目标**另有过一道白名单 `linkSafe`（只放行 http(s)）—— `video.url` 非 http(s) 时 pill / 封面 / 分栏链接都降级为纯文本，不产生可点击面（`noopener` 已挡同源 XSS，这条是纵深）。
   - CL028 文本口径：搜索/排序/quickFilter/CSV 统一走 `cellTextFor`（媒体类型取 `mediaTextValue`）。**行为差异**：`0` / `false` 这类假值过去被 `String(row[k] || '')` 折成空串，现在按原值参与筛选与导出（更正确，但若旧页面依赖「0 视为空」需显式处理）。
+  - CL030 加固：外链白名单同口径延伸到 `actions.hrefKey` 与 `clickMode: 'tab'` 的行级 `row.url`（非法目标渲染 `action-btn-disabled` 不可点按钮 / 行点击直接 no-op）；属性上下文一律用 `escapeHtmlAttr`（`title` 曾用 `escapeHtml`，双引号不转义 ⇒ 可注入事件属性）；`onclick` 的 JSON 注入走 `jsAttr`（单引号属性内 `'` 也转义）。
 - **分栏详情跨列与空值**（CL025）：列属性 `splitSpan` = `"full"`（整行，旧 `splitFull` 等价）或正整数 N（`grid-column:span N`，上限 6；数字与数字字符串 `"2"` 等价）；选项 `hideEmptyCells: true` 时空值字段整格不渲染、剩余格自动重排（缺省 false 保持全列，向后兼容）。
 - **分栏模式列过滤**：标记为「分栏可见」的列显示于分栏表格；可用选项显式指定分栏列集
 - **列隐藏双语义**：「永不可见」vs「默认收起·可开启·分栏仍全列」—— 语义与键名对照见 `html-gen help table`

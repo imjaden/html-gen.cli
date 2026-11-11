@@ -183,17 +183,19 @@ class TestSplitSpanAndEmpty(unittest.TestCase):
                                 f'vs 名称={by_label["名称"]["w"]}')
 
     def test_10_string_span_equivalent_to_number(self):
-        # CL028 (评审 FR-9): splitSpan 写字符串 "2" 与数字 2 等价（早前静默失效）
-        cols = [dict(c) for c in COLS]
-        for c in cols:
-            if c['key'] == 'w2':
-                c['splitSpan'] = '2'
-        self._open_split(render(cols=cols))
-        r = self._items()
-        by_label = {i['label']: i for i in r['items']}
-        self.assertGreaterEqual(by_label['权重2']['w'], by_label['名称']['w'] * 1.8,
-                                f'字符串 "2" 应等同数字 2，实得 权重2={by_label["权重2"]["w"]} '
-                                f'vs 名称={by_label["名称"]["w"]}')
+        # CL028 (评审 FR-9) + CL030 (🟢-2): 数字字符串与数字等价；Number() 口径下 " 2 " / "2.0" 也认
+        for raw in ('2', ' 2 ', '2.0'):
+            with self.subTest(span=raw):
+                cols = [dict(c) for c in COLS]
+                for c in cols:
+                    if c['key'] == 'w2':
+                        c['splitSpan'] = raw
+                self._open_split(render(cols=cols))
+                r = self._items()
+                by_label = {i['label']: i for i in r['items']}
+                self.assertGreaterEqual(by_label['权重2']['w'], by_label['名称']['w'] * 1.8,
+                                        f'splitSpan={raw!r} 应等同数字 2，实得 权重2={by_label["权重2"]["w"]} '
+                                        f'vs 名称={by_label["名称"]["w"]}')
 
     def test_07_geometry_adjacent_rows_not_same_top(self):
         self._open_split(render())
