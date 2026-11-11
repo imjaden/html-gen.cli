@@ -1,34 +1,42 @@
 #!/usr/bin/env python3
 """渲染基线门禁 —— 模板源码与代表产物的 sha256 钉子（HTML-GEN-CL029）。
 
-来源: daily-checker 转交件 ⑥（本仓侧「改了模板却没人发现产物漂移」的守卫）。
+来源: daily-checker 转交件 ⑥（「改了模板却没人发现产物漂移」）。
 设计取舍:
-  - 只钉**子集**（4 个模板/样式源 + 5 个代表页），不做全仓哈希 —— 全量会在每次正常重建时全红。
-  - 基线文件随仓入库（`data/_render-baseline.json`），改模板后必须**显式** `--update` 重建，
-    这样「产物变了但没人说」会变成门禁红，而不是静默漂移。
+  - 只钉**子集**（模板/样式源 + 代表产物），不做全仓哈希 —— 全量会在每次正常重建时全红。
+  - `--verify` 把「产物是不是当前模板产出的」变成可判：用**从产物回收的参数集**重渲到临时目录比 sha。
+    没有这一条，基线只能证明「文件没被改过」，证明不了「产物与模板同源」（v1.1 修的正是这个缺口）。
+  - `--update` 默认先 verify；产物落后于模板时**拒绝**重建基线（需 `--force` 越权），
+    避免把「模板已前进、产物没重刷」的漂移一次性拍成绿。
   - 只依赖标准库；`--root` 供测试在临时副本上跑，不碰真仓。
 
 用法:
-  python3 scripts/baseline.py --check            # 校验（rc=0 全绿 / rc=1 有漂移或缺文件）
-  python3 scripts/baseline.py --check --json     # 机器可读
-  python3 scripts/baseline.py --update           # 重建基线（改完模板并确认产物正确后跑）
+  python3 scripts/baseline.py --check                 # 校验钉子（0 一致 / 1 漂移 / 2 无基线 / 3 损坏）
+  python3 scripts/baseline.py --check --json
+  python3 scripts/baseline.py --verify                # 重渲比 sha：产物是否由当前模板产出
+  python3 scripts/baseline.py --update                # 重建基线（先 verify；落后则拒，--force 越权）
   python3 scripts/baseline.py --check --root /tmp/x   # 在指定根上跑（测试用）
 """
 import argparse
 import hashlib
+import html as H
 import json
+import re
+import subprocess
 import sys
+import tempfile
 from datetime import datetime
 from pathlib import Path
 
 ROOT = Path(__file__).resolve().parent.parent
 BASELINE_REL = 'data/_render-baseline.json'
 
-# 子集口径: 模板/样式源（真值层）+ 代表产物（消费层各类型各一）
+# 钉子子集: 模板/样式源（真值层，含 slide 源）+ 代表产物（必须是「当前模板产出」，由 --verify 保证）
 SUBSET = [
     'layout-table.html',
     'layout-doc.html',
     'layout-knowledge.html',
+    'layout-slide.html',
     'style-guide.css',
     'index.html',
     'demos/index.html',
@@ -36,6 +44,24 @@ SUBSET = [
     'demos/countries-table.html',
     'demos/provinces-table.html',
 ]
+
+# --verify 作业表: 产物 → 数据源。title/subtitle/corner/home 全部从产物回收，
+# 不在脚本里维护第二份参数副本（参数漂移是 CL002 FIND-002 的老坑）。
+TABLE_PRODUCTS = {
+    'demos/countries-table.html': 'data/_countries-data.json',
+    'demos/provinces-table.html': 'data/_provinces-data.json',
+    'demos/table-features-demo.html': 'data/_table-features-demo.json',
+    'demos/table-actions-demo.html': 'data/_table-actions-demo.json',
+    'demos/hermes-profile-skills-list.html': 'data/_skills-table-config.json',
+}
+SLIDE_PRODUCTS = ['demos/slide-guide.html']
+# 就地重建型（`demo --rebuild` 写仓内固定路径，无法安全重渲到临时目录）⇒ verify 只标注不判定
+REBUILD_SPECIAL = ['demos/demos-index.html']
+
+GITHUB_RE = re.compile(r'<a href="([^"]+)" class="github-corner"')
+HOME_RE = re.compile(r'<a class="home-link" href="([^"]+)"')
+H1_RE = re.compile(r'<h1[^>]*>(.*?)</h1>', re.S)
+DESC_RE = re.compile(r'<div class="table-desc">(.*?)</div>', re.S)
 
 
 def sha256_of(path):
@@ -58,40 +84,118 @@ def snapshot(root):
 
 
 def load_baseline(root):
+    """返回 (dict|None, err)；err ∈ {None, 'missing', 'corrupt: …'}。"""
     p = root / BASELINE_REL
     if not p.is_file():
-        return None
+        return None, 'missing'
     try:
-        return json.loads(p.read_text(encoding='utf-8'))
+        return json.loads(p.read_text(encoding='utf-8')), None
     except json.JSONDecodeError as e:
-        print(f'❌ 基线文件损坏: {p} ({e})', file=sys.stderr)
-        return None
+        return None, f'corrupt: {e}'
 
 
-def cmd_update(root, quiet=False):
+def _unesc(s):
+    return H.unescape(s.replace('<br>', '\n')).strip()
+
+
+def _recovered_common(t):
+    a = []
+    m = GITHUB_RE.search(t)
+    if m:
+        a += ['--github-url', m.group(1)]
+    m = HOME_RE.search(t)
+    if m:
+        a += ['--home-url', m.group(1)]
+    return a
+
+
+def build_jobs(root):
+    """[(rel, argv)]：argv 能把该产物重渲出来（不含 -o）。"""
+    jobs = []
+    for rel, data in TABLE_PRODUCTS.items():
+        target = root / rel
+        if not target.is_file():
+            continue
+        t = target.read_text(encoding='utf-8')
+        argv = ['table', '-d', data]
+        m = H1_RE.search(t)
+        if m:
+            argv += ['--title', _unesc(m.group(1))]
+        d = DESC_RE.search(t)
+        if d and _unesc(d.group(1)):
+            argv += ['--subtitle', _unesc(d.group(1))]
+        argv += _recovered_common(t)
+        jobs.append((rel, argv))
+    for rel in SLIDE_PRODUCTS:
+        md = root / Path(rel).with_suffix('.md')
+        if (root / rel).is_file() and md.is_file():
+            jobs.append((rel, ['slide', '-i', str(md.relative_to(root))]))
+    return jobs
+
+
+def cmd_verify(root, as_json=False, quiet=False):
+    """重渲比 sha。rc: 0 全部一致 / 1 有落后或渲染失败。"""
+    cli = root / 'html-gen.py'
+    tmpdir = Path(tempfile.mkdtemp(prefix='baseline-verify-'))
+    results = []
+    for rel, argv in build_jobs(root):
+        out = tmpdir / rel.replace('/', '_')
+        r = subprocess.run([sys.executable, str(cli)] + argv + ['-o', str(out)],
+                           cwd=str(root), capture_output=True, text=True)
+        if r.returncode != 0 or not out.is_file():
+            results.append({'path': rel, 'status': 'fail', 'detail': r.stderr.strip()[:200]})
+            continue
+        same = out.read_text(encoding='utf-8') == (root / rel).read_text(encoding='utf-8')
+        results.append({'path': rel, 'status': 'current' if same else 'stale',
+                        'detail': f'{sha256_of(root / rel)[:12]} vs {sha256_of(out)[:12]}'})
+    for rel in REBUILD_SPECIAL:
+        if (root / rel).is_file():
+            results.append({'path': rel, 'status': 'skip',
+                            'detail': '就地重建型（demo --rebuild），verify 不判定'})
+    bad = [x for x in results if x['status'] in ('stale', 'fail')]
+    if as_json:
+        print(json.dumps({'ok': not bad, 'results': results}, ensure_ascii=False, indent=2))
+    elif not quiet:
+        for x in results:
+            icon = {'current': '✅', 'stale': '❌ 落后', 'fail': '❌ 失败', 'skip': '⏭ 跳过'}[x['status']]
+            print(f'{icon:9} {x["path"]:44} {x["detail"]}')
+        print('\n产物与当前模板一致' if not bad else
+              f'\n{len(bad)} 个产物落后于当前模板 —— 先重刷产物再 --update')
+    return 0 if not bad else 1
+
+
+def cmd_update(root, quiet=False, force=False):
+    if not force:
+        if cmd_verify(root, quiet=True) != 0:
+            print('❌ 产物落后于当前模板，拒绝重建基线（否则会把漂移拍成绿）。\n'
+                  '   先按 --verify 清单重刷产物；确需越权加 --force。', file=sys.stderr)
+            return 1
     data = {
-        'version': 1,
+        'version': 2,
         'generated': datetime.now().strftime('%Y-%m-%d'),
-        'note': 'CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update 重建',
+        'note': 'CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）',
+        'verified': not force,
         'files': snapshot(root),
     }
     out = root / BASELINE_REL
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     if not quiet:
-        print(f'✅ 已重建基线: {out}（{len(data["files"])} 个文件）')
+        print(f'✅ 已重建基线: {out}（{len(data["files"])} 个文件，verified={data["verified"]}）')
     return 0
 
 
 def cmd_check(root, as_json=False):
-    base = load_baseline(root)
+    base, err = load_baseline(root)
     if base is None:
-        msg = f'未找到基线文件 {root / BASELINE_REL} —— 先跑 --update 建立基线'
+        msg = (f'未找到基线文件 {root / BASELINE_REL} —— 先跑 --update 建立基线'
+               if err == 'missing' else f'基线文件损坏（{root / BASELINE_REL}）：{err}')
         if as_json:
-            print(json.dumps({'ok': False, 'error': msg, 'mismatches': []}, ensure_ascii=False))
+            print(json.dumps({'ok': False, 'total': len(SUBSET), 'error': msg, 'mismatches': []},
+                             ensure_ascii=False))
         else:
             print(f'❌ {msg}', file=sys.stderr)
-        return 2
+        return 2 if err == 'missing' else 3
 
     expected = base.get('files', {})
     actual = snapshot(root)
@@ -103,7 +207,7 @@ def cmd_check(root, as_json=False):
                                'expected': None, 'actual': act.get('sha256')})
         elif act.get('reason') == 'missing':
             if exp.get('sha256') is None:
-                # 基线建立时该文件本就不存在（子集里允许缺项）⇒ 仍算一致
+                # 基线建立时该文件本就不存在（子集允许缺项）⇒ 仍算一致
                 continue
             mismatches.append({'path': rel, 'reason': 'missing',
                                'expected': exp.get('sha256'), 'actual': None})
@@ -122,13 +226,15 @@ def cmd_check(root, as_json=False):
         hit = next((m for m in mismatches if m['path'] == rel), None)
         if hit:
             print(f"❌ {rel}: {hit['reason']}"
-                  + (f" （{str(hit['expected'])[:12]} → {str(hit['actual'])[:12]}）" if hit['reason'] == 'changed' else ''))
+                  + (f" （{str(hit['expected'])[:12]} → {str(hit['actual'])[:12]}）"
+                     if hit['reason'] == 'changed' else ''))
         else:
             print(f'✅ {rel}')
     if ok:
         print(f'\n基线一致: {len(SUBSET)}/{len(SUBSET)}（{root}）')
         return 0
-    print(f'\n漂移 {len(mismatches)}/{len(SUBSET)} —— 确认产物正确后跑 --update 重建基线', file=sys.stderr)
+    print(f'\n漂移 {len(mismatches)}/{len(SUBSET)} —— 确认产物正确后跑 --update 重建基线',
+          file=sys.stderr)
     return 1
 
 
@@ -137,10 +243,12 @@ def main(argv=None):
         prog='baseline.py',
         description='渲染基线门禁: 模板源码 + 代表产物的 sha256 钉子（HTML-GEN-CL029）')
     g = ap.add_mutually_exclusive_group(required=True)
-    g.add_argument('--check', action='store_true', help='校验当前状态是否与基线一致（rc=0/1）')
-    g.add_argument('--update', action='store_true', help='重建基线文件')
+    g.add_argument('--check', action='store_true', help='校验钉子（0/1/2/3）')
+    g.add_argument('--verify', action='store_true', help='重渲比 sha：产物是否由当前模板产出')
+    g.add_argument('--update', action='store_true', help='重建基线（默认先 verify）')
     ap.add_argument('--root', default=None, help='仓库根（默认本脚本上一级）')
-    ap.add_argument('--json', action='store_true', help='--check 时输出 JSON')
+    ap.add_argument('--json', action='store_true', help='机器可读输出')
+    ap.add_argument('--force', action='store_true', help='--update 跳过 verify（越权）')
     ap.add_argument('--quiet', action='store_true')
     args = ap.parse_args(argv)
 
@@ -149,7 +257,9 @@ def main(argv=None):
         print(f'❌ 根目录不存在: {root}', file=sys.stderr)
         return 2
     if args.update:
-        return cmd_update(root, quiet=args.quiet)
+        return cmd_update(root, quiet=args.quiet, force=args.force)
+    if args.verify:
+        return cmd_verify(root, as_json=args.json, quiet=args.quiet)
     return cmd_check(root, as_json=args.json)
 
 

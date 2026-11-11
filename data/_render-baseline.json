@@ -1,7 +1,8 @@
 {
-  "version": 1,
+  "version": 2,
   "generated": "2026-11-11",
-  "note": "CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update 重建",
+  "note": "CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）",
+  "verified": true,
   "files": {
     "layout-table.html": {
       "sha256": "55bdc4fd5a5c61e1091b6a1b321f3ef43baa8a8a97774193558638b1084d5713",
@@ -14,6 +15,10 @@
     "layout-knowledge.html": {
       "sha256": "8924b1c14ce8394649aa8ad54d14d47cfee9ce5dfc95368bc6572449f5172fd2",
       "bytes": 28620
+    },
+    "layout-slide.html": {
+      "sha256": "8d844975fa77e1435404cbca9410857ca1e89c2936c707f6e76835d500901279",
+      "bytes": 33424
     },
     "style-guide.css": {
       "sha256": "75bc4f81a22ff2bb6a8e02f14354108e60f4ec621c3b99c30769a248543b5a91",
@@ -32,12 +37,12 @@
       "bytes": 113962
     },
     "demos/countries-table.html": {
-      "sha256": "da446767a0c6ca18a879130561689da52d64e27d60bd14a47298a4f871bb5e23",
-      "bytes": 231672
+      "sha256": "e8c6964204555fc4c605034922464a0c85aa37b3f556d57eccb9242ee8949dcc",
+      "bytes": 246330
     },
     "demos/provinces-table.html": {
-      "sha256": "7f2d18ab8b91eb4e16b048c0890dd2b1f061693a989a08786ec6294bc0107d0c",
-      "bytes": 109231
+      "sha256": "5123acb65b23566ebf70fe3517f634513fdbbb760a7e9db123e1fbc47ce7ff15",
+      "bytes": 123889
     }
   }
 }

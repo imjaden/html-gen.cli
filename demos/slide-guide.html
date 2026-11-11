@@ -250,199 +250,210 @@ pre code { background: none; padding: 0; }
 
 </style>
 <style>
-.doc-wrapper { display: flex; min-height: 100vh; }
-.doc-sidebar {
+.slide-wrapper { display: flex; min-height: 100vh; }
+.slide-sidebar {
   width: 260px; min-width: 260px;
   background: var(--surface-900);
   border-right: 1px solid #2a2a3e;
-  flex-direction: column;
+  display: flex; flex-direction: column;
   position: sticky; top: 0; height: 100vh;
   overflow-y: auto;
-  transition: width 0.25s, min-width 0.25s;
 }
-
-/* ── Bare mode: 默认隐藏侧边栏/工具栏，URL 入参驱动显示 ── */
-.doc-sidebar { display: none; }
-.top-toolbar { display: none; }
-body.show-sidebar .doc-sidebar { display: flex; }
-body.show-toolbar .top-toolbar { display: flex; }
-.doc-sidebar.collapsed { width: 48px; min-width: 48px; }
-.doc-sidebar-resize {
-  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
-  cursor: col-resize; z-index: 20; transition: background 0.15s;
-}
-.doc-sidebar-resize:hover, .doc-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
-.doc-sidebar.collapsed .doc-sidebar-header,
-.doc-sidebar.collapsed .doc-toc,
-.doc-sidebar.collapsed .doc-sidebar-footer { display: none; }
-.doc-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
-.doc-sidebar.collapsed .doc-sidebar-icon { display: flex; }
-.doc-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
-.doc-sidebar-header {
+.slide-sidebar-header {
   padding: 16px 18px 12px;
   border-bottom: 1px solid #2a2a3e;
   flex-shrink: 0;
 }
-.doc-sidebar-header .sidebar-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
-.doc-sidebar-header .sidebar-title:hover { color: var(--cobalt-300); }
-.doc-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
-.doc-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
-.doc-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
-.doc-h3-toggle:hover { color: #9ca3af; }
-.doc-h3-toggle.on { color: var(--cobalt-400); }
-.doc-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
-.doc-toc ul { list-style: none; padding: 0; margin: 0; }
-.doc-toc a {
-  display: block;
-  padding: 7px 18px 7px 0;
-  font-size: 0.8rem; color: #9ca3af;
-  text-decoration: none;
-  border-left: 3px solid transparent;
-  transition: all 0.15s;
-  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+.slide-sidebar-header .slide-title { font-size: 13px; font-weight: 700; color: var(--cobalt-400); overflow: hidden; text-overflow: ellipsis; white-space: nowrap; cursor: pointer; }
+.slide-sidebar-header .slide-title:hover { color: var(--cobalt-300); }
+.slide-sidebar-header .sub { font-size: 11px; color: #6b7280; margin-top: 2px; }
+.slide-sidebar-header .sub-row { display: flex; align-items: center; justify-content: space-between; }
+.slide-h3-toggle { display: flex; align-items: center; gap: 4px; cursor: pointer; user-select: none; font-size: 0.65rem; color: #6b7280; white-space: nowrap; }
+.slide-h3-toggle:hover { color: #9ca3af; }
+.slide-h3-toggle.on { color: var(--cobalt-400); }
+
+/* ── Sidebar Collapse ── */
+.slide-sidebar { width: 260px; min-width: 260px; transition: width 0.25s, min-width 0.25s; }
+.slide-sidebar.collapsed { width: 48px; min-width: 48px; }
+.slide-sidebar-resize {
+  position: absolute; right: -4px; top: 0; bottom: 0; width: 8px;
+  cursor: col-resize; z-index: 20; transition: background 0.15s;
 }
-.doc-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
-.doc-toc a.active {
-  background: rgba(79,70,229,0.1);
-  color: var(--cobalt-400);
-  border-left-color: var(--cobalt-600);
+.slide-sidebar-resize:hover, .slide-sidebar-resize.active { background: var(--cobalt-600); opacity: 0.4; }
+.slide-sidebar.collapsed .slide-title,
+.slide-sidebar.collapsed .sub-row,
+.slide-sidebar.collapsed .slide-h3-toggle,
+.slide-sidebar.collapsed .slide-toc,
+.slide-sidebar.collapsed .slide-sidebar-footer { display: none; }
+.slide-sidebar-icon { display: none; font-size: 1.2rem; justify-content: center; align-items: center; padding: 14px 0 8px; cursor: pointer; user-select: none; }
+.slide-sidebar.collapsed .slide-sidebar-icon { display: flex; }
+.slide-sidebar-icon:hover { background: rgba(79,70,229,0.15); }
+.slide-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
+.slide-sidebar-footer .sb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e;
+  background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem;
+  transition: all 0.15s; font-family: inherit;
 }
-.doc-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
-.doc-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; display: none; }
-.doc-toc .toc-h3.show { display: block; }
-
-.doc-main { flex: 1; min-width: 0; overflow-y: auto; }
-.doc-header {
-  padding: 0 80px;
-  margin-top: 30px;
-  position: sticky; top: 0; z-index: 10;
-  background: var(--surface-950);
-}
-.doc-header h1 { font-size: 1.3rem; font-weight: 700; color: #f0f0f0; margin: 0; }
-.doc-header .meta { font-size: 0.75rem; color: #6b7280; line-height: 1.6; margin-top: 6px; }
-.doc-header .meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
-/* ── md 路径行: 默认隐藏, ?show-md=1 显示 (隐私) ── */
-.meta-path { display: none; }
-body.show-md .meta-path { display: inline; }
-.doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
-/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
-body.width-narrow .doc-body { max-width: 720px; }
-body.width-wide .doc-body { max-width: 1280px; }
-
-.doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
-.doc-body h1:first-child { margin-top: 0; }
-.doc-body h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 1rem 0 1rem 0; }
-.doc-body h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
-.doc-body h4 { font-size: 0.95rem; font-weight: 600; color: #c0c0c0; margin: 0.75rem 0 0.3rem; }
-.doc-body h5 { font-size: 0.88rem; font-weight: 600; color: #b0b0b0; margin: 0.6rem 0 0.25rem; }
-.doc-body h6 { font-size: 0.82rem; font-weight: 600; color: #a0a0a0; margin: 0.5rem 0 0.2rem; }
-.doc-body p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
-.doc-body ul, .doc-body ol { margin: 0.6rem 0; padding-left: 1.5rem; }
-.doc-body li { line-height: 1.8; margin: 3px 0; }
-.doc-body table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
-.doc-body th, .doc-body td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
-.doc-body th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
-.doc-body tr:nth-child(even) { background: rgba(255,255,255,0.02); }
-.doc-body tr:hover { background: rgba(79,70,229,0.06); }
-.doc-body code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
-.doc-body pre { position: relative; background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
-.doc-body pre code { background: none; padding: 0; font-size: 0.78rem; }
-.copy-btn { position: absolute; top: 6px; right: 6px; background: rgba(255,255,255,0.06); border: 1px solid #2a2a3e; color: #9ca3af; padding: 3px 8px; border-radius: var(--radius-sm); font-size: 0.65rem; cursor: pointer; font-family: inherit; transition: all 0.15s; opacity: 0; }
-pre:hover .copy-btn { opacity: 1; }
-.copy-btn:hover { background: rgba(79,70,229,0.2); color: var(--cobalt-400); border-color: var(--cobalt-600); }
-.doc-body blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
-.doc-body hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
-.doc-body img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
-.doc-footer { margin-top: 2rem; padding-top: 1rem; border-top: 1px solid #2a2a3e; font-size: 0.75rem; color: #6b7280; }
-
-.progress-bar { position: fixed; top: 0; left: 0; width: 0; height: 2px; background: var(--cobalt-600); z-index: 999; transition: width 0.1s linear; }
-
-.lightbox { display: none; position: fixed; inset: 0; z-index: 1000; background: rgba(0,0,0,0.85); align-items: center; justify-content: center; cursor: zoom-out; }
-.lightbox.active { display: flex; }
-.lightbox img { max-width: 90vw; max-height: 90vh; border-radius: 8px; box-shadow: 0 8px 40px rgba(0,0,0,0.5); cursor: default; }
-.lightbox .lb-close { position: fixed; top: 16px; right: 20px; font-size: 28px; color: #aaa; cursor: pointer; line-height: 1; }
-.lightbox .lb-close:hover { color: #fff; }
-.doc-body img { cursor: zoom-in; }
-
-.anchor-link { opacity: 0; text-decoration: none; color: var(--cobalt-500); font-size: 0.75em; margin-left: 4px; font-weight: 400; transition: opacity 0.15s; }
-h2:hover .anchor-link, h3:hover .anchor-link, h4:hover .anchor-link, h5:hover .anchor-link, h6:hover .anchor-link { opacity: 1; }
-.anchor-link:hover { color: var(--cobalt-400); }
-
-.code-with-lines { counter-reset: line; padding-left: 0; }
-.code-with-lines .line::before { counter-increment: line; content: counter(line); display: inline-block; width: 2.5em; min-width: 2.5em; text-align: right; padding-right: 1em; color: #4a5568; user-select: none; }
-
-.doc-body blockquote.callout { border-left-width: 4px; padding: 10px 16px; margin: 0.75rem 0; }
-.doc-body blockquote.callout strong { font-weight: 700; }
-.doc-body blockquote.callout.note { border-left-color: var(--cobalt-500); background: rgba(79,70,229,0.08); color: #c0c4f0; }
-.doc-body blockquote.callout.tip { border-left-color: #34d399; background: rgba(52,211,153,0.08); color: #a7f3d0; }
-.doc-body blockquote.callout.warning { border-left-color: #fbbf24; background: rgba(251,191,36,0.08); color: #fde68a; }
-.doc-body blockquote.callout.danger { border-left-color: #f87171; background: rgba(248,113,113,0.08); color: #fecaca; }
-
-/* ── Sidebar Footer ── */
-.doc-sidebar-footer { padding: 8px 12px; border-top: 1px solid #2a2a3e; display: flex; align-items: center; gap: 4px; flex-shrink: 0; }
-.doc-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
-.doc-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+.slide-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
+.sb-collapse-btn { margin-left: auto; }
 
 /* ── TOC Search ── */
-.doc-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
-.doc-toc-search.active { display: block; }
-.doc-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
-.doc-toc-search input:focus { border-color: var(--cobalt-600); }
-.doc-toc-search input::placeholder { color: #555; }
-:root.light .doc-toc-search { border-color: #e5e5e5; }
-:root.light .doc-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
-.doc-toc a.filtered-out { display: none; }
+.slide-toc-search { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
+.slide-toc-search.active { display: block; }
+.slide-toc-search input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
+.slide-toc-search input:focus { border-color: var(--cobalt-600); }
+.slide-toc-search input::placeholder { color: #555; }
+:root.light .slide-toc-search { border-color: #e5e5e5; }
+:root.light .slide-toc-search input { background: #f5f5f5; border-color: #ddd; color: #333; }
+.slide-toc a.filtered-out { display: none; }
+.toc-h3 { display: none; }
+.toc-h3.show { display: block; }
+.slide-toc .toc-h3 { display: none; }
+.slide-toc .toc-h3.show { display: block; }
+.slide-toc { flex: 1; overflow-y: auto; padding: 8px 0; }
+.slide-toc a {
+  display: block; padding: 7px 18px 7px 0;
+  font-size: 0.8rem; color: #9ca3af; text-decoration: none;
+  border-left: 3px solid transparent; transition: all 0.15s;
+  overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.slide-toc a:hover { background: rgba(79,70,229,0.06); color: #e0e0e0; }
+.slide-toc a.active {
+  background: rgba(79,70,229,0.1); color: var(--cobalt-400);
+  border-left-color: var(--cobalt-600);
+}
+.slide-toc .toc-h2 { padding-left: 16px; font-size: 0.75rem; }
+.slide-toc .toc-h3 { padding-left: 28px; font-size: 0.72rem; color: #6b7280; }
+
+.slide-main { flex: 1; display: flex; flex-direction: column; min-width: 0; overflow: hidden; position: relative; }
+.slide-page-num {
+  position: absolute; top: 12px; right: 20px; font-size: 0.7rem; color: #6b7280;
+  z-index: 5; opacity: 1; transition: opacity 0.5s;
+}
+.slide-page-num.fade { opacity: 0; }
+.slide-page {
+  flex: 1; overflow-y: auto; padding: 24px 40px 48px;
+  font-size: 0.88rem;
+  animation: slideFadeIn 0.22s ease;
+}
+@keyframes slideFadeIn { from{opacity:0;transform:translateX(6px)} to{opacity:1;transform:translateX(0)} }
+
+/* ── Cover Page ── */
+.slide-cover { display: flex; flex-direction: column; align-items: center; justify-content: center; text-align: center; }
+.slide-cover h1 { font-size: 1.6rem; margin-bottom: 8px; color: #f0f0f0; }
+.slide-cover .slide-cover-sub { font-size: 0.95rem; color: var(--cobalt-400); margin-bottom: 6px; }
+.slide-cover .slide-cover-meta { font-size: 0.75rem; color: #6b7280; margin-bottom: 12px; }
+.slide-cover .slide-cover-meta code { font-size: 0.72rem; background: rgba(255,255,255,0.04); padding: 1px 5px; }
+/* ── md 路径行: slide 无 show-md 运行时显隐, 默认隐藏 (隐私) ── */
+.meta-path { display: none; }
+.slide-cover .slide-cover-count { font-size: 0.8rem; color: #9ca3af; }
+
+/* ── Content Styles ── */
+.slide-page h2 { font-size: 1.25rem; font-weight: 600; color: #e0e0e0; margin: 0 0 1rem 0; }
+.slide-page h3 { font-size: 1.05rem; font-weight: 600; color: #d0d0d0; margin: 0.5rem 0 0.3rem; }
+.slide-page p { font-size: 0.88rem; line-height: 1.8; margin: 0.5rem 0; }
+.slide-page ul, .slide-page ol { margin: 0.6rem 0; padding-left: 1.5rem; }
+.slide-page li { line-height: 1.8; margin: 3px 0; }
+.slide-page table { border-collapse: collapse; margin: 0.75rem 0; width: 100%; font-size: 0.8rem; }
+.slide-page th, .slide-page td { border: 1px solid #2a2a3e; padding: 8px 12px; text-align: left; }
+.slide-page th { background: #0d0d1a; font-weight: 600; color: #9ca3af; font-size: 0.75rem; text-transform: uppercase; letter-spacing: 0.03em; }
+.slide-page tr:nth-child(even) { background: rgba(255,255,255,0.02); }
+.slide-page tr:hover { background: rgba(79,70,229,0.06); }
+.slide-page code { font-family: var(--font-mono); font-size: 0.78rem; background: rgba(255,255,255,0.06); padding: 2px 6px; border-radius: 3px; }
+.slide-page pre { background: #0d0d1a; border: 1px solid #2a2a3e; border-radius: var(--radius-md); padding: 14px 16px; overflow-x: auto; margin: 0.75rem 0; }
+.slide-page pre code { background: none; padding: 0; font-size: 0.78rem; }
+.slide-page blockquote { border-left: 3px solid var(--cobalt-600); margin: 0.1rem 0; padding: 2px 16px; background: rgba(79,70,229,0.06); color: #b0b0c0; }
+.slide-page hr { border: none; border-top: 1px solid #2a2a3e; margin: 0.5rem 0; }
+.slide-page img { max-width: 100%; border-radius: var(--radius-md); margin: 1rem 0; }
+
+/* ── H3 Column Mode ── */
+.slide-columns { display: flex; gap: 24px; height: 100%; }
+.slide-columns.cols-2 > .slide-col { flex: 1; min-width: 0; }
+.slide-columns.cols-3 > .slide-col { flex: 1; min-width: 0; }
+.slide-col { overflow-y: auto; }
+.slide-col h3 { font-size: 1rem; font-weight: 600; color: var(--cobalt-400); margin-bottom: 8px; padding-bottom: 4px; border-bottom: 1px solid #2a2a3e; }
+.slide-col h3:first-child { margin-top: 0; }
+
+/* ── Performance Warning ── */
+.perf-warning {
+  margin: 0 40px 8px; padding: 8px 14px; border-radius: 6px;
+  background: rgba(251,191,36,0.1); border: 1px solid rgba(251,191,36,0.25);
+  color: #fbbf24; font-size: 0.72rem; display: none;
+}
+
+/* ── Navigation Dots ── */
+.slide-nav { display: flex; justify-content: center; align-items: center; gap: 10px; padding: 8px 16px 12px; }
+.slide-dots { display: flex; gap: 5px; align-items: center; }
+.slide-dot {
+  width: 7px; height: 7px; border-radius: 50%; background: #3a3a5e;
+  cursor: pointer; transition: all 0.2s; flex-shrink: 0;
+}
+.slide-dot.active { background: var(--cobalt-400); width: 22px; border-radius: 4px; }
+.slide-dot.visited { background: #555; }
+.slide-nav-title { font-size: 0.68rem; color: #6b7280; max-width: 400px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 
 /* ── Top-Right Toolbar ── */
-.top-toolbar { position: fixed; top: 12px; right: 88px; z-index: 900; align-items: center; gap: 2px; background: rgba(17,17,27,0.88); backdrop-filter: blur(12px); border: 1px solid #2a2a3e; border-radius: 28px; padding: 3px 5px; }
+.top-toolbar {
+  position: fixed; top: 12px; right: 88px; z-index: 900;
+  display: flex; align-items: center; gap: 2px;
+  background: rgba(17,17,27,0.88); backdrop-filter: blur(12px);
+  border: 1px solid #2a2a3e; border-radius: 28px;
+  padding: 3px 5px;
+}
 :root.light .top-toolbar { background: rgba(255,255,255,0.88); border-color: #ddd; }
-.tb-btn { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; border-radius: 50%; border: none; background: transparent; color: #9ca3af; cursor: pointer; font-size: 0.85rem; transition: all 0.2s; font-family: inherit; }
+.tb-btn {
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 32px; height: 32px; border-radius: 50%; border: none;
+  background: transparent; color: #9ca3af; cursor: pointer;
+  font-size: 0.85rem; transition: all 0.2s; font-family: inherit;
+}
 .tb-btn:hover { background: rgba(79,70,229,0.15); color: #e0e0e0; }
 .tb-btn.active { background: var(--cobalt-600); color: #fff; }
 .tb-divider { width: 1px; height: 18px; background: #2a2a3e; margin: 0 3px; }
 
 /* ── Light Theme ── */
-:root.light { --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0; --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1; }
+:root.light {
+  --surface-950: #f5f5f5; --surface-900: #ffffff; --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8; --cobalt-950: #eef2ff; --cobalt-600: #6366f1;
+}
 :root.light body { color: #333; background: #f5f5f5; }
-:root.light .doc-sidebar { background: #fff; border-color: #e5e5e5; }
-:root.light .doc-sidebar-header { border-color: #e5e5e5; }
-:root.light .doc-sidebar-footer { border-color: #e5e5e5; }
-:root.light .doc-toc a { color: #666; }
-:root.light .doc-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
-:root.light .doc-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
-:root.light .doc-body h2 { color: #222; }
-:root.light .doc-body h3 { color: #333; }
-:root.light .doc-body h4 { color: #444; }
-:root.light .doc-body h5 { color: #555; }
-:root.light .doc-body h6 { color: #666; }
-:root.light .doc-body p, :root.light .doc-body li { color: #444; }
-:root.light .doc-body code { background: rgba(0,0,0,0.06); color: #555; }
-:root.light .doc-body pre { background: #f0f0f0; border-color: #ddd; color: #333; }
-:root.light .doc-body blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
-:root.light .doc-body table th { background: #f0f0f0; color: #555; }
-:root.light .doc-body table td { border-color: #ddd; }
-:root.light .doc-body hr { border-color: #ddd; }
-:root.light .doc-header { background: #f5f5f5; }
-:root.light .doc-header h1 { color: #222; }
+:root.light .slide-sidebar { background: #fff; border-color: #e5e5e5; }
+:root.light .slide-sidebar-header { border-color: #e5e5e5; }
+:root.light .slide-toc a { color: #666; }
+:root.light .slide-toc a:hover { background: rgba(79,70,229,0.04); color: #333; }
+:root.light .slide-toc a.active { background: rgba(79,70,229,0.08); color: var(--cobalt-600); }
+:root.light .slide-page h2 { color: #222; }
+:root.light .slide-page h3 { color: #333; }
+:root.light .slide-page p, :root.light .slide-page li { color: #444; }
+:root.light .slide-page code { background: rgba(0,0,0,0.06); color: #555; }
+:root.light .slide-page pre { background: #f0f0f0; border-color: #ddd; color: #333; }
+:root.light .slide-page blockquote { background: rgba(79,70,229,0.04); color: #555; border-color: var(--cobalt-400); }
+:root.light .slide-page table th { background: #f0f0f0; color: #555; }
+:root.light .slide-page table td { border-color: #ddd; }
+:root.light .slide-page hr { border-color: #ddd; }
+:root.light .slide-cover h1 { color: #222; }
+:root.light .slide-cover .slide-cover-sub { color: var(--cobalt-600); }
+:root.light .slide-nav { background: #f5f5f5; }
+:root.light .slide-dot { background: #ccc; }
+:root.light .slide-dot.visited { background: #999; }
+:root.light .perf-warning { background: rgba(251,191,36,0.08); }
 
 @media (max-width: 768px) {
-  .doc-sidebar { display: none; }
-  .doc-sidebar.open { display: flex; position: fixed; top: 0; left: 0; width: 260px; height: 100vh; z-index: 50; box-shadow: 4px 0 20px rgba(0,0,0,0.5); }
-  .doc-body { padding: 0 16px 40px; }
-  .doc-header { padding: 0 16px; }
+  .slide-sidebar { display: none; }
+  .slide-page { padding: 16px 20px 40px; }
 }
 
 @media print {
-  .doc-sidebar, .top-toolbar, .progress-bar, .github-corner, .github-corner-hit, .home-link { display: none !important; }
-  .doc-body { color: #000; }
-  .doc-body pre { background: #f5f5f5; border: 1px solid #ccc; color: #000; }
-  .doc-body code { background: #f0f0f0; color: #000; }
-  .doc-body a { color: #000; text-decoration: underline; }
+  .slide-sidebar, .top-toolbar, .slide-navigation, .slide-dots, .github-corner, .github-corner-hit, .home-link { display: none !important; }
+  .slide-container { padding: 0; }
+  .slide-page { break-after: page; box-shadow: none; border: none; }
+  .slide-page h1, .slide-page h2, .slide-page h3 { color: #000; }
+  body { background: #fff; }
 }
 /* ── GitHub Corner ── */
 .github-corner { position: fixed; top: 0; right: 0; z-index: 950; color: #9ca3af; pointer-events: none; }
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
-body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-hit, body:not(.show-toolbar) .home-link { display: none; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
   .home-link { position: fixed; top: 84px; right: 12px; z-index: 949; width: 36px; height: 36px; border-radius: 8px; background: rgba(0,0,0,0.41); display: flex; align-items: center; justify-content: center; text-decoration: none; font-size: 1rem; }
@@ -452,10 +463,41 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 </style>
 </head>
 <body>
-<div class="progress-bar" id="progressBar"></div>
-<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
-  <span class="lb-close" onclick="closeLightbox()">✕</span>
-  <img id="lightboxImg" src="" alt="">
+<div class="slide-wrapper">
+
+  <aside class="slide-sidebar" id="sidebar">
+    <div class="slide-sidebar-resize" id="sbResize"></div>
+    <div class="slide-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">🎞️</div>
+    <div class="slide-sidebar-header">
+      <div class="slide-title" title="D 型 · 幻灯片方案" id="slideTitle">🎞️ D 型 · 幻灯片方案</div>
+      <div class="sub-row">
+        <div class="sub"></div>
+        <div class="slide-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
+      </div>
+    </div>
+    <nav class="slide-toc" id="toc"></nav>
+    <!-- TOC Search -->
+    <div class="slide-toc-search" id="tocSearchWrap">
+      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
+    </div>
+    <div class="slide-sidebar-footer">
+      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
+      <span style="flex:1"></span>
+      <button class="sb-btn sb-collapse-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
+    </div>
+  </aside>
+
+  <div class="slide-main" id="slideMain">
+    <div class="perf-warning" id="perfWarning"></div>
+    <div class="slide-page-num" id="slidePageNum"></div>
+    <div class="slide-page" id="slidePage"></div>
+  </div>
+
+</div>
+
+<div class="slide-nav" id="slideNav">
+  <div class="slide-dots" id="slideDots"></div>
+  <div class="slide-nav-title" id="slideNavTitle"></div>
 </div>
 
 <!-- Top-Right Toolbar -->
@@ -465,44 +507,16 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <span class="tb-divider"></span>
   <button class="tb-btn" id="themeBtn" onclick="toggleTheme()" title="切换主题">🌙</button>
 </div>
-<a href="https://github.com/imjaden/html-gen.cli" class="github-corner" target="_blank" rel="noopener" aria-label="View source on Github">
-  <svg width="72" height="72" viewBox="0 0 250 250" aria-hidden="true">
-    <path d="M0,0 L115,115 L130,115 L142,142 L250,250 L250,0 Z" fill="rgba(0,0,0,0.41)"></path>
-    <path d="M128.3,109.0 C113.8,99.7 119.0,89.6 119.0,89.6 C122.0,82.7 120.5,78.6 120.5,78.6 C119.2,72.0 123.4,76.3 123.4,76.3 C127.3,80.9 125.5,87.3 125.5,87.3 C122.9,97.6 130.6,101.9 134.4,103.2" fill="currentColor" style="transform-origin: 130px 106px;" class="octo-arm"></path>
-    <path d="M115.0,115.0 C114.9,115.1 118.7,116.5 119.8,115.4 L133.7,101.6 C136.9,99.2 139.9,98.4 142.2,98.6 C133.8,88.0 127.5,74.4 143.8,58.0 C148.5,53.4 154.0,51.2 159.7,51.0 C160.3,49.4 163.2,43.6 171.4,40.1 C171.4,40.1 176.1,42.5 178.8,56.2 C183.1,58.6 187.2,61.8 190.9,65.4 C194.5,69.0 197.7,73.2 200.1,77.6 C213.8,80.2 216.3,84.9 216.3,84.9 C212.7,93.1 206.9,96.0 205.4,96.6 C205.1,102.4 203.0,107.8 198.3,112.5 C181.9,128.9 168.3,122.5 157.7,114.1 C157.9,116.9 156.7,120.9 152.7,124.9 L141.0,136.5 C139.8,137.7 141.6,141.9 141.8,141.8 Z" fill="currentColor" class="octo-body"></path>
-  </svg>
-</a>
-<a class="github-corner-hit" href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener" aria-label="GitHub"></a>
 
 
-<div class="doc-wrapper">
-  <aside class="doc-sidebar" id="sidebar">
-    <div class="doc-sidebar-resize" id="sbResize"></div>
-    <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
-    <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="D 型 · 幻灯片方案" id="sidebarTitle">📄 D 型 · 幻灯片方案</div>
-      <div class="sub-row">
-        <div class="sub"></div>
-        <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
-      </div>
-    </div>
-    <nav class="doc-toc" id="toc"></nav>
-    <!-- TOC Search -->
-    <div class="doc-toc-search" id="tocSearchWrap">
-      <input type="text" id="tocSearchInput" placeholder="搜索章节..." onkeydown="tocSearchKey(event)">
-    </div>
-    <div class="doc-sidebar-footer">
-      <button class="sb-btn" id="tocSearchBtn" onclick="toggleTocSearch()" title="搜索 TOC">🔍</button>
-      <span style="flex:1"></span>
-      <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
-    </div>
-  </aside>
-  <div class="doc-main" id="docMain">
-    <div class="doc-header">
-      <h1>D 型 · 幻灯片方案</h1>
-      <div class="meta">创建: 2026-08-24 16:05 · 编辑: 2026-08-24 16:05<br>字数: 424 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
-    </div>
-    <div class="doc-body" id="docBody"><hr>
+
+<!-- Hidden: content source for DOM cloning -->
+<div style="display:none">
+  <div class="doc-header">
+    <h1>D 型 · 幻灯片方案</h1>
+    <div class="meta">创建: 2026-08-24 16:05 · 编辑: 2026-08-24 16:05<br>字数: 726 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
+  </div>
+  <div id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
 <p>幻灯片模板适用于<strong>演示与分页展示</strong>场景，是三层模板中的演示层：每个 <code>## h2</code> 标题为一页，h1 为封面页。</p>
 <table><thead><tr>
@@ -694,48 +708,42 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 <td>新增「模板案例」章节（★ featured 精选）</td>
 </tr>
 </tbody></table></div>
-  </div>
 </div>
+
 <script>
 (function() {
-  // ── Bare mode: URL 入参驱动侧边栏/工具栏显示 ──
-  var params = new URLSearchParams(location.search);
-  // 默认展示；?sidebar=0 / ?toolbar=0 显式隐藏（知识库嵌入由 layout-knowledge 追加该参数）
-  if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
-  if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
-
-  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
-  var w = params.get('width');
-  if (w === 'narrow') document.body.classList.add('width-narrow');
-  else if (w === 'wide') document.body.classList.add('width-wide');
-  // medium 或未指定: 不加 class, 用默认 960px
-
-  // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──
-  if (params.get('show-md') === '1') document.body.classList.add('show-md');
-
   const body = document.getElementById('docBody');
   const toc  = document.getElementById('toc');
   const headings = body.querySelectorAll('h2, h3');
   const tocItems = [];
 
   /* ═══════ i18n & Theme ═══════ */
-  var _lang = localStorage.getItem('html-gen:doc_lang');
+  var _lang = localStorage.getItem('html-gen:layoutslide_lang');
   _lang = (_lang === 'zh' || _lang === 'en') ? _lang : 'zh';
-  var L = { zh: { pages: '共 {n} 节' }, en: { pages: '{n} sections' } };
-  function t(key, params) { var s = L[_lang][key]; Object.keys(params).forEach(function(k) { s = s.replace('{'+k+'}', params[k]); }); return s; }
+  var L = {
+    zh: { pages: '共 {n} 页', current: '{m} / {n}' },
+    en: { pages: '{n} pages', current: '{m} / {n}' }
+  };
+  function t(key, params) {
+    var s = L[_lang][key];
+    Object.keys(params).forEach(function(k) { s = s.replace('{' + k + '}', params[k]); });
+    return s;
+  }
+  // Init lang buttons
   document.getElementById('langZh').classList.toggle('active', _lang === 'zh');
   document.getElementById('langEn').classList.toggle('active', _lang === 'en');
 
   window.setLang = function(lang) {
     if (lang !== 'zh' && lang !== 'en') return;
     _lang = lang;
-    try { localStorage.setItem('html-gen:doc_lang', lang); } catch(e) {}
+    localStorage.setItem('html-gen:layoutslide_lang', lang);
     document.getElementById('langZh').classList.toggle('active', lang === 'zh');
     document.getElementById('langEn').classList.toggle('active', lang === 'en');
-    updateSub();
+    if (typeof slide !== 'undefined' && slide._updateSub) slide._updateSub();
   };
 
-  var _theme = localStorage.getItem('html-gen:doc_theme');
+  // Theme init + toggle
+  var _theme = localStorage.getItem('html-gen:layoutslide_theme');
   if (_theme === 'light') document.documentElement.classList.add('light');
   document.getElementById('themeBtn').textContent = (_theme === 'light') ? '☀️' : '🌙';
 
@@ -743,24 +751,30 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
     var r = document.documentElement;
     var isLight = !r.classList.contains('light');
     r.classList.toggle('light', isLight);
-    try { localStorage.setItem('html-gen:doc_theme', isLight ? 'light' : 'dark'); } catch(e) {}
+    localStorage.setItem('html-gen:layoutslide_theme', isLight ? 'light' : 'dark');
     document.getElementById('themeBtn').textContent = isLight ? '☀️' : '🌙';
   };
 
-  // Title click → copy path (via meta text)
-  document.getElementById('sidebarTitle').addEventListener('click', function() {
+  // Title click → copy path
+  document.getElementById('slideTitle').addEventListener('click', function() {
     var metaEl = document.querySelector('.doc-header .meta');
     var m = metaEl ? metaEl.textContent.match(/路径:\s*(.+)/) : null;
-    var target = m ? m[1].trim() : decodeURI(window.location.href);
-    if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
-      copyText(target, '已复制: ' + target);
-    }
+    var path = m ? m[1].trim() : document.title;
+    path = path.replace(/^\/Users\/[^/]+/, '~').replace(/^\/home\/[^/]+/, '~');
+    copyText(path, '已复制: ' + path);
   });
 
   function showToast(msg) {
-    var el = document.getElementById('docToast'); if (!el) { el = document.createElement('div'); el.id = 'docToast'; el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none'; document.body.appendChild(el); }
+    var el = document.getElementById('slideToast');
+    if (!el) {
+      el = document.createElement('div');
+      el.id = 'slideToast';
+      el.style.cssText = 'position:fixed;bottom:24px;left:50%;transform:translateX(-50%);padding:8px 20px;background:var(--cobalt-950);color:#e0e0e0;border-radius:8px;font-size:0.78rem;z-index:9999;border:1px solid var(--cobalt-700);opacity:0;transition:opacity 0.2s;white-space:nowrap;pointer-events:none';
+      document.body.appendChild(el);
+    }
     el.textContent = msg; el.style.opacity = '1';
-    clearTimeout(el._hide); el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
+    clearTimeout(el._hide);
+    el._hide = setTimeout(function() { el.style.opacity = '0'; }, 2500);
   }
 
   /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
@@ -791,50 +805,180 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
   }
   /* ═══════ html-gen:clipboard-copy v1 END ═══════ */
 
-  // Section count
-  var _h2Count = body.querySelectorAll('h2').length;
-  function updateSub() {
-    var subEl = document.querySelector('.doc-sidebar-header .sub');
-    if (!subEl) return;
-    var base = (subEl.textContent || '').replace(/\s*共\s*\d+\s*节.*|\s*\d+\s*sections.*/, '').trim();
-    var text = t('pages', {n: _h2Count});
-    subEl.textContent = (base ? base + ' · ' : '') + text;
-  }
-  updateSub();
+  /* ═══════ Slide Mode ═══════ */
+  var slide = {
+    currentPage: 0,
+    pages: [],
+    _h2Index: {},
+    _fadeTimer: null,
 
-  /* ═══════ H3 Toggle ═══════ */
-  var _h3Visible = false;
-  window.toggleH3 = function() {
-    _h3Visible = !_h3Visible;
-    var btn = document.getElementById('h3Toggle');
-    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
-    try { localStorage.setItem('html-gen:doc:h3-visible', _h3Visible); } catch(e) {}
-    var h3s = document.querySelectorAll('.toc-h3');
-    for (var i = 0; i < h3s.length; i++) h3s[i].classList.toggle('show', _h3Visible);
-  };
-  try { if (localStorage.getItem('html-gen:doc:h3-visible') === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; } } catch(e) {}
+    init: function() {
+      var self = this;
+      var h2s = body.querySelectorAll('h2');
+      var coverTitle = document.querySelector('.doc-header h1').textContent;
+      var coverSub = (document.querySelector('.slide-sidebar-header .sub').textContent || '').trim();
+      var coverMetaEl = document.querySelector('.doc-header .meta');
+      var coverMeta = coverMetaEl ? coverMetaEl.innerHTML : '';
 
-  /* ═══════ Sidebar Collapse ═══════ */
-  var _sidebarCollapsed = false;
-  window.toggleSidebar = function() {
-    _sidebarCollapsed = !_sidebarCollapsed;
-    var sb = document.getElementById('sidebar'); var btn = document.getElementById('collapseBtn');
-    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
-    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
-    try { localStorage.setItem('html-gen:doc:sidebar-collapsed', _sidebarCollapsed); } catch(e) {}
-    setTimeout(function() { updateProgress(); }, 300);
-  };
-  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
-  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
-  try { if (localStorage.getItem('html-gen:doc:sidebar-collapsed') === 'true') toggleSidebar(); } catch(e) {}
+      // Cover page
+      this.pages.push({ type: 'cover', title: coverTitle, subtitle: coverSub, meta: coverMeta });
 
-  document.addEventListener('keydown', function(e) {
-    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
-    if (!e.metaKey && !e.ctrlKey) {
-      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
-      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+      // h2 pages — detect h3 children for column mode
+      h2s.forEach(function(h2, pi) {
+        var section = { type: 'h2', title: h2.textContent, id: h2.id, nodes: [], h3s: [] };
+        var el = h2.nextElementSibling;
+        var currentH3 = null;
+        while (el && el.tagName !== 'H2') {
+          if (el.tagName === 'H3') {
+            if (currentH3) section.h3s.push(currentH3);
+            currentH3 = { title: el.textContent, id: el.id, nodes: [] };
+          } else if (currentH3) {
+            currentH3.nodes.push(el.cloneNode(true));
+          } else {
+            section.nodes.push(el.cloneNode(true));
+          }
+          el = el.nextElementSibling;
+        }
+        if (currentH3) section.h3s.push(currentH3);
+        self.pages.push(section);
+        self._h2Index[h2.id] = pi + 1;
+      });
+
+      // Update sidebar header
+      var logoEl = document.querySelector('.slide-sidebar-header .slide-title');
+      if (logoEl) {
+        var txt = logoEl.textContent.replace(/^🎞️\s*/, '');
+        if (txt.length > 30) txt = txt.substring(0, 30) + '…';
+        logoEl.textContent = '🎞️ ' + txt;
+      }
+      var subEl = document.querySelector('.slide-sidebar-header .sub');
+      if (subEl) {
+        this._subBase = subEl.textContent.trim();
+      }
+      this._updateSub();
+
+      this.buildDots();
+      this.restoreProgress();
+
+      // Show perf warning if present
+      var pw = document.getElementById('perfWarning');
+      if (pw && pw.textContent.trim()) pw.style.display = 'block';
+
+      this.goTo(this.currentPage);
+    },
+
+    goTo: function(n) {
+      if (n < 0 || n >= this.pages.length) return;
+      this.currentPage = n;
+      this.renderPage(n);
+      this.saveProgress();
+      this._syncToc();
+      this._updateDots();
+      this._showPageNum();
+      this._updateSub();
+    },
+
+    next: function() { if (this.currentPage < this.pages.length - 1) this.goTo(this.currentPage + 1); },
+    prev: function() { if (this.currentPage > 0) this.goTo(this.currentPage - 1); },
+
+    renderPage: function(n) {
+      var page = this.pages[n];
+      var container = document.getElementById('slidePage');
+      while (container.firstChild) container.removeChild(container.firstChild);
+
+      if (page.type === 'cover') {
+        container.className = 'slide-page slide-cover';
+        var h1 = document.createElement('h1'); h1.textContent = page.title; container.appendChild(h1);
+        if (page.subtitle) { var s = document.createElement('div'); s.className = 'slide-cover-sub'; s.textContent = page.subtitle; container.appendChild(s); }
+        var m = document.createElement('div'); m.className = 'slide-cover-meta'; m.innerHTML = page.meta; container.appendChild(m);
+        var c = document.createElement('div'); c.className = 'slide-cover-count'; c.textContent = '共 ' + (this.pages.length - 1) + ' 节'; container.appendChild(c);
+      } else {
+        container.className = 'slide-page';
+        // h3 column mode: 2+ h3s → side-by-side columns
+        if (page.h3s && page.h3s.length >= 2) {
+          var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
+          var cols = document.createElement('div');
+          cols.className = 'slide-columns cols-' + Math.min(page.h3s.length, 3);
+          page.h3s.forEach(function(h3s) {
+            var col = document.createElement('div'); col.className = 'slide-col';
+            var h3 = document.createElement('h3'); h3.textContent = h3s.title; col.appendChild(h3);
+            h3s.nodes.forEach(function(n) { col.appendChild(n.cloneNode(true)); });
+            cols.appendChild(col);
+          });
+          container.appendChild(cols);
+          // If there are also top-level nodes (before first h3), show them above columns
+          if (page.nodes.length > 0) {
+            var topDiv = document.createElement('div');
+            page.nodes.forEach(function(n) { topDiv.appendChild(n.cloneNode(true)); });
+            container.insertBefore(topDiv, cols);
+          }
+        } else {
+          // Single column: full width (h3 降级 or no h3)
+          var h2 = document.createElement('h2'); h2.textContent = page.title; container.appendChild(h2);
+          page.nodes.forEach(function(node) { container.appendChild(node.cloneNode(true)); });
+          if (page.h3s) {
+            page.h3s.forEach(function(h3s) {
+              var h3 = document.createElement('h3'); h3.textContent = h3s.title; container.appendChild(h3);
+              h3s.nodes.forEach(function(n) { container.appendChild(n.cloneNode(true)); });
+            });
+          }
+        }
+      }
+    },
+
+    buildDots: function() {
+      var self = this;
+      var dots = document.getElementById('slideDots');
+      if (!dots) return;
+      dots.innerHTML = '';
+      this.pages.forEach(function(p, i) {
+        var dot = document.createElement('div'); dot.className = 'slide-dot'; dot.title = p.title;
+        dot.addEventListener('click', function() { self.goTo(i); });
+        dots.appendChild(dot);
+      });
+      this._updateDots();
+    },
+
+    _updateDots: function() {
+      var el = document.getElementById('slideDots'); if (!el) return;
+      var dots = el.children;
+      for (var i = 0; i < dots.length; i++) {
+        dots[i].classList.remove('active', 'visited');
+        if (i === this.currentPage) dots[i].classList.add('active');
+        else if (i < this.currentPage) dots[i].classList.add('visited');
+      }
+      var t = document.getElementById('slideNavTitle'); if (t) t.textContent = this.pages[this.currentPage].title;
+    },
+
+    _showPageNum: function() {
+      var el = document.getElementById('slidePageNum'); if (!el) return;
+      el.textContent = (this.currentPage + 1) + ' / ' + this.pages.length;
+      el.classList.remove('fade'); clearTimeout(this._fadeTimer);
+      this._fadeTimer = setTimeout(function() { el.classList.add('fade'); }, 3000);
+    },
+
+    _syncToc: function() {
+      if (this.currentPage === 0) { tocItems.forEach(function(a) { a.classList.remove('active'); }); return; }
+      var page = this.pages[this.currentPage];
+      tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === page.id); });
+    },
+
+    _updateSub: function() {
+      var subEl = document.querySelector('.slide-sidebar-header .sub');
+      if (!subEl || this._subBase === undefined) return;
+      var total = this.pages.length - 1;
+      var text = this.currentPage === 0
+        ? t('pages', {n: total})
+        : t('current', {m: this.currentPage, n: total});
+      subEl.textContent = (this._subBase ? this._subBase + ' · ' : '') + text;
+    },
+
+    saveProgress: function() { try { localStorage.setItem('html-gen:layoutslide_page', this.currentPage); } catch(e) {} },
+
+    restoreProgress: function() {
+      try { var n = parseInt(localStorage.getItem('html-gen:layoutslide_page'), 10); if (isNaN(n) || n < 0 || n >= this.pages.length) n = 0; this.currentPage = n; } catch(e) { this.currentPage = 0; }
     }
-  });
+  };
 
   /* ═══════ TOC Search ═══════ */
   var _tocSearchActive = false, _tocSearchTimer;
@@ -880,7 +1024,7 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 
   // Click away to close
   document.addEventListener('click', function(e) {
-    if (_tocSearchActive && !e.target.closest('.doc-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
+    if (_tocSearchActive && !e.target.closest('.slide-toc-search') && e.target !== document.getElementById('tocSearchBtn')) {
       _tocSearchActive = true; toggleTocSearch();
     }
   });
@@ -888,54 +1032,89 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
   /* ═══════ TOC ═══════ */
   headings.forEach(function(h, i) {
     if (!h.id) h.id = 'section-' + i;
-    var anchor = document.createElement('a'); anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
-    anchor.addEventListener('click', function(e) { e.preventDefault(); var url = window.location.href.split('#')[0] + '#' + h.id; copyText(url, null, '复制失败，请手动复制链接', function() { anchor.textContent = '\u2713'; setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500); }); });
+    var anchor = document.createElement('a');
+    anchor.className = 'anchor-link'; anchor.textContent = '\u00b6'; anchor.href = '#' + h.id;
+    anchor.addEventListener('click', function(e) {
+      e.preventDefault();
+      var url = window.location.href.split('#')[0] + '#' + h.id;
+      copyText(url, null, '复制失败，请手动复制链接', function() {
+        anchor.textContent = '\u2713';
+        setTimeout(function() { anchor.textContent = '\u00b6'; }, 1500);
+      });
+    });
     h.appendChild(anchor);
     var level = h.tagName.toLowerCase().replace('h', '');
-    var link = document.createElement('a'); link.href = '#' + h.id; link.textContent = h.textContent; link.className = 'toc-h' + level; link.dataset.target = h.id;
-    link.addEventListener('click', function(e) { e.preventDefault(); var t = document.getElementById(this.dataset.target); if (t) t.scrollIntoView({ behavior: 'smooth' }); });
-    toc.appendChild(link); tocItems.push(link);
-  });
-
-  // h4-h6 anchors (not in TOC)
-  document.querySelectorAll('.doc-body h4, .doc-body h5, .doc-body h6').forEach(function(h, i) {
-    if (!h.id) h.id = 'section-' + i;
-    var anchor = document.createElement('a');
-    anchor.className = 'anchor-link';
-    anchor.href = '#' + h.id;
-    anchor.textContent = '\u00b6';
-    h.appendChild(anchor);
-  });
-
-  function onScroll() {
-    var current = ''; headings.forEach(function(h) { if (h.getBoundingClientRect().top <= 100) current = h.id; });
-    tocItems.forEach(function(a) { a.classList.toggle('active', a.dataset.target === current); });
-  }
-  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
-
-  body.querySelectorAll('pre').forEach(function(pre) {
-    var btn = document.createElement('button'); btn.className = 'copy-btn'; btn.textContent = '复制';
-    btn.addEventListener('click', function() {
-      var code = pre.querySelector('code'); var text = code ? code.textContent : pre.textContent;
-      copyText(text, null, null, function() { btn.textContent = '已复制'; setTimeout(function() { btn.textContent = '复制'; }, 2000); });
+    var link = document.createElement('a');
+    link.href = '#' + h.id; link.textContent = h.textContent;
+    link.className = 'toc-h' + level; link.dataset.target = h.id;
+    link.addEventListener('click', function(e) {
+      e.preventDefault();
+      var idx = slide._h2Index[h.id];
+      if (idx !== undefined) slide.goTo(idx);
     });
-    pre.appendChild(btn);
+    toc.appendChild(link);
+    tocItems.push(link);
   });
 
-  body.querySelectorAll('pre code').forEach(function(code) {
-    var text = code.textContent; var lines = text.split('\n'); if (lines.length > 0 && lines[lines.length-1] === '') lines.pop(); if (lines.length < 2) return;
-    code.textContent = ''; lines.forEach(function(line, idx) { var span = document.createElement('span'); span.className = 'line'; span.textContent = line; code.appendChild(span); if (idx < lines.length-1) code.appendChild(document.createTextNode('\n')); });
-    code.classList.add('code-with-lines');
+  /* ═══════ Keyboard ═══════ */
+  document.addEventListener('keydown', function(e) {
+    if (e.target.tagName === 'INPUT' || e.target.tagName === 'TEXTAREA') return;
+    if (e.key === 'ArrowRight' || e.key === 'ArrowDown') { e.preventDefault(); slide.next(); }
+    else if (e.key === 'ArrowLeft' || e.key === 'ArrowUp') { e.preventDefault(); slide.prev(); }
+    else if (e.key === ' ' && !e.shiftKey) { e.preventDefault(); slide.next(); }
+    else if (e.key === ' ' && e.shiftKey) { e.preventDefault(); slide.prev(); }
+    else if (e.key === 'Home') { e.preventDefault(); slide.goTo(0); }
+    else if (e.key === 'End') { e.preventDefault(); slide.goTo(slide.pages.length - 1); }
+    else if (e.key === 'f' || e.key === 'F') {
+      e.preventDefault();
+      if (document.fullscreenElement) document.exitFullscreen(); else document.documentElement.requestFullscreen();
+    }
   });
 
-  var main = document.getElementById('docMain'); var bar = document.getElementById('progressBar');
-  function updateProgress() { var p = main.scrollTop / (main.scrollHeight - main.clientHeight); bar.style.width = (p * 100) + '%'; }
-  main.addEventListener('scroll', updateProgress, { passive: true }); updateProgress();
+  /* ═══════ H3 Toggle ═══════ */
+  var _h3Visible = false;
+  window.toggleH3 = function() {
+    _h3Visible = !_h3Visible;
+    var btn = document.getElementById('h3Toggle');
+    if (btn) { btn.classList.toggle('on', _h3Visible); btn.textContent = _h3Visible ? 'H3 ✓' : 'H3'; }
+    try { localStorage.setItem('html-gen:sidebar:h3-visible', _h3Visible); } catch(e) {}
+    var h3s = document.querySelectorAll('.toc-h3');
+    for (var i = 0; i < h3s.length; i++) { h3s[i].classList.toggle('show', _h3Visible); }
+  };
 
-  var lb = document.getElementById('lightbox'); var lbImg = document.getElementById('lightboxImg');
-  body.querySelectorAll('img').forEach(function(img) { img.addEventListener('click', function(e) { e.stopPropagation(); lbImg.src = this.src; lb.classList.add('active'); }); });
-  window.closeLightbox = function(e) { if (!e || e.target === lb || e.target === document.querySelector('.lb-close')) lb.classList.remove('active'); };
-  document.addEventListener('keydown', function(e) { if (e.key === 'Escape' && lb.classList.contains('active')) lb.classList.remove('active'); });
+  // Restore H3 state
+  try {
+    var savedH3 = localStorage.getItem('html-gen:sidebar:h3-visible');
+    if (savedH3 === 'true') { _h3Visible = true; document.getElementById('h3Toggle').classList.add('on'); document.getElementById('h3Toggle').textContent = 'H3 ✓'; }
+  } catch(e) {}
+
+  /* ═══════ Sidebar Collapse ═══════ */
+  var _sidebarCollapsed = false;
+  window.toggleSidebar = function() {
+    _sidebarCollapsed = !_sidebarCollapsed;
+    var sb = document.getElementById('sidebar');
+    var btn = document.getElementById('collapseBtn');
+    if (sb) sb.classList.toggle('collapsed', _sidebarCollapsed);
+    if (btn) btn.textContent = _sidebarCollapsed ? '▶▶' : '◀◀';
+    try { localStorage.setItem('html-gen:sidebar:collapsed', _sidebarCollapsed); } catch(e) {}
+  };
+  window.collapseSidebar = function() { if (!_sidebarCollapsed) toggleSidebar(); };
+  window.expandSidebar = function() { if (_sidebarCollapsed) toggleSidebar(); };
+
+  // Restore collapse state
+  try {
+    var savedCollapsed = localStorage.getItem('html-gen:sidebar:collapsed');
+    if (savedCollapsed === 'true') toggleSidebar();
+  } catch(e) {}
+
+  // [ collapse / ] expand — skip in inputs
+  document.addEventListener('keydown', function(e) {
+    if (document.activeElement.tagName === 'INPUT' || document.activeElement.tagName === 'TEXTAREA') return;
+    if (!e.metaKey && !e.ctrlKey) {
+      if (e.key === '[') { e.preventDefault(); collapseSidebar(); }
+      else if (e.key === ']') { e.preventDefault(); expandSidebar(); }
+    }
+  });
 
   /* ── Sidebar Resize ── */
   (function() {
@@ -958,11 +1137,13 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
       if (dragging) {
         dragging = false;
         handle.classList.remove('active');
-        try { localStorage.setItem('html-gen:doc:sidebar-width', sb.style.width); } catch(e) {}
+        try { localStorage.setItem('html-gen:slide:sidebar-width', sb.style.width); } catch(e) {}
       }
     });
-    try { var sw = localStorage.getItem('html-gen:doc:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
+    try { var sw = localStorage.getItem('html-gen:slide:sidebar-width'); if (sw) { sb.style.width = sw; sb.style.minWidth = sw; } } catch(e) {}
   })();
+
+  slide.init();
 })();
 </script>
 </body>

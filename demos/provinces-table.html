@@ -294,6 +294,9 @@ pre code { background: none; padding: 0; }
 .data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
 .data-table .video-pill:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table .video-pill.video-more { color:var(--cobalt-300); border-style:dashed; }
+/* CL030 (评审 🟢-1): 目标非法的降级 pill 不可点，别给手型 */
+.data-table .video-pill.video-pill-nolink { cursor:default; opacity:0.75; }
+.data-table .video-pill.video-pill-nolink:hover { background:rgba(79,70,229,0.12); border-color:rgba(79,70,229,0.2); color:var(--cobalt-400); }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -357,6 +360,12 @@ pre code { background: none; padding: 0; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
 .data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
 .data-table tbody tr.clickable { cursor:pointer; }
+/* CL021: 常驻行高亮 (options.highlight) —— 冻结列/右侧固定列是不透明背景, 必须同步覆盖 */
+.data-table tbody tr.hl-row { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row:hover { background:rgba(250,204,21,0.12); }
+.data-table tbody tr.hl-row > td.frozen-col,
+.data-table tbody tr.hl-row > td.sticky-right { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row > td:first-child { box-shadow:inset 3px 0 0 var(--hl-fg, #fde68a); }
 .col-checkbox { width:32px; text-align:center; }
 .col-checkbox input { cursor:pointer; accent-color:var(--cobalt-500); }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
@@ -366,6 +375,9 @@ pre code { background: none; padding: 0; }
   border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.62rem; color:#6b7280;
   background:transparent; transition:all 0.15s; margin:0 1px; }
 .action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
+/* CL030 (评审 SEC-5): 目标非法的操作按钮 —— 不可点，别给手型/hover 高亮 */
+.action-btn.action-btn-disabled { cursor:not-allowed; opacity:0.45; }
+.action-btn.action-btn-disabled:hover { background:transparent; border-color:#2a2a3e; color:#6b7280; }
 
 /* ── Column toggle ── */
 .col-toggle-wrap { position:relative; display:inline-block; }
@@ -435,6 +447,21 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .split-preview .kv-item-full { grid-column: 1 / -1; }
 .split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
+  /* CL026: 媒体单元格（image 列 / videos 封面）与灯箱 —— 缩略图高度随密度走，不撑行 */
+  .cell-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:zoom-in; }
+  .data-table.dense .cell-thumb { height:18px; max-width:52px; }
+  .data-table.comfortable .cell-thumb { height:30px; max-width:80px; }
+  .video-cover-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:pointer; }
+  .data-table.dense .video-cover-thumb { height:18px; max-width:52px; }
+  .data-table.comfortable .video-cover-thumb { height:30px; max-width:80px; }
+  .split-preview .kv-img { max-width:100%; max-height:320px; border-radius:6px; border:1px solid #1a1a2e; display:block; margin:2px 0; cursor:zoom-in; }
+  .split-preview .kv-media-link { display:inline-block; margin:2px 0; line-height:1.6; }
+  .split-preview .kv-video-cover { height:48px; width:auto; max-width:120px; object-fit:cover; border-radius:4px; border:1px solid #1a1a2e; vertical-align:middle; margin-right:6px; cursor:pointer; }
+  .lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; cursor:zoom-out; }
+  .lightbox.active { display:flex; }
+  .lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.5); cursor:default; }
+  .lightbox .lb-close { position:fixed; top:16px; right:20px; font-size:28px; color:#aaa; cursor:pointer; line-height:1; }
+  .lightbox .lb-close:hover { color:#fff; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -565,6 +592,12 @@ pre code { background: none; padding: 0; }
 
 </div><!-- /wrapper -->
 
+<!-- Lightbox (CL026: image 列 / 分栏大图点击放大; 移植自 layout-doc.html) -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
+
 <!-- Modal Panel -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
   <div class="modal-panel" id="modalPanel"></div>
@@ -616,7 +649,33 @@ pre code { background: none; padding: 0; }
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
-  let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
+  /* CL021: 默认排序 — options.defaultSort {key, asc}; 缺省不改数据原序。初始化在 initThead() 之前,
+     表头箭头随之点亮; 用户点表头仍可覆盖 (首次点击变反序, 属预期) */
+  const DEFAULT_SORT = (OPTIONS && OPTIONS.defaultSort) || null;
+  /* CL021: 常驻行高亮 — options.highlight {key, values[], mode}; 由数据派生, 每帧 render 重算,
+     筛选/搜索/排序/翻页/re-render 后自动保持 (与 tr.selected / tr.split-active 各自独立) */
+  const HL_CFG = (OPTIONS && OPTIONS.highlight) || null;
+  function rowHighlighted(row) {
+    if (!HL_CFG || !HL_CFG.key) return false;
+    var vals = Array.isArray(HL_CFG.values) ? HL_CFG.values
+             : (HL_CFG.value !== undefined && HL_CFG.value !== null ? [HL_CFG.value] : []);
+    if (!vals.length) return false;
+    var raw = row[HL_CFG.key];
+    if (raw === undefined || raw === null) return false;
+    var s = String(raw);
+    // mode=contains: 与 pill 列同口径 (逗号/顿号/斜杠切分后整值比对)
+    var parts = HL_CFG.mode === 'contains'
+      ? s.split(/[,，、/]+/).map(function(x){ return x.trim(); })
+      : [s];
+    for (var i = 0; i < vals.length; i++) {
+      if (parts.indexOf(String(vals[i])) !== -1) return true;
+    }
+    return false;
+  }
+
+  let filtered = DATA.slice(), currentPage = 1, activeTab = '',
+      sortKey = (DEFAULT_SORT && DEFAULT_SORT.key) ? String(DEFAULT_SORT.key) : '',
+      sortAsc = DEFAULT_SORT ? DEFAULT_SORT.asc !== false : true;
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
@@ -696,7 +755,7 @@ pre code { background: none; padding: 0; }
     // Search filter（options.searchFields 限定字段，默认全列向后兼容；videos 列排除：数组 String() 噪音 + title 误命中）
     if (q) {
       var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
-        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.key; }).map(function(c){ return c.key; });
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.type !== 'image' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
         return searchKeys.some(function(k) {
           return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
@@ -705,8 +764,9 @@ pre code { background: none; padding: 0; }
     }
     // Quick filter (cell click / pill click)
     if (quickFilter) {
+      var qfCol = COLUMNS.find(function(c){ return c.key === quickFilter.key; });
       filtered = filtered.filter(function(row) {
-        var v = String(row[quickFilter.key] || '');
+        var v = cellTextFor(qfCol, row[quickFilter.key]);
         if (quickFilter.mode === 'contains') {
           // 标签筛选：顿号/逗号切分后包含匹配
           return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
@@ -719,10 +779,12 @@ pre code { background: none; padding: 0; }
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
       var isDate = col && col.type === 'datetime';
+      var isMedia = col && (col.type === 'image' || col.type === 'videos');
       var loc = col && col.locale;
       var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
       var isDate2 = col2 && col2.type === 'datetime';
+      var isMedia2 = col2 && (col2.type === 'image' || col2.type === 'videos');
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
         // Primary key
@@ -732,6 +794,7 @@ pre code { background: none; padding: 0; }
         var cmp;
         if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
         else if (isDate) { va = Date.parse(va) || 0; vb = Date.parse(vb) || 0; cmp = va - vb; }
+        else if (isMedia) { va = mediaTextValue(va); vb = mediaTextValue(vb); cmp = va.localeCompare(vb); }
         else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
         if (cmp !== 0) return sortAsc ? cmp : -cmp;
         // Secondary key (only when primary equal)
@@ -742,6 +805,7 @@ pre code { background: none; padding: 0; }
           var cmp2;
           if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
           else if (isDate2) { va2 = Date.parse(va2) || 0; vb2 = Date.parse(vb2) || 0; cmp2 = va2 - vb2; }
+          else if (isMedia2) { va2 = mediaTextValue(va2); vb2 = mediaTextValue(vb2); cmp2 = va2.localeCompare(vb2); }
           else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
           return sortAsc2 ? cmp2 : -cmp2;
         }
@@ -780,8 +844,9 @@ pre code { background: none; padding: 0; }
       var rowIdx = start + pi;
       var rowClass = [];
       if (selectedRows[rowIdx]) rowClass.push('selected');
+      if (rowHighlighted(row)) rowClass.push('hl-row');   // CL021: 常驻高亮 (options.highlight)
       if (isRowClickable(row)) rowClass.push('clickable');
-      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
+      var rowHtml = '<tr data-idx="'+rowIdx+'" class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
@@ -812,13 +877,22 @@ pre code { background: none; padding: 0; }
               rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
+            if (col.type === 'image') {
+              // CL026: 图片列 —— 单元格出缩略图（高度随密度，不撑行），点击开灯箱
+              var imgCell = imageCellHtml(val, col);
+              var freezeClsI = col.freeze ? ' frozen-col' : '';
+              var stickyClsI = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyleI = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-media'+(col.class?' '+col.class:'')+freezeClsI+stickyClsI+'"'+freezeStyleI+'>'+imgCell+'</td>';
+              return;
+            }
             if (col.type === 'videos') {
               // 视频列：每视频一个 pill [图标] title (duration)；maxShow 折叠 "+N"，点击展开全部（不折叠回，re-render 重置）
               var videos = val;
               var vMaxShow = (col.videos && typeof col.videos.maxShow === 'number') ? col.videos.maxShow : 3;
               var vCount = Array.isArray(videos) ? videos.length : 0;
               var vVisible = Math.min(vCount, vMaxShow);
-              var vHtml = '';
+              var vHtml = vCount > 0 ? videoCoverCellHtml(videos[0]) : '';   // CL026: 首个视频封面（可选）
               for (var vi = 0; vi < vVisible; vi++) vHtml += renderVideoPill(videos[vi]);
               var vRestHtml = '';
               if (vCount > vVisible) {
@@ -842,7 +916,7 @@ pre code { background: none; padding: 0; }
           var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
           var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
-          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
+          var qfVal = JSON.stringify(cellTextFor(col, row[col.key])).replace(/"/g, '&quot;');
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
             tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
@@ -868,6 +942,9 @@ pre code { background: none; padding: 0; }
           if (Array.isArray(v) && c.type === 'videos') {
             // videos 数组特判：逐条渲染 [图标] title (duration) + url 链接（勿 String(v) → [object Object]）
             valHtml = renderVideoListHtml(v);
+          } else if (c.type === 'image') {
+            // CL026: 图片列在行内展开同样出图（点击灯箱）
+            valHtml = imageSplitHtml(v, c);
           } else {
             valHtml = escapeHtml(String(v));
           }
@@ -880,20 +957,34 @@ pre code { background: none; padding: 0; }
     renderPager(totalPages);
   }
 
+  // CL030 (评审 SEC-5): onclick 属性由单引号包裹 —— 注入的 JSON 里 " 与 ' 都必须转义，
+  // 否则数据含引号即可跳出属性注入事件处理器（旧写法只处理了 "）。
+  function jsAttr(v) {
+    return JSON.stringify(v === undefined || v === null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function renderActions(col, row) {
     if (!col.actions) return '';
     return col.actions.map(function(act) {
       var onclick = '';
       if (act.copyKey) {
-        onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
+        onclick = 'event.stopPropagation();copyAction(' + jsAttr(row[act.copyKey] || '') + ')';
       } else if (act.hrefKey) {
-        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '').replace(/"/g, '&quot;') + ',"_blank","noopener,noreferrer")';
+        // CL030 SEC-5: 外链目标同样只放行 http(s)（与 linkSafe 同口径）；非法 ⇒ 渲染不可点按钮
+        var hrefSafe = linkSafe(row[act.hrefKey] || '');
+        if (hrefSafe) {
+          onclick = 'event.stopPropagation();window.open(' + jsAttr(hrefSafe) + ',"_blank","noopener,noreferrer")';
+        }
       } else if (act.handler) {
-        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + jsAttr(row) + ')';
       } else if (act.desc) {
-        onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
+        onclick = 'event.stopPropagation();showDemoAction(' + jsAttr((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
       }
-      return '<button class="action-btn ' + (act.class||'') + '" onclick=\'' + onclick + '\' title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
+      return '<button class="action-btn ' + (act.class||'') + (onclick ? '' : ' action-btn-disabled') + '"'
+        + (onclick ? ' onclick=\'' + onclick + '\'' : '')
+        + ' title="' + escapeHtmlAttr(act.label||'') + '">' + (act.icon || act.label) + '</button>';
     }).join('');
   }
 
@@ -929,8 +1020,14 @@ pre code { background: none; padding: 0; }
     var url = v.url;
     if (url === undefined || url === null) return '';
     var label = videoPillLabel(v);
-    var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
-    return '<span class="video-pill" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
+    var safeUrl = linkSafe(url);   // CL028 SEC-1: 目标只放行 http(s)
+    if (!safeUrl) {
+      // 目标非法 ⇒ 保留可读文案但不给点击入口（不改数据，只降级展示）
+      // CL030 (评审 SEC-4): title 是属性上下文，必须用 escapeHtmlAttr（escapeHtml 不转义双引号 ⇒ 属性可逃逸）
+      return '<span class="video-pill video-pill-nolink" title="' + escapeHtmlAttr(String(url)) + '">' + escapeHtml(label) + '</span>';
+    }
+    var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
+    return '<span class="video-pill" title="' + escapeHtmlAttr(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
   }
   // 折叠 "+N"：点击展开全部（DOM 显示剩余 pill），不折叠回；跨 re-render 重置折叠态
   window.expandVideos = function(el) {
@@ -947,13 +1044,107 @@ pre code { background: none; padding: 0; }
       var url = v.url;
       var label = videoPillLabel(v);
       if (url) {
-        var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
-        return '<div style="margin:2px 0;line-height:1.6">' +
-          '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+        var safeUrl = linkSafe(url);   // CL028 SEC-1
+        if (safeUrl) {
+          var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
+          // CL026: 视频封面（可选）—— 有 cover 时先出封面图，点击与外链同一目标
+          var coverSrc = isSafeMediaUrl(v.cover || '');
+          var coverHtml = coverSrc
+            ? '<img class="kv-video-cover" src="' + escapeHtmlAttr(coverSrc) + '" alt="' + escapeHtmlAttr(label) + '" loading="lazy" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">'
+            : '';
+          return '<div style="margin:2px 0;line-height:1.6">' + coverHtml +
+            '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtmlAttr(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+        }
+        // 目标非 http(s) ⇒ 纯文本（不给可点面）
       }
       return '<div style="margin:2px 0;line-height:1.6">' + escapeHtml(label) + '</div>';
     }).join('');
   }
+
+  /* ── CL026: 媒体列（type=image / videos 项 cover）────────────────────────────
+     安全: src 只放行 http(s) / file / data:image/* —— 拦 javascript:、vbscript: 等伪协议。
+     取值: 字符串即 URL; 对象取 src|thumb|url; 可选 alt 作替代文本。
+     CSV / 排序 / quickFilter 共用 mediaTextValue，避免对象被 String() 成 [object Object]。 */
+  function escapeHtmlAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function isSafeMediaUrl(u) {
+    var s = (u === null || u === undefined) ? '' : String(u).trim();
+    if (!s) return '';
+    // CL028 (评审 SEC-2): data: 只放行显式图片子类型；svg+xml 在 <img> 上下文不执行脚本，故保留。
+    // file:// 保留（本机场景），http(s) 起源下浏览器会自行拒载。
+    return /^(https?:\/\/|file:\/\/|data:image\/(?:png|jpe?g|gif|webp|svg\+xml);)/i.test(s) ? s : '';
+  }
+  // CL028 (评审 SEC-1): 外链**目标**另有一道白名单 —— video.url 会直入 onclick 的 window.open，
+  // 不过滤就能塞 javascript:（noopener 挡住同源 XSS，但属纵深缺口，且既有 pill 面同源）。
+  function linkSafe(u) {
+    var s = (u === null || u === undefined) ? '' : String(u).trim();
+    if (!s) return '';
+    return /^https?:\/\//i.test(s) ? s : '';
+  }
+  function mediaSrc(m) {
+    if (m === null || m === undefined) return '';
+    if (typeof m === 'object') return isSafeMediaUrl(m.src || m.thumb || m.url || '');
+    return isSafeMediaUrl(m);
+  }
+  function mediaAlt(m, col) {
+    if (m && typeof m === 'object' && m.alt) return String(m.alt);
+    return (col && col.label) ? String(col.label) : '';
+  }
+  // 注: 形参统一用 m（不用视频项惯用的 v）—— 否则 m.src/m.thumb 一类会被 help 契约的
+  // videos 子键提取正则当成视频项字段，逼着契约去声明并不存在的键。
+  function mediaTextValue(m) {
+    if (m === null || m === undefined) return '';
+    if (Array.isArray(m)) {
+      return m.map(function(it) {
+        return (it && typeof it === 'object') ? String(it.title || it.alt || it.url || it.src || '') : String(it);
+      }).join(' ');
+    }
+    if (typeof m === 'object') return String(m.alt || m.title || m.src || m.url || '');
+    return String(m);
+  }
+  // 搜索 / 排序 / 筛选 / CSV 的统一文本口径：媒体类型走 mediaTextValue，其余沿用 String(v)
+  function cellTextFor(col, v) {
+    if (col && (col.type === 'image' || col.type === 'videos')) return mediaTextValue(v);
+    return String(v === null || v === undefined ? '' : v);
+  }
+  function imageCellHtml(v, col) {
+    var src = mediaSrc(v);
+    if (!src) return '';
+    return '<img class="cell-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(mediaAlt(v, col)) +
+      '" loading="lazy" onclick="event.stopPropagation();openLightbox(this.src)">';
+  }
+  function imageSplitHtml(v, col) {
+    var src = mediaSrc(v);
+    if (!src) return '';
+    return '<img class="kv-img" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(mediaAlt(v, col)) +
+      '" loading="lazy" onclick="event.stopPropagation();openLightbox(this.src)">';
+  }
+  // 视频封面缩略（单元格用）: 点击直接外链到该视频，语义与 pill 一致
+  function videoCoverCellHtml(video) {
+    if (!video || typeof video !== 'object') return '';
+    var src = isSafeMediaUrl(video.cover || '');
+    if (!src) return '';
+    var safeUrl = linkSafe(video.url || '');   // CL028 SEC-1
+    var clickAttr = safeUrl
+      ? ' onclick="event.stopPropagation();window.open(' + JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;') + ',\'_blank\',\'noopener,noreferrer\')"'
+      : '';   // 目标非 http(s) ⇒ 只展示封面，不给点击面
+    return '<img class="video-cover-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(video.title || '') +
+      '" loading="lazy" title="' + escapeHtmlAttr(video.title || video.url || '') + '"' + clickAttr + '>';
+  }
+  window.openLightbox = function(src) {
+    var lb = document.getElementById('lightbox'), im = document.getElementById('lightboxImg');
+    if (!lb || !im || !src) return;
+    im.src = src;
+    lb.classList.add('active');
+  };
+  window.closeLightbox = function(e) {
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    if (!e || e.target === lb || (e.target.classList && e.target.classList.contains('lb-close'))) {
+      lb.classList.remove('active');
+    }
+  };
 
   function getRowClickCol() {
     return COLUMNS.find(function(c){return c.onClick;});
@@ -1093,7 +1284,9 @@ pre code { background: none; padding: 0; }
     if (clickMode === 'tab') {
       var col = getRowClickCol();
       if (!col || col.onClick !== 'url' || !row.url) return;
-      window.open(row.url, '_blank', 'noopener,noreferrer');
+      var safeTarget = linkSafe(row.url);   // CL030 (评审 SEC-5): 外链目标只放行 http(s)
+      if (!safeTarget) return;
+      window.open(safeTarget, '_blank', 'noopener,noreferrer');
       return;
     }
     // modal mode: show popup
@@ -1118,6 +1311,15 @@ pre code { background: none; padding: 0; }
     }
   }
   window.handleRowClick = handleRowClick;
+
+  /* CL018: 分栏行高亮 —— 按 data-idx 定位（分页/排序下用 filtered 下标会错位） */
+  function highlightSplitRow(idx) {
+    var tbody = document.getElementById('tbody');
+    if (!tbody) return;
+    tbody.querySelectorAll('tr.split-active').forEach(function(r){ r.classList.remove('split-active'); });
+    var tr = tbody.querySelector('tr[data-idx="'+idx+'"]');
+    if (tr) tr.classList.add('split-active');
+  }
 
   /* ── Modal Panel ── */
   function showModal(row) {
@@ -1266,10 +1468,7 @@ pre code { background: none; padding: 0; }
         body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:0.75rem">⚠ 无法加载 SKILL.md<br><span style="font-size:0.62rem">'+escapeHtml(mdUrl)+'</span><br><span style="font-size:0.62rem">'+escapeHtml(err.message)+'</span></div>';
       });
       // Highlight
-      var tbody = document.getElementById('tbody');
-      var rows = tbody.querySelectorAll('tr');
-      rows.forEach(function(r){ r.classList.remove('split-active'); });
-      if (rows[idx]) rows[idx].classList.add('split-active');
+      highlightSplitRow(idx);
     }
   }
 
@@ -1306,10 +1505,7 @@ pre code { background: none; padding: 0; }
     render();  // re-render with preview-only cols
     renderSplitPreview(row);
     // highlight active row
-    var tbody = document.getElementById('tbody');
-    var rows = tbody.querySelectorAll('tr');
-    rows.forEach(function(r){ r.classList.remove('split-active'); });
-    if (rows[idx]) rows[idx].classList.add('split-active');
+    highlightSplitRow(idx);
     syncUrlState();
   }
   window.activateSplit = activateSplit;
@@ -1366,6 +1562,14 @@ pre code { background: none; padding: 0; }
     if (url) window.open(url, '_blank', 'noopener,noreferrer');
   };
 
+  // CL025: 空值判定（分栏详情 hideEmptyCells 用）。单独成函数、形参用 x，
+  // 是为了不产生「视频项变量 + 点 + 字段名」的形态 —— 那会被 help 契约的 videos
+  // 子键提取正则当成视频项字段（tests/test_help_contract.py::test_07 与契约对账）。
+  function isEmptyCellValue(x) {
+    if (x === null || x === undefined || x === '') return true;
+    return Array.isArray(x) && x.length === 0;
+  }
+
   function renderSplitPreview(row) {
     var header = document.getElementById('splitPreviewHeader');
     var body = document.getElementById('splitPreviewBody');
@@ -1390,20 +1594,49 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      // CL025 ②: OPTIONS.hideEmptyCells 为 true 时，空值字段整格不渲染（剩余格自动重排）；
+      //           「有值但加载失败」仍由值本身承载，属另一语义。缺省 false = 保持既有全列渲染。
+      // CL025 ③: 列属性 splitSpan —— "full" 或正整数（grid-column:span N，上限 6）；
+      //           旧 splitFull 等价 "full"，两者并存时 splitSpan 优先。
+      var hideEmpty = !!(OPTIONS && OPTIONS.hideEmptyCells);
       var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
-      body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
-        var v = row[c.key]; if (v === null || v === undefined) v = '';
-        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
+      var items = [];
+      cols.forEach(function(c) {
+        var v = row[c.key];
+        var isEmpty = isEmptyCellValue(v);
+        if (hideEmpty && isEmpty) return;
+        if (v === null || v === undefined) v = '';
+        var span = c.splitSpan;
+        if (typeof span === 'string') {
+          // CL030 (评审 🟢-2): 数字字符串等价 —— 用 Number() 全额容错（"2.0"/"+2"/"2e0" 也认），
+          // 全角 "０２" 不认（收益低，不做，help 已写「数字或数字字符串」）
+          var spanNum = Number(span.trim());
+          if (span.trim() !== '' && Number.isInteger(spanNum) && spanNum > 0) span = spanNum;
+        }
+        var full = (span === 'full' || span === true || (!span && !!c.splitFull));
+        var spanN = 0;
+        if (!full && typeof span === 'number' && isFinite(span) && span > 1) {
+          spanN = Math.min(Math.floor(span), 6);
+        }
+        var cls = full ? ' kv-item kv-item-full' : ' kv-item';
+        var style = spanN ? ' style="grid-column:span ' + spanN + '"' : '';
         var valHtml;
         if (Array.isArray(v) && c.type === 'videos') {
           // videos 数组特判：逐条渲染 + url 链接（勿 String(v) → [object Object]）
           valHtml = renderVideoListHtml(v);
+        } else if (c.type === 'image') {
+          // CL026: 图片列 —— 分栏详情出大图，点击灯箱放大
+          valHtml = imageSplitHtml(v, c);
+        } else if (c.escape === false) {
+          // CL018: 与表格单元格同口径 —— 列级 escape:false 是唯一豁免口，分栏详情同样放行
+          valHtml = full ? String(v).replace(/\n/g,'<br>') : String(v);
         } else {
-          valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+          valHtml = full ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
         }
-        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
-      }).join('')+'</div>';
+        items.push('<div class="'+cls+'"'+style+'><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>');
+      });
+      body.innerHTML = items.length ? '<div class="kv-list">'+items.join('')+'</div>' : '';
     }
   }
 
@@ -1641,8 +1874,8 @@ pre code { background: none; padding: 0; }
       var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
       var rows = filtered.map(function(row) {
         return cols.map(function(c) {
-          var v = row[c.key]; if (v === null || v === undefined) v = '';
-          return '"'+String(v).replace(/"/g,'""')+'"';
+          var v = cellTextFor(c, row[c.key]);
+          return '"'+v.replace(/"/g,'""')+'"';
         }).join(',');
       });
       var csv = '\uFEFF' + header + '\n' + rows.join('\n');
