@@ -192,20 +192,76 @@ class TestMediaColumns(unittest.TestCase):
         self.assertEqual(after, 0,
                          'image 列不参与默认搜索：仅图片 URL 含的关键词不应命中任何行')
 
-    def test_11_sort_by_image_column_orders_by_text(self):
-        self._load(render())
-        # 两行 pic 均为 data:image/svg（相同文本前缀），用 alt 区分：改为按 label 排序验证不崩且稳定
+    def test_11_sort_by_image_column_orders_by_media_text(self):
+        # CL028 (评审 FR-2): 原断言（行数不变 + 无 [object Object]）零判别力 ——
+        # String(对象) 排序既不抛错也不丢行，把 isMedia 分支整段置死照样绿。
+        # 改为「媒体文本序 ≠ String() 序」的判别性断言：alt AAA 必须排在 ZZZ 之前。
+        rows = [
+            {'name': '行B', 'pic': {'src': IMG, 'alt': 'ZZZ'}, 'video': []},
+            {'name': '行A', 'pic': {'src': IMG, 'alt': 'AAA'}, 'video': []},
+        ]
+        self._load(render(rows=rows))
+        first_before = self.driver.find_element(By.CSS_SELECTOR, '#tbody tr td:nth-child(1)').text
+        self.assertEqual(first_before, '行B', '数据序：行B 在前（若反过来本用例不成立）')
         self.driver.execute_script("""
           var ths = document.querySelectorAll('.data-table thead th');
           for (var i = 0; i < ths.length; i++) { if (ths[i].textContent.trim() === '图片') { ths[i].click(); break; } }
         """)
         time.sleep(0.4)
-        rows = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr')
-        self.assertEqual(len(rows), 2, '按 image 列排序后行数不变（对象不得被 String() 成 [object Object] 而丢行）')
         cells = self.driver.execute_script(
-            "return Array.prototype.map.call(document.querySelectorAll('#tbody tr td:nth-child(2)'),"
+            "return Array.prototype.map.call(document.querySelectorAll('#tbody tr td:nth-child(1)'),"
             " function(td){ return td.textContent.trim(); });")
-        self.assertNotIn('[object Object]', cells, f'单元格不得露出 [object Object]: {cells}')
+        self.assertEqual(cells[0], '行A',
+                         f'按 image 列升序应按 alt 文本（AAA<ZZZ）排序，实得顺序 {cells}')
+
+    def test_12_unsafe_video_url_has_no_click_surface(self):
+        # CL028 (评审 SEC-1): video.url 非 http(s) ⇒ 不允许出现可点击外链面
+        rows = [{'name': 'A', 'pic': IMG,
+                 'video': [{'url': 'javascript:window.__viaOpen=1', 'title': '坏目标', 'cover': COVER}]}]
+        self._load(render(rows=rows))
+        self.driver.execute_script("""
+          window.__opened = [];
+          window.open = function(u, t) { window.__opened.push([u, t]); return null; };
+        """)
+        pills = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td .video-pill')
+        self.assertEqual(len(pills), 1, '目标非法时仍应显示 pill 文案（只是不可点）')
+        self.assertFalse(pills[0].get_attribute('onclick'), '非法目标不得带 onclick')
+        covers = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td img.video-cover-thumb')
+        for c in covers:
+            self.assertFalse(c.get_attribute('onclick'), '非法目标下封面不得带 onclick')
+            c.click()
+        time.sleep(0.2)
+        self.assertEqual(self.driver.execute_script('return window.__opened;'), [],
+                         '非法目标点击不得调用 window.open')
+        # 分栏详情同口径
+        self.driver.find_element(By.CSS_SELECTOR, '#tbody tr td:nth-child(1)').click()
+        time.sleep(0.6)
+        links = self.driver.find_elements(By.CSS_SELECTOR, '#splitPreviewBody a.video-split-link')
+        self.assertEqual(len(links), 0, '分栏详情不得渲染非法目标的 <a>')
+        self.assertEqual(self.driver.execute_script('return window.__opened;'), [])
+
+    def test_13_unsafe_cover_protocol_rejected(self):
+        # CL028 (评审 FR-4/SEC-3): cover 也走白名单，javascript: 不得渲染为 <img>
+        rows = [{'name': 'A', 'pic': IMG,
+                 'video': [{'url': 'https://example.com/v1', 'title': '有坏封面',
+                            'cover': 'javascript:window.__viaCover=1'}]}]
+        self._load(render(rows=rows))
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td img.video-cover-thumb')), 0,
+                         'cover 为伪协议时不得渲染封面图')
+        self.driver.find_element(By.CSS_SELECTOR, '#tbody tr td:nth-child(1)').click()
+        time.sleep(0.6)
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#splitPreviewBody img.kv-video-cover')), 0,
+                         '分栏详情同样不得渲染非法封面')
+
+    def test_14_non_whitelisted_data_subtype_rejected(self):
+        # CL028 (评审 SEC-2): data: 收窄到 png/jpeg/gif/webp/svg+xml —— 其它子类型不渲染
+        cols = [dict(c) for c in COLS]
+        rows = [{'name': 'A', 'pic': 'data:image/bmp;base64,AAAA', 'video': []},
+                {'name': 'B', 'pic': 'data:image/png;base64,iVBORw0KGgo=', 'video': []}]
+        self._load(render(rows=rows, cols=cols))
+        imgs = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td.cell-media img.cell-thumb')
+        self.assertEqual(len(imgs), 1, 'data:image/bmp 不在白名单 ⇒ 只应有 png 那一行的图')
+        self.assertIn('image/png', imgs[0].get_attribute('src'))
 
 
 if __name__ == '__main__':

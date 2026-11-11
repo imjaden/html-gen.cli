@@ -993,8 +993,13 @@ pre code { background: none; padding: 0; }
     var url = v.url;
     if (url === undefined || url === null) return '';
     var label = videoPillLabel(v);
-    var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
-    return '<span class="video-pill" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
+    var safeUrl = linkSafe(url);   // CL028 SEC-1: 目标只放行 http(s)
+    if (!safeUrl) {
+      // 目标非法 ⇒ 保留可读文案但不给点击入口（不改数据，只降级展示）
+      return '<span class="video-pill video-pill-nolink" title="' + escapeHtml(String(url)) + '">' + escapeHtml(label) + '</span>';
+    }
+    var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
+    return '<span class="video-pill" title="' + escapeHtml(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
   }
   // 折叠 "+N"：点击展开全部（DOM 显示剩余 pill），不折叠回；跨 re-render 重置折叠态
   window.expandVideos = function(el) {
@@ -1011,14 +1016,18 @@ pre code { background: none; padding: 0; }
       var url = v.url;
       var label = videoPillLabel(v);
       if (url) {
-        var urlAttr = JSON.stringify(String(url)).replace(/"/g, '&quot;');
-        // CL026: 视频封面（可选）—— 有 cover 时先出封面图，点击与外链同一目标
-        var coverSrc = isSafeMediaUrl(v.cover || '');
-        var coverHtml = coverSrc
-          ? '<img class="kv-video-cover" src="' + escapeHtmlAttr(coverSrc) + '" alt="' + escapeHtmlAttr(label) + '" loading="lazy" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">'
-          : '';
-        return '<div style="margin:2px 0;line-height:1.6">' + coverHtml +
-          '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+        var safeUrl = linkSafe(url);   // CL028 SEC-1
+        if (safeUrl) {
+          var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
+          // CL026: 视频封面（可选）—— 有 cover 时先出封面图，点击与外链同一目标
+          var coverSrc = isSafeMediaUrl(v.cover || '');
+          var coverHtml = coverSrc
+            ? '<img class="kv-video-cover" src="' + escapeHtmlAttr(coverSrc) + '" alt="' + escapeHtmlAttr(label) + '" loading="lazy" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">'
+            : '';
+          return '<div style="margin:2px 0;line-height:1.6">' + coverHtml +
+            '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+        }
+        // 目标非 http(s) ⇒ 纯文本（不给可点面）
       }
       return '<div style="margin:2px 0;line-height:1.6">' + escapeHtml(label) + '</div>';
     }).join('');
@@ -1034,7 +1043,16 @@ pre code { background: none; padding: 0; }
   function isSafeMediaUrl(u) {
     var s = (u === null || u === undefined) ? '' : String(u).trim();
     if (!s) return '';
-    return /^(https?:\/\/|file:\/\/|data:image\/)/i.test(s) ? s : '';
+    // CL028 (评审 SEC-2): data: 只放行显式图片子类型；svg+xml 在 <img> 上下文不执行脚本，故保留。
+    // file:// 保留（本机场景），http(s) 起源下浏览器会自行拒载。
+    return /^(https?:\/\/|file:\/\/|data:image\/(?:png|jpe?g|gif|webp|svg\+xml);)/i.test(s) ? s : '';
+  }
+  // CL028 (评审 SEC-1): 外链**目标**另有一道白名单 —— video.url 会直入 onclick 的 window.open，
+  // 不过滤就能塞 javascript:（noopener 挡住同源 XSS，但属纵深缺口，且既有 pill 面同源）。
+  function linkSafe(u) {
+    var s = (u === null || u === undefined) ? '' : String(u).trim();
+    if (!s) return '';
+    return /^https?:\/\//i.test(s) ? s : '';
   }
   function mediaSrc(m) {
     if (m === null || m === undefined) return '';
@@ -1079,10 +1097,12 @@ pre code { background: none; padding: 0; }
     if (!video || typeof video !== 'object') return '';
     var src = isSafeMediaUrl(video.cover || '');
     if (!src) return '';
-    var urlAttr = JSON.stringify(String(video.url || '')).replace(/"/g, '&quot;');
+    var safeUrl = linkSafe(video.url || '');   // CL028 SEC-1
+    var clickAttr = safeUrl
+      ? ' onclick="event.stopPropagation();window.open(' + JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;') + ',\'_blank\',\'noopener,noreferrer\')"'
+      : '';   // 目标非 http(s) ⇒ 只展示封面，不给点击面
     return '<img class="video-cover-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(video.title || '') +
-      '" loading="lazy" title="' + escapeHtmlAttr(video.title || video.url || '') +
-      '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">';
+      '" loading="lazy" title="' + escapeHtmlAttr(video.title || video.url || '') + '"' + clickAttr + '>';
   }
   window.openLightbox = function(src) {
     var lb = document.getElementById('lightbox'), im = document.getElementById('lightboxImg');
@@ -1558,6 +1578,11 @@ pre code { background: none; padding: 0; }
         if (hideEmpty && isEmpty) return;
         if (v === null || v === undefined) v = '';
         var span = c.splitSpan;
+        if (typeof span === 'string') {
+          // CL028 (评审 FR-9): "2" 与 2 等价 —— 早前只认 typeof number，字符串权重会静默失效
+          var spanTrim = span.trim();
+          if (/^\d+$/.test(spanTrim)) span = parseInt(spanTrim, 10);
+        }
         var full = (span === 'full' || span === true || (!span && !!c.splitFull));
         var spanN = 0;
         if (!full && typeof span === 'number' && isFinite(span) && span > 1) {

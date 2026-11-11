@@ -31,10 +31,10 @@ COLS = [
 ROW = {'name': '行1', 'emptyCol': '', 'w2': 'W', 'full1': 'F'}
 
 
-def render(extra_options=None, row=None):
+def render(extra_options=None, row=None, cols=None):
     data = {
         'title': 'CL025 探针',
-        'columns': COLS,
+        'columns': cols or COLS,
         'data': [row or ROW],
         'options': {'clickMode': 'split', 'pageSize': 10},
     }
@@ -175,6 +175,25 @@ class TestSplitSpanAndEmpty(unittest.TestCase):
             for a, b in zip(group, group[1:]):
                 self.assertGreaterEqual(b['x'], a['x'] + a['w'] - 1,
                                         f'top={top} 行内 {a["label"]} 与 {b["label"]} 横向重叠')
+        # CL028 (评审 FR-3) 判别力补强: 只判「不出界」时，splitSpan 完全失效（变异 A）仍全绿。
+        # 补一条直接量权重的断言: N 轨 ≈ N 倍单轨宽，span 被丢掉就红。
+        by_label = {i['label']: i for i in r['items']}
+        self.assertGreaterEqual(by_label['权重2']['w'], by_label['名称']['w'] * 1.8,
+                                f'splitSpan:2 应≈两倍单轨宽，实得 权重2={by_label["权重2"]["w"]} '
+                                f'vs 名称={by_label["名称"]["w"]}')
+
+    def test_10_string_span_equivalent_to_number(self):
+        # CL028 (评审 FR-9): splitSpan 写字符串 "2" 与数字 2 等价（早前静默失效）
+        cols = [dict(c) for c in COLS]
+        for c in cols:
+            if c['key'] == 'w2':
+                c['splitSpan'] = '2'
+        self._open_split(render(cols=cols))
+        r = self._items()
+        by_label = {i['label']: i for i in r['items']}
+        self.assertGreaterEqual(by_label['权重2']['w'], by_label['名称']['w'] * 1.8,
+                                f'字符串 "2" 应等同数字 2，实得 权重2={by_label["权重2"]["w"]} '
+                                f'vs 名称={by_label["名称"]["w"]}')
 
     def test_07_geometry_adjacent_rows_not_same_top(self):
         self._open_split(render())
