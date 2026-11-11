@@ -447,6 +447,9 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .split-preview .kv-item-full { grid-column: 1 / -1; }
 .split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
+/* CL031 声明式行布局（options.splitGrid）：行边界由 JS 逐格写 grid-row/grid-column ——
+   display:contents 不产生行边界（设计稿 §3 有 Chromium 实测），故这里只给容器与轨道。 */
+.split-preview .kv-grid { display:grid; grid-template-columns:repeat(var(--kv-cols, 1), minmax(0, 1fr)); gap:6px; }
   /* CL026: 媒体单元格（image 列 / videos 封面）与灯箱 —— 缩略图高度随密度走，不撑行 */
   .cell-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:zoom-in; }
   .data-table.dense .cell-thumb { height:18px; max-width:52px; }
@@ -1599,45 +1602,149 @@ pre code { background: none; padding: 0; }
       //           「有值但加载失败」仍由值本身承载，属另一语义。缺省 false = 保持既有全列渲染。
       // CL025 ③: 列属性 splitSpan —— "full" 或正整数（grid-column:span N，上限 6）；
       //           旧 splitFull 等价 "full"，两者并存时 splitSpan 优先。
-      var hideEmpty = !!(OPTIONS && OPTIONS.hideEmptyCells);
+      // CL031: options.splitGrid 存在时走**声明式行布局**（显式行/列坐标 + catch-all + hide）；
+      //        不写该键 ⇒ 下面的扁平 auto-fill 分支逐字不变（向后兼容）。
       var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
+      __gridRow = row;                       // CL031: 栅格路径的取值上下文
+      var grid = resolveSplitGrid(cols);
+      if (grid) {
+        body.innerHTML = grid.html;
+        return;
+      }
+      var hideEmpty = !!(OPTIONS && OPTIONS.hideEmptyCells);
       var items = [];
       cols.forEach(function(c) {
         var v = row[c.key];
         var isEmpty = isEmptyCellValue(v);
         if (hideEmpty && isEmpty) return;
         if (v === null || v === undefined) v = '';
-        var span = c.splitSpan;
-        if (typeof span === 'string') {
-          // CL030 (评审 🟢-2): 数字字符串等价 —— 用 Number() 全额容错（"2.0"/"+2"/"2e0" 也认），
-          // 全角 "０２" 不认（收益低，不做，help 已写「数字或数字字符串」）
-          var spanNum = Number(span.trim());
-          if (span.trim() !== '' && Number.isInteger(spanNum) && spanNum > 0) span = spanNum;
-        }
-        var full = (span === 'full' || span === true || (!span && !!c.splitFull));
-        var spanN = 0;
-        if (!full && typeof span === 'number' && isFinite(span) && span > 1) {
-          spanN = Math.min(Math.floor(span), 6);
-        }
+        var span = normalizeSpan(c.splitSpan);
+        var full = isFullSpan(span) || (!span && !!c.splitFull);
+        var spanN = plainSpan(span);
         var cls = full ? ' kv-item kv-item-full' : ' kv-item';
         var style = spanN ? ' style="grid-column:span ' + spanN + '"' : '';
-        var valHtml;
-        if (Array.isArray(v) && c.type === 'videos') {
-          // videos 数组特判：逐条渲染 + url 链接（勿 String(v) → [object Object]）
-          valHtml = renderVideoListHtml(v);
-        } else if (c.type === 'image') {
-          // CL026: 图片列 —— 分栏详情出大图，点击灯箱放大
-          valHtml = imageSplitHtml(v, c);
-        } else if (c.escape === false) {
-          // CL018: 与表格单元格同口径 —— 列级 escape:false 是唯一豁免口，分栏详情同样放行
-          valHtml = full ? String(v).replace(/\n/g,'<br>') : String(v);
-        } else {
-          valHtml = full ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
-        }
-        items.push('<div class="'+cls+'"'+style+'><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>');
+        items.push('<div class="'+cls+'"'+style+'><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+splitValueHtml(c, v, full)+'</div></div>');
       });
       body.innerHTML = items.length ? '<div class="kv-list">'+items.join('')+'</div>' : '';
     }
+  }
+
+  /* ── CL031: 声明式行布局（splitGrid） ──────────────────────────────── */
+
+  // 单元格值渲染（扁平与栅格两条路径共用）
+  function splitValueHtml(c, v, full) {
+    if (Array.isArray(v) && c.type === 'videos') return renderVideoListHtml(v);   // 勿 String(v) → [object Object]
+    if (c.type === 'image') return imageSplitHtml(v, c);
+    if (c.escape === false) return full ? String(v).replace(/\n/g,'<br>') : String(v);
+    return full ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+  }
+
+  // span 归一：'full' / true / 数字或数字字符串（"2.0"/" 2 " 也认，全角不认）
+  function normalizeSpan(span) {
+    if (typeof span === 'string') {
+      var s = span.trim();
+      if (s === 'full') return 'full';
+      var n = Number(s);
+      if (s !== '' && Number.isInteger(n) && n > 0) return n;
+      return undefined;
+    }
+    if (span === true) return 'full';
+    if (typeof span === 'number' && isFinite(span) && span > 0) return span;
+    return undefined;
+  }
+  function isFullSpan(span) { return span === 'full'; }
+  function plainSpan(span) {
+    if (typeof span !== 'number' || !isFinite(span) || span <= 1) return 0;
+    return Math.min(Math.floor(span), 6);
+  }
+
+  // 把 options.splitGrid 解析成可直接落 DOM 的 html（返回 null = 未启用）
+  function resolveSplitGrid(cols) {
+    var cfg = OPTIONS && OPTIONS.splitGrid;
+    if (!cfg || !Array.isArray(cfg.grid) || !cfg.grid.length) return null;
+    var hideList = (Array.isArray(cfg.hide) ? cfg.hide : []).map(String);
+    var byKey = {};
+    cols.forEach(function (c) { byKey[c.key] = c; });
+    var used = {};
+    // ① 解析每行的格（key 未知静默跳过，不崩、不白屏）
+    var lines = cfg.grid.map(function (rawLine) {
+      var line = [];
+      (Array.isArray(rawLine) ? rawLine : []).forEach(function (cell) {
+        if (cell === '*') { line.push({ catchAll: true }); return; }
+        var key = (typeof cell === 'string') ? cell : (cell && cell.key);
+        if (!key || !byKey[key]) return;
+        used[key] = true;
+        line.push({ col: byKey[key], span: (cell && typeof cell === 'object') ? cell.span : undefined });
+      });
+      return line;
+    });
+    // ② catch-all：只认最后一个 '*'；展开为「未被引用 + 未 hide」的列（COLUMNS 原序）
+    var lastCatch = -1;
+    lines.forEach(function (line, idx) {
+      if (line.some(function (x) { return x.catchAll; })) lastCatch = idx;
+    });
+    if (lastCatch >= 0) {
+      var rest = cols.filter(function (c) { return !used[c.key] && hideList.indexOf(c.key) < 0; });
+      lines = lines.map(function (line, idx) {
+        var out = [];
+        line.forEach(function (cell) {
+          if (!cell.catchAll) { out.push(cell); return; }
+          if (idx !== lastCatch) return;                     // 其它 '*' 丢弃
+          rest.forEach(function (c) { out.push({ col: c, span: 1 }); });
+        });
+        return out;
+      });
+    }
+    // ③ hide 清单：显式引用也不渲染（数据仍在表格/CSV 里）
+    lines = lines
+      .map(function (line) {
+        return line.filter(function (cell) { return hideList.indexOf(cell.col.key) < 0; });
+      })
+      .filter(function (line) { return line.length > 0; });   // ④ 空行零节点（不留空轨）
+    if (!lines.length) return { html: '' };
+
+    // ⑤ 轨道数 = 各行 span 之和的最大值；整行格按 1 计
+    var maxCols = 1;
+    lines.forEach(function (line) {
+      var n = 0;
+      line.forEach(function (cell) {
+        var sp = normalizeSpan(cell.span);
+        n += isFullSpan(sp) ? 1 : (plainSpan(sp) || 1);
+      });
+      if (n > maxCols) maxCols = n;
+    });
+
+    // ⑥ 渲染：逐格写 grid-row / grid-column（display:contents 不产生行边界，见设计稿 §3）
+    var parts = [];
+    lines.forEach(function (line, ri) {
+      var colIdx = 1;
+      line.forEach(function (cell) {
+        var c = cell.col;
+        var v = rowValueForCurrent(c);
+        if (v === null) return;                                  // 空值跳过（skipEmpty 生效时）
+        var sp = normalizeSpan(cell.span);
+        var full = isFullSpan(sp);
+        var spanN = full ? 1 : (plainSpan(sp) || 1);
+        var style = 'grid-row:' + (ri + 1) + ';' +
+                    (full ? 'grid-column:1 / -1;' : 'grid-column:' + colIdx + ' / span ' + spanN + ';');
+        if (!full) colIdx += spanN;
+        parts.push('<div class="kv-item' + (full ? ' kv-item-full' : '') + '" style="' + style + '">' +
+                   '<div class="kv-label">' + escapeHtml(c.label) + '</div>' +
+                   '<div class="kv-value">' + splitValueHtml(c, v, full) + '</div></div>');
+      });
+    });
+    return { html: '<div class="kv-grid" style="--kv-cols:' + maxCols + '">' + parts.join('') + '</div>' };
+  }
+
+  // 当前分栏行（renderSplitPreview 的入参），供 resolveSplitGrid 取单元格值
+  var __gridRow = null;
+  function rowValueForCurrent(c) {
+    var row = __gridRow || {};
+    var v = row[c.key];
+    var skipEmpty = (typeof (OPTIONS && OPTIONS.splitGrid && OPTIONS.splitGrid.skipEmpty) === 'boolean')
+      ? OPTIONS.splitGrid.skipEmpty : !!(OPTIONS && OPTIONS.hideEmptyCells);
+    if (skipEmpty && isEmptyCellValue(v)) return null;
+    return (v === null || v === undefined) ? '' : v;
   }
 
   /* ── Split drag ── */

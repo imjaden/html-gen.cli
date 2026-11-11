@@ -950,6 +950,7 @@ TEMPLATE_CONTRACT = {
                 ('columnResize', '列宽拖拽 (false 时隐藏 resize handle)', 'true'),
                 ('columnsSplit', '分栏模式专用列集 (如 ["name","actions"]; 缺省按 preview 过滤)', ''),
                 ('hideEmptyCells', '分栏详情空值字段不渲染 (剩余格自动重排; 缺省 false 保持全列)', 'false'),
+                ('splitGrid', '分栏详情声明式行布局 {grid:[[key | {key,span:"full"|N} | "*"]], hide:[key], skipEmpty:bool}; catch-all "*" 展开剩余列且空集零节点; 缺省无 = 扁平自动填充', ''),
                 ('modalRenderer', '自定义模态框渲染器 (如 skills 结构化详情)', ''),
                 ('defaultFilter', '初始筛选 {key,value,mode} 加载后自动按该列筛选', ''),
                 ('defaultSort', '初始排序 {key,asc} 加载即按该列排序 (asc 缺省 true; 缺省保持数据原序)', ''),

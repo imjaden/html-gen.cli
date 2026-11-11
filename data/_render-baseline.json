@@ -5,8 +5,8 @@
   "verified": true,
   "files": {
     "layout-table.html": {
-      "sha256": "55bdc4fd5a5c61e1091b6a1b321f3ef43baa8a8a97774193558638b1084d5713",
-      "bytes": 101684
+      "sha256": "5f3e870162b86e5da0c67bc81c050f9026d8295a85521f367d4b433c47016fab",
+      "bytes": 106589
     },
     "layout-doc.html": {
       "sha256": "f120e96bc10c3d62dfa932a75173e4ec3ce074dde8e88bf7dc4cab66ef880c25",
@@ -33,16 +33,16 @@
       "bytes": 27457
     },
     "demos/demos-index.html": {
-      "sha256": "d1251a3b8e33f38c8ab042aa0665c578bb9888fd426aa9d973cdff56d000dba5",
-      "bytes": 113962
+      "sha256": "94e55d9e41773193a343ed945ba936e424dfe89921853a70e26f6b01df2dac35",
+      "bytes": 118867
     },
     "demos/countries-table.html": {
-      "sha256": "e8c6964204555fc4c605034922464a0c85aa37b3f556d57eccb9242ee8949dcc",
-      "bytes": 246330
+      "sha256": "ff4ebb98cc042cec3b8898303e3a50cdaee3d99a1b3b47dbff95418cc242d24f",
+      "bytes": 251235
     },
     "demos/provinces-table.html": {
-      "sha256": "5123acb65b23566ebf70fe3517f634513fdbbb760a7e9db123e1fbc47ce7ff15",
-      "bytes": 123889
+      "sha256": "b2181196a11fb4692ab0ee8ec6d5d9aab545224b5ea3a8b5538cfc9b2d15bc07",
+      "bytes": 128794
     }
   }
 }
