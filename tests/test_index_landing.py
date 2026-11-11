@@ -203,14 +203,18 @@ return [...document.querySelectorAll('.tpl .demos')].map(d => {
         # 首屏可见
         self.assertFalse(self.driver.execute_script(
             "return document.querySelector('.scroll-hint').classList.contains('hide');"), "初始应可见")
-        # 滚动后淡出
+        # 滚动后淡出（CL025: 用显式等待替换固定 sleep —— 全量 -n 4 并行负载下 0.3s 会偶发超时）
         self.driver.execute_script("window.scrollTo(0, 300);")
-        time.sleep(0.3)
+        WebDriverWait(self.driver, 5).until(
+            lambda d: d.execute_script(
+                "return document.querySelector('.scroll-hint').classList.contains('hide');"))
         self.assertTrue(self.driver.execute_script(
             "return document.querySelector('.scroll-hint').classList.contains('hide');"), "滚动后应隐藏")
         # 回顶恢复
         self.driver.execute_script("window.scrollTo(0, 0);")
-        time.sleep(0.3)
+        WebDriverWait(self.driver, 5).until(
+            lambda d: not d.execute_script(
+                "return document.querySelector('.scroll-hint').classList.contains('hide');"))
         self.assertFalse(self.driver.execute_script(
             "return document.querySelector('.scroll-hint').classList.contains('hide');"), "回顶应恢复显示")
 
