@@ -44,8 +44,8 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 }
 ```
 
-> **键表不在本文档**：列类型（6）/ 列属性（23）/ Tab 属性（6）/ 选项（17）/ `options.feedback`（5）/
-> `actions[]`（7）/ `videos`（5）的完整定义（取值、默认值、语义差异）见 `html-gen help table` 的键规范段
+> **键表不在本文档**：列类型（7）/ 列属性（23）/ Tab 属性（6）/ 选项（17）/ `options.feedback`（5）/
+> `actions[]`（7）/ `videos`（6）的完整定义（取值、默认值、语义差异）见 `html-gen help table` 的键规范段
 > （单一事实源：`TEMPLATE_CONTRACT['table']`）。以下仅保留渲染要点，键名以 help 为准：
 
 - **Videos 视频列**：行字段为对象数组（地址必填 + 标题/时长/平台可选），每视频渲染 pill `[平台图标] 标题 (时长)`；

@@ -198,6 +198,21 @@
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .split-preview .kv-item-full { grid-column: 1 / -1; }
 .split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
+  /* CL026: 媒体单元格（image 列 / videos 封面）与灯箱 —— 缩略图高度随密度走，不撑行 */
+  .cell-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:zoom-in; }
+  .data-table.dense .cell-thumb { height:18px; max-width:52px; }
+  .data-table.comfortable .cell-thumb { height:30px; max-width:80px; }
+  .video-cover-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:pointer; }
+  .data-table.dense .video-cover-thumb { height:18px; max-width:52px; }
+  .data-table.comfortable .video-cover-thumb { height:30px; max-width:80px; }
+  .split-preview .kv-img { max-width:100%; max-height:320px; border-radius:6px; border:1px solid #1a1a2e; display:block; margin:2px 0; cursor:zoom-in; }
+  .split-preview .kv-media-link { display:inline-block; margin:2px 0; line-height:1.6; }
+  .split-preview .kv-video-cover { height:48px; width:auto; max-width:120px; object-fit:cover; border-radius:4px; border:1px solid #1a1a2e; vertical-align:middle; margin-right:6px; cursor:pointer; }
+  .lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; cursor:zoom-out; }
+  .lightbox.active { display:flex; }
+  .lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.5); cursor:default; }
+  .lightbox .lb-close { position:fixed; top:16px; right:20px; font-size:28px; color:#aaa; cursor:pointer; line-height:1; }
+  .lightbox .lb-close:hover { color:#fff; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -320,6 +335,12 @@
 <div class="toast" id="toast"></div>
 
 </div><!-- /wrapper -->
+
+<!-- Lightbox (CL026: image 列 / 分栏大图点击放大; 移植自 layout-doc.html) -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
 
 <!-- Modal Panel -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
@@ -478,7 +499,7 @@
     // Search filter（options.searchFields 限定字段，默认全列向后兼容；videos 列排除：数组 String() 噪音 + title 误命中）
     if (q) {
       var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
-        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.key; }).map(function(c){ return c.key; });
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.type !== 'image' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
         return searchKeys.some(function(k) {
           return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
@@ -487,8 +508,9 @@
     }
     // Quick filter (cell click / pill click)
     if (quickFilter) {
+      var qfCol = COLUMNS.find(function(c){ return c.key === quickFilter.key; });
       filtered = filtered.filter(function(row) {
-        var v = String(row[quickFilter.key] || '');
+        var v = cellTextFor(qfCol, row[quickFilter.key]);
         if (quickFilter.mode === 'contains') {
           // 标签筛选：顿号/逗号切分后包含匹配
           return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
@@ -501,10 +523,12 @@
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
       var isDate = col && col.type === 'datetime';
+      var isMedia = col && (col.type === 'image' || col.type === 'videos');
       var loc = col && col.locale;
       var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
       var isDate2 = col2 && col2.type === 'datetime';
+      var isMedia2 = col2 && (col2.type === 'image' || col2.type === 'videos');
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
         // Primary key
@@ -514,6 +538,7 @@
         var cmp;
         if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
         else if (isDate) { va = Date.parse(va) || 0; vb = Date.parse(vb) || 0; cmp = va - vb; }
+        else if (isMedia) { va = mediaTextValue(va); vb = mediaTextValue(vb); cmp = va.localeCompare(vb); }
         else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
         if (cmp !== 0) return sortAsc ? cmp : -cmp;
         // Secondary key (only when primary equal)
@@ -524,6 +549,7 @@
           var cmp2;
           if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
           else if (isDate2) { va2 = Date.parse(va2) || 0; vb2 = Date.parse(vb2) || 0; cmp2 = va2 - vb2; }
+          else if (isMedia2) { va2 = mediaTextValue(va2); vb2 = mediaTextValue(vb2); cmp2 = va2.localeCompare(vb2); }
           else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
           return sortAsc2 ? cmp2 : -cmp2;
         }
@@ -595,13 +621,22 @@
               rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
               return;
             }
+            if (col.type === 'image') {
+              // CL026: 图片列 —— 单元格出缩略图（高度随密度，不撑行），点击开灯箱
+              var imgCell = imageCellHtml(val, col);
+              var freezeClsI = col.freeze ? ' frozen-col' : '';
+              var stickyClsI = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyleI = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-media'+(col.class?' '+col.class:'')+freezeClsI+stickyClsI+'"'+freezeStyleI+'>'+imgCell+'</td>';
+              return;
+            }
             if (col.type === 'videos') {
               // 视频列：每视频一个 pill [图标] title (duration)；maxShow 折叠 "+N"，点击展开全部（不折叠回，re-render 重置）
               var videos = val;
               var vMaxShow = (col.videos && typeof col.videos.maxShow === 'number') ? col.videos.maxShow : 3;
               var vCount = Array.isArray(videos) ? videos.length : 0;
               var vVisible = Math.min(vCount, vMaxShow);
-              var vHtml = '';
+              var vHtml = vCount > 0 ? videoCoverCellHtml(videos[0]) : '';   // CL026: 首个视频封面（可选）
               for (var vi = 0; vi < vVisible; vi++) vHtml += renderVideoPill(videos[vi]);
               var vRestHtml = '';
               if (vCount > vVisible) {
@@ -625,7 +660,7 @@
           var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
           var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
-          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
+          var qfVal = JSON.stringify(cellTextFor(col, row[col.key])).replace(/"/g, '&quot;');
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
             tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
@@ -651,6 +686,9 @@
           if (Array.isArray(v) && c.type === 'videos') {
             // videos 数组特判：逐条渲染 [图标] title (duration) + url 链接（勿 String(v) → [object Object]）
             valHtml = renderVideoListHtml(v);
+          } else if (c.type === 'image') {
+            // CL026: 图片列在行内展开同样出图（点击灯箱）
+            valHtml = imageSplitHtml(v, c);
           } else {
             valHtml = escapeHtml(String(v));
           }
@@ -730,13 +768,92 @@
       var url = v.url;
       var label = videoPillLabel(v);
       if (url) {
-        var urlAttr = JSON.stringify(String(url)).replace(/\"/g, '&quot;');
-        return '<div style="margin:2px 0;line-height:1.6">' +
+        var urlAttr = JSON.stringify(String(url)).replace(/"/g, '&quot;');
+        // CL026: 视频封面（可选）—— 有 cover 时先出封面图，点击与外链同一目标
+        var coverSrc = isSafeMediaUrl(v.cover || '');
+        var coverHtml = coverSrc
+          ? '<img class="kv-video-cover" src="' + escapeHtmlAttr(coverSrc) + '" alt="' + escapeHtmlAttr(label) + '" loading="lazy" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">'
+          : '';
+        return '<div style="margin:2px 0;line-height:1.6">' + coverHtml +
           '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtml(String(url)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
       }
       return '<div style="margin:2px 0;line-height:1.6">' + escapeHtml(label) + '</div>';
     }).join('');
   }
+
+  /* ── CL026: 媒体列（type=image / videos 项 cover）────────────────────────────
+     安全: src 只放行 http(s) / file / data:image/* —— 拦 javascript:、vbscript: 等伪协议。
+     取值: 字符串即 URL; 对象取 src|thumb|url; 可选 alt 作替代文本。
+     CSV / 排序 / quickFilter 共用 mediaTextValue，避免对象被 String() 成 [object Object]。 */
+  function escapeHtmlAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function isSafeMediaUrl(u) {
+    var s = (u === null || u === undefined) ? '' : String(u).trim();
+    if (!s) return '';
+    return /^(https?:\/\/|file:\/\/|data:image\/)/i.test(s) ? s : '';
+  }
+  function mediaSrc(m) {
+    if (m === null || m === undefined) return '';
+    if (typeof m === 'object') return isSafeMediaUrl(m.src || m.thumb || m.url || '');
+    return isSafeMediaUrl(m);
+  }
+  function mediaAlt(m, col) {
+    if (m && typeof m === 'object' && m.alt) return String(m.alt);
+    return (col && col.label) ? String(col.label) : '';
+  }
+  // 注: 形参统一用 m（不用视频项惯用的 v）—— 否则 m.src/m.thumb 一类会被 help 契约的
+  // videos 子键提取正则当成视频项字段，逼着契约去声明并不存在的键。
+  function mediaTextValue(m) {
+    if (m === null || m === undefined) return '';
+    if (Array.isArray(m)) {
+      return m.map(function(it) {
+        return (it && typeof it === 'object') ? String(it.title || it.alt || it.url || it.src || '') : String(it);
+      }).join(' ');
+    }
+    if (typeof m === 'object') return String(m.alt || m.title || m.src || m.url || '');
+    return String(m);
+  }
+  // 搜索 / 排序 / 筛选 / CSV 的统一文本口径：媒体类型走 mediaTextValue，其余沿用 String(v)
+  function cellTextFor(col, v) {
+    if (col && (col.type === 'image' || col.type === 'videos')) return mediaTextValue(v);
+    return String(v === null || v === undefined ? '' : v);
+  }
+  function imageCellHtml(v, col) {
+    var src = mediaSrc(v);
+    if (!src) return '';
+    return '<img class="cell-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(mediaAlt(v, col)) +
+      '" loading="lazy" onclick="event.stopPropagation();openLightbox(this.src)">';
+  }
+  function imageSplitHtml(v, col) {
+    var src = mediaSrc(v);
+    if (!src) return '';
+    return '<img class="kv-img" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(mediaAlt(v, col)) +
+      '" loading="lazy" onclick="event.stopPropagation();openLightbox(this.src)">';
+  }
+  // 视频封面缩略（单元格用）: 点击直接外链到该视频，语义与 pill 一致
+  function videoCoverCellHtml(video) {
+    if (!video || typeof video !== 'object') return '';
+    var src = isSafeMediaUrl(video.cover || '');
+    if (!src) return '';
+    var urlAttr = JSON.stringify(String(video.url || '')).replace(/"/g, '&quot;');
+    return '<img class="video-cover-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(video.title || '') +
+      '" loading="lazy" title="' + escapeHtmlAttr(video.title || video.url || '') +
+      '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">';
+  }
+  window.openLightbox = function(src) {
+    var lb = document.getElementById('lightbox'), im = document.getElementById('lightboxImg');
+    if (!lb || !im || !src) return;
+    im.src = src;
+    lb.classList.add('active');
+  };
+  window.closeLightbox = function(e) {
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    if (!e || e.target === lb || (e.target.classList && e.target.classList.contains('lb-close'))) {
+      lb.classList.remove('active');
+    }
+  };
 
   function getRowClickCol() {
     return COLUMNS.find(function(c){return c.onClick;});
@@ -1209,6 +1326,9 @@
         if (Array.isArray(v) && c.type === 'videos') {
           // videos 数组特判：逐条渲染 + url 链接（勿 String(v) → [object Object]）
           valHtml = renderVideoListHtml(v);
+        } else if (c.type === 'image') {
+          // CL026: 图片列 —— 分栏详情出大图，点击灯箱放大
+          valHtml = imageSplitHtml(v, c);
         } else if (c.escape === false) {
           // CL018: 与表格单元格同口径 —— 列级 escape:false 是唯一豁免口，分栏详情同样放行
           valHtml = full ? String(v).replace(/\n/g,'<br>') : String(v);
@@ -1455,8 +1575,8 @@
       var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
       var rows = filtered.map(function(row) {
         return cols.map(function(c) {
-          var v = row[c.key]; if (v === null || v === undefined) v = '';
-          return '"'+String(v).replace(/"/g,'""')+'"';
+          var v = cellTextFor(c, row[c.key]);
+          return '"'+v.replace(/"/g,'""')+'"';
         }).join(',');
       });
       var csv = '\uFEFF' + header + '\n' + rows.join('\n');

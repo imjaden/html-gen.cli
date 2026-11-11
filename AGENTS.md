@@ -3,7 +3,7 @@
 ## Always Do
 
 - 提交一律 path-scoped：`git add <path>` + `git commit -q -m "type@scope: subject" --only -- <path>`；绝不 `git add -A`。
-- 改完跑全量回归：`python3 -m pytest tests/ -q -n 4`（期望 420 passed）；调试用 `-n 0`。
+- 改完跑全量回归：`python3 -m pytest tests/ -q -n 4`（期望 431 passed）；调试用 `-n 0`。
 - 改 CLI 参数或模板键时同步三面：`html-gen help <theme>` 键规范段、`TEMPLATE_CONTRACT`、`tests/test_help_contract.py`。
 - 数据/模板改动后重建产物：`python3 html-gen.py demo --rebuild`；同步脚本先 `--dry-run` 再 `--apply`。
 - 改本文件前先量 `wc -c AGENTS.md` ≤ 4,000B，改完跑三条自查（见 `### 引用与维护`）。
@@ -41,7 +41,7 @@
 
 ### 测试计数
 
-- 420 tests（41 文件，含 99 subtests）；本节为仓内唯一计数权威，`README.md` / `README.zh.md` / `features.md` / `skills/pages-index/SKILL.md` 均指向此处。
+- 431 tests（42 文件，含 99 subtests）；本节为仓内唯一计数权威，`README.md` / `README.zh.md` / `features.md` / `skills/pages-index/SKILL.md` 均指向此处。
 - `python3 -m pytest tests/ -q -n 4`（约 55s，py3.12）；调试 `-n 0`；细则见 `documents/testing.md`。
 
 ## 项目独立性

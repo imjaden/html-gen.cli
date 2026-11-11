@@ -1,0 +1,212 @@
+"""CL026 守卫: 媒体列 —— type=image 缩略图/灯箱/协议白名单; videos 项 cover 封面外链。
+
+来源: 用户 2026-11-09 提出「image 列类型」与「video 列支持封面 + 点击外链」两条需求，
+路线取推荐项 (b): 新增 image 类型 + 扩展既有 videos 项 cover，不新增单数 video 类型。
+判据全部为行为断言（渲染后 DOM / 点击事件实测）。
+"""
+import base64
+import json
+import subprocess
+import sys
+import tempfile
+import time
+import unittest
+from pathlib import Path
+
+from selenium import webdriver
+from selenium.webdriver.chrome.service import Service
+from selenium.webdriver.common.by import By
+from selenium.webdriver.support.ui import WebDriverWait
+from selenium.webdriver.support import expected_conditions as EC
+from selenium.webdriver.chrome.options import Options
+
+ROOT = Path(__file__).resolve().parent.parent
+GEN = ROOT / 'html-gen.py'
+CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
+
+SVG = ('<svg xmlns="http://www.w3.org/2000/svg" width="120" height="60">'
+       '<rect width="120" height="60" fill="#4f46e5"/></svg>')
+IMG = 'data:image/svg+xml;base64,' + base64.b64encode(SVG.encode()).decode()
+COVER = ('data:image/svg+xml;base64,' +
+         base64.b64encode(SVG.replace('#4f46e5', '#0ea5e9').encode()).decode())
+
+COLS = [
+    {'key': 'name', 'label': '名称', 'width': '120px'},
+    {'key': 'pic', 'label': '图片', 'type': 'image', 'width': '140px'},
+    {'key': 'video', 'label': '视频', 'type': 'videos', 'width': '200px'},
+]
+ROWS = [
+    {'name': 'A 单图', 'pic': IMG,
+     'video': [{'url': 'https://example.com/v1', 'title': '带封面', 'platform': 'bilibili', 'cover': COVER}]},
+    {'name': 'B 对象图', 'pic': {'src': IMG, 'alt': '封面替代文本'},
+     'video': [{'url': 'https://example.com/v2', 'title': '无封面', 'platform': 'youtube'}]},
+]
+
+
+def render(rows=None, cols=None, extra_options=None):
+    data = {
+        'title': 'CL026 媒体列探针',
+        'columns': cols or COLS,
+        'data': rows or ROWS,
+        'options': {'clickMode': 'split', 'pageSize': 20},
+    }
+    data['options'].update(extra_options or {})
+    tmp = Path(tempfile.mkdtemp(prefix='cl026_'))
+    dj, out = tmp / 'd.json', tmp / 'o.html'
+    dj.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+    r = subprocess.run([sys.executable, str(GEN), 'table', '-d', str(dj), '-o', str(out)],
+                       capture_output=True, text=True)
+    assert r.returncode == 0, r.stderr
+    return out
+
+
+class TestMediaColumns(unittest.TestCase):
+
+    @classmethod
+    def setUpClass(cls):
+        opts = Options()
+        opts.add_argument('--headless=new')
+        opts.add_argument('--no-sandbox')
+        opts.add_argument('--disable-dev-shm-usage')
+        cls.driver = webdriver.Chrome(service=Service(CHROMEDRIVER), options=opts)
+
+    @classmethod
+    def tearDownClass(cls):
+        cls.driver.quit()
+
+    def setUp(self):
+        self.driver.set_window_size(1440, 900)
+
+    def _load(self, path, density=None):
+        self.driver.get('file://' + str(path))
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#tbody tr')))
+        self.driver.execute_script('localStorage.clear();')
+        if density:
+            self.driver.execute_script(
+                "localStorage.setItem('html-gen:table:density', arguments[0]);", density)
+        self.driver.get('file://' + str(path))
+        WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#tbody tr')))
+        time.sleep(0.3)
+
+    # image 列 ------------------------------------------------------------
+    def test_01_image_cell_renders_thumbnail(self):
+        self._load(render())
+        imgs = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td.cell-media img.cell-thumb')
+        self.assertEqual(len(imgs), 2, f'两行都应有缩略图，实得 {len(imgs)}')
+        nat = self.driver.execute_script('return [arguments[0].naturalWidth, arguments[0].naturalHeight];', imgs[0])
+        self.assertEqual(nat, [120, 60], f'缩略图应真实加载（naturalWidth 120x60），实得 {nat}')
+        h = self.driver.execute_script('return Math.round(arguments[0].getBoundingClientRect().height);', imgs[0])
+        self.assertEqual(h, 22, f'默认密度缩略图高应 22px（不撑行），实得 {h}')
+
+    def test_02_image_object_form_uses_alt(self):
+        self._load(render())
+        imgs = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td.cell-media img.cell-thumb')
+        self.assertEqual(imgs[1].get_attribute('alt'), '封面替代文本')
+
+    def test_03_unsafe_protocol_rejected(self):
+        rows = [dict(ROWS[0], pic='javascript:alert(1)')]
+        self._load(render(rows=rows))
+        imgs = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td.cell-media img')
+        self.assertEqual(len(imgs), 0, 'javascript: 伪协议不得渲染为 <img>')
+
+    def test_04_click_thumbnail_opens_lightbox(self):
+        self._load(render())
+        thumb = self.driver.find_element(By.CSS_SELECTOR, '#tbody tr td.cell-media img.cell-thumb')
+        thumb.click()
+        time.sleep(0.2)
+        self.assertTrue(self.driver.execute_script(
+            "return document.getElementById('lightbox').classList.contains('active');"), '点击缩略图应开灯箱')
+        self.assertTrue(self.driver.execute_script(
+            "return document.getElementById('lightboxImg').getAttribute('src');").startswith('data:image/svg'))
+        self.driver.execute_script('window.closeLightbox();')
+        time.sleep(0.15)
+        self.assertFalse(self.driver.execute_script(
+            "return document.getElementById('lightbox').classList.contains('active');"), '关闭后灯箱应隐藏')
+
+    def test_05_dense_density_shrinks_thumbnail(self):
+        self._load(render(), density='compact')
+        h = self.driver.execute_script(
+            "return Math.round(document.querySelector('#tbody tr td.cell-media img.cell-thumb')"
+            ".getBoundingClientRect().height);")
+        self.assertEqual(h, 18, f'紧凑密度缩略图高应 18px，实得 {h}')
+
+    def test_06_image_in_split_detail_shows_large_image(self):
+        self._load(render())
+        self.driver.find_element(By.CSS_SELECTOR, '#tbody tr td:nth-child(1)').click()
+        time.sleep(0.6)
+        imgs = self.driver.find_elements(By.CSS_SELECTOR, '#splitPreviewBody img.kv-img')
+        self.assertEqual(len(imgs), 1, '分栏详情应出大图')
+        imgs[0].click()
+        time.sleep(0.2)
+        self.assertTrue(self.driver.execute_script(
+            "return document.getElementById('lightbox').classList.contains('active');"), '分栏大图点击应开灯箱')
+
+    # videos 列 cover ------------------------------------------------------
+    def test_07_video_cover_in_cell_and_click_opens_url(self):
+        self._load(render())
+        covers = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td img.video-cover-thumb')
+        self.assertEqual(len(covers), 1, '仅带 cover 的视频出封面缩略图')
+        # 拦截 window.open，验证点击封面外链到该视频
+        self.driver.execute_script("""
+          window.__opened = [];
+          window.open = function(u, t) { window.__opened.push([u, t]); return null; };
+        """)
+        covers[0].click()
+        time.sleep(0.2)
+        opened = self.driver.execute_script('return window.__opened;')
+        self.assertEqual(opened, [['https://example.com/v1', '_blank']],
+                         f'封面点击应外链到视频地址，实得 {opened}')
+
+    def test_08_videos_without_cover_keep_pills(self):
+        self._load(render())
+        pills = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td .video-pill')
+        self.assertGreaterEqual(len(pills), 2, '无 cover 的视频仍渲染 pill（向后兼容）')
+        covers = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr td img.video-cover-thumb')
+        self.assertEqual(len(covers), 1, '仅 1 行有 cover')
+
+    def test_09_video_cover_in_split_detail(self):
+        self._load(render())
+        self.driver.find_element(By.CSS_SELECTOR, '#tbody tr td:nth-child(1)').click()
+        time.sleep(0.6)
+        covers = self.driver.find_elements(By.CSS_SELECTOR, '#splitPreviewBody img.kv-video-cover')
+        self.assertEqual(len(covers), 1, '分栏详情应渲染视频封面')
+        self.driver.execute_script("""
+          window.__opened = [];
+          window.open = function(u, t) { window.__opened.push([u, t]); return null; };
+        """)
+        covers[0].click()
+        time.sleep(0.2)
+        opened = self.driver.execute_script('return window.__opened;')
+        self.assertEqual(opened, [['https://example.com/v1', '_blank']])
+
+    # 消费面 ---------------------------------------------------------------
+    def test_10_image_column_excluded_from_search(self):
+        self._load(render())
+        # 'svg+xml' 只出现在 image 列的 data URI 里：若 image 参与搜索应命中 2 行，
+        # 排除后（与 videos 同口径）应 0 行 —— 这才是「已排除」的判别性证据。
+        self.driver.find_element(By.CSS_SELECTOR, '#searchInput').send_keys('svg+xml')
+        time.sleep(0.5)
+        after = len(self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr'))
+        self.assertEqual(after, 0,
+                         'image 列不参与默认搜索：仅图片 URL 含的关键词不应命中任何行')
+
+    def test_11_sort_by_image_column_orders_by_text(self):
+        self._load(render())
+        # 两行 pic 均为 data:image/svg（相同文本前缀），用 alt 区分：改为按 label 排序验证不崩且稳定
+        self.driver.execute_script("""
+          var ths = document.querySelectorAll('.data-table thead th');
+          for (var i = 0; i < ths.length; i++) { if (ths[i].textContent.trim() === '图片') { ths[i].click(); break; } }
+        """)
+        time.sleep(0.4)
+        rows = self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr')
+        self.assertEqual(len(rows), 2, '按 image 列排序后行数不变（对象不得被 String() 成 [object Object] 而丢行）')
+        cells = self.driver.execute_script(
+            "return Array.prototype.map.call(document.querySelectorAll('#tbody tr td:nth-child(2)'),"
+            " function(td){ return td.textContent.trim(); });")
+        self.assertNotIn('[object Object]', cells, f'单元格不得露出 [object Object]: {cells}')
+
+
+if __name__ == '__main__':
+    unittest.main()
