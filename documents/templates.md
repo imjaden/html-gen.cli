@@ -48,6 +48,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - **快速过滤**：点击单元格值 → 筛选该列该值的行，filter pill 可关闭；列属性启用（默认关，键名见 help）
 - **列冻结**：sticky 列，动态计算 left 偏移（基于该列 width 配置）
 - **右侧固定列**：水平滚动时保持在视口右侧
+- **分栏详情跨列与空值**（CL025）：列属性 `splitSpan` = `"full"`（整行，旧 `splitFull` 等价）或正整数 N（`grid-column:span N`，上限 6）；选项 `hideEmptyCells: true` 时空值字段整格不渲染、剩余格自动重排（缺省 false 保持全列，向后兼容）。
 - **分栏模式列过滤**：标记为「分栏可见」的列显示于分栏表格；可用选项显式指定分栏列集
 - **列隐藏双语义**：「永不可见」vs「默认收起·可开启·分栏仍全列」—— 语义与键名对照见 `html-gen help table`
 - **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
