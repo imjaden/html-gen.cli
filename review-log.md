@@ -2684,7 +2684,7 @@ CL032 逐条独立复算成立：78 html（19 顶层 + 59 子目录）、jobs 39
 ## 2026-11-12 — CL038 回填 + CL039 抗洗白 round-3（PASS 86/100）
 
 > 受审区间: `github/main..HEAD` 2 笔 —— `8bd4840`(CL039 3 文件 +35/-4) / `7b09b1f`(CL038 10 文件 +2732/-1351)。
-> 报告: `documents/handoff/drama-backfill-cl038-cl039-review-v1.0-20261112.md` · 结论: **PASS 86/100 · 上轮 246 主项闭合 / 245 部分闭合 / 247、248 未闭合 · 新 4🟡 + 5🟢，阻断 0**
+> 报告: `documents/handoff/drama-backfill-cl038-cl039-review-v1.0-20261112.md` · 结论: **PASS 86/100 · 上轮 246 主项闭合 / 245 部分闭合 / 247、248 未闭合 · 新 5🟡 + 4🟢（249–258，251 未分配），阻断 0**
 > 工程面: `round: 3` · `blocking_new: 0` · `blocking_repeat: 0`
 
 ### Summary
