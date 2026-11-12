@@ -124,8 +124,9 @@ class TestSplitGrid(unittest.TestCase):
                              f'f 应在第 3 轨（D/E/F 同行依次排开，f.x={by["F"]["x"]}）')
 
     def test_01b_short_row_does_not_absorb_next_row(self):
-        # 判别性用例：[[a],[b,c]] —— 只写 grid-column 时 c 会被自动流塞回第 1 行的空列；
-        # 只有真正写死 grid-row，b/c 才同处第 2 行。
+        # 守「短行不吸收下一行」的结果：[[a],[b,c]] ⇒ b/c 同处第 2 行、c 不回填第 1 行空列。
+        # 注意：本用例不构成 M1（删掉逐格 grid-row）的判别力 —— 行首恒落第 1 轨，
+        # 上一行已占 col 1 ⇒ CSS Grid 稀疏自动流必然换行，结果与显式坐标一致（M1 为等价变异）。
         self._open(render({'grid': [['a'], ['b', 'c']]}))
         r = self._cells()
         by = {i['label']: i for i in r['items']}
@@ -230,6 +231,38 @@ class TestSplitGrid(unittest.TestCase):
         self._open(render({'grid': [['a', 'emptyOne'], ['b']], 'skipEmpty': False}))
         labels2 = [i['label'] for i in self._cells()['items']]
         self.assertIn('空', labels2, 'skipEmpty=false 时空值列仍占格（向后兼容 hideEmptyCells 缺省 false）')
+
+    # 判据 7 (CL033): 行内 full 只吃剩余轨，不盖兄弟格 ---------------------
+    def test_10_mid_row_full_fills_remainder(self):
+        # 修前 full 恒写 1 / -1 ⇒ 与同行兄弟格重叠且无提示
+        self._open(render({'grid': [['a', {'key': 'b', 'span': 'full'}]]}))
+        r = self._cells()
+        by = {i['label']: i for i in r['items']}
+        gap = 6   # .kv-grid 的 gap
+        self.assertEqual(by['A']['top'], by['B']['top'], 'a/b 应同行（full 不得隐式换行）')
+        self.assertGreater(by['B']['x'], by['A']['x'], 'full 应排在 a 之后')
+        self.assertGreaterEqual(by['B']['x'], by['A']['x'] + by['A']['w'],
+                                f'b 盖住 a：a 右边界={by["A"]["x"] + by["A"]["w"]}, b.x={by["B"]["x"]}')
+        expect = r['gridW'] - by['A']['w'] - gap
+        self.assertLessEqual(abs(by['B']['w'] - expect), 3,
+                             f'full 应填满剩余轨：B={by["B"]["w"]}, 期望≈{expect}（grid={r["gridW"]}）')
+        # 行首 full 且其后仍有兄弟格：同样不得重叠，也不得靠隐式新增轨道绕过
+        self._open(render({'grid': [[{'key': 'a', 'span': 'full'}, 'b']]}))
+        r2 = self._cells()
+        by2 = {i['label']: i for i in r2['items']}
+        self.assertEqual(by2['A']['top'], by2['B']['top'], 'a/b 应同行')
+        self.assertGreaterEqual(by2['B']['x'], by2['A']['x'] + by2['A']['w'],
+                                f'行首 full 也不得盖住 b：a.w={by2["A"]["w"]}, b.x={by2["B"]["x"]}')
+        self.assertLessEqual(by2['B']['x'] + by2['B']['w'], r2['gridLeft'] + r2['gridW'] + 1,
+                             'b 不得溢出栅格（隐式新增轨道）')
+
+    # 判据 7 防回归: 独占一行的 full 仍占满整行 ----------------------------
+    def test_11_full_alone_still_spans_all(self):
+        self._open(render({'grid': [['a', 'b'], [{'key': 'c', 'span': 'full'}]]}))
+        r = self._cells()
+        by = {i['label']: i for i in r['items']}
+        self.assertLessEqual(abs(by['C']['w'] - r['gridW']), 2,
+                             f'唯一格 full 应≈栅格宽（C={by["C"]["w"]}, grid={r["gridW"]}）')
 
     # 边界: 未知 key / 非法 grid 不崩 ---------------------------------------
     def test_08_unknown_key_and_bad_grid_are_safe(self):

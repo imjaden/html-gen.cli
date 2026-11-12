@@ -1715,19 +1715,38 @@ pre code { background: none; padding: 0; }
     });
 
     // ⑥ 渲染：逐格写 grid-row / grid-column（display:contents 不产生行边界，见设计稿 §3）
+    // CL033: 行内 span:"full" 不再恒写 1 / -1（那会盖住同行兄弟格且无提示）——
+    //   该行唯一格 ⇒ 1 / -1（占满整行，语义不变）；行内还有兄弟格 ⇒ 只吃「本行剩余轨」：
+    //   先扣掉其后兄弟格所需的轨，其余填满。不做隐式换行 ⇒ grid 行数与 lines 长度保持 1:1。
     var parts = [];
     lines.forEach(function (line, ri) {
+      // 先算出本行真正会渲染的格（skipEmpty 会丢格），full 的剩余轨按它计
+      var cells = line.map(function (cell) {
+        return { cell: cell, v: rowValueForCurrent(cell.col) };
+      }).filter(function (x) { return x.v !== null; });
       var colIdx = 1;
-      line.forEach(function (cell) {
-        var c = cell.col;
-        var v = rowValueForCurrent(c);
-        if (v === null) return;                                  // 空值跳过（skipEmpty 生效时）
+      cells.forEach(function (item, ci) {
+        var cell = item.cell, c = cell.col, v = item.v;
         var sp = normalizeSpan(cell.span);
         var full = isFullSpan(sp);
         var spanN = full ? 1 : (plainSpan(sp) || 1);
-        var style = 'grid-row:' + (ri + 1) + ';' +
-                    (full ? 'grid-column:1 / -1;' : 'grid-column:' + colIdx + ' / span ' + spanN + ';');
-        if (!full) colIdx += spanN;
+        var style = 'grid-row:' + (ri + 1) + ';';
+        if (!full) {
+          style += 'grid-column:' + colIdx + ' / span ' + spanN + ';';
+          colIdx += spanN;
+        } else if (cells.length === 1) {
+          style += 'grid-column:1 / -1;';
+        } else {
+          // 其后兄弟格占用的轨数（整行格按 1 计）；maxCols ≥ 本行 span 之和 ⇒ take ≥ 1
+          var tail = 0;
+          for (var j = ci + 1; j < cells.length; j++) {
+            var tsp = normalizeSpan(cells[j].cell.span);
+            tail += isFullSpan(tsp) ? 1 : (plainSpan(tsp) || 1);
+          }
+          var take = Math.max(1, maxCols - colIdx + 1 - tail);
+          style += 'grid-column:' + colIdx + ' / span ' + take + ';';
+          colIdx += take;
+        }
         parts.push('<div class="kv-item' + (full ? ' kv-item-full' : '') + '" style="' + style + '">' +
                    '<div class="kv-label">' + escapeHtml(c.label) + '</div>' +
                    '<div class="kv-value">' + splitValueHtml(c, v, full) + '</div></div>');

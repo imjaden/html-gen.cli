@@ -54,6 +54,8 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
   - CL030 加固：外链白名单同口径延伸到 `actions.hrefKey` 与 `clickMode: 'tab'` 的行级 `row.url`（非法目标渲染 `action-btn-disabled` 不可点按钮 / 行点击直接 no-op）；属性上下文一律用 `escapeHtmlAttr`（`title` 曾用 `escapeHtml`，双引号不转义 ⇒ 可注入事件属性）；`onclick` 的 JSON 注入走 `jsAttr`（单引号属性内 `'` 也转义）。
 - **分栏详情跨列与空值**（CL025）：列属性 `splitSpan` = `"full"`（整行，旧 `splitFull` 等价）或正整数 N（`grid-column:span N`，上限 6；数字与数字字符串 `"2"` 等价）；选项 `hideEmptyCells: true` 时空值字段整格不渲染、剩余格自动重排（缺省 false 保持全列，向后兼容）。
 - **分栏详情声明式行布局**（CL031）：选项 `options.splitGrid = { grid, hide, skipEmpty }`。`grid` 是「行数组的数组」，格元素三态：`"key"` / `{key, span: "full"|N}` / `"*"`（catch-all，只认最后一个，展开为「未显式引用 + 未 hide」的列，展开集为空则该行**零节点不留空轨**）。JS 逐格写 `grid-row` / `grid-column`（`display:contents` 不产生行边界，见 `documents/solutions/table-split-grid-design-v1.0-20261109.md` §3）；轨道数 = 各行 span 之和的最大值。`hide` 里的列保留数据但不渲染；`skipEmpty` 缺省继承 `hideEmptyCells`。**不写该键 ⇒ 走原扁平 auto-fill，行为不变**；`splitSpan`/`splitFull` 在 `splitGrid` 存在时让位，`preview`/`columnsSplit` 属表格侧、与它零交叉。
+  - `span: "full"`（CL033 起）：该行**唯一格** ⇒ 占满整行（`1 / -1`）；行内**还有兄弟格** ⇒ 只吃「本行剩余轨」——先扣掉其后兄弟格所需轨，其余填满（不做隐式换行，`grid` 行数与视觉行数保持 1:1）。CL031 时恒写 `1 / -1`，会让行中/行首的 full 盖住同行兄弟格且无任何提示。
+  - 逐格 `grid-row` 属**意图显式**（抗未来 `grid-auto-flow` 变动）：当前行首恒落第 1 轨 + CSS 稀疏自动流的排布结果与仅写 `grid-column` 一致 ⇒ 删掉 `grid-row` 是**等价变异**（`test_01b` 只守「短行不吸收下一行」的结果，不构成它的判别力，评审已复核）。
 - **分栏模式列过滤**：标记为「分栏可见」的列显示于分栏表格；可用选项显式指定分栏列集
 - **列隐藏双语义**：「永不可见」vs「默认收起·可开启·分栏仍全列」—— 语义与键名对照见 `html-gen help table`
 - **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
