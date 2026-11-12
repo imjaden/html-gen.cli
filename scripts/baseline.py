@@ -97,6 +97,66 @@ SKIP_PRODUCTS = {
     'demos/the-price-you-choose.html': '生成后注入层产物（rx-patch），CLI 直渲 != 产物',
 }
 
+# ── 案例目录产物（CL032 尾项）：demos/<case>/ 下的 doc / table 页 ──
+# 有单源的按「同目录同名 md」或显式数据源登记；无源/自建/跳转桩一律进 CASE_SKIP 并带理由，
+# 不让「子目录页没有门禁」变成静默漂移面（此前 59 页全无覆盖）。
+CASE_DOC_DIRS = ('chaitin', 'cloudwise', 'drama')
+CASE_TABLE_PRODUCTS = {
+    'demos/drama/daming-timeline-table.html': 'data/_drama-table-daming-timeline.json',
+    'demos/drama/history-timeline-table.html': 'data/_drama-table-history-timeline.json',
+    'demos/drama/yongzheng-timeline-table.html': 'data/_drama-table-yongzheng-timeline.json',
+    'demos/drama/zhuyuanzhang-timeline-table.html': 'data/_drama-table-zhuyuanzhang-timeline.json',
+    'demos/drama/history-strategy-table.html': 'data/_drama-table-history-strategy.json',
+}
+CASE_SKIP = {
+    'demos/chaitin/': 'custom 手写页（stat-box/card），无模板也无单源 JSON',
+    'demos/slimdown/': '自建构建链 scripts/build-slimdown.py（非 CLI 直渲；重跑逐字节可复现，已实测 plan/archive 零差异）',
+    'demos/the-price-you-choose/': 'doc 页 md 源不在本仓（产物内只有 basename）；01-08 为旧 slug 跳转桩',
+    'demos/drama/daming-strategy-table.html': '产物 10 列 / 源 JSON 7 列（页面已演进未回填）⇒ CL038',
+    'demos/drama/yongzheng-strategy-table.html': '产物 10 列 / 源 JSON 7 列（页面已演进未回填）⇒ CL038',
+    'demos/drama/zhuyuanzhang-strategy-table.html': '产物 10 列 / 源 JSON 7 列（页面已演进未回填）⇒ CL038',
+}
+
+
+def case_skip_files(root, jobs=()):
+    """把 CASE_SKIP（含目录型）展开成 [(rel, reason)]。
+
+    目录型条目的语义是「该目录下**没有单源、不可重渲**的页」——
+    目录里若有可 verify 的产物（如同目录带 .md 的 doc 页），必须在展开时排除，
+    否则同一文件既判定又跳过 = 口径矛盾（守卫 test_08 会直接红）。
+    """
+    jobs = set(jobs)
+    out = []
+    for key, reason in CASE_SKIP.items():
+        if key.endswith('/'):
+            d = root / key
+            if not d.is_dir():
+                continue
+            for f in sorted(d.glob('*.html')):
+                rel = str(f.relative_to(root))
+                if rel not in jobs:
+                    out.append((rel, reason))
+        else:
+            out.append((key, reason))
+    return out
+
+
+def case_doc_products(base=None):
+    """demos/<case>/*.md 且同目录同名 html 存在 ⇒ 可重渲。只认 CASE_DOC_DIRS（新目录须显式登记）。"""
+    base = base or Path(__file__).resolve().parent.parent
+    out = []
+    for d in CASE_DOC_DIRS:
+        for md in sorted((base / 'demos' / d).glob('*.md')):
+            if md.with_suffix('.html').is_file():
+                out.append(f'demos/{d}/{md.stem}.html')
+    return out
+
+
+_CASE_DOC = case_doc_products()
+# 子集 = 基础清单 + 案例产物（doc 自动列举 + table 显式登记），保持排序稳定便于对账
+SUBSET = SUBSET + [r for r in _CASE_DOC if r not in SUBSET] \
+                 + [r for r in sorted(CASE_TABLE_PRODUCTS) if r not in SUBSET]
+
 GITHUB_RE = re.compile(r'<a href="([^"]+)" class="github-corner"')
 HOME_RE = re.compile(r'<a class="home-link" href="([^"]+)"')
 H1_RE = re.compile(r'<h1[^>]*>(.*?)</h1>', re.S)
@@ -162,7 +222,7 @@ def _recovered_common(t):
 def build_jobs(root):
     """[(rel, argv)]：argv 能把该产物重渲出来（不含 -o）。"""
     jobs = []
-    for rel, data in TABLE_PRODUCTS.items():
+    for rel, data in {**TABLE_PRODUCTS, **CASE_TABLE_PRODUCTS}.items():
         target = root / rel
         if not target.is_file():
             continue
@@ -180,7 +240,7 @@ def build_jobs(root):
         md = root / Path(rel).with_suffix('.md')
         if (root / rel).is_file() and md.is_file():
             jobs.append((rel, ['slide', '-i', str(md.relative_to(root))]))
-    for rel in DOC_PRODUCTS:
+    for rel in DOC_PRODUCTS + _CASE_DOC:
         target, md = root / rel, root / Path(rel).with_suffix('.md')
         if not target.is_file() or not md.is_file():
             continue
@@ -229,7 +289,8 @@ def cmd_verify(root, as_json=False, quiet=False, keep_temp=False):
         same = out.read_text(encoding='utf-8') == (root / rel).read_text(encoding='utf-8')
         results.append({'path': rel, 'status': 'current' if same else 'stale',
                         'detail': f'{sha256_of(root / rel)[:12]} vs {sha256_of(out)[:12]}'})
-    for rel, reason in SKIP_PRODUCTS.items():
+    jobs = {rel for rel, _ in build_jobs(root)}
+    for rel, reason in list(SKIP_PRODUCTS.items()) + case_skip_files(root, jobs):
         if (root / rel).is_file():
             results.append({'path': rel, 'status': 'skip', 'detail': reason})
     if not keep_temp:

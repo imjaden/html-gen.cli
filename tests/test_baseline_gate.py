@@ -150,15 +150,20 @@ class TestRenderBaseline(unittest.TestCase):
 
     # v1.2（CL032）新增 -----------------------------------------------------
     def test_08_every_demo_product_is_covered_or_skipped(self):
-        """不得有页面悄悄落在门禁之外：既不在 build_jobs 也不在 SKIP 就是漏网。"""
+        """不得有页面悄悄落在门禁之外：既不在 build_jobs 也不在 SKIP 就是漏网。
+
+        CL032 尾项起扫描面从 `demos/*.html` 扩到 `demos/**/*.html`（含 case 子目录）：
+        子目录页此前 100% 无覆盖，正是「改了没说」最难发现的盲区。
+        """
         mod = _load_script()
         jobs = {rel for rel, _ in mod.build_jobs(ROOT)}
-        products = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'demos').glob('*.html')}
-        uncovered = products - jobs - set(mod.SKIP_PRODUCTS)
+        skip = set(mod.SKIP_PRODUCTS) | {rel for rel, _ in mod.case_skip_files(ROOT, jobs)}
+        products = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'demos').rglob('*.html')}
+        uncovered = products - jobs - skip
         self.assertEqual(uncovered, set(), f'未进门禁的页面: {sorted(uncovered)}')
-        self.assertGreaterEqual(len(jobs), 12, f'可 verify 产物应 ≥12，实得 {len(jobs)}')
-        self.assertEqual(set(jobs) & set(mod.SKIP_PRODUCTS), set(), '既判定又跳过 = 口径矛盾')
-        for rel, reason in mod.SKIP_PRODUCTS.items():
+        self.assertGreaterEqual(len(jobs), 30, f'可 verify 产物应 ≥30，实得 {len(jobs)}')
+        self.assertEqual(jobs & (skip | set(mod.SKIP_PRODUCTS)), set(), '既判定又跳过 = 口径矛盾')
+        for rel, reason in {**mod.SKIP_PRODUCTS, **mod.CASE_SKIP}.items():
             self.assertTrue(reason.strip(), f'{rel} 的 skip 必须带理由（禁静默漏过）')
         # 子集必须覆盖全部可 verify 产物（--check 才能把「产物被手改」也钉住）
         self.assertTrue(jobs <= set(mod.SUBSET), f'未钉进子集的产物: {sorted(jobs - set(mod.SUBSET))}')

@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<meta name="generator" content="html-gen v3.4+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>公司商业分析 · 纵/横菜单设计方案</title>
@@ -26,6 +27,8 @@
   --accent-400: #facc15;
   --accent-500: #eab308;
   --accent-600: #ca8a04;
+  --hl-bg: rgba(250, 204, 21, .18);
+  --hl-fg: #fde68a;
   --surface-800: #1e1e2e;
   --surface-850: #181825;
   --surface-900: #11111b;
@@ -73,6 +76,8 @@
   --code-bg: #f6f8fa;
   --code-text: #57606a;
   --code-cmd: #1f2328;
+  --hl-bg: rgba(250, 204, 21, .45);
+  --hl-fg: #5a4600;
   --hero-title-from: #1f2328;
   --gh-corner-fill: rgba(0,0,0,0.75);
   --gh-octocat: #ffffff;
@@ -106,6 +111,12 @@ code {
   font-size: 0.8rem;
   background: rgba(255,255,255,0.06);
   padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+mark.hl {
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+  padding: 0 2px;
   border-radius: var(--radius-sm);
 }
 pre {
@@ -490,7 +501,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>公司商业分析 · 纵/横菜单设计方案</h1>
-      <div class="meta">创建: 2026-08-24 16:03 · 编辑: 2026-07-11 11:57<br>字数: 641 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>menu-design.md</code></span></div>
+      <div class="meta">创建: 2026-08-24 16:03 · 编辑: 2026-07-11 11:57<br>字数: 1,419 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>menu-design.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><blockquote>基于长亭科技（Chaitin Tech）的数据梳理，设计适用于公司业务分析的 C 型知识库导航体系。</blockquote>
 <hr>

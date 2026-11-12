@@ -95,6 +95,102 @@
     "demos/cloudwise-business-analysis.html": {
       "sha256": "d5aba3d514865ed06d1e1cbad4f3a8105b5e0ffb60e0440755c84e3c57d9563b",
       "bytes": 49769
+    },
+    "demos/chaitin/menu-design.html": {
+      "sha256": "240323028a7c3defac1ccbb00c9153716cfe8f063d3d8b13b1aadb6725f451ce",
+      "bytes": 50504
+    },
+    "demos/cloudwise/awards.html": {
+      "sha256": "774db9bf074e679229e3fc57bc5b95caecc8d4131dc9fbdd2ad22bd56bfa1d4d",
+      "bytes": 38727
+    },
+    "demos/cloudwise/business-model.html": {
+      "sha256": "95d3032435c148bd969324d456fa000490ea3eb8a9214d13a1b6462834794fe9",
+      "bytes": 38771
+    },
+    "demos/cloudwise/company-history.html": {
+      "sha256": "35febf4b76c0e1fb18d8cd9da941434a33af36c3f693e8ef7aeb1a44fd47696d",
+      "bytes": 38879
+    },
+    "demos/cloudwise/company-profile.html": {
+      "sha256": "f12f804a231a4e2bd9a3a6ac55101c15bb5ebc5ecfbdf5dffd141320a57da489",
+      "bytes": 40419
+    },
+    "demos/cloudwise/competitive-landscape.html": {
+      "sha256": "79e460543f7bb257942251008827877b237bfa884e081f79a2e3f8b694ff9c6d",
+      "bytes": 38935
+    },
+    "demos/cloudwise/core-products.html": {
+      "sha256": "e3ca2a64d422b95e14d0e40efe4dd01cc920d57204c360da8338c195da355ce5",
+      "bytes": 39715
+    },
+    "demos/cloudwise/customers-market.html": {
+      "sha256": "5187e2da680634152dba132f61fb3589fd6820c7c08d0ac9ed75012156f80840",
+      "bytes": 38609
+    },
+    "demos/cloudwise/funding-valuation.html": {
+      "sha256": "09fffd4d272d4e1d4897f88a5a75a75721fb5581b292d72352965b05cc38ff36",
+      "bytes": 39226
+    },
+    "demos/cloudwise/growth-outlook.html": {
+      "sha256": "4855c8c199c6fe937246dfed3d3ba82552727ddaaab0f5ec3ca9a5a4699e1634",
+      "bytes": 40101
+    },
+    "demos/cloudwise/management-team.html": {
+      "sha256": "1de16a8867660ae310dc878b70250315871d85d7e0147e4566c826b00a4d5a45",
+      "bytes": 39014
+    },
+    "demos/cloudwise/open-source.html": {
+      "sha256": "92f28500fd47073a36e6d07647ffaa7ab280d67656f09016ebe28f6ea4081044",
+      "bytes": 40010
+    },
+    "demos/cloudwise/partners.html": {
+      "sha256": "3f9a8246d241d2e42edc74d80f6519be45554dafda42a389bae714cf5b87d45c",
+      "bytes": 38335
+    },
+    "demos/cloudwise/product-matrix.html": {
+      "sha256": "366085ea47cf8802d9c844e6759ab1d4106ae2e6471bc508cb56acf69f25626f",
+      "bytes": 39317
+    },
+    "demos/cloudwise/solutions.html": {
+      "sha256": "871835e0533c5773e43be83112141b363ce7ba146c302bf5d416f809e78d22ce",
+      "bytes": 39009
+    },
+    "demos/drama/daming-overview.html": {
+      "sha256": "5ebd8159ee4639931de5c7603a85374f5aa29576edf9f2a6e135850a51fec09e",
+      "bytes": 40524
+    },
+    "demos/drama/history-overview.html": {
+      "sha256": "27b5b8e3038ced5a3b5699e0343c8366672a432e4eeb068922ad9042c26769d9",
+      "bytes": 42543
+    },
+    "demos/drama/yongzheng-overview.html": {
+      "sha256": "3f64595ae03073ba2a2debad57eb2fb30010190f085b6b715d754b17c8032d43",
+      "bytes": 40116
+    },
+    "demos/drama/zhuyuanzhang-overview.html": {
+      "sha256": "29837f598cec4b3748e158a7770a3d86b49aa94eb49a256f8076fba915df1f29",
+      "bytes": 40708
+    },
+    "demos/drama/daming-timeline-table.html": {
+      "sha256": "efcf916f59b73f8ddc800765aa3d0635b71bd0150593747babbc48b0ee2e380a",
+      "bytes": 124775
+    },
+    "demos/drama/history-strategy-table.html": {
+      "sha256": "99427a210aeb7e934dc0b381785fd61b09323d5c85177df1567c5e62b8009af4",
+      "bytes": 155386
+    },
+    "demos/drama/history-timeline-table.html": {
+      "sha256": "e40176cf6f1af3586f58005aa4fa588116d19834ec25602f0574d3b8cc818cb2",
+      "bytes": 134233
+    },
+    "demos/drama/yongzheng-timeline-table.html": {
+      "sha256": "e25743334b4fbb0ee24c647420d0b319768b66bf715649bc665056cd97544518",
+      "bytes": 124054
+    },
+    "demos/drama/zhuyuanzhang-timeline-table.html": {
+      "sha256": "267cb087a058221f39b63103318db7e55b483d823d470652be0f2b08ac642264",
+      "bytes": 121338
     }
   }
 }

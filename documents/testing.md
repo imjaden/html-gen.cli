@@ -46,9 +46,9 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
   - sleep 调低用 `skills/test-speed-optimization/scripts/speedup_sleeps.py`（--dry-run/--apply/--restore）
 - 依赖：`pytest-xdist>=3.8.0`（见 requirements-dev.txt）
 
-## 渲染基线门禁（CL029，v1.2 = CL032 扩容）
+## 渲染基线门禁（CL029 → v1.2 CL032 → v1.3 CL032 尾项）
 
-`scripts/baseline.py`：对**可判定子集**（5 个模板/样式源含 `layout-slide.html` + 2 个手写落地页 + `demos-index` 就地重建 + 15 个可 verify 产物 = 23 项）钉 sha256+字节数，
+`scripts/baseline.py`：对**可判定子集**（5 个模板/样式源含 `layout-slide.html` + 2 个手写落地页 + `demos-index` 就地重建 + **39 个可 verify 产物** = **47 项**）钉 sha256+字节数，
 基线文件 `data/_render-baseline.json` 随仓入库（`version: 2`，带 `verified` 标记）。
 
 ```bash
@@ -61,13 +61,20 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
 - **两道门**：`--check` 证「文件没被改过」；`--verify` 证「产物是当前模板产出的」。
   后者用**从产物回收的参数集**（title/subtitle/welcome/corner/home 全从产物解析）重渲到临时目录比 sha，
   脚本里不维护第二份参数副本 —— 参数漂移是 CL002 FIND-002 的老坑。
-- **覆盖清单（v1.2）**：table 5（countries / provinces / table-features / table-actions / hermes-skills）+ slide 1（slide-guide）
+- **覆盖清单（v1.3）**：table 5（countries / provinces / table-features / table-actions / hermes-skills）+ slide 1（slide-guide）
   + doc 5（usage-guide / doc-guide / table-guide / knowledge-guide / markdown-spec，md 源走**同目录同名约定**
   `demos/<name>.html` ← `demos/<name>.md`）+ knowledge 4（knowledge-demo / drama-knowledge / chaitin / cloudwise，
-  台账逐页登记 `产物 → (kb-data, groups)`）= **15 件判定 + `demos-index` 就地重建**。
-- **SKIP 五项逐条带理由（禁静默漏过）**：`demos/demos-index.html`（就地重建型）/ `demos/index.html`（半手写落地页）/
+  台账逐页登记 `产物 → (kb-data, groups)`）= 基础 **15 件判定**；
+  **+ 案例目录产物（v1.3 新增）**：`demos/{chaitin,cloudwise,drama}/*.md` 有同名 html 的 19 件 doc 页自动列举
+  （`case_doc_products()`，新目录须显式加进 `CASE_DOC_DIRS`）+ `CASE_TABLE_PRODUCTS` 5 件 table 页
+  （4 个 drama timeline + history-strategy）= **39 件判定**。
+- **SKIP 逐条带理由（禁静默漏过），含目录型**：`demos/demos-index.html`（就地重建型）/ `demos/index.html`（半手写落地页）/
   `index.html`（仓根手写）/ `demos/slide-demo.html`（无 .md 源，手工同步）/ `demos/the-price-you-choose.html`
-  （生成后注入层 rx-patch，CLI 直渲 ≠ 产物）。新增页面若不进 `build_jobs` 也不进 `SKIP_PRODUCTS`，`test_08` 直接红。
+  （生成后注入层 rx-patch，CLI 直渲 ≠ 产物）；`CASE_SKIP` 里 `demos/chaitin/`（无 md 源的自建页，**展开时排除已判定的
+  `menu-design.html`**）/ `demos/slimdown/`（自建构建链 `scripts/build-slimdown.py`，重跑逐字节可复现）/
+  `demos/the-price-you-choose/`（md 源不在本仓；01-08 为旧 slug 跳转桩）/ 3 个 drama strategy 表
+  （产物 10 列 vs 源 JSON 7 列，页面已演进未回填 ⇒ CL038）。
+  新增页面若不进 `build_jobs` 也不进 skip（单条或目录型），`test_08` 直接红；扫描面自 v1.3 起是 `demos/**/*.html`（含子目录）。
 - **为什么不许 `--force` 常态化**：产物落后于模板时重建基线，等于把「模板已前进、产物没重刷」的漂移一次性拍成绿
   （复审实测就是这种状态：countries/provinces/table-features/table-actions/hermes-skills/slide-guide 六个产物都落后）。
 - 测试：`tests/test_baseline_gate.py` 9 例，全部在 `--root` 临时副本上跑（真仓零写入）：
