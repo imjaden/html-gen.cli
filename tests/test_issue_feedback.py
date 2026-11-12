@@ -400,7 +400,9 @@ class TestIssueSyncScript(unittest.TestCase):
 
     def test_27_human_override_requires_issue(self):
         """N1: --field/--value/--value-file 必须与 --issue 联用（否则 exit 2）。"""
-        missing = str(Path(tempfile.mkdtemp(prefix='hg-nope-')) / 'nope.md')   # 唯一不存在的路径（CL035）
+        junk = Path(tempfile.mkdtemp(prefix='hg-nope-'))
+        self.addCleanup(shutil.rmtree, str(junk), ignore_errors=True)
+        missing = str(junk / 'nope.md')                                        # 唯一不存在的路径（CL035）
         for argv in (['--field', 'note'], ['--value', 'x'], ['--value-file', missing]):
             self.assertEqual(self.mod.main(argv), 2, argv)
 

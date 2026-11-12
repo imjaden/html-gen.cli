@@ -56,8 +56,6 @@ class TmpDirMixin:
     def setUpClass(cls):
         super().setUpClass()
         cls.tmpdir = Path(tempfile.mkdtemp(prefix=f'hg-{cls.__name__.lower()}-'))
-
-    @classmethod
-    def tearDownClass(cls):
-        shutil.rmtree(cls.tmpdir, ignore_errors=True)
-        super().tearDownClass()
+        # addClassCleanup 在 setUpClass 之后立刻注册 ⇒ 后续 setUpClass 中途抛错（如缺驱动）也会清理；
+        # 用 tearDownClass 则那种情况根本不执行，临时目录直接泄漏。
+        cls.addClassCleanup(shutil.rmtree, str(cls.tmpdir), ignore_errors=True)

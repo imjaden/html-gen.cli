@@ -31,7 +31,7 @@ class TestDoc(TmpDirMixin, unittest.TestCase):
             ('markdown-spec.md', 'B 型规范'),
             ('knowledge-guide.md', 'C 型'),
         ]:
-            out = Path('/tmp') / f'test-doc-{md_name.replace(".md", ".html")}'
+            out = self.tmpdir / f'test-doc-{md_name.replace(".md", ".html")}'
             src = DEMOS / 'templates' / md_name if (DEMOS / 'templates' / md_name).exists() else DEMOS / md_name
             run_gen('doc', '-i', str(src), '--title', title, '-o', str(out))
             html = out.read_text()

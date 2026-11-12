@@ -5,15 +5,14 @@ from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import TmpDirMixin, chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
 TMPL = PROJECT / 'layout-table.html'
 STYLE = PROJECT / 'style-guide.css'
-DEMO = Path('/tmp') / '_test_datetime_clickmode.html'
 
 
-def generate_html(data, options=None):
+def generate_html(data, options=None, out_path=None):
     """Generate a test HTML using the table template."""
     tmpl = TMPL.read_text(encoding='utf-8')
     css = STYLE.read_text(encoding='utf-8') if STYLE.exists() else ''
@@ -33,14 +32,17 @@ def generate_html(data, options=None):
     html = html.replace('<!--DATA-->', data_str)
     html = html.replace('<!--TABS-->', tabs_str)
     html = html.replace('<!--OPTIONS-->', opts_str)
-    DEMO.write_text(html, encoding='utf-8')
-    return DEMO
+    out_path = Path(out_path)
+    out_path.write_text(html, encoding='utf-8')
+    return out_path
 
 
-class TestDatetimeClickmode(unittest.TestCase):
+class TestDatetimeClickmode(TmpDirMixin, unittest.TestCase):
 
     @classmethod
     def setUpClass(cls):
+        super().setUpClass()
+        cls.demo = cls.tmpdir / '_test_datetime_clickmode.html'
         opts = Options()
         opts.add_argument('--headless')
         opts.add_argument('--no-sandbox')
@@ -56,13 +58,13 @@ class TestDatetimeClickmode(unittest.TestCase):
         self.driver.set_window_size(1280, 800)
 
     def _load(self, data, options=None):
-        generate_html(data, options)
-        self.driver.get('file://' + str(DEMO))
+        generate_html(data, options, self.demo)
+        self.driver.get('file://' + str(self.demo))
         time.sleep(0.15)  # [speedup]
 
         try: self.driver.execute_script("localStorage.clear();") 
         except: pass
-        self.driver.get('file://' + str(DEMO))
+        self.driver.get('file://' + str(self.demo))
         time.sleep(0.4)  # [speedup]
 
         self.driver.execute_script(

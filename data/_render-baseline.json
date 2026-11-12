@@ -6,19 +6,27 @@
   "files": {
     "layout-table.html": {
       "sha256": "204aeb64533c65c0bdae82d4556284530d910f3163ebc8d058c2ed2ec6c39727",
-      "bytes": 110407
+      "bytes": 110407,
+      "corner": false,
+      "home": false
     },
     "layout-doc.html": {
       "sha256": "f120e96bc10c3d62dfa932a75173e4ec3ce074dde8e88bf7dc4cab66ef880c25",
-      "bytes": 29535
+      "bytes": 29535,
+      "corner": false,
+      "home": false
     },
     "layout-knowledge.html": {
       "sha256": "8924b1c14ce8394649aa8ad54d14d47cfee9ce5dfc95368bc6572449f5172fd2",
-      "bytes": 28620
+      "bytes": 28620,
+      "corner": false,
+      "home": false
     },
     "layout-slide.html": {
       "sha256": "8d844975fa77e1435404cbca9410857ca1e89c2936c707f6e76835d500901279",
-      "bytes": 33424
+      "bytes": 33424,
+      "corner": false,
+      "home": false
     },
     "style-guide.css": {
       "sha256": "75bc4f81a22ff2bb6a8e02f14354108e60f4ec621c3b99c30769a248543b5a91",
@@ -26,171 +34,255 @@
     },
     "index.html": {
       "sha256": "dd5c80c890c3b3ff1eb9c8514f383bda2287aba9571325412e333281359e5f22",
-      "bytes": 29508
+      "bytes": 29508,
+      "corner": true,
+      "home": false
     },
     "demos/index.html": {
       "sha256": "6c93c5dc14b484d3b8f6dd5b403b9d332ef6da6814652d38f1504b69e246abb4",
-      "bytes": 27457
+      "bytes": 27457,
+      "corner": true,
+      "home": false
     },
     "demos/demos-index.html": {
       "sha256": "64d50828da3073e74ff52fc4ed3aa543a6512d0315cead6c7b4c1e6a7b510184",
-      "bytes": 123368
+      "bytes": 123368,
+      "corner": false,
+      "home": true
     },
     "demos/countries-table.html": {
       "sha256": "38db57aadf7e41276b3b87e3ee1c17447e7c5264f28fc8389dd82ff397f3bf71",
-      "bytes": 255179
+      "bytes": 255179,
+      "corner": true,
+      "home": true
     },
     "demos/provinces-table.html": {
       "sha256": "b33d50959d1913b8bbf31f144b4152e706642244e84f39cd941093cee1512009",
-      "bytes": 132738
+      "bytes": 132738,
+      "corner": true,
+      "home": false
     },
     "demos/table-features-demo.html": {
       "sha256": "dd46104052ba18d57c2d68a4bc5a4aca154a7456ff3f3d285393a322f1cb9c9e",
-      "bytes": 121827
+      "bytes": 121827,
+      "corner": true,
+      "home": false
     },
     "demos/table-actions-demo.html": {
       "sha256": "e84929ca72f26d20cada4d906c8b06adce502e5c5dce186e3a7a128322bed845",
-      "bytes": 121543
+      "bytes": 121543,
+      "corner": true,
+      "home": false
     },
     "demos/hermes-profile-skills-list.html": {
       "sha256": "d3614609c8cb8142874f824904efa0a8be7424c05fd9ff390c6748d17105fef0",
-      "bytes": 170853
+      "bytes": 170853,
+      "corner": true,
+      "home": false
     },
     "demos/slide-guide.html": {
       "sha256": "b86b8f122569a68b15611262107aa119e33da40d1cd3672133909fbcebfaba60",
-      "bytes": 46914
+      "bytes": 46914,
+      "corner": false,
+      "home": false
     },
     "demos/usage-guide.html": {
       "sha256": "3c0ae653027614eb569f6439bc8f267536e33b08dd9e740563c6fa10436fa61e",
-      "bytes": 54149
+      "bytes": 54149,
+      "corner": true,
+      "home": false
     },
     "demos/doc-guide.html": {
       "sha256": "e69d6fb20a7dd7eecc9678ac2fe394191dca57aaf6a3603675cea4da862b714a",
-      "bytes": 52235
+      "bytes": 52235,
+      "corner": false,
+      "home": false
     },
     "demos/table-guide.html": {
       "sha256": "ec0c01d5599c6abc59484d5547917f389d1ae71a09791301a50e382a96f4ad38",
-      "bytes": 56972
+      "bytes": 56972,
+      "corner": true,
+      "home": false
     },
     "demos/knowledge-guide.html": {
       "sha256": "330fa58b90f420ee2279aaac66d7195c0335cd6ffddc0a32e685b6b313a4736e",
-      "bytes": 51733
+      "bytes": 51733,
+      "corner": true,
+      "home": false
     },
     "demos/markdown-spec.html": {
       "sha256": "7a81f0ea1ae294c3f55007c0a1405f46c5010bb6db311bc307928a58afe65934",
-      "bytes": 52856
+      "bytes": 52856,
+      "corner": true,
+      "home": false
     },
     "demos/knowledge-demo.html": {
       "sha256": "ba03055d89559e88d11fe0d38a5ba59cac74e20c1dbe9e55afccf2bf081ca765",
-      "bytes": 68882
+      "bytes": 68882,
+      "corner": true,
+      "home": false
     },
     "demos/drama-knowledge.html": {
       "sha256": "d44dd22aa2787c8421015f1012711c73098c186aea8c71a80e8f9e99e3f0e822",
-      "bytes": 40269
+      "bytes": 40269,
+      "corner": true,
+      "home": false
     },
     "demos/chaitin-business-analysis.html": {
       "sha256": "d92ce9fafe02059346f9d721647639481ea1f569bd613f259b6b99b091455514",
-      "bytes": 40139
+      "bytes": 40139,
+      "corner": true,
+      "home": false
     },
     "demos/cloudwise-business-analysis.html": {
       "sha256": "d5aba3d514865ed06d1e1cbad4f3a8105b5e0ffb60e0440755c84e3c57d9563b",
-      "bytes": 49769
+      "bytes": 49769,
+      "corner": false,
+      "home": false
     },
     "demos/chaitin/menu-design.html": {
       "sha256": "240323028a7c3defac1ccbb00c9153716cfe8f063d3d8b13b1aadb6725f451ce",
-      "bytes": 50504
+      "bytes": 50504,
+      "corner": true,
+      "home": false
     },
     "demos/cloudwise/awards.html": {
       "sha256": "774db9bf074e679229e3fc57bc5b95caecc8d4131dc9fbdd2ad22bd56bfa1d4d",
-      "bytes": 38727
+      "bytes": 38727,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/business-model.html": {
       "sha256": "95d3032435c148bd969324d456fa000490ea3eb8a9214d13a1b6462834794fe9",
-      "bytes": 38771
+      "bytes": 38771,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/company-history.html": {
       "sha256": "35febf4b76c0e1fb18d8cd9da941434a33af36c3f693e8ef7aeb1a44fd47696d",
-      "bytes": 38879
+      "bytes": 38879,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/company-profile.html": {
       "sha256": "f12f804a231a4e2bd9a3a6ac55101c15bb5ebc5ecfbdf5dffd141320a57da489",
-      "bytes": 40419
+      "bytes": 40419,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/competitive-landscape.html": {
       "sha256": "79e460543f7bb257942251008827877b237bfa884e081f79a2e3f8b694ff9c6d",
-      "bytes": 38935
+      "bytes": 38935,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/core-products.html": {
       "sha256": "e3ca2a64d422b95e14d0e40efe4dd01cc920d57204c360da8338c195da355ce5",
-      "bytes": 39715
+      "bytes": 39715,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/customers-market.html": {
       "sha256": "5187e2da680634152dba132f61fb3589fd6820c7c08d0ac9ed75012156f80840",
-      "bytes": 38609
+      "bytes": 38609,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/funding-valuation.html": {
       "sha256": "09fffd4d272d4e1d4897f88a5a75a75721fb5581b292d72352965b05cc38ff36",
-      "bytes": 39226
+      "bytes": 39226,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/growth-outlook.html": {
       "sha256": "4855c8c199c6fe937246dfed3d3ba82552727ddaaab0f5ec3ca9a5a4699e1634",
-      "bytes": 40101
+      "bytes": 40101,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/management-team.html": {
       "sha256": "1de16a8867660ae310dc878b70250315871d85d7e0147e4566c826b00a4d5a45",
-      "bytes": 39014
+      "bytes": 39014,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/open-source.html": {
       "sha256": "92f28500fd47073a36e6d07647ffaa7ab280d67656f09016ebe28f6ea4081044",
-      "bytes": 40010
+      "bytes": 40010,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/partners.html": {
       "sha256": "3f9a8246d241d2e42edc74d80f6519be45554dafda42a389bae714cf5b87d45c",
-      "bytes": 38335
+      "bytes": 38335,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/product-matrix.html": {
       "sha256": "366085ea47cf8802d9c844e6759ab1d4106ae2e6471bc508cb56acf69f25626f",
-      "bytes": 39317
+      "bytes": 39317,
+      "corner": false,
+      "home": false
     },
     "demos/cloudwise/solutions.html": {
       "sha256": "871835e0533c5773e43be83112141b363ce7ba146c302bf5d416f809e78d22ce",
-      "bytes": 39009
+      "bytes": 39009,
+      "corner": false,
+      "home": false
     },
     "demos/drama/daming-overview.html": {
-      "sha256": "5ebd8159ee4639931de5c7603a85374f5aa29576edf9f2a6e135850a51fec09e",
-      "bytes": 40524
+      "sha256": "26c1069e8a38a862957115de177ab88af622e9bdfb5770b923b7bac6cbe17d73",
+      "bytes": 41851,
+      "corner": true,
+      "home": false
     },
     "demos/drama/history-overview.html": {
-      "sha256": "27b5b8e3038ced5a3b5699e0343c8366672a432e4eeb068922ad9042c26769d9",
-      "bytes": 42543
+      "sha256": "3ccf850c1bc44248bd406ed927fbe72372079fe00f3ff414bd3ed5cf06e3f76e",
+      "bytes": 43870,
+      "corner": true,
+      "home": false
     },
     "demos/drama/yongzheng-overview.html": {
-      "sha256": "3f64595ae03073ba2a2debad57eb2fb30010190f085b6b715d754b17c8032d43",
-      "bytes": 40116
+      "sha256": "9529386114c083385662e3dbc87c70425cadd9cf3fab7a313a7199da3a269a2f",
+      "bytes": 41443,
+      "corner": true,
+      "home": false
     },
     "demos/drama/zhuyuanzhang-overview.html": {
-      "sha256": "29837f598cec4b3748e158a7770a3d86b49aa94eb49a256f8076fba915df1f29",
-      "bytes": 40708
+      "sha256": "6926aac1179aa6d5d86b976d94e17b0204ba9912f47b77199f705aecfb43f224",
+      "bytes": 42035,
+      "corner": true,
+      "home": false
     },
     "demos/drama/daming-timeline-table.html": {
       "sha256": "efcf916f59b73f8ddc800765aa3d0635b71bd0150593747babbc48b0ee2e380a",
-      "bytes": 124775
+      "bytes": 124775,
+      "corner": false,
+      "home": false
     },
     "demos/drama/history-strategy-table.html": {
-      "sha256": "99427a210aeb7e934dc0b381785fd61b09323d5c85177df1567c5e62b8009af4",
-      "bytes": 155386
+      "sha256": "8cc8f648ac4900f132930b65173792a6b0216a81c207469ea141f511e181ba34",
+      "bytes": 156713,
+      "corner": true,
+      "home": false
     },
     "demos/drama/history-timeline-table.html": {
       "sha256": "e40176cf6f1af3586f58005aa4fa588116d19834ec25602f0574d3b8cc818cb2",
-      "bytes": 134233
+      "bytes": 134233,
+      "corner": false,
+      "home": false
     },
     "demos/drama/yongzheng-timeline-table.html": {
       "sha256": "e25743334b4fbb0ee24c647420d0b319768b66bf715649bc665056cd97544518",
-      "bytes": 124054
+      "bytes": 124054,
+      "corner": false,
+      "home": false
     },
     "demos/drama/zhuyuanzhang-timeline-table.html": {
       "sha256": "267cb087a058221f39b63103318db7e55b483d823d470652be0f2b08ac642264",
-      "bytes": 121338
+      "bytes": 121338,
+      "corner": false,
+      "home": false
     }
   }
 }

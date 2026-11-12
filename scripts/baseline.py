@@ -153,9 +153,9 @@ def case_doc_products(base=None):
 
 
 _CASE_DOC = case_doc_products()
-# 子集 = 基础清单 + 案例产物（doc 自动列举 + table 显式登记），保持排序稳定便于对账
-SUBSET = SUBSET + [r for r in _CASE_DOC if r not in SUBSET] \
-                 + [r for r in sorted(CASE_TABLE_PRODUCTS) if r not in SUBSET]
+# 子集单源：基础清单 + 案例产物（doc 自动列举 + table 显式登记），只算一次，别二次拼 SUBSET
+_BASE_SUBSET = SUBSET
+SUBSET = _BASE_SUBSET + [r for r in _CASE_DOC + sorted(CASE_TABLE_PRODUCTS) if r not in _BASE_SUBSET]
 
 GITHUB_RE = re.compile(r'<a href="([^"]+)" class="github-corner"')
 HOME_RE = re.compile(r'<a class="home-link" href="([^"]+)"')
@@ -184,7 +184,15 @@ def snapshot(root):
         if not p.is_file():
             files[rel] = {'sha256': None, 'bytes': None, 'reason': 'missing'}
             continue
-        files[rel] = {'sha256': sha256_of(p), 'bytes': p.stat().st_size}
+        rec = {'sha256': sha256_of(p), 'bytes': p.stat().st_size}
+        if p.suffix == '.html':
+            # 记「参数存在性」（HG-SEC-237）：--verify 的参数是从产物自己回收的，
+            # 一旦某次重建把 --github-url/--home-url 漏掉，回收也一起消失、verify 永远绿。
+            # 存在性钉子让这种「参数丢失」在 --check 里当场红。
+            t = p.read_text(encoding='utf-8', errors='ignore')
+            rec['corner'] = bool(GITHUB_RE.search(t))
+            rec['home'] = bool(HOME_RE.search(t))
+        files[rel] = rec
     return files
 
 
@@ -358,6 +366,12 @@ def cmd_check(root, as_json=False):
             mismatches.append({'path': rel, 'reason': 'changed',
                                'expected': exp.get('sha256'), 'actual': act.get('sha256'),
                                'bytes_expected': exp.get('bytes'), 'bytes_actual': act.get('bytes')})
+        # 参数存在性独立核查（HG-SEC-237）：产物字节可能整体换过、也可能只是丢了某个 CLI 参数；
+        # --verify 的参数是从产物自己回收的 ⇒ 漏参后回收也消失、永远绿，只有基线里的存在性钉子能抓。
+        for flag in ('corner', 'home'):
+            if exp.get(flag) and act.get(flag) is False:
+                mismatches.append({'path': rel, 'reason': f'param-lost:{flag}',
+                                   'expected': True, 'actual': False})
 
     ok = not mismatches
     if as_json:

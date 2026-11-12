@@ -7,6 +7,7 @@
 4) `CHROMEDRIVER_REQUIRED=1` 时缺驱动必须抛 RuntimeError（CI 口径：门禁不许静默放水）。
 """
 import os
+import re
 import subprocess
 import sys
 import unittest
@@ -84,10 +85,14 @@ class TestChromedriverEnv(unittest.TestCase):
         例外只认同行 `noqa: tmp-path-guard` 标注 —— 那是「env 取值 / 不落盘的字符串夹具」，
         不是文件路径。拼接绕过（`'/t'+'mp/x'`）属另一种后门范式，评审会打回，别学。
         """
+        # 判据覆盖三种写法（HG-SEC-238：只查带尾斜杠的子串会漏掉「tmp 目录常量 + 斜杠拼接名」）：
+        #   直接以引号包裹的 tmp 绝对路径、带尾斜杠的、以及 tmp 目录常量后接拼接的形态。
+        #   自证行内字面量用 `noqa: tmp-path-guard` 标注，别用拼接规避扫描（那是后门范式）。
         hits = []
+        pat = re.compile(r'''['"]/tmp(/|['"])''')
         for p in sorted(TESTS.rglob('*.py')):
             for i, line in enumerate(p.read_text(encoding='utf-8').splitlines(), 1):
-                if '/tmp/' in line and 'noqa: tmp-path-guard' not in line:   # noqa: tmp-path-guard
+                if pat.search(line) and 'noqa: tmp-path-guard' not in line:   # noqa: tmp-path-guard
                     hits.append(f'{p.relative_to(TESTS)}:{i}')
         self.assertEqual(hits, [], f'测试里仍有固定临时路径（改 mkdtemp）: {hits}')
 
