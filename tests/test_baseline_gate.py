@@ -4,6 +4,7 @@
 v1.1（复审返工）补：stderr 漂移提示、`--json` 错误分支形状、基线损坏 rc=3、
 `--update` 在产物落后时拒绝（越权需 --force 并标 verified=false）。
 """
+import importlib.util
 import json
 import shutil
 import subprocess
@@ -16,6 +17,23 @@ ROOT = Path(__file__).resolve().parent.parent
 SCRIPT = ROOT / 'scripts' / 'baseline.py'
 BASELINE_REL = 'data/_render-baseline.json'
 SUBSET = ['layout-table.html', 'style-guide.css', 'layout-slide.html']
+
+
+def _load_script():
+    """把 scripts/baseline.py 当模块加载（只 import，不跑 main）。"""
+    spec = importlib.util.spec_from_file_location('htmlgen_baseline_gate', SCRIPT)
+    assert spec and spec.loader
+    mod = importlib.util.module_from_spec(spec)
+    spec.loader.exec_module(mod)
+    return mod
+
+
+def _subset_len():
+    """子集项数现取脚本里的 SUBSET（v1.2 扩容后不再写死 10 —— 两边各存一个数必然漂移）。"""
+    return len(_load_script().SUBSET)
+
+
+SUBSET_LEN = _subset_len()
 
 
 def run(args, root=None):
@@ -39,7 +57,7 @@ class TestRenderBaseline(unittest.TestCase):
         r = run(['--check'])
         self.assertEqual(r.returncode, 0, f'真仓基线应一致:\n{r.stdout}\n{r.stderr}')
         self.assertIn('基线一致', r.stdout)
-        self.assertIn('10/10', r.stdout, f'子集应为 10 项:\n{r.stdout}')
+        self.assertIn(f'{SUBSET_LEN}/{SUBSET_LEN}', r.stdout, f'子集应为 {SUBSET_LEN} 项:\n{r.stdout}')
 
     def test_02_one_byte_change_turns_red(self):
         tmp = self._temp_root()
@@ -66,7 +84,7 @@ class TestRenderBaseline(unittest.TestCase):
         self.assertEqual(r.returncode, 0, r.stderr)
         data = json.loads(r.stdout)
         self.assertTrue(data['ok'])
-        self.assertEqual(data['total'], 10)
+        self.assertEqual(data['total'], SUBSET_LEN)
         self.assertEqual(data['mismatches'], [])
         (tmp / 'style-guide.css').unlink()
         r2 = run(['--check', '--json'], tmp)
@@ -88,7 +106,7 @@ class TestRenderBaseline(unittest.TestCase):
         self.assertEqual(rj.returncode, 2)
         dj = json.loads(rj.stdout)
         self.assertFalse(dj['ok'])
-        self.assertEqual(dj['total'], 10)
+        self.assertEqual(dj['total'], SUBSET_LEN)
         self.assertIn('error', dj)
 
     def test_05_update_after_drift_restores_green(self):
@@ -129,6 +147,33 @@ class TestRenderBaseline(unittest.TestCase):
         self.assertEqual(r2.returncode, 0, f'--force 应可越权重建:\n{r2.stdout}{r2.stderr}')
         data = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
         self.assertFalse(data['verified'], '--force 建的基线必须标 verified=false')
+
+    # v1.2（CL032）新增 -----------------------------------------------------
+    def test_08_every_demo_product_is_covered_or_skipped(self):
+        """不得有页面悄悄落在门禁之外：既不在 build_jobs 也不在 SKIP 就是漏网。"""
+        mod = _load_script()
+        jobs = {rel for rel, _ in mod.build_jobs(ROOT)}
+        products = {p.relative_to(ROOT).as_posix() for p in (ROOT / 'demos').glob('*.html')}
+        uncovered = products - jobs - set(mod.SKIP_PRODUCTS)
+        self.assertEqual(uncovered, set(), f'未进门禁的页面: {sorted(uncovered)}')
+        self.assertGreaterEqual(len(jobs), 12, f'可 verify 产物应 ≥12，实得 {len(jobs)}')
+        self.assertEqual(set(jobs) & set(mod.SKIP_PRODUCTS), set(), '既判定又跳过 = 口径矛盾')
+        for rel, reason in mod.SKIP_PRODUCTS.items():
+            self.assertTrue(reason.strip(), f'{rel} 的 skip 必须带理由（禁静默漏过）')
+        # 子集必须覆盖全部可 verify 产物（--check 才能把「产物被手改」也钉住）
+        self.assertTrue(jobs <= set(mod.SUBSET), f'未钉进子集的产物: {sorted(jobs - set(mod.SUBSET))}')
+
+    def test_09_doc_and_kb_jobs_carry_their_source(self):
+        """doc/kb 作业必须带单源 + 从产物回收的标题（缺标题会静默退化为默认「知识库」）。"""
+        mod = _load_script()
+        jobs = dict(mod.build_jobs(ROOT))
+        for rel in mod.DOC_PRODUCTS:
+            self.assertIn('-i', jobs[rel], f'{rel} 缺 -i 单源')
+            self.assertIn(Path(rel).with_suffix('.md').as_posix(), jobs[rel],
+                          f'{rel} 的 md 源应走同目录同名约定')
+        for rel in mod.KB_PRODUCTS:
+            self.assertIn('-d', jobs[rel], f'{rel} 缺 -d 台账')
+            self.assertIn('--title', jobs[rel], f'{rel} 的标题必须从产物回收')
 
 
 if __name__ == '__main__':

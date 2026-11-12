@@ -43,6 +43,58 @@
     "demos/provinces-table.html": {
       "sha256": "97e8de45d67f0b6344bdf5d3e1f189c35c45decaf34445e37acdfbfdce1eb7d2",
       "bytes": 129884
+    },
+    "demos/table-features-demo.html": {
+      "sha256": "88cfe0d1709e97aa7f636ae86cf58d030b303662c239163e9311d85584a06034",
+      "bytes": 118973
+    },
+    "demos/table-actions-demo.html": {
+      "sha256": "52ba121f534a9ecbf054b18fc79208ed39ba972f1f1625f3d85b67216636c2a3",
+      "bytes": 118689
+    },
+    "demos/hermes-profile-skills-list.html": {
+      "sha256": "34d5c8fd3404928dd2ee1a3f1e7ba3bab2922a039a6e282fe75f2429ebbcf183",
+      "bytes": 167999
+    },
+    "demos/slide-guide.html": {
+      "sha256": "70904e41cffe968b3ebaca67f37fe3f9a43dc4204af2d67f9181306e538c51f7",
+      "bytes": 46854
+    },
+    "demos/usage-guide.html": {
+      "sha256": "db89812f8c968798e1925c98ef1584d6fb6d50a0bccab5627461997c512ae1a2",
+      "bytes": 54089
+    },
+    "demos/doc-guide.html": {
+      "sha256": "b98e537f5e85a82d3926b365e65f1dec5b51c68a1444ee897ffbb74bfc3bb459",
+      "bytes": 52175
+    },
+    "demos/table-guide.html": {
+      "sha256": "81c7c7be2947f2867f31e92c7b0d0549e7e27438b036258706e3e056fc8182e3",
+      "bytes": 56912
+    },
+    "demos/knowledge-guide.html": {
+      "sha256": "1445ca163b0d98cae1f668732c84174a1ada48cc50dbf4ea7afc770671e4e648",
+      "bytes": 51673
+    },
+    "demos/markdown-spec.html": {
+      "sha256": "b19ead38d1b4751f64da01d2a0aa062f731d7b88388106343cd271a5b335f18a",
+      "bytes": 52796
+    },
+    "demos/knowledge-demo.html": {
+      "sha256": "d11047db87713e256360c107101f9d4f963d76667032bf80a1986cfcd58becc6",
+      "bytes": 68822
+    },
+    "demos/drama-knowledge.html": {
+      "sha256": "5e2c50d7be1a5fb13b37efa0ba3db8eca038753aff7566d583a824923ef462bf",
+      "bytes": 40209
+    },
+    "demos/chaitin-business-analysis.html": {
+      "sha256": "c7ad21dcb0d2a63fb724063c4957856dfc1b6f8a72ed4cdac41db13f3b08b654",
+      "bytes": 40079
+    },
+    "demos/cloudwise-business-analysis.html": {
+      "sha256": "c6dff08aa038548e7177ec561a22bdac4f620e21bd3b28a7ce45bea7fe755512",
+      "bytes": 49709
     }
   }
 }

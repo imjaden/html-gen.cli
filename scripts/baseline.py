@@ -3,7 +3,9 @@
 
 来源: daily-checker 转交件 ⑥（「改了模板却没人发现产物漂移」）。
 设计取舍:
-  - 只钉**子集**（模板/样式源 + 代表产物），不做全仓哈希 —— 全量会在每次正常重建时全红。
+  - 只钉**可判定的子集**（模板/样式源 + 全部可重建产物），不做全仓哈希 —— 全量会在每次正常重建时全红。
+    v1.2（CL032）：子集从「4 模板 + 6 代表产物」扩到全量可 verify 产物；手写页 / 就地重建 / 生成后注入的页
+    进 SKIP_PRODUCTS，`--verify` 逐条标注 skip 与理由，不再静默漏过。
   - `--verify` 把「产物是不是当前模板产出的」变成可判：用**从产物回收的参数集**重渲到临时目录比 sha。
     没有这一条，基线只能证明「文件没被改过」，证明不了「产物与模板同源」（v1.1 修的正是这个缺口）。
   - `--update` 默认先 verify；产物落后于模板时**拒绝**重建基线（需 `--force` 越权），
@@ -31,7 +33,8 @@ from pathlib import Path
 ROOT = Path(__file__).resolve().parent.parent
 BASELINE_REL = 'data/_render-baseline.json'
 
-# 钉子子集: 模板/样式源（真值层，含 slide 源）+ 代表产物（必须是「当前模板产出」，由 --verify 保证）
+# 钉子子集: 模板/样式源（真值层，含 slide 源）+ 全部「可 verify 的产物」
+# v1.2（CL032）: 子集从 10 项扩到全量可重建产物 —— 只钉几个代表页时，别的页停在上古模板也不会红。
 SUBSET = [
     'layout-table.html',
     'layout-doc.html',
@@ -43,6 +46,19 @@ SUBSET = [
     'demos/demos-index.html',
     'demos/countries-table.html',
     'demos/provinces-table.html',
+    'demos/table-features-demo.html',
+    'demos/table-actions-demo.html',
+    'demos/hermes-profile-skills-list.html',
+    'demos/slide-guide.html',
+    'demos/usage-guide.html',
+    'demos/doc-guide.html',
+    'demos/table-guide.html',
+    'demos/knowledge-guide.html',
+    'demos/markdown-spec.html',
+    'demos/knowledge-demo.html',
+    'demos/drama-knowledge.html',
+    'demos/chaitin-business-analysis.html',
+    'demos/cloudwise-business-analysis.html',
 ]
 
 # --verify 作业表: 产物 → 数据源。title/subtitle/corner/home 全部从产物回收，
@@ -55,13 +71,41 @@ TABLE_PRODUCTS = {
     'demos/hermes-profile-skills-list.html': 'data/_skills-table-config.json',
 }
 SLIDE_PRODUCTS = ['demos/slide-guide.html']
-# 就地重建型（`demo --rebuild` 写仓内固定路径，无法安全重渲到临时目录）⇒ verify 只标注不判定
-REBUILD_SPECIAL = ['demos/demos-index.html']
+# doc 产物没有 md 路径痕迹可回收（产物里只有 basename），走**同目录同名约定**: demos/<name>.html ← demos/<name>.md
+DOC_PRODUCTS = [
+    'demos/usage-guide.html',
+    'demos/doc-guide.html',
+    'demos/table-guide.html',
+    'demos/knowledge-guide.html',
+    'demos/markdown-spec.html',
+]
+# knowledge 产物 → (kb-data, groups)。groups 缺失的页（the-price-you-choose）走 SKIP：
+# 它是生成后注入层产物（rx-patch + canonical + w-note），CLI 直渲 != 产物。
+KB_PRODUCTS = {
+    'demos/knowledge-demo.html': ('data/_demo-kb-data.json', 'data/_demo-groups.json'),
+    'demos/drama-knowledge.html': ('data/_drama-kb-data.json', 'data/_drama-groups.json'),
+    'demos/chaitin-business-analysis.html': ('data/_chaitin-kb-data.json', 'data/_chaitin-groups.json'),
+    'demos/cloudwise-business-analysis.html': ('data/_cloudwise-kb-data.json', 'data/_cloudwise-groups.json'),
+}
+# 不可判定型：就地重建 / 手写页 / 生成后注入 ⇒ verify 输出里逐条标注 skip 与理由（不静默漏过）
+SKIP_PRODUCTS = {
+    'demos/demos-index.html': '就地重建型（demo --rebuild），verify 不判定',
+    'demos/index.html': '半手写落地页（demo featured 源），无单源数据可回收',
+    'index.html': '手写落地页（仓根），无生成器',
+    'demos/slide-demo.html': '手写页（无 .md 源），style/JS 手工同步',
+    'demos/the-price-you-choose.html': '生成后注入层产物（rx-patch），CLI 直渲 != 产物',
+}
 
 GITHUB_RE = re.compile(r'<a href="([^"]+)" class="github-corner"')
 HOME_RE = re.compile(r'<a class="home-link" href="([^"]+)"')
 H1_RE = re.compile(r'<h1[^>]*>(.*?)</h1>', re.S)
 DESC_RE = re.compile(r'<div class="table-desc">(.*?)</div>', re.S)
+TITLE_RE = re.compile(r'<title>(.*?)</title>', re.S)
+MD_H1_RE = re.compile(r'^#\s+(.*)$', re.M)
+KW_TITLE_RE = re.compile(r'<div class="w-title">📚\s*(.*?)</div>', re.S)
+KW_SUB_RE = re.compile(r'<div class="sub">(.*?)</div>', re.S)
+KW_WELCOME_RE = re.compile(r'<div class="w-sub">(.*?)</div>', re.S)
+KW_WELCOME_DEFAULT = '从上方类目选择，浏览整理的知识内容。'
 
 
 def sha256_of(path):
@@ -98,6 +142,11 @@ def _unesc(s):
     return H.unescape(s.replace('<br>', '\n')).strip()
 
 
+def _plain(s):
+    """去标签 + 反转义（产物里回收的标题/欢迎语可能含行内标签）。"""
+    return _unesc(re.sub(r'<[^>]+>', '', s))
+
+
 def _recovered_common(t):
     a = []
     m = GITHUB_RE.search(t)
@@ -130,6 +179,37 @@ def build_jobs(root):
         md = root / Path(rel).with_suffix('.md')
         if (root / rel).is_file() and md.is_file():
             jobs.append((rel, ['slide', '-i', str(md.relative_to(root))]))
+    for rel in DOC_PRODUCTS:
+        target, md = root / rel, root / Path(rel).with_suffix('.md')
+        if not target.is_file() or not md.is_file():
+            continue
+        t = target.read_text(encoding='utf-8')
+        argv = ['doc', '-i', str(Path(rel).with_suffix('.md'))]
+        # doc 的标题默认取 md 首个 h1；只在产物 <title> 与之不同时才显式传（不存第二份标题表）
+        m, h1 = TITLE_RE.search(t), MD_H1_RE.search(md.read_text(encoding='utf-8'))
+        if m and h1 and _plain(m.group(1)) != h1.group(1).strip():
+            argv += ['--title', _plain(m.group(1))]
+        argv += _recovered_common(t)
+        jobs.append((rel, argv))
+    for rel, (data, groups) in KB_PRODUCTS.items():
+        target = root / rel
+        if not target.is_file() or not (root / data).is_file():
+            continue
+        t = target.read_text(encoding='utf-8')
+        argv = ['knowledge', '-d', data]
+        if groups and (root / groups).is_file():
+            argv += ['-g', groups]
+        m = KW_TITLE_RE.search(t)
+        if m and _plain(m.group(1)):
+            argv += ['--title', _plain(m.group(1))]
+        m = KW_SUB_RE.search(t)
+        if m and _plain(m.group(1)):
+            argv += ['--subtitle', _plain(m.group(1))]
+        m = KW_WELCOME_RE.search(t)
+        if m and _plain(m.group(1)) and _plain(m.group(1)) != KW_WELCOME_DEFAULT:
+            argv += ['--welcome', _plain(m.group(1))]
+        argv += _recovered_common(t)
+        jobs.append((rel, argv))
     return jobs
 
 
@@ -148,10 +228,9 @@ def cmd_verify(root, as_json=False, quiet=False):
         same = out.read_text(encoding='utf-8') == (root / rel).read_text(encoding='utf-8')
         results.append({'path': rel, 'status': 'current' if same else 'stale',
                         'detail': f'{sha256_of(root / rel)[:12]} vs {sha256_of(out)[:12]}'})
-    for rel in REBUILD_SPECIAL:
+    for rel, reason in SKIP_PRODUCTS.items():
         if (root / rel).is_file():
-            results.append({'path': rel, 'status': 'skip',
-                            'detail': '就地重建型（demo --rebuild），verify 不判定'})
+            results.append({'path': rel, 'status': 'skip', 'detail': reason})
     bad = [x for x in results if x['status'] in ('stale', 'fail')]
     if as_json:
         print(json.dumps({'ok': not bad, 'results': results}, ensure_ascii=False, indent=2))
