@@ -850,54 +850,74 @@
       "label": "全部"
     },
     {
-      "key": "热身",
+      "key": "warmup",
       "label": "热身",
-      "field": "theme"
+      "field": "theme",
+      "value": "热身",
+      "contains": true
     },
     {
-      "key": "凯格尔",
+      "key": "kegel",
       "label": "凯格尔",
-      "field": "theme"
+      "field": "theme",
+      "value": "凯格尔",
+      "contains": true
     },
     {
-      "key": "睡前拉伸",
+      "key": "bedtime",
       "label": "睡前拉伸",
-      "field": "theme"
+      "field": "theme",
+      "value": "睡前拉伸",
+      "contains": true
     },
     {
-      "key": "瘦肚提臀",
+      "key": "belly",
       "label": "瘦肚提臀",
-      "field": "theme"
+      "field": "theme",
+      "value": "瘦肚提臀",
+      "contains": true
     },
     {
-      "key": "深蹲",
+      "key": "squat",
       "label": "深蹲",
-      "field": "theme"
+      "field": "theme",
+      "value": "深蹲",
+      "contains": true
     },
     {
-      "key": "椅子卷腹",
+      "key": "chair",
       "label": "椅子卷腹",
-      "field": "theme"
+      "field": "theme",
+      "value": "椅子卷腹",
+      "contains": true
     },
     {
-      "key": "八段锦",
+      "key": "baduanjin",
       "label": "八段锦",
-      "field": "theme"
+      "field": "theme",
+      "value": "八段锦",
+      "contains": true
     },
     {
-      "key": "训练金字塔",
+      "key": "pyramid",
       "label": "训练金字塔",
-      "field": "theme"
+      "field": "theme",
+      "value": "训练金字塔",
+      "contains": true
     },
     {
-      "key": "基础力量",
+      "key": "strength",
       "label": "基础力量",
-      "field": "theme"
+      "field": "theme",
+      "value": "基础力量",
+      "contains": true
     },
     {
-      "key": "有氧",
+      "key": "cardio",
       "label": "有氧",
-      "field": "theme"
+      "field": "theme",
+      "value": "有氧",
+      "contains": true
     }
   ],
   "options": {
