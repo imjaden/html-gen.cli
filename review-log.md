@@ -2680,3 +2680,31 @@ CL032 逐条独立复算成立：78 html（19 顶层 + 59 子目录）、jobs 39
 - **未 push**：沿用上轮裁定「按『推送』口令放行」；`github/main..HEAD` 5 笔（含修复笔 `d978c97`）留本地。
 - 本批实现已随 `d978c97` 落地，无待交付的 dev impl prompt；本轮 2 🟡 建议并入下一批（245 优先：它决定这道门能否防复发）。
 - 不属本批：CL038（3 个 strategy 表 JSON 回填）、CL037（`b0f4b4f` slimdown）、跨仓 hermes-manager 重生成转交件。
+
+## 2026-11-12 — CL038 回填 + CL039 抗洗白 round-3（PASS 86/100）
+
+> 受审区间: `github/main..HEAD` 2 笔 —— `8bd4840`(CL039 3 文件 +35/-4) / `7b09b1f`(CL038 10 文件 +2732/-1351)。
+> 报告: `documents/handoff/drama-backfill-cl038-cl039-review-v1.0-20261112.md` · 结论: **PASS 86/100 · 上轮 246 主项闭合 / 245 部分闭合 / 247、248 未闭合 · 新 4🟡 + 5🟢，阻断 0**
+> 工程面: `round: 3` · `blocking_new: 0` · `blocking_repeat: 0`
+
+### Summary
+
+逐条独立复算，病人主张 15 项**无一条伪造**。CL039：真仓漏 `--github-url` 重生成 → `--verify` rc=0（参数回收盲区复现）→ `--update` 被新门拒（`基线有 corner、新快照没有`，rc=1，`_render-baseline.json` sha256 **前后同值**、`corner=True`/`verified=True` 未动）；`--update --force` 才写 `corner=False`/`verified=False`，`--check` 转 50/50；守卫判据注入 `/private/tmp`、`/var/tmp` 两行 → `test_05` **FAILED**，删除后 5 passed；旧新判据对 `tests/**/*.py` **逐行比对零漂移**（old 0 / new 0，丢失 0 / 新增 0）。CL038：产物 DATA 并集 10 键无 `idiom`；`legacy.idiom` **22/3/17 = 旧源非空数**，键集合与值 **3/3 全等**，`idiom` 之外孤儿 0、`tabs`/`options` 逐字保留；按新源重刷 **COLUMNS/DATA/title/corner 3/3 全等且整页逐字节相同**（119892/120589/119294 B，强于「仅壳前进」之说），与 `7b09b1f^` 产物比也是四项全等、字节 89–90KB→119–121KB 纯壳增长；baseline 50/50、`--verify` 判定 **42 ✅ + 37 ⏭**；产物外链仅既有 github 角标 + favicon，无外链 CSS/字体/脚本。全量 `/usr/bin/python3 -m pytest tests/ -q -n 4` → **473 passed (62.13s)**。
+
+### 发现
+
+- 🟡 **HG-SEC-249** `verified=false` 不黏滞 ⇒ 两步洗白：`--update --force` 之后一次**普通** `--update` 即写回 `corner:False / verified:True`、`--check` 当场 50/50 绿（实测），且 `verified` **无任何读者**（只命中写入点 `baseline.py:356`）⇒ 洗白后零痕迹。修：旧基线 `verified is False` 时普通 `--update` 直接拒（二段洗白需两次显式 --force）或 `--check` 对 `verified:false` 打 ⚠️。
+- 🟡 **HG-SEC-250** 新门零自动化覆盖：`tests/test_baseline_gate.py` test_07 只测「产物落后→拒」，无「verify 绿但 corner True→False」用例（`grep param_regression|param-lost tests/` 空）。修：补 1 例（基线记 `corner:true` + 产物无角标 → rc=1 / sha 不变 / force 后 `verified=False`），同步 473→474 三面口径。
+- 🟡 **HG-SEC-252** `legacy` 行标识取旧行 `strategy` 名，3 表 **5 处** strategy 在产物里改名（daming:21、zhuyuanzhang:16 `走为上计→走为上`；yongzheng:21/23/24 `离间计→反间计`/`将计就计→连环计`/`杀鸡儆猴→指桑骂槐`）⇒ 5 条 legacy 键在现数据行里找不到（**yongzheng 3 条全部 dangling**）；值未丢、与旧行自身配对错配 0。修：legacy 值带 idx（或键加 `#idx`）并在工具里报 dangling。
+- 🟡 **HG-SEC-253** 回填工具孤儿提取三面静默（均实测）：(a) 行键非唯一 ⇒ `setdefault(...)[rid]` 覆盖，两行同 `strategy` 只剩 1 条 rc=0；(b) `zip(old,new)` 按索引截断 ⇒ 行数不等时尾部旧行孤儿字段全丢（2 vs 17 行只报 count）；(c) `--drop-orphans` 不清理已存在 `legacy`（已回填文件再跑仍 22 条），与文档暗示不符。修：`--apply` 前行数相等 + 行键唯一校验（否则 rc≠0），`--drop-orphans` 时 `pop('legacy')`。
+- 🟡 **HG-SEC-254** `field_diff` added/dropped 标签反转（`backfill-table-json.py:40-43`）：新增的 derivative/homology/synonym/antonym 印成 `→'<dropped>'`，真正被摘的 `idiom` **一次都没进差异行**且不显示值（`SKIP_KEYS` 死代码）。字段级差异是 CL038 核心卖点，误导方向相反。
+- 🟢 **HG-SEC-255 待确认** yongzheng 现数据 `反间计` **重复**（行 8 周瑜版 / 行 21 陈平+抬旗纳秋月版，内容不同），该重复在 `7b09b1f^` 产物里已存在、本轮回填把它固化成源权威；另 4 处改名是「换成另一个三十六计条目」而非同计简称，疑早期录入错位 ⇒ 请 data owner 确认页面这 4 处。
+- 🟢 **HG-SEC-256** `documents/testing.md:57` 算术矛盾：「…+ 39 个可 verify 产物 = 50 项」（5+2+1+39=47，实测判定 42）；`:71`「47/47」也已过时（现 50/50）。属 HG-SEC-248 同款复发。
+- 🟢 **HG-SEC-257** 判据仍枚举：`/private/var/tmp/x`、`/var/folders/…` 不命中（11 形态探针）；建议并成 `['"]/(?:private/)?(?:var/)?tmp(?:/|['"])|['"]/var/folders/`。
+- 🟢 **HG-SEC-258** `--help` 文案未随行为更新（`--update`/`--force` 未提参数回归拦截）；新脚本 mode 644（同类 755）且只登记在 testing.md，未进 `documents/cli-reference.md` 脚本索引。
+
+### 处理
+
+- PASS ⇒ 本 `review-log.md` + `.review-level.yaml` + 报告（`documents/handoff/`，G-2 落点）本地 path-scoped 提交（`audit@review`）。
+- **未 push**：`github/main..HEAD` 2 笔留本地待「推送」口令（沿用上两轮裁定）。
+- 建议下批（非阻断）：249 + 250 同批（一处改完计数同步），252 + 253 + 254 同批（回填工具三修 + dangling 报告），256 + 257 + 258 随文档批；255 需 data owner 先定性。

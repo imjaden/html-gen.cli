@@ -892,3 +892,17 @@ review_history:
     findings_open: 2
     tracking: "HG-SEC-237..244 all CLOSED (237 corner 7/7/7/7/5 = 父提交 + 95 页角标面全一致 + 基线 46 条登记 corner/home + param-lost:corner 变异 1 条; 238 两处夹具迁移 + 守卫三写法命中 + 21 passed + /tmp 0; 239 addCleanup 已落 hg-nope 3->3; 240 addClassCleanup 实证 0 泄漏; 241 台账 [x] DONE; 243 AGENTS 473/47 3660B 实测 473 passed 102 subtests; 244 _BASE_SUBSET 语义全等)。NEW 245 MEDIUM (--update 把 corner:false 洗进基线, param-lost 对重建+update 同批无效, 无自动化测试) / 246 MEDIUM (守卫判据漏 /private/tmp 与 /var/tmp) / 247 GREEN (conftest:52 + testing.md:34 仍写 tearDownClass 清理) / 248 GREEN (上轮 242 testing.md 无计数位结论撤回: :42 有 46 文件/102 subtests 旧快照, 46 != 47; subtests 计数依赖 pytest>=9)"
     report: documents/handoff/next-batch-cl032-035-review-v1.1-20261112.md
+  - date: 2026-11-12
+    reviewer: Security Reviewer
+    review_type: design-document-review-recheck
+    review_level: L2
+    round: 3
+    blocking_new: 0
+    blocking_repeat: 0
+    scope: "HTML-GEN-CL038 + CL039 — github/main..HEAD 2 笔 (8bd4840 CL039 3 文件 +35/-4 / 7b09b1f CL038 10 文件 +2732/-1351); 独立复算 473 passed + baseline 50-50 + verify 判定 42 + 三表 legacy.idiom 22-3-17 值全等 + 三表按新源重刷四项全等且整页逐字节相同 + --update 拦截 rc=1 且基线 sha 不动 + test_05 注入两行转红"
+    verdict: PASS
+    score: 86
+    findings_total: 13
+    findings_open: 5
+    tracking: "上轮 245 部分闭合(直连路径 rc=1 基线不动实证; 二段洗白仍开→249) / 246 主项闭合(两形态命中且旧新判据零漂移) / 247 未闭合(conftest.py:52 docstring 仍写 tearDownClass, 只改了 testing.md) / 248 未闭合(同段复发→256)。NEW 249 MEDIUM (verified=false 不黏滞: --force 后一次普通 --update 即写回 corner False + verified True, 且 verified 无任何读者) / 250 MEDIUM (新门零自动化覆盖, test_baseline_gate 无 param-regression 用例) / 252 MEDIUM (legacy 行标识用旧 strategy 名, 5 处改名致 dangling: yongzheng 3 条全 dangling; 值未丢且配对错配 0) / 253 MEDIUM (孤儿提取 zip 按索引截断 + 行键非唯一静默覆盖 + drop-orphans 不清既有 legacy, 三面均实测) / 254 LOW (field_diff added/dropped 标签反转, idiom 从不入差异行; SKIP_KEYS 死代码); GREEN 255 (yongzheng 反间计 x2 行 8/21 + 4 处 strategy 改名待 data owner 确认) 256 (testing.md:57 39 vs 50 算术矛盾, :71 47-47 过时) 257 (判据仍枚举, 漏 /private/var/tmp 与 /var/folders) 258 (help 文案未随行为更新 + 新脚本 644 且未进 cli-reference 索引)"
+    report: documents/handoff/drama-backfill-cl038-cl039-review-v1.0-20261112.md
