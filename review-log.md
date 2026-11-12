@@ -2656,3 +2656,27 @@ CL032 逐条独立复算成立：78 html（19 顶层 + 59 子目录）、jobs 39
 - CONDITIONAL PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（`audit@review`，path-scoped）。
 - **未 push**：`github/main..HEAD` 2 笔 + 本评审笔留本地，待 HG-SEC-237/238 修后按「推送」口令放行/重审。
 - 不属本批（按来件边界不重复记账）：3 个 strategy 表与 CL038、`b0f4b4f`（台账 CL037）、跨仓 hermes-manager 重生成。
+
+## 2026-11-12 — next-batch CL032/CL035 复核 round-2（PASS 90/100）
+
+> 受审区间: `github/main..HEAD` 5 笔 —— `87f2369`(CL032) / `4393e03`(CL035) / `76e0a5d`(上轮 audit) / `d978c97`(修复) / `488af5e`(AGENTS 计数)。
+> 报告: `documents/handoff/next-batch-cl032-035-review-v1.1-20261112.md` · 结论: **PASS 90/100 · 上轮 5/5 闭合（2🔴+3🟡）· 新 2🟡/2🟢 非阻断**
+> 工程面: `round: 2` · `blocking_new: 0` · `blocking_repeat: 0`
+
+### Summary
+
+只复核上轮 🔴/🟡 是否闭合，逐条独立复跑：HG-SEC-237 ① corner 复原 **7/7/7/7/5**（= `87f2369^` 同值），且 `87f2369^` vs HEAD **95 页角标存在性全一致**（丢 0 / 增 0）；② 基线 46 条 html 全部登记 `corner`/`home`（`style-guide.css` 非 html 跳过），漏 `--github-url` 重生成 → `--check --json` 得 **1 条 `param-lost:corner`**，还原后 47/47。HG-SEC-238 两处夹具已迁（`test_datetime_clickmode.py:45` TmpDirMixin + `out_path`；`test_templates.py:34` `self.tmpdir`），守卫判据 `re.compile(r'''['\"]/tmp(/|['\"])''')` 变异探针命中 4 形态，两文件 **21 passed**、`/tmp` 残留 **0**。HG-SEC-239 `addCleanup` 已落（`hg-nope-*` 3→3，近 10 分钟新建 0）；HG-SEC-240 `addClassCleanup` 已落且**实证**：setUpClass 在 `super()` 后抛错 → 临时目录 0 泄漏；HG-SEC-241 台账 `[x] DONE` 带补漏段；HG-SEC-243 `AGENTS.md:6/:44` = 473/47、3,660B、`472` 零命中，实测 **473 passed / 102 subtests / 47 文件**；HG-SEC-244 `_BASE_SUBSET` 与旧版 **集合/顺序/jobs 39/ skip 全等**（语义无损）。全量 `--verify` 一致、`--check` 47/47、工作区空、新笔攻击面 0。
+
+### 发现
+
+- 🟡 **HG-SEC-245** `--update` 会把 `corner:false` **洗进基线** ⇒ `param-lost` 钉子对「重建 + update 同批」（即 CL032 事故路径）无效。实证：漏参重生成 → `--update` exit 0 记 `corner=False` → `--check` 47/47 绿。修：`--update` 覆写前比旧基线，`true→false` 拒绝（`--force` 放行）或存在性做黏性；并在 `test_baseline_gate` 补 `param-lost` 用例（现零自动化覆盖）。
+- 🟡 **HG-SEC-246** 守卫判据要求引号紧邻 `/tmp`，**`/private/tmp`、`/var/tmp` 漏网**（变异探针 5 行命中 4 行）。修：`['\"]/(?:private/|var/)?tmp(?:/|['\"])`。
+- 🟢 **HG-SEC-247** `conftest.py:52` docstring 与 `documents/testing.md:34` 仍写「`tearDownClass` 清理」，与同段两行后的 `addClassCleanup` 自相矛盾。
+- 🟢 **HG-SEC-248** 上轮 242「testing.md 无计数位」应撤回：`testing.md:42` 有「46 文件，共 102 subtests（旧快照）」，其中 46 ≠ 实测 47；另「473 passed / 102 subtests」依赖解释器（pytest 8.4.2 不记 subtests，pytest 9.1 才输出），建议注明或去掉 subtests 数。
+
+### 处理
+
+- PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地 path-scoped 提交（`audit@review`）。
+- **未 push**：沿用上轮裁定「按『推送』口令放行」；`github/main..HEAD` 5 笔（含修复笔 `d978c97`）留本地。
+- 本批实现已随 `d978c97` 落地，无待交付的 dev impl prompt；本轮 2 🟡 建议并入下一批（245 优先：它决定这道门能否防复发）。
+- 不属本批：CL038（3 个 strategy 表 JSON 回填）、CL037（`b0f4b4f` slimdown）、跨仓 hermes-manager 重生成转交件。

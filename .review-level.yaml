@@ -878,3 +878,17 @@ review_history:
     findings_open: 8
     tracking: "HG-SEC-237..244 — 237 BLOCKING (5 页重建丢 github-corner: daming/history/yongzheng/zhuyuanzhang overview + history-strategy-table; _recovered_common 从产物自身回收 --github-url ⇒ 丢参数后自洽不动点, verify/check 恒绿; 修 = 按 recovered argv 重渲 + verify 用基线登记参数) / 238 BLOCKING (声明 25 处 /tmp 清零不成立: test_datetime_clickmode:13 + test_templates:34 仍 Path('/tmp') / 固定名, 全量后 /tmp 留 6 文件; 守卫 '/tmp/' 子串对 Path('/tmp') / 天生盲, 探针实证) / 239 (test_27 mkdtemp 只造不清理, 3 个 hg-nope-* 残留) / 240 (TmpDirMixin 未 addClassCleanup, HG-SEC-221 同坑) / 241 (CL035 台账未翻转 + 验收无 /tmp 残留被证伪); GREEN 242 (chore@tests vs test 映射 / 台账 24 vs 25 算术 / grep 实得 3 行 / testing.md 无计数位) 243 (AGENTS.md 472-47 vs 473 待审批) 244 (_CASE_DOC 导入期基准 vs --root 双源, 方向由 jobs<subset 兜住)"
     report: documents/handoff/next-batch-cl032-035-review-v1.0-20261112.md
+  - date: 2026-11-12
+    reviewer: Security Reviewer
+    review_type: design-document-review-recheck
+    review_level: L2
+    round: 2
+    blocking_new: 0
+    blocking_repeat: 0
+    scope: "HTML-GEN-CL032 + CL035 round-2 recheck — github/main..HEAD 5 笔 (87f2369 / 4393e03 / 76e0a5d / d978c97 fix / 488af5e docs); 独立复算 473 passed + 102 subtests + 47 文件 + baseline 47-47 + 95 页角标回归面 + param-lost 变异 1 条 + 21 passed 且 /tmp 残留 0 + setUpClass 抛错 0 泄漏 + SUBSET 新旧四项全等"
+    verdict: PASS
+    score: 90
+    findings_total: 12
+    findings_open: 2
+    tracking: "HG-SEC-237..244 all CLOSED (237 corner 7/7/7/7/5 = 父提交 + 95 页角标面全一致 + 基线 46 条登记 corner/home + param-lost:corner 变异 1 条; 238 两处夹具迁移 + 守卫三写法命中 + 21 passed + /tmp 0; 239 addCleanup 已落 hg-nope 3->3; 240 addClassCleanup 实证 0 泄漏; 241 台账 [x] DONE; 243 AGENTS 473/47 3660B 实测 473 passed 102 subtests; 244 _BASE_SUBSET 语义全等)。NEW 245 MEDIUM (--update 把 corner:false 洗进基线, param-lost 对重建+update 同批无效, 无自动化测试) / 246 MEDIUM (守卫判据漏 /private/tmp 与 /var/tmp) / 247 GREEN (conftest:52 + testing.md:34 仍写 tearDownClass 清理) / 248 GREEN (上轮 242 testing.md 无计数位结论撤回: :42 有 46 文件/102 subtests 旧快照, 46 != 47; subtests 计数依赖 pytest>=9)"
+    report: documents/handoff/next-batch-cl032-035-review-v1.1-20261112.md
