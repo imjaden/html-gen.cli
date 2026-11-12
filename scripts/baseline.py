@@ -107,14 +107,14 @@ CASE_TABLE_PRODUCTS = {
     'demos/drama/yongzheng-timeline-table.html': 'data/_drama-table-yongzheng-timeline.json',
     'demos/drama/zhuyuanzhang-timeline-table.html': 'data/_drama-table-zhuyuanzhang-timeline.json',
     'demos/drama/history-strategy-table.html': 'data/_drama-table-history-strategy.json',
+    'demos/drama/daming-strategy-table.html': 'data/_drama-table-daming-strategy.json',
+    'demos/drama/yongzheng-strategy-table.html': 'data/_drama-table-yongzheng-strategy.json',
+    'demos/drama/zhuyuanzhang-strategy-table.html': 'data/_drama-table-zhuyuanzhang-strategy.json',
 }
 CASE_SKIP = {
     'demos/chaitin/': 'custom 手写页（stat-box/card），无模板也无单源 JSON',
     'demos/slimdown/': '自建构建链 scripts/build-slimdown.py（非 CLI 直渲；重跑逐字节可复现，已实测 plan/archive 零差异）',
     'demos/the-price-you-choose/': 'doc 页 md 源不在本仓（产物内只有 basename）；01-08 为旧 slug 跳转桩',
-    'demos/drama/daming-strategy-table.html': '产物 10 列 / 源 JSON 7 列（页面已演进未回填）⇒ CL038',
-    'demos/drama/yongzheng-strategy-table.html': '产物 10 列 / 源 JSON 7 列（页面已演进未回填）⇒ CL038',
-    'demos/drama/zhuyuanzhang-strategy-table.html': '产物 10 列 / 源 JSON 7 列（页面已演进未回填）⇒ CL038',
 }
 
 

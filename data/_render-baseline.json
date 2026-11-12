@@ -254,6 +254,12 @@
       "corner": true,
       "home": false
     },
+    "demos/drama/daming-strategy-table.html": {
+      "sha256": "b93c89a91e24529fdce63b228420b813467cc70c44f08f2bd22e1fa4fea2cb40",
+      "bytes": 130507,
+      "corner": true,
+      "home": false
+    },
     "demos/drama/daming-timeline-table.html": {
       "sha256": "efcf916f59b73f8ddc800765aa3d0635b71bd0150593747babbc48b0ee2e380a",
       "bytes": 124775,
@@ -272,10 +278,22 @@
       "corner": false,
       "home": false
     },
+    "demos/drama/yongzheng-strategy-table.html": {
+      "sha256": "9ffc3d4a85e4e3bbe38c2d4b1e6eaf66c1aa58aeb003524b8cfbc97778244cf5",
+      "bytes": 131326,
+      "corner": true,
+      "home": false
+    },
     "demos/drama/yongzheng-timeline-table.html": {
       "sha256": "e25743334b4fbb0ee24c647420d0b319768b66bf715649bc665056cd97544518",
       "bytes": 124054,
       "corner": false,
+      "home": false
+    },
+    "demos/drama/zhuyuanzhang-strategy-table.html": {
+      "sha256": "ac6adc3db940202116605826ab2b6432015b59f564e5275c7ae397b62b55aaed",
+      "bytes": 130311,
+      "corner": true,
       "home": false
     },
     "demos/drama/zhuyuanzhang-timeline-table.html": {

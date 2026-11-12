@@ -1,10 +1,11 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<meta name="generator" content="html-gen v3.4+tpl204aeb64">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <title>朱元璋（2006） · 36计策</title>
+<link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
    style-guide.css
@@ -26,10 +27,25 @@
   --accent-400: #facc15;
   --accent-500: #eab308;
   --accent-600: #ca8a04;
+  --hl-bg: rgba(250, 204, 21, .18);
+  --hl-fg: #fde68a;
   --surface-800: #1e1e2e;
   --surface-850: #181825;
   --surface-900: #11111b;
   --surface-950: #0a0a14;
+  --text-primary: #f0f0f0;
+  --text-body: #e0e0e0;
+  --text-secondary: #9ca3af;
+  --text-muted: #6b7280;
+  --text-faint: #555555;
+  --border-strong: #2a2a3e;
+  --border-soft: #1a1a2e;
+  --code-bg: #0d0d1a;
+  --code-text: #b0b0c0;
+  --code-cmd: #e0e0e0;
+  --hero-title-from: #ffffff;
+  --gh-corner-fill: rgba(0,0,0,0.41);
+  --gh-octocat: var(--text-secondary);
   --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
   --font-mono: 'JetBrains Mono', monospace;
   --radius-sm: 4px;
@@ -39,17 +55,53 @@
   --radius-full: 9999px;
 }
 
+/* ── Light Theme（浅色变量组；模板页另有局部覆盖，此处为基座） ── */
+:root.light {
+  --surface-950: #f5f5f5;
+  --surface-900: #ffffff;
+  --surface-850: #f0f0f0;
+  --surface-800: #e8e8e8;
+  --cobalt-950: #eef2ff;
+  --cobalt-600: #6366f1;
+  --cobalt-700: #4338ca;
+  --cobalt-400: #6366f1;
+  --cobalt-300: #818cf8;
+  --text-primary: #1f2328;
+  --text-body: #333333;
+  --text-secondary: #57606a;
+  --text-muted: #6e7681;
+  --text-faint: #8b949e;
+  --border-strong: #d0d7de;
+  --border-soft: #e5e7eb;
+  --code-bg: #f6f8fa;
+  --code-text: #57606a;
+  --code-cmd: #1f2328;
+  --hl-bg: rgba(250, 204, 21, .45);
+  --hl-fg: #5a4600;
+  --hero-title-from: #1f2328;
+  --gh-corner-fill: rgba(0,0,0,0.75);
+  --gh-octocat: #ffffff;
+}
+:root.light body { color: var(--text-body); background: var(--surface-950); }
+:root.light h1 { color: var(--text-primary); }
+:root.light h2 { color: var(--text-body); }
+:root.light h3 { color: #333333; }
+:root.light a { color: var(--cobalt-600); }
+:root.light a:hover { color: var(--cobalt-700); }
+:root.light code { background: rgba(0,0,0,0.06); color: #555555; }
+:root.light pre { background: #f0f0f0; border-color: #dddddd; color: #333333; }
+
 *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 body {
   font-family: var(--font-sans);
   background: var(--surface-950);
-  color: #e0e0e0;
+  color: var(--text-body);
   line-height: 1.6;
   -webkit-font-smoothing: antialiased;
 }
 
-h1 { font-size: 1.4rem; font-weight: 700; color: #f0f0f0; margin-bottom: 0.75rem; }
-h2 { font-size: 1.15rem; font-weight: 600; color: #e0e0e0; margin: 1.25rem 0 0.5rem; }
+h1 { font-size: 1.4rem; font-weight: 700; color: var(--text-primary); margin-bottom: 0.75rem; }
+h2 { font-size: 1.15rem; font-weight: 600; color: var(--text-body); margin: 1.25rem 0 0.5rem; }
 h3 { font-size: 1rem; font-weight: 600; color: #d0d0d0; margin: 1rem 0 0.4rem; }
 p  { margin-bottom: 0.6rem; }
 a { color: var(--cobalt-400); text-decoration: none; }
@@ -59,6 +111,12 @@ code {
   font-size: 0.8rem;
   background: rgba(255,255,255,0.06);
   padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+mark.hl {
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+  padding: 0 2px;
   border-radius: var(--radius-sm);
 }
 pre {
@@ -194,8 +252,19 @@ pre code { background: none; padding: 0; }
 </style>
 <style>
 /* ── Tabs ── */
-.table-tabs { display:flex; gap:4px; margin-bottom:10px; overflow-x:auto; flex-wrap:nowrap; }
+.tabs-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+/* CL036: 无 tab 且 tabs-actions 为空 ⇒ 整行折叠（只 CSS 隐藏, DOM 必须保留:
+   跨仓调用方 normalize_skeleton 会往 .tabs-actions 里搬 ▦/⚙ 控件, 删节点会使其 fail-fast） */
+.tabs-row.no-tabs { display:none; }
+.table-tabs { display:flex; gap:4px; overflow-x:auto; flex-wrap:nowrap; flex:1; min-width:0; }
 .table-tabs:empty { display:none; }
+.tabs-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
+.tabs-actions:empty { display:none; }
+/* 分享/Home 按钮（CL005；CL036 起移入表头, 紧跟统计 pill）: 同尺寸 36px 圆角深底 */
+.home-link, .share-link { display:flex; align-items:center; justify-content:center; width:36px; height:36px;
+  border-radius:8px; background:rgba(0,0,0,0.41); text-decoration:none; font-size:1rem; cursor:pointer;
+  border:none; color:inherit; font-family:inherit; flex-shrink:0; line-height:1; }
+.home-link:hover, .share-link:hover { background:rgba(0,0,0,0.6); }
 .tab-btn {
   padding:5px 14px; border-radius:6px 6px 0 0; cursor:pointer; font-size:0.72rem; font-weight:500;
   background:var(--surface-900); color:#6b7280; border:1px solid #1a1a2e; border-bottom:none;
@@ -210,8 +279,10 @@ pre code { background: none; padding: 0; }
 /* ── Header bar ── */
 .table-header { display:flex; align-items:center; gap:8px; flex-wrap:wrap; margin-bottom:10px; }
 .table-header h1 { font-size:1rem; font-weight:700; margin:0; white-space:nowrap; }
+.table-desc { margin:-4px 0 10px; font-size:0.78rem; line-height:1.7; color:#9ca3af; word-break:break-word; }
+.table-desc:empty { display:none; }
 .stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
-  background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
+  background:var(--surface-900); border:1px solid #1a1a2e; font-size:calc(var(--table-fs) * 0.8); color:#9ca3af; white-space:nowrap; }
 .stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
 .filter-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px;
   background:rgba(79,70,229,0.15); border:1px solid var(--cobalt-600); font-size:0.65rem; color:var(--cobalt-300); cursor:pointer; white-space:nowrap; }
@@ -220,9 +291,16 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
-.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
+.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:calc(var(--table-fs) * 0.86); line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
 .data-table .cell-pill.pill-clickable { cursor:pointer; }
 .data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
+/* ── Videos 视频列 pill（独立类：max-width 不换行 + ellipsis 缩略） ── */
+.data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:calc(var(--table-fs) * 0.86); line-height:1.5; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
+.data-table .video-pill:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
+.data-table .video-pill.video-more { color:var(--cobalt-300); border-style:dashed; }
+/* CL030 (评审 🟢-1): 目标非法的降级 pill 不可点，别给手型 */
+.data-table .video-pill.video-pill-nolink { cursor:default; opacity:0.75; }
+.data-table .video-pill.video-pill-nolink:hover { background:rgba(79,70,229,0.12); border-color:rgba(79,70,229,0.2); color:var(--cobalt-400); }
 .data-table tr.keyboard-focus { outline:2px solid var(--cobalt-400); outline-offset:-2px; }
 
 /* ── Batch toolbar ── */
@@ -246,7 +324,7 @@ pre code { background: none; padding: 0; }
 .ratio-wrap { position:relative; display:inline-block; }
 
 @media print {
-  .table-tabs, .table-header, .pager, .toast, .modal-overlay, .qs-overlay,
+  .table-tabs, .tabs-actions, .table-header, .table-desc, .pager, .toast, .modal-overlay, .qs-overlay,
   .batch-bar, .col-toggle-wrap, .fs-btn, .split-drag, .split-preview { display: none !important; }
   .data-table th, .data-table td { color: #000; border-color: #ccc; }
   .data-table th { background: #f5f5f5; }
@@ -266,9 +344,11 @@ pre code { background: none; padding: 0; }
 /* ── Table ── */
 .table-wrap { border:1px solid #1a1a2e; border-radius:var(--radius-lg); overflow-x:auto; }
 .data-table { width:100%; min-width:600px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
+/* ── Density (CL036: 字号收口到 --table-fs, 三档只改变量与内边距) ── */
+:root { --table-fs: 0.82rem; }
 .data-table th {
   position:sticky; top:0; z-index:10; background:var(--surface-900); border-bottom:1px solid #2a2a3e;
-  padding:6px 8px; text-align:left; font-size:0.65rem; font-weight:600; color:#9ca3af;
+  padding:6px 8px; text-align:left; font-size:calc(var(--table-fs) * 0.88); font-weight:600; color:#9ca3af;
   text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; user-select:none;
   position:relative;
 }
@@ -280,12 +360,18 @@ pre code { background: none; padding: 0; }
   position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
-.data-table td { padding:7px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+.data-table td { padding:8px 10px; border-bottom:1px solid #1a1a2e; font-size:var(--table-fs);
   vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
 .data-table tbody tr.selected { background:rgba(79,70,229,0.15); }
 .data-table tbody tr.clickable { cursor:pointer; }
+/* CL021: 常驻行高亮 (options.highlight) —— 冻结列/右侧固定列是不透明背景, 必须同步覆盖 */
+.data-table tbody tr.hl-row { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row:hover { background:rgba(250,204,21,0.12); }
+.data-table tbody tr.hl-row > td.frozen-col,
+.data-table tbody tr.hl-row > td.sticky-right { background:rgba(250,204,21,0.07); }
+.data-table tbody tr.hl-row > td:first-child { box-shadow:inset 3px 0 0 var(--hl-fg, #fde68a); }
 .col-checkbox { width:32px; text-align:center; }
 .col-checkbox input { cursor:pointer; accent-color:var(--cobalt-500); }
 .col-index-num { text-align:center; color:#6b7280; font-size:0.72rem; }
@@ -295,6 +381,9 @@ pre code { background: none; padding: 0; }
   border-radius:5px; border:1px solid #2a2a3e; cursor:pointer; font-size:0.62rem; color:#6b7280;
   background:transparent; transition:all 0.15s; margin:0 1px; }
 .action-btn:hover { background:var(--cobalt-600); border-color:var(--cobalt-600); color:white; }
+/* CL030 (评审 SEC-5): 目标非法的操作按钮 —— 不可点，别给手型/hover 高亮 */
+.action-btn.action-btn-disabled { cursor:not-allowed; opacity:0.45; }
+.action-btn.action-btn-disabled:hover { background:transparent; border-color:#2a2a3e; color:#6b7280; }
 
 /* ── Column toggle ── */
 .col-toggle-wrap { position:relative; display:inline-block; }
@@ -313,11 +402,13 @@ pre code { background: none; padding: 0; }
 .col-toggle-dropdown .settings-radio input { accent-color:var(--cobalt-500); margin:0; }
 .col-toggle-divider { height:1px; background:#2a2a3e; margin:4px 0; }
 
-/* ── Density ── */
-.data-table.dense td { padding:2px 8px; font-size:0.7rem; }
-.data-table.dense th { padding:3px 8px; font-size:0.6rem; }
-.data-table.comfortable td { padding:10px 12px; font-size:0.82rem; }
-.data-table.comfortable th { padding:10px 12px; font-size:0.72rem; }
+/* ── Density: 三档只改变量 + 内边距 (CL036) ── */
+.data-table.dense { --table-fs: 0.7rem; }
+.data-table.dense td { padding:2px 8px; }
+.data-table.dense th { padding:3px 8px; }
+.data-table.comfortable { --table-fs: 0.94rem; }
+.data-table.comfortable td { padding:12px 14px; }
+.data-table.comfortable th { padding:10px 12px; }
 
 /* ── Modal Panel ── */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
@@ -336,12 +427,11 @@ pre code { background: none; padding: 0; }
   grid-template-columns: var(--spl-ratio, 40%) 5px 1fr;
   grid-template-rows: auto auto 1fr;
 }
-.wrapper.split-mode .table-tabs { grid-column: 1 / -1; }
+.wrapper.split-mode .tabs-row { grid-column: 1 / -1; }
 .wrapper.split-mode .batch-bar { grid-column: 1 / -1; }
 .wrapper.split-mode .table-main { overflow: auto; min-width: 200px; }
 .wrapper.split-mode .split-drag { display: block !important; grid-column: 2; }
 .wrapper.split-mode .split-preview { display: flex; }
-.wrapper.split-mode .toast { display: none !important; }
 .split-preview { display:none; flex-direction:column; background:var(--surface-900); border-left:1px solid #2a2a3e;
   min-width:200px; position:relative; }
 .wrapper.split-mode .split-preview { display:flex; }
@@ -352,6 +442,8 @@ pre code { background: none; padding: 0; }
 .split-preview-header .sp-nav { display:inline-flex; align-items:center; justify-content:center; width:24px; height:24px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.7rem; font-family:inherit; }
 .split-preview-header .sp-nav:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 .split-preview-header .sp-nav:disabled { opacity:0.3; cursor:default; }
+.split-preview-header .sp-feedback { display:inline-flex; align-items:center; justify-content:center; height:24px; padding:0 6px; border-radius:4px; border:1px solid #2a2a3e; background:transparent; color:#6b7280; cursor:pointer; font-size:0.75rem; font-family:inherit; }
+.split-preview-header .sp-feedback:hover { background:rgba(79,70,229,0.1); color:#e0e0e0; }
 .split-preview-body { flex:1; overflow:auto; padding:14px; }
 .split-preview-body iframe { width:100%; height:70vh; border:none; }
 .split-drag { display:none; width:5px; cursor:col-resize; flex-shrink:0; background:transparent; transition:background 0.15s; }
@@ -363,6 +455,24 @@ pre code { background: none; padding: 0; }
 .split-preview .kv-item .kv-value { font-size:0.78rem; color:#e0e0e0; word-break:break-all; }
 .split-preview .kv-item-full { grid-column: 1 / -1; }
 .split-preview .kv-item-full .kv-value { white-space:normal; line-height:1.75; word-break:break-word; }
+/* CL031 声明式行布局（options.splitGrid）：行边界由 JS 逐格写 grid-row/grid-column ——
+   display:contents 不产生行边界（设计稿 §3 有 Chromium 实测），故这里只给容器与轨道。 */
+.split-preview .kv-grid { display:grid; grid-template-columns:repeat(var(--kv-cols, 1), minmax(0, 1fr)); gap:6px; }
+  /* CL026: 媒体单元格（image 列 / videos 封面）与灯箱 —— 缩略图高度随密度走，不撑行 */
+  .cell-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:zoom-in; }
+  .data-table.dense .cell-thumb { height:18px; max-width:52px; }
+  .data-table.comfortable .cell-thumb { height:30px; max-width:80px; }
+  .video-cover-thumb { height:22px; width:auto; max-width:64px; object-fit:cover; border-radius:3px; border:1px solid #1a1a2e; display:inline-block; vertical-align:middle; cursor:pointer; }
+  .data-table.dense .video-cover-thumb { height:18px; max-width:52px; }
+  .data-table.comfortable .video-cover-thumb { height:30px; max-width:80px; }
+  .split-preview .kv-img { max-width:100%; max-height:320px; border-radius:6px; border:1px solid #1a1a2e; display:block; margin:2px 0; cursor:zoom-in; }
+  .split-preview .kv-media-link { display:inline-block; margin:2px 0; line-height:1.6; }
+  .split-preview .kv-video-cover { height:48px; width:auto; max-width:120px; object-fit:cover; border-radius:4px; border:1px solid #1a1a2e; vertical-align:middle; margin-right:6px; cursor:pointer; }
+  .lightbox { display:none; position:fixed; inset:0; z-index:1000; background:rgba(0,0,0,0.85); align-items:center; justify-content:center; cursor:zoom-out; }
+  .lightbox.active { display:flex; }
+  .lightbox img { max-width:90vw; max-height:90vh; border-radius:8px; box-shadow:0 8px 40px rgba(0,0,0,0.5); cursor:default; }
+  .lightbox .lb-close { position:fixed; top:16px; right:20px; font-size:28px; color:#aaa; cursor:pointer; line-height:1; }
+  .lightbox .lb-close:hover { color:#fff; }
 .data-table tr.split-active { outline:2px solid var(--cobalt-500); }
 .data-table tr.split-active { border-left:3px solid var(--cobalt-500); outline:none; }
 .data-table th.sticky-right, .data-table td.sticky-right {
@@ -419,6 +529,7 @@ pre code { background: none; padding: 0; }
 .github-corner-hit { position: fixed; top: 36px; right: 0; width: 36px; height: 36px; z-index: 951; cursor: pointer; }
 .github-corner:hover .octo-arm { animation: octocat-wave 560ms ease-in-out; }
 @keyframes octocat-wave { 0%,100%{transform:rotate(0)} 20%,60%{transform:rotate(-25deg)} 40%,80%{transform:rotate(10deg)} }
+  
 
 </style>
 </head>
@@ -433,7 +544,12 @@ pre code { background: none; padding: 0; }
 <a class="github-corner-hit" href="https://github.com/imjaden/html-gen.cli" target="_blank" rel="noopener" aria-label="GitHub"></a>
 <div class="wrapper">
 
-<div class="table-tabs" id="tabsBar"></div>
+<div class="tabs-row">
+  <div class="table-tabs" id="tabsBar"></div>
+  <div class="tabs-actions">
+    <!-- 跨仓 normalize_skeleton 会把 ▦/⚙ 控件搬进本容器；本模板自身不再往这里放按钮（CL036） -->
+  </div>
+</div>
 
 <div class="batch-bar" id="batchBar">
   <span class="bb-text" id="batchCount">已选 0 条</span>
@@ -449,6 +565,9 @@ pre code { background: none; padding: 0; }
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
   <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
+  <!-- CL036: 分享/Home 紧随统计 pill（原先在 tabs-row, 单视图页会退化成「只有按钮的一行」） -->
+  
+  <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝含当前视图的分享链接" aria-label="拷贝含当前视图的分享链接">🔗</button>
   <div class="flex-1"></div>
   <input class="header-search" id="searchInput" placeholder="搜索..." onkeydown="if(event.key==='Enter')doSearch()">
   
@@ -463,6 +582,7 @@ pre code { background: none; padding: 0; }
     <div class="col-toggle-dropdown" id="colToggleDropdown"></div>
   </div>
 </div>
+<div class="table-desc"></div>
 
 <div class="table-wrap">
   <table class="data-table">
@@ -484,6 +604,12 @@ pre code { background: none; padding: 0; }
 <div class="toast" id="toast"></div>
 
 </div><!-- /wrapper -->
+
+<!-- Lightbox (CL026: image 列 / 分栏大图点击放大; 移植自 layout-doc.html) -->
+<div class="lightbox" id="lightbox" onclick="closeLightbox(event)">
+  <span class="lb-close" onclick="closeLightbox()">✕</span>
+  <img id="lightboxImg" src="" alt="">
+</div>
 
 <!-- Modal Panel -->
 <div class="modal-overlay" id="modalOverlay" onclick="if(event.target===this)closeModal()">
@@ -515,307 +641,19 @@ pre code { background: none; padding: 0; }
            列可见性/行选择/CSV导出/行点击/列宽拖拽/Tab记忆/实时搜索
      ═══════════════════════════════════════════ */
 
-  const COLUMNS = [
-    {
-        "key": "strategy",
-        "label": "计策名称",
-        "sortable": true,
-        "locale": "zh",
-        "width": "60px",
-        "freeze": true,
-        "preview": true,
-        "onCellClick": "split"
-    },
-    {
-        "key": "category",
-        "label": "分类",
-        "type": "pills",
-        "sortable": true,
-        "locale": "zh",
-        "width": "40px",
-        "preview": true
-    },
-    {
-        "key": "derivative",
-        "label": "衍生词",
-        "sortable": true,
-        "locale": "zh",
-        "width": "60px",
-        "preview": true
-    },
-    {
-        "key": "homology",
-        "label": "同源意象",
-        "sortable": true,
-        "locale": "zh",
-        "width": "60px",
-        "preview": true
-    },
-    {
-        "key": "synonym",
-        "label": "近义词",
-        "sortable": true,
-        "locale": "zh",
-        "width": "60px",
-        "preview": true
-    },
-    {
-        "key": "antonym",
-        "label": "反义词",
-        "sortable": true,
-        "locale": "zh",
-        "width": "60px",
-        "preview": true
-    },
-    {
-      "key": "origin",
-      "label": "历史典故",
-      "sortable": true,
-      "locale": "zh",
-      "width": "240px",
-      "preview": true,
-      "splitFull": true
-    },
-    {
-      "key": "origin_figures",
-      "label": "典故人物",
-      "sortable": true,
-      "locale": "zh",
-      "width": "120px",
-      "preview": true
-    },
-    {
-      "key": "event",
-      "label": "剧中事件",
-      "sortable": true,
-      "locale": "zh",
-      "width": "280px",
-      "preview": true,
-      "onCellClick": "split",
-      "splitFull": true
-    },
-    {
-      "key": "figures",
-      "label": "剧中人物",
-      "sortable": true,
-      "locale": "zh",
-      "width": "140px",
-      "preview": true,
-      "splitFull": true
-    }
-  ];
-  const DATA    = [
-    {
-      "strategy": "瞒天过海",
-      "category": "胜战计",
-      "derivative": "掩人耳目",
-      "homology": "明修暗度",
-      "synonym": "欺上瞒下",
-      "antonym": "开诚布公、光明磊落",
-      "origin": "唐太宗御驾亲征，薛仁贵设计瞒过太宗渡过渤海",
-      "origin_figures": "唐太宗、薛仁贵",
-      "event": "朱元璋采纳朱升 “高筑墙、广积粮、缓称王”，表面拥戴小明王韩林儿，不急于称帝，暗中扩充兵马地盘，隐藏争夺天下的野心。",
-      "figures": "朱元璋、朱升"
-    },
-    {
-      "strategy": "借刀杀人",
-      "category": "胜战计",
-      "derivative": "借势除患",
-      "homology": "假手于人",
-      "synonym": "坐收渔利",
-      "antonym": "亲力亲为、直接对敌",
-      "origin": "敌已明，友未定，引友杀敌，不自出力，以《损》推演。春秋子贡、曹操相关典故",
-      "origin_figures": "子贡、曹操",
-      "event": "1. 朝堂上朱元璋借胡惟庸之手打压浙西文官集团；事后再清算胡惟庸，借谋反之名清除淮西勋贵势力。2. 刘伯温遭朝中同僚构陷，朱元璋不直接动手，借朝堂倾轧、地方势力打压刘伯温。",
-      "figures": "朱元璋、胡惟庸、刘伯温"
-    },
-    {
-      "strategy": "以逸待劳",
-      "category": "胜战计",
-      "derivative": "养精蓄锐",
-      "homology": "后发制人",
-      "synonym": "守株待兔",
-      "antonym": "疲于奔命、劳师远征",
-      "origin": "困敌之势，不以战。损刚益柔。源自《孙子兵法》",
-      "origin_figures": "孙子",
-      "event": "鄱阳湖大战，朱元璋兵力舰船弱于陈友谅，不急于决战，扼守湖口险要，消耗陈友谅大军粮草士气，待敌军疲惫再发动火攻总攻。",
-      "figures": "朱元璋、刘伯温、陈友谅"
-    },
-    {
-      "strategy": "声东击西",
-      "category": "胜战计",
-      "derivative": "虚晃一招",
-      "homology": "围魏救赵",
-      "synonym": "出其不意",
-      "antonym": "直来直去、明目张胆",
-      "origin": "敌志乱萃，不虞。坤下兑上之象，利其不自主而取之。战国孙膑战例",
-      "origin_figures": "孙膑",
-      "event": "鄱阳湖之战，陈友谅佯攻泾江口，意图吸引朱元璋主力，真实目标是南湖嘴突围；朱元璋识破此计，布下圈套等候陈友谅。",
-      "figures": "陈友谅、朱元璋"
-    },
-    {
-      "strategy": "暗度陈仓",
-      "category": "敌战计",
-      "derivative": "迂回奇袭",
-      "homology": "瞒天过海",
-      "synonym": "明来暗往",
-      "antonym": "正大光明、正面进军",
-      "origin": "示之以动，利其静而有主，益动而巽。韩信还定三秦",
-      "origin_figures": "韩信",
-      "event": "陈友谅表面在泾江口布置重兵，做出要从泾江突围姿态，暗中准备从防守薄弱南湖嘴突围，属于明处造势、暗处行动。",
-      "figures": "陈友谅"
-    },
-    {
-      "strategy": "隔岸观火",
-      "category": "敌战计",
-      "derivative": "坐观成败",
-      "homology": "鹬蚌相争，渔翁得利",
-      "synonym": "坐山观虎斗",
-      "antonym": "拔刀相助、主动介入",
-      "origin": "阳乖序乱，阴以待逆。暴戾恣睢，其势自毙。战国秦赵相争典故",
-      "origin_figures": "秦国、赵国",
-      "event": "元廷、各股义军混战厮杀，朱元璋早期坐视元军和其他义军互相攻伐，保存自身实力，待各方实力损耗再出兵攻取地盘。",
-      "figures": "朱元璋"
-    },
-    {
-      "strategy": "笑里藏刀",
-      "category": "敌战计",
-      "derivative": "口蜜腹剑",
-      "homology": "外柔内狠",
-      "synonym": "两面三刀",
-      "antonym": "肝胆相照、直言不讳",
-      "origin": "信而安之，阴以图之。备而后动，勿使有变。刚中柔外也。典出李义府",
-      "origin_figures": "李义府",
-      "event": "朱元璋对待开国功臣，表面礼遇厚待、封官赐爵，内心猜忌，步步布局罗织罪名，最后大肆屠戮勋贵；对待胡惟庸，前期充分信任纵容，助长其骄横，后一举清算。",
-      "figures": "朱元璋、胡惟庸"
-    },
-    {
-      "strategy": "打草惊蛇",
-      "category": "攻战计",
-      "derivative": "敲山震虎",
-      "homology": "投石问路",
-      "synonym": "风吹草动",
-      "antonym": "不动声色、秘而不宣",
-      "origin": "疑以叩实，察而后动。复者，阴之媒也。南唐王鲁判案典故",
-      "origin_figures": "王鲁",
-      "event": "朱元璋设立检校（锦衣卫前身）监视文武百官，借处理小的贪腐案件敲打朝堂群臣，试探大臣的忠心与私下动向。",
-      "figures": "朱元璋、检校（吴风）"
-    },
-    {
-      "strategy": "调虎离山",
-      "category": "攻战计",
-      "derivative": "诱敌出走",
-      "homology": "引蛇出洞",
-      "synonym": "声调诱敌",
-      "antonym": "坚壁固守、就地缠斗",
-      "origin": "待天以困之，用人以诱之，往蹇来返。东汉孙策战例",
-      "origin_figures": "孙策",
-      "event": "朱元璋逼迫刘伯温告老还乡，把他调离权力中枢应天，解除其朝堂影响力；同时派检校一路监视，防止他在京中串联势力。",
-      "figures": "朱元璋、刘伯温"
-    },
-    {
-      "strategy": "欲擒故纵",
-      "category": "攻战计",
-      "derivative": "放长线钓大鱼",
-      "homology": "穷寇莫追",
-      "synonym": "欲取姑予",
-      "antonym": "急功近利、穷追猛打",
-      "origin": "逼则反兵，走则减势。紧随勿迫，累其气力，消其斗志。演义诸葛亮七擒孟获",
-      "origin_figures": "诸葛亮、孟获",
-      "event": "朱元璋纵容胡惟庸专权擅政，对他诸多越界行为暂时不予惩治，任由其结党坐大，等其罪证积累充分，再一次性彻底铲除胡党势力。",
-      "figures": "朱元璋、胡惟庸"
-    },
-    {
-      "strategy": "擒贼擒王",
-      "category": "攻战计",
-      "derivative": "釜底抽薪",
-      "homology": "打蛇打七寸",
-      "synonym": "直捣核心",
-      "antonym": "泛泛攻击、舍本逐末",
-      "origin": "摧其坚，夺其魁，以解其体。龙战于野，其道穷也。唐代张巡战例",
-      "origin_figures": "张巡",
-      "event": "鄱阳湖水战，火攻之时目标直指陈友谅主力大船，击杀敌军主帅，瓦解数十万大军斗志。",
-      "figures": "朱元璋、刘伯温、陈友谅"
-    },
-    {
-      "strategy": "釜底抽薪",
-      "category": "混战计",
-      "derivative": "断其根本",
-      "homology": "擒贼擒王",
-      "synonym": "抽薪止沸",
-      "antonym": "扬汤止沸、治标不治本",
-      "origin": "不敌其力，而消其势，兑下乾上之象。东汉官渡之战",
-      "origin_figures": "曹操、袁绍",
-      "event": "胡惟庸案后朱元璋直接废除丞相制度，从制度根源上消除相权威胁皇权的基础，而非只诛杀一个丞相。",
-      "figures": "朱元璋"
-    },
-    {
-      "strategy": "上屋抽梯",
-      "category": "并战计",
-      "derivative": "诱入绝境",
-      "homology": "置之死地",
-      "synonym": "过河拆桥",
-      "antonym": "留有余地、助人后路",
-      "origin": "假之以便，唆之使前，断其援应，陷之死地。刘表刘琦典故",
-      "origin_figures": "刘表、刘琦",
-      "event": "先给大臣、勋贵高位与权力，引诱他们踏入权力漩涡；一旦他们形成势力，再断绝退路，罗织罪案株连清洗。",
-      "figures": "朱元璋、李善长、胡惟庸"
-    },
-    {
-      "strategy": "指桑骂槐",
-      "category": "并战计",
-      "derivative": "敲山震虎",
-      "homology": "杀鸡儆猴",
-      "synonym": "旁敲侧击",
-      "antonym": "直言斥责、就事论事",
-      "origin": "大凌小者，警以诱之。刚中而应，行险而顺。春秋司马穰苴治军",
-      "origin_figures": "司马穰苴",
-      "event": "朱元璋借处置小贪官，当众训诫警告一众开国勋贵，敲打勋贵侵占田地、骄纵不法的行为，不直接点名，却威慑全体功臣。",
-      "figures": "朱元璋"
-    },
-    {
-      "strategy": "反间计",
-      "category": "败战计",
-      "derivative": "离间构陷",
-      "homology": "挑拨离间",
-      "synonym": "离间之计",
-      "antonym": "推心置腹、彼此信任",
-      "origin": "疑中之疑。比之自内，不自失也。周瑜利用蒋干离间曹操",
-      "origin_figures": "周瑜、曹操",
-      "event": "剧中战场、朝堂使用情报离间，散播流言，挑拨陈友谅手下将领互相猜忌；朝堂中利用情报挑拨淮西集团与浙东文官集团互相争斗。",
-      "figures": "朱元璋、刘伯温"
-    },
-    {
-      "strategy": "连环计",
-      "category": "败战计",
-      "derivative": "计计相扣",
-      "homology": "多策叠加",
-      "synonym": "计中计",
-      "antonym": "一计单行、简单直进",
-      "origin": "将多兵众，不可以敌，使其自累，以杀其势。王允貂蝉离间董卓吕布",
-      "origin_figures": "王允、貂蝉",
-      "event": "朱元璋对付功臣集团整套策略：欲擒故纵纵容权臣→检校监视收集把柄→借谋反大案株连清洗，多计叠加连环实施；鄱阳湖之战 “扼守 + 火攻 + 心理战” 连环破敌。",
-      "figures": "朱元璋、刘伯温"
-    },
-    {
-      "strategy": "走为上",
-      "category": "败战计",
-      "derivative": "避敌锋芒",
-      "homology": "留得青山在",
-      "synonym": "全身而退",
-      "antonym": "死战不退、困守硬拼",
-      "origin": "全师避敌。左次无咎，未失常也。源自孙子兵法",
-      "origin_figures": "孙子",
-      "event": "汤和看透朱元璋猜忌，主动请求解除兵权，告老还乡、装疯自保，保全性命，是剧中少数善终功臣。",
-      "figures": "汤和"
-    }
-  ];
+  const COLUMNS = [{"key": "strategy", "label": "计策名称", "sortable": true, "locale": "zh", "width": "60px", "freeze": true, "preview": true, "onCellClick": "split"}, {"key": "category", "label": "分类", "type": "pills", "sortable": true, "locale": "zh", "width": "40px", "preview": true}, {"key": "derivative", "label": "衍生词", "sortable": true, "locale": "zh", "width": "60px", "preview": true}, {"key": "homology", "label": "同源意象", "sortable": true, "locale": "zh", "width": "60px", "preview": true}, {"key": "synonym", "label": "近义词", "sortable": true, "locale": "zh", "width": "60px", "preview": true}, {"key": "antonym", "label": "反义词", "sortable": true, "locale": "zh", "width": "60px", "preview": true}, {"key": "origin", "label": "历史典故", "sortable": true, "locale": "zh", "width": "240px", "preview": true, "splitFull": true}, {"key": "origin_figures", "label": "典故人物", "sortable": true, "locale": "zh", "width": "120px", "preview": true}, {"key": "event", "label": "剧中事件", "sortable": true, "locale": "zh", "width": "280px", "preview": true, "onCellClick": "split", "splitFull": true}, {"key": "figures", "label": "剧中人物", "sortable": true, "locale": "zh", "width": "140px", "preview": true, "splitFull": true}];  // [{key,label,sortable?,width?,class?,type?('number'|'string'|'actions'),locale?,actions?,onClick?}]
+  const DATA    = [{"strategy": "瞒天过海", "category": "胜战计", "derivative": "掩人耳目", "homology": "明修暗度", "synonym": "欺上瞒下", "antonym": "开诚布公、光明磊落", "origin": "唐太宗御驾亲征，薛仁贵设计瞒过太宗渡过渤海", "origin_figures": "唐太宗、薛仁贵", "event": "朱元璋采纳朱升 “高筑墙、广积粮、缓称王”，表面拥戴小明王韩林儿，不急于称帝，暗中扩充兵马地盘，隐藏争夺天下的野心。", "figures": "朱元璋、朱升"}, {"strategy": "借刀杀人", "category": "胜战计", "derivative": "借势除患", "homology": "假手于人", "synonym": "坐收渔利", "antonym": "亲力亲为、直接对敌", "origin": "敌已明，友未定，引友杀敌，不自出力，以《损》推演。春秋子贡、曹操相关典故", "origin_figures": "子贡、曹操", "event": "1. 朝堂上朱元璋借胡惟庸之手打压浙西文官集团；事后再清算胡惟庸，借谋反之名清除淮西勋贵势力。2. 刘伯温遭朝中同僚构陷，朱元璋不直接动手，借朝堂倾轧、地方势力打压刘伯温。", "figures": "朱元璋、胡惟庸、刘伯温"}, {"strategy": "以逸待劳", "category": "胜战计", "derivative": "养精蓄锐", "homology": "后发制人", "synonym": "守株待兔", "antonym": "疲于奔命、劳师远征", "origin": "困敌之势，不以战。损刚益柔。源自《孙子兵法》", "origin_figures": "孙子", "event": "鄱阳湖大战，朱元璋兵力舰船弱于陈友谅，不急于决战，扼守湖口险要，消耗陈友谅大军粮草士气，待敌军疲惫再发动火攻总攻。", "figures": "朱元璋、刘伯温、陈友谅"}, {"strategy": "声东击西", "category": "胜战计", "derivative": "虚晃一招", "homology": "围魏救赵", "synonym": "出其不意", "antonym": "直来直去、明目张胆", "origin": "敌志乱萃，不虞。坤下兑上之象，利其不自主而取之。战国孙膑战例", "origin_figures": "孙膑", "event": "鄱阳湖之战，陈友谅佯攻泾江口，意图吸引朱元璋主力，真实目标是南湖嘴突围；朱元璋识破此计，布下圈套等候陈友谅。", "figures": "陈友谅、朱元璋"}, {"strategy": "暗度陈仓", "category": "敌战计", "derivative": "迂回奇袭", "homology": "瞒天过海", "synonym": "明来暗往", "antonym": "正大光明、正面进军", "origin": "示之以动，利其静而有主，益动而巽。韩信还定三秦", "origin_figures": "韩信", "event": "陈友谅表面在泾江口布置重兵，做出要从泾江突围姿态，暗中准备从防守薄弱南湖嘴突围，属于明处造势、暗处行动。", "figures": "陈友谅"}, {"strategy": "隔岸观火", "category": "敌战计", "derivative": "坐观成败", "homology": "鹬蚌相争，渔翁得利", "synonym": "坐山观虎斗", "antonym": "拔刀相助、主动介入", "origin": "阳乖序乱，阴以待逆。暴戾恣睢，其势自毙。战国秦赵相争典故", "origin_figures": "秦国、赵国", "event": "元廷、各股义军混战厮杀，朱元璋早期坐视元军和其他义军互相攻伐，保存自身实力，待各方实力损耗再出兵攻取地盘。", "figures": "朱元璋"}, {"strategy": "笑里藏刀", "category": "敌战计", "derivative": "口蜜腹剑", "homology": "外柔内狠", "synonym": "两面三刀", "antonym": "肝胆相照、直言不讳", "origin": "信而安之，阴以图之。备而后动，勿使有变。刚中柔外也。典出李义府", "origin_figures": "李义府", "event": "朱元璋对待开国功臣，表面礼遇厚待、封官赐爵，内心猜忌，步步布局罗织罪名，最后大肆屠戮勋贵；对待胡惟庸，前期充分信任纵容，助长其骄横，后一举清算。", "figures": "朱元璋、胡惟庸"}, {"strategy": "打草惊蛇", "category": "攻战计", "derivative": "敲山震虎", "homology": "投石问路", "synonym": "风吹草动", "antonym": "不动声色、秘而不宣", "origin": "疑以叩实，察而后动。复者，阴之媒也。南唐王鲁判案典故", "origin_figures": "王鲁", "event": "朱元璋设立检校（锦衣卫前身）监视文武百官，借处理小的贪腐案件敲打朝堂群臣，试探大臣的忠心与私下动向。", "figures": "朱元璋、检校（吴风）"}, {"strategy": "调虎离山", "category": "攻战计", "derivative": "诱敌出走", "homology": "引蛇出洞", "synonym": "声调诱敌", "antonym": "坚壁固守、就地缠斗", "origin": "待天以困之，用人以诱之，往蹇来返。东汉孙策战例", "origin_figures": "孙策", "event": "朱元璋逼迫刘伯温告老还乡，把他调离权力中枢应天，解除其朝堂影响力；同时派检校一路监视，防止他在京中串联势力。", "figures": "朱元璋、刘伯温"}, {"strategy": "欲擒故纵", "category": "攻战计", "derivative": "放长线钓大鱼", "homology": "穷寇莫追", "synonym": "欲取姑予", "antonym": "急功近利、穷追猛打", "origin": "逼则反兵，走则减势。紧随勿迫，累其气力，消其斗志。演义诸葛亮七擒孟获", "origin_figures": "诸葛亮、孟获", "event": "朱元璋纵容胡惟庸专权擅政，对他诸多越界行为暂时不予惩治，任由其结党坐大，等其罪证积累充分，再一次性彻底铲除胡党势力。", "figures": "朱元璋、胡惟庸"}, {"strategy": "擒贼擒王", "category": "攻战计", "derivative": "釜底抽薪", "homology": "打蛇打七寸", "synonym": "直捣核心", "antonym": "泛泛攻击、舍本逐末", "origin": "摧其坚，夺其魁，以解其体。龙战于野，其道穷也。唐代张巡战例", "origin_figures": "张巡", "event": "鄱阳湖水战，火攻之时目标直指陈友谅主力大船，击杀敌军主帅，瓦解数十万大军斗志。", "figures": "朱元璋、刘伯温、陈友谅"}, {"strategy": "釜底抽薪", "category": "混战计", "derivative": "断其根本", "homology": "擒贼擒王", "synonym": "抽薪止沸", "antonym": "扬汤止沸、治标不治本", "origin": "不敌其力，而消其势，兑下乾上之象。东汉官渡之战", "origin_figures": "曹操、袁绍", "event": "胡惟庸案后朱元璋直接废除丞相制度，从制度根源上消除相权威胁皇权的基础，而非只诛杀一个丞相。", "figures": "朱元璋"}, {"strategy": "上屋抽梯", "category": "并战计", "derivative": "诱入绝境", "homology": "置之死地", "synonym": "过河拆桥", "antonym": "留有余地、助人后路", "origin": "假之以便，唆之使前，断其援应，陷之死地。刘表刘琦典故", "origin_figures": "刘表、刘琦", "event": "先给大臣、勋贵高位与权力，引诱他们踏入权力漩涡；一旦他们形成势力，再断绝退路，罗织罪案株连清洗。", "figures": "朱元璋、李善长、胡惟庸"}, {"strategy": "指桑骂槐", "category": "并战计", "derivative": "敲山震虎", "homology": "杀鸡儆猴", "synonym": "旁敲侧击", "antonym": "直言斥责、就事论事", "origin": "大凌小者，警以诱之。刚中而应，行险而顺。春秋司马穰苴治军", "origin_figures": "司马穰苴", "event": "朱元璋借处置小贪官，当众训诫警告一众开国勋贵，敲打勋贵侵占田地、骄纵不法的行为，不直接点名，却威慑全体功臣。", "figures": "朱元璋"}, {"strategy": "反间计", "category": "败战计", "derivative": "离间构陷", "homology": "挑拨离间", "synonym": "离间之计", "antonym": "推心置腹、彼此信任", "origin": "疑中之疑。比之自内，不自失也。周瑜利用蒋干离间曹操", "origin_figures": "周瑜、曹操", "event": "剧中战场、朝堂使用情报离间，散播流言，挑拨陈友谅手下将领互相猜忌；朝堂中利用情报挑拨淮西集团与浙东文官集团互相争斗。", "figures": "朱元璋、刘伯温"}, {"strategy": "连环计", "category": "败战计", "derivative": "计计相扣", "homology": "多策叠加", "synonym": "计中计", "antonym": "一计单行、简单直进", "origin": "将多兵众，不可以敌，使其自累，以杀其势。王允貂蝉离间董卓吕布", "origin_figures": "王允、貂蝉", "event": "朱元璋对付功臣集团整套策略：欲擒故纵纵容权臣→检校监视收集把柄→借谋反大案株连清洗，多计叠加连环实施；鄱阳湖之战 “扼守 + 火攻 + 心理战” 连环破敌。", "figures": "朱元璋、刘伯温"}, {"strategy": "走为上", "category": "败战计", "derivative": "避敌锋芒", "homology": "留得青山在", "synonym": "全身而退", "antonym": "死战不退、困守硬拼", "origin": "全师避敌。左次无咎，未失常也。源自孙子兵法", "origin_figures": "孙子", "event": "汤和看透朱元璋猜忌，主动请求解除兵权，告老还乡、装疯自保，保全性命，是剧中少数善终功臣。", "figures": "汤和"}];
   const TABS    = [];     // [{key,label,field?,match?}] or []
   const OPTIONS = {"pageSize": 30, "exportCSV": true, "search": true, "showIndex": true};  // {pageSize?,exportCSV?,rowSelect?,stats?,search?}
   // Support columnsSplit for dedicated split-mode columns
   if (OPTIONS && OPTIONS.columnsSplit) {
     COLUMNS._splitCols = OPTIONS.columnsSplit;
   }
+
+  // CL009: GitHub Issue 反馈通道 — options.feedback={repo,dataset,key,altKey,template}
+  // 未配置 repo（或显式空串）→ 不渲染反馈按钮（既有页面零变更）
+  const FB_CFG  = (OPTIONS && OPTIONS.feedback) || null;
+  const FB_REPO = (FB_CFG && FB_CFG.repo) ? String(FB_CFG.repo) : '';
 
   const PAGE_SIZE = (OPTIONS && OPTIONS.pageSize) || 30;
   const showExport = OPTIONS && OPTIONS.exportCSV;
@@ -824,7 +662,33 @@ pre code { background: none; padding: 0; }
   const columnResize = !(OPTIONS && OPTIONS.columnResize === false);  // true by default
   const showSearch = OPTIONS ? OPTIONS.search !== false : true;
 
-  let filtered = DATA.slice(), currentPage = 1, activeTab = '', sortKey = '', sortAsc = true;
+  /* CL021: 默认排序 — options.defaultSort {key, asc}; 缺省不改数据原序。初始化在 initThead() 之前,
+     表头箭头随之点亮; 用户点表头仍可覆盖 (首次点击变反序, 属预期) */
+  const DEFAULT_SORT = (OPTIONS && OPTIONS.defaultSort) || null;
+  /* CL021: 常驻行高亮 — options.highlight {key, values[], mode}; 由数据派生, 每帧 render 重算,
+     筛选/搜索/排序/翻页/re-render 后自动保持 (与 tr.selected / tr.split-active 各自独立) */
+  const HL_CFG = (OPTIONS && OPTIONS.highlight) || null;
+  function rowHighlighted(row) {
+    if (!HL_CFG || !HL_CFG.key) return false;
+    var vals = Array.isArray(HL_CFG.values) ? HL_CFG.values
+             : (HL_CFG.value !== undefined && HL_CFG.value !== null ? [HL_CFG.value] : []);
+    if (!vals.length) return false;
+    var raw = row[HL_CFG.key];
+    if (raw === undefined || raw === null) return false;
+    var s = String(raw);
+    // mode=contains: 与 pill 列同口径 (逗号/顿号/斜杠切分后整值比对)
+    var parts = HL_CFG.mode === 'contains'
+      ? s.split(/[,，、/]+/).map(function(x){ return x.trim(); })
+      : [s];
+    for (var i = 0; i < vals.length; i++) {
+      if (parts.indexOf(String(vals[i])) !== -1) return true;
+    }
+    return false;
+  }
+
+  let filtered = DATA.slice(), currentPage = 1, activeTab = '',
+      sortKey = (DEFAULT_SORT && DEFAULT_SORT.key) ? String(DEFAULT_SORT.key) : '',
+      sortAsc = DEFAULT_SORT ? DEFAULT_SORT.asc !== false : true;
   let selectedRows = {}, colVisibility = {};
   // Restore column visibility from localStorage
   try { colVisibility = JSON.parse(localStorage.getItem('html-gen:table:col-visibility')) || {}; } catch(e) {}
@@ -835,7 +699,13 @@ pre code { background: none; padding: 0; }
   let quickFilter = null;  // {key, value}
 
   // Restore from localStorage
-  try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
+  // CL036: 优先级 localStorage(用户显式选过) > options.density(页面默认) > 'default'
+  try {
+    var _lsDensity = localStorage.getItem('html-gen:table:density');
+    var _optDensity = (typeof OPTIONS !== 'undefined' && OPTIONS && OPTIONS.density) || '';
+    var _validDensity = ['default', 'compact', 'comfortable'];
+    density = _lsDensity || (_validDensity.indexOf(_optDensity) !== -1 ? _optDensity : 'default');
+  } catch(e) {}
   try { clickMode = localStorage.getItem('html-gen:table:click-mode') || 'tab'; } catch(e) {}
   try { splitRatio = parseFloat(localStorage.getItem('html-gen:table:split-ratio')) || 40; } catch(e) {}
 
@@ -869,7 +739,7 @@ pre code { background: none; padding: 0; }
   /* ── Tabs ── */
   function buildTabs() {
     const bar = document.getElementById('tabsBar');
-    if (!TABS || !TABS.length) { bar.innerHTML = ''; return; }
+    if (!TABS || !TABS.length) { bar.innerHTML = ''; syncTabsRow(); return; }
     if (!activeTab) {
       try { activeTab = localStorage.getItem('html-gen:table:tab'); } catch(e) {}
       if (!activeTab || !TABS.find(function(t){return t.key===activeTab})) activeTab = TABS[0].key;
@@ -879,6 +749,20 @@ pre code { background: none; padding: 0; }
         DATA.filter(function(row) { return matchTab(row, t); }).length;
       return '<div class="tab-btn'+(t.key===activeTab?' active':'')+'" onclick="switchTab(\''+t.key+'\')">'+t.label+'<span class="count">'+cnt+'</span></div>';
     }).join('');
+    syncTabsRow();
+  }
+
+  /* CL036: 无 tab 且 tabs-actions 为空 ⇒ 折叠整条 tabs 行（DOM 保留, 跨仓 normalize_skeleton 依赖它） */
+  function syncTabsRow() {
+    // 不用 id/属性: 跨仓 normalize_skeleton 按 tabs-row 开标签的精确串定位（加属性或再出现一次该串都会使其 RuntimeError）
+    var row = document.querySelector('.tabs-row');
+    if (!row) return;
+    var bar = document.getElementById('tabsBar');
+    var actionsBox = row.querySelector('.tabs-actions');   // 不用短名 act.*: 契约正则按 act.<key> 扫 actions 维度
+    var hasTabs = !!(bar && bar.children.length);
+    var hasActions = !!(actionsBox && actionsBox.children.length);
+    if (!hasTabs && !hasActions) row.classList.add('no-tabs');
+    else row.classList.remove('no-tabs');
   }
 
   function matchTab(row, tab) {
@@ -901,10 +785,10 @@ pre code { background: none; padding: 0; }
       var tab = TABS.find(function(t){return t.key===activeTab;});
       if (tab) filtered = filtered.filter(function(row){return matchTab(row, tab);});
     }
-    // Search filter（options.searchFields 限定字段，默认全列向后兼容）
+    // Search filter（options.searchFields 限定字段，默认全列向后兼容；videos 列排除：数组 String() 噪音 + title 误命中）
     if (q) {
       var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
-        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.key; }).map(function(c){ return c.key; });
+        COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.type !== 'image' && c.key; }).map(function(c){ return c.key; });
       filtered = filtered.filter(function(row) {
         return searchKeys.some(function(k) {
           return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
@@ -913,8 +797,9 @@ pre code { background: none; padding: 0; }
     }
     // Quick filter (cell click / pill click)
     if (quickFilter) {
+      var qfCol = COLUMNS.find(function(c){ return c.key === quickFilter.key; });
       filtered = filtered.filter(function(row) {
-        var v = String(row[quickFilter.key] || '');
+        var v = cellTextFor(qfCol, row[quickFilter.key]);
         if (quickFilter.mode === 'contains') {
           // 标签筛选：顿号/逗号切分后包含匹配
           return v.split(/[,，、/]+/).map(function(s){return s.trim();}).indexOf(quickFilter.value) !== -1;
@@ -927,10 +812,12 @@ pre code { background: none; padding: 0; }
       var col = COLUMNS.find(function(c){return c.key===sortKey;});
       var isNum = col && col.type === 'number';
       var isDate = col && col.type === 'datetime';
+      var isMedia = col && (col.type === 'image' || col.type === 'videos');
       var loc = col && col.locale;
       var col2 = sortKey2 ? COLUMNS.find(function(c){return c.key===sortKey2;}) : null;
       var isNum2 = col2 && col2.type === 'number';
       var isDate2 = col2 && col2.type === 'datetime';
+      var isMedia2 = col2 && (col2.type === 'image' || col2.type === 'videos');
       var loc2 = col2 && col2.locale;
       filtered.sort(function(a, b) {
         // Primary key
@@ -940,6 +827,7 @@ pre code { background: none; padding: 0; }
         var cmp;
         if (isNum) { va = parseFloat(va)||0; vb = parseFloat(vb)||0; cmp = va - vb; }
         else if (isDate) { va = Date.parse(va) || 0; vb = Date.parse(vb) || 0; cmp = va - vb; }
+        else if (isMedia) { va = mediaTextValue(va); vb = mediaTextValue(vb); cmp = va.localeCompare(vb); }
         else { va = String(va); vb = String(vb); cmp = loc ? va.localeCompare(vb, loc) : va.localeCompare(vb); }
         if (cmp !== 0) return sortAsc ? cmp : -cmp;
         // Secondary key (only when primary equal)
@@ -950,6 +838,7 @@ pre code { background: none; padding: 0; }
           var cmp2;
           if (isNum2) { va2 = parseFloat(va2)||0; vb2 = parseFloat(vb2)||0; cmp2 = va2 - vb2; }
           else if (isDate2) { va2 = Date.parse(va2) || 0; vb2 = Date.parse(vb2) || 0; cmp2 = va2 - vb2; }
+          else if (isMedia2) { va2 = mediaTextValue(va2); vb2 = mediaTextValue(vb2); cmp2 = va2.localeCompare(vb2); }
           else { va2 = String(va2); vb2 = String(vb2); cmp2 = loc2 ? va2.localeCompare(vb2, loc2) : va2.localeCompare(vb2); }
           return sortAsc2 ? cmp2 : -cmp2;
         }
@@ -988,8 +877,9 @@ pre code { background: none; padding: 0; }
       var rowIdx = start + pi;
       var rowClass = [];
       if (selectedRows[rowIdx]) rowClass.push('selected');
+      if (rowHighlighted(row)) rowClass.push('hl-row');   // CL021: 常驻高亮 (options.highlight)
       if (isRowClickable(row)) rowClass.push('clickable');
-      var rowHtml = '<tr class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
+      var rowHtml = '<tr data-idx="'+rowIdx+'" class="'+rowClass.join(' ')+'"'+(isRowClickable(row)?' onclick="handleRowClick('+rowIdx+')"':'')+'>';
       if (showRowSelect) {
         rowHtml += '<td class="col-checkbox"><input type="checkbox" '+(selectedRows[rowIdx]?'checked':'')+' onclick="event.stopPropagation();toggleRow('+rowIdx+')"></td>';
       }
@@ -1014,28 +904,61 @@ pre code { background: none; padding: 0; }
               var stickyCls = col.stickyRight ? ' sticky-right' : '';
               var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
               // pills 列整格点击：onCellClick:'split' 时打开分栏（pill 标签点击仍为筛选，stopPropagation 隔离）
-              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"' : '';
+              // CL009: 携带列 key，反馈链接可预填 field
+              var pillsKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
+              var pillsTdOnclick = col.onCellClick === 'split' ? ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+pillsKey+')"' : '';
               rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeCls+stickyCls+'"'+pillsTdOnclick+freezeStyle+'>'+pillsHtml+'</td>';
+              return;
+            }
+            if (col.type === 'image') {
+              // CL026: 图片列 —— 单元格出缩略图（高度随密度，不撑行），点击开灯箱
+              var imgCell = imageCellHtml(val, col);
+              var freezeClsI = col.freeze ? ' frozen-col' : '';
+              var stickyClsI = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyleI = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-media'+(col.class?' '+col.class:'')+freezeClsI+stickyClsI+'"'+freezeStyleI+'>'+imgCell+'</td>';
+              return;
+            }
+            if (col.type === 'videos') {
+              // 视频列：每视频一个 pill [图标] title (duration)；maxShow 折叠 "+N"，点击展开全部（不折叠回，re-render 重置）
+              var videos = val;
+              var vMaxShow = (col.videos && typeof col.videos.maxShow === 'number') ? col.videos.maxShow : 3;
+              var vCount = Array.isArray(videos) ? videos.length : 0;
+              var vVisible = Math.min(vCount, vMaxShow);
+              var vHtml = vCount > 0 ? videoCoverCellHtml(videos[0]) : '';   // CL026: 首个视频封面（可选）
+              for (var vi = 0; vi < vVisible; vi++) vHtml += renderVideoPill(videos[vi]);
+              var vRestHtml = '';
+              if (vCount > vVisible) {
+                vRestHtml = '<span class="video-rest" style="display:none">';
+                for (var vj = vVisible; vj < vCount; vj++) vRestHtml += renderVideoPill(videos[vj]);
+                vRestHtml += '</span>';
+              }
+              var vMoreHtml = vCount > vVisible ? '<span class="video-pill video-more" onclick="event.stopPropagation();expandVideos(this)" title="展开全部">+' + (vCount - vVisible) + '</span>' : '';
+              var freezeClsV = col.freeze ? ' frozen-col' : '';
+              var stickyClsV = col.stickyRight ? ' sticky-right' : '';
+              var freezeStyleV = frozenOffsets[cols.indexOf(col)] || '';
+              rowHtml += '<td class="clickable-cell cell-pills'+(col.class?' '+col.class:'')+freezeClsV+stickyClsV+'"'+freezeStyleV+'>'+vHtml+vRestHtml+vMoreHtml+'</td>';
               return;
             }
             if (col.render) val = col.render(val, row);
           else if (col.format === 'thousands' && typeof val === 'number') val = val.toLocaleString('en-US');
-          else if (col.escape) val = escapeHtml(String(val));
+          else if (col.escape === false) { /* 显式豁免: raw HTML（如 <a> 链接列） */ }
           else if (val === undefined || val === null) val = '';
+          else val = escapeHtml(String(val));  // HG-SEC-134: 默认转义，防止 stored XSS
           var freezeCls = col.freeze ? ' frozen-col' : '';
           var stickyCls = col.stickyRight ? ' sticky-right' : '';
           var freezeStyle = frozenOffsets[cols.indexOf(col)] || '';
           var qfKey = JSON.stringify(col.key).replace(/"/g, '&quot;');
-          var qfVal = JSON.stringify(String(row[col.key]||'')).replace(/"/g, '&quot;');
+          var qfVal = JSON.stringify(cellTextFor(col, row[col.key])).replace(/"/g, '&quot;');
           var tdOnclick = '';
           if (col.onCellClick === 'split') {
-            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
           } else if (col.quickFilter === true) {
             // quickFilter 默认关: col.quickFilter === true 才启用单元格点击筛选
             tdOnclick = ' onclick="event.stopPropagation();quickFilterBy('+qfKey+','+qfVal+')"';
           } else if (col === firstKeyCol) {
             // 第 1 列默认分栏: 无其他 onclick handler 时打开 split
-            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+')"';
+            tdOnclick = ' onclick="event.stopPropagation();openSplitAt('+rowIdx+','+qfKey+')"';  // CL009: 携带列 key
           }
           rowHtml += '<td class="clickable-cell' + (col.class ? ' ' + col.class : '') + freezeCls + stickyCls + '"'+tdOnclick+freezeStyle+'>'+val+'</td>';
         }
@@ -1048,7 +971,17 @@ pre code { background: none; padding: 0; }
         rowHtml += '<div class="expand-grid">';
         detailCols.forEach(function(c) {
           var v = row[c.key]; if (v === null || v === undefined) v = '';
-          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + escapeHtml(String(v)) + '</div></div>';
+          var valHtml;
+          if (Array.isArray(v) && c.type === 'videos') {
+            // videos 数组特判：逐条渲染 [图标] title (duration) + url 链接（勿 String(v) → [object Object]）
+            valHtml = renderVideoListHtml(v);
+          } else if (c.type === 'image') {
+            // CL026: 图片列在行内展开同样出图（点击灯箱）
+            valHtml = imageSplitHtml(v, c);
+          } else {
+            valHtml = escapeHtml(String(v));
+          }
+          rowHtml += '<div class="expand-item"><div class="ex-label">' + escapeHtml(c.label) + '</div><div class="ex-value">' + valHtml + '</div></div>';
         });
         rowHtml += '</div></td></tr>';
       }
@@ -1057,20 +990,34 @@ pre code { background: none; padding: 0; }
     renderPager(totalPages);
   }
 
+  // CL030 (评审 SEC-5): onclick 属性由单引号包裹 —— 注入的 JSON 里 " 与 ' 都必须转义，
+  // 否则数据含引号即可跳出属性注入事件处理器（旧写法只处理了 "）。
+  function jsAttr(v) {
+    return JSON.stringify(v === undefined || v === null ? '' : v)
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/'/g, '&#39;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function renderActions(col, row) {
     if (!col.actions) return '';
     return col.actions.map(function(act) {
       var onclick = '';
       if (act.copyKey) {
-        onclick = 'event.stopPropagation();copyAction(' + JSON.stringify(row[act.copyKey] || '') + ')';
+        onclick = 'event.stopPropagation();copyAction(' + jsAttr(row[act.copyKey] || '') + ')';
       } else if (act.hrefKey) {
-        onclick = 'event.stopPropagation();window.open(' + JSON.stringify(row[act.hrefKey] || '').replace(/"/g, '&quot;') + ',"_blank","noopener,noreferrer")';
+        // CL030 SEC-5: 外链目标同样只放行 http(s)（与 linkSafe 同口径）；非法 ⇒ 渲染不可点按钮
+        var hrefSafe = linkSafe(row[act.hrefKey] || '');
+        if (hrefSafe) {
+          onclick = 'event.stopPropagation();window.open(' + jsAttr(hrefSafe) + ',"_blank","noopener,noreferrer")';
+        }
       } else if (act.handler) {
-        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + JSON.stringify(row).replace(/\"/g, '&quot;') + ')';
+        onclick = 'event.stopPropagation();window.' + act.handler + '(event,' + jsAttr(row) + ')';
       } else if (act.desc) {
-        onclick = 'event.stopPropagation();showDemoAction(' + JSON.stringify((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
+        onclick = 'event.stopPropagation();showDemoAction(' + jsAttr((act.icon||'') + ' ' + act.label + ': ' + act.desc) + ')';
       }
-      return '<button class="action-btn ' + (act.class||'') + '" onclick=\'' + onclick + '\' title="' + (act.label||'') + '">' + (act.icon || act.label) + '</button>';
+      return '<button class="action-btn ' + (act.class||'') + (onclick ? '' : ' action-btn-disabled') + '"'
+        + (onclick ? ' onclick=\'' + onclick + '\'' : '')
+        + ' title="' + escapeHtmlAttr(act.label||'') + '">' + (act.icon || act.label) + '</button>';
     }).join('');
   }
 
@@ -1080,6 +1027,157 @@ pre code { background: none; padding: 0; }
   };
 
   function escapeAttr(s) { return String(s).replace(/'/g,"\\'").replace(/"/g,'&quot;'); }
+
+  /* ── Videos column (col.type === 'videos') ── */
+  // 平台图标映射：归一化 String(platform).trim().toLowerCase() 后匹配别名（抖音→douyin、B站→bilibili、YouTube→youtube）
+  var VIDEO_PLATFORM_ICONS = {
+    'douyin': '🎵', '抖音': '🎵',
+    'bilibili': '📺', 'b站': '📺',
+    'youtube': '▶️'
+  };
+  function videoPlatformIcon(platform) {
+    var p = String(platform === undefined || platform === null ? '' : platform).trim().toLowerCase();
+    return VIDEO_PLATFORM_ICONS[p] || '📹';
+  }
+  // pill 文案：[图标] title (duration)；title 缺省 → [图标] platform (duration)；均缺省 → [📹] (duration)
+  function videoPillLabel(v) {
+    var icon = videoPlatformIcon(v.platform);
+    var dur = v.duration ? ' (' + v.duration + ')' : '';
+    if (v.title) return icon + ' ' + v.title + dur;
+    if (v.platform) return icon + ' ' + String(v.platform) + dur;
+    return icon + dur;
+  }
+  // 单元格视频 pill：点击新标签页打开 url（noopener,noreferrer；onclick 转义沿用 actions 先例 JSON.stringify + &quot;）
+  function renderVideoPill(v) {
+    if (!v || typeof v !== 'object') return '';
+    var url = v.url;
+    if (url === undefined || url === null) return '';
+    var label = videoPillLabel(v);
+    var safeUrl = linkSafe(url);   // CL028 SEC-1: 目标只放行 http(s)
+    if (!safeUrl) {
+      // 目标非法 ⇒ 保留可读文案但不给点击入口（不改数据，只降级展示）
+      // CL030 (评审 SEC-4): title 是属性上下文，必须用 escapeHtmlAttr（escapeHtml 不转义双引号 ⇒ 属性可逃逸）
+      return '<span class="video-pill video-pill-nolink" title="' + escapeHtmlAttr(String(url)) + '">' + escapeHtml(label) + '</span>';
+    }
+    var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
+    return '<span class="video-pill" title="' + escapeHtmlAttr(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</span>';
+  }
+  // 折叠 "+N"：点击展开全部（DOM 显示剩余 pill），不折叠回；跨 re-render 重置折叠态
+  window.expandVideos = function(el) {
+    var td = el.parentNode;
+    var rest = td.querySelector('.video-rest');
+    if (rest) rest.style.display = '';
+    el.style.display = 'none';
+  };
+  // split 预览 / expand 行内展开：markdown 链接风格 [图标 title (duration)] —— label 为链接文本（点击打开 url），url 仅 hover title 可见
+  function renderVideoListHtml(videos) {
+    if (!Array.isArray(videos) || !videos.length) return '';
+    return videos.map(function(v) {
+      if (!v || typeof v !== 'object') return '';
+      var url = v.url;
+      var label = videoPillLabel(v);
+      if (url) {
+        var safeUrl = linkSafe(url);   // CL028 SEC-1
+        if (safeUrl) {
+          var urlAttr = JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;');
+          // CL026: 视频封面（可选）—— 有 cover 时先出封面图，点击与外链同一目标
+          var coverSrc = isSafeMediaUrl(v.cover || '');
+          var coverHtml = coverSrc
+            ? '<img class="kv-video-cover" src="' + escapeHtmlAttr(coverSrc) + '" alt="' + escapeHtmlAttr(label) + '" loading="lazy" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">'
+            : '';
+          return '<div style="margin:2px 0;line-height:1.6">' + coverHtml +
+            '<a class="video-split-link" href="javascript:void(0)" title="' + escapeHtmlAttr(String(safeUrl)) + '" onclick="event.stopPropagation();window.open(' + urlAttr + ',\'_blank\',\'noopener,noreferrer\')">' + escapeHtml(label) + '</a></div>';
+        }
+        // 目标非 http(s) ⇒ 纯文本（不给可点面）
+      }
+      return '<div style="margin:2px 0;line-height:1.6">' + escapeHtml(label) + '</div>';
+    }).join('');
+  }
+
+  /* ── CL026: 媒体列（type=image / videos 项 cover）────────────────────────────
+     安全: src 只放行 http(s) / file / data:image/* —— 拦 javascript:、vbscript: 等伪协议。
+     取值: 字符串即 URL; 对象取 src|thumb|url; 可选 alt 作替代文本。
+     CSV / 排序 / quickFilter 共用 mediaTextValue，避免对象被 String() 成 [object Object]。 */
+  function escapeHtmlAttr(s) {
+    return String(s).replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+  function isSafeMediaUrl(u) {
+    var s = (u === null || u === undefined) ? '' : String(u).trim();
+    if (!s) return '';
+    // CL028 (评审 SEC-2): data: 只放行显式图片子类型；svg+xml 在 <img> 上下文不执行脚本，故保留。
+    // file:// 保留（本机场景），http(s) 起源下浏览器会自行拒载。
+    return /^(https?:\/\/|file:\/\/|data:image\/(?:png|jpe?g|gif|webp|svg\+xml);)/i.test(s) ? s : '';
+  }
+  // CL028 (评审 SEC-1): 外链**目标**另有一道白名单 —— video.url 会直入 onclick 的 window.open，
+  // 不过滤就能塞 javascript:（noopener 挡住同源 XSS，但属纵深缺口，且既有 pill 面同源）。
+  function linkSafe(u) {
+    var s = (u === null || u === undefined) ? '' : String(u).trim();
+    if (!s) return '';
+    return /^https?:\/\//i.test(s) ? s : '';
+  }
+  function mediaSrc(m) {
+    if (m === null || m === undefined) return '';
+    if (typeof m === 'object') return isSafeMediaUrl(m.src || m.thumb || m.url || '');
+    return isSafeMediaUrl(m);
+  }
+  function mediaAlt(m, col) {
+    if (m && typeof m === 'object' && m.alt) return String(m.alt);
+    return (col && col.label) ? String(col.label) : '';
+  }
+  // 注: 形参统一用 m（不用视频项惯用的 v）—— 否则 m.src/m.thumb 一类会被 help 契约的
+  // videos 子键提取正则当成视频项字段，逼着契约去声明并不存在的键。
+  function mediaTextValue(m) {
+    if (m === null || m === undefined) return '';
+    if (Array.isArray(m)) {
+      return m.map(function(it) {
+        return (it && typeof it === 'object') ? String(it.title || it.alt || it.url || it.src || '') : String(it);
+      }).join(' ');
+    }
+    if (typeof m === 'object') return String(m.alt || m.title || m.src || m.url || '');
+    return String(m);
+  }
+  // 搜索 / 排序 / 筛选 / CSV 的统一文本口径：媒体类型走 mediaTextValue，其余沿用 String(v)
+  function cellTextFor(col, v) {
+    if (col && (col.type === 'image' || col.type === 'videos')) return mediaTextValue(v);
+    return String(v === null || v === undefined ? '' : v);
+  }
+  function imageCellHtml(v, col) {
+    var src = mediaSrc(v);
+    if (!src) return '';
+    return '<img class="cell-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(mediaAlt(v, col)) +
+      '" loading="lazy" onclick="event.stopPropagation();openLightbox(this.src)">';
+  }
+  function imageSplitHtml(v, col) {
+    var src = mediaSrc(v);
+    if (!src) return '';
+    return '<img class="kv-img" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(mediaAlt(v, col)) +
+      '" loading="lazy" onclick="event.stopPropagation();openLightbox(this.src)">';
+  }
+  // 视频封面缩略（单元格用）: 点击直接外链到该视频，语义与 pill 一致
+  function videoCoverCellHtml(video) {
+    if (!video || typeof video !== 'object') return '';
+    var src = isSafeMediaUrl(video.cover || '');
+    if (!src) return '';
+    var safeUrl = linkSafe(video.url || '');   // CL028 SEC-1
+    var clickAttr = safeUrl
+      ? ' onclick="event.stopPropagation();window.open(' + JSON.stringify(String(safeUrl)).replace(/"/g, '&quot;') + ',\'_blank\',\'noopener,noreferrer\')"'
+      : '';   // 目标非 http(s) ⇒ 只展示封面，不给点击面
+    return '<img class="video-cover-thumb" src="' + escapeHtmlAttr(src) + '" alt="' + escapeHtmlAttr(video.title || '') +
+      '" loading="lazy" title="' + escapeHtmlAttr(video.title || video.url || '') + '"' + clickAttr + '>';
+  }
+  window.openLightbox = function(src) {
+    var lb = document.getElementById('lightbox'), im = document.getElementById('lightboxImg');
+    if (!lb || !im || !src) return;
+    im.src = src;
+    lb.classList.add('active');
+  };
+  window.closeLightbox = function(e) {
+    var lb = document.getElementById('lightbox');
+    if (!lb) return;
+    if (!e || e.target === lb || (e.target.classList && e.target.classList.contains('lb-close'))) {
+      lb.classList.remove('active');
+    }
+  };
 
   function getRowClickCol() {
     return COLUMNS.find(function(c){return c.onClick;});
@@ -1121,6 +1219,7 @@ pre code { background: none; padding: 0; }
   }
 
   window.quickFilterBy = function(key, value, mode) {
+    if (splitActive) closeSplit();  // HG-SEC-075: quickFilter 设置/清除 → 关闭分栏 (split 下标仅对默认排序+无 quickFilter 有效)
     mode = mode || 'exact';
     if (quickFilter && quickFilter.key === key && quickFilter.value === value && (quickFilter.mode || 'exact') === mode) {
       quickFilter = null;  // toggle off
@@ -1133,6 +1232,7 @@ pre code { background: none; padding: 0; }
   };
 
   window.clearQuickFilter = function() {
+    if (splitActive) closeSplit();  // HG-SEC-075
     quickFilter = null;
     currentPage = 1;
     render();
@@ -1188,6 +1288,7 @@ pre code { background: none; padding: 0; }
 
   var sortKey2 = '', sortAsc2 = true;
   window.sortBy = function(key, event) {
+    if (splitActive) closeSplit();  // HG-SEC-075: sort 变化 → 关闭分栏 (split 下标仅对默认排序有效)
     if (event && event.shiftKey) { if (sortKey2 === key) sortAsc2 = !sortAsc2; else { sortKey2 = key; sortAsc2 = true; } }
     else { if (sortKey === key) sortAsc = !sortAsc; else { sortKey = key; sortAsc = true; sortKey2 = ''; } }
     expandedIdx = -1; initThead(); render();
@@ -1216,7 +1317,9 @@ pre code { background: none; padding: 0; }
     if (clickMode === 'tab') {
       var col = getRowClickCol();
       if (!col || col.onClick !== 'url' || !row.url) return;
-      window.open(row.url, '_blank', 'noopener,noreferrer');
+      var safeTarget = linkSafe(row.url);   // CL030 (评审 SEC-5): 外链目标只放行 http(s)
+      if (!safeTarget) return;
+      window.open(safeTarget, '_blank', 'noopener,noreferrer');
       return;
     }
     // modal mode: show popup
@@ -1241,6 +1344,15 @@ pre code { background: none; padding: 0; }
     }
   }
   window.handleRowClick = handleRowClick;
+
+  /* CL018: 分栏行高亮 —— 按 data-idx 定位（分页/排序下用 filtered 下标会错位） */
+  function highlightSplitRow(idx) {
+    var tbody = document.getElementById('tbody');
+    if (!tbody) return;
+    tbody.querySelectorAll('tr.split-active').forEach(function(r){ r.classList.remove('split-active'); });
+    var tr = tbody.querySelector('tr[data-idx="'+idx+'"]');
+    if (tr) tr.classList.add('split-active');
+  }
 
   /* ── Modal Panel ── */
   function showModal(row) {
@@ -1389,10 +1501,7 @@ pre code { background: none; padding: 0; }
         body.innerHTML = '<div style="text-align:center;padding:40px;color:#6b7280;font-size:0.75rem">⚠ 无法加载 SKILL.md<br><span style="font-size:0.62rem">'+escapeHtml(mdUrl)+'</span><br><span style="font-size:0.62rem">'+escapeHtml(err.message)+'</span></div>';
       });
       // Highlight
-      var tbody = document.getElementById('tbody');
-      var rows = tbody.querySelectorAll('tr');
-      rows.forEach(function(r){ r.classList.remove('split-active'); });
-      if (rows[idx]) rows[idx].classList.add('split-active');
+      highlightSplitRow(idx);
     }
   }
 
@@ -1404,48 +1513,110 @@ pre code { background: none; padding: 0; }
   });
 
   /* ── Split View ── */
-  var splitRow = null, splitIdx = -1;
-  function activateSplit(row, idx) {
-    splitRow = row; splitIdx = idx;
+  var splitRow = null, splitIdx = -1, splitField = '';  // CL009: splitField = 触发分栏的列 key（'' = 未知）
+
+  /* ── URL 状态同步 (CL004: ?tab&q&split replaceState; HG-SEC-074 统一 URLSearchParams) ── */
+  function syncUrlState() {
+    var p = new URLSearchParams();
+    if (TABS && TABS.length && activeTab && activeTab !== TABS[0].key) p.set('tab', activeTab);
+    var q = document.getElementById('searchInput').value;
+    if (q) p.set('q', q);
+    if (splitActive && splitIdx >= 0) p.set('split', String(splitIdx));
+    if (density && density !== 'default') p.set('density', density);   // CL036: 分享链接还原密度
+    var qs = p.toString();
+    var url = location.pathname + (qs ? '?' + qs : '');
+    try { history.replaceState(null, '', url); } catch(e) {}
+  }
+  window.syncUrlState = syncUrlState;
+
+  function activateSplit(row, idx, colKey) {
+    splitRow = row; splitIdx = idx; splitField = colKey || '';  // CL009
     splitActive = true;
+    window.splitActive = true; window.splitIdx = idx; window.splitRow = row;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.add('split-mode');
     initThead();
     render();  // re-render with preview-only cols
     renderSplitPreview(row);
     // highlight active row
-    var tbody = document.getElementById('tbody');
-    var rows = tbody.querySelectorAll('tr');
-    rows.forEach(function(r){ r.classList.remove('split-active'); });
-    if (rows[idx]) rows[idx].classList.add('split-active');
+    highlightSplitRow(idx);
+    syncUrlState();
   }
   window.activateSplit = activateSplit;
-  window.openSplitAt = function(idx) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx); };
+  window.openSplitAt = function(idx, colKey) { if (idx >= 0 && idx < filtered.length) activateSplit(filtered[idx], idx, colKey); };
   window.splitNav = function(dir) {
     var newIdx = splitIdx + dir;
     if (newIdx < 0 || newIdx >= filtered.length) return;
-    activateSplit(filtered[newIdx], newIdx);
+    activateSplit(filtered[newIdx], newIdx, '');
   };
   window.closeSplit = function() {
     splitActive = false;
+    window.splitActive = false; window.splitIdx = -1; window.splitRow = null;  // 暴露供调试/测试
     var wrapper = document.querySelector('.wrapper');
     wrapper.classList.remove('split-mode');
-    splitRow = null; splitIdx = -1;
+    splitRow = null; splitIdx = -1; splitField = '';
     initThead();
     render();
     // clear highlight
     var rows = document.getElementById('tbody').querySelectorAll('tr');
     rows.forEach(function(r){ r.classList.remove('split-active'); });
+    syncUrlState();
   };
+
+  /* ── CL009: GitHub Issue 反馈链接（Issue Form 预填，全部 encodeURIComponent） ── */
+  function buildFeedbackUrl(row) {
+    if (!FB_REPO || !row) return '';
+    var keyField = (FB_CFG && FB_CFG.key) || 'name';
+    var altField = (FB_CFG && FB_CFG.altKey) || '';
+    var rowId = (row[keyField] === null || row[keyField] === undefined) ? '' : String(row[keyField]);
+    if (!rowId) return '';
+    var parts = [];
+    function add(k, v) {
+      if (v === null || v === undefined) return;
+      v = String(v);
+      if (!v) return;
+      parts.push(encodeURIComponent(k) + '=' + encodeURIComponent(v));
+    }
+    // v1.3 (CL009): 模板名来自 options.feedback.template（案例自描述）
+    add('template', (FB_CFG && FB_CFG.template) || 'data-fix.yml');
+    var bits = [];
+    if (FB_CFG && FB_CFG.dataset) bits.push(String(FB_CFG.dataset));
+    bits.push(rowId);
+    add('title', '[数据反馈] ' + bits.join(' · '));
+    add('page', (location.pathname || '').replace(/^\/+/, ''));
+    add('dataset', FB_CFG && FB_CFG.dataset);
+    add('row', rowId);
+    add('row_en', altField ? row[altField] : '');
+    // v1.3 (D1): 不再预填 field / current —— 字段由表单下拉选择（dropdown 不可 URL 预填）
+    return 'https://github.com/' + FB_REPO + '/issues/new?' + parts.join('&');
+  }
+  window.buildFeedbackUrl = buildFeedbackUrl;
+  window.openFeedbackIssue = function() {
+    var url = buildFeedbackUrl(splitRow);
+    if (url) window.open(url, '_blank', 'noopener,noreferrer');
+  };
+
+  // CL025: 空值判定（分栏详情 hideEmptyCells 用）。单独成函数、形参用 x，
+  // 是为了不产生「视频项变量 + 点 + 字段名」的形态 —— 那会被 help 契约的 videos
+  // 子键提取正则当成视频项字段（tests/test_help_contract.py::test_07 与契约对账）。
+  function isEmptyCellValue(x) {
+    if (x === null || x === undefined || x === '') return true;
+    return Array.isArray(x) && x.length === 0;
+  }
 
   function renderSplitPreview(row) {
     var header = document.getElementById('splitPreviewHeader');
     var body = document.getElementById('splitPreviewBody');
     // title from first column
     var titleCol = visibleCols({requireKey: true})[0];
+    // CL009: 反馈按钮仅当 options.feedback.repo 配置时渲染
+    var fbBtn = FB_REPO
+      ? '<button class="sp-feedback" id="spFeedbackBtn" onclick="openFeedbackIssue()" title="反馈数据">✏️</button>'
+      : '';
     header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
       '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
       ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+      fbBtn +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 
     // render: url → iframe, desc → textContent, else kv-list
@@ -1457,15 +1628,173 @@ pre code { background: none; padding: 0; }
       body.innerHTML = '';
       body.appendChild(d);
     } else {
-      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤；splitFull 字段整行宽 + 换行
+      // 分栏详情展示所有字段：全列渲染（排除 actions/hide），忽略列可见性与 preview 过滤
+      // CL025 ②: OPTIONS.hideEmptyCells 为 true 时，空值字段整格不渲染（剩余格自动重排）；
+      //           「有值但加载失败」仍由值本身承载，属另一语义。缺省 false = 保持既有全列渲染。
+      // CL025 ③: 列属性 splitSpan —— "full" 或正整数（grid-column:span N，上限 6）；
+      //           旧 splitFull 等价 "full"，两者并存时 splitSpan 优先。
+      // CL031: options.splitGrid 存在时走**声明式行布局**（显式行/列坐标 + catch-all + hide）；
+      //        不写该键 ⇒ 下面的扁平 auto-fill 分支逐字不变（向后兼容）。
       var cols = COLUMNS.filter(function(c){ return c.key && c.type !== 'actions' && !c.hide; });
-      body.innerHTML = '<div class="kv-list">'+cols.map(function(c) {
-        var v = row[c.key]; if (v === null || v === undefined) v = '';
-        var cls = c.splitFull ? ' kv-item kv-item-full' : ' kv-item';
-        var valHtml = c.splitFull ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
-        return '<div class="'+cls+'"><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+valHtml+'</div></div>';
-      }).join('')+'</div>';
+      __gridRow = row;                       // CL031: 栅格路径的取值上下文
+      var grid = resolveSplitGrid(cols);
+      if (grid) {
+        body.innerHTML = grid.html;
+        return;
+      }
+      var hideEmpty = !!(OPTIONS && OPTIONS.hideEmptyCells);
+      var items = [];
+      cols.forEach(function(c) {
+        var v = row[c.key];
+        var isEmpty = isEmptyCellValue(v);
+        if (hideEmpty && isEmpty) return;
+        if (v === null || v === undefined) v = '';
+        var span = normalizeSpan(c.splitSpan);
+        var full = isFullSpan(span) || (!span && !!c.splitFull);
+        var spanN = plainSpan(span);
+        var cls = full ? ' kv-item kv-item-full' : ' kv-item';
+        var style = spanN ? ' style="grid-column:span ' + spanN + '"' : '';
+        items.push('<div class="'+cls+'"'+style+'><div class="kv-label">'+escapeHtml(c.label)+'</div><div class="kv-value">'+splitValueHtml(c, v, full)+'</div></div>');
+      });
+      body.innerHTML = items.length ? '<div class="kv-list">'+items.join('')+'</div>' : '';
     }
+  }
+
+  /* ── CL031: 声明式行布局（splitGrid） ──────────────────────────────── */
+
+  // 单元格值渲染（扁平与栅格两条路径共用）
+  function splitValueHtml(c, v, full) {
+    if (Array.isArray(v) && c.type === 'videos') return renderVideoListHtml(v);   // 勿 String(v) → [object Object]
+    if (c.type === 'image') return imageSplitHtml(v, c);
+    if (c.escape === false) return full ? String(v).replace(/\n/g,'<br>') : String(v);
+    return full ? escapeHtml(String(v)).replace(/\n/g,'<br>') : escapeHtml(String(v));
+  }
+
+  // span 归一：'full' / true / 数字或数字字符串（"2.0"/" 2 " 也认，全角不认）
+  function normalizeSpan(span) {
+    if (typeof span === 'string') {
+      var s = span.trim();
+      if (s === 'full') return 'full';
+      var n = Number(s);
+      if (s !== '' && Number.isInteger(n) && n > 0) return n;
+      return undefined;
+    }
+    if (span === true) return 'full';
+    if (typeof span === 'number' && isFinite(span) && span > 0) return span;
+    return undefined;
+  }
+  function isFullSpan(span) { return span === 'full'; }
+  function plainSpan(span) {
+    if (typeof span !== 'number' || !isFinite(span) || span <= 1) return 0;
+    return Math.min(Math.floor(span), 6);
+  }
+
+  // 把 options.splitGrid 解析成可直接落 DOM 的 html（返回 null = 未启用）
+  function resolveSplitGrid(cols) {
+    var cfg = OPTIONS && OPTIONS.splitGrid;
+    if (!cfg || !Array.isArray(cfg.grid) || !cfg.grid.length) return null;
+    var hideList = (Array.isArray(cfg.hide) ? cfg.hide : []).map(String);
+    var byKey = {};
+    cols.forEach(function (c) { byKey[c.key] = c; });
+    var used = {};
+    // ① 解析每行的格（key 未知静默跳过，不崩、不白屏）
+    var lines = cfg.grid.map(function (rawLine) {
+      var line = [];
+      (Array.isArray(rawLine) ? rawLine : []).forEach(function (cell) {
+        if (cell === '*') { line.push({ catchAll: true }); return; }
+        var key = (typeof cell === 'string') ? cell : (cell && cell.key);
+        if (!key || !byKey[key]) return;
+        used[key] = true;
+        line.push({ col: byKey[key], span: (cell && typeof cell === 'object') ? cell.span : undefined });
+      });
+      return line;
+    });
+    // ② catch-all：只认最后一个 '*'；展开为「未被引用 + 未 hide」的列（COLUMNS 原序）
+    var lastCatch = -1;
+    lines.forEach(function (line, idx) {
+      if (line.some(function (x) { return x.catchAll; })) lastCatch = idx;
+    });
+    if (lastCatch >= 0) {
+      var rest = cols.filter(function (c) { return !used[c.key] && hideList.indexOf(c.key) < 0; });
+      lines = lines.map(function (line, idx) {
+        var out = [];
+        line.forEach(function (cell) {
+          if (!cell.catchAll) { out.push(cell); return; }
+          if (idx !== lastCatch) return;                     // 其它 '*' 丢弃
+          rest.forEach(function (c) { out.push({ col: c, span: 1 }); });
+        });
+        return out;
+      });
+    }
+    // ③ hide 清单：显式引用也不渲染（数据仍在表格/CSV 里）
+    lines = lines
+      .map(function (line) {
+        return line.filter(function (cell) { return hideList.indexOf(cell.col.key) < 0; });
+      })
+      .filter(function (line) { return line.length > 0; });   // ④ 空行零节点（不留空轨）
+    if (!lines.length) return { html: '' };
+
+    // ⑤ 轨道数 = 各行 span 之和的最大值；整行格按 1 计
+    var maxCols = 1;
+    lines.forEach(function (line) {
+      var n = 0;
+      line.forEach(function (cell) {
+        var sp = normalizeSpan(cell.span);
+        n += isFullSpan(sp) ? 1 : (plainSpan(sp) || 1);
+      });
+      if (n > maxCols) maxCols = n;
+    });
+
+    // ⑥ 渲染：逐格写 grid-row / grid-column（display:contents 不产生行边界，见设计稿 §3）
+    // CL033: 行内 span:"full" 不再恒写 1 / -1（那会盖住同行兄弟格且无提示）——
+    //   该行唯一格 ⇒ 1 / -1（占满整行，语义不变）；行内还有兄弟格 ⇒ 只吃「本行剩余轨」：
+    //   先扣掉其后兄弟格所需的轨，其余填满。不做隐式换行 ⇒ grid 行数与 lines 长度保持 1:1。
+    var parts = [];
+    lines.forEach(function (line, ri) {
+      // 先算出本行真正会渲染的格（skipEmpty 会丢格），full 的剩余轨按它计
+      var cells = line.map(function (cell) {
+        return { cell: cell, v: rowValueForCurrent(cell.col) };
+      }).filter(function (x) { return x.v !== null; });
+      var colIdx = 1;
+      cells.forEach(function (item, ci) {
+        var cell = item.cell, c = cell.col, v = item.v;
+        var sp = normalizeSpan(cell.span);
+        var full = isFullSpan(sp);
+        var spanN = full ? 1 : (plainSpan(sp) || 1);
+        var style = 'grid-row:' + (ri + 1) + ';';
+        if (!full) {
+          style += 'grid-column:' + colIdx + ' / span ' + spanN + ';';
+          colIdx += spanN;
+        } else if (cells.length === 1) {
+          style += 'grid-column:1 / -1;';
+        } else {
+          // 其后兄弟格占用的轨数（整行格按 1 计）；maxCols ≥ 本行 span 之和 ⇒ take ≥ 1
+          var tail = 0;
+          for (var j = ci + 1; j < cells.length; j++) {
+            var tsp = normalizeSpan(cells[j].cell.span);
+            tail += isFullSpan(tsp) ? 1 : (plainSpan(tsp) || 1);
+          }
+          var take = Math.max(1, maxCols - colIdx + 1 - tail);
+          style += 'grid-column:' + colIdx + ' / span ' + take + ';';
+          colIdx += take;
+        }
+        parts.push('<div class="kv-item' + (full ? ' kv-item-full' : '') + '" style="' + style + '">' +
+                   '<div class="kv-label">' + escapeHtml(c.label) + '</div>' +
+                   '<div class="kv-value">' + splitValueHtml(c, v, full) + '</div></div>');
+      });
+    });
+    return { html: '<div class="kv-grid" style="--kv-cols:' + maxCols + '">' + parts.join('') + '</div>' };
+  }
+
+  // 当前分栏行（renderSplitPreview 的入参），供 resolveSplitGrid 取单元格值
+  var __gridRow = null;
+  function rowValueForCurrent(c) {
+    var row = __gridRow || {};
+    var v = row[c.key];
+    var skipEmpty = (typeof (OPTIONS && OPTIONS.splitGrid && OPTIONS.splitGrid.skipEmpty) === 'boolean')
+      ? OPTIONS.splitGrid.skipEmpty : !!(OPTIONS && OPTIONS.hideEmptyCells);
+    if (skipEmpty && isEmptyCellValue(v)) return null;
+    return (v === null || v === undefined) ? '' : v;
   }
 
   /* ── Split drag ── */
@@ -1546,16 +1875,29 @@ pre code { background: none; padding: 0; }
   window.applyRatioPreset = applyRatioPreset;
 
   /* ── Density ── */
+  var DENSITY_FS = { default: '0.82rem', compact: '0.7rem', comfortable: '0.94rem' };  // CL036
   function applyDensity() {
     var table = document.querySelector('.data-table');
     table.classList.remove('dense', 'comfortable');
     if (density === 'compact') table.classList.add('dense');
     else if (density === 'comfortable') table.classList.add('comfortable');
+    // 表头统计 pill 在 .data-table 之外, 靠 root 变量跟随同一档位
+    document.documentElement.style.setProperty('--table-fs', DENSITY_FS[density] || DENSITY_FS.default);
   }
 
   /* ── Actions ── */
   window.copyAction = function(text) {
     copyText(text, '已复制: ' + text, '复制失败');
+  };
+
+  /* ── Share link (CL004: 🔗 拷贝规范化分享 URL; 剪贴板回退由 canonical copyText 承接) ── */
+  function buildShareUrl() {
+    syncUrlState();  // 确保 URL 与当前状态一致 (默认/空参数已剔除)
+    return location.href;
+  }
+  window.buildShareUrl = buildShareUrl;
+  window.shareLink = function() {
+    copyText(buildShareUrl(), '已复制链接', '复制失败');
   };
 
   /* ── Column visibility ── */
@@ -1584,7 +1926,7 @@ pre code { background: none; padding: 0; }
     var hasModal = validModes.indexOf('modal') !== -1;
     var hasExpand = validModes.indexOf('expand') !== -1;
     var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
-    if (tabCount > 1 || density !== 'default') {
+    if (true) {   // CL036: 密度入口无条件渲染（原先 tabCount>1 || density!=='default' 把单视图页入口整个藏掉）
       html += '<div class="settings-section">密度</div>';
       html += '<div style="display:flex;gap:4px;padding:4px 8px">';
       ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
@@ -1650,6 +1992,7 @@ pre code { background: none; padding: 0; }
     try { localStorage.setItem('html-gen:table:density', val); } catch(e) {}
     applyDensity();
     initColToggle();
+    syncUrlState();   // CL036: 切档即写 ?density=（分享链接可还原视图）
   };
 
   window.setClickMode = function(val) {
@@ -1667,9 +2010,9 @@ pre code { background: none; padding: 0; }
   var searchTimer;
   document.getElementById('searchInput').addEventListener('input', function() {
     clearTimeout(searchTimer);
-    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); }, 300);
+    searchTimer = setTimeout(function() { expandedIdx = -1; currentPage = 1; render(); syncUrlState(); }, 300);  // H1: q 随 debounce 同步
   });
-  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); };
+  window.doSearch = function() { expandedIdx = -1; currentPage = 1; render(); syncUrlState(); };
 
   /* ── Tab switch ── */
   window.switchTab = function(key) {
@@ -1679,6 +2022,7 @@ pre code { background: none; padding: 0; }
     buildTabs();
     currentPage = 1;
     render();
+    syncUrlState();
   };
 
   /* ── CSV Export ── */
@@ -1691,8 +2035,8 @@ pre code { background: none; padding: 0; }
       var header = cols.map(function(c){return '"'+c.label+'"';}).join(',');
       var rows = filtered.map(function(row) {
         return cols.map(function(c) {
-          var v = row[c.key]; if (v === null || v === undefined) v = '';
-          return '"'+String(v).replace(/"/g,'""')+'"';
+          var v = cellTextFor(c, row[c.key]);
+          return '"'+v.replace(/"/g,'""')+'"';
         }).join(',');
       });
       var csv = '\uFEFF' + header + '\n' + rows.join('\n');
@@ -1795,6 +2139,22 @@ pre code { background: none; padding: 0; }
 
   /* ── Init ── */
   function init() {
+    // CL004: URL 状态恢复 — 顺序 tab(buildTabs 前) → q(render 前) → split(render 后) (HG-SEC-076)
+    var _params = new URLSearchParams(location.search);
+    var _urlTab = _params.get('tab');
+    if (_urlTab && TABS && TABS.find(function(t){ return t.key === _urlTab; })) {
+      activeTab = _urlTab;  // 白名单校验, 无效忽略
+    }
+    var _urlQ = _params.get('q');
+    if (_urlQ !== null) {
+      // 仅 value 赋值 (无 innerHTML 注入面), URLSearchParams 自动解码 (HG-SEC-074)
+      document.getElementById('searchInput').value = _urlQ;
+    }
+    var _urlDensity = _params.get('density');   // CL036: 分享链接还原密度（白名单校验）
+    if (['default', 'compact', 'comfortable'].indexOf(_urlDensity) !== -1) {
+      density = _urlDensity;
+    }
+    var _urlSplit = _params.get('split');
     // Restore saved column widths
     try {
       var savedWidths = localStorage.getItem(COL_WIDTHS_KEY);
@@ -1820,6 +2180,13 @@ pre code { background: none; padding: 0; }
     var _df = OPTIONS && OPTIONS.defaultFilter;
     if (_df && _df.key && _df.value) {
       quickFilterBy(_df.key, _df.value, _df.mode || 'exact');
+    }
+    // CL004: split 恢复 (render 后; filtered 已按 tab+q 重建; 越界忽略; 有 quickFilter 时下标语义失效跳过)
+    if (_urlSplit !== null && !quickFilter) {
+      var n = parseInt(_urlSplit, 10);
+      if (!isNaN(n) && n >= 0 && n < filtered.length) {
+        activateSplit(filtered[n], n);
+      }
     }
   }
   init();
@@ -1856,6 +2223,7 @@ pre code { background: none; padding: 0; }
       this.active = false;
       currentPage = 1;
       render();
+      syncUrlState();
     },
 
     updateMatchCount: function() {
