@@ -25,8 +25,11 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
 - **夹具输出一律 `tempfile.mkdtemp()`，禁写固定 `/tmp/<name>`**（CL034）：固定共享名会被并发会话 /
   `-n 4` 并行 worker 覆盖掉，页面被顶掉后整片用例红。反证配方：起一个循环覆盖该路径的第三者进程，
-  用例应仍绿（探针：`bash scripts/probe-tmp-pollution.sh`，第三者循环覆盖该路径、期望 `TOTAL_FAILS=0`）。
+  用例应仍绿（探针：`bash scripts/probe-tmp-pollution.sh`，第三者循环覆盖该路径、期望 `TOTAL_FAILS=0`；
+  探针自带 `CHROMEDRIVER_REQUIRED=1` + 「必须真跑满 2 passed」两条防假绿，自身故意写 `/tmp` 属例外）。
   Selenium 等待用 `WebDriverWait` 等「元素就位 + `document.readyState === 'complete'`」，勿用固定 `time.sleep`。
+  **存量**：本规落地时 `tests/` 已有 25 处固定 `/tmp` 路径（`test_templates.py` 18 处，其余 4 文件 7 处），
+  属历史债，另批立项清理（`HTML-GEN-CL035` 待开），不追溯改历史提交。
 
 > 用例计数与全量命令以 `AGENTS.md` 的「测试计数」子节为唯一权威（本节只写细则，不重复计数）。
 
