@@ -2538,3 +2538,35 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - ⚠️ CONDITIONAL ⇒ **不 push**，等 ops reword 3 笔 subject 后触发**尾项复核**（换 hash 后需重跑 `-n 4` + `--check`/`--verify`）。
 - 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 已本地提交（path-scoped，`audit@review`）。
 - 建议同批顺带（一行级）：204 的 `64 → 31` 与 grep 判据补 `--include=*.py`、209 删残留 import。
+
+## 2026-11-12 — next-batch CL033/CL032/CL024 尾项复核 round-2（PASS 95/100）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review-recheck)
+- **Scope**: `github/main..HEAD` 5 笔 —— `83f9488`(CL033) / `d9d4ef3`(CL032) / `f41c412`(CL024) / `5d122c9`(上轮审计) / `cc59515`(本轮返工)，59 unique 文件 +905/-193；派生 `4e7574f` 不计入
+- **Verdict**: ✅ PASS 95/100（A）· 0 🔴 / 1 🟡（建议修）/ 6 🟢 record
+- **Score**: 95 / 100
+- **Tracking**: 203/204①/205/207/208/209/211/212 ✅ closed；206（偶发红，既有债立项）+ 210（AGENTS.md 计数，受保护待审批）仍开；新增 HG-SEC-213（🟡）+ 214..218（🟢）
+- **报告**: `documents/handoff/next-batch-cl033-032-024-review-v1.1-20261112.md`
+
+### Summary
+
+**sha 位移 errata（非缺陷）**：上轮 `70f714b`/`4225011`/`6bb5f6d`/`488bbac`/`c40be23` 经 CL008 reword 变为 `83f9488`/`d9d4ef3`/`f41c412`/`5d122c9`/`cc59515`。三口径独立证「仅 subject 行变化」——`rev-parse ^{tree}` 5/5 IDENTICAL、`patch-id --stable` 5/5 SAME、`%B | tail -n +2 | md5` 5/5 SAME；旧 sha 仍可从 reflog 与 `backup-pre-reword-20261112` 取到，未 push ⇒ 无 force。
+
+**独立复算（1A 口径）**：全量 `-n 4` ×2 = **466 passed**（66.14s / 70.76s，2/2 绿）；`baseline.py --check` **23/23**；`--verify` **15 current + 5 带理由 skip**，且 verify 后 `/tmp` 与 `$TMPDIR` 的 `baseline-verify-*` 归 0（`--keep-temp` 实测保留 1）。**205 双探针**：缺驱动 ⇒ 13 skipped（理由含实际路径 + env 覆盖方式）；`CHROMEDRIVER_REQUIRED=1` ⇒ 4 errors（RuntimeError）不 skip。**208 变异 5 例**：顶层/嵌套/docstring 三处违规均红（`rglob` 真递归，点名 `sub/test_nested.py:1`），`# noqa` 与 `#` 注释行两处豁免通过（⇒ 214）。**212 实证**：`--title=-dash-title` rc=0 且标题字面生效，两 token 形式被 argparse 拒（缺陷还原）。**204①**：三处 `64` 清零，修前真值 31 文件/32 处/35 处 `Service(` 与 body 逐字吻合。**209**：`chrome.service import Service` 仅剩 conftest:16。**211**：`maxCols` 见 `layout-table.html:1464`、写入 `--kv-cols` 见 `:1505`，文档新句成立。
+
+### 发现
+
+- 🟡 **HG-SEC-213**（本轮唯一未闭合）`documents/testing.md:22-23` 与返工笔 body 的复算判据 `grep -rn "/Users/" tests/ --include=*.py | grep chromedriver | wc -l == 0` 实测 **2** —— 两行都是判据自身（`test_selenium_infra.py:33` 注释、`:41` 判据行带 noqa）。`--include=*.py` 正确解决了上轮的 `.pyc` 3 个假命中，但期望值又错 ⇒ 「自证数字与实测不符」同类缺陷第 3 次。修复：判据改「0 处非标注命中」并去掉 `:33` 注释里的双 token，或直接只引用 `test_selenium_infra.py::test_01_*`（根治双源）。
+- 🟢 **214** `noqa: user-path-guard` 豁免无上界（真实代码行加该标注即 4 passed）；建议断言豁免集合恰为 `{test_selenium_infra.py:41}`。
+- 🟢 **215** `--keep-temp` 不打印 tmpdir（输出中 `baseline-verify-` 出现 0 次）且 `rmtree` 无 `try/finally`；异常/中断路径仍泄漏。
+- 🟢 **216** `CHROMEDRIVER_REQUIRED` 解析不含 `FALSE`/`NO`；仓内无 CI（`.github` 仅 ISSUE_TEMPLATE）⇒ 严格开关无自动落点，testing.md 应补可直接复制的严格跑法。
+- 🟢 **217** 「顺手清掉 135 个历史遗留目录」为仓外一次性手动操作，不可复算（结果面 `/tmp`=0 与声明一致）。
+- 🟢 **218** 双 argv 约定并存：`tests/test_sync_videos.py:40-41` 的假 html-gen 桩按 `index+1` 取值，若调用方改用 `--flag=value` 会静默取错。
+- 🟡/🟢 **挂账不变**：206（`-n 4` 偶发红，既有债按约定单独立项，本轮 2 次未复现）；210（`AGENTS.md:6/:44` 仍 458/45，实测 466/46 偏差扩到 8，受保护文件三次审批超时未绕过）。
+
+### 处理
+
+- ✅ PASS ⇒ 报告（`documents/handoff/`）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（path-scoped，`audit@review`）。
+- **未 push**：`git rev-list --count github/main..HEAD` 提交后 = 7；建议 213 一行修后一并推送，或用户「推送」口令放行。
+- 建议同批（一行级）：213；另批：214/215/216/217/218；治理：`cjk_new`=153 存量需一次裁定。

@@ -831,3 +831,14 @@ review_history:
     findings_open: 4
     tracking: "HG-SEC-203..212 — 203 (BLOCKING: 3/3 CJK subjects violate CL008 new-commit rule, reword needed) / 204 self-proof claims mismatch (comment says 64 files, actual 31; grep gate says 2, actual 5) / 205 missing chromedriver silently skips 39 assertions, no strict switch / 206 flaky test_doc_title_click_copy_path under -n 4 (1 of 3 runs); 207..212 GREEN records (default path hardcoded, test_01 non-recursive, unused Service import, AGENTS.md count 458/45 pending approval, splitGrid remaining-track wording, verify tmpdir cleanup)"
     report: documents/handoff/next-batch-cl033-032-024-review-v1.0-20261112.md
+  - date: 2026-11-12
+    reviewer: Security Reviewer
+    review_type: design-document-review-recheck
+    review_level: L2
+    scope: "next-batch CL033/CL032/CL024 尾项复核 round-2 — github/main..HEAD 5 笔 (83f9488 CL033 / d9d4ef3 CL032 / f41c412 CL024 / 5d122c9 上轮审计 / cc59515 返工), 59 unique files +905/-193; 派生 4e7574f 不计入; sha 位移 errata 已证 tree/patch-id/body-md5 三口径 5/5 相同"
+    verdict: PASS
+    score: 95
+    findings_total: 13
+    findings_open: 5
+    tracking: "HG-SEC-203..212 follow-ups — closed 203 (CL008 reword + 三口径证内容未变) / 204-1 (64→31, 31/32/35 复算吻合) / 205 (CHROMEDRIVER_REQUIRED strict switch, test_04) / 207 (expanduser default) / 208 (rglob + noqa, 变异 M1/M2/M5 红) / 209 (残留 Service 导入已删) / 211 (templates.md 点 maxCols) / 212 (rmtree + keep-temp + --flag=value); open 206 (flaky -n 4, 既有债按约定立项) + 210 (AGENTS.md 458/45 受保护, 偏差扩到 8); NEW HG-SEC-213 (MEDIUM 建议修: testing.md 复算判据期望 0 实测 2, 自证数字不符第 3 次) + 214..218 GREEN records (noqa 豁免无上界 / keep-temp 不打印且无 try-finally / REQUIRED 大小写 + 无 CI 落点 / 135 目录清理仓外不可复算 / 双 argv 约定与 test_sync_videos 桩)"
+    report: documents/handoff/next-batch-cl033-032-024-review-v1.1-20261112.md
