@@ -206,7 +206,6 @@ class TestDocSlideFrontmatter(unittest.TestCase):
         """D1: sidebar sticky survives scroll to bottom."""
         from selenium import webdriver
         from selenium.webdriver.chrome.options import Options
-        from selenium.webdriver.chrome.service import Service
         import time
 
         tmp_md = Path('/tmp/test-sticky.md')

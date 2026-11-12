@@ -173,7 +173,8 @@ class TestRenderBaseline(unittest.TestCase):
                           f'{rel} 的 md 源应走同目录同名约定')
         for rel in mod.KB_PRODUCTS:
             self.assertIn('-d', jobs[rel], f'{rel} 缺 -d 台账')
-            self.assertIn('--title', jobs[rel], f'{rel} 的标题必须从产物回收')
+            self.assertTrue(any(a.startswith('--title=') for a in jobs[rel]),
+                            f'{rel} 的标题必须从产物回收（--title=<值> 形式）')
 
 
 if __name__ == '__main__':

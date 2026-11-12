@@ -24,6 +24,7 @@ import hashlib
 import html as H
 import json
 import re
+import shutil
 import subprocess
 import sys
 import tempfile
@@ -151,10 +152,10 @@ def _recovered_common(t):
     a = []
     m = GITHUB_RE.search(t)
     if m:
-        a += ['--github-url', m.group(1)]
+        a.append('--github-url=' + m.group(1))
     m = HOME_RE.search(t)
     if m:
-        a += ['--home-url', m.group(1)]
+        a.append('--home-url=' + m.group(1))
     return a
 
 
@@ -169,10 +170,10 @@ def build_jobs(root):
         argv = ['table', '-d', data]
         m = H1_RE.search(t)
         if m:
-            argv += ['--title', _unesc(m.group(1))]
+            argv.append('--title=' + _unesc(m.group(1)))
         d = DESC_RE.search(t)
         if d and _unesc(d.group(1)):
-            argv += ['--subtitle', _unesc(d.group(1))]
+            argv.append('--subtitle=' + _unesc(d.group(1)))
         argv += _recovered_common(t)
         jobs.append((rel, argv))
     for rel in SLIDE_PRODUCTS:
@@ -188,7 +189,7 @@ def build_jobs(root):
         # doc 的标题默认取 md 首个 h1；只在产物 <title> 与之不同时才显式传（不存第二份标题表）
         m, h1 = TITLE_RE.search(t), MD_H1_RE.search(md.read_text(encoding='utf-8'))
         if m and h1 and _plain(m.group(1)) != h1.group(1).strip():
-            argv += ['--title', _plain(m.group(1))]
+            argv.append('--title=' + _plain(m.group(1)))
         argv += _recovered_common(t)
         jobs.append((rel, argv))
     for rel, (data, groups) in KB_PRODUCTS.items():
@@ -201,19 +202,19 @@ def build_jobs(root):
             argv += ['-g', groups]
         m = KW_TITLE_RE.search(t)
         if m and _plain(m.group(1)):
-            argv += ['--title', _plain(m.group(1))]
+            argv.append('--title=' + _plain(m.group(1)))
         m = KW_SUB_RE.search(t)
         if m and _plain(m.group(1)):
-            argv += ['--subtitle', _plain(m.group(1))]
+            argv.append('--subtitle=' + _plain(m.group(1)))
         m = KW_WELCOME_RE.search(t)
         if m and _plain(m.group(1)) and _plain(m.group(1)) != KW_WELCOME_DEFAULT:
-            argv += ['--welcome', _plain(m.group(1))]
+            argv.append('--welcome=' + _plain(m.group(1)))
         argv += _recovered_common(t)
         jobs.append((rel, argv))
     return jobs
 
 
-def cmd_verify(root, as_json=False, quiet=False):
+def cmd_verify(root, as_json=False, quiet=False, keep_temp=False):
     """重渲比 sha。rc: 0 全部一致 / 1 有落后或渲染失败。"""
     cli = root / 'html-gen.py'
     tmpdir = Path(tempfile.mkdtemp(prefix='baseline-verify-'))
@@ -231,6 +232,8 @@ def cmd_verify(root, as_json=False, quiet=False):
     for rel, reason in SKIP_PRODUCTS.items():
         if (root / rel).is_file():
             results.append({'path': rel, 'status': 'skip', 'detail': reason})
+    if not keep_temp:
+        shutil.rmtree(tmpdir, ignore_errors=True)      # 临时渲染产物用完即清（--keep-temp 保留排查）
     bad = [x for x in results if x['status'] in ('stale', 'fail')]
     if as_json:
         print(json.dumps({'ok': not bad, 'results': results}, ensure_ascii=False, indent=2))
@@ -329,6 +332,7 @@ def main(argv=None):
     ap.add_argument('--json', action='store_true', help='机器可读输出')
     ap.add_argument('--force', action='store_true', help='--update 跳过 verify（越权）')
     ap.add_argument('--quiet', action='store_true')
+    ap.add_argument('--keep-temp', action='store_true', help='--verify 保留临时渲染目录（排查用）')
     args = ap.parse_args(argv)
 
     root = Path(args.root).resolve() if args.root else ROOT
@@ -338,7 +342,7 @@ def main(argv=None):
     if args.update:
         return cmd_update(root, quiet=args.quiet, force=args.force)
     if args.verify:
-        return cmd_verify(root, as_json=args.json, quiet=args.quiet)
+        return cmd_verify(root, as_json=args.json, quiet=args.quiet, keep_temp=args.keep_temp)
     return cmd_check(root, as_json=args.json)
 
 
