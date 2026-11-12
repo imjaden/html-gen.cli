@@ -1,5 +1,5 @@
 """Tests for doc-body content width levels (?width=narrow|medium|wide)."""
-import subprocess, sys, time, unittest
+import subprocess, sys, tempfile, time, unittest
 from pathlib import Path
 
 from selenium import webdriver
@@ -7,14 +7,12 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import TmpDirMixin, chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
 GEN = PROJECT / 'html-gen.py'
 DEMO = PROJECT / 'demos' / 'doc-guide.html'
 
-TMP_MD = Path('/tmp/test-doc-width.md')
-TMP_HTML = Path('/tmp/test-doc-width.html')
 
 
 def run_gen(*args):
@@ -22,19 +20,16 @@ def run_gen(*args):
                           capture_output=True, text=True, timeout=30)
 
 
-class TestDocWidthRegression(unittest.TestCase):
+class TestDocWidthRegression(TmpDirMixin, unittest.TestCase):
     """纯 Python 回归：模板 CSS 规则 + 无持久化."""
 
     @classmethod
     def setUpClass(cls):
-        TMP_MD.write_text("# 宽度测试\n## 章节\n正文内容测试。\n")
-        run_gen('doc', '-i', str(TMP_MD), '-o', str(TMP_HTML))
-        cls.html = TMP_HTML.read_text()
-
-    @classmethod
-    def tearDownClass(cls):
-        TMP_MD.unlink(missing_ok=True)
-        TMP_HTML.unlink(missing_ok=True)
+        super().setUpClass()
+        cls.md, cls.out = cls.tmpdir / 'test-doc-width.md', cls.tmpdir / 'test-doc-width.html'
+        cls.md.write_text("# 宽度测试\n## 章节\n正文内容测试。\n", encoding='utf-8')
+        run_gen('doc', '-i', str(cls.md), '-o', str(cls.out))
+        cls.html = cls.out.read_text(encoding='utf-8')
 
     def test_width_narrow_css(self):
         self.assertIn('body.width-narrow .doc-body { max-width: 720px; }', self.html)

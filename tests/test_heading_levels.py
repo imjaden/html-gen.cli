@@ -1,4 +1,6 @@
 """Tests for h4-h6 heading rendering support."""
+import shutil
+import tempfile
 import subprocess, sys, time, unittest
 from pathlib import Path
 
@@ -69,8 +71,9 @@ class TestHeadingLevelsSelenium(unittest.TestCase):
         opts.add_argument('--disable-dev-shm-usage')
         svc = chromedriver_service()
         cls.driver = webdriver.Chrome(service=svc, options=opts)
-        # Generate a doc with h4/h5/h6
-        cls.tmp = Path('/tmp/test-h4-h6.md')
+        # Generate a doc with h4/h5/h6（CL035：每类独立临时目录，勿用固定共享名）
+        cls.tmpdir = Path(tempfile.mkdtemp(prefix='hg-h4h6-'))
+        cls.tmp = cls.tmpdir / 'test-h4-h6.md'
         cls.tmp.write_text(
             "# 主标题\n"
             "## 二级章节\n"
@@ -83,14 +86,13 @@ class TestHeadingLevelsSelenium(unittest.TestCase):
             "###### 六级\n"
             "六级内容。\n"
         )
-        cls.out = Path('/tmp/test-h4-h6.html')
+        cls.out = cls.tmpdir / 'test-h4-h6.html'
         run_gen('doc', '-i', str(cls.tmp), '-o', str(cls.out))
 
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
-        cls.tmp.unlink(missing_ok=True)
-        cls.out.unlink(missing_ok=True)
+        shutil.rmtree(cls.tmpdir, ignore_errors=True)
 
     def setUp(self):
         self.driver.get('file://' + str(self.out))

@@ -44,9 +44,10 @@ class TestChromedriverEnv(unittest.TestCase):
 
     def test_02_env_overrides_path_and_default_is_expanduser(self):
         code = 'import conftest; print(conftest.CHROMEDRIVER)'
-        r_env = _run_in_tests(code, {'CHROMEDRIVER': '/tmp/whatever/chromedriver'})
+        r_env = _run_in_tests(code, {'CHROMEDRIVER': '/tmp/whatever/chromedriver'})  # noqa: tmp-path-guard
         self.assertEqual(r_env.returncode, 0, r_env.stderr)
-        self.assertEqual(r_env.stdout.strip(), '/tmp/whatever/chromedriver', 'CHROMEDRIVER 未生效')
+        self.assertEqual(r_env.stdout.strip(), '/tmp/whatever/chromedriver',   # noqa: tmp-path-guard
+                         'CHROMEDRIVER 未生效')
         r_def = _run_in_tests(code, {})
         self.assertEqual(r_def.returncode, 0, r_def.stderr)
         self.assertEqual(r_def.stdout.strip(), EXPECTED_DEFAULT,
@@ -76,6 +77,19 @@ class TestChromedriverEnv(unittest.TestCase):
         self.assertTrue(r.stdout.startswith('RAISE:'),
                         f'CHROMEDRIVER_REQUIRED=1 时缺驱动必须失败，实得: {r.stdout!r}{r.stderr}')
         self.assertIn('REQUIRED', r.stdout)
+
+    def test_05_no_fixed_temp_paths_in_tests(self):
+        """CL035 守卫：夹具不许用固定临时路径（并行/并发下会被第三方进程顶掉）。
+
+        例外只认同行 `noqa: tmp-path-guard` 标注 —— 那是「env 取值 / 不落盘的字符串夹具」，
+        不是文件路径。拼接绕过（`'/t'+'mp/x'`）属另一种后门范式，评审会打回，别学。
+        """
+        hits = []
+        for p in sorted(TESTS.rglob('*.py')):
+            for i, line in enumerate(p.read_text(encoding='utf-8').splitlines(), 1):
+                if '/tmp/' in line and 'noqa: tmp-path-guard' not in line:   # noqa: tmp-path-guard
+                    hits.append(f'{p.relative_to(TESTS)}:{i}')
+        self.assertEqual(hits, [], f'测试里仍有固定临时路径（改 mkdtemp）: {hits}')
 
 
 if __name__ == '__main__':

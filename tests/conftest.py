@@ -10,6 +10,8 @@
 - `chromedriver_service()`：缺二进制时抛 `unittest.SkipTest`（带实际路径与 env 提示）。
 """
 import os
+import shutil
+import tempfile
 import unittest
 from pathlib import Path
 
@@ -39,3 +41,23 @@ def chromedriver_service():
             raise RuntimeError(f'{msg} —— CHROMEDRIVER_REQUIRED=1 要求缺驱动即失败（CI 口径）')
         raise unittest.SkipTest(msg)
     return Service(CHROMEDRIVER)
+
+
+class TmpDirMixin:
+    """每类独立临时目录（HTML-GEN-CL035）。
+
+    为什么：夹具用固定名（系统临时目录下的 test-x.md 之类）时，并行 worker、同机其他会话或任何第三方进程
+    写同一个名字就会把被测页顶掉 —— 单跑恒绿、全量偶发整片假红，且症状（断言对不上）
+    离根因（文件被换）很远。约定：任何造文件的夹具都用 `mkdtemp`，固定名一律不许进夹具。
+    类内引用 `self.tmpdir`；`tearDownClass` 负责清理。
+    """
+
+    @classmethod
+    def setUpClass(cls):
+        super().setUpClass()
+        cls.tmpdir = Path(tempfile.mkdtemp(prefix=f'hg-{cls.__name__.lower()}-'))
+
+    @classmethod
+    def tearDownClass(cls):
+        shutil.rmtree(cls.tmpdir, ignore_errors=True)
+        super().tearDownClass()

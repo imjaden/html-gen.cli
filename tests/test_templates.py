@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import TmpDirMixin, chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
 DEMOS = PROJECT / 'demos'
@@ -20,7 +20,7 @@ def run_gen(*args):
     assert r == 0, f"gen failed: {' '.join(args)}"
 
 
-class TestDoc(unittest.TestCase):
+class TestDoc(TmpDirMixin, unittest.TestCase):
     """Doc mode — flat HTML, no slide code."""
 
     def test_gen_all_demos(self):
@@ -51,9 +51,9 @@ class TestDoc(unittest.TestCase):
 
     def test_doc_meta_has_path(self):
         """meta 含 路径: 行, 且为脱敏文件名 (不含 /)."""
-        tmp_md = Path('/tmp/test-meta-path.md')
+        tmp_md = self.tmpdir / 'test-meta-path.md'
         tmp_md.write_text('# 标题\n## S1\n内容')
-        out = Path('/tmp/test-meta-path.html')
+        out = self.tmpdir / 'test-meta-path.html'
         run_gen('doc', '-i', str(tmp_md), '-o', str(out))
         html = out.read_text()
         self.assertIn('路径:', html)
@@ -73,11 +73,11 @@ class TestDoc(unittest.TestCase):
         self.assertIn("params.get('show-md') === '1'", tmpl)
 
 
-class TestSlide(unittest.TestCase):
+class TestSlide(TmpDirMixin, unittest.TestCase):
     """Slide mode — standalone template, no doc/slide toggle."""
 
     def test_gen_slide(self):
-        out = Path('/tmp/test-slide-demo.html')
+        out = self.tmpdir / 'test-slide-demo.html'
         run_gen('slide', '-i', str(DEMOS / 'markdown-spec.md'),
                 '--title', 'Slide Test', '-o', str(out))
         html = out.read_text()
@@ -96,7 +96,7 @@ class TestSlide(unittest.TestCase):
         self.assertIn('slide.init()', html)
 
     def test_cover_page(self):
-        out = Path('/tmp/test-slide-cover.html')
+        out = self.tmpdir / 'test-slide-cover.html'
         run_gen('slide', '-i', str(DEMOS / 'doc-guide.md'),
                 '--title', 'Cover Test', '-o', str(out))
         html = out.read_text()
@@ -104,7 +104,7 @@ class TestSlide(unittest.TestCase):
         self.assertIn('slide-cover-count', html)
 
     def test_perf_warning(self):
-        out = Path('/tmp/test-slide-perf.html')
+        out = self.tmpdir / 'test-slide-perf.html'
         src = DEMOS / 'doc-guide.md'
         run_gen('slide', '-i', str(src), '--title', 'Perf', '-o', str(out))
         html = out.read_text()
@@ -125,9 +125,9 @@ class TestSlide(unittest.TestCase):
 
     def test_slide_meta_has_path(self):
         """slide meta 同样含脱敏路径, 默认 CSS 隐藏 .meta-path."""
-        tmp_md = Path('/tmp/test-meta-slide.md')
+        tmp_md = self.tmpdir / 'test-meta-slide.md'
         tmp_md.write_text('# 标题\n## S1\n内容')
-        out = Path('/tmp/test-meta-slide.html')
+        out = self.tmpdir / 'test-meta-slide.html'
         run_gen('slide', '-i', str(tmp_md), '-o', str(out))
         html = out.read_text()
         self.assertIn('路径:', html)
@@ -141,31 +141,31 @@ class TestSlide(unittest.TestCase):
         out.unlink(missing_ok=True)
 
 
-class TestBackwardCompat(unittest.TestCase):
+class TestBackwardCompat(TmpDirMixin, unittest.TestCase):
     """Table and knowledge still work."""
 
     def test_table(self):
-        out = Path('/tmp/test-table-compat.html')
+        out = self.tmpdir / 'test-table-compat.html'
         run_gen('table', '-d', str(PROJECT / 'data/_demos-data.json'), '--title', 'T', '-o', str(out))
         html = out.read_text()
         self.assertIn('data-table', html)
 
     def test_knowledge(self):
-        out = Path('/tmp/test-kb-compat.html')
+        out = self.tmpdir / 'test-kb-compat.html'
         run_gen('knowledge', '-d', str(PROJECT / 'data/_chaitin-kb-data.json'),
                 '-g', str(PROJECT / 'data/_chaitin-groups.json'), '--title', 'K', '-o', str(out))
         html = out.read_text()
         self.assertIn('kw-wrapper', html)
 
 
-class TestDocSlideFrontmatter(unittest.TestCase):
+class TestDocSlideFrontmatter(TmpDirMixin, unittest.TestCase):
     """D5: frontmatter strip + sticky sidebar tests."""
 
     def test_doc_frontmatter_stripped(self):
         """D2+D3+D4: frontmatter stripped, fm title as <title>."""
-        tmp_md = Path('/tmp/test-fm-doc.md')
+        tmp_md = self.tmpdir / 'test-fm-doc.md'
         tmp_md.write_text('---\ntitle: TestDoc\n---\n# 正文标题\n## Section 1\n内容')
-        out = Path('/tmp/test-fm-doc.html')
+        out = self.tmpdir / 'test-fm-doc.html'
         run_gen('doc', '-i', str(tmp_md), '-o', str(out))
         html = out.read_text()
         self.assertNotIn('<p>title:', html, "Frontmatter should not leak into body")
@@ -178,9 +178,9 @@ class TestDocSlideFrontmatter(unittest.TestCase):
 
     def test_slide_frontmatter_stripped(self):
         """D2+D5: slide frontmatter stripped, no leakage."""
-        tmp_md = Path('/tmp/test-fm-slide.md')
+        tmp_md = self.tmpdir / 'test-fm-slide.md'
         tmp_md.write_text('---\ntitle: TestSlide\n---\n# 封面\n## Page 1\n内容')
-        out = Path('/tmp/test-fm-slide.html')
+        out = self.tmpdir / 'test-fm-slide.html'
         run_gen('slide', '-i', str(tmp_md), '-o', str(out))
         html = out.read_text()
         # Frontmatter delimiter should not appear in body
@@ -193,9 +193,9 @@ class TestDocSlideFrontmatter(unittest.TestCase):
 
     def test_doc_no_frontmatter_regression(self):
         """D2: doc without frontmatter still works, h1 from body."""
-        tmp_md = Path('/tmp/test-no-fm.md')
+        tmp_md = self.tmpdir / 'test-no-fm.md'
         tmp_md.write_text('# 无FM标题\n## Section\n内容')
-        out = Path('/tmp/test-no-fm.html')
+        out = self.tmpdir / 'test-no-fm.html'
         run_gen('doc', '-i', str(tmp_md), '-o', str(out))
         html = out.read_text()
         self.assertIn('<title>无FM标题</title>', html, "Body # should be title")
@@ -208,12 +208,12 @@ class TestDocSlideFrontmatter(unittest.TestCase):
         from selenium.webdriver.chrome.options import Options
         import time
 
-        tmp_md = Path('/tmp/test-sticky.md')
+        tmp_md = self.tmpdir / 'test-sticky.md'
         lines = ['# Sticky Test']
         for i in range(50):
             lines.append(f'## Section {i}\n\nParagraph content for section {i}.\n')
         tmp_md.write_text('\n'.join(lines))
-        out = Path('/tmp/test-sticky.html')
+        out = self.tmpdir / 'test-sticky.html'
         run_gen('doc', '-i', str(tmp_md), '-o', str(out))
 
         opts = Options()
@@ -248,7 +248,7 @@ class TestDocSlideFrontmatter(unittest.TestCase):
 class TestDocShowMd(unittest.TestCase):
     """Selenium: ?show-md=1 显隐 + 标题点击复制脱敏文件名.
 
-    CL034: 夹具输出走 `tempfile.mkdtemp()`（原先写死 `/tmp/test-show-md.{md,html}`）——
+    CL034: 夹具输出走 `tempfile.mkdtemp()`（原先写死共享临时名）——
     固定共享名会被并发会话/并行 worker 覆盖，页面被顶掉后本类用例整片红（实测第三者
     循环覆盖该路径 ⇒ 本类 2 例全红）。文件名仍取 `test-show-md.md`：断言的是「复制脱敏
     文件名」这条语义，与目录无关。

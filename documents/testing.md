@@ -29,8 +29,12 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
   用例应仍绿（探针：`bash scripts/probe-tmp-pollution.sh`，第三者循环覆盖该路径、期望 `TOTAL_FAILS=0`；
   探针自带 `CHROMEDRIVER_REQUIRED=1` + 「必须真跑满 2 passed」两条防假绿，自身故意写 `/tmp` 属例外）。
   Selenium 等待用 `WebDriverWait` 等「元素就位 + `document.readyState === 'complete'`」，勿用固定 `time.sleep`。
-  **存量**：本规落地时 `tests/` 已有 25 处固定 `/tmp` 路径（`test_templates.py` 18 处，其余 4 文件 7 处），
-  属历史债，另批立项清理（`HTML-GEN-CL035` 待开），不追溯改历史提交。
+  **存量已清零（CL035）**：落地时 `tests/` 有 25 处固定 `/tmp` 路径，现全部改为
+  `conftest.TmpDirMixin`（`setUpClass` 建 `mkdtemp`、`tearDownClass` 清）或类内 `mkdtemp`；
+  守卫 `tests/test_selenium_infra.py::test_05_no_fixed_temp_paths_in_tests` 扫 `tests/**/*.py`，
+  出现 `/tmp/` 且无同行 `noqa: tmp-path-guard` 即红（变异实证：恢复一处固定名 ⇒ 该例红，还原 ⇒ 绿）。
+  现存两处例外是 `test_02` 里的 `CHROMEDRIVER` **env 取值字符串**（不落盘），带 `noqa` 标注。
+  为什么用测试而非探针守这条：它不是形状断言，退化实现（新夹具写死固定名）会真的让用例在并发下互顶。
 
 > 用例计数与全量命令以 `AGENTS.md` 的「测试计数」子节为唯一权威（本节只写细则，不重复计数）。
 
