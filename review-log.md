@@ -2629,3 +2629,30 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - CONDITIONAL PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（path-scoped，`audit@review`）。
 - **未 push**：`github/main..HEAD` 4 笔 + 本审计笔留本地，push 由「推送」口令放行；建议 HG-SEC-226 一行修后一并推（去件 sha 失效在推送前修成本最低）。
 - 另批（不阻塞）：HG-SEC-230 顶层键覆盖扩展入契约；HG-SEC-233 `src/` 同步纪律写入 `documents/directory-layout.md`；HG-SEC-232 待审批落 AGENTS.md。
+
+## 2026-11-12 — next-batch CL032/CL035（基线扩面 + 夹具临时路径）设计评审（CONDITIONAL PASS 80/100）
+
+> 受审区间: `github/main..HEAD` 2 笔 —— `87f2369` chore@baseline(CL032, 29 文件) / `4393e03` chore@tests(CL035, 9 文件)。
+> 报告: `documents/handoff/next-batch-cl032-035-review-v1.0-20261112.md` · 结论: **CONDITIONAL PASS 80/100 · 2 🔴 / 3 🟡 / 3 🟢**
+> 工程面: `round: 1` · `blocking_new: 2` · `blocking_repeat: 0`
+
+### Summary
+
+CL032 逐条独立复算成立：78 html（19 顶层 + 59 子目录）、jobs 39 / SUBSET 47 / skip 40（uncovered=∅ 且 jobs∩skip=∅）、19/19 docBody 逐字全等、5/5 table COLUMNS·DATA·OPTIONS 全等、3 个 strategy 表 10 vs 7 列拒刷判断成立（且 JSON 反向独有 `idiom`、5+2+2 处 label/width 不等 ⇒ 声明低估、方向保守）、`build-slimdown.py --apply` 后工作区空（逐字节可复现实证）、test_08 探针 orphan 子目录页转红、`--check` 47/47、`--verify` 全一致、chaitin 目录型 skip 正确排除 menu-design。CL035：473 passed / 47 文件 / gate 9 + selenium_infra 5；`TmpDirMixin` 残留 0。安全面 diff 扫描 0 命中、无新增外部资源。
+
+### 发现
+
+- 🔴 **HG-SEC-237** `87f2369` 使 5 页丢掉整块 github-corner（daming/history/yongzheng/zhuyuanzhang overview + history-strategy-table），commit 声明「壳差异仅三分类」未含此项；根因是 `_recovered_common()` 从**产物自身**回收 `--github-url` ⇒ 丢参数后产物成自洽不动点，`--verify`/`--check` 恒绿（实证 `build_jobs` 对 daming-overview 已无 `--github-url`，menu-design 仍有）；`scripts/tool-table-videos-syncer.py:207` 早有「重建须透传 --github-url」明训。修：5 页按 recovered argv 重渲 + `baseline --update`；`--verify` 改用基线登记的 corner/home 参数（否则该类回归永久绿）。
+- 🔴 **HG-SEC-238** 「25 处固定 /tmp 清零」在 HEAD 不成立：`tests/test_datetime_clickmode.py:13` 与 `tests/test_templates.py:34` 仍 `Path('/tmp') / 固定名`（跑完全量 /tmp 留 6 个固定名文件）；守卫判据 `'/tmp/' in line` 对 `Path('/tmp') /` 天生盲（探针：同文件 `'/tmp/x'` 被抓、`Path('/tmp')/'x'` 漏网）。修：判据改 `['\"]/tmp\b` + `/private/tmp`，2 处迁 mkdtemp，`documents/testing.md` 改口径。
+- 🟡 **HG-SEC-239** test_27 的 `mkdtemp` 只造不清理（`$TMPDIR` 实测 3 个 `hg-nope-*`）。
+- 🟡 **HG-SEC-240** `TmpDirMixin` 未用 `addClassCleanup`（setUpClass 抛错 ⇒ tearDownClass 不执行 ⇒ 泄漏；HG-SEC-221 同坑未吸收）。
+- 🟡 **HG-SEC-241** CL035 台账 `cache/draft/TODO-20261109.md:23` 仍 READY 未翻转，其验收「无 /tmp 残留」被 238 证伪。
+- 🟢 **HG-SEC-242** 记录集：`chore@tests` ↔ 治理表 `test` 映射偏差；台账「24 件（19+5+1=25）」算术少 1；`grep -rn "/tmp/" tests/*.py` 实得 3 行（含守卫自身 :90）；`documents/testing.md` 无计数位可同步（来件「已同步 473」无面）。
+- 🟢 **HG-SEC-243** `AGENTS.md:6/:44` 仍 472/47 vs 实测 473，README×2 已 473 且注「权威见 AGENTS.md」⇒ 权威反向旧（待审批，连续第 4 批）。
+- 🟢 **HG-SEC-244** `_CASE_DOC` 导入期以真仓为 base 拼进 SUBSET，而 jobs/skip 用 `--root` 实参 ⇒ 双源口径（方向由 jobs⊆SUBSET + uncovered 双向断言兜住，无静默漏网）。
+
+### 处理
+
+- CONDITIONAL PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（`audit@review`，path-scoped）。
+- **未 push**：`github/main..HEAD` 2 笔 + 本评审笔留本地，待 HG-SEC-237/238 修后按「推送」口令放行/重审。
+- 不属本批（按来件边界不重复记账）：3 个 strategy 表与 CL038、`b0f4b4f`（台账 CL037）、跨仓 hermes-manager 重生成。

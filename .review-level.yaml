@@ -864,3 +864,17 @@ review_history:
     findings_open: 7
     tracking: "HG-SEC-226..236 — 226 BLOCKING (去件引用 amend 前草稿 b217461: 不在任何 ref、git fsck unreachable; tree 与 af6994f 差 9 文件 +44/-35, 草稿含本件明禁的 id=tabsRow; fix = 改引 af6994f 并注本地未推送) / 227 (检查点①判据过度概括: normalize_skeleton 仅在 gen_split 调用, shortcuts 走 gen_page 且 TABS=[] 会折叠; 括注只看 tabs-actions 子节点与 syncTabsRow 两者皆空不符) / 228 (8 个 console 页范围不准: 实测 4 页带壳, 1acl 自建壳未点名, ④ drift grep 对 4 个非 html-gen 页永久误报, 入口脚本漏 cron/memory/sessions-web-refresh.py) / 229 (documents/handoff 9 件中唯一零 frontmatter + 命名不合 topic-type-vX.Y-date) / 230 (WARN_UNKNOWN_KEY 仅覆盖 columns/options/feedback, 顶层 option 拼错宽松与 strict 均 rc0 无告警) / 231 (b0f4b4f 无闭环编号, 近 40 笔中 36 笔带 CL) / 232 (AGENTS.md 466-46 vs 实测 472-47, 待审批, 连续第 3 批同款) ; GREEN 233 (src_html_gen 打包镜像停在 CL030 前) 234 (no-tabs 折叠纯客户端有一帧空行) 235 (cmd_table open 缺 encoding) 236 (slimdown favicon 外链 19-19 既有 + build-slimdown 纯 stdlib 无 shell)"
     report: documents/handoff/html-gen-cl036-shell-review-v1.0-20261112.md
+  - date: 2026-11-12
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    round: 1
+    blocking_new: 2
+    blocking_repeat: 0
+    scope: "HTML-GEN-CL032 + CL035 — github/main..HEAD 2 笔 (87f2369 chore@baseline 29 文件 / 4393e03 chore@tests 9 文件); 独立复算 473 passed + 47 文件 + baseline 47-47 + 19-19 docBody + 5-5 table 块级 + slimdown 逐字节重建 + test_08 探针转红"
+    verdict: CONDITIONAL PASS
+    score: 80
+    findings_total: 8
+    findings_open: 8
+    tracking: "HG-SEC-237..244 — 237 BLOCKING (5 页重建丢 github-corner: daming/history/yongzheng/zhuyuanzhang overview + history-strategy-table; _recovered_common 从产物自身回收 --github-url ⇒ 丢参数后自洽不动点, verify/check 恒绿; 修 = 按 recovered argv 重渲 + verify 用基线登记参数) / 238 BLOCKING (声明 25 处 /tmp 清零不成立: test_datetime_clickmode:13 + test_templates:34 仍 Path('/tmp') / 固定名, 全量后 /tmp 留 6 文件; 守卫 '/tmp/' 子串对 Path('/tmp') / 天生盲, 探针实证) / 239 (test_27 mkdtemp 只造不清理, 3 个 hg-nope-* 残留) / 240 (TmpDirMixin 未 addClassCleanup, HG-SEC-221 同坑) / 241 (CL035 台账未翻转 + 验收无 /tmp 残留被证伪); GREEN 242 (chore@tests vs test 映射 / 台账 24 vs 25 算术 / grep 实得 3 行 / testing.md 无计数位) 243 (AGENTS.md 472-47 vs 473 待审批) 244 (_CASE_DOC 导入期基准 vs --root 双源, 方向由 jobs<subset 兜住)"
+    report: documents/handoff/next-batch-cl032-035-review-v1.0-20261112.md
