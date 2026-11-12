@@ -11,7 +11,7 @@ author: ops (html-gen.cli)
 
 - 来件方：`html-gen.cli`（本仓） · 指向：`hermes-manager`（`web_console_lib` + console 生成器）
 - 性质：**去件（只提变更与检查点）**，本仓不改对方任何代码
-- 落地提交：`af6994f`（本仓 `main`，**评审后已推送**；若需精确对齐，以 `git log -1 -- layout-table.html` 为准）
+- 落地提交：`af6994f`（本仓 `main`，CL036 批随评审放行后推送；跨仓取 sha 前请以 `git log -1 -- layout-table.html` 确认本仓已含该笔，勿凭本文引用值断言远端状态）
 - 起因：`http://jaden.local:8081/shortcuts/index.html` 目视两问题（分享按钮形同独占一行 / 字号行高偏小），
   定位后确认「壳 = html-gen table 模板，页面 = 你方生成器产出」，故模板侧已改，你方重生成即继承
 
