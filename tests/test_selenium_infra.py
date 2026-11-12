@@ -30,7 +30,7 @@ def _run_in_tests(code, env_extra):
 class TestChromedriverEnv(unittest.TestCase):
 
     def test_01_no_user_absolute_path_in_tests(self):
-        # 判据只看「/Users/ 与 chromedriver 同行」⇒ conftest 与本文件同样受约束，无按名豁免。
+        # 判据只看「用户主目录前缀与驱动名同行」⇒ conftest 与本文件同样受约束，无按名豁免。
         # 本行与上方注释含字面量，用 `noqa: user-path-guard` 显式标注为判据自身（不是拼接绕检）。
         skip = 'noqa: user-path-guard'
         hits = []
