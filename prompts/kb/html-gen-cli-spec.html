@@ -494,7 +494,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-cli-spec</h1>
-      <div class="meta">创建: 2026-11-12 18:00 · 编辑: 2026-11-12 18:00<br>字数: 1,033 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
+      <div class="meta">创建: 2026-11-12 18:11 · 编辑: 2026-11-12 18:11<br>字数: 1,070 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><blockquote>本文档定义 html-gen 项目的 CLI 规范（对齐 hermes-manager 治理规范</blockquote>
 <blockquote>「CLI 规范」条目 + cli-args-reference.md 统一 JSON 信封）。</blockquote>
@@ -561,6 +561,10 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <li><code>html-gen help &lt;topic&gt; --json</code>：机器可读契约（<code>{status,data,error}</code> 信封；<code>data.contract</code> + <code>data.template_stamps</code>），跨仓生成器可在生成前比对键集合与模板指纹。</li>
 <li><code>html-gen table --strict</code>：未知配置键 ⇒ exit 2（缺省仅 stderr 告警）。</li>
 <li>未知键告警带稳定令牌 <code>WARN_UNKNOWN_KEY</code>（写 stderr，<code>--quiet</code> 不吞），调用方 <code>grep</code> 即可感知，不必解析中文。</li>
+</ul>
+<p>  覆盖面如实：仅 <code>columns[].&lt;属性&gt;</code> / <code>columns[].type</code> / <code>options.&lt;键&gt;</code>（含 <code>options.feedback.&lt;子键&gt;</code>）三类；</p>
+<p>  <code>data[]</code> 行内字段名与 <code>col.actions[]</code>/<code>col.videos</code> 嵌套项<strong>不校验</strong>。</p>
+<ul>
 <li>产物 <code>&lt;head&gt;</code> 注入 <code>&lt;meta name="generator" content="html-gen v{ver}+tpl{sha8}"&gt;</code>（模板指纹，供 drift 检测）。</li>
 </ul>
 <h2 id="3-参数惯例-对齐-cli-args-reference-md">3. 参数惯例（对齐 cli-args-reference.md）</h2>

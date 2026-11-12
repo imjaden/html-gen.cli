@@ -44,6 +44,8 @@ tags: [html-gen, cli, spec, json, governance]
 - `html-gen help <topic> --json`：机器可读契约（`{status,data,error}` 信封；`data.contract` + `data.template_stamps`），跨仓生成器可在生成前比对键集合与模板指纹。
 - `html-gen table --strict`：未知配置键 ⇒ exit 2（缺省仅 stderr 告警）。
 - 未知键告警带稳定令牌 `WARN_UNKNOWN_KEY`（写 stderr，`--quiet` 不吞），调用方 `grep` 即可感知，不必解析中文。
+  覆盖面如实：仅 `columns[].<属性>` / `columns[].type` / `options.<键>`（含 `options.feedback.<子键>`）三类；
+  `data[]` 行内字段名与 `col.actions[]`/`col.videos` 嵌套项**不校验**。
 - 产物 `<head>` 注入 `<meta name="generator" content="html-gen v{ver}+tpl{sha8}">`（模板指纹，供 drift 检测）。
 
 ## 3. 参数惯例（对齐 cli-args-reference.md）

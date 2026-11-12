@@ -48,7 +48,7 @@ html-gen help demo
 html-gen help table --json   # CL036: 机器可读契约 (checkpoint 信封 {status,data,error}; 含 template_stamps)
 
 # table --strict — CL036: 未知配置键从「stderr 告警」升级为 exit 2（缺省仍宽松, 向后兼容）
-html-gen table -d data.json -o out.html --strict
+html-gen table -d data.json -o out.html --strict   # 仅 3 类键: columns[].* / columns[].type / options.*(含 feedback)
 
 # version — 版本 (CL016: {name} v{ver} ({date}); --version flag 兼容同格式)
 html-gen version
