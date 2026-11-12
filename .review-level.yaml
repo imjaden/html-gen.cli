@@ -842,3 +842,14 @@ review_history:
     findings_open: 5
     tracking: "HG-SEC-203..212 follow-ups — closed 203 (CL008 reword + 三口径证内容未变) / 204-1 (64→31, 31/32/35 复算吻合) / 205 (CHROMEDRIVER_REQUIRED strict switch, test_04) / 207 (expanduser default) / 208 (rglob + noqa, 变异 M1/M2/M5 红) / 209 (残留 Service 导入已删) / 211 (templates.md 点 maxCols) / 212 (rmtree + keep-temp + --flag=value); open 206 (flaky -n 4, 既有债按约定立项) + 210 (AGENTS.md 458/45 受保护, 偏差扩到 8); NEW HG-SEC-213 (MEDIUM 建议修: testing.md 复算判据期望 0 实测 2, 自证数字不符第 3 次) + 214..218 GREEN records (noqa 豁免无上界 / keep-temp 不打印且无 try-finally / REQUIRED 大小写 + 无 CI 落点 / 135 目录清理仓外不可复算 / 双 argv 约定与 test_sync_videos 桩)"
     report: documents/handoff/next-batch-cl033-032-024-review-v1.1-20261112.md
+  - date: 2026-11-12
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "HTML-GEN-CL034 单笔 a79c2c8 (fix@tests isolate TestDocShowMd fixture from shared /tmp path), 3 files +50/-9: tests/test_templates.py mkdtemp fixture + WebDriverWait tightening, scripts/probe-tmp-pollution.sh new probe, documents/testing.md hygiene rule"
+    verdict: PASS
+    score: 93
+    findings_total: 7
+    findings_open: 2
+    tracking: "HG-SEC-206 CLOSED (root cause proven by independent A/B: pre-fix worktree 8c46b71 + polluter = 3/3 rounds 2 failed (11.5s), same worktree without polluter = 2 passed, HEAD = 3/3 rounds TOTAL_FAILS=0, full suite 466 passed x3 at -n 4 + 466 at -n 8, baseline 23/23). NEW HG-SEC-219 (MEDIUM: probe false-green when chromedriver missing -> 2 skipped yet rc=0/TOTAL_FAILS=0, same class as closed 205; fix = CHROMEDRIVER_REQUIRED=1 + assert 2 passed) / 220 (MEDIUM: testing.md blanket ban on mkdtemp vs 25 legacy fixed /tmp occurrences in 5 files (18 in same file) and the probe itself writing fixed /tmp path; add legacy-exemption + probe-exemption clause) / 221 GREEN (tearDownClass quits driver before rmtree; setUpClass partial failure leaks hg-showmd-* -> use addClassCleanup) / 222 GREEN (write_text without encoding=utf-8 on CJK literal) / 223 GREEN (probe writes+deletes shared predictable /tmp path, set -u only, no trap, leaves 3 /tmp/probe-tmp-pollution-*.log) / 224 GREEN (HTML-GEN-CL034 had no draft/loop registration; 1/2/3 artifacts supplied by this report, step JSON is cross-repo) / 225 GREEN (toast wait 5s->10s is a loosening, 15x observed runtime margin)"
+    report: documents/handoff/cl034-showmd-fixture-review-v1.0-20261112.md

@@ -2570,3 +2570,33 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - ✅ PASS ⇒ 报告（`documents/handoff/`）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（path-scoped，`audit@review`）。
 - **未 push**：`git rev-list --count github/main..HEAD` 提交后 = 7；建议 213 一行修后一并推送，或用户「推送」口令放行。
 - 建议同批（一行级）：213；另批：214/215/216/217/218；治理：`cjk_new`=153 存量需一次裁定。
+
+## 2026-11-12 — CL034 TestDocShowMd 夹具隔离（PASS 93/100 · HG-SEC-206 闭合）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: 单笔 `a79c2c8` fix@tests: isolate TestDocShowMd fixture from shared /tmp path (HTML-GEN-CL034) — 3 文件 +50/−9（`tests/test_templates.py` / `scripts/probe-tmp-pollution.sh` 新增 / `documents/testing.md`）；上轮 HG-SEC-206 的落地笔，零用例增减、零产物改动
+- **Verdict**: ✅ PASS 93/100（A−）· 0 🔴 / 2 🟡（建议修，非阻断）/ 5 🟢 record
+- **Score**: 93 / 100
+- **Tracking**: 206 ✅ closed；新增 HG-SEC-219（🟡 探针 skip 通道假绿）/ 220（🟡 testing.md 新规 vs 25 处存量自违例）；221..225 🟢 record
+- **报告**: `documents/handoff/cl034-showmd-fixture-review-v1.0-20261112.md`
+
+### Summary
+
+**独立复算（1A 口径）**：探针 `bash scripts/probe-tmp-pollution.sh 3` → 3 轮各 2 passed、`TOTAL_FAILS=0`、rc=0；`tests/test_templates.py -n 0` → 18 passed；全量 `-n 4` ×3 → **466 passed**（60.72/60.49/61.75s）、`-n 8` → **466 passed**（51.44s）；`baseline.py --check` **23/23**；`git status` 空。**根因经独立 A/B 反证坐实（强于原报）**：`git worktree add --detach … 8c46b71` 重建修前夹具 + 拷入探针 ⇒ round1/2/3 **各 2 failed**（≈11.4s，双 5s 超时形态）、`TOTAL_FAILS=3`；同 worktree **不起污染进程** ⇒ 2 passed（0.58s）⇒ 归因唯一「第三者覆盖」，不是旧代码自身坏。修后夹具落 `/var/folders/…/T/hg-showmd-*`（TMPDIR，与 `/tmp` 不同目录树）⇒ 隔离强度高于「换名」。**计数**：46 文件 / 466 用例 / 新增 test 方法 0，与 AGENTS.md:6/:44 逐字一致。**安全面**：区间 diff `shell=True|os.system|eval(|exec(|pickle|verify=False|api_key|secret|password|token` **0 命中**、新增外链/依赖 **0**、探针仅 bash+stdlib。
+
+### 发现
+
+- 🟡 **HG-SEC-219** 探针只以 `rc` 判红：`CHROMEDRIVER=/nonexistent bash scripts/probe-tmp-pollution.sh 1` ⇒ `2 skipped` 却 `rc=0 / TOTAL_FAILS=0`（**假绿**），与已闭合的 HG-SEC-205 同类；且判别力锚定 `/tmp/test-show-md.html` 这一具体路径（改成 `TMPDIR` 下固定名则探针仍绿）。修：探针 pytest 调用前置 `CHROMEDRIVER_REQUIRED=1` + 断言日志含 `2 passed`。
+- 🟡 **HG-SEC-220** `documents/testing.md:26` 新规「一律 mkdtemp / 禁写固定 `/tmp/<name>`」与仓内现实冲突：实测 **25 处 / 5 文件**固定 `/tmp` 命中（同文件 18 处），且**探针自身**在 `/tmp/test-show-md.html` 上写删；commit body 未披露存量 ⇒ 规则落地当天自违例 25 处。修：加「存量 25 处另批立项 + 探针故意违例豁免」一行。
+- 🟢 **HG-SEC-221** `tearDownClass` 先 `driver.quit()` 再 `rmtree`（`:273-275`），`quit()` 抛异常即不回收；`setUpClass` 在 `mkdtemp` 之后失败时该函数根本不跑 ⇒ `hg-showmd-*` 泄漏。修：紧跟 `mkdtemp` 用 `cls.addClassCleanup(shutil.rmtree, …)`。
+- 🟢 **HG-SEC-222** `write_text('# ShowMD 测试…')`（`:264`）缺 `encoding='utf-8'`，`LC_ALL=C` 下 CJK 字面量触发 `UnicodeEncodeError`。
+- 🟢 **HG-SEC-223** 探针卫生：`:14` 写 / `:25` 删共享可预测路径（CWE-377/59 形态，本机他人符号链接会被跟随）；仅 `set -u`、无 `trap`；`kill "$poll"` 不杀进程组；**实测残留** `/tmp/probe-tmp-pollution-{1,2,3}.log` 3 个不回收。
+- 🟢 **HG-SEC-224** `hm loop artifacts HTML-GEN-CL034` ⇒ ①②③ ❌、④ 0/6：CL034 无 draft/loop 登记（①②③ 由本报告提交补齐；④ 属 hermes-manager 侧，跨仓只读）。
+- 🟢 **HG-SEC-225** toast 等待 5s→10s 为放松（实测整类 0.53~0.68s，余量 15 倍+）；当前取值可接受，但后续再 flaky 应先查慢因、勿继续加阈值。
+
+### 处理
+
+- ✅ PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（path-scoped，`audit@review`）。
+- **未 push**：沿用本仓前两轮处置（本笔 `a79c2c8` 与本审计笔留在本地，push 由「推送」口令放行；建议 219 一行修后一并推）。
+- 另批（不阻塞）：220 的 25 处存量清理立项；221/222/223 一行级卫生修；224 跨仓 draft 登记。
