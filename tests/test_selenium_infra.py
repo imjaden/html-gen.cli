@@ -89,7 +89,8 @@ class TestChromedriverEnv(unittest.TestCase):
         #   直接以引号包裹的 tmp 绝对路径、带尾斜杠的、以及 tmp 目录常量后接拼接的形态。
         #   自证行内字面量用 `noqa: tmp-path-guard` 标注，别用拼接规避扫描（那是后门范式）。
         hits = []
-        pat = re.compile(r'''['"]/tmp(/|['"])''')
+        # 三种 tmp 根都算：/tmp、/private/tmp（macOS realpath）、/var/tmp
+        pat = re.compile(r'''['"](?:/private|/var)?/tmp(/|['"])''')
         for p in sorted(TESTS.rglob('*.py')):
             for i, line in enumerate(p.read_text(encoding='utf-8').splitlines(), 1):
                 if pat.search(line) and 'noqa: tmp-path-guard' not in line:   # noqa: tmp-path-guard

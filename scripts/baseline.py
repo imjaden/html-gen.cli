@@ -315,18 +315,46 @@ def cmd_verify(root, as_json=False, quiet=False, keep_temp=False):
     return 0 if not bad else 1
 
 
+def _param_regressions(root, fresh):
+    """旧基线里 corner/home 为 True、新快照却是 False 的项（HG-SEC-245）。
+
+    为什么必须在 --update 里拦：--verify 的参数从产物回收 ⇒ 漏参重建后 verify 仍然绿，
+    若此时照常 --update，新基线会把 `corner: False` 一起写进去，钉子当场被洗白，之后永远抓不到。
+    唯一正当的「角标消失」是产品决策（显式去掉 corner），故需 --force 才允许翻。
+    """
+    base, err = load_baseline(root)
+    if base is None:
+        return []
+    regress = []
+    for rel, exp in base.get('files', {}).items():
+        act = fresh.get(rel) or {}
+        for flag in ('corner', 'home'):
+            if exp.get(flag) and act.get(flag) is False:
+                regress.append({'path': rel, 'flag': flag})
+    return regress
+
+
 def cmd_update(root, quiet=False, force=False):
+    fresh = snapshot(root)
     if not force:
         if cmd_verify(root, quiet=True) != 0:
             print('❌ 产物落后于当前模板，拒绝重建基线（否则会把漂移拍成绿）。\n'
                   '   先按 --verify 清单重刷产物；确需越权加 --force。', file=sys.stderr)
+            return 1
+        drops = _param_regressions(root, fresh)
+        if drops:
+            for d in drops[:5]:
+                print(f"❌ {d['path']}: 基线有 {d['flag']}、新快照没有（重建时丢了对应 CLI 参数？）",
+                      file=sys.stderr)
+            print('   拒绝重建基线：先按产物原参数（--github-url/--home-url）重刷；'
+                  '确属产品决策要摘掉角标，加 --force。', file=sys.stderr)
             return 1
     data = {
         'version': 2,
         'generated': datetime.now().strftime('%Y-%m-%d'),
         'note': 'CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）',
         'verified': not force,
-        'files': snapshot(root),
+        'files': fresh,
     }
     out = root / BASELINE_REL
     out.parent.mkdir(parents=True, exist_ok=True)

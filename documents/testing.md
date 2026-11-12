@@ -30,12 +30,12 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
   探针自带 `CHROMEDRIVER_REQUIRED=1` + 「必须真跑满 2 passed」两条防假绿，自身故意写 `/tmp` 属例外）。
   Selenium 等待用 `WebDriverWait` 等「元素就位 + `document.readyState === 'complete'`」，勿用固定 `time.sleep`。
   **存量已清零（CL035）**：落地时 `tests/` 有 25 处固定 `/tmp` 路径，现全部改为
-  `conftest.TmpDirMixin`（`setUpClass` 建 `mkdtemp`、`tearDownClass` 清）或类内 `mkdtemp`；
+  `conftest.TmpDirMixin`（`setUpClass` 建 `mkdtemp`、`addClassCleanup` 清）或类内 `mkdtemp` + `addCleanup`；
   守卫 `tests/test_selenium_infra.py::test_05_no_fixed_temp_paths_in_tests` 扫 `tests/**/*.py`，
   命中「带引号的 tmp 绝对路径」任一形态（`…/tmp/名`、纯 tmp 目录、tmp 目录常量后接拼接）即红，
   除非同行 `noqa: tmp-path-guard`（现存两处是 `test_02` 的 `CHROMEDRIVER` **env 取值字符串**，不落盘）。
   变异实证：`tmp 目录常量/'名'` 拼接形态曾被只查尾斜杠的旧判据漏掉（HG-SEC-238），现两种形态各注入一次均红；
-  `TmpDirMixin` 用 `addClassCleanup` 注册清理（`setUpClass` 中途抛错也会清，tearDownClass 那种情况不执行）。
+  `TmpDirMixin` 用 `addClassCleanup` 注册清理（`setUpClass` 中途抛错也会清；清理**不**放 `tearDownClass`，那种情况它根本不执行）。
   为什么用测试而非探针守这条：它不是形状断言，退化实现（新夹具写死固定名）会真的让用例在并发下互顶。
 
 > 用例计数与全量命令以 `AGENTS.md` 的「测试计数」子节为唯一权威（本节只写细则，不重复计数）。
@@ -69,6 +69,8 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   verify 永远绿（实测：CL032 首次重刷 5 个产物丢 corner 而全绿）。故 `--update` 在基线里额外记
   `corner`/`home` 存在性，`--check` 见「基线有、产物没有」即报 `param-lost:corner|home`。
   变异实证：漏 `--github-url` 重生成 ⇒ `--check --json` 出现 1 条 `param-lost`；补回 ⇒ 47/47 一致。
+  **`--update` 同批也拦（HG-SEC-245）**：漏参重建后立刻 `--update` 会被拒（rc=1，基线不动，提示按原参数重刷），
+  否则新基线会把 `corner:false` 写进去、钉子当场洗白；确属产品决策要摘角标时才 `--force`（并标 `verified=false`）。
   后者用**从产物回收的参数集**（title/subtitle/welcome/corner/home 全从产物解析）重渲到临时目录比 sha，
   脚本里不维护第二份参数副本 —— 参数漂移是 CL002 FIND-002 的老坑。
 - **覆盖清单（v1.3）**：table 5（countries / provinces / table-features / table-actions / hermes-skills）+ slide 1（slide-guide）
