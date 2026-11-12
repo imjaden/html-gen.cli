@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "count": 74,
+  "count": 77,
   "demos": [
     {
       "name": "chaitin-business-model",
@@ -543,6 +543,33 @@
       "type": "doc",
       "entry": "slide-guide.html",
       "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "slimdown-archive",
+      "title": "薄肌减脂 · 档案 · slimdown",
+      "type": "html",
+      "entry": "slimdown/archive.html",
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "slimdown-exercises",
+      "title": "训练动作库 · slimdown",
+      "type": "table",
+      "entry": "slimdown/exercises.html",
+      "featured": false,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "slimdown-plan",
+      "title": "薄肌减脂 · 训练方案 · slimdown",
+      "type": "html",
+      "entry": "slimdown/plan.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },

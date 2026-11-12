@@ -1,0 +1,910 @@
+{
+  "title": "训练动作库 · slimdown",
+  "subtitle": "72 个动作 · 10 个主题 · 点任意行看详情，可搜索、筛选、导出 CSV",
+  "columns": [
+    {
+      "key": "id",
+      "label": "ID",
+      "sortable": true,
+      "width": "70px",
+      "initialHidden": true
+    },
+    {
+      "key": "name",
+      "label": "动作名称",
+      "sortable": true,
+      "locale": "zh",
+      "preview": true,
+      "freeze": true,
+      "width": "240px"
+    },
+    {
+      "key": "theme",
+      "label": "主题",
+      "type": "pills",
+      "quickFilter": true,
+      "width": "100px"
+    },
+    {
+      "key": "equip",
+      "label": "器材",
+      "type": "pills",
+      "quickFilter": true,
+      "width": "110px"
+    },
+    {
+      "key": "muscle",
+      "label": "肌群",
+      "type": "pills",
+      "quickFilter": true,
+      "width": "90px"
+    },
+    {
+      "key": "load",
+      "label": "建议运动量",
+      "width": "130px"
+    },
+    {
+      "key": "alias",
+      "label": "别名",
+      "width": "240px"
+    }
+  ],
+  "data": [
+    {
+      "id": "ex01",
+      "name": "壶铃环绕 Halo",
+      "theme": "热身",
+      "equip": "壶铃 5kg",
+      "muscle": "上肢",
+      "load": "3×10/方向",
+      "sets": 3,
+      "reps": "10/方向",
+      "alias": "绕肩 Halo · 环绕"
+    },
+    {
+      "id": "ex02",
+      "name": "农夫行走 Farmer Carry",
+      "theme": "热身",
+      "equip": "壶铃 5kg",
+      "muscle": "上肢",
+      "load": "3×30 步",
+      "sets": 3,
+      "reps": "30 步",
+      "alias": "农夫走路"
+    },
+    {
+      "id": "ex03",
+      "name": "棍花绕肩 Stick Halo",
+      "theme": "热身",
+      "equip": "盘龙棍",
+      "muscle": "上肢",
+      "load": "3×10/方向",
+      "sets": 3,
+      "reps": "10/方向",
+      "alias": "绕肩棍花 · 棍花"
+    },
+    {
+      "id": "ex04",
+      "name": "蝴蝶双拍 Butterfly Pulse",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "蝴蝶式脉冲"
+    },
+    {
+      "id": "ex05",
+      "name": "凯格尔桥 Kegel Bridge",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "凯格尔"
+    },
+    {
+      "id": "ex06",
+      "name": "钻石臀桥 Diamond Bridge",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "钻石桥"
+    },
+    {
+      "id": "ex07",
+      "name": "桥式开合 Bridge Open",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "桥开合"
+    },
+    {
+      "id": "ex08",
+      "name": "桥式动停 Bridge Hold",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "桥脉冲 · 动停"
+    },
+    {
+      "id": "ex09",
+      "name": "高频摩擦 Clam Pulse",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "蚌式脉冲"
+    },
+    {
+      "id": "ex10",
+      "name": "反向臀冲 Reverse Thrust",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "反向臀推"
+    },
+    {
+      "id": "ex11",
+      "name": "俯身臀刺 Kickback",
+      "theme": "凯格尔",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "8×20 秒",
+      "sets": 8,
+      "reps": "20 秒",
+      "alias": "后踢腿"
+    },
+    {
+      "id": "ex12",
+      "name": "死虫 Dead Bug",
+      "theme": "睡前拉伸",
+      "equip": "瑜伽垫",
+      "muscle": "核心",
+      "load": "3×10/侧",
+      "sets": 3,
+      "reps": "10/侧",
+      "alias": "死虫子"
+    },
+    {
+      "id": "ex13",
+      "name": "鸟狗 Bird Dog",
+      "theme": "睡前拉伸",
+      "equip": "瑜伽垫",
+      "muscle": "核心",
+      "load": "3×10/侧",
+      "sets": 3,
+      "reps": "10/侧",
+      "alias": "鸟狗式"
+    },
+    {
+      "id": "ex14",
+      "name": "猫牛式 Cat-Cow",
+      "theme": "睡前拉伸",
+      "equip": "瑜伽垫",
+      "muscle": "核心",
+      "load": "1×拉伸",
+      "sets": 1,
+      "reps": "拉伸",
+      "alias": "猫牛 · 胸椎旋转"
+    },
+    {
+      "id": "ex15",
+      "name": "真空腹 Vacuum",
+      "theme": "瘦肚提臀",
+      "equip": "瑜伽垫",
+      "muscle": "核心",
+      "load": "3×20 秒",
+      "sets": 3,
+      "reps": "20 秒",
+      "alias": "收腹真空"
+    },
+    {
+      "id": "ex16",
+      "name": "臀桥 Glute Bridge",
+      "theme": "瘦肚提臀",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "3×12–15",
+      "sets": 3,
+      "reps": "12–15",
+      "alias": "臀桥 · 髋冲"
+    },
+    {
+      "id": "ex17",
+      "name": "臀推 Hip Thrust",
+      "theme": "瘦肚提臀",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "4×10–12",
+      "sets": 4,
+      "reps": "10–12",
+      "alias": "臀冲"
+    },
+    {
+      "id": "ex18",
+      "name": "壶铃深蹲 Goblet Squat",
+      "theme": "深蹲",
+      "equip": "壶铃 5kg",
+      "muscle": "下肢",
+      "load": "4×12–15",
+      "sets": 4,
+      "reps": "12–15",
+      "alias": "高脚杯深蹲"
+    },
+    {
+      "id": "ex19",
+      "name": "保加利亚分腿蹲",
+      "theme": "深蹲",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "3×10/腿",
+      "sets": 3,
+      "reps": "10/腿",
+      "alias": "分腿蹲"
+    },
+    {
+      "id": "ex20",
+      "name": "哥萨克深蹲 Cossack Squat",
+      "theme": "深蹲",
+      "equip": "徒手",
+      "muscle": "下肢",
+      "load": "3×10/侧",
+      "sets": 3,
+      "reps": "10/侧",
+      "alias": "侧蹲 · 哥萨克"
+    },
+    {
+      "id": "ex21",
+      "name": "贴地架（标准名待确认）",
+      "theme": "深蹲",
+      "equip": "徒手",
+      "muscle": "下肢",
+      "load": "3×10",
+      "sets": 3,
+      "reps": "10",
+      "alias": "贴地蹲（口语名待确认）"
+    },
+    {
+      "id": "ex22",
+      "name": "海底轮深蹲（标准名待确认）",
+      "theme": "深蹲",
+      "equip": "徒手",
+      "muscle": "下肢",
+      "load": "3×10",
+      "sets": 3,
+      "reps": "10",
+      "alias": "低蹲 · 相扑蹲（口语名待确认）"
+    },
+    {
+      "id": "ex23",
+      "name": "上下卷腹",
+      "theme": "椅子卷腹",
+      "equip": "椅子",
+      "muscle": "核心",
+      "load": "3×12–15",
+      "sets": 3,
+      "reps": "12–15",
+      "alias": "卷腹上落"
+    },
+    {
+      "id": "ex24",
+      "name": "开合卷腹",
+      "theme": "椅子卷腹",
+      "equip": "椅子",
+      "muscle": "核心",
+      "load": "3×12–15",
+      "sets": 3,
+      "reps": "12–15",
+      "alias": "开合并腿卷腹"
+    },
+    {
+      "id": "ex25",
+      "name": "画半圆",
+      "theme": "椅子卷腹",
+      "equip": "椅子",
+      "muscle": "核心",
+      "load": "3×12/侧",
+      "sets": 3,
+      "reps": "12/侧",
+      "alias": "仰卧侧画弧"
+    },
+    {
+      "id": "ex26",
+      "name": "上下剪刀腿",
+      "theme": "椅子卷腹",
+      "equip": "椅子",
+      "muscle": "核心",
+      "load": "3×12/侧",
+      "sets": 3,
+      "reps": "12/侧",
+      "alias": "剪刀腿"
+    },
+    {
+      "id": "ex27",
+      "name": "双手托天理三焦",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第一式"
+    },
+    {
+      "id": "ex28",
+      "name": "左右开弓似射雕",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第二式"
+    },
+    {
+      "id": "ex29",
+      "name": "调理脾胃须单举",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第三式"
+    },
+    {
+      "id": "ex30",
+      "name": "五劳七伤往后瞧",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第四式"
+    },
+    {
+      "id": "ex31",
+      "name": "摇头摆尾去心火",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第五式"
+    },
+    {
+      "id": "ex32",
+      "name": "两手攀足固肾腰",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第六式"
+    },
+    {
+      "id": "ex33",
+      "name": "攒拳怒目增气力",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第七式"
+    },
+    {
+      "id": "ex34",
+      "name": "背后七颠百病消",
+      "theme": "八段锦",
+      "equip": "徒手",
+      "muscle": "全身",
+      "load": "每式 6–8 次 ×3 轮",
+      "sets": 3,
+      "reps": "6–8 次/式",
+      "alias": "八段锦第八式"
+    },
+    {
+      "id": "ex35",
+      "name": "俯卧撑 20",
+      "theme": "训练金字塔",
+      "equip": "徒手",
+      "muscle": "上肢",
+      "load": "20 个",
+      "sets": 1,
+      "reps": "20 个",
+      "alias": "金字塔第 1 级"
+    },
+    {
+      "id": "ex36",
+      "name": "深蹲撑 30",
+      "theme": "训练金字塔",
+      "equip": "徒手",
+      "muscle": "下肢",
+      "load": "30 个",
+      "sets": 1,
+      "reps": "30 个",
+      "alias": "金字塔第 2 级"
+    },
+    {
+      "id": "ex37",
+      "name": "登山跑 40",
+      "theme": "训练金字塔",
+      "equip": "徒手",
+      "muscle": "核心",
+      "load": "40 个",
+      "sets": 1,
+      "reps": "40 个",
+      "alias": "金字塔第 3 级"
+    },
+    {
+      "id": "ex38",
+      "name": "开合跳 50",
+      "theme": "训练金字塔",
+      "equip": "徒手",
+      "muscle": "有氧",
+      "load": "50 个",
+      "sets": 1,
+      "reps": "50 个",
+      "alias": "金字塔第 4 级"
+    },
+    {
+      "id": "ex39",
+      "name": "高抬腿 50",
+      "theme": "训练金字塔",
+      "equip": "徒手",
+      "muscle": "有氧",
+      "load": "50 个",
+      "sets": 1,
+      "reps": "50 个",
+      "alias": "金字塔第 5 级"
+    },
+    {
+      "id": "ex40",
+      "name": "平板支撑 60 秒",
+      "theme": "训练金字塔",
+      "equip": "徒手",
+      "muscle": "核心",
+      "load": "60 秒",
+      "sets": 1,
+      "reps": "60 秒",
+      "alias": "金字塔第 6 级"
+    },
+    {
+      "id": "ex41",
+      "name": "壶铃摆荡 Swing",
+      "theme": "基础力量",
+      "equip": "壶铃 5kg",
+      "muscle": "下肢",
+      "load": "4×15",
+      "sets": 4,
+      "reps": "15",
+      "alias": "前摆 · 摆定 · Swing · 铰链"
+    },
+    {
+      "id": "ex42",
+      "name": "单臂划船 One-arm Row",
+      "theme": "基础力量",
+      "equip": "壶铃 5kg",
+      "muscle": "上肢",
+      "load": "4×12/侧",
+      "sets": 4,
+      "reps": "12/侧",
+      "alias": "单臂拉 · 拉"
+    },
+    {
+      "id": "ex43",
+      "name": "地板卧推 Floor Press",
+      "theme": "基础力量",
+      "equip": "壶铃 5kg",
+      "muscle": "上肢",
+      "load": "3×12",
+      "sets": 3,
+      "reps": "12",
+      "alias": "地面卧推 · 推"
+    },
+    {
+      "id": "ex44",
+      "name": "单腿硬拉 RDL",
+      "theme": "基础力量",
+      "equip": "壶铃 5kg",
+      "muscle": "下肢",
+      "load": "3×10/腿",
+      "sets": 3,
+      "reps": "10/腿",
+      "alias": "单腿 RDL · 铰链"
+    },
+    {
+      "id": "ex45",
+      "name": "壶铃高翻 Clean",
+      "theme": "基础力量",
+      "equip": "壶铃 5kg",
+      "muscle": "上肢",
+      "load": "3×10/侧",
+      "sets": 3,
+      "reps": "10/侧",
+      "alias": "高翻 · 铰链"
+    },
+    {
+      "id": "ex46",
+      "name": "单臂推举 OHP",
+      "theme": "基础力量",
+      "equip": "壶铃 5kg",
+      "muscle": "上肢",
+      "load": "3×10/侧",
+      "sets": 3,
+      "reps": "10/侧",
+      "alias": "推举 · 推"
+    },
+    {
+      "id": "ex47",
+      "name": "平板支撑 Plank",
+      "theme": "基础力量",
+      "equip": "瑜伽垫",
+      "muscle": "核心",
+      "load": "3×40–60 秒",
+      "sets": 3,
+      "reps": "40–60 秒",
+      "alias": "平板 · 核心"
+    },
+    {
+      "id": "ex48",
+      "name": "侧平板 Side Plank",
+      "theme": "基础力量",
+      "equip": "瑜伽垫",
+      "muscle": "核心",
+      "load": "3×30–45 秒/侧",
+      "sets": 3,
+      "reps": "30–45 秒/侧",
+      "alias": "侧桥 · 核心"
+    },
+    {
+      "id": "ex49",
+      "name": "持棍转体 Stick Twist",
+      "theme": "基础力量",
+      "equip": "盘龙棍",
+      "muscle": "核心",
+      "load": "3×10/侧",
+      "sets": 3,
+      "reps": "10/侧",
+      "alias": "棍转体"
+    },
+    {
+      "id": "ex50",
+      "name": "举棍平衡 Stick Hold",
+      "theme": "基础力量",
+      "equip": "盘龙棍",
+      "muscle": "核心",
+      "load": "3×20 秒",
+      "sets": 3,
+      "reps": "20 秒",
+      "alias": "棍举平衡"
+    },
+    {
+      "id": "ex51",
+      "name": "标准俯卧撑 Push-up",
+      "theme": "基础力量",
+      "equip": "俯卧撑支架",
+      "muscle": "上肢",
+      "load": "4×8–12",
+      "sets": 4,
+      "reps": "8–12",
+      "alias": "平地俯卧撑 · 推"
+    },
+    {
+      "id": "ex52",
+      "name": "窄距俯卧撑 Close-grip",
+      "theme": "基础力量",
+      "equip": "俯卧撑支架",
+      "muscle": "上肢",
+      "load": "3×10",
+      "sets": 3,
+      "reps": "10",
+      "alias": "窄俯卧撑 · 推"
+    },
+    {
+      "id": "ex53",
+      "name": "宽距俯卧撑 Wide",
+      "theme": "基础力量",
+      "equip": "俯卧撑支架",
+      "muscle": "上肢",
+      "load": "3×10",
+      "sets": 3,
+      "reps": "10",
+      "alias": "宽俯卧撑 · 推"
+    },
+    {
+      "id": "ex54",
+      "name": "上斜俯卧撑 Incline",
+      "theme": "基础力量",
+      "equip": "俯卧撑支架",
+      "muscle": "上肢",
+      "load": "3×8–10",
+      "sets": 3,
+      "reps": "8–10",
+      "alias": "脚架凳上 · 凳上俯卧撑 · 推"
+    },
+    {
+      "id": "ex55",
+      "name": "弹力带下拉 Pulldown",
+      "theme": "基础力量",
+      "equip": "弹力带",
+      "muscle": "上肢",
+      "load": "3×12–15",
+      "sets": 3,
+      "reps": "12–15",
+      "alias": "下拉 · 门框下拉 · 拉"
+    },
+    {
+      "id": "ex56",
+      "name": "弹力带划船 Band Row",
+      "theme": "基础力量",
+      "equip": "弹力带",
+      "muscle": "上肢",
+      "load": "3×12/侧",
+      "sets": 3,
+      "reps": "12/侧",
+      "alias": "划船 · 拉"
+    },
+    {
+      "id": "ex57",
+      "name": "面拉 Face Pull",
+      "theme": "基础力量",
+      "equip": "弹力带",
+      "muscle": "上肢",
+      "load": "3×15",
+      "sets": 3,
+      "reps": "15",
+      "alias": "反向飞鸟拉 · 拉"
+    },
+    {
+      "id": "ex58",
+      "name": "侧平举 Lateral Raise",
+      "theme": "基础力量",
+      "equip": "弹力带",
+      "muscle": "上肢",
+      "load": "3×15",
+      "sets": 3,
+      "reps": "15",
+      "alias": "平举 · 推"
+    },
+    {
+      "id": "ex59",
+      "name": "肩外旋 External Rot.",
+      "theme": "基础力量",
+      "equip": "弹力带",
+      "muscle": "上肢",
+      "load": "3×15/侧",
+      "sets": 3,
+      "reps": "15/侧",
+      "alias": "外旋 · 拉"
+    },
+    {
+      "id": "ex60",
+      "name": "弹力带弯举 Band Curl",
+      "theme": "基础力量",
+      "equip": "弹力带",
+      "muscle": "上肢",
+      "load": "3×12",
+      "sets": 3,
+      "reps": "12",
+      "alias": "弯举 · 拉"
+    },
+    {
+      "id": "ex61",
+      "name": "握力器 Grip",
+      "theme": "基础力量",
+      "equip": "握力器",
+      "muscle": "上肢",
+      "load": "3×力竭",
+      "sets": 3,
+      "reps": "力竭",
+      "alias": "握力"
+    },
+    {
+      "id": "ex62",
+      "name": "慢速握 Hold",
+      "theme": "基础力量",
+      "equip": "握力器",
+      "muscle": "上肢",
+      "load": "3×10 秒握",
+      "sets": 3,
+      "reps": "10 秒握",
+      "alias": "慢速收紧"
+    },
+    {
+      "id": "ex63",
+      "name": "腕弯举 Wrist Curl",
+      "theme": "基础力量",
+      "equip": "小臂弯力器",
+      "muscle": "上肢",
+      "load": "3×15",
+      "sets": 3,
+      "reps": "15",
+      "alias": "腕屈"
+    },
+    {
+      "id": "ex64",
+      "name": "腕后伸 Wrist Ext.",
+      "theme": "基础力量",
+      "equip": "小臂弯力器",
+      "muscle": "上肢",
+      "load": "3×15",
+      "sets": 3,
+      "reps": "15",
+      "alias": "腕伸"
+    },
+    {
+      "id": "ex65",
+      "name": "反向弯举 Reverse Curl",
+      "theme": "基础力量",
+      "equip": "小臂弯力器",
+      "muscle": "上肢",
+      "load": "3×12",
+      "sets": 3,
+      "reps": "12",
+      "alias": "反腕弯举"
+    },
+    {
+      "id": "ex66",
+      "name": "轻松跑 Easy Run",
+      "theme": "有氧",
+      "equip": "有氧/徒手",
+      "muscle": "有氧",
+      "load": "1×7–15 km",
+      "sets": 1,
+      "reps": "7–15 km",
+      "alias": "慢跑"
+    },
+    {
+      "id": "ex67",
+      "name": "长距离跑 Long Run",
+      "theme": "有氧",
+      "equip": "有氧/徒手",
+      "muscle": "有氧",
+      "load": "1×15 km",
+      "sets": 1,
+      "reps": "15 km",
+      "alias": "长跑 · LSD"
+    },
+    {
+      "id": "ex68",
+      "name": "间歇跑 Interval",
+      "theme": "有氧",
+      "equip": "有氧/徒手",
+      "muscle": "有氧",
+      "load": "6×800 m",
+      "sets": 6,
+      "reps": "800 m",
+      "alias": "间歇 · 800 米"
+    },
+    {
+      "id": "ex69",
+      "name": "快走 Brisk Walk",
+      "theme": "有氧",
+      "equip": "有氧/徒手",
+      "muscle": "有氧",
+      "load": "1×45 分",
+      "sets": 1,
+      "reps": "45 分",
+      "alias": "散步"
+    },
+    {
+      "id": "ex70",
+      "name": "提踵 Calf Raise",
+      "theme": "基础力量",
+      "equip": "瑜伽垫",
+      "muscle": "下肢",
+      "load": "4×15",
+      "alias": "站姿提踵 · 小腿",
+      "sets": 4,
+      "reps": "15"
+    },
+    {
+      "id": "ex71",
+      "name": "弓步走 Walking Lunge",
+      "theme": "基础力量",
+      "equip": "徒手",
+      "muscle": "下肢",
+      "load": "3×12/腿",
+      "alias": "行走箭步蹲 · 箭步走",
+      "sets": 3,
+      "reps": "12/腿"
+    },
+    {
+      "id": "ex72",
+      "name": "锤式弯举 Hammer Curl",
+      "theme": "基础力量",
+      "equip": "小臂弯力器",
+      "muscle": "上肢",
+      "load": "3×12",
+      "alias": "锤式 · 中立握弯举",
+      "sets": 3,
+      "reps": "12"
+    }
+  ],
+  "tabs": [
+    {
+      "key": "all",
+      "label": "全部"
+    },
+    {
+      "key": "热身",
+      "label": "热身",
+      "field": "theme"
+    },
+    {
+      "key": "凯格尔",
+      "label": "凯格尔",
+      "field": "theme"
+    },
+    {
+      "key": "睡前拉伸",
+      "label": "睡前拉伸",
+      "field": "theme"
+    },
+    {
+      "key": "瘦肚提臀",
+      "label": "瘦肚提臀",
+      "field": "theme"
+    },
+    {
+      "key": "深蹲",
+      "label": "深蹲",
+      "field": "theme"
+    },
+    {
+      "key": "椅子卷腹",
+      "label": "椅子卷腹",
+      "field": "theme"
+    },
+    {
+      "key": "八段锦",
+      "label": "八段锦",
+      "field": "theme"
+    },
+    {
+      "key": "训练金字塔",
+      "label": "训练金字塔",
+      "field": "theme"
+    },
+    {
+      "key": "基础力量",
+      "label": "基础力量",
+      "field": "theme"
+    },
+    {
+      "key": "有氧",
+      "label": "有氧",
+      "field": "theme"
+    }
+  ],
+  "options": {
+    "pageSize": 100,
+    "clickMode": "modal",
+    "search": true,
+    "exportCSV": true,
+    "columnResize": true
+  }
+}

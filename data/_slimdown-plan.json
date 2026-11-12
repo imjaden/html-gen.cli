@@ -1,0 +1,207 @@
+{
+  "version": "v1.0",
+  "updated": "2026-11-12",
+  "title": "薄肌减脂 · 七日活动方案",
+  "subtitle": "跑量 30 km/周 · 力量 4 次 · 核心每天 5 分钟；点日卡编辑，改完可存本机、生成分享链接或复制成图片",
+  "meta": {
+    "slogan": "薄肌减脂 · 阶段一",
+    "goal": "周降 ≤0.31 kg",
+    "steps": "8000–10000 步 / 睡眠 ≥7.5 h",
+    "safety": "周降 >0.5 kg 连续两周 ⇒ 加 150–200 kcal；力量主项连续 2 周掉 >10% ⇒ 同上加。"
+  },
+  "days": [
+    {
+      "key": "mon",
+      "label": "周一",
+      "short": "一",
+      "theme": "下肢 A · 股四 + 臀",
+      "duration": "45 分",
+      "items": [
+        {
+          "id": "ex18",
+          "sets": 4,
+          "reps": "8–10",
+          "note": "膝跟脚尖方向，蹲到大腿平行"
+        },
+        {
+          "id": "ex19",
+          "sets": 3,
+          "reps": "10/腿"
+        },
+        {
+          "id": "ex16",
+          "sets": 3,
+          "reps": "12–15"
+        },
+        {
+          "id": "ex70",
+          "sets": 4,
+          "reps": "15"
+        },
+        {
+          "id": "ex47",
+          "sets": 3,
+          "reps": "40–60 秒"
+        }
+      ]
+    },
+    {
+      "key": "tue",
+      "label": "周二",
+      "short": "二",
+      "theme": "轻松跑 A",
+      "duration": "45 分",
+      "items": [
+        {
+          "id": "ex66",
+          "sets": 1,
+          "reps": "8 km",
+          "note": "配速 6:30–6:45，能说话"
+        }
+      ]
+    },
+    {
+      "key": "wed",
+      "label": "周三",
+      "short": "三",
+      "theme": "上肢推 · 胸肩三头",
+      "duration": "40 分",
+      "items": [
+        {
+          "id": "ex51",
+          "sets": 4,
+          "reps": "8–12"
+        },
+        {
+          "id": "ex52",
+          "sets": 3,
+          "reps": "10"
+        },
+        {
+          "id": "ex43",
+          "sets": 3,
+          "reps": "10"
+        },
+        {
+          "id": "ex58",
+          "sets": 3,
+          "reps": "12–15"
+        }
+      ]
+    },
+    {
+      "key": "thu",
+      "label": "周四",
+      "short": "四",
+      "theme": "轻松跑 B + 核心",
+      "duration": "50 分",
+      "items": [
+        {
+          "id": "ex66",
+          "sets": 1,
+          "reps": "7 km"
+        },
+        {
+          "id": "ex15",
+          "sets": 3,
+          "reps": "20 秒"
+        },
+        {
+          "id": "ex12",
+          "sets": 3,
+          "reps": "10/侧"
+        },
+        {
+          "id": "ex48",
+          "sets": 3,
+          "reps": "30–45 秒/侧"
+        },
+        {
+          "id": "ex13",
+          "sets": 3,
+          "reps": "10/侧"
+        }
+      ]
+    },
+    {
+      "key": "fri",
+      "label": "周五",
+      "short": "五",
+      "theme": "后链臀 · 臀 + 腘绳",
+      "duration": "45 分",
+      "items": [
+        {
+          "id": "ex41",
+          "sets": 4,
+          "reps": "15",
+          "note": "髋铰链不是下蹲"
+        },
+        {
+          "id": "ex44",
+          "sets": 3,
+          "reps": "10/腿"
+        },
+        {
+          "id": "ex17",
+          "sets": 4,
+          "reps": "10–12"
+        },
+        {
+          "id": "ex71",
+          "sets": 3,
+          "reps": "12/腿"
+        },
+        {
+          "id": "ex70",
+          "sets": 4,
+          "reps": "20"
+        }
+      ]
+    },
+    {
+      "key": "sat",
+      "label": "周六",
+      "short": "六",
+      "theme": "上肢拉 · 背 + 二头",
+      "duration": "40 分",
+      "items": [
+        {
+          "id": "ex42",
+          "sets": 4,
+          "reps": "10–12/侧"
+        },
+        {
+          "id": "ex55",
+          "sets": 3,
+          "reps": "12–15",
+          "note": "门框下拉"
+        },
+        {
+          "id": "ex57",
+          "sets": 3,
+          "reps": "15"
+        },
+        {
+          "id": "ex72",
+          "sets": 3,
+          "reps": "12"
+        }
+      ]
+    },
+    {
+      "key": "sun",
+      "label": "周日",
+      "short": "日",
+      "theme": "长距离 C · 质量课",
+      "duration": "90 分",
+      "items": [
+        {
+          "id": "ex67",
+          "sets": 1,
+          "reps": "15 km",
+          "note": "配速 6:40–7:00；隔周替换 6×800 m 间歇 + 4 km 慢跑"
+        }
+      ]
+    }
+  ]
+}

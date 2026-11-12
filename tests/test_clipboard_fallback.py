@@ -37,6 +37,10 @@ FAIL_MSG = '复制失败，请手动选中文本复制'
 ANCHOR_FAIL_MSG = '复制失败，请手动复制链接'
 # 落地页（D6 本批不动，自带另一签名的 copyText，已合规）——不进产物面守卫
 LANDING_EXCLUDED = {'demos/index.html'}
+# 图片剪贴板例外：canonical 块只处理文本；图片必须走 ClipboardItem（无替代 API）。
+# 该页文本复制仍用 canonical 块，图片调用点自带 isSecureContext 判定 + 下载兜底，
+# 下面的分支用三条断言锁住这几件不丢，不是整文件放行。
+IMAGE_CLIPBOARD_EXEMPT = {'demos/slimdown/plan.html'}
 
 DOC_PAGE = PROJECT / 'demos' / 'usage-guide.html'
 SLIDE_PAGE = PROJECT / 'demos' / 'slide-demo.html'
@@ -156,6 +160,13 @@ class TestClipboardStatic(unittest.TestCase):
                 continue                      # D6：落地页本批不动
             text = read(rel)
             if 'navigator.clipboard' not in text:
+                continue
+            if rel in IMAGE_CLIPBOARD_EXEMPT:
+                # 文本路径必须仍是 canonical 块；图片路径的三件套不得退化
+                self.assertIn('html-gen:clipboard-copy v1 BEGIN', text, f'{rel} 文本复制须走 canonical 块')
+                self.assertIn('navigator.clipboard.write([', text, f'{rel} 图片复制应走 ClipboardItem')
+                for token in ('isSecureContext', 'ClipboardItem', '已下载 PNG'):
+                    self.assertIn(token, text, f'{rel} 图片复制缺 {token}（能力判定 / API / 失败兜底）')
                 continue
             block = extract_block(text) if BEG in text else ''
             spans = script_spans(text)
