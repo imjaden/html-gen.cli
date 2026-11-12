@@ -2600,3 +2600,32 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - ✅ PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（path-scoped，`audit@review`）。
 - **未 push**：沿用本仓前两轮处置（本笔 `a79c2c8` 与本审计笔留在本地，push 由「推送」口令放行；建议 219 一行修后一并推）。
 - 另批（不阻塞）：220 的 25 处存量清理立项；221/222/223 一行级卫生修；224 跨仓 draft 登记。
+
+## 2026-11-12 — HTML-GEN-CL036 table 壳变更 4 笔设计评审（CONDITIONAL PASS 88/100）
+
+> 受审区间: `github/main..HEAD` 4 笔（订正口径覆盖开场「聚焦 HEAD 1 笔」）—— `b0f4b4f` feat@demos(slimdown) / `8ab6754` docs@solutions(方案稿) / `af6994f` feat@table(主体) / `ece6b5d` docs@handoff(去件)。
+> 报告: `documents/handoff/html-gen-cl036-shell-review-v1.0-20261112.md` · 结论: **CONDITIONAL PASS 88/100 · 1 🔴 / 6 🟡 / 4 🟢**
+
+### Summary
+
+**独立复算（1A 口径，9/10 主张重跑）**：全量 `pytest tests/ -q -n 4` → **472 passed**（65.67s）、`ls tests/test_*.py` = **47**；`baseline.py --check` → **23/23**；D11 三向一致（契约 `v3.4+tpl204aeb64` = 产物 generator 戳 = `shasum -a 256 layout-table.html` 前 8）；D10 宽松 rc0 + stderr 令牌 / `--strict` rc2 / `--quiet` 不吞（三项均实测）；**跨仓兼容用对方真库实调**（只读 import `web_console_lib.normalize_skeleton()`，输出仅写 scratch）：不抛错、`ratioBtn`/`colToggleBtn` 已入 `.tabs-row`、`share` 仍在 header、`<div class="tabs-row">` 全文命中恰 1；`git status` 空。安全面：区间 diff `shell=True|os.system|eval(|exec(|pickle|verify=False` **0 命中**，新增外链仅 favicon（19/19 demos 既有），`?density=` 白名单(`layout-table.html:1902`)、`q` 仅 `.value`(`:1898`)。
+
+### 发现
+
+- 🔴 **HG-SEC-226** 去件 `:10` 引用 `b217461` —— 实为 `af6994f` 的 **amend 前草稿**，不在任何 ref 上（`git fsck` unreachable，对方 clone 取不到），且 **tree 不同**（9 文件 +44/−35），草稿版恰是 `<div class="tabs-row" id="tabsRow">` 即本件 S1b 明禁写法 ⇒ 文档自引矛盾、按 sha 取值会让 `normalize_skeleton` 抛 RuntimeError。修：改引 `af6994f` + 注「本地未推送」。
+- 🟡 **HG-SEC-227** 检查点 ① 判据过度概括：`normalize_skeleton` 只在 `gen_split` 里调（`web_console_lib.py:770`），shortcuts 走 `gen_page`（`:293`，docstring 自述不调）且 `const TABS = []`（`web/shortcuts/index.html:644`）⇒ 该页 `.tabs-actions` 应为空、`.tabs-row` **会**折叠（正是设计意图），照文档验收会读出假失败；括注「只看 tabs-actions 子节点」亦与 `:505-517` 的「两者皆空」不符。
+- 🟡 **HG-SEC-228** 「8 个 console 页需重生成」范围不准：实测仅 4 页带本批壳（cron/memory/session/shortcuts 各有 `.ratio-wrap`+`.flex-1`+`.tabs-actions`）；knowledge 为 knowledge 模板，feishu/todo 无 `--cobalt`，1acl 为自建壳（有 `.tabs-row` 但无 `.ratio-wrap`/`.flex-1`，与本批同款缺陷却未点名）⇒ ④ 的 `grep web/*/index.html` 巡检定式对 4 个非 html-gen 页**永远误报**；入口脚本只写了 shortcuts 一个，漏 `cron/memory/sessions-web-refresh.py`。
+- 🟡 **HG-SEC-229** 去件为 `documents/handoff/` 9 件中**唯一零 frontmatter**，文件名亦不合 `{topic}-{type}-v{major}.{minor}-{yyyymmdd}`（cl034/next-batch 两件合规）。
+- 🟡 **HG-SEC-230** `WARN_UNKNOWN_KEY`/`--strict` 仅覆盖 `columns[]`/`columns[].type`/`options.*`/`options.feedback.*`（`html-gen.py:716-760`）；实测 `{"option":{...}}`（少 s）宽松 rc0 **无告警**、`--strict` 仍 **rc0** ⇒ 去件检查点 ② 把它当作「拼错 100% 静默」的解，接收方会误判门禁已闭合。修：补边界行（顶层键不在覆盖内）。
+- 🟡 **HG-SEC-231** `b0f4b4f` 无闭环编号（近 40 笔中 36 笔带 CL），5,823 行 17 文件的新案例在 `hm loop artifacts`/draft 无归属。
+- 🟡 **HG-SEC-232** AGENTS.md `:6`/`:44` 仍 466/46（实测 472/47），而 README×2 已写 472 且注明「权威见 AGENTS.md」⇒ 被指向的权威反而错；历史同款 HG-SEC-210（458/45）。**按来件说明不计本批缺陷**，登记待审批（连续第 3 批）。
+- 🟢 **HG-SEC-233** `src/html_gen/` 为 gitignored 打包镜像（`.gitignore:37`），停在 CL030 前（新标记 0 命中）；PATH 直连仓根脚本故无现网影响，`pip install .` 会发旧壳。
+- 🟢 **HG-SEC-234** `no-tabs` 折叠纯客户端（`layout-table.html:505`），JS 前有一帧空行（CLS）。
+- 🟢 **HG-SEC-235** `cmd_table` 的 `open(data_path)`（`html-gen.py:773`）缺 `encoding='utf-8'`（CL012 既有）。
+- 🟢 **HG-SEC-236** slimdown 三页含 favicon 外链，`demos/*.html` 19/19 同款（既有约定）；`scripts/build-slimdown.py` 纯 stdlib + 列表式 `subprocess.run`（无 shell），零依赖达标。
+
+### 处理
+
+- CONDITIONAL PASS ⇒ 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 本地提交（path-scoped，`audit@review`）。
+- **未 push**：`github/main..HEAD` 4 笔 + 本审计笔留本地，push 由「推送」口令放行；建议 HG-SEC-226 一行修后一并推（去件 sha 失效在推送前修成本最低）。
+- 另批（不阻塞）：HG-SEC-230 顶层键覆盖扩展入契约；HG-SEC-233 `src/` 同步纪律写入 `documents/directory-layout.md`；HG-SEC-232 待审批落 AGENTS.md。

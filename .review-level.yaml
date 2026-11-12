@@ -853,3 +853,14 @@ review_history:
     findings_open: 2
     tracking: "HG-SEC-206 CLOSED (root cause proven by independent A/B: pre-fix worktree 8c46b71 + polluter = 3/3 rounds 2 failed (11.5s), same worktree without polluter = 2 passed, HEAD = 3/3 rounds TOTAL_FAILS=0, full suite 466 passed x3 at -n 4 + 466 at -n 8, baseline 23/23). NEW HG-SEC-219 (MEDIUM: probe false-green when chromedriver missing -> 2 skipped yet rc=0/TOTAL_FAILS=0, same class as closed 205; fix = CHROMEDRIVER_REQUIRED=1 + assert 2 passed) / 220 (MEDIUM: testing.md blanket ban on mkdtemp vs 25 legacy fixed /tmp occurrences in 5 files (18 in same file) and the probe itself writing fixed /tmp path; add legacy-exemption + probe-exemption clause) / 221 GREEN (tearDownClass quits driver before rmtree; setUpClass partial failure leaks hg-showmd-* -> use addClassCleanup) / 222 GREEN (write_text without encoding=utf-8 on CJK literal) / 223 GREEN (probe writes+deletes shared predictable /tmp path, set -u only, no trap, leaves 3 /tmp/probe-tmp-pollution-*.log) / 224 GREEN (HTML-GEN-CL034 had no draft/loop registration; 1/2/3 artifacts supplied by this report, step JSON is cross-repo) / 225 GREEN (toast wait 5s->10s is a loosening, 15x observed runtime margin)"
     report: documents/handoff/cl034-showmd-fixture-review-v1.0-20261112.md
+  - date: 2026-11-12
+    reviewer: Security Reviewer
+    review_type: design-document-review
+    review_level: L2
+    scope: "HTML-GEN-CL036 — github/main..HEAD 4 笔 (b0f4b4f slimdown 17 文件 / 8ab6754 方案稿 1 / af6994f table 主体 45 / ece6b5d 去件 1); 独立复算 472 passed + 47 文件 + baseline 23-23 + D11 三向戳一致 + 跨仓实调 normalize_skeleton 通过"
+    verdict: CONDITIONAL PASS
+    score: 88
+    findings_total: 11
+    findings_open: 7
+    tracking: "HG-SEC-226..236 — 226 BLOCKING (去件引用 amend 前草稿 b217461: 不在任何 ref、git fsck unreachable; tree 与 af6994f 差 9 文件 +44/-35, 草稿含本件明禁的 id=tabsRow; fix = 改引 af6994f 并注本地未推送) / 227 (检查点①判据过度概括: normalize_skeleton 仅在 gen_split 调用, shortcuts 走 gen_page 且 TABS=[] 会折叠; 括注只看 tabs-actions 子节点与 syncTabsRow 两者皆空不符) / 228 (8 个 console 页范围不准: 实测 4 页带壳, 1acl 自建壳未点名, ④ drift grep 对 4 个非 html-gen 页永久误报, 入口脚本漏 cron/memory/sessions-web-refresh.py) / 229 (documents/handoff 9 件中唯一零 frontmatter + 命名不合 topic-type-vX.Y-date) / 230 (WARN_UNKNOWN_KEY 仅覆盖 columns/options/feedback, 顶层 option 拼错宽松与 strict 均 rc0 无告警) / 231 (b0f4b4f 无闭环编号, 近 40 笔中 36 笔带 CL) / 232 (AGENTS.md 466-46 vs 实测 472-47, 待审批, 连续第 3 批同款) ; GREEN 233 (src_html_gen 打包镜像停在 CL030 前) 234 (no-tabs 折叠纯客户端有一帧空行) 235 (cmd_table open 缺 encoding) 236 (slimdown favicon 外链 19-19 既有 + build-slimdown 纯 stdlib 无 shell)"
+    report: documents/handoff/html-gen-cl036-shell-review-v1.0-20261112.md
