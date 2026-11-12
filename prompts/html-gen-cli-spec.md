@@ -31,6 +31,13 @@
 > `html-gen help <type>` 的「CLI 参数」段（实现: `html-gen.py` 的 `TEMPLATE_CONTRACT[type]['cli']`，
 > 由 `tests/test_help_contract.py` 对 argparse 实测提取做双向守卫）。复制到本文档即漂移。
 
+### 2.1 CL036 新增（跨仓契约面）
+
+- `html-gen help <topic> --json`：机器可读契约（`{status,data,error}` 信封；`data.contract` + `data.template_stamps`），跨仓生成器可在生成前比对键集合与模板指纹。
+- `html-gen table --strict`：未知配置键 ⇒ exit 2（缺省仅 stderr 告警）。
+- 未知键告警带稳定令牌 `WARN_UNKNOWN_KEY`（写 stderr，`--quiet` 不吞），调用方 `grep` 即可感知，不必解析中文。
+- 产物 `<head>` 注入 `<meta name="generator" content="html-gen v{ver}+tpl{sha8}">`（模板指纹，供 drift 检测）。
+
 ## 3. 参数惯例（对齐 cli-args-reference.md）
 
 - 长形 flag 是键（如 `--data` / `--output` / `--input` / `--groups`），短形仅为别名：

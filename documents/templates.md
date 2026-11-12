@@ -60,7 +60,8 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - **列隐藏双语义**：「永不可见」vs「默认收起·可开启·分栏仍全列」—— 语义与键名对照见 `html-gen help table`
 - **快捷键**：↑↓ 键盘导航行，Enter 点击，F 全屏
 - **批量操作**：选中行出现工具栏（全选/取消/导出 CSV）
-- **URL 状态分享**（CL004/CL005）：`?tab&q&split` 参数 replaceState 同步 + 加载恢复（tab 白名单 / split 越界忽略 / q 仅 input.value）；tabs 行居右按钮区 `.tabs-actions`：↗ 拷贝分享链接（clipboard + execCommand fallback）+ 🏠 home 入口（`--home-url` 注入, 与 share 同容器 36px 圆角深底）；排序/quickFilter 变化自动 closeSplit
+- **URL 状态分享**（CL004/CL005/CL036）：`?tab&q&split&density` 参数 replaceState 同步 + 加载恢复（tab 白名单 / split 越界忽略 / q 仅 input.value / density 白名单）；**分享/Home 按钮自 CL036 起落在 `.table-header` 内、紧跟统计 pill**（原为 tabs 行居右 `.tabs-actions`，单视图页会退化成「只有按钮的一行」）：🔗 拷贝含视图的分享链接（clipboard + execCommand fallback）+ 🏠 home 入口（`--home-url` 注入，同容器 36px 圆角深底）；`.tabs-row` 在无 tab 且 `.tabs-actions` 为空时挂 `no-tabs` 整行折叠（**只 CSS 隐藏，DOM 必须保留**：跨仓 `normalize_skeleton` 会往 `.tabs-actions` 搬 ▦/⚙ 控件）；排序/quickFilter 变化自动 closeSplit
+- **密度三档 + 字号变量**（CL036）：字号收口到 `--table-fs`（`:root` 默认 0.82rem），三档只改变量与内边距 —— `default` 0.82rem / 8px 10px、`compact` 0.7rem / 2px 8px、`comfortable` 0.94rem / 12px 14px；`th` = `calc(var(--table-fs)*0.88)`、`.cell-pill`/`.video-pill` = `*0.86`、`.stat-pill` = `*0.8` 联动。来源优先级：`?density=` > localStorage（用户显式选过）> `options.density` > `default`；⚙ 面板的密度入口**始终渲染**（原先 `tabCount>1 || density!=='default'` 会把单视图页入口整段藏掉）
 - **视图预设**：保存/加载/删除设置（密度/模式/排序/列可见性，最多 10 个，≤2KB）
 - 列名从 JSON 首条 key 自动推导
 - 支持单元格 HTML（`<a>`、`<code>` 等）

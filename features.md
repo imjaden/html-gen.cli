@@ -225,7 +225,7 @@ pytest 全量绿 ✅ — CI/提交前置（计数见 AGENTS.md「测试计数」
 | `html-gen:kw_lang` | 语言 (zh/en) | knowledge |
 | `html-gen:kw_theme` | 主题 (dark/light) | knowledge |
 | `html-gen:kw:sidebar-width` | 侧边栏宽度 | knowledge |
-| `html-gen:table:density` | 密度 (default/compact/comfortable) | table |
+| `html-gen:table:density` | 密度三档 (default/compact/comfortable)；CL036 起入口恒在, `?density=` 与 `options.density` 亦可设 | table |
 | `html-gen:table:click-mode` | 点击模式 (tab/modal/split/expand) | table |
 | `html-gen:table:col-visibility` | 列可见性 (JSON) | table |
 | `html-gen:table:col-widths` | 列宽度 (JSON) | table |

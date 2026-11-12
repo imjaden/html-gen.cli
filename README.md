@@ -134,5 +134,5 @@ python3 -m pytest tests/ -q -n 4
 
 ## Testing
 
-- Selenium headless Chrome regression suite (`tests/test_*.py` — 466 tests, see AGENTS.md for the authoritative count)
+- Selenium headless Chrome regression suite (`tests/test_*.py` — 472 tests, see AGENTS.md for the authoritative count)
 - Every test asserts zero JS errors on page load

@@ -217,14 +217,15 @@ class TestUrlState(unittest.TestCase):
         self.assertIn('split=0', url)
         self.assertEqual(get_errors(self.driver), [])
 
-    # ── test_06 分享/Home 按钮位于 tabs 行居右 (CL005) ──
-    def test_06_share_home_buttons_in_tabs_actions(self):
-        """shareBtn 位于 .tabs-actions（tabs 行居右）且图标 ↗; --home-url 注入的 home-link 同容器。"""
+    # ── test_06 分享/Home 按钮位于表头统计 pill 右侧 (CL005 → CL036 迁移) ──
+    def test_06_share_home_buttons_in_table_header(self):
+        """shareBtn 位于 .table-header（统计 pill 之后）且图标 🔗; --home-url 的 home-link 同容器。"""
         self._gen_page()
         btn = self.driver.find_element(By.ID, 'shareBtn')
         parent = btn.find_element(By.XPATH, '..')
-        self.assertIn('tabs-actions', parent.get_attribute('class'))
-        self.assertIn('↗', btn.text)
+        self.assertIn('table-header', parent.get_attribute('class'),
+                      'CL036: 分享按钮应落在表头而非 tabs 行')
+        self.assertIn('🔗', btn.text)
         # --home-url 生成页: home-link 与 shareBtn 同容器（tabs 行居右）
         stamp = str(int(time.time() * 1000))
         src = PROJECT / 'tests' / f'_tmp_cl005home_{stamp}.json'
@@ -241,7 +242,8 @@ class TestUrlState(unittest.TestCase):
             EC.presence_of_element_located((By.CSS_SELECTOR, '#tbody tr, #emptyState')))
         error_collector(self.driver)
         home = self.driver.find_element(By.CSS_SELECTOR, '.home-link')
-        self.assertIn('tabs-actions', home.find_element(By.XPATH, '..').get_attribute('class'))
+        self.assertIn('table-header', home.find_element(By.XPATH, '..').get_attribute('class'),
+                      'CL036: home-link 与分享按钮同置表头')
         self.assertEqual(get_errors(self.driver), [])
 
 

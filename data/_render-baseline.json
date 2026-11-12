@@ -5,8 +5,8 @@
   "verified": true,
   "files": {
     "layout-table.html": {
-      "sha256": "5f9113d0a6fe58c4c3aae827f77e9df154a0da6b26164d4a29d7771d88b8c207",
-      "bytes": 107679
+      "sha256": "204aeb64533c65c0bdae82d4556284530d910f3163ebc8d058c2ed2ec6c39727",
+      "bytes": 110407
     },
     "layout-doc.html": {
       "sha256": "f120e96bc10c3d62dfa932a75173e4ec3ce074dde8e88bf7dc4cab66ef880c25",
@@ -33,68 +33,68 @@
       "bytes": 27457
     },
     "demos/demos-index.html": {
-      "sha256": "452240728e6afd6b65582695e8271836221fde1da8ac561e17c94ece1de0b7b3",
-      "bytes": 120514
+      "sha256": "64d50828da3073e74ff52fc4ed3aa543a6512d0315cead6c7b4c1e6a7b510184",
+      "bytes": 123368
     },
     "demos/countries-table.html": {
-      "sha256": "61d41de3cda3f4aa55410e56f85e77d40b3b298ddfc3598b94408451177bcc92",
-      "bytes": 252325
+      "sha256": "38db57aadf7e41276b3b87e3ee1c17447e7c5264f28fc8389dd82ff397f3bf71",
+      "bytes": 255179
     },
     "demos/provinces-table.html": {
-      "sha256": "97e8de45d67f0b6344bdf5d3e1f189c35c45decaf34445e37acdfbfdce1eb7d2",
-      "bytes": 129884
+      "sha256": "b33d50959d1913b8bbf31f144b4152e706642244e84f39cd941093cee1512009",
+      "bytes": 132738
     },
     "demos/table-features-demo.html": {
-      "sha256": "88cfe0d1709e97aa7f636ae86cf58d030b303662c239163e9311d85584a06034",
-      "bytes": 118973
+      "sha256": "dd46104052ba18d57c2d68a4bc5a4aca154a7456ff3f3d285393a322f1cb9c9e",
+      "bytes": 121827
     },
     "demos/table-actions-demo.html": {
-      "sha256": "52ba121f534a9ecbf054b18fc79208ed39ba972f1f1625f3d85b67216636c2a3",
-      "bytes": 118689
+      "sha256": "e84929ca72f26d20cada4d906c8b06adce502e5c5dce186e3a7a128322bed845",
+      "bytes": 121543
     },
     "demos/hermes-profile-skills-list.html": {
-      "sha256": "34d5c8fd3404928dd2ee1a3f1e7ba3bab2922a039a6e282fe75f2429ebbcf183",
-      "bytes": 167999
+      "sha256": "d3614609c8cb8142874f824904efa0a8be7424c05fd9ff390c6748d17105fef0",
+      "bytes": 170853
     },
     "demos/slide-guide.html": {
-      "sha256": "70904e41cffe968b3ebaca67f37fe3f9a43dc4204af2d67f9181306e538c51f7",
-      "bytes": 46854
+      "sha256": "b86b8f122569a68b15611262107aa119e33da40d1cd3672133909fbcebfaba60",
+      "bytes": 46914
     },
     "demos/usage-guide.html": {
-      "sha256": "db89812f8c968798e1925c98ef1584d6fb6d50a0bccab5627461997c512ae1a2",
-      "bytes": 54089
+      "sha256": "3c0ae653027614eb569f6439bc8f267536e33b08dd9e740563c6fa10436fa61e",
+      "bytes": 54149
     },
     "demos/doc-guide.html": {
-      "sha256": "b98e537f5e85a82d3926b365e65f1dec5b51c68a1444ee897ffbb74bfc3bb459",
-      "bytes": 52175
+      "sha256": "e69d6fb20a7dd7eecc9678ac2fe394191dca57aaf6a3603675cea4da862b714a",
+      "bytes": 52235
     },
     "demos/table-guide.html": {
-      "sha256": "81c7c7be2947f2867f31e92c7b0d0549e7e27438b036258706e3e056fc8182e3",
-      "bytes": 56912
+      "sha256": "ec0c01d5599c6abc59484d5547917f389d1ae71a09791301a50e382a96f4ad38",
+      "bytes": 56972
     },
     "demos/knowledge-guide.html": {
-      "sha256": "1445ca163b0d98cae1f668732c84174a1ada48cc50dbf4ea7afc770671e4e648",
-      "bytes": 51673
+      "sha256": "330fa58b90f420ee2279aaac66d7195c0335cd6ffddc0a32e685b6b313a4736e",
+      "bytes": 51733
     },
     "demos/markdown-spec.html": {
-      "sha256": "b19ead38d1b4751f64da01d2a0aa062f731d7b88388106343cd271a5b335f18a",
-      "bytes": 52796
+      "sha256": "7a81f0ea1ae294c3f55007c0a1405f46c5010bb6db311bc307928a58afe65934",
+      "bytes": 52856
     },
     "demos/knowledge-demo.html": {
-      "sha256": "d11047db87713e256360c107101f9d4f963d76667032bf80a1986cfcd58becc6",
-      "bytes": 68822
+      "sha256": "ba03055d89559e88d11fe0d38a5ba59cac74e20c1dbe9e55afccf2bf081ca765",
+      "bytes": 68882
     },
     "demos/drama-knowledge.html": {
-      "sha256": "5e2c50d7be1a5fb13b37efa0ba3db8eca038753aff7566d583a824923ef462bf",
-      "bytes": 40209
+      "sha256": "d44dd22aa2787c8421015f1012711c73098c186aea8c71a80e8f9e99e3f0e822",
+      "bytes": 40269
     },
     "demos/chaitin-business-analysis.html": {
-      "sha256": "c7ad21dcb0d2a63fb724063c4957856dfc1b6f8a72ed4cdac41db13f3b08b654",
-      "bytes": 40079
+      "sha256": "d92ce9fafe02059346f9d721647639481ea1f569bd613f259b6b99b091455514",
+      "bytes": 40139
     },
     "demos/cloudwise-business-analysis.html": {
-      "sha256": "c6dff08aa038548e7177ec561a22bdac4f620e21bd3b28a7ce45bea7fe755512",
-      "bytes": 49709
+      "sha256": "d5aba3d514865ed06d1e1cbad4f3a8105b5e0ffb60e0440755c84e3c57d9563b",
+      "bytes": 49769
     }
   }
 }

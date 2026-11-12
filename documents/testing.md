@@ -21,6 +21,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
   所有 `tests/test_*.py` 一律 `from conftest import chromedriver_service`，不得再写用户绝对路径
   （判据不在文档里手写 grep —— 直接跑 `pytest tests/test_selenium_infra.py -n 0`：`test_01_*` 递归扫 `tests/`，
   只豁免 `#` 注释行与带 `noqa: user-path-guard` 标注的判据自身；手写 grep 会命中判据自身的两个字面量）
+- **table 模板回归判据（CL036）**：① 分享按钮必须在 `.table-header` 内且位于 `.flex-1` 之前；② 无 tab 页 `#tabsRow` 带 `no-tabs` 且 `display:none`；③ 密度入口恒在（`input[name=density]` 恒 3 个）；④ 切档改 `--table-fs` 且写 `?density=`、`buildShareUrl()` 带上；⑤ `help table --json` 的 `template_stamps.table` == 产物 `<meta name="generator">`；⑥ `--strict` 未知键 exit 2、宽松模式 stderr 带 `WARN_UNKNOWN_KEY` 且不污染 stdout。（`tests/test_cl036_table_density_actions.py` 六例守这些）
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
 - **夹具输出一律 `tempfile.mkdtemp()`，禁写固定 `/tmp/<name>`**（CL034）：固定共享名会被并发会话 /

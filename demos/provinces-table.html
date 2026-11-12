@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<meta name="generator" content="html-gen v3.4+tpl204aeb64">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>中国省份速查表</title>
@@ -252,11 +253,14 @@ pre code { background: none; padding: 0; }
 <style>
 /* ── Tabs ── */
 .tabs-row { display:flex; align-items:center; gap:8px; margin-bottom:10px; }
+/* CL036: 无 tab 且 tabs-actions 为空 ⇒ 整行折叠（只 CSS 隐藏, DOM 必须保留:
+   跨仓调用方 normalize_skeleton 会往 .tabs-actions 里搬 ▦/⚙ 控件, 删节点会使其 fail-fast） */
+.tabs-row.no-tabs { display:none; }
 .table-tabs { display:flex; gap:4px; overflow-x:auto; flex-wrap:nowrap; flex:1; min-width:0; }
 .table-tabs:empty { display:none; }
 .tabs-actions { display:flex; align-items:center; gap:6px; flex-shrink:0; }
 .tabs-actions:empty { display:none; }
-/* 居右分享/Home 按钮（CL005）: 同尺寸 36px 圆角深底, 图标 emoji 全尺寸 font-size 1rem */
+/* 分享/Home 按钮（CL005；CL036 起移入表头, 紧跟统计 pill）: 同尺寸 36px 圆角深底 */
 .home-link, .share-link { display:flex; align-items:center; justify-content:center; width:36px; height:36px;
   border-radius:8px; background:rgba(0,0,0,0.41); text-decoration:none; font-size:1rem; cursor:pointer;
   border:none; color:inherit; font-family:inherit; flex-shrink:0; line-height:1; }
@@ -278,7 +282,7 @@ pre code { background: none; padding: 0; }
 .table-desc { margin:-4px 0 10px; font-size:0.78rem; line-height:1.7; color:#9ca3af; word-break:break-word; }
 .table-desc:empty { display:none; }
 .stat-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:9999px;
-  background:var(--surface-900); border:1px solid #1a1a2e; font-size:0.65rem; color:#9ca3af; white-space:nowrap; }
+  background:var(--surface-900); border:1px solid #1a1a2e; font-size:calc(var(--table-fs) * 0.8); color:#9ca3af; white-space:nowrap; }
 .stat-pill .num { font-weight:700; color:#e0e0e0; font-variant-numeric:tabular-nums; }
 .filter-pill { display:inline-flex; align-items:center; gap:4px; padding:2px 8px; border-radius:6px;
   background:rgba(79,70,229,0.15); border:1px solid var(--cobalt-600); font-size:0.65rem; color:var(--cobalt-300); cursor:pointer; white-space:nowrap; }
@@ -287,11 +291,11 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
-.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
+.data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:calc(var(--table-fs) * 0.86); line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
 .data-table .cell-pill.pill-clickable { cursor:pointer; }
 .data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 /* ── Videos 视频列 pill（独立类：max-width 不换行 + ellipsis 缩略） ── */
-.data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:0.7rem; line-height:1.5; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
+.data-table .video-pill { display:inline-block; max-width:180px; padding:0 6px; border-radius:9999px; font-size:calc(var(--table-fs) * 0.86); line-height:1.5; vertical-align:middle; white-space:nowrap; overflow:hidden; text-overflow:ellipsis; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:1px 2px; cursor:pointer; }
 .data-table .video-pill:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
 .data-table .video-pill.video-more { color:var(--cobalt-300); border-style:dashed; }
 /* CL030 (评审 🟢-1): 目标非法的降级 pill 不可点，别给手型 */
@@ -340,9 +344,11 @@ pre code { background: none; padding: 0; }
 /* ── Table ── */
 .table-wrap { border:1px solid #1a1a2e; border-radius:var(--radius-lg); overflow-x:auto; }
 .data-table { width:100%; min-width:600px; border-collapse:separate; border-spacing:0; table-layout:fixed; }
+/* ── Density (CL036: 字号收口到 --table-fs, 三档只改变量与内边距) ── */
+:root { --table-fs: 0.82rem; }
 .data-table th {
   position:sticky; top:0; z-index:10; background:var(--surface-900); border-bottom:1px solid #2a2a3e;
-  padding:6px 8px; text-align:left; font-size:0.65rem; font-weight:600; color:#9ca3af;
+  padding:6px 8px; text-align:left; font-size:calc(var(--table-fs) * 0.88); font-weight:600; color:#9ca3af;
   text-transform:uppercase; letter-spacing:0.04em; white-space:nowrap; user-select:none;
   position:relative;
 }
@@ -354,7 +360,7 @@ pre code { background: none; padding: 0; }
   position:absolute; top:0; right:0; bottom:0; width:5px; cursor:col-resize;
 }
 .data-table th .resize-handle:hover { background:var(--cobalt-600); }
-.data-table td { padding:7px 8px; border-bottom:1px solid #1a1a2e; font-size:0.75rem;
+.data-table td { padding:8px 10px; border-bottom:1px solid #1a1a2e; font-size:var(--table-fs);
   vertical-align:middle; max-width:0; overflow:hidden; text-overflow:ellipsis; white-space:nowrap; }
 .data-table tbody tr { transition:background 0.12s; }
 .data-table tbody tr:hover { background:rgba(79,70,229,0.07); }
@@ -396,11 +402,13 @@ pre code { background: none; padding: 0; }
 .col-toggle-dropdown .settings-radio input { accent-color:var(--cobalt-500); margin:0; }
 .col-toggle-divider { height:1px; background:#2a2a3e; margin:4px 0; }
 
-/* ── Density ── */
-.data-table.dense td { padding:2px 8px; font-size:0.7rem; }
-.data-table.dense th { padding:3px 8px; font-size:0.6rem; }
-.data-table.comfortable td { padding:10px 12px; font-size:0.82rem; }
-.data-table.comfortable th { padding:10px 12px; font-size:0.72rem; }
+/* ── Density: 三档只改变量 + 内边距 (CL036) ── */
+.data-table.dense { --table-fs: 0.7rem; }
+.data-table.dense td { padding:2px 8px; }
+.data-table.dense th { padding:3px 8px; }
+.data-table.comfortable { --table-fs: 0.94rem; }
+.data-table.comfortable td { padding:12px 14px; }
+.data-table.comfortable th { padding:10px 12px; }
 
 /* ── Modal Panel ── */
 .modal-overlay { display:none; position:fixed; inset:0; background:rgba(0,0,0,0.5); z-index:1000; justify-content:center; align-items:center; }
@@ -539,8 +547,7 @@ pre code { background: none; padding: 0; }
 <div class="tabs-row">
   <div class="table-tabs" id="tabsBar"></div>
   <div class="tabs-actions">
-    
-    <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>
+    <!-- 跨仓 normalize_skeleton 会把 ▦/⚙ 控件搬进本容器；本模板自身不再往这里放按钮（CL036） -->
   </div>
 </div>
 
@@ -558,6 +565,9 @@ pre code { background: none; padding: 0; }
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
   <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
+  <!-- CL036: 分享/Home 紧随统计 pill（原先在 tabs-row, 单视图页会退化成「只有按钮的一行」） -->
+  
+  <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝含当前视图的分享链接" aria-label="拷贝含当前视图的分享链接">🔗</button>
   <div class="flex-1"></div>
   <input class="header-search" id="searchInput" placeholder="搜索..." onkeydown="if(event.key==='Enter')doSearch()">
   
@@ -689,7 +699,13 @@ pre code { background: none; padding: 0; }
   let quickFilter = null;  // {key, value}
 
   // Restore from localStorage
-  try { density = localStorage.getItem('html-gen:table:density') || 'default'; } catch(e) {}
+  // CL036: 优先级 localStorage(用户显式选过) > options.density(页面默认) > 'default'
+  try {
+    var _lsDensity = localStorage.getItem('html-gen:table:density');
+    var _optDensity = (typeof OPTIONS !== 'undefined' && OPTIONS && OPTIONS.density) || '';
+    var _validDensity = ['default', 'compact', 'comfortable'];
+    density = _lsDensity || (_validDensity.indexOf(_optDensity) !== -1 ? _optDensity : 'default');
+  } catch(e) {}
   try { clickMode = localStorage.getItem('html-gen:table:click-mode') || 'tab'; } catch(e) {}
   try { splitRatio = parseFloat(localStorage.getItem('html-gen:table:split-ratio')) || 40; } catch(e) {}
 
@@ -723,7 +739,7 @@ pre code { background: none; padding: 0; }
   /* ── Tabs ── */
   function buildTabs() {
     const bar = document.getElementById('tabsBar');
-    if (!TABS || !TABS.length) { bar.innerHTML = ''; return; }
+    if (!TABS || !TABS.length) { bar.innerHTML = ''; syncTabsRow(); return; }
     if (!activeTab) {
       try { activeTab = localStorage.getItem('html-gen:table:tab'); } catch(e) {}
       if (!activeTab || !TABS.find(function(t){return t.key===activeTab})) activeTab = TABS[0].key;
@@ -733,6 +749,20 @@ pre code { background: none; padding: 0; }
         DATA.filter(function(row) { return matchTab(row, t); }).length;
       return '<div class="tab-btn'+(t.key===activeTab?' active':'')+'" onclick="switchTab(\''+t.key+'\')">'+t.label+'<span class="count">'+cnt+'</span></div>';
     }).join('');
+    syncTabsRow();
+  }
+
+  /* CL036: 无 tab 且 tabs-actions 为空 ⇒ 折叠整条 tabs 行（DOM 保留, 跨仓 normalize_skeleton 依赖它） */
+  function syncTabsRow() {
+    // 不用 id/属性: 跨仓 normalize_skeleton 按 tabs-row 开标签的精确串定位（加属性或再出现一次该串都会使其 RuntimeError）
+    var row = document.querySelector('.tabs-row');
+    if (!row) return;
+    var bar = document.getElementById('tabsBar');
+    var actionsBox = row.querySelector('.tabs-actions');   // 不用短名 act.*: 契约正则按 act.<key> 扫 actions 维度
+    var hasTabs = !!(bar && bar.children.length);
+    var hasActions = !!(actionsBox && actionsBox.children.length);
+    if (!hasTabs && !hasActions) row.classList.add('no-tabs');
+    else row.classList.remove('no-tabs');
   }
 
   function matchTab(row, tab) {
@@ -1492,6 +1522,7 @@ pre code { background: none; padding: 0; }
     var q = document.getElementById('searchInput').value;
     if (q) p.set('q', q);
     if (splitActive && splitIdx >= 0) p.set('split', String(splitIdx));
+    if (density && density !== 'default') p.set('density', density);   // CL036: 分享链接还原密度
     var qs = p.toString();
     var url = location.pathname + (qs ? '?' + qs : '');
     try { history.replaceState(null, '', url); } catch(e) {}
@@ -1844,11 +1875,14 @@ pre code { background: none; padding: 0; }
   window.applyRatioPreset = applyRatioPreset;
 
   /* ── Density ── */
+  var DENSITY_FS = { default: '0.82rem', compact: '0.7rem', comfortable: '0.94rem' };  // CL036
   function applyDensity() {
     var table = document.querySelector('.data-table');
     table.classList.remove('dense', 'comfortable');
     if (density === 'compact') table.classList.add('dense');
     else if (density === 'comfortable') table.classList.add('comfortable');
+    // 表头统计 pill 在 .data-table 之外, 靠 root 变量跟随同一档位
+    document.documentElement.style.setProperty('--table-fs', DENSITY_FS[density] || DENSITY_FS.default);
   }
 
   /* ── Actions ── */
@@ -1892,7 +1926,7 @@ pre code { background: none; padding: 0; }
     var hasModal = validModes.indexOf('modal') !== -1;
     var hasExpand = validModes.indexOf('expand') !== -1;
     var tabCount = (hasSplit ? 1 : 0) + (hasModal ? 1 : 0) + (hasExpand ? 1 : 0) + 1;
-    if (tabCount > 1 || density !== 'default') {
+    if (true) {   // CL036: 密度入口无条件渲染（原先 tabCount>1 || density!=='default' 把单视图页入口整个藏掉）
       html += '<div class="settings-section">密度</div>';
       html += '<div style="display:flex;gap:4px;padding:4px 8px">';
       ['default:标准', 'compact:紧凑', 'comfortable:舒适'].forEach(function(item) {
@@ -1958,6 +1992,7 @@ pre code { background: none; padding: 0; }
     try { localStorage.setItem('html-gen:table:density', val); } catch(e) {}
     applyDensity();
     initColToggle();
+    syncUrlState();   // CL036: 切档即写 ?density=（分享链接可还原视图）
   };
 
   window.setClickMode = function(val) {
@@ -2114,6 +2149,10 @@ pre code { background: none; padding: 0; }
     if (_urlQ !== null) {
       // 仅 value 赋值 (无 innerHTML 注入面), URLSearchParams 自动解码 (HG-SEC-074)
       document.getElementById('searchInput').value = _urlQ;
+    }
+    var _urlDensity = _params.get('density');   // CL036: 分享链接还原密度（白名单校验）
+    if (['default', 'compact', 'comfortable'].indexOf(_urlDensity) !== -1) {
+      density = _urlDensity;
     }
     var _urlSplit = _params.get('split');
     // Restore saved column widths

@@ -9,7 +9,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
   html-gen table --data data.json [-o out.html]  # 输出: CLI -o 或 JSON 顶层 output 必填其一
   html-gen knowledge --data data.json [--groups groups.json] --title "xxx" [-o out.html]
 """
-import html, json, re, sys, os, time, argparse, types, unicodedata
+import html, json, re, sys, os, time, argparse, types, unicodedata, hashlib
 from pathlib import Path
 
 __version__ = "3.4"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
@@ -45,6 +45,27 @@ def inject(template, **kwargs):
             s = s.replace('</', '<\\/')
         template = template.replace(f'<!--{key.upper()}-->', s)
     return template
+
+
+def _template_stamp(template_path):
+    """D11: 模板指纹 —— `v<版本>+tpl<sha8>`，写进产物 <meta name="generator">。
+
+    跨仓 drift 的最小锚点: 页面自己带出「哪版 HTML 生成器 + 哪份模板」，
+    模板升级后可直接比对产物戳而无需重渲染。
+    """
+    try:
+        digest = hashlib.sha256(template_path.read_bytes()).hexdigest()[:8]
+    except OSError:
+        digest = 'unknown'
+    return f'html-gen v{__version__}+tpl{digest}'
+
+
+def stamp_generator(page, template_path):
+    """在 <head> 后注入 `<meta name="generator">`（幂等: 已有则替换）。"""
+    tag = f'<meta name="generator" content="{_template_stamp(template_path)}">'
+    page = re.sub(r'<meta name="generator" content="[^"]*">', '', page)
+    m = re.search(r'<head[^>]*>', page, re.I)
+    return page if not m else page[:m.end()] + '\n' + tag + page[m.end():]
 
 
 def inline_style(template):
@@ -95,7 +116,8 @@ def home_link_html(url):
 
 # CL021: 分享按钮占位符注入 (options.share, 默认开启; false → 空串不渲染)。
 # 走 inject() 而非运行时删 DOM —— 产物自包含、Selenium 可静态断言。
-SHARE_BUTTON_TMPL = '<button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝分享链接">↗️</button>'
+SHARE_BUTTON_TMPL = ('<button class="share-link" id="shareBtn" onclick="shareLink()" '
+                     'title="拷贝含当前视图的分享链接" aria-label="拷贝含当前视图的分享链接">🔗</button>')
 
 
 def share_button_html(options):
@@ -605,6 +627,7 @@ def cmd_doc(args):
     result = inject(tmpl, title=title, subtitle=args.subtitle or '', metadata=meta, content=content,
                     github_corner=gc, home_link=hl, favicon=favicon_args(args))
     out = args.output or md.with_suffix('.html')
+    result = stamp_generator(result, TEMPLATE_DOC)   # D11 版本戳
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
         h3_count = len(re.findall(r'<h3\b', content))
@@ -675,6 +698,7 @@ def cmd_slide(args):
                     cover=h1_html, h2_count=str(h2_count), perf_warning=perf_warning,
                     github_corner=gc, home_link=hl, favicon=favicon_args(args))
     out = args.output or md.with_suffix('.slide.html')
+    result = stamp_generator(result, TEMPLATE_SLIDE)   # D11 版本戳
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
         pages = h2_count + (1 if h1_html else 0)
@@ -723,11 +747,16 @@ def warn_unknown_table_keys(raw):
                 if k not in fbs:
                     found.append(('未知反馈子键', k, 'options.feedback'))
     seen = set()
+    reported = []
     for kind, key, loc in found:                   # 同一键只提示一次 (保留首个位置)
         if (kind, key) in seen:
             continue
         seen.add((kind, key))
-        print(f'⚠️ {kind}: {key} ({loc})（见 html-gen help table）', file=sys.stderr)
+        reported.append((kind, key, loc))
+        # D10: 保留人读文案, 前面加稳定机器令牌 —— 调用方 grep 'WARN_UNKNOWN_KEY' 即可感知,
+        # 不必解析中文; --quiet 只静音进度, 不静音本行 (写 stderr)。
+        print(f'WARN_UNKNOWN_KEY {kind}: {key} ({loc})（见 html-gen help table）', file=sys.stderr)
+    return reported
 
 
 def cmd_table(args):
@@ -761,8 +790,12 @@ def cmd_table(args):
         json_subtitle = raw.get('subtitle')
         json_output = raw.get('output')
 
-    # CL012: 未知配置键提示 (仅 stderr, 不阻断不改退出码)
-    warn_unknown_table_keys(raw)
+    # CL012: 未知配置键提示 (仅 stderr, 不阻断不改退出码); D10: --strict 升级为错误 exit 2
+    unknown = warn_unknown_table_keys(raw)
+    if unknown and getattr(args, 'strict', False):
+        print(f'❌ --strict: 拒绝未知配置键 {len(unknown)} 个（见 html-gen help table）',
+              file=sys.stderr)
+        sys.exit(2)
 
     # title/subtitle 优先级: CLI 显式入参 > JSON 顶层字段 > 默认值
     title = args.title if args.title is not None else (json_title or '数据表格')
@@ -791,6 +824,7 @@ def cmd_table(args):
     if not out:
         print(NO_OUTPUT_MSG, file=sys.stderr)
         sys.exit(1)
+    result = stamp_generator(result, TEMPLATE_TABLE)   # D11 版本戳
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
         tabs_n = len(tabs)
@@ -840,6 +874,7 @@ def cmd_knowledge(args):
     if not out:
         print(NO_OUTPUT_MSG, file=sys.stderr)
         sys.exit(1)
+    result = stamp_generator(result, TEMPLATE_KNOWLEDGE)   # D11 版本戳
     Path(out).write_text(result, encoding='utf-8')
     if not getattr(args, 'quiet', False):
         if isinstance(items, list):
@@ -884,6 +919,7 @@ TEMPLATE_CONTRACT = {
             _CLI_HOME_URL,
             _CLI_FAVICON,
             ('--feedback-repo', 'GitHub Issue 反馈通道仓库 owner/repo (默认不注入, 隐私; 显式空串禁用; 环境变量 HTML_GEN_FEEDBACK_REPO)', ''),
+            ('--strict', '未知配置键视为错误 exit 2 (缺省仅 stderr 告警 WARN_UNKNOWN_KEY)', ''),
             _CLI_QUIET,
         ],
         'data': {
@@ -940,6 +976,7 @@ TEMPLATE_CONTRACT = {
             ],
             'options': [
                 ('pageSize', '每页条数', '30'),
+                ('density', '默认密度档 default/compact/comfortable (页面 ⚙ 可切; ?density= 覆盖)', 'default'),
                 ('exportCSV', '导出 CSV 按钮', 'false'),
                 ('rowSelect', '行选择复选框与批量操作栏', 'false'),
                 ('search', '搜索框显隐', 'true'),
@@ -988,6 +1025,7 @@ TEMPLATE_CONTRACT = {
             ('?tab', '当前标签页 key (白名单校验, 非法忽略)', ''),
             ('?q', '搜索关键字 (仅恢复输入框值)', ''),
             ('?split', '分栏预览行下标 (越界忽略)', ''),
+            ('?density', '密度档 default/compact/comfortable (非法忽略; 分享链接据此还原视图)', ''),
         ],
         'behaviors': [
             ('tab', '🔗 新标签页打开 (window.open, noopener)'),
@@ -1440,6 +1478,27 @@ def render_help(topic):
 
 
 def cmd_help(args):
+    if getattr(args, 'json', False):
+        # D9: 机器可读契约导出 —— 跨仓生成器可在生成前比对键集合, 拼错键从「静默」变「启动即报」。
+        topic = args.topic
+        if topic and topic not in TEMPLATE_CONTRACT:
+            print(json.dumps({'status': 'error', 'data': None,
+                              'error': f'主题 {topic!r} 无契约 (可用: {sorted(TEMPLATE_CONTRACT)})'},
+                             ensure_ascii=False, indent=2))
+            sys.exit(2)
+        data = {
+            'version': __version__,
+            'release_date': __release_date__,
+            'topics': sorted(TEMPLATE_CONTRACT),
+            'template_stamps': {t: _template_stamp({
+                'doc': TEMPLATE_DOC, 'slide': TEMPLATE_SLIDE,
+                'table': TEMPLATE_TABLE, 'knowledge': TEMPLATE_KNOWLEDGE}[t])
+                for t in TEMPLATE_CONTRACT},
+            'contract': (TEMPLATE_CONTRACT[topic] if topic else TEMPLATE_CONTRACT),
+        }
+        print(json.dumps({'status': 'ok', 'data': data, 'error': None},
+                         ensure_ascii=False, indent=2, sort_keys=True))
+        return
     if args.topic in TEMPLATE_CONTRACT:           # 契约主题 → 契约渲染
         print(render_help(args.topic))
     elif args.topic in HELP_MAP:                  # prompt/demo → 手写
@@ -1463,6 +1522,8 @@ def main():
     h = sub.add_parser('help', help='显示帮助')
     h.add_argument('topic', nargs='?', choices=['doc', 'slide', 'table', 'knowledge', 'prompt', 'demo'],
                    help='帮助主题 (doc/slide/table/knowledge/prompt/demo)')
+    h.add_argument('--json', action='store_true',
+                   help='输出机器可读契约 (checkpoint 信封 {status,data,error}; 供跨仓生成器比对)')
 
     v = sub.add_parser('version', help='显示版本')
 
@@ -1489,6 +1550,8 @@ def main():
 
     t = sub.add_parser('table', help='JSON → A 型数据表格')
     t.add_argument('--quiet', action='store_true', default=argparse.SUPPRESS, help='仅打印生成路径，抑制统计信息')
+    t.add_argument('--strict', action='store_true',
+                   help='未知配置键视为错误 (exit 2; 缺省仅 stderr 提示, 兼容既有调用方)')
     t.add_argument('-d', '--data', required=True)
     t.add_argument('--title')  # 优先级: CLI > JSON 顶层 title > '数据表格'
     t.add_argument('--subtitle', help='页面级段落描述(纯文本, \\n 换行); JSON 顶层 subtitle 兜底, 显式传空串清空')

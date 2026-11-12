@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
+<meta name="generator" content="html-gen v3.4+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>html-gen-cli-spec</title>
@@ -26,6 +27,8 @@
   --accent-400: #facc15;
   --accent-500: #eab308;
   --accent-600: #ca8a04;
+  --hl-bg: rgba(250, 204, 21, .18);
+  --hl-fg: #fde68a;
   --surface-800: #1e1e2e;
   --surface-850: #181825;
   --surface-900: #11111b;
@@ -73,6 +76,8 @@
   --code-bg: #f6f8fa;
   --code-text: #57606a;
   --code-cmd: #1f2328;
+  --hl-bg: rgba(250, 204, 21, .45);
+  --hl-fg: #5a4600;
   --hero-title-from: #1f2328;
   --gh-corner-fill: rgba(0,0,0,0.75);
   --gh-octocat: #ffffff;
@@ -106,6 +111,12 @@ code {
   font-size: 0.8rem;
   background: rgba(255,255,255,0.06);
   padding: 2px 6px;
+  border-radius: var(--radius-sm);
+}
+mark.hl {
+  background: var(--hl-bg);
+  color: var(--hl-fg);
+  padding: 0 2px;
   border-radius: var(--radius-sm);
 }
 pre {
@@ -483,7 +494,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-cli-spec</h1>
-      <div class="meta">创建: 2026-09-28 12:00 · 编辑: 2026-09-28 12:00<br>字数: 504 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
+      <div class="meta">创建: 2026-11-12 18:00 · 编辑: 2026-11-12 18:00<br>字数: 1,033 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>html-gen-cli-spec.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><blockquote>本文档定义 html-gen 项目的 CLI 规范（对齐 hermes-manager 治理规范</blockquote>
 <blockquote>「CLI 规范」条目 + cli-args-reference.md 统一 JSON 信封）。</blockquote>
@@ -545,6 +556,13 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <blockquote><strong>参数（必填 / 可选 / 默认 / env 兜底）不在本文档枚举</strong> —— 单一事实源是</blockquote>
 <blockquote><code>html-gen help &lt;type&gt;</code> 的「CLI 参数」段（实现: <code>html-gen.py</code> 的 <code>TEMPLATE_CONTRACT[type]['cli']</code>，</blockquote>
 <blockquote>由 <code>tests/test_help_contract.py</code> 对 argparse 实测提取做双向守卫）。复制到本文档即漂移。</blockquote>
+<h3 id="2-1-cl036-新增-跨仓契约面">2.1 CL036 新增（跨仓契约面）</h3>
+<ul>
+<li><code>html-gen help &lt;topic&gt; --json</code>：机器可读契约（<code>{status,data,error}</code> 信封；<code>data.contract</code> + <code>data.template_stamps</code>），跨仓生成器可在生成前比对键集合与模板指纹。</li>
+<li><code>html-gen table --strict</code>：未知配置键 ⇒ exit 2（缺省仅 stderr 告警）。</li>
+<li>未知键告警带稳定令牌 <code>WARN_UNKNOWN_KEY</code>（写 stderr，<code>--quiet</code> 不吞），调用方 <code>grep</code> 即可感知，不必解析中文。</li>
+<li>产物 <code>&lt;head&gt;</code> 注入 <code>&lt;meta name="generator" content="html-gen v{ver}+tpl{sha8}"&gt;</code>（模板指纹，供 drift 检测）。</li>
+</ul>
 <h2 id="3-参数惯例-对齐-cli-args-reference-md">3. 参数惯例（对齐 cli-args-reference.md）</h2>
 <ul>
 <li>长形 flag 是键（如 <code>--data</code> / <code>--output</code> / <code>--input</code> / <code>--groups</code>），短形仅为别名：</li>
