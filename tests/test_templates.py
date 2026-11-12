@@ -1,5 +1,5 @@
 """Tests for html-gen: doc, slide, table, knowledge templates."""
-import json, os, re, sys, time, unittest
+import json, os, re, shutil, sys, tempfile, time, unittest
 from pathlib import Path
 
 from selenium import webdriver
@@ -246,13 +246,20 @@ class TestDocSlideFrontmatter(unittest.TestCase):
 
 
 class TestDocShowMd(unittest.TestCase):
-    """Selenium: ?show-md=1 显隐 + 标题点击复制脱敏文件名."""
+    """Selenium: ?show-md=1 显隐 + 标题点击复制脱敏文件名.
+
+    CL034: 夹具输出走 `tempfile.mkdtemp()`（原先写死 `/tmp/test-show-md.{md,html}`）——
+    固定共享名会被并发会话/并行 worker 覆盖，页面被顶掉后本类用例整片红（实测第三者
+    循环覆盖该路径 ⇒ 本类 2 例全红）。文件名仍取 `test-show-md.md`：断言的是「复制脱敏
+    文件名」这条语义，与目录无关。
+    """
 
     @classmethod
     def setUpClass(cls):
-        cls.tmp_md = Path('/tmp/test-show-md.md')
+        cls.tmpdir = Path(tempfile.mkdtemp(prefix='hg-showmd-'))
+        cls.tmp_md = cls.tmpdir / 'test-show-md.md'
         cls.tmp_md.write_text('# ShowMD 测试\n## 章节\n正文内容。\n')
-        cls.out = Path('/tmp/test-show-md.html')
+        cls.out = cls.tmpdir / 'test-show-md.html'
         run_gen('doc', '-i', str(cls.tmp_md), '-o', str(cls.out))
 
         opts = Options()
@@ -265,13 +272,14 @@ class TestDocShowMd(unittest.TestCase):
     @classmethod
     def tearDownClass(cls):
         cls.driver.quit()
-        cls.tmp_md.unlink(missing_ok=True)
-        cls.out.unlink(missing_ok=True)
+        shutil.rmtree(cls.tmpdir, ignore_errors=True)
 
     def _load(self, query=''):
         self.driver.get('file://' + str(self.out) + query)
-        WebDriverWait(self.driver, 5).until(
+        WebDriverWait(self.driver, 10).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
+        WebDriverWait(self.driver, 10).until(
+            lambda d: d.execute_script('return document.readyState') == 'complete')
         self.driver.execute_script(
             "window.__testErrors = [];"
             "window.onerror = function(m) { window.__testErrors.push(String(m)); };")
@@ -304,10 +312,12 @@ class TestDocShowMd(unittest.TestCase):
         self.driver.execute_script(
             "Object.defineProperty(navigator, 'clipboard', { value: {"
             " writeText: function () { return Promise.resolve(); } }, configurable: true });")
-        el = self.driver.find_element(By.ID, 'sidebarTitle')
+        # CL034: 先等标题就位再点（-n 4 负载下 DOM 绑定可能晚于 readyState）
+        el = WebDriverWait(self.driver, 10).until(
+            EC.presence_of_element_located((By.ID, 'sidebarTitle')))
         self.driver.execute_script("arguments[0].click();", el)
         # 等 toast 出现并含"已复制"文本 (异步动画, 固定 sleep 会偶发 flaky)
-        WebDriverWait(self.driver, 5).until(
+        WebDriverWait(self.driver, 10).until(
             EC.text_to_be_present_in_element(
                 (By.ID, 'docToast'), '已复制: test-show-md.md'))
         toast = self.driver.execute_script(

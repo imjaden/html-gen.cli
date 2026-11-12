@@ -23,6 +23,10 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
   只豁免 `#` 注释行与带 `noqa: user-path-guard` 标注的判据自身；手写 grep 会命中判据自身的两个字面量）
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
+- **夹具输出一律 `tempfile.mkdtemp()`，禁写固定 `/tmp/<name>`**（CL034）：固定共享名会被并发会话 /
+  `-n 4` 并行 worker 覆盖掉，页面被顶掉后整片用例红。反证配方：起一个循环覆盖该路径的第三者进程，
+  用例应仍绿（探针：`bash scripts/probe-tmp-pollution.sh`，第三者循环覆盖该路径、期望 `TOTAL_FAILS=0`）。
+  Selenium 等待用 `WebDriverWait` 等「元素就位 + `document.readyState === 'complete'`」，勿用固定 `time.sleep`。
 
 > 用例计数与全量命令以 `AGENTS.md` 的「测试计数」子节为唯一权威（本节只写细则，不重复计数）。
 
