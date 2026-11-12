@@ -2510,3 +2510,31 @@ F1–F11 逐条独立复跑全成立（params.get 4 处 / 老正则 3 项漏 sho
 - HG-SEC-202..206（🟢 record）→ 归属「另批 errata/勘误」（设计补记 1 · ops 回执 2 · tests 注释 1 · 无需处置 1）；**均不阻断**，本批 0 代码回炉项
 - 遗留未验证面（承接 192，本批登记）：移动 Safari `readonly` + `select()`/`execCommand`；`src/` 打包源未重建（199 = 发版流程，N-A）
 - 报告: `documents/review/html-gen-clipboard-fallback-impl-audit-v1.0-20260928.md`
+
+## 2026-11-12 — next-batch CL033/CL032/CL024 评审（CONDITIONAL PASS 80/100）
+
+- **Reviewer**: Security Reviewer
+- **Level**: L2 (design-document-review)
+- **Scope**: `github/main..HEAD` 3 笔业务提交 —— `70f714b`(CL033 splitGrid 行内 full) / `4225011`(CL032 baseline --verify 全量) / `6bb5f6d`(CL024 chromedriver env 化)，56 unique 文件 +627/-186；区间派生物 `4e7574f` docs@handoff **不计入**（单 md 文件 +36/-36，零代码已核）
+- **Verdict**: ⚠️ CONDITIONAL PASS 80/100（阻塞 1 🟡 = CL008 中文 subject；建议 3 🟡 + record 6 🟢）
+- **Score**: 80 / 100
+- **Tracking**: HG-SEC-203..212（203 CL008 中文 subject ×3 / 204 自证材料与实测不符 ×2 / 205 缺驱动静默 skip 无 strict 开关 / 206 全量 -n4 偶发红；207..212 全 🟢 record）
+- **报告**: `documents/handoff/next-batch-cl033-032-024-review-v1.0-20261112.md`
+
+### Summary
+
+**独立复算（1A 口径）**：全量 `-n 4` 复跑 3 次 —— run1 **464 passed / 1 failed**（`test_templates.py::TestDocShowMd::test_doc_title_click_copy_path`）、run2/run3 **465 passed**（59.80s/60.81s），单跑该用例恒绿 ⇒ 偶发红登记 206。`baseline.py --check` **23/23**、`--verify` **15 件 sha 逐对相等 + 5 件带理由 skip**、`git status` 空。**CL033 修法经变异复算坐实**：把 `full` 分支改回恒 `1 / -1` ⇒ **test_10 精确红 / 12 例保持绿**（与 commit body 逐字吻合）；删逐格 `grid-row` ⇒ **13 passed**，实证「等价变异」的口径订正未过度声明。**CL024 清面**：修前 31 文件/32 处硬编码 → HEAD 仅 `conftest.py` 2 处；**39 调用点 / 0 模块级**（SkipTest 语义正确）。**CL032 覆盖**：`jobs ∪ SKIP` 覆盖 `demos/*.html` 且 test_08 反向断言「既判定又跳过」，子集项数改 import 现取；重刷 9 页 diff 逐页核过 —— doc 5 页**仅 meta 字数行**、knowledge 4 页**仅 CL018 `_rxW` JS 块**、table 5 页 + demos-index **仅 splitGrid JS 块**（并实证这 9 页此前确有真实模板漂移，该门禁缺口非虚构）。**安全面**：区间 diff 对 `shell=True|os.system|eval|exec|pickle|verify=False` 命中 0；CL033 新 JS 的 `style` 串**只拼数字**（`normalizeSpan`→`Number.isInteger`、`plainSpan` 上限 6、`take` 经 `Math.max(1,…)`）⇒ 无数据→CSS 通道；产物 diff 无新增外链/无新增依赖。
+
+### 发现
+
+- 🟡 **HG-SEC-203（阻塞）** CL008：本批 3/3 subject 含中文，author 日期 2026-11-12 ≥ 2026-08-27 属「新笔」硬约束，按 handbook §5 + hm-loop-handbook §9.3「违反 → 审计 CONDITIONAL」。`hm check commit --json` → `cjk_new`=157 / `cjk_legacy`=0（全仓系统性漏检，另批裁定）。修复：3 笔未 push，`rebase -i 4e7574f` reword 英文 subject，无需 force。
+- 🟡 **HG-SEC-204** 自证材料 2 处与实测不符：① `conftest.py:4/:10` + `test_selenium_infra.py:6` 的「64 个测试文件」，实测 31 文件/32 处/35 处 `Service(`，与本批 commit body「31 个」自相矛盾；② docs/commit 的复算判据 `grep … | wc -l == 2` 实测 **5**（缺 `--include=*.py`，3 个 `.pyc` 命中）。
+- 🟡 **HG-SEC-205** 缺 chromedriver 即 `SkipTest` 且**无 strict 开关** ⇒ 39 处几何/交互断言可整体静默变绿（本批唯一实质削弱门禁的机制变化）。建议 `CHROMEDRIVER_REQUIRED=1` 或 CI 断言 skipped==0。
+- 🟡 **HG-SEC-206** `test_doc_title_click_copy_path` 在 `-n 4` 下 3 次 1 红（固定 `/tmp` 路径 + 5s 等 toast）；**非本批引入**（该文件本批仅换 Service 来源），建议单独立项（mkdtemp + 等待策略）。
+- 🟢 **HG-SEC-207..212**：DEFAULT 仍绑本机用户名绝对路径（建议 `expanduser`）/ test_01 守卫非递归且自带「拼接即豁免」范式 / `test_templates.py:209` 遗留未使用 `Service` 局部导入（commit 称已清）/ AGENTS.md `:6`/`:44` 仍 458·45 且 README 把它指为权威（受保护文件，两次审批超时未绕过，**待补审批**）/ splitGrid「剩余轨」基准为跨行 `maxCols` 而 `templates.md:57` 未点明 / `--verify` 临时目录无回收。
+
+### 处理
+
+- ⚠️ CONDITIONAL ⇒ **不 push**，等 ops reword 3 笔 subject 后触发**尾项复核**（换 hash 后需重跑 `-n 4` + `--check`/`--verify`）。
+- 报告（`documents/handoff/`，G-2 落点）+ 本 `review-log.md` + `.review-level.yaml` 已本地提交（path-scoped，`audit@review`）。
+- 建议同批顺带（一行级）：204 的 `64 → 31` 与 grep 判据补 `--include=*.py`、209 删残留 import。
