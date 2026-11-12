@@ -18,11 +18,10 @@ from pathlib import Path
 from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from conftest import chromedriver_service
 
-CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
 DRAMA = PROJECT / 'demos' / 'drama'
 
@@ -77,7 +76,7 @@ class TestTableDefaultState(unittest.TestCase):
         opts.add_argument('--headless')
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
-        cls.driver = webdriver.Chrome(service=Service(CHROMEDRIVER), options=opts)
+        cls.driver = webdriver.Chrome(service=chromedriver_service(), options=opts)
 
     @classmethod
     def tearDownClass(cls):

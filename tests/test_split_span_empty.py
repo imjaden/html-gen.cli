@@ -12,15 +12,14 @@ import unittest
 from pathlib import Path
 
 from selenium import webdriver
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
+from conftest import chromedriver_service
 
 ROOT = Path(__file__).resolve().parent.parent
 GEN = ROOT / 'html-gen.py'
-CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 
 COLS = [
     {'key': 'name', 'label': '名称', 'width': '120px'},
@@ -57,7 +56,7 @@ class TestSplitSpanAndEmpty(unittest.TestCase):
         opts.add_argument('--headless=new')
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
-        cls.driver = webdriver.Chrome(service=Service(CHROMEDRIVER), options=opts)
+        cls.driver = webdriver.Chrome(service=chromedriver_service(), options=opts)
 
     @classmethod
     def tearDownClass(cls):

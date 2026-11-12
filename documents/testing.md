@@ -15,13 +15,16 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 ## 测试治理
 
 - Selenium 测试：headless Chrome，`localStorage.clear()` setUp，`window.__testErrors` 跟踪
-- Chromedriver: `/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver`
+- Chromedriver: `tests/conftest.py` 的 `CHROMEDRIVER`（env 覆盖，缺省 `~/CodeSpace/script-miner/cache/chromedriver/chromedriver`）；
+  二进制不存在时 `chromedriver_service()` 抛 `SkipTest`（带原因 + env 提示），不让 Selenium 报 WebDriverException。
+  所有 `tests/test_*.py` 一律 `from conftest import chromedriver_service`，**不得**再硬编码绝对路径
+  （判据：`grep -rn "script-miner/cache/chromedriver" tests/ | wc -l` == 2，均在 conftest.py 内）
 - 测试文件命名：`tests/test_{feature}.py`，继承 `unittest.TestCase`
 - 每个测试方法独立加载页面，`_errors()` 检查 JS 错误
 
 > 用例计数与全量命令以 `AGENTS.md` 的「测试计数」子节为唯一权威（本节只写细则，不重复计数）。
 
-- 组成：45 文件，共 102 subtests（下表为旧快照，缺 `test_table_default_state 10` / `test_split_span_empty 10` / `test_media_columns 14` / `test_link_safety 5` / `test_split_grid 13` / `test_baseline_gate 9`（3 例为 CL029 返工新增）；总计以 AGENTS.md「测试计数」为准）；test_issue_feedback 37 / test_help_contract 22 / test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_aliases 17 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_clipboard_fallback 12 / test_table_default_state 10 / test_demo_cmd 10 / test_the_price_you_choose_demo 8 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_word_count 7 / test_render_summary 7 / test_rebuild_refs 7 / test_history_tables 7 / test_doc_sidebar 7 / test_xss_escape 6 / test_url_state 6 / test_sticky_width 6 / test_prompt_cmd 6 / test_md_highlight 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_initial_hidden_split 5 / test_knowledge_width 5 / test_split_detail 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 组成：46 文件，共 102 subtests（下表为旧快照，缺 `test_table_default_state 10` / `test_split_span_empty 10` / `test_media_columns 14` / `test_link_safety 5` / `test_split_grid 13` / `test_baseline_gate 9` / `test_selenium_infra 3`（3 例为 CL029 返工新增）；总计以 AGENTS.md「测试计数」为准）；test_issue_feedback 37 / test_help_contract 22 / test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_aliases 17 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_clipboard_fallback 12 / test_table_default_state 10 / test_demo_cmd 10 / test_the_price_you_choose_demo 8 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_word_count 7 / test_render_summary 7 / test_rebuild_refs 7 / test_history_tables 7 / test_doc_sidebar 7 / test_xss_escape 6 / test_url_state 6 / test_sticky_width 6 / test_prompt_cmd 6 / test_md_highlight 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_initial_hidden_split 5 / test_knowledge_width 5 / test_split_detail 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~55s)

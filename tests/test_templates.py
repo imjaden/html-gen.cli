@@ -7,12 +7,11 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
 DEMOS = PROJECT / 'demos'
 GEN = PROJECT / 'html-gen.py'
-CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 
 
 def run_gen(*args):
@@ -223,7 +222,7 @@ class TestDocSlideFrontmatter(unittest.TestCase):
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
         driver = webdriver.Chrome(
-            service=Service('/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'),
+            service=chromedriver_service(),
             options=opts)
         try:
             driver.get(f'file://{out}')
@@ -262,7 +261,7 @@ class TestDocShowMd(unittest.TestCase):
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
         cls.driver = webdriver.Chrome(
-            service=Service(CHROMEDRIVER), options=opts)
+            service=chromedriver_service(), options=opts)
 
     @classmethod
     def tearDownClass(cls):
@@ -329,7 +328,7 @@ class TestDocTypography(unittest.TestCase):
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
         cls.driver = webdriver.Chrome(
-            service=Service(CHROMEDRIVER), options=opts)
+            service=chromedriver_service(), options=opts)
         cls.page = DEMOS / 'markdown-spec.html'  # 含 p/li/blockquote 的真实产物
 
     @classmethod

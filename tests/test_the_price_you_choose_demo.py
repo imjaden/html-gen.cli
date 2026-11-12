@@ -13,12 +13,11 @@ from pathlib import Path
 
 from selenium import webdriver
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
+from conftest import chromedriver_service
 
-CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
 DEMOS = PROJECT / 'demos'
 ENTRY = DEMOS / 'the-price-you-choose.html'
@@ -44,7 +43,7 @@ class TestThePriceYouChoose(unittest.TestCase):
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
         opts.set_capability('goog:loggingPrefs', {'browser': 'ALL'})
-        cls.driver = webdriver.Chrome(service=Service(CHROMEDRIVER), options=opts)
+        cls.driver = webdriver.Chrome(service=chromedriver_service(), options=opts)
 
     @classmethod
     def tearDownClass(cls):

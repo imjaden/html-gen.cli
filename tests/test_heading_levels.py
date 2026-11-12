@@ -7,11 +7,10 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
 GEN = PROJECT / 'html-gen.py'
-CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 
 
 def run_gen(*args):
@@ -68,7 +67,7 @@ class TestHeadingLevelsSelenium(unittest.TestCase):
         opts.add_argument('--headless')
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
-        svc = Service(CHROMEDRIVER)
+        svc = chromedriver_service()
         cls.driver = webdriver.Chrome(service=svc, options=opts)
         # Generate a doc with h4/h5/h6
         cls.tmp = Path('/tmp/test-h4-h6.md')

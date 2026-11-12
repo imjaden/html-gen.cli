@@ -8,9 +8,8 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.chrome.options import Options
-from selenium.webdriver.chrome.service import Service
+from conftest import chromedriver_service
 
-CHROMEDRIVER = '/Users/jadenli/CodeSpace/script-miner/cache/chromedriver/chromedriver'
 PROJECT = Path(__file__).resolve().parent.parent
 DEMO = PROJECT / 'demos' / 'table-features-demo.html'
 
@@ -64,7 +63,7 @@ class TestTableFeatures(unittest.TestCase):
         opts.add_argument('--headless')
         opts.add_argument('--no-sandbox')
         opts.add_argument('--disable-dev-shm-usage')
-        svc = Service(CHROMEDRIVER)
+        svc = chromedriver_service()
         cls.driver = webdriver.Chrome(service=svc, options=opts)
 
     @classmethod
