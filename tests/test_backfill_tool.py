@@ -104,6 +104,25 @@ class TestBackfillTool(TmpDirMixin, unittest.TestCase):
             self.assertEqual(rr.returncode, 0, rr.stderr)
             self.assertNotIn('悬空', rr.stdout, f'{stem} 的 legacy 不应有悬空键:\n{rr.stdout}')
 
+    def test_05_rename_reported_in_same_run(self):
+        """HG-SEC-260：改名造成的悬空必须在**本次** --apply 当轮报出，不能晚一轮。
+
+        旧实现拿写盘前的旧行当参照系，而 legacy 正是按旧行名写的 ⇒ 参照系与写入端同源，
+        本次改名永远「当场绿」。夹具刻意让旧行名与新行名不同：legacy 写在 旧名 下，
+        产物行是 新名 ⇒ 本轮就该报。
+        """
+        old_rows = [{'strategy': '走为上计', 'idiom': 'x'}]
+        new_rows = [{'strategy': '走为上', 'note': 'n'}]
+        html, src = make_pair(self.tmpdir, COLS, new_rows, COLS, old_rows)
+
+        r = run(['--pair', f'{html}={src}', '--apply'])
+        self.assertEqual(r.returncode, 0, f'{r.stdout}{r.stderr}')
+        self.assertIn('悬空', r.stdout, f'改名当轮必须报悬空（否则要等下一轮）:\n{r.stdout}')
+        self.assertIn('走为上计', r.stdout)
+        # 写盘后仍是同一个判定口径：下一次 dry-run 也必须报（数据里确实挂着断链键）
+        r2 = run(['--pair', f'{html}={src}', '--dry-run'])
+        self.assertIn('悬空', r2.stdout, r2.stdout)
+
 
 if __name__ == '__main__':
     unittest.main()

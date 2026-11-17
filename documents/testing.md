@@ -110,5 +110,5 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   参数回归拒写 + 越权基线拒普通 --update + 二次 force 才恢复（test_10）**。
   子集项数由测试 import `baseline.SUBSET` 现取，不再写死常数；文档里的「N 个可 verify 产物 / N 项」
   也在 test_08 里与 `len(build_jobs)` / `len(SUBSET)` 绑死（改口径忘改文档即红）。
-- 测试：`tests/test_backfill_tool.py` 4 例（CL040）：行数不等拒写 / 行标识重复拒写 / 字段差异方向与真值 /
-  legacy 悬空键报告（含真数据三表零悬空）。夹具用 `mkdtemp` 子目录，脚本走 subprocess。
+- 测试：`tests/test_backfill_tool.py` 5 例（CL040）：行数不等拒写 / 行标识重复拒写 / 字段差异方向与真值 /
+  legacy 悬空键报告（含真数据三表零悬空）/ 改名当轮即报悬空（HG-SEC-260）。夹具用 `mkdtemp` 子目录，脚本走 subprocess。

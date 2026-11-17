@@ -68,9 +68,14 @@ def fmt_diff(d):
     return ' '.join(parts)
 
 
-def dangling_legacy(raw):
-    """legacy 段里按行标识 join 不到任何行的键（改名即断链的当场暴露面，CL040 D3）。"""
-    keys = {row_key(r, i) for i, r in enumerate(raw.get('data', []))}
+def dangling_legacy(raw, live_rows=None):
+    """legacy 段里按行标识 join 不到任何行的键（改名即断链的当场暴露面，CL040 D3）。
+
+    HG-SEC-260：参照系必须是**产物行**（回填后的 data），不能用 `raw['data']`（写盘前的旧行）——
+    legacy 是按旧行名写的，若拿旧行当参照，本次改名造成的悬空永远「当场绿」、要等下一轮才报。
+    """
+    rows = raw.get('data', []) if live_rows is None else live_rows
+    keys = {row_key(r, i) for i, r in enumerate(rows)}
     bad = []
     for field, mapping in (raw.get('legacy') or {}).items():
         if not isinstance(mapping, dict):
@@ -159,7 +164,7 @@ def main(argv=None):
         if orphans:
             print(f'   保留未渲染字段 {dict(orphans)}（存顶层 legacy；--drop-orphans 才丢）')
 
-        bad = dangling_legacy(raw)
+        bad = dangling_legacy(raw, data)
         if bad:
             print(f'   ⚠️ legacy 悬空键 {len(bad)} 条（行已改名 ⇒ 无法按名 join）：{bad[:5]}'
                   + (' …' if len(bad) > 5 else ''))

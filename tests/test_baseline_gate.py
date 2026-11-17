@@ -256,6 +256,12 @@ class TestRenderBaseline(unittest.TestCase):
         base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
         self.assertTrue(base['verified'], 'verify 绿且无参数回归 ⇒ verified 必须回到 True')
 
+        # 9) HG-SEC-263：help 文案不得与第 8 步相反（旧文案「不会写 verified=true」自相矛盾）
+        h = run(['--help'])
+        self.assertEqual(h.returncode, 0, h.stderr)
+        self.assertIn('仍跑 verify', h.stdout)
+        self.assertNotIn('不会写 verified=true', h.stdout, '--force 可以写回 true（第 8 步），文案不得否认')
+
     def test_09_doc_and_kb_jobs_carry_their_source(self):
         """doc/kb 作业必须带单源 + 从产物回收的标题（缺标题会静默退化为默认「知识库」）。"""
         mod = _load_script()

@@ -455,7 +455,7 @@ def main(argv=None):
     ap.add_argument('--root', default=None, help='仓库根（默认本脚本上一级）')
     ap.add_argument('--json', action='store_true', help='机器可读输出')
     ap.add_argument('--force', action='store_true',
-                   help='--update 跳过拒绝（仍跑 verify；不会写 verified=true）')
+                   help='--update 跳过拒绝（仍跑 verify；verified 由 verify 结果与参数回归决定，不强制写 false）')
     ap.add_argument('--quiet', action='store_true')
     ap.add_argument('--keep-temp', action='store_true', help='--verify 保留临时渲染目录（排查用）')
     args = ap.parse_args(argv)
