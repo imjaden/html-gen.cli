@@ -41,7 +41,7 @@
 
 ### 测试计数
 
-- 473 tests（47 文件，含 102 subtests）；本节为仓内唯一计数权威，`README.md` / `README.zh.md` / `features.md` / `skills/pages-index/SKILL.md` 均指向此处。
+- 473 tests（47 文件，含 103 subtests）；本节为仓内唯一计数权威，`README.md` / `README.zh.md` / `features.md` / `skills/pages-index/SKILL.md` 均指向此处。
 - `python3 -m pytest tests/ -q -n 4`（约 55s，py3.12）；调试 `-n 0`；细则见 `documents/testing.md`。
 
 ## 项目独立性
