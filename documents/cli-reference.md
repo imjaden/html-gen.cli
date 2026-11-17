@@ -128,6 +128,8 @@ Layer 3: html-gen.py            CLI 生成器（doc / table / knowledge）
 | `layout-table.html` | A 型表格模板：搜索 + 排序 + 分页 |
 | `layout-knowledge.html` | C 型知识库模板：顶部标签栏 + 左侧章节 + iframe/内联内容 |
 | `scripts/company-research-schema.json` | 公司调研 schema 定义（company/groups/items/output） |
+| `scripts/baseline.py` | 渲染基线门禁（CL029）：`--check` / `--verify` / `--update`；钉子 = 模板源码 + 代表产物 sha256 + `corner`/`home` 参数存在性（详见 `documents/testing.md`「渲染基线门禁」） |
+| `scripts/backfill-table-json.py` | 产物 → 数据源回填（CL038/CL040）：回收 `const COLUMNS/DATA` 写回 JSON，字段级差异；行数/行键校验失败 rc=2；孤儿字段存 `legacy` |
 
 ## 项目独立性与跨项目只读依赖
 

@@ -40,7 +40,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 
 > 用例计数与全量命令以 `AGENTS.md` 的「测试计数」子节为唯一权威（本节只写细则，不重复计数）。
 
-- 组成：46 文件，共 102 subtests（下表为旧快照，缺 `test_table_default_state 10` / `test_split_span_empty 10` / `test_media_columns 14` / `test_link_safety 5` / `test_split_grid 13` / `test_baseline_gate 9` / `test_selenium_infra 4`（3 例为 CL029 返工新增）；总计以 AGENTS.md「测试计数」为准）；test_issue_feedback 37 / test_help_contract 22 / test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_aliases 17 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_clipboard_fallback 12 / test_table_default_state 10 / test_demo_cmd 10 / test_the_price_you_choose_demo 8 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_word_count 7 / test_render_summary 7 / test_rebuild_refs 7 / test_history_tables 7 / test_doc_sidebar 7 / test_xss_escape 6 / test_url_state 6 / test_sticky_width 6 / test_prompt_cmd 6 / test_md_highlight 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_initial_hidden_split 5 / test_knowledge_width 5 / test_split_detail 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
+- 组成：48 文件，共 103 subtests（下表为旧快照，缺 `test_table_default_state 10` / `test_split_span_empty 10` / `test_media_columns 14` / `test_link_safety 5` / `test_split_grid 13` / `test_baseline_gate 10` / `test_backfill_tool 4` / `test_selenium_infra 4`（3 例为 CL029 返工新增）；总计以 AGENTS.md「测试计数」为准）；test_issue_feedback 37 / test_help_contract 22 / test_sync_videos 21 / test_templates 18 / test_index_landing 18 / test_aliases 17 / test_drama_knowledge 16 / test_hermes_skills 15 / test_table_features 14 / test_json_output 14 / test_provinces_table 13 / test_prompt_site 13 / test_countries_table 13 / test_clipboard_fallback 12 / test_table_default_state 10 / test_demo_cmd 10 / test_the_price_you_choose_demo 8 / test_videos 8 / test_knowledge_sidebar 8 / test_doc_width 8 / test_word_count 7 / test_render_summary 7 / test_rebuild_refs 7 / test_history_tables 7 / test_doc_sidebar 7 / test_xss_escape 6 / test_url_state 6 / test_sticky_width 6 / test_prompt_cmd 6 / test_md_highlight 6 / test_heading_levels 6 / test_doc_bare 6 / test_demos_index 6 / test_corner_privacy 6 / test_initial_hidden_split 5 / test_knowledge_width 5 / test_split_detail 5 / test_cli_version 5 / test_slide_h3_toggle 4 / test_datetime_clickmode 3）
 - **全量命令**（pytest-xdist 并行，见 pytest.ini `addopts = -n 4`）：
   ```bash
   python3 -m pytest tests/ -q -n 4     # 并行全量 (~55s)
@@ -54,7 +54,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 
 ## 渲染基线门禁（CL029 → v1.2 CL032 → v1.3 CL032 尾项）
 
-`scripts/baseline.py`：对**可判定子集**（5 个模板/样式源含 `layout-slide.html` + 2 个手写落地页 + `demos-index` 就地重建 + **39 个可 verify 产物** = **50 项**）钉 sha256+字节数，
+`scripts/baseline.py`：对**可判定子集**（5 个模板/样式源含 `layout-slide.html` + 2 个手写落地页 + `demos-index` 就地重建 + **42 个可 verify 产物** = **50 项**）钉 sha256+字节数，
 基线文件 `data/_render-baseline.json` 随仓入库（`version: 2`，带 `verified` 标记）。
 
 ```bash
@@ -68,7 +68,7 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   `--verify` 的参数是**从产物自己回收**的 ⇒ 某次重建漏了 `--github-url`/`--home-url` 时，回收也一起消失、
   verify 永远绿（实测：CL032 首次重刷 5 个产物丢 corner 而全绿）。故 `--update` 在基线里额外记
   `corner`/`home` 存在性，`--check` 见「基线有、产物没有」即报 `param-lost:corner|home`。
-  变异实证：漏 `--github-url` 重生成 ⇒ `--check --json` 出现 1 条 `param-lost`；补回 ⇒ 47/47 一致。
+  变异实证：漏 `--github-url` 重生成 ⇒ `--check --json` 出现 1 条 `param-lost`；补回 ⇒ 50/50 一致。
   **`--update` 同批也拦（HG-SEC-245）**：漏参重建后立刻 `--update` 会被拒（rc=1，基线不动，提示按原参数重刷），
   否则新基线会把 `corner:false` 写进去、钉子当场洗白；确属产品决策要摘角标时才 `--force`（并标 `verified=false`）。
   后者用**从产物回收的参数集**（title/subtitle/welcome/corner/home 全从产物解析）重渲到临时目录比 sha，
@@ -95,8 +95,20 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   回填后判据 = 用新源重刷、`COLUMNS`/`DATA`/`title`/`corner` 四项与回填前逐字相等，方可纳入基线。
 - **为什么不许 `--force` 常态化**：产物落后于模板时重建基线，等于把「模板已前进、产物没重刷」的漂移一次性拍成绿
   （复审实测就是这种状态：countries/provinces/table-features/table-actions/hermes-skills/slide-guide 六个产物都落后）。
-- 测试：`tests/test_baseline_gate.py` 9 例，全部在 `--root` 临时副本上跑（真仓零写入）：
+- **`verified` 的语义（CL040）**：= 「本份基线是在 verify 绿、且无参数回归的前提下建立的」。
+  `--force` 也跑 verify（force 只解除拒绝，不再无条件写 true）；旧基线若带 `verified=false`，
+  普通 `--update` 一律拒 —— 否则「先 force 洗成 false、再普通 update」当场把钉子洗白，
+  而 `--verify` 因参数从产物回收永远抓不到（HG-SEC-249）。洗白要两次显式 `--force` 才回到 true。
+  `--check` 见 `verified=false` 时在 stderr 打 ⚠️（rc 不变，避免破坏既有 rc=0 断言）。
+- 回填工具 `scripts/backfill-table-json.py` 的输入拒绝面（CL040）：源/产物行数不等或行标识重复 ⇒
+  **rc=2 且不写盘**（`--drop-orphans` 才放行并清掉既有 `legacy` 段）；字段差异按 `+新增带新值 /
+  -摘除带旧值 / ~变更带双值` 输出；`legacy` 里按行名 join 不到的键会报「悬空」。
+- 测试：`tests/test_baseline_gate.py` 10 例，全部在 `--root` 临时副本上跑（真仓零写入）：
   未改绿 / 改一字节红且只报该项（含 stderr 漂移提示断言）/ JSON 形状 / 缺文件 / 无基线 exit 2 /
   基线损坏 exit 3 / 产物落后时 `--update` 拒绝且 `--force` 标 `verified=false` / `--update` 复原 /
-  **无页面漏网（jobs ∪ SKIP 覆盖 `demos/*.html`，子集 ⊇ 全部 jobs）/ doc·kb 作业带单源与回收标题**。
-  子集项数由测试 import `baseline.SUBSET` 现取，不再写死常数。
+  **无页面漏网（jobs ∪ SKIP 覆盖 `demos/*.html`，子集 ⊇ 全部 jobs）/ doc·kb 作业带单源与回收标题 /
+  参数回归拒写 + 越权基线拒普通 --update + 二次 force 才恢复（test_10）**。
+  子集项数由测试 import `baseline.SUBSET` 现取，不再写死常数；文档里的「N 个可 verify 产物 / N 项」
+  也在 test_08 里与 `len(build_jobs)` / `len(SUBSET)` 绑死（改口径忘改文档即红）。
+- 测试：`tests/test_backfill_tool.py` 4 例（CL040）：行数不等拒写 / 行标识重复拒写 / 字段差异方向与真值 /
+  legacy 悬空键报告（含真数据三表零悬空）。夹具用 `mkdtemp` 子目录，脚本走 subprocess。

@@ -22,6 +22,8 @@ html-gen help <topic> — 按主题显示帮助 (doc/slide/table/knowledge/promp
 
 ### 脚本工具
 scripts/company-report.py — 公司调研报告生成器 (schema → C 型知识库) ✅ — scripts/company-research-schema.json
+scripts/baseline.py — 渲染基线门禁 (模板源码 + 产物 sha256 + 参数存在性钉子) ✅
+scripts/backfill-table-json.py — 产物 → 数据源回填 (columns/data + 字段级差异 + legacy 保全) ✅
 
 ---
 
