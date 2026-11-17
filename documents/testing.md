@@ -99,7 +99,9 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   `--force` 也跑 verify（force 只解除拒绝，不再无条件写 true）；旧基线若带 `verified=false`，
   普通 `--update` 一律拒 —— 否则「先 force 洗成 false、再普通 update」当场把钉子洗白，
   而 `--verify` 因参数从产物回收永远抓不到（HG-SEC-249）。洗白要两次显式 `--force` 才回到 true。
-  `--check` 见 `verified=false` 时在 stderr 打 ⚠️（rc 不变，避免破坏既有 rc=0 断言）。
+  `--check` 见 `verified=false` 时在 stderr 打 ⚠️（rc 不变，避免破坏既有 rc=0 断言）；
+  `--check --json` 带 `verified` 与 `drifted`（HG-SEC-261），其中 `drifted` 按**不同产物**计数——
+  同一产物既「内容变了」又「参数丢了」只算 1 项，判据条数另报（HG-SEC-266，旧口径 2/50 实为 1 件）。
 - 回填工具 `scripts/backfill-table-json.py` 的输入拒绝面（CL040）：源/产物行数不等或行标识重复 ⇒
   **rc=2 且不写盘**（`--drop-orphans` 才放行并清掉既有 `legacy` 段）；字段差异按 `+新增带新值 /
   -摘除带旧值 / ~变更带双值` 输出；`legacy` 里按行名 join 不到的键会报「悬空」。
@@ -111,4 +113,5 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   子集项数由测试 import `baseline.SUBSET` 现取，不再写死常数；文档里的「N 个可 verify 产物 / N 项」
   也在 test_08 里与 `len(build_jobs)` / `len(SUBSET)` 绑死（改口径忘改文档即红）。
 - 测试：`tests/test_backfill_tool.py` 5 例（CL040）：行数不等拒写 / 行标识重复拒写 / 字段差异方向与真值 /
-  legacy 悬空键报告（含真数据三表零悬空）/ 改名当轮即报悬空（HG-SEC-260）。夹具用 `mkdtemp` 子目录，脚本走 subprocess。
+  legacy 悬空键报告（含真数据三表零悬空）/ 改名当轮即报悬空（HG-SEC-260）；
+  坏路径给「输入不存在」+ rc=2 而非裸 traceback（HG-SEC-262）。夹具用 `mkdtemp` 子目录，脚本走 subprocess。

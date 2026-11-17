@@ -6,6 +6,7 @@ v1.1（复审返工）补：stderr 漂移提示、`--json` 错误分支形状、
 """
 import importlib.util
 import json
+import re
 import shutil
 import subprocess
 import sys
@@ -173,6 +174,23 @@ class TestRenderBaseline(unittest.TestCase):
                       f'testing.md 的「可 verify 产物」数应等于 build_jobs 实际 {len(jobs)} 件')
         self.assertIn(f'= **{len(mod.SUBSET)} 项**', doc,
                       f'testing.md 的子集项数应等于 SUBSET 实际 {len(mod.SUBSET)} 项')
+        # HG-SEC-265：文件数与用例数也要绑死（此前只有「N 件 / N 项」被绑）
+        tests_dir = ROOT / 'tests'
+        n_files = len(list(tests_dir.glob('test_*.py')))
+        self.assertIn(f'{n_files} 文件', doc,
+                      f'testing.md 的「N 文件」应等于 tests/test_*.py 实际 {n_files} 个')
+        gate_src = (tests_dir / 'test_baseline_gate.py').read_text(encoding='utf-8')
+        n_gate = len(re.findall(r'^    def test_\w+\(', gate_src, re.M))
+        self.assertIn(f'test_baseline_gate.py` {n_gate} 例', doc,
+                      f'testing.md 应写 test_baseline_gate.py 实有 {n_gate} 例')
+        # subtests 只能实跑才数得出 ⇒ 退一步守「两处同数」（AGENTS.md 是权威、testing.md 复述）
+        agents = (ROOT / 'AGENTS.md').read_text(encoding='utf-8')
+        self.assertIn(f'{n_files} 文件', agents, f'AGENTS.md 的文件数也应为 {n_files}')
+        sub_doc = re.search(r'共 (\d+) subtests', doc)
+        sub_agents = re.search(r'含 (\d+) subtests', agents)
+        self.assertTrue(sub_doc and sub_agents, '两处都应写 subtests 数量')
+        self.assertEqual(sub_doc.group(1), sub_agents.group(1),
+                         'testing.md 与 AGENTS.md 的 subtests 数必须同值（改一处忘改另一处即红）')
 
     # v1.3（CL040）新增 -----------------------------------------------------
     def test_10_param_regression_blocks_update_and_sticks(self):
@@ -216,6 +234,15 @@ class TestRenderBaseline(unittest.TestCase):
 
         # 2) 漏参重渲（产物字节变了，但仍是当前模板产物）
         render(False)
+
+        # 2b) HG-SEC-261/266：--check --json 必须带 verified（越权态对机器可见）；
+        #     同一产物「内容变了 + 参数丢了」只算 1 项漂移，判据条数另计。
+        r = run(['--check', '--json'], tmp)
+        self.assertEqual(r.returncode, 1, f'产物已变 ⇒ --check 应 rc=1:\n{r.stdout}{r.stderr}')
+        rep = json.loads(r.stdout)
+        self.assertTrue(rep.get('verified'), '该基线是正常建立的，JSON 里 verified 应为 true')
+        self.assertEqual(rep.get('drifted'), 1, f'同一产物多条判据只算 1 项: {rep}')
+        self.assertGreater(len(rep['mismatches']), 1, '判据条数仍要逐条可见（changed + param-lost）')
 
         # 3) ★ 前提：verify 仍然绿（参数从产物回收）
         r = run(['--verify', '--quiet'], tmp)

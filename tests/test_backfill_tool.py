@@ -85,6 +85,12 @@ class TestBackfillTool(TmpDirMixin, unittest.TestCase):
         self.assertNotIn('<dropped>', r.stdout, '不得再出现占位字面（旧实现的双向错位）')
         self.assertNotIn('<none>', r.stdout)
 
+        # 2) HG-SEC-262：坏路径给「人话 + rc=2」，不是裸 traceback
+        bad = run(['--pair', f'{self.tmpdir}/nope.html={self.tmpdir}/nope.json', '--dry-run'])
+        self.assertEqual(bad.returncode, 2, f'缺文件应 rc=2:\n{bad.stdout}{bad.stderr}')
+        self.assertIn('输入不存在', bad.stderr)
+        self.assertNotIn('Traceback', bad.stderr)
+
     def test_04_legacy_dangling_reported(self):
         # 行已改名（旧名 走为上计 → 现行 走为上），legacy 仍按旧名存 ⇒ 悬空
         old_rows = [{'strategy': '走为上'}]

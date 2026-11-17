@@ -419,8 +419,13 @@ def cmd_check(root, as_json=False):
                                    'expected': True, 'actual': False})
 
     ok = not mismatches
+    # HG-SEC-266：同一产物「内容变了 + 参数丢了」会各记一条 ⇒ 直接用 len(mismatches) 当「漂移 N 项」
+    # 会把一件算成两件（实测 2/50 实为 1 件）。对外口径一律按**不同路径**计，判据条数单独报。
+    drifted = len({m['path'] for m in mismatches})
     if as_json:
-        print(json.dumps({'ok': ok, 'total': len(SUBSET), 'mismatches': mismatches},
+        # HG-SEC-261：verified 必须进机器可读输出，否则越权建立的基线（钉子可能已失效）对巡检不可见。
+        print(json.dumps({'ok': ok, 'total': len(SUBSET), 'verified': base.get('verified'),
+                          'drifted': drifted, 'mismatches': mismatches},
                          ensure_ascii=False, indent=2))
         return 0 if ok else 1
 
@@ -438,8 +443,9 @@ def cmd_check(root, as_json=False):
     if ok:
         print(f'\n基线一致: {len(SUBSET)}/{len(SUBSET)}（{root}）')
         return 0
-    print(f'\n漂移 {len(mismatches)}/{len(SUBSET)} —— 确认产物正确后跑 --update 重建基线',
-          file=sys.stderr)
+    print(f'\n漂移 {drifted}/{len(SUBSET)} 项'
+          + (f'（{len(mismatches)} 条判据）' if len(mismatches) != drifted else '')
+          + ' —— 确认产物正确后跑 --update 重建基线', file=sys.stderr)
     return 1
 
 

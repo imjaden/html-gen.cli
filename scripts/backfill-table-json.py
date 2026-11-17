@@ -102,8 +102,21 @@ def main(argv=None):
     rc = 0
     for spec in a.pair:
         html_p, json_p = (pathlib.Path(x) for x in spec.split('=', 1))
-        html = html_p.read_text(encoding='utf-8')
-        raw = json.loads(json_p.read_text(encoding='utf-8'))
+        # HG-SEC-262：坏路径/坏 JSON 过去直接抛裸 traceback（rc=1 但看不出是哪一侧、什么原因）
+        missing = [str(p) for p in (html_p, json_p) if not p.is_file()]
+        if missing:
+            print(f'❌ 输入不存在：{", ".join(missing)}（--pair 要求 HTML=JSON 两侧都是文件）',
+                  file=sys.stderr)
+            rc = 2
+            continue
+        try:
+            html = html_p.read_text(encoding='utf-8')
+            raw = json.loads(json_p.read_text(encoding='utf-8'))
+        except (UnicodeDecodeError, json.JSONDecodeError) as e:
+            print(f'❌ 读取失败（{json_p if isinstance(e, json.JSONDecodeError) else html_p}）：{e}',
+                  file=sys.stderr)
+            rc = 2
+            continue
         cols = _embedded(html, COLS_RE, 'COLUMNS')
         data = _embedded(html, DATA_RE, 'DATA')
 
