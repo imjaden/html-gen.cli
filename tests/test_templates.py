@@ -156,6 +156,9 @@ class TestBackwardCompat(TmpDirMixin, unittest.TestCase):
                 '-g', str(PROJECT / 'data/_chaitin-groups.json'), '--title', 'K', '-o', str(out))
         html = out.read_text()
         self.assertIn('kw-wrapper', html)
+        # 侧栏条目 ellipsis 单行 ⇒ 必须有 title 属性兜全名（HERMES-MANAGER-CL393 转交）
+        self.assertIn("class=\"kw-item-text\" title=", html)
+        self.assertIn('function escAttr(', html)
 
 
 class TestDocSlideFrontmatter(TmpDirMixin, unittest.TestCase):

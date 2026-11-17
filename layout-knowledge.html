@@ -226,7 +226,7 @@
 <script>
 (function() {
   const GROUPS = <!--GROUPS-->;  // [{key, label, icon}]
-  const ITEMS  = <!--ITEMS-->;   // [{title, group, section?, badge?, url?, desc?}]
+  const ITEMS  = <!--ITEMS-->;   // [{title, group, section?, badge?, url?, desc?, page_title?}]  page_title = 侧栏 tooltip 全名（缺省用 title）
 
   let activeGroup = GROUPS.length > 0 ? GROUPS[0].key : '';
   let activeItem = null;
@@ -350,6 +350,14 @@
   };
 
   // ── Render sidebar sections ──
+  // 侧栏条目文本是 ellipsis 单行：超宽名字只剩前缀 ⇒ 用 title 属性兜住全名（悬停可见）。
+  // 值优先取 page_title（消费方可给「全名/短名」两套），缺省回退 title。
+  function escAttr(s) {
+    return String(s == null ? '' : s)
+      .replace(/&/g, '&amp;').replace(/"/g, '&quot;')
+      .replace(/</g, '&lt;').replace(/>/g, '&gt;');
+  }
+
   function renderSidebar() {
     var container = document.getElementById('kwSectionsContainer');
     var groupItems = ITEMS.filter(function(item) { return item.group === activeGroup; });
@@ -378,7 +386,7 @@
           var bc = BADGE_COLORS[item.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
           badgeHtml = '<span class="kw-item-badge" style="background:'+bc.bg+';color:'+bc.color+';border:1px solid '+bc.border+'">'+item.badge+'</span>';
         }
-        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text">' + item.title + '</span>' + badgeHtml + '</div>';
+        html += '<div class="kw-item" onclick="selectItem(\'' + activeGroup.replace(/'/g,"\\'") + '\',\'' + item.title.replace(/'/g,"\\'") + '\')"><span class="kw-item-text" title="' + escAttr(item.page_title || item.title) + '">' + item.title + '</span>' + badgeHtml + '</div>';
       });
       }
     });

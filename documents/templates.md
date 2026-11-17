@@ -75,9 +75,9 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - **Videos 视频列**：行字段为对象数组 `[{url,title,duration,platform}]`，每视频一个 pill（图标+标题+时长）；`col.videos.maxShow` 折叠 "+N" 点击展开（不折叠回，re-render 重置）；平台图标映射 douyin/抖音🎵 bilibili/B站/b站📺 youtube▶️ 其他📹；pill 点击新标签页（noopener,noreferrer）；默认搜索排除 videos；split/expand 数组特判渲染
 
 ### layout-knowledge.html（C 型知识库）
-- **键规范**（item 8 / groups 3 / 数据源与输出目标 / CLI 参数 10）见 `html-gen help knowledge` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['knowledge']`）
+- **键规范**（item 9 / groups 3 / 数据源与输出目标 / CLI 参数 10）见 `html-gen help knowledge` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['knowledge']`）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
-- 左侧章节列表（按 section 分组，badge 标记显式）
+- 左侧章节列表（按 section 分组，badge 标记显式）；条目文本单行 `ellipsis`（侧栏 260px，约容 24 列），全名走 `title` 属性悬停提示：取 `item.page_title` → 回退 `item.title`
 - 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏）
 - **嵌入降级**：条目带 `url` 时以 iframe 加载详情页，并在该 URL 追加 `sidebar=0&toolbar=0` 使其进入 Bare 模式（知识库页自身无 sidebar/toolbar URL 状态；键口径见 `html-gen help doc` 的「URL 状态」段）
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated": "2026-11-12",
+  "generated": "2026-11-17",
   "note": "CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）",
   "verified": true,
   "files": {
@@ -17,8 +17,8 @@
       "home": false
     },
     "layout-knowledge.html": {
-      "sha256": "8924b1c14ce8394649aa8ad54d14d47cfee9ce5dfc95368bc6572449f5172fd2",
-      "bytes": 28620,
+      "sha256": "0b7f1e13030564257465eba90a69cc6e237a52cf8b0b495943f15a09cd9cdb4f",
+      "bytes": 29141,
       "corner": false,
       "home": false
     },
@@ -117,26 +117,26 @@
       "home": false
     },
     "demos/knowledge-demo.html": {
-      "sha256": "ba03055d89559e88d11fe0d38a5ba59cac74e20c1dbe9e55afccf2bf081ca765",
-      "bytes": 68882,
+      "sha256": "2978613aa1b5e2ede53d1ec75515c53a6e555816cab5c3a9ab5976d1d3e264a6",
+      "bytes": 69403,
       "corner": true,
       "home": false
     },
     "demos/drama-knowledge.html": {
-      "sha256": "d44dd22aa2787c8421015f1012711c73098c186aea8c71a80e8f9e99e3f0e822",
-      "bytes": 40269,
+      "sha256": "0ba0f10b1bca0f8324478dc397e280148eea3c4c201978de9d774507cd2e79f5",
+      "bytes": 40790,
       "corner": true,
       "home": false
     },
     "demos/chaitin-business-analysis.html": {
-      "sha256": "d92ce9fafe02059346f9d721647639481ea1f569bd613f259b6b99b091455514",
-      "bytes": 40139,
+      "sha256": "6662afc215d7ed8ff8a976d853b66f4d18745e09ad69b04574d4a390cf146ff2",
+      "bytes": 40660,
       "corner": true,
       "home": false
     },
     "demos/cloudwise-business-analysis.html": {
-      "sha256": "d5aba3d514865ed06d1e1cbad4f3a8105b5e0ffb60e0440755c84e3c57d9563b",
-      "bytes": 49769,
+      "sha256": "46e49d57e1c7612138eedd306cc47de77b674aefc787a2c88b29069b9d9094f1",
+      "bytes": 50290,
       "corner": false,
       "home": false
     },

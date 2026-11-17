@@ -495,12 +495,14 @@ class TestHelpContract(unittest.TestCase):
 
         layout-knowledge.html 的 item.active / item.filtered 是运行时状态 (白名单),
         item.icon 只在生成器 (cmd_knowledge 自动分组推导) 消费 ⇒ 必须双源合并 (HG-SEC-169);
-        item.width 由 CL018 新增 (条目级 iframe 宽度)。
+        item.width 由 CL018 新增 (条目级 iframe 宽度); item.page_title 由 HERMES-MANAGER-CL393
+        转交新增 (侧栏 tooltip 全名, 缺省回退 title)。
         """
         self._assert_topic_dim('knowledge', 'item')
         self.assertEqual(dim_keys('item', 'knowledge'),
-                         {'title', 'group', 'section', 'badge', 'desc', 'url', 'icon', 'width'},
-                         'knowledge item 契约键集应为 8 项 (含 icon/width)')
+                         {'title', 'group', 'section', 'badge', 'desc', 'url', 'icon', 'width',
+                          'page_title'},
+                         'knowledge item 契约键集应为 9 项 (含 icon/width/page_title)')
 
     def test_20_knowledge_groups_keys(self):
         """knowledge groups: 模板 g.* 消费键 == 契约 groups (3 键: key/label/icon)。"""

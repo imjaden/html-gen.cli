@@ -1127,6 +1127,7 @@ TEMPLATE_CONTRACT = {
                 ('url', '详情页地址 (iframe 加载; 与 desc 二选一)', ''),
                 ('icon', '条目图标 emoji (缺省无 groups 文件时用于推导类目图标)', ''),
                 ('width', '详情页宽度 narrow|medium|wide (iframe 追加 ?width=; 缺省 medium, url 含 overview 时默认 wide)', ''),
+                ('page_title', '侧栏悬停 tooltip 的全名 (可选; 缺省用 title —— 侧栏文本是单行 ellipsis, 长名靠它兜)', ''),
             ],
             'groups': [
                 ('key', '类目 key (与条目 group 全等匹配)', ''),
