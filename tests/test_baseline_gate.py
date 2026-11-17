@@ -167,6 +167,94 @@ class TestRenderBaseline(unittest.TestCase):
             self.assertTrue(reason.strip(), f'{rel} 的 skip 必须带理由（禁静默漏过）')
         # 子集必须覆盖全部可 verify 产物（--check 才能把「产物被手改」也钉住）
         self.assertTrue(jobs <= set(mod.SUBSET), f'未钉进子集的产物: {sorted(jobs - set(mod.SUBSET))}')
+        # 文档数字与实现绑死（HG-SEC-256 第二次复发的守卫：改口径忘了改文档就红）
+        doc = (ROOT / 'documents/testing.md').read_text(encoding='utf-8')
+        self.assertIn(f'**{len(jobs)} 个可 verify 产物**', doc,
+                      f'testing.md 的「可 verify 产物」数应等于 build_jobs 实际 {len(jobs)} 件')
+        self.assertIn(f'= **{len(mod.SUBSET)} 项**', doc,
+                      f'testing.md 的子集项数应等于 SUBSET 实际 {len(mod.SUBSET)} 项')
+
+    # v1.3（CL040）新增 -----------------------------------------------------
+    def test_10_param_regression_blocks_update_and_sticks(self):
+        """HG-SEC-249/250：漏参重建 ⇒ --update 拒；--force 后普通 --update 也拒（二次洗白封堵）。
+
+        判别性前提写死在用例里：第 3 步 --verify 必须 rc=0 —— 参数回归之所以能被抓到，
+        全靠基线里的存在性钉子（--verify 的参数从产物自己回收，漏参后它永远绿）。
+        """
+        tmp = Path(tempfile.mkdtemp(prefix='cl040_'))
+        self.addCleanup(shutil.rmtree, tmp, True)
+        for rel in SUBSET:                                   # 快照全家
+            if (ROOT / rel).is_file():
+                (tmp / rel).parent.mkdir(parents=True, exist_ok=True)
+                shutil.copy2(ROOT / rel, tmp / rel)
+        for rel in ('html-gen.py', 'style-guide.css'):
+            shutil.copy2(ROOT / rel, tmp / rel)
+        for tpl in ROOT.glob('layout-*.html'):
+            shutil.copy2(tpl, tmp / tpl.name)
+        (tmp / 'data').mkdir(exist_ok=True)
+        shutil.copy2(ROOT / 'data' / '_countries-data.json', tmp / 'data' / '_countries-data.json')
+
+        prod = tmp / 'demos' / 'countries-table.html'
+        prod.parent.mkdir(parents=True, exist_ok=True)
+
+        def render(with_corner):
+            cmd = [sys.executable, 'html-gen.py', 'table', '-d', 'data/_countries-data.json',
+                   '-o', 'demos/countries-table.html', '--title', '全球国家速查表', '--quiet']
+            if with_corner:
+                cmd.append('--github-url=https://github.com/imjaden/html-gen.cli')
+            r = subprocess.run(cmd, cwd=str(tmp), capture_output=True, text=True)
+            self.assertEqual(r.returncode, 0, f'渲染失败:\n{r.stderr}')
+
+        # 1) 带 --github-url 建基线：钉子 corner=True、verified=True
+        render(True)
+        r = run(['--update', '--quiet'], tmp)
+        self.assertEqual(r.returncode, 0, f'首次建基线应成功:\n{r.stdout}{r.stderr}')
+        base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
+        self.assertTrue(base['files']['demos/countries-table.html']['corner'])
+        self.assertTrue(base['verified'], 'verify 绿 + 无 drops ⇒ verified 必须为 True')
+        sha_before = (tmp / BASELINE_REL).read_bytes()
+
+        # 2) 漏参重渲（产物字节变了，但仍是当前模板产物）
+        render(False)
+
+        # 3) ★ 前提：verify 仍然绿（参数从产物回收）
+        r = run(['--verify', '--quiet'], tmp)
+        self.assertEqual(r.returncode, 0,
+                         f'漏参后 --verify 仍应绿（这正是钉子存在的理由）:\n{r.stdout}{r.stderr}')
+
+        # 4) 普通 --update 被拒，且基线文件逐字节未动
+        r = run(['--update', '--quiet'], tmp)
+        self.assertEqual(r.returncode, 1, f'参数回归时 --update 必须拒绝:\n{r.stdout}{r.stderr}')
+        self.assertIn('基线有 corner', r.stderr)
+        self.assertEqual((tmp / BASELINE_REL).read_bytes(), sha_before, '拒绝路径不得写盘')
+
+        # 5) --force 越权：写入 corner=False 且 verified=False（verify 绿也不算数）
+        r = run(['--update', '--quiet', '--force'], tmp)
+        self.assertEqual(r.returncode, 0, f'--force 应可越权重建:\n{r.stdout}{r.stderr}')
+        base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
+        self.assertFalse(base['files']['demos/countries-table.html']['corner'])
+        self.assertFalse(base['verified'], '有参数回归时 --force 不得写 verified=true')
+
+        # 6) ★ HG-SEC-249 回归：越权建立后，普通 --update 一律拒（否则一次 force 就洗白）
+        r = run(['--update', '--quiet'], tmp)
+        self.assertEqual(r.returncode, 1, f'verified=false 的基线不接受普通 --update:\n{r.stdout}{r.stderr}')
+        self.assertIn('越权建立', r.stderr)
+        base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
+        self.assertFalse(base['verified'], '拒绝路径不得把 verified 翻回 true')
+        self.assertFalse(base['files']['demos/countries-table.html']['corner'])
+
+        # 7) --check 仍绿（钉子一致），但必须留痕
+        r = run(['--check'], tmp)
+        self.assertEqual(r.returncode, 0, f'一致时 --check 应 rc=0:\n{r.stdout}{r.stderr}')
+        self.assertIn('⚠️', r.stderr)
+        self.assertIn('verified=false', r.stderr)
+
+        # 8) 终止性：第二次显式 --force 才恢复常态（verify 绿 + 无 drops ⇒ verified=True）。
+        #    若把 verified 写回 `not force`，这里恒为 False ⇒ 一次越权就永久 false（死锁）。
+        r = run(['--update', '--quiet', '--force'], tmp)
+        self.assertEqual(r.returncode, 0, f'第二次 --force 应成功:\n{r.stdout}{r.stderr}')
+        base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
+        self.assertTrue(base['verified'], 'verify 绿且无参数回归 ⇒ verified 必须回到 True')
 
     def test_09_doc_and_kb_jobs_carry_their_source(self):
         """doc/kb 作业必须带单源 + 从产物回收的标题（缺标题会静默退化为默认「知识库」）。"""

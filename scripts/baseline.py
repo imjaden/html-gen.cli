@@ -335,13 +335,23 @@ def _param_regressions(root, fresh):
 
 
 def cmd_update(root, quiet=False, force=False):
+    """重建基线。
+
+    verified 的语义（HG-SEC-249）：**这份基线是在 verify 绿、且无参数回归的前提下建立的**。
+    因此 force 也跑 verify（force 只解除拒绝，不再是「无条件写 true」）；旧基线若带
+    verified=false（上一轮越权建立），普通 --update 一律拒 —— 否则「先 --force 洗成 false、
+    再普通 --update」就把钉子彻底洗白，而 --verify 由于参数从产物回收永远抓不到。
+    要洗白必须两次显式 --force（第一次真摘角标留 false，第二次 verify 绿 + 无 drops 才回 true）。
+    """
     fresh = snapshot(root)
+    verify_ok = (cmd_verify(root, quiet=True) == 0)
+    drops = _param_regressions(root, fresh)
+    old, _ = load_baseline(root)
     if not force:
-        if cmd_verify(root, quiet=True) != 0:
+        if not verify_ok:
             print('❌ 产物落后于当前模板，拒绝重建基线（否则会把漂移拍成绿）。\n'
                   '   先按 --verify 清单重刷产物；确需越权加 --force。', file=sys.stderr)
             return 1
-        drops = _param_regressions(root, fresh)
         if drops:
             for d in drops[:5]:
                 print(f"❌ {d['path']}: 基线有 {d['flag']}、新快照没有（重建时丢了对应 CLI 参数？）",
@@ -349,18 +359,25 @@ def cmd_update(root, quiet=False, force=False):
             print('   拒绝重建基线：先按产物原参数（--github-url/--home-url）重刷；'
                   '确属产品决策要摘掉角标，加 --force。', file=sys.stderr)
             return 1
+        if old and old.get('verified') is False:
+            print('❌ 上一份基线是越权建立的（verified=false）—— 角标/首页钉子可能已失效。\n'
+                  '   先按原参数重刷产物并核对参数；确认产物无误后再 --force 重建（两次 force 才恢复常态）。',
+                  file=sys.stderr)
+            return 1
     data = {
         'version': 2,
         'generated': datetime.now().strftime('%Y-%m-%d'),
         'note': 'CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）',
-        'verified': not force,
+        'verified': bool(verify_ok and not drops),
         'files': fresh,
     }
     out = root / BASELINE_REL
     out.parent.mkdir(parents=True, exist_ok=True)
     out.write_text(json.dumps(data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
     if not quiet:
-        print(f'✅ 已重建基线: {out}（{len(data["files"])} 个文件，verified={data["verified"]}）')
+        have = sum(1 for v in fresh.values() if v.get('sha256'))
+        print(f'✅ 已重建基线: {out}（钉子 {len(data["files"])} 项 · 实存 {have} 项，'
+              f'verified={data["verified"]}）')
     return 0
 
 
@@ -415,6 +432,9 @@ def cmd_check(root, as_json=False):
                      if hit['reason'] == 'changed' else ''))
         else:
             print(f'✅ {rel}')
+    if base.get('verified') is False:
+        print('⚠️ 基线为越权建立（verified=false）：角标/首页钉子可能已失效'
+              '（确认产物无误后 --force 重建一次即可恢复常态）', file=sys.stderr)
     if ok:
         print(f'\n基线一致: {len(SUBSET)}/{len(SUBSET)}（{root}）')
         return 0
@@ -430,10 +450,12 @@ def main(argv=None):
     g = ap.add_mutually_exclusive_group(required=True)
     g.add_argument('--check', action='store_true', help='校验钉子（0/1/2/3）')
     g.add_argument('--verify', action='store_true', help='重渲比 sha：产物是否由当前模板产出')
-    g.add_argument('--update', action='store_true', help='重建基线（默认先 verify）')
+    g.add_argument('--update', action='store_true',
+                   help='重建基线（先 verify + 参数回归拦截；旧基线 verified=false 时拒）')
     ap.add_argument('--root', default=None, help='仓库根（默认本脚本上一级）')
     ap.add_argument('--json', action='store_true', help='机器可读输出')
-    ap.add_argument('--force', action='store_true', help='--update 跳过 verify（越权）')
+    ap.add_argument('--force', action='store_true',
+                   help='--update 跳过拒绝（仍跑 verify；不会写 verified=true）')
     ap.add_argument('--quiet', action='store_true')
     ap.add_argument('--keep-temp', action='store_true', help='--verify 保留临时渲染目录（排查用）')
     args = ap.parse_args(argv)
