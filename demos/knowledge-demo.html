@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.4+tpl0b7f1e13">
+<meta name="generator" content="html-gen v3.5+tpl31e9e75d">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>知识库功能演示</title>
@@ -451,7 +451,7 @@ pre code { background: none; padding: 0; }
       <input type="text" id="kwSearchInput" placeholder="搜索...">
     </div>
     <div class="kw-sidebar-footer">
-      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索">🔍</button>
+      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索（⌘F / Ctrl+F）">🔍</button>
       <span style="flex:1"></span>
       <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
     </div>
@@ -686,6 +686,7 @@ pre code { background: none; padding: 0; }
       frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (_rxW ? 'width=' + _rxW + '&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
+    _kwHideSidebarOnMobile();   // CL044: 窄屏选中条目后收起侧栏
     syncUrl();
   };
 
@@ -725,6 +726,30 @@ pre code { background: none; padding: 0; }
       if (!e.metaKey && !e.ctrlKey) { e.preventDefault(); toggleSidebar(); }
     }
   });
+
+  /* ═══════ CL044: ⌘F / Ctrl+F 打开侧栏搜索 ═══════
+     窄屏（@media max-width:768px）侧栏是 off-canvas（display:none + .open 才显示），
+     不加 open 就会出现「搜索框已激活、但它在隐藏容器里」⇒ 用户看不见。 */
+  function _kwRevealSidebar() {
+    var sb = document.getElementById('kwSidebar');
+    if (!sb) return;
+    if (sb.classList.contains('collapsed')) toggleSidebar();   // 折叠态下搜索框在隐藏区
+    if (getComputedStyle(sb).display === 'none') sb.classList.add('open');
+  }
+  function _kwHideSidebarOnMobile() {
+    var sb = document.getElementById('kwSidebar');
+    if (sb && sb.classList.contains('open')) sb.classList.remove('open');
+  }
+  document.addEventListener('keydown', function(e) {
+    if (!(e.metaKey || e.ctrlKey) || (e.key !== 'f' && e.key !== 'F')) return;
+    var wrap = document.getElementById('kwSearchWrap');
+    var input = document.getElementById('kwSearchInput');
+    if (!wrap || !input) return;              // 无侧栏搜索的页面不拦
+    e.preventDefault();                       // 捕获阶段: 抢在浏览器原生查找之前
+    _kwRevealSidebar();
+    if (!wrap.classList.contains('active')) toggleKwSearch();   // 幂等: 已开不误关
+    setTimeout(function() { input.focus(); input.select(); }, 0);
+  }, true);
 
   /* ── Sidebar Search ── */
   var _kwSearchActive = false, _kwSearchTimer;
@@ -772,7 +797,7 @@ pre code { background: none; padding: 0; }
   });
 
   document.getElementById('kwSearchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); }
+    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); _kwHideSidebarOnMobile(); }
     else if (e.key === 'Enter') {
       var firstVisible = document.querySelector('.kw-item:not(.filtered-out)');
       if (firstVisible) firstVisible.click();
