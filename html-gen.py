@@ -12,8 +12,8 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 import html, json, re, sys, os, time, argparse, types, unicodedata, hashlib
 from pathlib import Path
 
-__version__ = "3.4"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
-__release_date__ = "2026-09-27"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
+__version__ = "3.5"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
+__release_date__ = "2026-11-17"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent
 TEMPLATE_DOC   = SKILLS_DIR / 'layout-doc.html'

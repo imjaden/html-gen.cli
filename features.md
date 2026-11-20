@@ -76,6 +76,7 @@ H3 子项开关 (localStorage 记忆, 载入恢复) ✅ — layout-slide.html
 键规范 (列类型 6 / 列属性 22 / Tab 6 / options 16 / feedback 5 / actions 7 / videos 5 / URL 状态 3 / CLI 9) ✅ — html-gen help table
 实时搜索 (300ms debounce) ✅ — layout-table.html
 Cmd+F Spotlight 弹窗搜索 (匹配计数, 实时同步) ✅ — layout-table.html
+Cmd+F / Ctrl+F 侧栏搜索 (拦截原生查找, 窄屏展开侧栏) ✅ — layout-knowledge.html
 多字段排序 (locale/数字/日期/字符串, Shift+点击二级排序) ✅ — layout-table.html
 默认排序 (options.defaultSort {key,asc}, 加载即排序 + 表头箭头点亮; 数值列按起始年 + 稳定序) ✅ — layout-table.html
 常驻行高亮 (options.highlight {key,values}, tr.hl-row 只高亮不筛选; 冻结列/右侧固定列背景同步覆盖) ✅ — layout-table.html
@@ -125,11 +126,12 @@ SKILL.md 加载 (split 面板 fetch + 简单 Markdown 渲染) ✅ — layout-tab
 printColWidths() 调试函数 ✅ — layout-table.html
 copyAction() / shareLink() 走 canonical copyText (execCommand('copy') 回退 + 返回值检查 + 失败反馈, headless Chrome 兼容) ✅ — layout-table.html
 
-### layout-knowledge.html (C 型知识库) — 477 行
+### layout-knowledge.html (C 型知识库) — 593 行
 条目 / 类目键规范 (item 7 / groups 3) ✅ — html-gen help knowledge
 顶部横向标签栏 (按 group 分组, 彩色圆点, 与侧边栏标题行对齐) ✅ — layout-knowledge.html
 左侧章节列表 (按 section 分组, badge 标记) ✅ — layout-knowledge.html
 侧边栏搜索 (🔍 按钮, 150ms debounce, ≥2 字符, section 自动隐藏) ✅ — layout-knowledge.html
+⌘F / Ctrl+F 打开侧边栏搜索 (捕获阶段拦截, 幂等, 窄屏自动展开侧栏) ✅ — layout-knowledge.html
 侧边栏折叠/展开 (48px 收起态, `[` 快捷键, 图标点击展开) ✅ — layout-knowledge.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-knowledge.html
 侧边栏标题点击复制路径 (textContent + URL 白名单 + Toast) ✅ — layout-knowledge.html
@@ -195,6 +197,7 @@ window.open noopener,noreferrer ✅ — layout-table.html
 textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-knowledge.html
 剪贴板回退 canonical copyText (isSecureContext 前置 / execCommand('copy') 检查返回值 / 失败可见反馈 / 禁假成功) ✅ — layout-{doc,slide,table,knowledge}.html
 剪贴板回退统一 CL015 (v3.4, 2026-09-27) — 四模板 canonical copyText 逐字节一致 + 8 调用点收敛 + 产物全量重生成 + 守卫测试 T1-T11 ✅ — documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md
+knowledge 模板 ⌘F/Ctrl+F 打开侧栏搜索 (v3.5, 2026-11-17) — 捕获阶段拦截原生查找 + 幂等 + 窄屏补 `.open` + 按钮 title 标快捷键；产物 4 页重生成 + 静态守卫 2 例 ✅ — layout-knowledge.html
 localStorage try/catch + 类型校验 ✅ — layout-*.html
 path traversal 校验 (_safe_path) ✅ — scripts/company-report.py
 script 上下文 </ 转义 (inject) ✅ — html-gen.py

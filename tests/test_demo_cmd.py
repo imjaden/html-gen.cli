@@ -98,7 +98,11 @@ class TestDemoCmd(unittest.TestCase):
         r = subprocess.run(['python3', str(GEN), '--version'],
                            capture_output=True, text=True, timeout=60)
         self.assertEqual(r.returncode, 0)
-        self.assertIn('html-gen v3.4 (2026-09-27)', r.stdout, f"版本号: {r.stdout}")
+        from importlib.util import spec_from_file_location, module_from_spec
+        spec = spec_from_file_location('html_gen_ver', GEN)
+        mod = module_from_spec(spec); spec.loader.exec_module(mod)
+        self.assertIn(f'html-gen v{mod.__version__} ({mod.__release_date__})', r.stdout,
+                      f'版本号: {r.stdout}')
 
     def test_09_registry_exists(self):
         """_registry.json 存在且条目与文件对应."""

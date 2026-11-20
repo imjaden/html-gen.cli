@@ -134,6 +134,58 @@ class TestKnowledgeSidebar(unittest.TestCase):
 
     # ── No JS errors ──
 
+    # ── CL044: ⌘F / Ctrl+F 打开侧栏搜索 ──
+
+    def _cmd_f(self):
+        self.driver.execute_script(
+            "document.dispatchEvent(new KeyboardEvent('keydown',"
+            " {key:'f', metaKey:true, bubbles:true, cancelable:true}));")
+
+    def test_09_cmdf_opens_search(self):
+        self._cmd_f()
+        time.sleep(0.2)
+        wrap = self.driver.find_element(By.ID, 'kwSearchWrap')
+        self.assertIn('active', (wrap.get_attribute('class') or '').split(),
+                      '⌘F 应激活侧栏搜索框')
+        self.assertEqual(self.driver.execute_script("return document.activeElement.id"),
+                         'kwSearchInput', '焦点应落在 #kwSearchInput')
+
+    def test_10_cmdf_idempotent_and_esc(self):
+        self._cmd_f()
+        time.sleep(0.2)
+        self._cmd_f()   # 连按两次不应把搜索关掉
+        time.sleep(0.2)
+        wrap = self.driver.find_element(By.ID, 'kwSearchWrap')
+        self.assertIn('active', (wrap.get_attribute('class') or '').split(),
+                      '⌘F 幂等：已打开时再按不应关闭')
+        self.driver.execute_script(
+            "document.getElementById('kwSearchInput')"
+            ".dispatchEvent(new KeyboardEvent('keydown', {key:'Escape', bubbles:true}));")
+        time.sleep(0.2)
+        self.assertNotIn('active', (wrap.get_attribute('class') or '').split(),
+                         'Escape 应关闭搜索框')
+
+    def test_11_cmdf_narrow_reveals_sidebar(self):
+        # 窄屏侧栏是 off-canvas（display:none）⇒ ⌘F 必须先加 .open，否则搜索框在隐藏容器里
+        self.driver.set_window_size(756, 413)
+        self.driver.get('file://' + str(DEMO))
+        time.sleep(0.3)
+        self._cmd_f()
+        time.sleep(0.25)
+        sb = self.driver.find_element(By.ID, 'kwSidebar')
+        self.assertIn('open', (sb.get_attribute('class') or '').split(),
+                      '窄屏 ⌘F 应给侧栏加 .open')
+        self.assertNotEqual(self.driver.execute_script(
+            "return getComputedStyle(document.getElementById('kwSidebar')).display"), 'none',
+            '窄屏 ⌘F 后侧栏必须可见')
+        self.driver.execute_script(
+            "document.getElementById('kwSearchInput')"
+            ".dispatchEvent(new KeyboardEvent('keydown', {key:'Escape', bubbles:true}));")
+        time.sleep(0.2)
+        self.assertNotIn('open', (sb.get_attribute('class') or '').split(),
+                         'Escape 后窄屏侧栏应收起')
+        self.driver.set_window_size(1280, 800)
+
     def test_08_no_js_errors(self):
         # Use JS for all interactions (elements may be off-screen in headless)
         self.driver.execute_script("toggleKwSearch();")

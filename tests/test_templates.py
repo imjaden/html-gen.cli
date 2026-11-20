@@ -376,5 +376,29 @@ class TestDocTypography(unittest.TestCase):
         self.assertLess(pt, 4, f"blockquote padding-top 应小: {pt}")
 
 
+class TestTemplateStaticGuards(unittest.TestCase):
+    """静态守卫（CL044）：模板级能力不得被重生成或后续改动悄悄抹掉。"""
+
+    CMD_F_LINE = ("if (!(e.metaKey || e.ctrlKey) || (e.key !== 'f' && e.key !== 'F')) "
+                  "return;")
+    KB_PRODUCTS = ('demos/knowledge-demo.html', 'demos/drama-knowledge.html',
+                   'demos/chaitin-business-analysis.html',
+                   'demos/cloudwise-business-analysis.html')
+
+    def test_knowledge_cmdf_branch_in_template(self):
+        tmpl = (PROJECT / 'layout-knowledge.html').read_text(encoding='utf-8')
+        self.assertIn(self.CMD_F_LINE, tmpl, '模板须保留 ⌘F 分支')
+        self.assertIn('_kwRevealSidebar', tmpl, '窄屏需先给侧栏加 .open')
+        self.assertIn('搜索（⌘F / Ctrl+F）', tmpl, '#kwSearchBtn 的 title 要写快捷键')
+
+    def test_knowledge_cmdf_reaches_products(self):
+        for rel in self.KB_PRODUCTS:
+            f = PROJECT / rel
+            if not f.is_file():
+                continue
+            self.assertIn(self.CMD_F_LINE, f.read_text(encoding='utf-8'),
+                          f'{rel} 未随模板重建（跑 baseline --verify 定位）')
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)
