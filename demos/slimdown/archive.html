@@ -55,19 +55,36 @@ b{font-weight:600;}
 .btn.ghost{border-color:transparent;color:var(--muted);}
 .btn.mini{padding:2px 7px;font-size:11.5px;line-height:1.4;}
 
-/* ── 周视图 ── */
-.week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
-.day-card{border:1px solid var(--rule);background:#fff;padding:14px 14px 10px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s;}
+/* ── 周视图：七天一行，总宽 90vw（从 980 容器里居中溢出） ── */
+#weekRow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;
+  width:90vw;position:relative;left:50%;transform:translateX(-50%);align-items:stretch;}
+.day-card{border:1px solid var(--rule);background:#fff;padding:12px 12px 10px;position:relative;
+  display:flex;flex-direction:column;min-width:0;transition:border-color .15s,box-shadow .15s;}
 .day-card:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(47,93,80,.10);}
 .day-card.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
-.day-card .d-top{display:flex;align-items:baseline;gap:8px;margin-bottom:2px;}
-.day-card .d-label{font-family:"Songti SC",SimSun,serif;font-size:19px;font-weight:700;color:var(--accent);}
-.day-card h3{margin:0;font-size:13.5px;font-weight:700;}
-.day-card .d-meta{font-size:11px;color:var(--muted);margin-bottom:8px;}
-.day-card ol{margin:0;padding-left:18px;}
-.day-card li{font-size:12px;padding:1px 0;}
-.day-card .d-sum{margin-top:6px;padding-top:5px;border-top:1px dashed var(--rule);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;}
-.today-chip{position:absolute;top:10px;right:10px;font-size:10px;background:var(--accent);color:#fff;padding:1px 7px;border-radius:2px;}
+.day-card.dragging{opacity:.35;}
+.day-card.drop-target{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);}
+.drag{flex:none;cursor:grab;touch-action:none;color:var(--muted);font-size:13px;line-height:1;
+  padding:2px 3px;border-radius:2px;user-select:none;}
+.drag:hover{color:var(--accent);background:var(--accent-soft);}
+.day-card .d-top{display:flex;align-items:baseline;gap:6px;margin-bottom:1px;min-width:0;}
+.day-card .d-label{font-family:"Songti SC",SimSun,serif;font-size:17px;font-weight:700;color:var(--accent);flex:none;}
+.day-card h3{margin:0;font-size:12.5px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.day-card .d-meta{font-size:10.5px;color:var(--muted);margin-bottom:7px;}
+.day-card ol{margin:0;padding:0;list-style:none;}
+.day-card li{display:flex;gap:4px;font-size:11px;padding:1px 0;white-space:nowrap;overflow:hidden;}
+.day-card li .nm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.day-card li .v{flex:0 0 auto;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;}
+.day-card .d-foot{margin-top:auto;padding-top:6px;border-top:1px dashed var(--rule);
+  display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);white-space:nowrap;}
+.d-acts{margin-left:auto;display:flex;gap:2px;}
+.d-acts button{appearance:none;border:1px solid transparent;background:none;color:var(--muted);
+  font-size:13px;line-height:1;padding:3px 4px;cursor:pointer;border-radius:2px;}
+.d-acts button:hover{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-soft);}
+.day-card.today h3{padding-right:30px;}
+.today-chip{position:absolute;top:10px;right:10px;font-size:9.5px;background:var(--accent);color:#fff;padding:1px 6px;border-radius:2px;}
+.drag-ghost{position:fixed;pointer-events:none;z-index:80;opacity:.92;transform:rotate(-1.5deg);
+  box-shadow:0 10px 28px rgba(0,0,0,.22);} 
 
 /* ── 工具条 ── */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 4px;}
@@ -109,17 +126,18 @@ b{font-weight:600;}
 
 /* 分享卡（也是出图源；屏上自适应，导出时固定 720px） */
 .card-wrap{background:#fff;padding:0;max-width:100%;}
-.card{width:100%;max-width:720px;background:var(--paper);color:var(--ink);padding:38px 42px 30px;position:relative;}
+.card{width:720px;max-width:100%;background:var(--paper);color:var(--ink);padding:34px 38px 28px;position:relative;}
 .card::before{content:"";position:absolute;inset:12px;border:1px solid var(--accent);pointer-events:none;}
-.card h2{margin:0 0 6px;font-family:"Songti SC","Noto Serif SC",serif;font-size:28px;line-height:1.25;}
+.card h2{margin:0 0 6px;font-family:"Songti SC","Noto Serif SC",serif;font-size:clamp(20px,3.4vw,28px);line-height:1.25;}
 .card .c-sub{font-size:12.5px;color:var(--accent);font-weight:700;letter-spacing:.02em;margin-bottom:4px;}
 .card .c-meta{font-size:11px;color:var(--muted);margin-bottom:18px;}
-.card table{margin-top:2px;}
+.card table{margin-top:2px;table-layout:fixed;}
+.card td.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card th{font-size:10.5px;}
 .card td{font-size:13.5px;padding:8px 8px;}
 .card .c-foot{margin-top:16px;padding-top:10px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
-.card .num{text-align:right;font-variant-numeric:tabular-nums;}
-.card .reps{text-align:right;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;}
+.card .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.card .reps{text-align:right;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .card.week{padding:34px 38px 26px;}
 .card.week h2{font-size:24px;margin-bottom:10px;}
 .card.week .w-day{margin:0 0 9px;padding:0 0 7px;border-bottom:1px solid var(--rule);}
@@ -133,8 +151,9 @@ b{font-weight:600;}
 .preview-mask{position:fixed;inset:0;background:rgba(20,18,14,.72);display:none;overflow:auto;z-index:60;padding:24px 12px;}
 .preview-mask.open{display:block;}
 .preview-inner{display:flex;flex-direction:column;align-items:center;gap:14px;}
-.preview-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.preview-bar .btn{background:var(--paper);}
+.preview-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;max-width:720px;}
+.preview-bar .btn:not(.primary){background:var(--paper);color:var(--ink);}
+.preview-bar .btn.primary{box-shadow:0 2px 8px rgba(0,0,0,.25);}
 
 /* 卡片模式（?card=day|week）：只留卡片本身，方便截图 */
 body.cardonly{background:#E8E4DA;}
@@ -159,9 +178,16 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   body{background:#fff;}
   .sheet{box-shadow:none;max-width:none;padding:0;}
   .masthead,.case-nav,.toolbar,.editor,.foot,.today-chip{display:none!important;}
-  .week-grid{grid-template-columns:1fr 1fr;}
+  #weekRow{display:grid;grid-template-columns:repeat(3,1fr);width:100%;left:0;transform:none;}
   .day-card{break-inside:avoid;page-break-inside:avoid;border-color:#999;}
   .day-card.today{box-shadow:none;}
+}
+
+/* ── <1100：七列改横向滚动，卡固定宽 ── */
+@media (max-width:1100px){
+  #weekRow{display:flex;overflow-x:auto;width:100%;left:0;transform:none;gap:10px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+  #weekRow .day-card{flex:0 0 168px;scroll-snap-align:start;}
 }
 
 /* ── 窄屏（放最后：覆盖上面的基础规则） ── */
@@ -207,7 +233,64 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   </section>
 
   <section>
-    <div class="sec-head"><span class="no">02</span><h2>能量与营养</h2><span class="hint">缺口 ≈270 kcal/日</span></div>
+    <div class="sec-head"><span class="no">02</span><h2>运动量区间 · 时长 / 节奏 / 体感</h2><span class="hint">RPE = 自感用力 0–10</span></div>
+    <table>
+      <colgroup><col style="width:18%"><col style="width:22%"><col style="width:30%"><col style="width:30%"></colgroup>
+      <thead><tr><th>类型</th><th>时长</th><th>节奏</th><th>体感 / RPE</th></tr></thead>
+      <tbody>
+        <tr><td>热身</td><td>5–8 分</td><td>动态拉伸 + 绕肩 + 猫牛</td><td>微汗、呼吸平稳；RPE 3–4</td></tr>
+        <tr><td>力量复合</td><td>每个动作 3–4 组</td><td>向心 1–2 秒 / 离心 2–3 秒</td><td>最后 2 次吃力但动作不变形；RPE 7–8</td></tr>
+        <tr><td>力量孤立</td><td>每个动作 3 组</td><td>控制节奏，不借惯性</td><td>目标肌肉烧灼感；RPE 7</td></tr>
+        <tr><td>核心</td><td>5–10 分</td><td>动作慢、不憋气</td><td>腹横发力，不腰酸；RPE 6</td></tr>
+        <tr><td>轻松跑</td><td>30–60 分</td><td>配速 6:30–7:00</td><td>能整句说话、不喘；心率 109–127；RPE 4–5</td></tr>
+        <tr><td>间歇跑</td><td>25–35 分（含热身冷身）</td><td>800 m @5:40 × 6，组间慢跑 400 m</td><td>间歇段喘到说不出整句；RPE 8–9</td></tr>
+        <tr><td>壶铃循环</td><td>25–35 分 / 4 轮</td><td>动作间不停，轮间休 90 秒</td><td>出汗但动作不变形；RPE 7–8</td></tr>
+        <tr><td>拉伸放松</td><td>5–10 分</td><td>静态拉伸每部位 30 秒</td><td>轻微牵拉感，不痛；RPE 2</td></tr>
+      </tbody>
+    </table>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">03</span><h2>一天节奏 · 居家 vs 出勤</h2><span class="hint">窗口 12:30–20:30</span></div>
+    <table>
+      <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
+      <thead><tr><th>居家办公（当前）</th><th>出勤通勤（以后切换）</th></tr></thead>
+      <tbody>
+        <tr>
+          <td>
+            <b>06:30 起床</b>：黑咖啡 + 肌酸（0 kcal 不破窗）<br>
+            <b>07:00 空腹微出汗</b>：真空腹 + 猫牛 + 绕肩 5–10 分<br>
+            <b>12:30 开窗</b>：正餐（蛋白 45 g）<br>
+            <b>14:00 餐后</b>：站立办公 + 走动 10 分消食<br>
+            <b>16:30 加餐</b>：蛋白 40 g<br>
+            <b>18:30 大训练</b>：力量 40–45 分 或 跑 30–60 分<br>
+            <b>19:30 练后餐</b>：蛋白 45 g + 主食<br>
+            <b>20:30 关窗</b>
+          </td>
+          <td>
+            <b>07:00 起床</b>：空腹 10 分核心（真空腹 + 死虫）<br>
+            <b>通勤</b>：提前一站下车快走 15 分<br>
+            <b>12:30 开窗</b>：正餐（带饭或公司选轻食）<br>
+            <b>13:00 餐后</b>：楼下散步 10–15 分<br>
+            <b>工位</b>：每小时起身 2 分（接水 / 拉伸）<br>
+            <b>19:00 到家</b>：力量 40 分（周一/三/五）或跑步 30 分（周二/四）<br>
+            <b>20:00 练后餐</b>：蛋白 45 g<br>
+            <b>20:30 关窗</b>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+    <p class="note">同日两练（力量 + 5–10 km 跑）：力量压到 ≤30 分钟，只做 2 个复合主项 + 1 个核心；跑在力量后 ≤40 分；间隔 ≥6 小时最优；跑日的力量不算入周 4 次，是补充。</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">04</span><h2>止损线</h2><span class="hint">出现即调整，不硬扛</span></div>
+    <p class="warn" style="margin:0 0 6px">周降 >0.5 kg 连续两周 ⇒ 加 150–200 kcal；力量主项连续 2 周掉 >10% ⇒ 同上加。</p>
+    <p class="note" style="margin:0">周检口径、围度测量 SOP、营养与 FAQ 见 <a href="archive.html">档案</a>；全部动作见 <a href="exercises.html">动作库</a>。</p>
+  </section>
+
+  <section>
+    <div class="sec-head"><span class="no">05</span><h2>能量与营养</h2><span class="hint">缺口 ≈270 kcal/日</span></div>
     <table>
       <colgroup><col style="width:16%"><col style="width:26%"><col style="width:58%"></colgroup>
       <thead><tr><th>项目</th><th>数值</th><th>说明</th></tr></thead>
@@ -222,7 +305,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   </section>
 
   <section>
-    <div class="sec-head"><span class="no">03</span><h2>进食窗口 · 16:8 双餐</h2><span class="hint">12:30 开窗 · 20:30 关窗</span></div>
+    <div class="sec-head"><span class="no">06</span><h2>进食窗口 · 16:8 双餐</h2><span class="hint">12:30 开窗 · 20:30 关窗</span></div>
     <table>
       <colgroup><col style="width:12%"><col style="width:66%"><col style="width:22%"></colgroup>
       <thead><tr><th>时间</th><th>内容</th><th>蛋白</th></tr></thead>
@@ -236,7 +319,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   </section>
 
   <section>
-    <div class="sec-head"><span class="no">04</span><h2>饥饿应对 · 进食顺序</h2><span class="hint">热量密度从低到高</span></div>
+    <div class="sec-head"><span class="no">07</span><h2>饥饿应对 · 进食顺序</h2><span class="hint">热量密度从低到高</span></div>
     <table>
       <colgroup><col style="width:8%"><col style="width:26%"><col style="width:66%"></colgroup>
       <thead><tr><th>序</th><th>食物</th><th>为什么排这里</th></tr></thead>
@@ -254,7 +337,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   </section>
 
   <section>
-    <div class="sec-head"><span class="no">05</span><h2>围度测量 SOP · 五条纪律</h2><span class="hint">每周日晨起排便后</span></div>
+    <div class="sec-head"><span class="no">08</span><h2>围度测量 SOP · 五条纪律</h2><span class="hint">每周日晨起排便后</span></div>
     <table>
       <colgroup><col style="width:24%"><col style="width:76%"></colgroup>
       <thead><tr><th>纪律</th><th>怎么做</th></tr></thead>
@@ -269,7 +352,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   </section>
 
   <section>
-    <div class="sec-head"><span class="no">06</span><h2>周检口径</h2><span class="hint">每周日</span></div>
+    <div class="sec-head"><span class="no">09</span><h2>周检口径</h2><span class="hint">每周日</span></div>
     <table>
       <colgroup><col style="width:16%"><col style="width:40%"><col style="width:44%"></colgroup>
       <thead><tr><th>项目</th><th>口径</th><th>触发动作</th></tr></thead>
@@ -284,7 +367,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   </section>
 
   <section>
-    <div class="sec-head"><span class="no">07</span><h2>补剂口径</h2><span class="hint">加分项，不是入场券</span></div>
+    <div class="sec-head"><span class="no">10</span><h2>补剂口径</h2><span class="hint">加分项，不是入场券</span></div>
     <table>
       <colgroup><col style="width:16%"><col style="width:84%"></colgroup>
       <thead><tr><th>补剂</th><th>怎么选 / 怎么吃</th></tr></thead>

@@ -55,19 +55,36 @@ b{font-weight:600;}
 .btn.ghost{border-color:transparent;color:var(--muted);}
 .btn.mini{padding:2px 7px;font-size:11.5px;line-height:1.4;}
 
-/* ── 周视图 ── */
-.week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
-.day-card{border:1px solid var(--rule);background:#fff;padding:14px 14px 10px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s;}
+/* ── 周视图：七天一行，总宽 90vw（从 980 容器里居中溢出） ── */
+#weekRow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;
+  width:90vw;position:relative;left:50%;transform:translateX(-50%);align-items:stretch;}
+.day-card{border:1px solid var(--rule);background:#fff;padding:12px 12px 10px;position:relative;
+  display:flex;flex-direction:column;min-width:0;transition:border-color .15s,box-shadow .15s;}
 .day-card:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(47,93,80,.10);}
 .day-card.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
-.day-card .d-top{display:flex;align-items:baseline;gap:8px;margin-bottom:2px;}
-.day-card .d-label{font-family:"Songti SC",SimSun,serif;font-size:19px;font-weight:700;color:var(--accent);}
-.day-card h3{margin:0;font-size:13.5px;font-weight:700;}
-.day-card .d-meta{font-size:11px;color:var(--muted);margin-bottom:8px;}
-.day-card ol{margin:0;padding-left:18px;}
-.day-card li{font-size:12px;padding:1px 0;}
-.day-card .d-sum{margin-top:6px;padding-top:5px;border-top:1px dashed var(--rule);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;}
-.today-chip{position:absolute;top:10px;right:10px;font-size:10px;background:var(--accent);color:#fff;padding:1px 7px;border-radius:2px;}
+.day-card.dragging{opacity:.35;}
+.day-card.drop-target{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);}
+.drag{flex:none;cursor:grab;touch-action:none;color:var(--muted);font-size:13px;line-height:1;
+  padding:2px 3px;border-radius:2px;user-select:none;}
+.drag:hover{color:var(--accent);background:var(--accent-soft);}
+.day-card .d-top{display:flex;align-items:baseline;gap:6px;margin-bottom:1px;min-width:0;}
+.day-card .d-label{font-family:"Songti SC",SimSun,serif;font-size:17px;font-weight:700;color:var(--accent);flex:none;}
+.day-card h3{margin:0;font-size:12.5px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.day-card .d-meta{font-size:10.5px;color:var(--muted);margin-bottom:7px;}
+.day-card ol{margin:0;padding:0;list-style:none;}
+.day-card li{display:flex;gap:4px;font-size:11px;padding:1px 0;white-space:nowrap;overflow:hidden;}
+.day-card li .nm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.day-card li .v{flex:0 0 auto;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;}
+.day-card .d-foot{margin-top:auto;padding-top:6px;border-top:1px dashed var(--rule);
+  display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);white-space:nowrap;}
+.d-acts{margin-left:auto;display:flex;gap:2px;}
+.d-acts button{appearance:none;border:1px solid transparent;background:none;color:var(--muted);
+  font-size:13px;line-height:1;padding:3px 4px;cursor:pointer;border-radius:2px;}
+.d-acts button:hover{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-soft);}
+.day-card.today h3{padding-right:30px;}
+.today-chip{position:absolute;top:10px;right:10px;font-size:9.5px;background:var(--accent);color:#fff;padding:1px 6px;border-radius:2px;}
+.drag-ghost{position:fixed;pointer-events:none;z-index:80;opacity:.92;transform:rotate(-1.5deg);
+  box-shadow:0 10px 28px rgba(0,0,0,.22);} 
 
 /* ── 工具条 ── */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 4px;}
@@ -109,17 +126,18 @@ b{font-weight:600;}
 
 /* 分享卡（也是出图源；屏上自适应，导出时固定 720px） */
 .card-wrap{background:#fff;padding:0;max-width:100%;}
-.card{width:100%;max-width:720px;background:var(--paper);color:var(--ink);padding:38px 42px 30px;position:relative;}
+.card{width:720px;max-width:100%;background:var(--paper);color:var(--ink);padding:34px 38px 28px;position:relative;}
 .card::before{content:"";position:absolute;inset:12px;border:1px solid var(--accent);pointer-events:none;}
-.card h2{margin:0 0 6px;font-family:"Songti SC","Noto Serif SC",serif;font-size:28px;line-height:1.25;}
+.card h2{margin:0 0 6px;font-family:"Songti SC","Noto Serif SC",serif;font-size:clamp(20px,3.4vw,28px);line-height:1.25;}
 .card .c-sub{font-size:12.5px;color:var(--accent);font-weight:700;letter-spacing:.02em;margin-bottom:4px;}
 .card .c-meta{font-size:11px;color:var(--muted);margin-bottom:18px;}
-.card table{margin-top:2px;}
+.card table{margin-top:2px;table-layout:fixed;}
+.card td.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card th{font-size:10.5px;}
 .card td{font-size:13.5px;padding:8px 8px;}
 .card .c-foot{margin-top:16px;padding-top:10px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
-.card .num{text-align:right;font-variant-numeric:tabular-nums;}
-.card .reps{text-align:right;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;}
+.card .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.card .reps{text-align:right;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .card.week{padding:34px 38px 26px;}
 .card.week h2{font-size:24px;margin-bottom:10px;}
 .card.week .w-day{margin:0 0 9px;padding:0 0 7px;border-bottom:1px solid var(--rule);}
@@ -133,8 +151,9 @@ b{font-weight:600;}
 .preview-mask{position:fixed;inset:0;background:rgba(20,18,14,.72);display:none;overflow:auto;z-index:60;padding:24px 12px;}
 .preview-mask.open{display:block;}
 .preview-inner{display:flex;flex-direction:column;align-items:center;gap:14px;}
-.preview-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.preview-bar .btn{background:var(--paper);}
+.preview-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;max-width:720px;}
+.preview-bar .btn:not(.primary){background:var(--paper);color:var(--ink);}
+.preview-bar .btn.primary{box-shadow:0 2px 8px rgba(0,0,0,.25);}
 
 /* 卡片模式（?card=day|week）：只留卡片本身，方便截图 */
 body.cardonly{background:#E8E4DA;}
@@ -159,9 +178,16 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   body{background:#fff;}
   .sheet{box-shadow:none;max-width:none;padding:0;}
   .masthead,.case-nav,.toolbar,.editor,.foot,.today-chip{display:none!important;}
-  .week-grid{grid-template-columns:1fr 1fr;}
+  #weekRow{display:grid;grid-template-columns:repeat(3,1fr);width:100%;left:0;transform:none;}
   .day-card{break-inside:avoid;page-break-inside:avoid;border-color:#999;}
   .day-card.today{box-shadow:none;}
+}
+
+/* ── <1100：七列改横向滚动，卡固定宽 ── */
+@media (max-width:1100px){
+  #weekRow{display:flex;overflow-x:auto;width:100%;left:0;transform:none;gap:10px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+  #weekRow .day-card{flex:0 0 168px;scroll-snap-align:start;}
 }
 
 /* ── 窄屏（放最后：覆盖上面的基础规则） ── */
@@ -185,7 +211,6 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
     <h1>薄肌减脂 · 训练方案<span class="thin">slimdown · 七日活动方案</span></h1>
     <div class="tag">版本 v1.0 · 2026-11-12<br>《slimdown 案例》</div>
   </header>
-  <nav class="case-nav"><a href="exercises.html">动作库</a><a href="plan.html" class="on">训练方案</a><a href="archive.html">档案</a></nav>
 
   <section>
     <div class="sec-head">
@@ -195,13 +220,11 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
     <div class="toolbar">
       <button class="btn primary" id="btnEdit">✏️ 编辑方案</button>
       <button class="btn" id="btnShare">🔗 分享链接</button>
-      <button class="btn" id="btnCardDay">🖼 今日卡片</button>
-      <button class="btn" id="btnCardWeek">🗓 整周卡片</button>
       <button class="btn" id="btnPrint">🖨 打印</button>
       <span class="spacer"></span>
       <span class="note" id="stateNote"></span>
     </div>
-    <div class="week-grid" id="weekGrid"></div>
+    <div class="week-grid" id="weekRow"></div>
   </section>
 
   <section class="editor" id="editor">
@@ -234,66 +257,10 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
     </div>
   </section>
 
-  <section>
-    <div class="sec-head"><span class="no">02</span><h2>运动量区间 · 时长 / 节奏 / 体感</h2><span class="hint">RPE = 自感用力 0–10</span></div>
-    <table>
-      <colgroup><col style="width:18%"><col style="width:22%"><col style="width:30%"><col style="width:30%"></colgroup>
-      <thead><tr><th>类型</th><th>时长</th><th>节奏</th><th>体感 / RPE</th></tr></thead>
-      <tbody>
-        <tr><td>热身</td><td>5–8 分</td><td>动态拉伸 + 绕肩 + 猫牛</td><td>微汗、呼吸平稳；RPE 3–4</td></tr>
-        <tr><td>力量复合</td><td>每个动作 3–4 组</td><td>向心 1–2 秒 / 离心 2–3 秒</td><td>最后 2 次吃力但动作不变形；RPE 7–8</td></tr>
-        <tr><td>力量孤立</td><td>每个动作 3 组</td><td>控制节奏，不借惯性</td><td>目标肌肉烧灼感；RPE 7</td></tr>
-        <tr><td>核心</td><td>5–10 分</td><td>动作慢、不憋气</td><td>腹横发力，不腰酸；RPE 6</td></tr>
-        <tr><td>轻松跑</td><td>30–60 分</td><td>配速 6:30–7:00</td><td>能整句说话、不喘；心率 109–127；RPE 4–5</td></tr>
-        <tr><td>间歇跑</td><td>25–35 分（含热身冷身）</td><td>800 m @5:40 × 6，组间慢跑 400 m</td><td>间歇段喘到说不出整句；RPE 8–9</td></tr>
-        <tr><td>壶铃循环</td><td>25–35 分 / 4 轮</td><td>动作间不停，轮间休 90 秒</td><td>出汗但动作不变形；RPE 7–8</td></tr>
-        <tr><td>拉伸放松</td><td>5–10 分</td><td>静态拉伸每部位 30 秒</td><td>轻微牵拉感，不痛；RPE 2</td></tr>
-      </tbody>
-    </table>
-  </section>
-
-  <section>
-    <div class="sec-head"><span class="no">03</span><h2>一天节奏 · 居家 vs 出勤</h2><span class="hint">窗口 12:30–20:30</span></div>
-    <table>
-      <colgroup><col style="width:50%"><col style="width:50%"></colgroup>
-      <thead><tr><th>居家办公（当前）</th><th>出勤通勤（以后切换）</th></tr></thead>
-      <tbody>
-        <tr>
-          <td>
-            <b>06:30 起床</b>：黑咖啡 + 肌酸（0 kcal 不破窗）<br>
-            <b>07:00 空腹微出汗</b>：真空腹 + 猫牛 + 绕肩 5–10 分<br>
-            <b>12:30 开窗</b>：正餐（蛋白 45 g）<br>
-            <b>14:00 餐后</b>：站立办公 + 走动 10 分消食<br>
-            <b>16:30 加餐</b>：蛋白 40 g<br>
-            <b>18:30 大训练</b>：力量 40–45 分 或 跑 30–60 分<br>
-            <b>19:30 练后餐</b>：蛋白 45 g + 主食<br>
-            <b>20:30 关窗</b>
-          </td>
-          <td>
-            <b>07:00 起床</b>：空腹 10 分核心（真空腹 + 死虫）<br>
-            <b>通勤</b>：提前一站下车快走 15 分<br>
-            <b>12:30 开窗</b>：正餐（带饭或公司选轻食）<br>
-            <b>13:00 餐后</b>：楼下散步 10–15 分<br>
-            <b>工位</b>：每小时起身 2 分（接水 / 拉伸）<br>
-            <b>19:00 到家</b>：力量 40 分（周一/三/五）或跑步 30 分（周二/四）<br>
-            <b>20:00 练后餐</b>：蛋白 45 g<br>
-            <b>20:30 关窗</b>
-          </td>
-        </tr>
-      </tbody>
-    </table>
-    <p class="note">同日两练（力量 + 5–10 km 跑）：力量压到 ≤30 分钟，只做 2 个复合主项 + 1 个核心；跑在力量后 ≤40 分；间隔 ≥6 小时最优；跑日的力量不算入周 4 次，是补充。</p>
-  </section>
-
-  <section>
-    <div class="sec-head"><span class="no">04</span><h2>止损线</h2><span class="hint">出现即调整，不硬扛</span></div>
-    <p class="warn" style="margin:0 0 6px">周降 >0.5 kg 连续两周 ⇒ 加 150–200 kcal；力量主项连续 2 周掉 >10% ⇒ 同上加。</p>
-    <p class="note" style="margin:0">周检口径、围度测量 SOP、营养与 FAQ 见 <a href="archive.html">档案</a>；全部动作见 <a href="exercises.html">动作库</a>。</p>
-  </section>
 
   <footer class="foot">
     <div>slimdown · 训练方案 v1.0 · 2026-11-12</div>
-    <div>主版本 = 结构调整 +1 · 次版本 = 内容增删 +0.1</div>
+    <div><a href="exercises.html">动作库</a> · <a href="archive.html">档案</a> · 主版本 +1 / 次版本 +0.1</div>
   </footer>
 </div>
 
@@ -375,31 +342,123 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
     return d.items.reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
   }
 
-  /* ── 渲染：周视图 ── */
+  /* ── 渲染：周视图（七天一行） ── */
   function renderWeek() {
-    var host = $('weekGrid');
+    var host = $('weekRow');
     var tk = todayKey();
-    host.innerHTML = days.map(function (d, i) {
+    host.innerHTML = days.map(function (d) {
       var isToday = d.key === tk;
       var items = d.items.map(function (it) {
         var e = BYID[it.id];
         if (!e) return '';
-        return '<li>' + esc(e.name) + ' <b>' + esc(it.sets) + '×' + esc(it.reps) + '</b></li>';
+        return '<li><span class="nm" title="' + esc(e.name) + '">' + esc(e.name) + '</span>' +
+          '<span class="v">' + esc(it.sets) + '×' + esc(it.reps) + '</span></li>';
       }).join('');
-      return '<div class="day-card' + (isToday ? ' today' : '') + '" data-day="' + esc(d.key) + '">' +
+      return '<div class="day-card' + (isToday ? ' today' : '') + '" data-day="' + esc(d.key) + '" tabindex="0">' +
         (isToday ? '<span class="today-chip">今天</span>' : '') +
-        '<div class="d-top"><span class="d-label">' + esc(d.short || d.label.slice(-1)) + '</span>' +
-        '<h3>' + esc(d.theme) + '</h3></div>' +
+        '<div class="d-top"><span class="drag" data-drag="' + esc(d.key) + '" title="拖拽换位（也可 Alt+←/→）">⠿</span>' +
+        '<span class="d-label">' + esc(d.short || d.label.slice(-1)) + '</span>' +
+        '<h3 title="' + esc(d.theme) + '">' + esc(d.theme) + '</h3></div>' +
         '<div class="d-meta">' + esc(d.label) + ' · ' + esc(d.duration) + '</div>' +
         '<ol>' + (items || '<li class="note">空</li>') + '</ol>' +
-        '<div class="d-sum"><span>' + d.items.length + ' 个动作</span><span>共 ' + sumSets(d) + ' 组</span></div>' +
+        '<div class="d-foot"><span>' + d.items.length + ' 个动作 共 ' + sumSets(d) + ' 组</span>' +
+        '<span class="d-acts">' +
+        '<button type="button" data-act="edit" data-day="' + esc(d.key) + '" title="编辑方案" aria-label="编辑' + esc(d.label) + '方案">✎</button>' +
+        '<button type="button" data-act="preview" data-day="' + esc(d.key) + '" title="预览卡片" aria-label="预览' + esc(d.label) + '卡片">▣</button>' +
+        '</span></div>' +
         '</div>';
     }).join('');
-    host.querySelectorAll('.day-card').forEach(function (c) {
-      c.addEventListener('click', function () { openEditor(c.getAttribute('data-day')); });
+    host.querySelectorAll('button[data-act]').forEach(function (b) {
+      b.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var key = b.getAttribute('data-day');
+        if (b.getAttribute('data-act') === 'edit') openEditor(key);
+        else openPreview('day', key);
+      });
     });
+    bindDrag(host);
     $('stateNote').textContent = shared ? '正在查看分享方案' : (dirty ? '未保存（仅本次浏览器）' : '');
   }
+
+  /* ── 拖拽换位：只换「这两天练什么」，星期标签不动 ── */
+  var dragState = null;
+  function bindDrag(host) {
+    host.querySelectorAll('.drag').forEach(function (h) {
+      h.addEventListener('pointerdown', function (ev) {
+        ev.preventDefault();
+        var card = h.closest('.day-card');
+        var ghost = card.cloneNode(true);
+        var r = card.getBoundingClientRect();
+        ghost.className = 'drag-ghost day-card';
+        ghost.style.width = r.width + 'px';
+        ghost.style.left = r.left + 'px';
+        ghost.style.top = r.top + 'px';
+        document.body.appendChild(ghost);
+        card.classList.add('dragging');
+        dragState = { from: card.getAttribute('data-day'), ghost: ghost, card: card,
+                      dx: ev.clientX - r.left, dy: ev.clientY - r.top, over: null };
+        try { h.setPointerCapture(ev.pointerId); } catch (e) {}
+        h.addEventListener('pointermove', onDragMove);
+        h.addEventListener('pointerup', onDragEnd);
+        h.addEventListener('pointercancel', onDragCancel);
+      });
+    });
+  }
+  function onDragMove(ev) {
+    if (!dragState) return;
+    var g = dragState.ghost;
+    g.style.left = (ev.clientX - dragState.dx) + 'px';
+    g.style.top = (ev.clientY - dragState.dy) + 'px';
+    var el = document.elementFromPoint(ev.clientX, ev.clientY);
+    var card = el && el.closest ? el.closest('.day-card') : null;
+    if (card === dragState.ghost) card = null;
+    if (dragState.over && dragState.over !== card) dragState.over.classList.remove('drop-target');
+    dragState.over = (card && card !== dragState.card) ? card : null;
+    if (dragState.over) dragState.over.classList.add('drop-target');
+  }
+  function onDragEnd(ev) {
+    if (!dragState) return;
+    var st = dragState;
+    cleanupDrag();
+    if (st.over) swapItems(st.from, st.over.getAttribute('data-day'));
+  }
+  function onDragCancel() { if (dragState) cleanupDrag(); }
+  function cleanupDrag() {
+    var st = dragState;
+    dragState = null;
+    if (!st) return;
+    st.ghost.remove();
+    st.card.classList.remove('dragging');
+    document.querySelectorAll('.drop-target').forEach(function (x) { x.classList.remove('drop-target'); });
+    var h = st.card.querySelector('.drag');
+    if (h) {
+      h.removeEventListener('pointermove', onDragMove);
+      h.removeEventListener('pointerup', onDragEnd);
+      h.removeEventListener('pointercancel', onDragCancel);
+    }
+  }
+  function swapItems(aKey, bKey) {
+    if (!aKey || !bKey || aKey === bKey) return;
+    var a = dayBy(aKey), b = dayBy(bKey);
+    ['theme', 'duration', 'items'].forEach(function (k) {
+      var t = a[k]; a[k] = b[k]; b[k] = t;
+    });
+    markDirty(); renderWeek();
+    saveLocal();
+    showToast('已交换 ' + a.label + ' ↔ ' + b.label);
+  }
+  /* 键盘：卡片聚焦后 Alt+←/→ 与相邻日交换 */
+  document.addEventListener('keydown', function (ev) {
+    if (!ev.altKey || (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight')) return;
+    var card = document.activeElement && document.activeElement.closest
+      ? document.activeElement.closest('.day-card') : null;
+    if (!card) return;
+    var i = days.findIndex(function (d) { return d.key === card.getAttribute('data-day'); });
+    var j = i + (ev.key === 'ArrowRight' ? 1 : -1);
+    if (i < 0 || j < 0 || j >= days.length) return;
+    ev.preventDefault();
+    swapItems(days[i].key, days[j].key);
+  });
 
   /* ── 编辑器 ── */
   function openEditor(key) {
@@ -538,22 +597,34 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   function numOf(id) { return parseInt(String(id).replace(/^ex/, ''), 10); }
   function idOf(n) { return 'ex' + (n < 10 ? '0' + n : String(n)); }
   function encodePlan() {
-    return 'v1|' + days.map(function (d, i) {
-      return (i + 1) + '=' + d.items.map(function (it) {
-        return numOf(it.id) + '*' + (parseInt(it.sets, 10) || 0) + '~' + encodeURIComponent(it.reps);
-      }).join(',');
+    return 'v2|' + days.map(function (d, i) {
+      var def = DEFAULTS[i] || {};
+      var th = d.theme === def.theme ? '' : encodeURIComponent(d.theme);
+      var du = d.duration === def.duration ? '' : encodeURIComponent(d.duration);
+      return (i + 1) + '=' + th + '!' + du + '!' +
+        d.items.map(function (it) {
+          return numOf(it.id) + '*' + (parseInt(it.sets, 10) || 0) + '~' + encodeURIComponent(it.reps);
+        }).join(',');
     }).join('|');
   }
   function decodePlan(str) {
     var out = [], unknown = 0;
     var segs = String(str).split('|');
-    if (segs[0] !== 'v1') return null;
+    var ver = segs[0];
+    if (ver !== 'v1' && ver !== 'v2') return null;
     segs.slice(1).forEach(function (seg) {
       var p = seg.split('=');
       var d = days[parseInt(p[0], 10) - 1];
       if (!d) return;
+      var theme = '', duration = '', itemsStr = p[1] || '';
+      if (ver === 'v2') {
+        var parts = itemsStr.split('!');
+        theme = decodeURIComponent(parts[0] || '');
+        duration = decodeURIComponent(parts[1] || '');
+        itemsStr = parts[2] || '';
+      }
       var items = [];
-      (p[1] || '').split(',').forEach(function (tok) {
+      itemsStr.split(',').forEach(function (tok) {
         if (!tok) return;
         var m = /^(\d+)\*(\d+)~(.*)$/.exec(tok);
         if (!m) return;
@@ -561,7 +632,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
         if (!BYID[id]) { unknown++; return; }
         items.push({ id: id, sets: parseInt(m[2], 10), reps: decodeURIComponent(m[3]) });
       });
-      out.push({ key: d.key, items: items });
+      out.push({ key: d.key, items: items, theme: theme, duration: duration });
     });
     return { days: out, unknown: unknown };
   }
@@ -634,7 +705,7 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   function cardRows(d) {
     return d.items.map(function (it) {
       var e = BYID[it.id] || { name: it.id };
-      return '<tr><td>' + esc(e.name) + '</td>' +
+      return '<tr><td class="nm">' + esc(e.name) + '</td>' +
         '<td class="num">' + esc(it.sets) + '</td>' +
         '<td class="reps">' + esc(it.reps) + '</td></tr>';
     }).join('');
@@ -673,16 +744,15 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
       '<div class="c-foot"><span>' + esc((META.meta && META.meta.steps) || '') + '</span><span>slimdown</span></div>' +
       '</div>';
   }
-  var previewScope = 'day';
-  function openPreview(scope) {
+  var previewScope = 'day', previewKey = '';
+  function openPreview(scope, key) {
     previewScope = scope;
-    $('previewHost').innerHTML = scope === 'week' ? buildWeekCard() : buildDayCard(todayKey());
+    previewKey = key || todayKey();
+    $('previewHost').innerHTML = scope === 'week' ? buildWeekCard() : buildDayCard(previewKey);
     $('imgNote').textContent = '';
     $('previewMask').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
-  $('btnCardDay').addEventListener('click', function () { openPreview('day'); });
-  $('btnCardWeek').addEventListener('click', function () { openPreview('week'); });
   $('btnClosePreview').addEventListener('click', function () {
     $('previewMask').classList.remove('open');
     document.body.style.overflow = '';
@@ -698,36 +768,30 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
     }
     return css;
   }
-  function cardToBlob(node, scale) {
-    scale = scale || 2;
-    // 导出统一按 720px 定宽重排（屏上窄屏自适应会得到糊图）
-    var stage = document.createElement('div');
-    stage.style.cssText = 'position:fixed;left:-10000px;top:0;width:720px;background:#FAF8F2;';
+  /* 导出 = 预览的实际 CSS 宽 ×1：预览多宽，PNG 就多宽（不再有隐藏的 2x/720 重排） */
+  function cardToBlob(node) {
+    var w = node.offsetWidth, h = node.offsetHeight;
     var clone = node.cloneNode(true);
     clone.removeAttribute('id');
-    clone.style.width = '720px';
-    clone.style.maxWidth = '720px';
-    stage.appendChild(clone);
-    document.body.appendChild(stage);
-    var w = clone.offsetWidth, h = clone.offsetHeight;
     var css = collectCss();
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + (w * scale) + '" height="' + (h * scale) +
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
       '" viewBox="0 0 ' + w + ' ' + h + '">' +
       '<foreignObject width="100%" height="100%">' +
       '<div xmlns="http://www.w3.org/1999/xhtml"><style><![CDATA[' + css + ']]></style>' +
       new XMLSerializer().serializeToString(clone) + '</div></foreignObject></svg>';
     var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    document.body.removeChild(stage);
     return new Promise(function (resolve, reject) {
       var img = new Image();
       img.onload = function () {
         var cv = document.createElement('canvas');
-        cv.width = w * scale; cv.height = h * scale;
+        cv.width = w; cv.height = h;
         var ctx = cv.getContext('2d');
         ctx.fillStyle = '#FAF8F2';
         ctx.fillRect(0, 0, cv.width, cv.height);
-        ctx.drawImage(img, 0, 0, cv.width, cv.height);
-        cv.toBlob(function (b) { b ? resolve(b) : reject(new Error('toBlob failed')); }, 'image/png');
+        ctx.drawImage(img, 0, 0, w, h);
+        cv.toBlob(function (b) {
+          b ? resolve({ blob: b, w: w, h: h }) : reject(new Error('toBlob failed'));
+        }, 'image/png');
       };
       img.onerror = function () { reject(new Error('SVG rasterize failed')); };
       img.src = url;
@@ -743,21 +807,22 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   }
   function fileName() {
     var d = new Date();
-    return 'slimdown-' + (previewScope === 'week' ? 'week' : todayKey()) + '-' +
+    return 'slimdown-' + (previewScope === 'week' ? 'week' : (previewKey || todayKey())) + '-' +
       d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.png';
   }
   $('btnCopyImg').addEventListener('click', function () {
     var node = $('shareCard');
     if (!node) return;
     $('imgNote').textContent = '生成中…';
-    cardToBlob(node, 2).then(function (blob) {
+    cardToBlob(node).then(function (r) {
+      var blob = r.blob, size = r.w + '×' + r.h;
       if (window.isSecureContext && navigator.clipboard && window.ClipboardItem) {
         return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-          .then(function () { $('imgNote').textContent = '已复制图片，可直接粘贴'; })
-          .catch(function () { download(blob, fileName()); $('imgNote').textContent = '复制被拒绝，已下载 PNG'; });
+          .then(function () { $('imgNote').textContent = '已复制 · ' + size; })
+          .catch(function () { download(blob, fileName()); $('imgNote').textContent = '复制被拒绝，已下载 ' + size; });
       }
       download(blob, fileName());
-      $('imgNote').textContent = '当前环境不支持复制图片，已下载 PNG';
+      $('imgNote').textContent = '当前环境不支持复制图片，已下载 PNG ' + size;
     }).catch(function (e) {
       $('imgNote').textContent = '导出失败：' + e.message + '（可改用截图）';
     });
@@ -765,8 +830,10 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   $('btnDownloadImg').addEventListener('click', function () {
     var node = $('shareCard');
     if (!node) return;
-    cardToBlob(node, 3).then(function (blob) { download(blob, fileName()); $('imgNote').textContent = '已下载'; })
-      .catch(function (e) { $('imgNote').textContent = '导出失败：' + e.message; });
+    cardToBlob(node).then(function (r) {
+      download(r.blob, fileName());
+      $('imgNote').textContent = '已下载 ' + r.w + '×' + r.h;
+    }).catch(function (e) { $('imgNote').textContent = '导出失败：' + e.message; });
   });
   $('btnPrint').addEventListener('click', function () { window.print(); });
 
@@ -793,7 +860,10 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
     if (!res || !res.days.length) { showToast('分享链接已损坏，已按本机方案显示'); return false; }
     res.days.forEach(function (sd) {
       var d = dayBy(sd.key);
-      if (d) d.items = sd.items;
+      if (!d) return;
+      d.items = sd.items;
+      if (sd.theme) d.theme = sd.theme;
+      if (sd.duration) d.duration = sd.duration;
     });
     shared = true;
     if (res.unknown) showToast('已忽略 ' + res.unknown + ' 个未知动作');

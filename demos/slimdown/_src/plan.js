@@ -48,31 +48,123 @@
     return d.items.reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
   }
 
-  /* ── 渲染：周视图 ── */
+  /* ── 渲染：周视图（七天一行） ── */
   function renderWeek() {
-    var host = $('weekGrid');
+    var host = $('weekRow');
     var tk = todayKey();
-    host.innerHTML = days.map(function (d, i) {
+    host.innerHTML = days.map(function (d) {
       var isToday = d.key === tk;
       var items = d.items.map(function (it) {
         var e = BYID[it.id];
         if (!e) return '';
-        return '<li>' + esc(e.name) + ' <b>' + esc(it.sets) + '×' + esc(it.reps) + '</b></li>';
+        return '<li><span class="nm" title="' + esc(e.name) + '">' + esc(e.name) + '</span>' +
+          '<span class="v">' + esc(it.sets) + '×' + esc(it.reps) + '</span></li>';
       }).join('');
-      return '<div class="day-card' + (isToday ? ' today' : '') + '" data-day="' + esc(d.key) + '">' +
+      return '<div class="day-card' + (isToday ? ' today' : '') + '" data-day="' + esc(d.key) + '" tabindex="0">' +
         (isToday ? '<span class="today-chip">今天</span>' : '') +
-        '<div class="d-top"><span class="d-label">' + esc(d.short || d.label.slice(-1)) + '</span>' +
-        '<h3>' + esc(d.theme) + '</h3></div>' +
+        '<div class="d-top"><span class="drag" data-drag="' + esc(d.key) + '" title="拖拽换位（也可 Alt+←/→）">⠿</span>' +
+        '<span class="d-label">' + esc(d.short || d.label.slice(-1)) + '</span>' +
+        '<h3 title="' + esc(d.theme) + '">' + esc(d.theme) + '</h3></div>' +
         '<div class="d-meta">' + esc(d.label) + ' · ' + esc(d.duration) + '</div>' +
         '<ol>' + (items || '<li class="note">空</li>') + '</ol>' +
-        '<div class="d-sum"><span>' + d.items.length + ' 个动作</span><span>共 ' + sumSets(d) + ' 组</span></div>' +
+        '<div class="d-foot"><span>' + d.items.length + ' 个动作 共 ' + sumSets(d) + ' 组</span>' +
+        '<span class="d-acts">' +
+        '<button type="button" data-act="edit" data-day="' + esc(d.key) + '" title="编辑方案" aria-label="编辑' + esc(d.label) + '方案">✎</button>' +
+        '<button type="button" data-act="preview" data-day="' + esc(d.key) + '" title="预览卡片" aria-label="预览' + esc(d.label) + '卡片">▣</button>' +
+        '</span></div>' +
         '</div>';
     }).join('');
-    host.querySelectorAll('.day-card').forEach(function (c) {
-      c.addEventListener('click', function () { openEditor(c.getAttribute('data-day')); });
+    host.querySelectorAll('button[data-act]').forEach(function (b) {
+      b.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var key = b.getAttribute('data-day');
+        if (b.getAttribute('data-act') === 'edit') openEditor(key);
+        else openPreview('day', key);
+      });
     });
+    bindDrag(host);
     $('stateNote').textContent = shared ? '正在查看分享方案' : (dirty ? '未保存（仅本次浏览器）' : '');
   }
+
+  /* ── 拖拽换位：只换「这两天练什么」，星期标签不动 ── */
+  var dragState = null;
+  function bindDrag(host) {
+    host.querySelectorAll('.drag').forEach(function (h) {
+      h.addEventListener('pointerdown', function (ev) {
+        ev.preventDefault();
+        var card = h.closest('.day-card');
+        var ghost = card.cloneNode(true);
+        var r = card.getBoundingClientRect();
+        ghost.className = 'drag-ghost day-card';
+        ghost.style.width = r.width + 'px';
+        ghost.style.left = r.left + 'px';
+        ghost.style.top = r.top + 'px';
+        document.body.appendChild(ghost);
+        card.classList.add('dragging');
+        dragState = { from: card.getAttribute('data-day'), ghost: ghost, card: card,
+                      dx: ev.clientX - r.left, dy: ev.clientY - r.top, over: null };
+        try { h.setPointerCapture(ev.pointerId); } catch (e) {}
+        h.addEventListener('pointermove', onDragMove);
+        h.addEventListener('pointerup', onDragEnd);
+        h.addEventListener('pointercancel', onDragCancel);
+      });
+    });
+  }
+  function onDragMove(ev) {
+    if (!dragState) return;
+    var g = dragState.ghost;
+    g.style.left = (ev.clientX - dragState.dx) + 'px';
+    g.style.top = (ev.clientY - dragState.dy) + 'px';
+    var el = document.elementFromPoint(ev.clientX, ev.clientY);
+    var card = el && el.closest ? el.closest('.day-card') : null;
+    if (card === dragState.ghost) card = null;
+    if (dragState.over && dragState.over !== card) dragState.over.classList.remove('drop-target');
+    dragState.over = (card && card !== dragState.card) ? card : null;
+    if (dragState.over) dragState.over.classList.add('drop-target');
+  }
+  function onDragEnd(ev) {
+    if (!dragState) return;
+    var st = dragState;
+    cleanupDrag();
+    if (st.over) swapItems(st.from, st.over.getAttribute('data-day'));
+  }
+  function onDragCancel() { if (dragState) cleanupDrag(); }
+  function cleanupDrag() {
+    var st = dragState;
+    dragState = null;
+    if (!st) return;
+    st.ghost.remove();
+    st.card.classList.remove('dragging');
+    document.querySelectorAll('.drop-target').forEach(function (x) { x.classList.remove('drop-target'); });
+    var h = st.card.querySelector('.drag');
+    if (h) {
+      h.removeEventListener('pointermove', onDragMove);
+      h.removeEventListener('pointerup', onDragEnd);
+      h.removeEventListener('pointercancel', onDragCancel);
+    }
+  }
+  function swapItems(aKey, bKey) {
+    if (!aKey || !bKey || aKey === bKey) return;
+    var a = dayBy(aKey), b = dayBy(bKey);
+    ['theme', 'duration', 'items'].forEach(function (k) {
+      var t = a[k]; a[k] = b[k]; b[k] = t;
+    });
+    markDirty(); renderWeek();
+    saveLocal();
+    showToast('已交换 ' + a.label + ' ↔ ' + b.label);
+  }
+  /* 键盘：卡片聚焦后 Alt+←/→ 与相邻日交换 */
+  document.addEventListener('keydown', function (ev) {
+    if (!ev.altKey || (ev.key !== 'ArrowLeft' && ev.key !== 'ArrowRight')) return;
+    var card = document.activeElement && document.activeElement.closest
+      ? document.activeElement.closest('.day-card') : null;
+    if (!card) return;
+    var i = days.findIndex(function (d) { return d.key === card.getAttribute('data-day'); });
+    var j = i + (ev.key === 'ArrowRight' ? 1 : -1);
+    if (i < 0 || j < 0 || j >= days.length) return;
+    ev.preventDefault();
+    swapItems(days[i].key, days[j].key);
+  });
 
   /* ── 编辑器 ── */
   function openEditor(key) {
@@ -211,22 +303,34 @@
   function numOf(id) { return parseInt(String(id).replace(/^ex/, ''), 10); }
   function idOf(n) { return 'ex' + (n < 10 ? '0' + n : String(n)); }
   function encodePlan() {
-    return 'v1|' + days.map(function (d, i) {
-      return (i + 1) + '=' + d.items.map(function (it) {
-        return numOf(it.id) + '*' + (parseInt(it.sets, 10) || 0) + '~' + encodeURIComponent(it.reps);
-      }).join(',');
+    return 'v2|' + days.map(function (d, i) {
+      var def = DEFAULTS[i] || {};
+      var th = d.theme === def.theme ? '' : encodeURIComponent(d.theme);
+      var du = d.duration === def.duration ? '' : encodeURIComponent(d.duration);
+      return (i + 1) + '=' + th + '!' + du + '!' +
+        d.items.map(function (it) {
+          return numOf(it.id) + '*' + (parseInt(it.sets, 10) || 0) + '~' + encodeURIComponent(it.reps);
+        }).join(',');
     }).join('|');
   }
   function decodePlan(str) {
     var out = [], unknown = 0;
     var segs = String(str).split('|');
-    if (segs[0] !== 'v1') return null;
+    var ver = segs[0];
+    if (ver !== 'v1' && ver !== 'v2') return null;
     segs.slice(1).forEach(function (seg) {
       var p = seg.split('=');
       var d = days[parseInt(p[0], 10) - 1];
       if (!d) return;
+      var theme = '', duration = '', itemsStr = p[1] || '';
+      if (ver === 'v2') {
+        var parts = itemsStr.split('!');
+        theme = decodeURIComponent(parts[0] || '');
+        duration = decodeURIComponent(parts[1] || '');
+        itemsStr = parts[2] || '';
+      }
       var items = [];
-      (p[1] || '').split(',').forEach(function (tok) {
+      itemsStr.split(',').forEach(function (tok) {
         if (!tok) return;
         var m = /^(\d+)\*(\d+)~(.*)$/.exec(tok);
         if (!m) return;
@@ -234,7 +338,7 @@
         if (!BYID[id]) { unknown++; return; }
         items.push({ id: id, sets: parseInt(m[2], 10), reps: decodeURIComponent(m[3]) });
       });
-      out.push({ key: d.key, items: items });
+      out.push({ key: d.key, items: items, theme: theme, duration: duration });
     });
     return { days: out, unknown: unknown };
   }
@@ -307,7 +411,7 @@
   function cardRows(d) {
     return d.items.map(function (it) {
       var e = BYID[it.id] || { name: it.id };
-      return '<tr><td>' + esc(e.name) + '</td>' +
+      return '<tr><td class="nm">' + esc(e.name) + '</td>' +
         '<td class="num">' + esc(it.sets) + '</td>' +
         '<td class="reps">' + esc(it.reps) + '</td></tr>';
     }).join('');
@@ -346,16 +450,15 @@
       '<div class="c-foot"><span>' + esc((META.meta && META.meta.steps) || '') + '</span><span>slimdown</span></div>' +
       '</div>';
   }
-  var previewScope = 'day';
-  function openPreview(scope) {
+  var previewScope = 'day', previewKey = '';
+  function openPreview(scope, key) {
     previewScope = scope;
-    $('previewHost').innerHTML = scope === 'week' ? buildWeekCard() : buildDayCard(todayKey());
+    previewKey = key || todayKey();
+    $('previewHost').innerHTML = scope === 'week' ? buildWeekCard() : buildDayCard(previewKey);
     $('imgNote').textContent = '';
     $('previewMask').classList.add('open');
     document.body.style.overflow = 'hidden';
   }
-  $('btnCardDay').addEventListener('click', function () { openPreview('day'); });
-  $('btnCardWeek').addEventListener('click', function () { openPreview('week'); });
   $('btnClosePreview').addEventListener('click', function () {
     $('previewMask').classList.remove('open');
     document.body.style.overflow = '';
@@ -371,36 +474,30 @@
     }
     return css;
   }
-  function cardToBlob(node, scale) {
-    scale = scale || 2;
-    // 导出统一按 720px 定宽重排（屏上窄屏自适应会得到糊图）
-    var stage = document.createElement('div');
-    stage.style.cssText = 'position:fixed;left:-10000px;top:0;width:720px;background:#FAF8F2;';
+  /* 导出 = 预览的实际 CSS 宽 ×1：预览多宽，PNG 就多宽（不再有隐藏的 2x/720 重排） */
+  function cardToBlob(node) {
+    var w = node.offsetWidth, h = node.offsetHeight;
     var clone = node.cloneNode(true);
     clone.removeAttribute('id');
-    clone.style.width = '720px';
-    clone.style.maxWidth = '720px';
-    stage.appendChild(clone);
-    document.body.appendChild(stage);
-    var w = clone.offsetWidth, h = clone.offsetHeight;
     var css = collectCss();
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + (w * scale) + '" height="' + (h * scale) +
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
       '" viewBox="0 0 ' + w + ' ' + h + '">' +
       '<foreignObject width="100%" height="100%">' +
       '<div xmlns="http://www.w3.org/1999/xhtml"><style><![CDATA[' + css + ']]></style>' +
       new XMLSerializer().serializeToString(clone) + '</div></foreignObject></svg>';
     var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    document.body.removeChild(stage);
     return new Promise(function (resolve, reject) {
       var img = new Image();
       img.onload = function () {
         var cv = document.createElement('canvas');
-        cv.width = w * scale; cv.height = h * scale;
+        cv.width = w; cv.height = h;
         var ctx = cv.getContext('2d');
         ctx.fillStyle = '#FAF8F2';
         ctx.fillRect(0, 0, cv.width, cv.height);
-        ctx.drawImage(img, 0, 0, cv.width, cv.height);
-        cv.toBlob(function (b) { b ? resolve(b) : reject(new Error('toBlob failed')); }, 'image/png');
+        ctx.drawImage(img, 0, 0, w, h);
+        cv.toBlob(function (b) {
+          b ? resolve({ blob: b, w: w, h: h }) : reject(new Error('toBlob failed'));
+        }, 'image/png');
       };
       img.onerror = function () { reject(new Error('SVG rasterize failed')); };
       img.src = url;
@@ -416,21 +513,22 @@
   }
   function fileName() {
     var d = new Date();
-    return 'slimdown-' + (previewScope === 'week' ? 'week' : todayKey()) + '-' +
+    return 'slimdown-' + (previewScope === 'week' ? 'week' : (previewKey || todayKey())) + '-' +
       d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.png';
   }
   $('btnCopyImg').addEventListener('click', function () {
     var node = $('shareCard');
     if (!node) return;
     $('imgNote').textContent = '生成中…';
-    cardToBlob(node, 2).then(function (blob) {
+    cardToBlob(node).then(function (r) {
+      var blob = r.blob, size = r.w + '×' + r.h;
       if (window.isSecureContext && navigator.clipboard && window.ClipboardItem) {
         return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-          .then(function () { $('imgNote').textContent = '已复制图片，可直接粘贴'; })
-          .catch(function () { download(blob, fileName()); $('imgNote').textContent = '复制被拒绝，已下载 PNG'; });
+          .then(function () { $('imgNote').textContent = '已复制 · ' + size; })
+          .catch(function () { download(blob, fileName()); $('imgNote').textContent = '复制被拒绝，已下载 ' + size; });
       }
       download(blob, fileName());
-      $('imgNote').textContent = '当前环境不支持复制图片，已下载 PNG';
+      $('imgNote').textContent = '当前环境不支持复制图片，已下载 PNG ' + size;
     }).catch(function (e) {
       $('imgNote').textContent = '导出失败：' + e.message + '（可改用截图）';
     });
@@ -438,8 +536,10 @@
   $('btnDownloadImg').addEventListener('click', function () {
     var node = $('shareCard');
     if (!node) return;
-    cardToBlob(node, 3).then(function (blob) { download(blob, fileName()); $('imgNote').textContent = '已下载'; })
-      .catch(function (e) { $('imgNote').textContent = '导出失败：' + e.message; });
+    cardToBlob(node).then(function (r) {
+      download(r.blob, fileName());
+      $('imgNote').textContent = '已下载 ' + r.w + '×' + r.h;
+    }).catch(function (e) { $('imgNote').textContent = '导出失败：' + e.message; });
   });
   $('btnPrint').addEventListener('click', function () { window.print(); });
 
@@ -466,7 +566,10 @@
     if (!res || !res.days.length) { showToast('分享链接已损坏，已按本机方案显示'); return false; }
     res.days.forEach(function (sd) {
       var d = dayBy(sd.key);
-      if (d) d.items = sd.items;
+      if (!d) return;
+      d.items = sd.items;
+      if (sd.theme) d.theme = sd.theme;
+      if (sd.duration) d.duration = sd.duration;
     });
     shared = true;
     if (res.unknown) showToast('已忽略 ' + res.unknown + ' 个未知动作');

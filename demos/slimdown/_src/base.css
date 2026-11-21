@@ -48,19 +48,36 @@ b{font-weight:600;}
 .btn.ghost{border-color:transparent;color:var(--muted);}
 .btn.mini{padding:2px 7px;font-size:11.5px;line-height:1.4;}
 
-/* ── 周视图 ── */
-.week-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px;}
-.day-card{border:1px solid var(--rule);background:#fff;padding:14px 14px 10px;cursor:pointer;position:relative;transition:border-color .15s,box-shadow .15s;}
+/* ── 周视图：七天一行，总宽 90vw（从 980 容器里居中溢出） ── */
+#weekRow{display:grid;grid-template-columns:repeat(7,minmax(0,1fr));gap:10px;
+  width:90vw;position:relative;left:50%;transform:translateX(-50%);align-items:stretch;}
+.day-card{border:1px solid var(--rule);background:#fff;padding:12px 12px 10px;position:relative;
+  display:flex;flex-direction:column;min-width:0;transition:border-color .15s,box-shadow .15s;}
 .day-card:hover{border-color:var(--accent);box-shadow:0 2px 10px rgba(47,93,80,.10);}
 .day-card.today{border-color:var(--accent);box-shadow:inset 0 0 0 1px var(--accent);}
-.day-card .d-top{display:flex;align-items:baseline;gap:8px;margin-bottom:2px;}
-.day-card .d-label{font-family:"Songti SC",SimSun,serif;font-size:19px;font-weight:700;color:var(--accent);}
-.day-card h3{margin:0;font-size:13.5px;font-weight:700;}
-.day-card .d-meta{font-size:11px;color:var(--muted);margin-bottom:8px;}
-.day-card ol{margin:0;padding-left:18px;}
-.day-card li{font-size:12px;padding:1px 0;}
-.day-card .d-sum{margin-top:6px;padding-top:5px;border-top:1px dashed var(--rule);font-size:11px;color:var(--muted);display:flex;justify-content:space-between;}
-.today-chip{position:absolute;top:10px;right:10px;font-size:10px;background:var(--accent);color:#fff;padding:1px 7px;border-radius:2px;}
+.day-card.dragging{opacity:.35;}
+.day-card.drop-target{border-color:var(--accent);box-shadow:inset 0 0 0 2px var(--accent);}
+.drag{flex:none;cursor:grab;touch-action:none;color:var(--muted);font-size:13px;line-height:1;
+  padding:2px 3px;border-radius:2px;user-select:none;}
+.drag:hover{color:var(--accent);background:var(--accent-soft);}
+.day-card .d-top{display:flex;align-items:baseline;gap:6px;margin-bottom:1px;min-width:0;}
+.day-card .d-label{font-family:"Songti SC",SimSun,serif;font-size:17px;font-weight:700;color:var(--accent);flex:none;}
+.day-card h3{margin:0;font-size:12.5px;font-weight:700;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.day-card .d-meta{font-size:10.5px;color:var(--muted);margin-bottom:7px;}
+.day-card ol{margin:0;padding:0;list-style:none;}
+.day-card li{display:flex;gap:4px;font-size:11px;padding:1px 0;white-space:nowrap;overflow:hidden;}
+.day-card li .nm{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;}
+.day-card li .v{flex:0 0 auto;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;}
+.day-card .d-foot{margin-top:auto;padding-top:6px;border-top:1px dashed var(--rule);
+  display:flex;align-items:center;gap:4px;font-size:10.5px;color:var(--muted);white-space:nowrap;}
+.d-acts{margin-left:auto;display:flex;gap:2px;}
+.d-acts button{appearance:none;border:1px solid transparent;background:none;color:var(--muted);
+  font-size:13px;line-height:1;padding:3px 4px;cursor:pointer;border-radius:2px;}
+.d-acts button:hover{color:var(--accent);background:var(--accent-soft);border-color:var(--accent-soft);}
+.day-card.today h3{padding-right:30px;}
+.today-chip{position:absolute;top:10px;right:10px;font-size:9.5px;background:var(--accent);color:#fff;padding:1px 6px;border-radius:2px;}
+.drag-ghost{position:fixed;pointer-events:none;z-index:80;opacity:.92;transform:rotate(-1.5deg);
+  box-shadow:0 10px 28px rgba(0,0,0,.22);} 
 
 /* ── 工具条 ── */
 .toolbar{display:flex;gap:8px;flex-wrap:wrap;align-items:center;margin:14px 0 4px;}
@@ -102,17 +119,18 @@ b{font-weight:600;}
 
 /* 分享卡（也是出图源；屏上自适应，导出时固定 720px） */
 .card-wrap{background:#fff;padding:0;max-width:100%;}
-.card{width:100%;max-width:720px;background:var(--paper);color:var(--ink);padding:38px 42px 30px;position:relative;}
+.card{width:720px;max-width:100%;background:var(--paper);color:var(--ink);padding:34px 38px 28px;position:relative;}
 .card::before{content:"";position:absolute;inset:12px;border:1px solid var(--accent);pointer-events:none;}
-.card h2{margin:0 0 6px;font-family:"Songti SC","Noto Serif SC",serif;font-size:28px;line-height:1.25;}
+.card h2{margin:0 0 6px;font-family:"Songti SC","Noto Serif SC",serif;font-size:clamp(20px,3.4vw,28px);line-height:1.25;}
 .card .c-sub{font-size:12.5px;color:var(--accent);font-weight:700;letter-spacing:.02em;margin-bottom:4px;}
 .card .c-meta{font-size:11px;color:var(--muted);margin-bottom:18px;}
-.card table{margin-top:2px;}
+.card table{margin-top:2px;table-layout:fixed;}
+.card td.nm{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .card th{font-size:10.5px;}
 .card td{font-size:13.5px;padding:8px 8px;}
 .card .c-foot{margin-top:16px;padding-top:10px;border-top:1px solid var(--rule);display:flex;justify-content:space-between;font-size:11px;color:var(--muted);}
-.card .num{text-align:right;font-variant-numeric:tabular-nums;}
-.card .reps{text-align:right;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;}
+.card .num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap;}
+.card .reps{text-align:right;color:var(--accent);font-weight:600;font-variant-numeric:tabular-nums;white-space:nowrap;}
 .card.week{padding:34px 38px 26px;}
 .card.week h2{font-size:24px;margin-bottom:10px;}
 .card.week .w-day{margin:0 0 9px;padding:0 0 7px;border-bottom:1px solid var(--rule);}
@@ -126,8 +144,9 @@ b{font-weight:600;}
 .preview-mask{position:fixed;inset:0;background:rgba(20,18,14,.72);display:none;overflow:auto;z-index:60;padding:24px 12px;}
 .preview-mask.open{display:block;}
 .preview-inner{display:flex;flex-direction:column;align-items:center;gap:14px;}
-.preview-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;}
-.preview-bar .btn{background:var(--paper);}
+.preview-bar{display:flex;gap:8px;flex-wrap:wrap;justify-content:center;width:100%;max-width:720px;}
+.preview-bar .btn:not(.primary){background:var(--paper);color:var(--ink);}
+.preview-bar .btn.primary{box-shadow:0 2px 8px rgba(0,0,0,.25);}
 
 /* 卡片模式（?card=day|week）：只留卡片本身，方便截图 */
 body.cardonly{background:#E8E4DA;}
@@ -152,9 +171,16 @@ details p{margin:6px 0 8px 14px;font-size:12.5px;color:#3a3730;}
   body{background:#fff;}
   .sheet{box-shadow:none;max-width:none;padding:0;}
   .masthead,.case-nav,.toolbar,.editor,.foot,.today-chip{display:none!important;}
-  .week-grid{grid-template-columns:1fr 1fr;}
+  #weekRow{display:grid;grid-template-columns:repeat(3,1fr);width:100%;left:0;transform:none;}
   .day-card{break-inside:avoid;page-break-inside:avoid;border-color:#999;}
   .day-card.today{box-shadow:none;}
+}
+
+/* ── <1100：七列改横向滚动，卡固定宽 ── */
+@media (max-width:1100px){
+  #weekRow{display:flex;overflow-x:auto;width:100%;left:0;transform:none;gap:10px;
+    scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;padding-bottom:6px;}
+  #weekRow .day-card{flex:0 0 168px;scroll-snap-align:start;}
 }
 
 /* ── 窄屏（放最后：覆盖上面的基础规则） ── */

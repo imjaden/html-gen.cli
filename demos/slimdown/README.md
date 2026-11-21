@@ -31,9 +31,13 @@ python3 scripts/build-slimdown.py --apply
   - `id` 形如 `ex18`，是分享链接与 localStorage 的唯一键；**不要改已发布条目的 id**，改 id 等于让旧链接失效。
   - `load` 保留原样给人看；`sets`/`reps` 由它拆出，供编辑与出图使用。
 - 方案：`days[].key/label/short/theme/duration/items[]`，item 为 `{id, sets, reps, note?}`。
-- 分享链接：`plan.html#p=v1|1=18*4~8%2D10,19*3~10%2F%E8%85%BF|...`
-  （天序号 = 从 1 起，动作 = 库内序号，`sets` `*`，`reps` 走 `encodeURIComponent`）。
-  解码时未知 id 会被跳过并提示；非法片段静默忽略，不 eval。
+- 分享链接：`plan.html#p=v2|1=!!18*4~8%2D10,19*3~10%2F%E8%85%BF|...`
+  （天序号从 1 起；每段 `主题!时长!动作表`，主题/时长与默认一致时留空；
+  动作 = 库内序号，`sets` `*`，`reps` 走 `encodeURIComponent`）。
+  解码兼容 v1（只带动作）；未知 id 跳过并提示；非法片段静默忽略，不 eval。
+- 方案页交互：七天一行（90vw，<1100px 横滚）；拖拽 `⠿` 或 `Alt+←/→` 交换**整天方案**
+  （主题/时长/动作一起换，星期标签不动）；卡片 `✎` 编辑、`▣` 预览；
+  PNG 导出宽度 = 预览实际宽度（1x，不再有隐藏的 2 倍放大）。
 
 ## 隐私
 
