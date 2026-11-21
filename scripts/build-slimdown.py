@@ -1,6 +1,9 @@
 #!/usr/bin/env python3
 """slimdown 案例生成器 —— 动作库 / 训练方案 / 档案 三页一次重建。
 
+案例编号: HTML-GEN-CL045（台账闭环编号；来源 2026-11-12 他人笔 b0f4b4f + review HG-SEC-231）
+用途: 三页同源可重建（数据 → _src 模板 → 单文件产物），`--dry-run` 先看面再 `--apply` 落盘。
+
 用法:
   python3 scripts/build-slimdown.py --dry-run   # 只打印将写哪些文件
   python3 scripts/build-slimdown.py --apply     # 写盘
