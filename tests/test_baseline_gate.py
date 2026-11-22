@@ -6,6 +6,7 @@ v1.1（复审返工）补：stderr 漂移提示、`--json` 错误分支形状、
 """
 import importlib.util
 import json
+import os
 import re
 import shutil
 import subprocess
@@ -301,6 +302,33 @@ class TestRenderBaseline(unittest.TestCase):
             self.assertIn('-d', jobs[rel], f'{rel} 缺 -d 台账')
             self.assertTrue(any(a.startswith('--title=') for a in jobs[rel]),
                             f'{rel} 的标题必须从产物回收（--title=<值> 形式）')
+
+
+class TestDocsIndexGate(unittest.TestCase):
+    """文档清单门禁（HTML-GEN-CL046）: `documents/docs-index.md` 不得落后于文档现状。
+
+    生成器单源在 hermes-manager（本仓只消费、不复制脚本）：上游脚本缺失时 skip，
+    在时用 `--check --quiet` 判定，rc≠0 即「改了文档没说」。
+    """
+
+    GEN = Path(os.path.expanduser('~/CodeSpace/hermes-manager/scripts/hm-docs-index.py'))
+    INDEX = ROOT / 'documents' / 'docs-index.md'
+
+    def test_01_index_exists_with_rows(self):
+        self.assertTrue(self.INDEX.is_file(), 'documents/docs-index.md 必须入库（生成器单源产出）')
+        rows = [ln for ln in self.INDEX.read_text(encoding='utf-8').splitlines()
+                if ln.startswith('| documents/')]
+        self.assertGreaterEqual(len(rows), 20, f'清单行数异常: {len(rows)}')
+
+    def test_02_index_not_stale(self):
+        if not self.GEN.is_file():
+            self.skipTest(f'上游生成器缺失，跳过门禁: {self.GEN}')
+        r = subprocess.run([sys.executable, str(self.GEN), '--root', str(ROOT),
+                            '--check', '--quiet'],
+                           cwd=str(ROOT), capture_output=True, text=True, timeout=180)
+        self.assertEqual(r.returncode, 0,
+                         f'文档清单落后于现状（跑 {self.GEN} --root . 重新生成）\n'
+                         f'stdout: {r.stdout.strip()[:400]}\nstderr: {r.stderr.strip()[:400]}')
 
 
 if __name__ == '__main__':
