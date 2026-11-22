@@ -25,6 +25,12 @@ tags: [html-gen, documents, handbook, archive, index]
 | pages-content-handbook-v1.0-20260908.md | 落地页双源与索引 + 内容案例（drama 知识库/表格、provinces/countries 双表数据工程） | 18 份 | solutions / root / review | 2026-09-08 |
 | engineering-testing-handbook-v1.0-20260908.md | 测试执行效率（pytest-xdist、sleep 调低、WebDriverWait、防 flaky） | 4 份 | root / review | 2026-09-08 |
 
+## 文档清单（机器台账，勿手改）
+
+| 清单 | 口径 | 维护方式 |
+|:--|:--|:--|
+| `docs-index.md` | durable 面全量（与 vault 镜像口径一致）7 列：文档/主题/类型/版本/日期/状态/行数 | `python3 ~/CodeSpace/hermes-manager/scripts/hm-docs-index.py --root . --html`（由 hermes-manager 单源生成；`--check` 判漂移） |
+
 ## 备注
 
 - 文档命名：`{topic}-handbook-v1.0-{date}.md`；主题手册只写「现行知识」，不复制命令细节之外的历史叙事。
