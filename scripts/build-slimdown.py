@@ -14,8 +14,9 @@
   demos/slimdown/archive.html     _src/archive.tpl + _src/archive.js
 
 设计取舍:
-  - 页面样式统一走 _src/base.css（纸上质感），不复用深色 table 模板的 CSS；
-    exercises.html 由 html-gen CLI 生成，保证「动作库用标准模板」这条不被绕过。
+  - 样式分两套：plan.html 走 _src/plan.css（深色暖调 + 四套 data-theme 变量），
+    archive.html 走 _src/base.css（纸上质感）；两者互不影响。
+  - exercises.html 由 html-gen CLI 生成，保证「动作库用标准模板」这条不被绕过。
   - 输出不含生成时间戳，同一份数据重复构建逐字节一致（便于 diff / 门禁）。
 """
 import argparse
@@ -93,7 +94,8 @@ def main():
 
     plan = json.loads(read(DATA_PLAN))
     ex = json.loads(read(DATA_EX))
-    css = read(SRC / 'base.css')
+    css_plan = read(SRC / 'plan.css')
+    css_base = read(SRC / 'base.css')
     js_plan = read(SRC / 'plan.js')
     js_arc = read(SRC / 'archive.js')
 
@@ -104,10 +106,10 @@ def main():
     }
 
     outputs = {
-        'plan.html': render(SRC / 'plan.tpl', css, js_plan, nav_html('plan.html'), plan,
+        'plan.html': render(SRC / 'plan.tpl', css_plan, js_plan, nav_html('plan.html'), plan,
                             '薄肌减脂 · 训练方案 · slimdown')
                      .replace('{{DATA}}', js_safe(payload)),
-        'archive.html': render(SRC / 'archive.tpl', css, js_arc, nav_html('archive.html'), plan,
+        'archive.html': render(SRC / 'archive.tpl', css_base, js_arc, nav_html('archive.html'), plan,
                                '薄肌减脂 · 档案 · slimdown'),
     }
 
