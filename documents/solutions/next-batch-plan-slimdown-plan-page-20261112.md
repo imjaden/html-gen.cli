@@ -18,6 +18,7 @@
 > | V10 打印 | 只翻底色与文字色，保留当前主题强调色；隐藏 FAB / 主题条 / 面板 |
 > | V11 文件拆分 | 新增 `_src/plan.css`（只服务 plan 页）；`base.css` 继续只服务 archive，避免深色改版波及档案页 |
 > | V12 版本 | `v1.2` / 2026-11-22 |
+> | V13 卡片行（2026-11-22 追加，全采推荐） | 拖拽手柄移到卡顶水平居中（36×20 热区，刀旗下移 4px）；动作名两行（中文 11.5px + 英文 10.5px 斜体，纯中文单行居中）；行高 35px、间隔 3px、行悬停 `rgba(255,255,255,.045)`；徽章 56→自适应（`min-width:56`，长值不截断，实测 56/58/60/76）；名称列 79→87~93px；出图卡同步两行；打印行高 26px + 隐藏 masthead/chip/手柄 ⇒ 7 卡一页（body 900px） |
 >
 > 实施落点：`demos/slimdown/_src/{plan.tpl,plan.css,plan.js}`、`scripts/build-slimdown.py`（plan 页改用 plan.css）、
 > `data/_slimdown-plan.json`（slogan + 版本）。实测：1440 下 7 卡各 194px、行宽 1408；出图 720×245 == 预览；

@@ -121,8 +121,13 @@
       var items = d.items.map(function (it, k) {
         var e = BYID[it.id];
         if (!e) return '';
+        var cn = e.name_cn || e.name, en = e.name_en || '';
+        var full = cn + (en ? ' · ' + en : '') + ' · ' + it.sets + ' 组 × ' + it.reps;
         return '<li><span class="idx">' + (k + 1) + '.</span>' +
-          '<span class="nm" title="' + esc(e.name) + '">' + esc(e.name) + '</span>' +
+          '<span class="nm" title="' + esc(full) + '">' +
+            '<span class="cn">' + esc(cn) + '</span>' +
+            (en ? '<span class="en">' + esc(en) + '</span>' : '') +
+          '</span>' +
           '<span class="badge" title="' + esc(it.sets + ' 组 × ' + it.reps) + '">' + esc(it.reps) + '</span></li>';
       }).join('');
       return '<div class="day-card' + (isToday ? ' today' : '') + '" style="--i:' + i + '"' +
@@ -578,8 +583,12 @@
   function cardRows(d) {
     return d.items.map(function (it, i) {
       var e = BYID[it.id] || { name: it.id };
+      var cn = e.name_cn || e.name, en = e.name_en || '';
       return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
-        '<span class="n" title="' + esc(e.name) + '">' + esc(e.name) + '</span>' +
+        '<span class="n" title="' + esc(cn + (en ? ' · ' + en : '')) + '">' +
+          '<span class="cn">' + esc(cn) + '</span>' +
+          (en ? '<span class="en">' + esc(en) + '</span>' : '') +
+        '</span>' +
         '<span class="s">' + esc(it.sets) + ' 组</span>' +
         '<span class="b">' + esc(it.reps) + '</span></div>';
     }).join('') || '<div class="c-row"><span class="n" style="color:var(--faint)">这一天没有安排</span></div>';

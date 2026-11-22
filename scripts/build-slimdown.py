@@ -57,6 +57,36 @@ def read(p):
     return p.read_text(encoding='utf-8')
 
 
+# 动作名拆中英：数据里给了 name_en 就用它，否则按「中文<空格>英文」拆。
+# 只用于 plan.html 的载荷，动作库 JSON 与 exercises.html 不动（columns 是显式声明的）。
+NAME_EN_RE = re.compile(r'^(.+?)\s+([A-Za-z][A-Za-z0-9\s\'&.\-–]*)$')
+
+
+def name_en_of(row):
+    explicit = (row.get('name_en') or '').strip()
+    if explicit:
+        return explicit
+    m = NAME_EN_RE.match((row.get('name') or '').strip())
+    return m.group(2).strip() if m else ''
+
+
+def plan_exercise(row):
+    """plan 载荷用的动作条目：显式带中/英文名，供卡片两行渲染。"""
+    cn, en = name_parts(row)
+    out = {k: row[k] for k in ('id', 'name', 'theme', 'equip', 'muscle', 'sets', 'reps')}
+    out['name_cn'] = cn
+    out['name_en'] = en
+    return out
+
+
+def name_parts(row):
+    """返回 (中文名, 英文名)；英文名可为空串（纯中文动作）。"""
+    full = (row.get('name') or '').strip()
+    en = name_en_of(row)
+    cn = full[:-len(en)].strip() if en and full.endswith(en) else full
+    return cn, en
+
+
 def render(tpl, css, js, nav, plan, title):
     html = read(tpl)
     return (html
@@ -101,8 +131,7 @@ def main():
 
     payload = {
         'plan': plan,
-        'exercises': [{k: r[k] for k in ('id', 'name', 'theme', 'equip', 'muscle', 'sets', 'reps')}
-                      for r in ex['data']],
+        'exercises': [plan_exercise(r) for r in ex['data']],
     }
 
     outputs = {
