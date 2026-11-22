@@ -318,7 +318,10 @@ class TestDocsIndexGate(unittest.TestCase):
         self.assertTrue(self.INDEX.is_file(), 'documents/docs-index.md 必须入库（生成器单源产出）')
         rows = [ln for ln in self.INDEX.read_text(encoding='utf-8').splitlines()
                 if ln.startswith('| documents/')]
-        self.assertGreaterEqual(len(rows), 20, f'清单行数异常: {len(rows)}')
+        # 下限只防「清单被清空/截断」，不是口径断言：生成器 v1.1 的 durable 面
+        # 只收 documents/*.md + documents/solutions/（排除 review/reports/handoff 等子目录），
+        # 本仓实测 19 篇；口径真值由 test_02 的逐字节 --check 钉住。
+        self.assertGreaterEqual(len(rows), 10, f'清单行数异常: {len(rows)}')
 
     def test_02_index_not_stale(self):
         if not self.GEN.is_file():
