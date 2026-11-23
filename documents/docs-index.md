@@ -1,4 +1,4 @@
-> 由 `scripts/hm-docs-index.py` 生成，勿手改；口径 = durable 面（与 vault 镜像一致），共 19 篇（design 8 · guide 10 · readme 1）。
+> 由 `scripts/hm-docs-index.py` 生成，勿手改；口径 = durable 面（与 vault 镜像一致），共 20 篇（design 9 · guide 10 · readme 1）。
 > 规范：`skills-governance/docs-index-spec.md`；改文档后跑 `python3 scripts/hm-docs-index.py --html` 同步 md 与视图。
 
 ## 清单
@@ -18,6 +18,7 @@
 | documents/solutions/github-issue-feedback-skill-design-v1.2-20260912.md | github-issue-feedback-skill-design | design | 1.2 | 2026-09-12 | current | 203 |
 | documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md | html-gen-clipboard-fallback-design | design | 1.2 | 2026-09-27 | current | 474 |
 | documents/solutions/html-gen-help-contract-design-v1.4-20260917.md | html-gen-help-contract-design | design | 1.4 | 2026-09-17 | current | 713 |
+| documents/solutions/knowledge-root-map-and-spotlight-design-v1.0-20261123.md | knowledge-root-map-and-spotlight-design | design | v1.0 | 2026-11-23 | current | 155 |
 | documents/solutions/slimdown-case-attribution-design-v1.0-20261117.md | slimdown-case-attribution-design | design | 1.0 | 2026-11-17 | current | 334 |
 | documents/solutions/table-split-grid-design-v1.0-20261109.md | table-split-grid-design | design | v1.0 | 2026-11-09 | current | 160 |
 | documents/solutions/table-text-xss-escape-design-v1.0-20260911.md | table-text-xss-escape-design | design | 1.0 | 2026-09-11 | current | 118 |
