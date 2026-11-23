@@ -1,6 +1,6 @@
 {
   "title": "训练动作库 · slimdown",
-  "subtitle": "72 个动作 · 10 个主题 · 点任意行看详情，可搜索、筛选、导出 CSV",
+  "subtitle": "80 个动作 · 11 个主题 · 点任意行看详情，可搜索、筛选、导出 CSV",
   "columns": [
     {
       "key": "id",
@@ -842,6 +842,94 @@
       "alias": "锤式 · 中立握弯举",
       "sets": 3,
       "reps": "12"
+    },
+    {
+      "id": "ex73",
+      "name": "自重深蹲 Bodyweight Squat",
+      "theme": "居家自重",
+      "equip": "徒手",
+      "muscle": "股四·臀",
+      "load": "3×20 次",
+      "sets": 3,
+      "reps": "20 次",
+      "alias": "徒手深蹲 · 空手深蹲"
+    },
+    {
+      "id": "ex74",
+      "name": "卷腹 Crunch",
+      "theme": "居家自重",
+      "equip": "瑜伽垫",
+      "muscle": "腹直肌",
+      "load": "3×25 次",
+      "sets": 3,
+      "reps": "25 次",
+      "alias": "仰卧卷腹"
+    },
+    {
+      "id": "ex75",
+      "name": "开合跳 Jumping Jack",
+      "theme": "居家自重",
+      "equip": "徒手",
+      "muscle": "全身有氧",
+      "load": "3×35 次",
+      "sets": 3,
+      "reps": "35 次",
+      "alias": "开合跳 · 星星跳"
+    },
+    {
+      "id": "ex76",
+      "name": "弓步蹲 Lunge",
+      "theme": "居家自重",
+      "equip": "徒手",
+      "muscle": "股四·臀",
+      "load": "3×15 次",
+      "sets": 3,
+      "reps": "15 次",
+      "alias": "箭步蹲 · 前弓步"
+    },
+    {
+      "id": "ex77",
+      "name": "靠墙静蹲 Wall Sit",
+      "theme": "居家自重",
+      "equip": "墙面",
+      "muscle": "股四",
+      "load": "3×30 秒",
+      "sets": 3,
+      "reps": "30 秒",
+      "alias": "贴墙静蹲"
+    },
+    {
+      "id": "ex78",
+      "name": "仰卧起坐 Sit-up",
+      "theme": "居家自重",
+      "equip": "瑜伽垫",
+      "muscle": "腹直肌",
+      "load": "3×15 次",
+      "sets": 3,
+      "reps": "15 次",
+      "alias": "屈膝仰卧起坐"
+    },
+    {
+      "id": "ex79",
+      "name": "后踢腿 Back Kick",
+      "theme": "居家自重",
+      "equip": "瑜伽垫",
+      "muscle": "臀·腘绳",
+      "load": "3×20 次",
+      "sets": 3,
+      "reps": "20 次",
+      "alias": "跪姿后踢 · 驴踢"
+    },
+    {
+      "id": "ex80",
+      "name": "马步蹲 Horse Stance Squat",
+      "theme": "居家自重",
+      "equip": "徒手",
+      "muscle": "股四",
+      "load": "3×60 次",
+      "sets": 3,
+      "reps": "60 次",
+      "alias": "马步 · 桩功蹲"
     }
   ],
   "tabs": [
@@ -917,6 +1005,13 @@
       "label": "有氧",
       "field": "theme",
       "value": "有氧",
+      "contains": true
+    },
+    {
+      "key": "home",
+      "label": "居家自重",
+      "field": "theme",
+      "value": "居家自重",
       "contains": true
     }
   ],

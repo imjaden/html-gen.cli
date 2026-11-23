@@ -345,7 +345,114 @@ a:hover{text-decoration:underline;}
   .anim-in #weekRow:not(.expanded) .day-card{transform:none;opacity:1;}
 }
 
-/* ═══════ 9. 卡片模式（?card=day|week）：只留卡本身，方便截图 ═══════ */
+/* ═══════ 9. 卡片模式（?card=day|week|theme）：只留卡本身，方便截图 ═══════ */
 body.cardonly{background:var(--bg);}
 body.cardonly > .sheet,body.cardonly > .fab-group,body.cardonly > .theme-bar{display:none;}
 body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-start;padding:22px 12px;min-height:100vh;}
+
+/* ═══════ 10. v1.3：视图分段 + 方案预设（按星期 / 按主题） ═══════ */
+.view-bar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:2px 0 14px;}
+.v-seg{display:inline-flex;border:1px solid var(--edge-soft);border-radius:10px;overflow:hidden;background:rgba(255,255,255,.03);}
+.v-seg button{appearance:none;font:inherit;font-size:12.5px;padding:7px 16px;border:0;cursor:pointer;
+  background:transparent;color:var(--muted);letter-spacing:.04em;transition:background .15s,color .15s;}
+.v-seg button:hover{color:var(--ink);}
+.v-seg button.on{background:var(--acc);color:#fff;font-weight:700;}
+.preset-pick{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);
+  border:1px solid var(--edge-soft);border-radius:9px;padding:5px 9px;}
+.preset-pick[hidden]{display:none;}
+.preset-pick .lbl{font-size:10.5px;color:var(--faint);letter-spacing:.08em;}
+.preset-pick select{appearance:none;-webkit-appearance:none;font:inherit;font-size:12px;color:var(--ink);
+  background:transparent;border:0;outline:none;cursor:pointer;padding-right:2px;}
+.preset-pick select option{background:var(--card);color:var(--ink);}
+
+/* 分享态提示条 */
+.shared-bar{margin:0 0 12px;padding:7px 12px;border:1px dashed var(--gold-soft);border-radius:9px;
+  display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--gold);}
+.shared-bar[hidden]{display:none;}
+.shared-bar .btn{margin-left:auto;}
+
+/* hidden 属性优先于布局 display（#weekRow/.p-tabs/#themeRow 都显式设了 display） */
+#weekRow[hidden],#themeRow[hidden],.p-tabs[hidden],.p-seg button[hidden],#btnDownloadEach[hidden]{display:none!important;}
+
+/* ═══════ 11. v1.3：动作行第三段（目标肌群） / 恢复日清单 / 打卡 ═══════ */
+.d-list .nm .mt{font-size:9.5px;color:var(--gold);letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.r-list{list-style:none;margin:12px 12px 0;padding:0;display:flex;flex-direction:column;gap:10px;}
+.r-list li{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink);min-width:0;}
+.r-ic{flex:none;width:26px;height:26px;border:1px solid var(--gold);border-radius:50%;
+  display:grid;place-items:center;color:var(--gold);font-size:11px;}
+.r-list .rt{flex:1;min-width:0;}
+.day-card .d-foot{position:relative;padding-right:30px;}
+.day-card .chk{position:absolute;right:8px;bottom:8px;z-index:4;width:24px;height:24px;padding:0;
+  border-radius:50%;border:1px solid var(--edge);background:rgba(0,0,0,.25);color:var(--faint);
+  font-size:12px;line-height:1;cursor:pointer;display:grid;place-items:center;
+  opacity:.55;transition:opacity .15s,border-color .15s,color .15s,background .15s;}
+.day-card .chk:hover{opacity:1;border-color:var(--gold);color:var(--gold);}
+.day-card .chk[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--bg);opacity:1;}
+.day-card.done{opacity:.82;}
+.day-card.done .d-foot .s2{color:var(--gold);}
+
+/* ═══════ 12. v1.3：主题跟练卡（按主题视图） ═══════ */
+#themeRow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:stretch;}
+#themeRow[hidden]{display:none;}
+.theme-card{--i:0;position:relative;display:flex;flex-direction:column;min-width:0;
+  background:linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);
+  border:1px solid var(--edge-soft);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+  transition:transform .35s var(--ease),box-shadow .2s ease,border-color .2s ease;}
+.theme-card:hover{transform:translateY(-4px);border-color:var(--gold-soft);}
+.theme-card .d-banner{margin:12px 12px 0;padding:11px 10px;}
+.theme-card .d-banner .b-head{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.theme-card .d-banner .b-day{font-size:14px;font-weight:800;letter-spacing:.03em;color:#fff;line-height:1.3;}
+.theme-card .d-banner .b-pace{font-size:10px;letter-spacing:.03em;color:rgba(255,255,255,.82);text-align:center;}
+.d-list.tall{margin:10px 12px 0;gap:2px;}
+.d-list.tall li{height:auto;min-height:34px;align-items:flex-start;gap:7px;padding:3px 2px;}
+.d-list.tall .nm{display:block;}
+.d-list.tall .nm b{display:block;font-size:12px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-list.tall .nm .en{display:block;font-size:9.5px;font-style:italic;color:var(--faint);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-list.tall .nm .note{display:block;font-size:9.5px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-list .m-badge{flex:none;width:52px;text-align:center;font-size:9.5px;color:var(--gold);
+  border:1px solid var(--gold-soft);border-radius:4px;padding:2px 0;margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-foot{margin-top:auto;padding:10px 12px;border-top:1px dashed var(--edge-soft);}
+.video-link{display:flex;align-items:center;gap:8px;color:var(--gold);font-size:11px;line-height:1.4;}
+.video-link:hover{color:#fff;text-decoration:none;}
+.video-link .v-ico,.no-video .v-ico{flex:none;width:22px;height:22px;border:1px solid var(--gold-soft);
+  border-radius:50%;display:grid;place-items:center;font-size:9.5px;color:var(--gold);}
+.video-link .v-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.video-link .v-arrow{flex:none;color:var(--faint);font-size:10.5px;}
+.no-video{display:flex;align-items:center;gap:8px;color:var(--faint);font-size:11px;}
+
+/* ═══════ 13. v1.3：出图宿主与主题长图/逐张 ═══════ */
+.shot-host{position:fixed;left:-10000px;top:0;width:720px;pointer-events:none;z-index:-1;}
+.shot-sheet{width:720px;display:flex;flex-direction:column;gap:14px;padding:18px;
+  background:var(--bg);border-radius:16px;}
+.preview-stack{display:flex;flex-direction:column;gap:14px;align-items:center;max-width:100%;}
+.preview-stack .card{max-width:100%;}
+.card.tcard .c-row .mb{flex:none;width:66px;text-align:center;font-size:10.5px;color:var(--gold);
+  border:1px solid var(--gold-soft);border-radius:4px;padding:2px 0;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.card.tcard .c-row .note{font-size:10.5px;color:var(--muted);}
+.card.tcard .c-row{align-items:flex-start;}
+
+/* ═══════ 14. v1.3 响应式补充 ═══════ */
+@media (max-width:1100px){
+  #themeRow{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    padding-bottom:8px;gap:10px;}
+  #themeRow .theme-card{flex:0 0 280px;scroll-snap-align:start;}
+}
+@media (max-width:520px){
+  .view-bar{gap:8px;}
+  .v-seg button{padding:6px 12px;font-size:11.5px;}
+  #themeRow .theme-card{flex:0 0 260px;}
+}
+
+/* ═══════ 15. v1.3 打印补充：主题视图 2 列、隐藏打卡与分段 ═══════ */
+@media print{
+  .view-bar,.shared-bar,.chk{display:none!important;}
+  #themeRow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  #themeRow .theme-card{break-inside:avoid;page-break-inside:avoid;}
+  .t-foot{border-top:1px solid var(--edge-soft);}
+}

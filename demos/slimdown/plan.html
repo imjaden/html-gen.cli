@@ -3,8 +3,15 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12100e">
 <title>薄肌减脂 · 训练方案 · slimdown</title>
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<script>
+/* 首屏防闪烁：CSS 生效前先把记忆里的配色与视图写到 <html>，避免先赤金再变墨绿 */
+(function(){try{var o=JSON.parse(localStorage.getItem('slimdown:ui:v2')||'{}')||{};
+if(o.theme)document.documentElement.setAttribute('data-theme',o.theme);
+if(o.view)document.documentElement.setAttribute('data-view',o.view);}catch(e){}})();
+</script>
 <style>/* slimdown 训练方案页 v1.2 —— 深色暖调 + 成套主题色（data-theme）+ 统一面板
    与 archive 的 base.css 分离：本文件只服务 plan.html。 */
 
@@ -352,30 +359,154 @@ a:hover{text-decoration:underline;}
   .anim-in #weekRow:not(.expanded) .day-card{transform:none;opacity:1;}
 }
 
-/* ═══════ 9. 卡片模式（?card=day|week）：只留卡本身，方便截图 ═══════ */
+/* ═══════ 9. 卡片模式（?card=day|week|theme）：只留卡本身，方便截图 ═══════ */
 body.cardonly{background:var(--bg);}
 body.cardonly > .sheet,body.cardonly > .fab-group,body.cardonly > .theme-bar{display:none;}
 body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-start;padding:22px 12px;min-height:100vh;}
+
+/* ═══════ 10. v1.3：视图分段 + 方案预设（按星期 / 按主题） ═══════ */
+.view-bar{display:flex;align-items:center;justify-content:center;gap:12px;flex-wrap:wrap;margin:2px 0 14px;}
+.v-seg{display:inline-flex;border:1px solid var(--edge-soft);border-radius:10px;overflow:hidden;background:rgba(255,255,255,.03);}
+.v-seg button{appearance:none;font:inherit;font-size:12.5px;padding:7px 16px;border:0;cursor:pointer;
+  background:transparent;color:var(--muted);letter-spacing:.04em;transition:background .15s,color .15s;}
+.v-seg button:hover{color:var(--ink);}
+.v-seg button.on{background:var(--acc);color:#fff;font-weight:700;}
+.preset-pick{display:inline-flex;align-items:center;gap:6px;font-size:11.5px;color:var(--muted);
+  border:1px solid var(--edge-soft);border-radius:9px;padding:5px 9px;}
+.preset-pick[hidden]{display:none;}
+.preset-pick .lbl{font-size:10.5px;color:var(--faint);letter-spacing:.08em;}
+.preset-pick select{appearance:none;-webkit-appearance:none;font:inherit;font-size:12px;color:var(--ink);
+  background:transparent;border:0;outline:none;cursor:pointer;padding-right:2px;}
+.preset-pick select option{background:var(--card);color:var(--ink);}
+
+/* 分享态提示条 */
+.shared-bar{margin:0 0 12px;padding:7px 12px;border:1px dashed var(--gold-soft);border-radius:9px;
+  display:flex;align-items:center;gap:10px;font-size:11.5px;color:var(--gold);}
+.shared-bar[hidden]{display:none;}
+.shared-bar .btn{margin-left:auto;}
+
+/* hidden 属性优先于布局 display（#weekRow/.p-tabs/#themeRow 都显式设了 display） */
+#weekRow[hidden],#themeRow[hidden],.p-tabs[hidden],.p-seg button[hidden],#btnDownloadEach[hidden]{display:none!important;}
+
+/* ═══════ 11. v1.3：动作行第三段（目标肌群） / 恢复日清单 / 打卡 ═══════ */
+.d-list .nm .mt{font-size:9.5px;color:var(--gold);letter-spacing:.02em;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.r-list{list-style:none;margin:12px 12px 0;padding:0;display:flex;flex-direction:column;gap:10px;}
+.r-list li{display:flex;align-items:center;gap:9px;font-size:12.5px;color:var(--ink);min-width:0;}
+.r-ic{flex:none;width:26px;height:26px;border:1px solid var(--gold);border-radius:50%;
+  display:grid;place-items:center;color:var(--gold);font-size:11px;}
+.r-list .rt{flex:1;min-width:0;}
+.day-card .d-foot{position:relative;padding-right:30px;}
+.day-card .chk{position:absolute;right:8px;bottom:8px;z-index:4;width:24px;height:24px;padding:0;
+  border-radius:50%;border:1px solid var(--edge);background:rgba(0,0,0,.25);color:var(--faint);
+  font-size:12px;line-height:1;cursor:pointer;display:grid;place-items:center;
+  opacity:.55;transition:opacity .15s,border-color .15s,color .15s,background .15s;}
+.day-card .chk:hover{opacity:1;border-color:var(--gold);color:var(--gold);}
+.day-card .chk[aria-pressed="true"]{background:var(--gold);border-color:var(--gold);color:var(--bg);opacity:1;}
+.day-card.done{opacity:.82;}
+.day-card.done .d-foot .s2{color:var(--gold);}
+
+/* ═══════ 12. v1.3：主题跟练卡（按主题视图） ═══════ */
+#themeRow{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:10px;align-items:stretch;}
+#themeRow[hidden]{display:none;}
+.theme-card{--i:0;position:relative;display:flex;flex-direction:column;min-width:0;
+  background:linear-gradient(180deg,var(--card) 0%,var(--card-2) 100%);
+  border:1px solid var(--edge-soft);border-radius:var(--radius);overflow:hidden;box-shadow:var(--shadow);
+  transition:transform .35s var(--ease),box-shadow .2s ease,border-color .2s ease;}
+.theme-card:hover{transform:translateY(-4px);border-color:var(--gold-soft);}
+.theme-card .d-banner{margin:12px 12px 0;padding:11px 10px;}
+.theme-card .d-banner .b-head{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;}
+.theme-card .d-banner .b-day{font-size:14px;font-weight:800;letter-spacing:.03em;color:#fff;line-height:1.3;}
+.theme-card .d-banner .b-pace{font-size:10px;letter-spacing:.03em;color:rgba(255,255,255,.82);text-align:center;}
+.d-list.tall{margin:10px 12px 0;gap:2px;}
+.d-list.tall li{height:auto;min-height:34px;align-items:flex-start;gap:7px;padding:3px 2px;}
+.d-list.tall .nm{display:block;}
+.d-list.tall .nm b{display:block;font-size:12px;font-weight:600;color:var(--ink);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-list.tall .nm .en{display:block;font-size:9.5px;font-style:italic;color:var(--faint);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-list.tall .nm .note{display:block;font-size:9.5px;color:var(--muted);
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.d-list .m-badge{flex:none;width:52px;text-align:center;font-size:9.5px;color:var(--gold);
+  border:1px solid var(--gold-soft);border-radius:4px;padding:2px 0;margin-top:1px;
+  white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.t-foot{margin-top:auto;padding:10px 12px;border-top:1px dashed var(--edge-soft);}
+.video-link{display:flex;align-items:center;gap:8px;color:var(--gold);font-size:11px;line-height:1.4;}
+.video-link:hover{color:#fff;text-decoration:none;}
+.video-link .v-ico,.no-video .v-ico{flex:none;width:22px;height:22px;border:1px solid var(--gold-soft);
+  border-radius:50%;display:grid;place-items:center;font-size:9.5px;color:var(--gold);}
+.video-link .v-title{flex:1 1 auto;min-width:0;overflow:hidden;text-overflow:ellipsis;white-space:nowrap;}
+.video-link .v-arrow{flex:none;color:var(--faint);font-size:10.5px;}
+.no-video{display:flex;align-items:center;gap:8px;color:var(--faint);font-size:11px;}
+
+/* ═══════ 13. v1.3：出图宿主与主题长图/逐张 ═══════ */
+.shot-host{position:fixed;left:-10000px;top:0;width:720px;pointer-events:none;z-index:-1;}
+.shot-sheet{width:720px;display:flex;flex-direction:column;gap:14px;padding:18px;
+  background:var(--bg);border-radius:16px;}
+.preview-stack{display:flex;flex-direction:column;gap:14px;align-items:center;max-width:100%;}
+.preview-stack .card{max-width:100%;}
+.card.tcard .c-row .mb{flex:none;width:66px;text-align:center;font-size:10.5px;color:var(--gold);
+  border:1px solid var(--gold-soft);border-radius:4px;padding:2px 0;white-space:nowrap;
+  overflow:hidden;text-overflow:ellipsis;}
+.card.tcard .c-row .note{font-size:10.5px;color:var(--muted);}
+.card.tcard .c-row{align-items:flex-start;}
+
+/* ═══════ 14. v1.3 响应式补充 ═══════ */
+@media (max-width:1100px){
+  #themeRow{display:flex;overflow-x:auto;scroll-snap-type:x mandatory;-webkit-overflow-scrolling:touch;
+    padding-bottom:8px;gap:10px;}
+  #themeRow .theme-card{flex:0 0 280px;scroll-snap-align:start;}
+}
+@media (max-width:520px){
+  .view-bar{gap:8px;}
+  .v-seg button{padding:6px 12px;font-size:11.5px;}
+  #themeRow .theme-card{flex:0 0 260px;}
+}
+
+/* ═══════ 15. v1.3 打印补充：主题视图 2 列、隐藏打卡与分段 ═══════ */
+@media print{
+  .view-bar,.shared-bar,.chk{display:none!important;}
+  #themeRow{display:grid;grid-template-columns:repeat(2,1fr);gap:10px;}
+  #themeRow .theme-card{break-inside:avoid;page-break-inside:avoid;}
+  .t-foot{border-top:1px solid var(--edge-soft);}
+}
 </style>
 </head>
 <body>
 
 <div class="theme-bar">
   <span class="ic" aria-hidden="true">🎨</span>
-  <select id="themeSel" aria-label="主题色"></select>
+  <select id="themeSel" aria-label="配色方案"></select>
 </div>
 
 <div class="sheet" id="sheet">
   <header class="masthead">
-    <div class="kicker">SLIMDOWN · 7-DAY PLAN</div>
-    <h1>薄肌减脂 · 七日方案</h1>
-    <div class="sub">今天练什么，一眼看懂</div>
+    <div class="kicker">HOME WORKOUT PLAN</div>
+    <h1>居家训练计划</h1>
+    <div class="sub" id="pageSub">干净饮食 · 热量缺口 · 减脂增肌</div>
   </header>
 
+  <div class="view-bar">
+    <div class="v-seg" id="viewSeg" role="tablist" aria-label="视图切换">
+      <button type="button" role="tab" data-view="week" class="on">按星期</button>
+      <button type="button" role="tab" data-view="theme">按主题</button>
+    </div>
+    <label class="preset-pick" id="presetPick">
+      <span class="lbl">方案</span>
+      <select id="presetSel" aria-label="方案预设"></select>
+    </label>
+  </div>
+
+  <div class="shared-bar" id="sharedBar" hidden>
+    <span>你正在查看他人分享的方案 · 未写入本机</span>
+    <button type="button" class="btn mini" id="btnUnshare">恢复我的方案</button>
+  </div>
+
   <div id="weekRow" aria-label="七日训练方案"></div>
+  <div id="themeRow" aria-label="主题训练方案" hidden></div>
 
   <footer class="foot">
-    <div>slimdown · v1.2 · 2026-11-22</div>
+    <div>slimdown · v1.3 · 2026-11-23</div>
     <div><a href="exercises.html">动作库</a> · <a href="archive.html">档案</a> · 右下角可编辑 / 存图</div>
   </footer>
 </div>
@@ -432,8 +563,10 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
         <button class="p-link" id="btnShare" type="button">分享链接</button>
         <button class="p-link" id="btnCopyImg" type="button">复制图片</button>
         <button class="p-link" id="btnPrint" type="button">打印</button>
+        <button class="p-link" id="btnClearMemory" type="button" title="清空配色 / 视图 / 筛选 / 打卡等本机记忆">清除本机记忆</button>
       </div>
       <div class="p-actions">
+        <button class="p-btn" id="btnDownloadEach" type="button" hidden>逐张下载</button>
         <button class="p-btn primary" id="btnSavePlan" type="button">保存方案</button>
         <button class="p-btn" id="btnDownloadImg" type="button" disabled>下载图片</button>
       </div>
@@ -456,35 +589,233 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   </div>
 </div>
 
-<script>window.SLIMDOWN = {"plan":{"version":"v1.2","updated":"2026-11-22","title":"薄肌减脂 · 七日活动方案","subtitle":"七天一眼看懂 · 右下角编辑 / 存图；改动自动存本机，可生成分享链接或下载 PNG","meta":{"slogan":"薄肌减脂 · 阶段一","goal":"周降 ≤0.31 kg","steps":"8000–10000 步 / 睡眠 ≥7.5 h","safety":"周降 >0.5 kg 连续两周 ⇒ 加 150–200 kcal；力量主项连续 2 周掉 >10% ⇒ 同上加。"},"days":[{"key":"mon","label":"周一","short":"一","theme":"下肢 A · 股四 + 臀","duration":"45 分","slogan":"先坚持，再谈变化！","items":[{"id":"ex18","sets":4,"reps":"8–10","note":"膝跟脚尖方向，蹲到大腿平行"},{"id":"ex19","sets":3,"reps":"10/腿"},{"id":"ex16","sets":3,"reps":"12–15"},{"id":"ex70","sets":4,"reps":"15"},{"id":"ex47","sets":3,"reps":"40–60 秒"}]},{"key":"tue","label":"周二","short":"二","theme":"轻松跑 A","duration":"45 分","slogan":"能说话的配速，才是好配速","items":[{"id":"ex66","sets":1,"reps":"8 km","note":"配速 6:30–6:45，能说话"}]},{"key":"wed","label":"周三","short":"三","theme":"上肢推 · 胸肩三头","duration":"40 分","slogan":"推得起，才撑得住","items":[{"id":"ex51","sets":4,"reps":"8–12"},{"id":"ex52","sets":3,"reps":"10"},{"id":"ex43","sets":3,"reps":"10"},{"id":"ex58","sets":3,"reps":"12–15"}]},{"key":"thu","label":"周四","short":"四","theme":"轻松跑 B + 核心","duration":"50 分","slogan":"跑得稳，先稳核心","items":[{"id":"ex66","sets":1,"reps":"7 km"},{"id":"ex15","sets":3,"reps":"20 秒"},{"id":"ex12","sets":3,"reps":"10/侧"},{"id":"ex48","sets":3,"reps":"30–45 秒/侧"},{"id":"ex13","sets":3,"reps":"10/侧"}]},{"key":"fri","label":"周五","short":"五","theme":"后链臀 · 臀 + 腘绳","duration":"45 分","slogan":"把后链唤醒，站姿更挺拔","items":[{"id":"ex41","sets":4,"reps":"15","note":"髋铰链不是下蹲"},{"id":"ex44","sets":3,"reps":"10/腿"},{"id":"ex17","sets":4,"reps":"10–12"},{"id":"ex71","sets":3,"reps":"12/腿"},{"id":"ex70","sets":4,"reps":"20"}]},{"key":"sat","label":"周六","short":"六","theme":"上肢拉 · 背 + 二头","duration":"40 分","slogan":"拉得住，肩颈才松","items":[{"id":"ex42","sets":4,"reps":"10–12/侧"},{"id":"ex55","sets":3,"reps":"12–15","note":"门框下拉"},{"id":"ex57","sets":3,"reps":"15"},{"id":"ex72","sets":3,"reps":"12"}]},{"key":"sun","label":"周日","short":"日","theme":"长距离 C · 质量课","duration":"90 分","slogan":"慢下来，才跑得远","items":[{"id":"ex67","sets":1,"reps":"15 km","note":"配速 6:40–7:00；隔周替换 6×800 m 间歇 + 4 km 慢跑"}]}]},"exercises":[{"id":"ex01","name":"壶铃环绕 Halo","theme":"热身","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"10/方向","name_cn":"壶铃环绕","name_en":"Halo"},{"id":"ex02","name":"农夫行走 Farmer Carry","theme":"热身","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"30 步","name_cn":"农夫行走","name_en":"Farmer Carry"},{"id":"ex03","name":"棍花绕肩 Stick Halo","theme":"热身","equip":"盘龙棍","muscle":"上肢","sets":3,"reps":"10/方向","name_cn":"棍花绕肩","name_en":"Stick Halo"},{"id":"ex04","name":"蝴蝶双拍 Butterfly Pulse","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"蝴蝶双拍","name_en":"Butterfly Pulse"},{"id":"ex05","name":"凯格尔桥 Kegel Bridge","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"凯格尔桥","name_en":"Kegel Bridge"},{"id":"ex06","name":"钻石臀桥 Diamond Bridge","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"钻石臀桥","name_en":"Diamond Bridge"},{"id":"ex07","name":"桥式开合 Bridge Open","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"桥式开合","name_en":"Bridge Open"},{"id":"ex08","name":"桥式动停 Bridge Hold","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"桥式动停","name_en":"Bridge Hold"},{"id":"ex09","name":"高频摩擦 Clam Pulse","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"高频摩擦","name_en":"Clam Pulse"},{"id":"ex10","name":"反向臀冲 Reverse Thrust","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"反向臀冲","name_en":"Reverse Thrust"},{"id":"ex11","name":"俯身臀刺 Kickback","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"俯身臀刺","name_en":"Kickback"},{"id":"ex12","name":"死虫 Dead Bug","theme":"睡前拉伸","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"10/侧","name_cn":"死虫","name_en":"Dead Bug"},{"id":"ex13","name":"鸟狗 Bird Dog","theme":"睡前拉伸","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"10/侧","name_cn":"鸟狗","name_en":"Bird Dog"},{"id":"ex14","name":"猫牛式 Cat-Cow","theme":"睡前拉伸","equip":"瑜伽垫","muscle":"核心","sets":1,"reps":"拉伸","name_cn":"猫牛式","name_en":"Cat-Cow"},{"id":"ex15","name":"真空腹 Vacuum","theme":"瘦肚提臀","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"20 秒","name_cn":"真空腹","name_en":"Vacuum"},{"id":"ex16","name":"臀桥 Glute Bridge","theme":"瘦肚提臀","equip":"瑜伽垫","muscle":"下肢","sets":3,"reps":"12–15","name_cn":"臀桥","name_en":"Glute Bridge"},{"id":"ex17","name":"臀推 Hip Thrust","theme":"瘦肚提臀","equip":"瑜伽垫","muscle":"下肢","sets":4,"reps":"10–12","name_cn":"臀推","name_en":"Hip Thrust"},{"id":"ex18","name":"壶铃深蹲 Goblet Squat","theme":"深蹲","equip":"壶铃 5kg","muscle":"下肢","sets":4,"reps":"12–15","name_cn":"壶铃深蹲","name_en":"Goblet Squat"},{"id":"ex19","name":"保加利亚分腿蹲","theme":"深蹲","equip":"瑜伽垫","muscle":"下肢","sets":3,"reps":"10/腿","name_cn":"保加利亚分腿蹲","name_en":""},{"id":"ex20","name":"哥萨克深蹲 Cossack Squat","theme":"深蹲","equip":"徒手","muscle":"下肢","sets":3,"reps":"10/侧","name_cn":"哥萨克深蹲","name_en":"Cossack Squat"},{"id":"ex21","name":"贴地架（标准名待确认）","theme":"深蹲","equip":"徒手","muscle":"下肢","sets":3,"reps":"10","name_cn":"贴地架（标准名待确认）","name_en":""},{"id":"ex22","name":"海底轮深蹲（标准名待确认）","theme":"深蹲","equip":"徒手","muscle":"下肢","sets":3,"reps":"10","name_cn":"海底轮深蹲（标准名待确认）","name_en":""},{"id":"ex23","name":"上下卷腹","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12–15","name_cn":"上下卷腹","name_en":""},{"id":"ex24","name":"开合卷腹","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12–15","name_cn":"开合卷腹","name_en":""},{"id":"ex25","name":"画半圆","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12/侧","name_cn":"画半圆","name_en":""},{"id":"ex26","name":"上下剪刀腿","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12/侧","name_cn":"上下剪刀腿","name_en":""},{"id":"ex27","name":"双手托天理三焦","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"双手托天理三焦","name_en":""},{"id":"ex28","name":"左右开弓似射雕","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"左右开弓似射雕","name_en":""},{"id":"ex29","name":"调理脾胃须单举","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"调理脾胃须单举","name_en":""},{"id":"ex30","name":"五劳七伤往后瞧","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"五劳七伤往后瞧","name_en":""},{"id":"ex31","name":"摇头摆尾去心火","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"摇头摆尾去心火","name_en":""},{"id":"ex32","name":"两手攀足固肾腰","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"两手攀足固肾腰","name_en":""},{"id":"ex33","name":"攒拳怒目增气力","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"攒拳怒目增气力","name_en":""},{"id":"ex34","name":"背后七颠百病消","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"背后七颠百病消","name_en":""},{"id":"ex35","name":"俯卧撑 20","theme":"训练金字塔","equip":"徒手","muscle":"上肢","sets":1,"reps":"20 个","name_cn":"俯卧撑 20","name_en":""},{"id":"ex36","name":"深蹲撑 30","theme":"训练金字塔","equip":"徒手","muscle":"下肢","sets":1,"reps":"30 个","name_cn":"深蹲撑 30","name_en":""},{"id":"ex37","name":"登山跑 40","theme":"训练金字塔","equip":"徒手","muscle":"核心","sets":1,"reps":"40 个","name_cn":"登山跑 40","name_en":""},{"id":"ex38","name":"开合跳 50","theme":"训练金字塔","equip":"徒手","muscle":"有氧","sets":1,"reps":"50 个","name_cn":"开合跳 50","name_en":""},{"id":"ex39","name":"高抬腿 50","theme":"训练金字塔","equip":"徒手","muscle":"有氧","sets":1,"reps":"50 个","name_cn":"高抬腿 50","name_en":""},{"id":"ex40","name":"平板支撑 60 秒","theme":"训练金字塔","equip":"徒手","muscle":"核心","sets":1,"reps":"60 秒","name_cn":"平板支撑 60 秒","name_en":""},{"id":"ex41","name":"壶铃摆荡 Swing","theme":"基础力量","equip":"壶铃 5kg","muscle":"下肢","sets":4,"reps":"15","name_cn":"壶铃摆荡","name_en":"Swing"},{"id":"ex42","name":"单臂划船 One-arm Row","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":4,"reps":"12/侧","name_cn":"单臂划船","name_en":"One-arm Row"},{"id":"ex43","name":"地板卧推 Floor Press","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"12","name_cn":"地板卧推","name_en":"Floor Press"},{"id":"ex44","name":"单腿硬拉 RDL","theme":"基础力量","equip":"壶铃 5kg","muscle":"下肢","sets":3,"reps":"10/腿","name_cn":"单腿硬拉","name_en":"RDL"},{"id":"ex45","name":"壶铃高翻 Clean","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"10/侧","name_cn":"壶铃高翻","name_en":"Clean"},{"id":"ex46","name":"单臂推举 OHP","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"10/侧","name_cn":"单臂推举","name_en":"OHP"},{"id":"ex47","name":"平板支撑 Plank","theme":"基础力量","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"40–60 秒","name_cn":"平板支撑","name_en":"Plank"},{"id":"ex48","name":"侧平板 Side Plank","theme":"基础力量","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"30–45 秒/侧","name_cn":"侧平板","name_en":"Side Plank"},{"id":"ex49","name":"持棍转体 Stick Twist","theme":"基础力量","equip":"盘龙棍","muscle":"核心","sets":3,"reps":"10/侧","name_cn":"持棍转体","name_en":"Stick Twist"},{"id":"ex50","name":"举棍平衡 Stick Hold","theme":"基础力量","equip":"盘龙棍","muscle":"核心","sets":3,"reps":"20 秒","name_cn":"举棍平衡","name_en":"Stick Hold"},{"id":"ex51","name":"标准俯卧撑 Push-up","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":4,"reps":"8–12","name_cn":"标准俯卧撑","name_en":"Push-up"},{"id":"ex52","name":"窄距俯卧撑 Close-grip","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":3,"reps":"10","name_cn":"窄距俯卧撑","name_en":"Close-grip"},{"id":"ex53","name":"宽距俯卧撑 Wide","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":3,"reps":"10","name_cn":"宽距俯卧撑","name_en":"Wide"},{"id":"ex54","name":"上斜俯卧撑 Incline","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":3,"reps":"8–10","name_cn":"上斜俯卧撑","name_en":"Incline"},{"id":"ex55","name":"弹力带下拉 Pulldown","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"12–15","name_cn":"弹力带下拉","name_en":"Pulldown"},{"id":"ex56","name":"弹力带划船 Band Row","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"12/侧","name_cn":"弹力带划船","name_en":"Band Row"},{"id":"ex57","name":"面拉 Face Pull","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"15","name_cn":"面拉","name_en":"Face Pull"},{"id":"ex58","name":"侧平举 Lateral Raise","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"15","name_cn":"侧平举","name_en":"Lateral Raise"},{"id":"ex59","name":"肩外旋 External Rot.","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"15/侧","name_cn":"肩外旋","name_en":"External Rot."},{"id":"ex60","name":"弹力带弯举 Band Curl","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"12","name_cn":"弹力带弯举","name_en":"Band Curl"},{"id":"ex61","name":"握力器 Grip","theme":"基础力量","equip":"握力器","muscle":"上肢","sets":3,"reps":"力竭","name_cn":"握力器","name_en":"Grip"},{"id":"ex62","name":"慢速握 Hold","theme":"基础力量","equip":"握力器","muscle":"上肢","sets":3,"reps":"10 秒握","name_cn":"慢速握","name_en":"Hold"},{"id":"ex63","name":"腕弯举 Wrist Curl","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"15","name_cn":"腕弯举","name_en":"Wrist Curl"},{"id":"ex64","name":"腕后伸 Wrist Ext.","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"15","name_cn":"腕后伸","name_en":"Wrist Ext."},{"id":"ex65","name":"反向弯举 Reverse Curl","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"12","name_cn":"反向弯举","name_en":"Reverse Curl"},{"id":"ex66","name":"轻松跑 Easy Run","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":1,"reps":"7–15 km","name_cn":"轻松跑","name_en":"Easy Run"},{"id":"ex67","name":"长距离跑 Long Run","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":1,"reps":"15 km","name_cn":"长距离跑","name_en":"Long Run"},{"id":"ex68","name":"间歇跑 Interval","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":6,"reps":"800 m","name_cn":"间歇跑","name_en":"Interval"},{"id":"ex69","name":"快走 Brisk Walk","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":1,"reps":"45 分","name_cn":"快走","name_en":"Brisk Walk"},{"id":"ex70","name":"提踵 Calf Raise","theme":"基础力量","equip":"瑜伽垫","muscle":"下肢","sets":4,"reps":"15","name_cn":"提踵","name_en":"Calf Raise"},{"id":"ex71","name":"弓步走 Walking Lunge","theme":"基础力量","equip":"徒手","muscle":"下肢","sets":3,"reps":"12/腿","name_cn":"弓步走","name_en":"Walking Lunge"},{"id":"ex72","name":"锤式弯举 Hammer Curl","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"12","name_cn":"锤式弯举","name_en":"Hammer Curl"}]};</script>
-<script>/* slimdown 训练方案页 v1.2 —— 深色周视图 / 四套主题 / 统一面板（编辑 · 预览）/ 分享 / 出图 */
+<div id="shotHost" class="shot-host" aria-hidden="true"></div>
+
+<script>window.SLIMDOWN = {"plan":{"version":"v1.3","updated":"2026-11-23","title":"居家训练计划","subtitle":"按星期或按主题看今天练什么 · 右下角可编辑 / 存图","meta":{"slogan":"薄肌减脂 · 阶段一","goal":"周降 ≤0.31 kg","steps":"8000–10000 步 / 睡眠 ≥7.5 h","safety":"周降 >0.5 kg 连续两周 ⇒ 加 150–200 kcal；力量主项连续 2 周掉 >10% ⇒ 同上加。"},"defaultPreset":"home","presets":[{"id":"home","label":"居家七日","version":"v1.3","slogan":"干净饮食 · 热量缺口 · 减脂增肌","days":[{"key":"mon","label":"周一","short":"一","theme":"全身激活","duration":"约 30 分","slogan":"先坚持，再谈变化！","setsHint":"3–5","items":[{"id":"ex73","reps":"20 次","muscle":"股四·臀"},{"id":"ex47","reps":"15 秒","muscle":"核心"},{"id":"ex74","reps":"25 次","muscle":"腹直肌"},{"id":"ex75","reps":"35 次","muscle":"全身有氧"},{"id":"ex76","reps":"15 次","muscle":"股四·臀"},{"id":"ex77","reps":"25 秒","muscle":"股四"},{"id":"ex78","reps":"10 次","muscle":"腹直肌"},{"id":"ex79","reps":"10 次","muscle":"臀·腘绳"},{"id":"ex51","reps":"5 次","muscle":"胸·三头"}]},{"key":"tue","label":"周二","short":"二","theme":"基础耐力","duration":"约 30 分","slogan":"稳稳坚持，慢慢变好！","setsHint":"3–5","items":[{"id":"ex73","reps":"10 次","muscle":"股四·臀"},{"id":"ex47","reps":"30 秒","muscle":"核心"},{"id":"ex74","reps":"25 次","muscle":"腹直肌"},{"id":"ex75","reps":"10 次","muscle":"全身有氧"},{"id":"ex76","reps":"25 次","muscle":"股四·臀"},{"id":"ex77","reps":"35 秒","muscle":"股四"},{"id":"ex78","reps":"10 次","muscle":"腹直肌"},{"id":"ex79","reps":"25 次","muscle":"臀·腘绳"},{"id":"ex51","reps":"10 次","muscle":"胸·三头"}]},{"key":"wed","label":"周三","short":"三","theme":"核心强化","duration":"约 30 分","slogan":"练的是体能，也是自律！","setsHint":"3–5","items":[{"id":"ex73","reps":"15 次","muscle":"股四·臀"},{"id":"ex47","reps":"40 秒","muscle":"核心"},{"id":"ex74","reps":"30 次","muscle":"腹直肌"},{"id":"ex75","reps":"55 次","muscle":"全身有氧"},{"id":"ex80","reps":"65 次","muscle":"股四"},{"id":"ex77","reps":"45 秒","muscle":"股四"},{"id":"ex78","reps":"25 次","muscle":"腹直肌"},{"id":"ex79","reps":"25 次","muscle":"臀·腘绳"}]},{"key":"thu","label":"周四","short":"四","theme":"下肢塑形","duration":"约 30 分","slogan":"按计划练，状态会回答你！","setsHint":"3–5","items":[{"id":"ex73","reps":"35 次","muscle":"股四·臀"},{"id":"ex47","reps":"30 秒","muscle":"核心"},{"id":"ex74","reps":"20 次","muscle":"腹直肌"},{"id":"ex75","reps":"25 次","muscle":"全身有氧"},{"id":"ex76","reps":"15 次","muscle":"股四·臀"},{"id":"ex77","reps":"35 秒","muscle":"股四"},{"id":"ex78","reps":"35 次","muscle":"腹直肌"},{"id":"ex79","reps":"10 次","muscle":"臀·腘绳"},{"id":"ex51","reps":"5 次","muscle":"胸·三头"}]},{"key":"fri","label":"周五","short":"五","theme":"后链收紧","duration":"约 30 分","slogan":"动作做到位，效果更到位！","setsHint":"3–5","items":[{"id":"ex73","reps":"35 次","muscle":"股四·臀"},{"id":"ex47","reps":"30 秒","muscle":"核心"},{"id":"ex74","reps":"20 次","muscle":"腹直肌"},{"id":"ex75","reps":"25 次","muscle":"全身有氧"},{"id":"ex76","reps":"15 次","muscle":"股四·臀"},{"id":"ex77","reps":"35 秒","muscle":"股四"},{"id":"ex78","reps":"35 次","muscle":"腹直肌"},{"id":"ex79","reps":"25 次","muscle":"臀·腘绳"}]},{"key":"sat","label":"周六","short":"六","theme":"周末冲刺","duration":"约 35 分","slogan":"今天多一点，明天好一点！","setsHint":"3–5","items":[{"id":"ex73","reps":"25 次","muscle":"股四·臀"},{"id":"ex47","reps":"60 秒","muscle":"核心"},{"id":"ex74","reps":"30 次","muscle":"腹直肌"},{"id":"ex75","reps":"55 次","muscle":"全身有氧"},{"id":"ex76","reps":"35 次","muscle":"股四·臀"},{"id":"ex77","reps":"45 秒","muscle":"股四"},{"id":"ex78","reps":"45 次","muscle":"腹直肌"},{"id":"ex79","reps":"50 次","muscle":"臀·腘绳"},{"id":"ex51","reps":"30 次","muscle":"胸·三头"}]},{"key":"sun","label":"周日","short":"日","theme":"恢复建议","duration":"全天休息","slogan":"休息不是偷懒，是为了更强！","rest":true,"recover":["充足休息","放松身体","轻松散步或简单拉伸","补充水分","为下一周充电"]}]},{"id":"strength","label":"力量版","version":"v1.2","days":[{"key":"mon","label":"周一","short":"一","theme":"下肢 A · 股四 + 臀","duration":"45 分","slogan":"先坚持，再谈变化！","items":[{"id":"ex18","sets":4,"reps":"8–10","note":"膝跟脚尖方向，蹲到大腿平行"},{"id":"ex19","sets":3,"reps":"10/腿"},{"id":"ex16","sets":3,"reps":"12–15"},{"id":"ex70","sets":4,"reps":"15"},{"id":"ex47","sets":3,"reps":"40–60 秒"}]},{"key":"tue","label":"周二","short":"二","theme":"轻松跑 A","duration":"45 分","slogan":"能说话的配速，才是好配速","items":[{"id":"ex66","sets":1,"reps":"8 km","note":"配速 6:30–6:45，能说话"}]},{"key":"wed","label":"周三","short":"三","theme":"上肢推 · 胸肩三头","duration":"40 分","slogan":"推得起，才撑得住","items":[{"id":"ex51","sets":4,"reps":"8–12"},{"id":"ex52","sets":3,"reps":"10"},{"id":"ex43","sets":3,"reps":"10"},{"id":"ex58","sets":3,"reps":"12–15"}]},{"key":"thu","label":"周四","short":"四","theme":"轻松跑 B + 核心","duration":"50 分","slogan":"跑得稳，先稳核心","items":[{"id":"ex66","sets":1,"reps":"7 km"},{"id":"ex15","sets":3,"reps":"20 秒"},{"id":"ex12","sets":3,"reps":"10/侧"},{"id":"ex48","sets":3,"reps":"30–45 秒/侧"},{"id":"ex13","sets":3,"reps":"10/侧"}]},{"key":"fri","label":"周五","short":"五","theme":"后链臀 · 臀 + 腘绳","duration":"45 分","slogan":"把后链唤醒，站姿更挺拔","items":[{"id":"ex41","sets":4,"reps":"15","note":"髋铰链不是下蹲"},{"id":"ex44","sets":3,"reps":"10/腿"},{"id":"ex17","sets":4,"reps":"10–12"},{"id":"ex71","sets":3,"reps":"12/腿"},{"id":"ex70","sets":4,"reps":"20"}]},{"key":"sat","label":"周六","short":"六","theme":"上肢拉 · 背 + 二头","duration":"40 分","slogan":"拉得住，肩颈才松","items":[{"id":"ex42","sets":4,"reps":"10–12/侧"},{"id":"ex55","sets":3,"reps":"12–15","note":"门框下拉"},{"id":"ex57","sets":3,"reps":"15"},{"id":"ex72","sets":3,"reps":"12"}]},{"key":"sun","label":"周日","short":"日","theme":"长距离 C · 质量课","duration":"90 分","slogan":"慢下来，才跑得远","items":[{"id":"ex67","sets":1,"reps":"15 km","note":"配速 6:40–7:00；隔周替换 6×800 m 间歇 + 4 km 慢跑"}]}]}],"themes":[{"id":"t01","tag":"全身","name":"暴汗燃脂瘦全身 · HIIT 跟练","time":"8 分钟","pace":"每个动作 20 次 · 间歇 10 秒","sets":3,"video":{"title":"HIIT 极速燃脂跟练 · 全身暴汗 · 9 分钟","url":"https://www.douyin.com/video/7688023595427040575"},"items":[{"cn":"胯下击掌","en":"Cross-body Clap","m":"核心·腹斜"},{"cn":"内侧毽子","en":"Inner Side Kick Tap","m":"内收·臀"},{"cn":"外侧毽子","en":"Outer Side Kick Tap","m":"臀·髋外展"},{"cn":"提膝下压","en":"Knee Lift & Press Down","m":"核心·股四"},{"cn":"后踢腿跳","en":"Back Kick Jump","m":"臀·腘绳"},{"cn":"肘膝触碰","en":"Elbow to Knee Tap","m":"腹斜·核心"},{"cn":"开合跳跃","en":"Jumping Jack","m":"全身有氧"},{"cn":"高抬腿跳","en":"High Knee Run","m":"核心·股四"}]},{"id":"t02","tag":"臀腿","name":"居家臀腿练习 · Tabata 跟练","time":"9 分钟","pace":"动作 30 秒 · 休息 10 秒","sets":3,"video":{"title":"居家燃脂跟练 · 臀腿练习 · 9 分钟","url":"https://www.douyin.com/video/7674779860993254245"},"items":[{"cn":"徒手深蹲","en":"Bodyweight Squat","m":"股四·臀"},{"cn":"窄距深蹲","en":"Narrow Stance Squat","m":"股四"},{"cn":"宽距深蹲","en":"Wide Stance Squat","m":"臀·内收"},{"cn":"深蹲开合","en":"Squat Jack","m":"股四·有氧"},{"cn":"左弓步蹲","en":"Left Reverse Lunge","m":"股四·臀"},{"cn":"右弓步蹲","en":"Right Reverse Lunge","m":"股四·臀"},{"cn":"交替弓步蹲","en":"Alternating Lunge","m":"股四·臀"},{"cn":"哈萨克深蹲","en":"Kazakh Squat","m":"臀·腿"},{"cn":"深蹲抬腿","en":"Squat with Leg Lift","m":"臀·核心"},{"cn":"高抬腿跑","en":"High Knee Run","m":"核心·股四"},{"cn":"深蹲侧抬腿","en":"Squat with Side Leg Lift","m":"臀·髋外展"},{"cn":"胯下击拳","en":"Cross-body Punch","m":"核心·腹斜"},{"cn":"螃蟹深蹲","en":"Crab Squat","m":"臀·肩"}]},{"id":"t03","tag":"全身","name":"高效燃脂全身塑形 · Tabata 跟练","time":"10 分钟","pace":"20 秒训练 · 10 秒休息","sets":3,"video":{"title":"Tabata 有氧跟练 · 高效燃脂全身塑形 · 10 分钟","url":"https://www.douyin.com/video/7670754490852576552"},"items":[{"cn":"开合跳","en":"Jumping Jack","m":"全身有氧"},{"cn":"提膝下压","en":"Knee Lift & Press Down","m":"核心·股四"},{"cn":"胯下击掌","en":"Cross-body Clap","m":"核心·腹斜"},{"cn":"马步左右触地","en":"Squat Pulse Side Tap","m":"股四·臀"},{"cn":"相扑深蹲","en":"Sumo Squat","m":"臀·内收"},{"cn":"深蹲跳跃触地","en":"Squat Jump & Touch Ground","m":"股四·臀"},{"cn":"并步侧点地","en":"Side Step Tap","m":"髋外展·有氧"},{"cn":"对侧提膝","en":"Cross Body Knee Lift","m":"腹斜·核心"},{"cn":"同侧提膝","en":"Same Side Knee Lift","m":"核心·腹斜"},{"cn":"提膝摸脚尖右","en":"Right Knee Tap Toe","m":"核心·股四"},{"cn":"提膝摸脚尖左","en":"Left Knee Tap Toe","m":"核心·股四"},{"cn":"波比跳 20 个","en":"Burpee (20 reps)","m":"全身"}]},{"id":"t04","tag":"养生","name":"懒人版八段锦","time":"约 10 分钟","pace":"每式缓慢重复 · 配合自然呼吸","sets":2,"video":{"title":"八段锦全套完整跟练 · 国体版本 · 12分钟","url":"https://www.douyin.com/video/7702667488476291754"},"items":[{"cn":"双手托天理三焦","en":"Double Hands Lift to Regulate Triple Burner","m":"三焦·舒展","note":"双手上托，身体舒展"},{"cn":"左右开弓似射雕","en":"Draw the Bow like Shooting an Eagle","m":"胸背·肩臂","note":"左右开弓，打开胸背"},{"cn":"调理脾胃须单举","en":"One Hand Raises to Tone Spleen & Stomach","m":"脾胃·肩臂","note":"一手上举，一手下按"},{"cn":"五劳七伤往后瞧","en":"Turn Head Back to Relieve Fatigue","m":"颈椎·头颈","note":"身体站稳，头向后转"},{"cn":"摇头摆尾去心火","en":"Shake Head & Tail to Clear Heart Fire","m":"腰胯·核心","note":"屈膝下蹲，转身摆动"},{"cn":"两手攀足固肾腰","en":"Hands Reach Feet to Strengthen Kidney & Waist","m":"腰肾·腿后","note":"俯身向下，量力而行"},{"cn":"攒拳怒目增气力","en":"Thrust Fist with Angry Gaze to Boost Strength","m":"臂力·核心","note":"马步攒拳，左右出拳"},{"cn":"背后七颠百病消","en":"Seven Heel Stamps to Expel All Illness","m":"全身·足踝","note":"提踵站起，轻轻落下"}]}]},"exercises":[{"id":"ex01","name":"壶铃环绕 Halo","theme":"热身","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"10/方向","name_cn":"壶铃环绕","name_en":"Halo"},{"id":"ex02","name":"农夫行走 Farmer Carry","theme":"热身","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"30 步","name_cn":"农夫行走","name_en":"Farmer Carry"},{"id":"ex03","name":"棍花绕肩 Stick Halo","theme":"热身","equip":"盘龙棍","muscle":"上肢","sets":3,"reps":"10/方向","name_cn":"棍花绕肩","name_en":"Stick Halo"},{"id":"ex04","name":"蝴蝶双拍 Butterfly Pulse","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"蝴蝶双拍","name_en":"Butterfly Pulse"},{"id":"ex05","name":"凯格尔桥 Kegel Bridge","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"凯格尔桥","name_en":"Kegel Bridge"},{"id":"ex06","name":"钻石臀桥 Diamond Bridge","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"钻石臀桥","name_en":"Diamond Bridge"},{"id":"ex07","name":"桥式开合 Bridge Open","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"桥式开合","name_en":"Bridge Open"},{"id":"ex08","name":"桥式动停 Bridge Hold","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"桥式动停","name_en":"Bridge Hold"},{"id":"ex09","name":"高频摩擦 Clam Pulse","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"高频摩擦","name_en":"Clam Pulse"},{"id":"ex10","name":"反向臀冲 Reverse Thrust","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"反向臀冲","name_en":"Reverse Thrust"},{"id":"ex11","name":"俯身臀刺 Kickback","theme":"凯格尔","equip":"瑜伽垫","muscle":"下肢","sets":8,"reps":"20 秒","name_cn":"俯身臀刺","name_en":"Kickback"},{"id":"ex12","name":"死虫 Dead Bug","theme":"睡前拉伸","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"10/侧","name_cn":"死虫","name_en":"Dead Bug"},{"id":"ex13","name":"鸟狗 Bird Dog","theme":"睡前拉伸","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"10/侧","name_cn":"鸟狗","name_en":"Bird Dog"},{"id":"ex14","name":"猫牛式 Cat-Cow","theme":"睡前拉伸","equip":"瑜伽垫","muscle":"核心","sets":1,"reps":"拉伸","name_cn":"猫牛式","name_en":"Cat-Cow"},{"id":"ex15","name":"真空腹 Vacuum","theme":"瘦肚提臀","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"20 秒","name_cn":"真空腹","name_en":"Vacuum"},{"id":"ex16","name":"臀桥 Glute Bridge","theme":"瘦肚提臀","equip":"瑜伽垫","muscle":"下肢","sets":3,"reps":"12–15","name_cn":"臀桥","name_en":"Glute Bridge"},{"id":"ex17","name":"臀推 Hip Thrust","theme":"瘦肚提臀","equip":"瑜伽垫","muscle":"下肢","sets":4,"reps":"10–12","name_cn":"臀推","name_en":"Hip Thrust"},{"id":"ex18","name":"壶铃深蹲 Goblet Squat","theme":"深蹲","equip":"壶铃 5kg","muscle":"下肢","sets":4,"reps":"12–15","name_cn":"壶铃深蹲","name_en":"Goblet Squat"},{"id":"ex19","name":"保加利亚分腿蹲","theme":"深蹲","equip":"瑜伽垫","muscle":"下肢","sets":3,"reps":"10/腿","name_cn":"保加利亚分腿蹲","name_en":""},{"id":"ex20","name":"哥萨克深蹲 Cossack Squat","theme":"深蹲","equip":"徒手","muscle":"下肢","sets":3,"reps":"10/侧","name_cn":"哥萨克深蹲","name_en":"Cossack Squat"},{"id":"ex21","name":"贴地架（标准名待确认）","theme":"深蹲","equip":"徒手","muscle":"下肢","sets":3,"reps":"10","name_cn":"贴地架（标准名待确认）","name_en":""},{"id":"ex22","name":"海底轮深蹲（标准名待确认）","theme":"深蹲","equip":"徒手","muscle":"下肢","sets":3,"reps":"10","name_cn":"海底轮深蹲（标准名待确认）","name_en":""},{"id":"ex23","name":"上下卷腹","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12–15","name_cn":"上下卷腹","name_en":""},{"id":"ex24","name":"开合卷腹","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12–15","name_cn":"开合卷腹","name_en":""},{"id":"ex25","name":"画半圆","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12/侧","name_cn":"画半圆","name_en":""},{"id":"ex26","name":"上下剪刀腿","theme":"椅子卷腹","equip":"椅子","muscle":"核心","sets":3,"reps":"12/侧","name_cn":"上下剪刀腿","name_en":""},{"id":"ex27","name":"双手托天理三焦","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"双手托天理三焦","name_en":""},{"id":"ex28","name":"左右开弓似射雕","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"左右开弓似射雕","name_en":""},{"id":"ex29","name":"调理脾胃须单举","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"调理脾胃须单举","name_en":""},{"id":"ex30","name":"五劳七伤往后瞧","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"五劳七伤往后瞧","name_en":""},{"id":"ex31","name":"摇头摆尾去心火","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"摇头摆尾去心火","name_en":""},{"id":"ex32","name":"两手攀足固肾腰","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"两手攀足固肾腰","name_en":""},{"id":"ex33","name":"攒拳怒目增气力","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"攒拳怒目增气力","name_en":""},{"id":"ex34","name":"背后七颠百病消","theme":"八段锦","equip":"徒手","muscle":"全身","sets":3,"reps":"6–8 次/式","name_cn":"背后七颠百病消","name_en":""},{"id":"ex35","name":"俯卧撑 20","theme":"训练金字塔","equip":"徒手","muscle":"上肢","sets":1,"reps":"20 个","name_cn":"俯卧撑 20","name_en":""},{"id":"ex36","name":"深蹲撑 30","theme":"训练金字塔","equip":"徒手","muscle":"下肢","sets":1,"reps":"30 个","name_cn":"深蹲撑 30","name_en":""},{"id":"ex37","name":"登山跑 40","theme":"训练金字塔","equip":"徒手","muscle":"核心","sets":1,"reps":"40 个","name_cn":"登山跑 40","name_en":""},{"id":"ex38","name":"开合跳 50","theme":"训练金字塔","equip":"徒手","muscle":"有氧","sets":1,"reps":"50 个","name_cn":"开合跳 50","name_en":""},{"id":"ex39","name":"高抬腿 50","theme":"训练金字塔","equip":"徒手","muscle":"有氧","sets":1,"reps":"50 个","name_cn":"高抬腿 50","name_en":""},{"id":"ex40","name":"平板支撑 60 秒","theme":"训练金字塔","equip":"徒手","muscle":"核心","sets":1,"reps":"60 秒","name_cn":"平板支撑 60 秒","name_en":""},{"id":"ex41","name":"壶铃摆荡 Swing","theme":"基础力量","equip":"壶铃 5kg","muscle":"下肢","sets":4,"reps":"15","name_cn":"壶铃摆荡","name_en":"Swing"},{"id":"ex42","name":"单臂划船 One-arm Row","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":4,"reps":"12/侧","name_cn":"单臂划船","name_en":"One-arm Row"},{"id":"ex43","name":"地板卧推 Floor Press","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"12","name_cn":"地板卧推","name_en":"Floor Press"},{"id":"ex44","name":"单腿硬拉 RDL","theme":"基础力量","equip":"壶铃 5kg","muscle":"下肢","sets":3,"reps":"10/腿","name_cn":"单腿硬拉","name_en":"RDL"},{"id":"ex45","name":"壶铃高翻 Clean","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"10/侧","name_cn":"壶铃高翻","name_en":"Clean"},{"id":"ex46","name":"单臂推举 OHP","theme":"基础力量","equip":"壶铃 5kg","muscle":"上肢","sets":3,"reps":"10/侧","name_cn":"单臂推举","name_en":"OHP"},{"id":"ex47","name":"平板支撑 Plank","theme":"基础力量","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"40–60 秒","name_cn":"平板支撑","name_en":"Plank"},{"id":"ex48","name":"侧平板 Side Plank","theme":"基础力量","equip":"瑜伽垫","muscle":"核心","sets":3,"reps":"30–45 秒/侧","name_cn":"侧平板","name_en":"Side Plank"},{"id":"ex49","name":"持棍转体 Stick Twist","theme":"基础力量","equip":"盘龙棍","muscle":"核心","sets":3,"reps":"10/侧","name_cn":"持棍转体","name_en":"Stick Twist"},{"id":"ex50","name":"举棍平衡 Stick Hold","theme":"基础力量","equip":"盘龙棍","muscle":"核心","sets":3,"reps":"20 秒","name_cn":"举棍平衡","name_en":"Stick Hold"},{"id":"ex51","name":"标准俯卧撑 Push-up","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":4,"reps":"8–12","name_cn":"标准俯卧撑","name_en":"Push-up"},{"id":"ex52","name":"窄距俯卧撑 Close-grip","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":3,"reps":"10","name_cn":"窄距俯卧撑","name_en":"Close-grip"},{"id":"ex53","name":"宽距俯卧撑 Wide","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":3,"reps":"10","name_cn":"宽距俯卧撑","name_en":"Wide"},{"id":"ex54","name":"上斜俯卧撑 Incline","theme":"基础力量","equip":"俯卧撑支架","muscle":"上肢","sets":3,"reps":"8–10","name_cn":"上斜俯卧撑","name_en":"Incline"},{"id":"ex55","name":"弹力带下拉 Pulldown","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"12–15","name_cn":"弹力带下拉","name_en":"Pulldown"},{"id":"ex56","name":"弹力带划船 Band Row","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"12/侧","name_cn":"弹力带划船","name_en":"Band Row"},{"id":"ex57","name":"面拉 Face Pull","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"15","name_cn":"面拉","name_en":"Face Pull"},{"id":"ex58","name":"侧平举 Lateral Raise","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"15","name_cn":"侧平举","name_en":"Lateral Raise"},{"id":"ex59","name":"肩外旋 External Rot.","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"15/侧","name_cn":"肩外旋","name_en":"External Rot."},{"id":"ex60","name":"弹力带弯举 Band Curl","theme":"基础力量","equip":"弹力带","muscle":"上肢","sets":3,"reps":"12","name_cn":"弹力带弯举","name_en":"Band Curl"},{"id":"ex61","name":"握力器 Grip","theme":"基础力量","equip":"握力器","muscle":"上肢","sets":3,"reps":"力竭","name_cn":"握力器","name_en":"Grip"},{"id":"ex62","name":"慢速握 Hold","theme":"基础力量","equip":"握力器","muscle":"上肢","sets":3,"reps":"10 秒握","name_cn":"慢速握","name_en":"Hold"},{"id":"ex63","name":"腕弯举 Wrist Curl","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"15","name_cn":"腕弯举","name_en":"Wrist Curl"},{"id":"ex64","name":"腕后伸 Wrist Ext.","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"15","name_cn":"腕后伸","name_en":"Wrist Ext."},{"id":"ex65","name":"反向弯举 Reverse Curl","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"12","name_cn":"反向弯举","name_en":"Reverse Curl"},{"id":"ex66","name":"轻松跑 Easy Run","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":1,"reps":"7–15 km","name_cn":"轻松跑","name_en":"Easy Run"},{"id":"ex67","name":"长距离跑 Long Run","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":1,"reps":"15 km","name_cn":"长距离跑","name_en":"Long Run"},{"id":"ex68","name":"间歇跑 Interval","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":6,"reps":"800 m","name_cn":"间歇跑","name_en":"Interval"},{"id":"ex69","name":"快走 Brisk Walk","theme":"有氧","equip":"有氧/徒手","muscle":"有氧","sets":1,"reps":"45 分","name_cn":"快走","name_en":"Brisk Walk"},{"id":"ex70","name":"提踵 Calf Raise","theme":"基础力量","equip":"瑜伽垫","muscle":"下肢","sets":4,"reps":"15","name_cn":"提踵","name_en":"Calf Raise"},{"id":"ex71","name":"弓步走 Walking Lunge","theme":"基础力量","equip":"徒手","muscle":"下肢","sets":3,"reps":"12/腿","name_cn":"弓步走","name_en":"Walking Lunge"},{"id":"ex72","name":"锤式弯举 Hammer Curl","theme":"基础力量","equip":"小臂弯力器","muscle":"上肢","sets":3,"reps":"12","name_cn":"锤式弯举","name_en":"Hammer Curl"},{"id":"ex73","name":"自重深蹲 Bodyweight Squat","theme":"居家自重","equip":"徒手","muscle":"股四·臀","sets":3,"reps":"20 次","name_cn":"自重深蹲","name_en":"Bodyweight Squat"},{"id":"ex74","name":"卷腹 Crunch","theme":"居家自重","equip":"瑜伽垫","muscle":"腹直肌","sets":3,"reps":"25 次","name_cn":"卷腹","name_en":"Crunch"},{"id":"ex75","name":"开合跳 Jumping Jack","theme":"居家自重","equip":"徒手","muscle":"全身有氧","sets":3,"reps":"35 次","name_cn":"开合跳","name_en":"Jumping Jack"},{"id":"ex76","name":"弓步蹲 Lunge","theme":"居家自重","equip":"徒手","muscle":"股四·臀","sets":3,"reps":"15 次","name_cn":"弓步蹲","name_en":"Lunge"},{"id":"ex77","name":"靠墙静蹲 Wall Sit","theme":"居家自重","equip":"墙面","muscle":"股四","sets":3,"reps":"30 秒","name_cn":"靠墙静蹲","name_en":"Wall Sit"},{"id":"ex78","name":"仰卧起坐 Sit-up","theme":"居家自重","equip":"瑜伽垫","muscle":"腹直肌","sets":3,"reps":"15 次","name_cn":"仰卧起坐","name_en":"Sit-up"},{"id":"ex79","name":"后踢腿 Back Kick","theme":"居家自重","equip":"瑜伽垫","muscle":"臀·腘绳","sets":3,"reps":"20 次","name_cn":"后踢腿","name_en":"Back Kick"},{"id":"ex80","name":"马步蹲 Horse Stance Squat","theme":"居家自重","equip":"徒手","muscle":"股四","sets":3,"reps":"60 次","name_cn":"马步蹲","name_en":"Horse Stance Squat"}]};</script>
+<script>/* slimdown 状态层 —— 一份 JSON 管所有点击态（配色 / 视图 / 预设 / 页签 / 筛选 / 打卡）
+   设计取舍：
+   - 单键 slimdown:ui:v2（多键分散会双源、清理漏）；
+   - 首次读时把旧键（slimdownPlanTheme / slimdownPlanFx）搬进来并删除，之后只认新键；
+   - 打卡按日期存，只保留最近 28 天，跨周自动滚；不上传、不进分享链接。 */
+window.SB = window.SB || {};
+(function (SB) {
+  'use strict';
+
+  var KEY = 'slimdown:ui:v2';
+  var LEGACY = [['theme', 'slimdownPlanTheme'], ['fx', 'slimdownPlanFx']];
+  var DEFAULTS = {
+    v: 2,
+    view: 'week',        /* week | theme */
+    preset: '',          /* 由页面按数据默认值补齐 */
+    theme: 'ember',      /* 配色皮肤 */
+    fx: 0,               /* 百叶窗动效是否已播过 */
+    day: '',             /* 上一次选中的日签 */
+    panelView: 'edit',   /* 面板分段：edit | prev */
+    exFilter: 'all',     /* 编辑左栏器材筛选 */
+    exQuery: '',         /* 编辑左栏搜索词 */
+    themeCard: 0,        /* 预览里的主题序号 */
+    checkin: {}          /* {'2026-11-23': ['mon','wed']} */
+  };
+  var KEEP_DAYS = 28;
+  var mem = null;
+
+  function read() {
+    if (mem) return mem;
+    var o = {};
+    try { o = JSON.parse(localStorage.getItem(KEY) || '{}') || {}; } catch (e) { o = {}; }
+    if (!o.v) {
+      for (var i = 0; i < LEGACY.length; i++) {
+        try {
+          var v = localStorage.getItem(LEGACY[i][1]);
+          if (LEGACY[i][0] === 'fx') { if (v === '1') o.fx = 1; } else if (v) { o[LEGACY[i][0]] = v; }
+        } catch (e) {}
+      }
+      o.v = 2;
+    }
+    for (var k in DEFAULTS) if (!(k in o)) o[k] = DEFAULTS[k];
+    if (!o.checkin || typeof o.checkin !== 'object') o.checkin = {};
+    mem = o;
+    return mem;
+  }
+
+  function flush() {
+    try {
+      localStorage.setItem(KEY, JSON.stringify(mem));
+      for (var i = 0; i < LEGACY.length; i++) localStorage.removeItem(LEGACY[i][1]);
+    } catch (e) {}
+  }
+
+  function get(k) { return read()[k]; }
+
+  function set(k, v) {
+    var o = read();
+    if (o[k] === v) return v;
+    o[k] = v;
+    flush();
+    return v;
+  }
+
+  function dayKey(d) {
+    var t = d || new Date();
+    return t.getFullYear() + '-' + String(t.getMonth() + 1).padStart(2, '0') + '-' +
+      String(t.getDate()).padStart(2, '0');
+  }
+
+  function prune(o) {
+    var now = new Date();
+    var cut = new Date(now.getTime() - KEEP_DAYS * 86400000);
+    var floor = dayKey(cut);
+    var next = {};
+    for (var d in o) if (d >= floor) next[d] = o[d];
+    return next;
+  }
+
+  /* 打卡：以「今天」为记账日，记下今天练的是哪一天（可补练） */
+  function isDone(dayId) {
+    var list = read().checkin[dayKey()] || [];
+    return list.indexOf(dayId) >= 0;
+  }
+
+  function toggleDone(dayId) {
+    var o = read();
+    var k = dayKey();
+    var list = (o.checkin[k] || []).slice();
+    var i = list.indexOf(dayId);
+    if (i >= 0) list.splice(i, 1); else list.push(dayId);
+    o.checkin[k] = list;
+    o.checkin = prune(o.checkin);
+    flush();
+    return i < 0;
+  }
+
+  function clear() {
+    try { localStorage.removeItem(KEY); } catch (e) {}
+    mem = null;
+  }
+
+  SB.ui = { get: get, set: set, all: read, clear: clear,
+            dayKey: dayKey, isDone: isDone, toggleDone: toggleDone };
+})(window.SB);
+
+/* slimdown 出图层 —— DOM → PNG（零依赖：foreignObject + canvas），周视图与主题视图共用
+   设计取舍（沿用 v1.2 已实测口径）：
+   - 1x：PNG 宽 = 节点 CSS 宽（出图卡固定 720），不做 2x；
+   - 克隆前把主题变量内联到克隆根，保证 PNG 与屏幕同色；
+   - 长图超过 maxH 时按比例缩到 maxH，避免撞 canvas 面积上限。 */
+window.SB = window.SB || {};
+(function (SB) {
+  'use strict';
+
+  var VARS = ['--bg', '--bg-2', '--glow', '--card', '--card-2', '--edge', '--edge-soft',
+              '--ink', '--muted', '--faint', '--acc', '--acc-2', '--acc-deep', '--gold', '--gold-soft'];
+  var MAX_H = 4000;
+
+  function collectCss() {
+    var css = '';
+    for (var i = 0; i < document.styleSheets.length; i++) {
+      var rules;
+      try { rules = document.styleSheets[i].cssRules; } catch (e) { continue; }
+      for (var j = 0; j < rules.length; j++) css += rules[j].cssText + '\n';
+    }
+    return css;
+  }
+
+  function themeVarsInline() {
+    var cs = getComputedStyle(document.documentElement);
+    return VARS.map(function (n) { return n + ':' + cs.getPropertyValue(n).trim(); }).join(';');
+  }
+
+  function bgColor() {
+    var v = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
+    return v || '#12100e';
+  }
+
+  function nodeToBlob(node, opts) {
+    opts = opts || {};
+    var w = node.offsetWidth, h = node.offsetHeight;
+    if (!w || !h) return Promise.reject(new Error('节点尺寸为 0'));
+    var maxH = opts.maxH || MAX_H;
+    var scale = h > maxH ? maxH / h : 1;
+    var cw = Math.round(w * scale), ch = Math.round(h * scale);
+    var clone = node.cloneNode(true);
+    clone.removeAttribute('id');
+    clone.setAttribute('style', themeVarsInline() + ';' + (clone.getAttribute('style') || ''));
+    var css = collectCss();
+    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
+      '" viewBox="0 0 ' + w + ' ' + h + '">' +
+      '<foreignObject width="100%" height="100%">' +
+      '<div xmlns="http://www.w3.org/1999/xhtml"><style><![CDATA[' + css + ']]></style>' +
+      new XMLSerializer().serializeToString(clone) + '</div></foreignObject></svg>';
+    var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
+    return new Promise(function (resolve, reject) {
+      var img = new Image();
+      img.onload = function () {
+        var cv = document.createElement('canvas');
+        cv.width = cw; cv.height = ch;
+        var ctx = cv.getContext('2d');
+        ctx.fillStyle = bgColor();
+        ctx.fillRect(0, 0, cw, ch);
+        ctx.drawImage(img, 0, 0, cw, ch);
+        cv.toBlob(function (b) {
+          b ? resolve({ blob: b, w: cw, h: ch, scaled: scale < 1 }) : reject(new Error('toBlob failed'));
+        }, 'image/png');
+      };
+      img.onerror = function () { reject(new Error('SVG rasterize failed')); };
+      img.src = url;
+    });
+  }
+
+  function download(blob, name) {
+    var a = document.createElement('a');
+    a.href = URL.createObjectURL(blob);
+    a.download = name;
+    document.body.appendChild(a);
+    a.click();
+    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
+  }
+
+  function stamp() {
+    var d = new Date();
+    return d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0');
+  }
+
+  SB.shot = { nodeToBlob: nodeToBlob, download: download, stamp: stamp,
+              collectCss: collectCss, vars: themeVarsInline };
+})(window.SB);
+
+/* slimdown 训练方案页 v1.3 —— 按星期 / 按主题 双视图 + 点击态记忆（state.js）+ 出图（shot.js）
+   面板：编辑 / 预览（周视图）· 预览 / 出图（主题视图）；分享链接 v3 带预设位。 */
 (function () {
   'use strict';
 
   var DATA = window.SLIMDOWN || {};
-  var META = DATA.plan || {};
+  var PLAN = DATA.plan || {};
+  var PRESETS = PLAN.presets || [];
+  var LAYOUTS = PLAN.themes || [];
   var EX = (DATA.exercises || []).slice();
   var BYID = {};
   EX.forEach(function (e) { BYID[e.id] = e; });
 
-  var LS_KEY = 'slimdown:v1';
-  var THEME_KEY = 'slimdownPlanTheme';
-  var FX_KEY = 'slimdownPlanFx';
-
-  var THEMES = [
+  var SKINS = [
     { id: 'ember', label: '赤金' },
     { id: 'forest', label: '墨绿' },
     { id: 'indigo', label: '靛蓝' },
     { id: 'amber', label: '暖橙' }
   ];
-  var VARS = ['--bg', '--bg-2', '--glow', '--card', '--card-2', '--edge', '--edge-soft',
-              '--ink', '--muted', '--faint', '--acc', '--acc-2', '--acc-deep', '--gold', '--gold-soft'];
+  var EDITS_KEY = 'slimdown:edits:v2';
+  var LEGACY_EDITS = 'slimdown:v1';
+  var REST_ICONS = ['Z', '松', '步', '水', '电'];
 
-  var DEFAULTS = JSON.parse(JSON.stringify(META.days || []));
-  var days = JSON.parse(JSON.stringify(DEFAULTS));
-  var dirty = false;
+  var ui = window.SB.ui;
+  var shot = window.SB.shot;
+
+  var cur = null, DEFAULTS = [], days = [];
+  var EDITS = readEdits();
   var shared = false;
   var activeKey = '';
+  var view = 'week';
+  var dragState = null, suppressClick = false;
+  var panelState = { open: false, scope: 'week', view: 'edit' };
 
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) {
@@ -504,6 +835,7 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     clearTimeout(t.__t);
     t.__t = setTimeout(function () { t.style.opacity = '0'; }, 1800);
   }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function todayKey() {
     var map = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     return map[new Date().getDay()];
@@ -512,13 +844,18 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     for (var i = 0; i < days.length; i++) if (days[i].key === key) return days[i];
     return days[0];
   }
+  function presetById(id) {
+    for (var i = 0; i < PRESETS.length; i++) if (PRESETS[i].id === id) return PRESETS[i];
+    return null;
+  }
   function sumSets(d) {
-    return d.items.reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
+    return (d.items || []).reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
   }
   function chipText(d) {
     if (d.rest) return '★ 恢复日 ★';
+    if (d.setsHint) return '★ 建议 ' + d.setsHint + ' 组 ★';
     var lo = 0, hi = 0;
-    d.items.forEach(function (it) {
+    (d.items || []).forEach(function (it) {
       var s = parseInt(it.sets, 10) || 0;
       if (s <= 1) return;            /* 单次有氧不参与“建议组数”，避免 1–3 组这种噪音 */
       if (!lo || s < lo) lo = s;
@@ -529,23 +866,19 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     return '★ 建议 ' + lo + '–' + hi + ' 组 ★';
   }
   function sloganOf(d) {
-    return d.slogan || (META.meta && META.meta.slogan) || '循序渐进 · 动作到位';
+    return d.slogan || (cur && cur.slogan) || (PLAN.meta && PLAN.meta.slogan) || '循序渐进 · 动作到位';
   }
-  function labelOfTheme(id) {
-    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i].label;
-    return id;
+  function exName(it) {
+    return BYID[it.id] || { name: '（未知动作 ' + it.id + '）' };
   }
 
-  /* ── 主题：data-theme + localStorage（优先级：localStorage > 默认赤金） ── */
-  function applyTheme(id, persist) {
-    var hit = THEMES.filter(function (t) { return t.id === id; })[0];
-    if (!hit) { id = 'ember'; hit = THEMES[0]; }
-    document.documentElement.setAttribute('data-theme', id);
+  /* ── 配色：data-theme + state.js（记忆优先于默认赤金） ── */
+  function applySkin(id, persist) {
+    var hit = SKINS.filter(function (t) { return t.id === id; })[0] || SKINS[0];
+    document.documentElement.setAttribute('data-theme', hit.id);
     var sel = $('themeSel');
-    if (sel && sel.value !== id) sel.value = id;
-    if (persist !== false) {
-      try { localStorage.setItem(THEME_KEY, id); } catch (e) {}
-    }
+    if (sel && sel.value !== hit.id) sel.value = hit.id;
+    if (persist !== false) ui.set('theme', hit.id);
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute('content',
@@ -553,23 +886,88 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     }
     return hit;
   }
-  function initTheme() {
+  function initSkins() {
     var sel = $('themeSel');
-    sel.innerHTML = THEMES.map(function (t) {
+    sel.innerHTML = SKINS.map(function (t) {
       return '<option value="' + t.id + '">' + esc(t.label) + '</option>';
     }).join('');
-    var stored = null;
-    try { stored = localStorage.getItem(THEME_KEY); } catch (e) {}
-    applyTheme((THEMES.filter(function (t) { return t.id === stored; })[0] || {}).id || 'ember', false);
+    applySkin(ui.get('theme'), false);
     sel.addEventListener('change', function () {
-      var t = applyTheme(sel.value);
-      showToast('主题：' + t.label);
+      var t = applySkin(sel.value);
+      showToast('配色：' + t.label);
     });
   }
-  function themeVarsInline() {
-    var cs = getComputedStyle(document.documentElement);
-    return VARS.map(function (n) { return n + ':' + cs.getPropertyValue(n).trim(); }).join(';');
+
+  /* ── 预设（居家七日 / 力量版）：编辑稿按预设分开存 ── */
+  function readEdits() {
+    var o = {};
+    try { o = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}') || {}; } catch (e) { o = {}; }
+    if (!o.v) {
+      try {
+        var raw = localStorage.getItem(LEGACY_EDITS);
+        if (raw) {
+          var old = JSON.parse(raw);
+          if (old && old.days && old.days.length) o.byPreset = { strength: old.days };
+        }
+      } catch (e) {}
+      o.v = 2;
+    }
+    if (!o.byPreset || typeof o.byPreset !== 'object') o.byPreset = {};
+    return o;
   }
+  function writeEdits() {
+    try {
+      localStorage.setItem(EDITS_KEY, JSON.stringify(EDITS));
+      localStorage.removeItem(LEGACY_EDITS);
+    } catch (e) {}
+  }
+  function loadPreset(id) {
+    var p = presetById(id) || presetById(PLAN.defaultPreset) || PRESETS[0];
+    if (!p) { DEFAULTS = []; days = []; return; }
+    cur = p;
+    DEFAULTS = clone(p.days || []);
+    days = clone(EDITS.byPreset[p.id] || DEFAULTS);
+    ui.set('preset', p.id);
+    var sel = $('presetSel');
+    if (sel && sel.value !== p.id) sel.value = p.id;
+  }
+  function initPresetSel() {
+    var sel = $('presetSel');
+    sel.innerHTML = PRESETS.map(function (p) {
+      return '<option value="' + esc(p.id) + '">' + esc(p.label) + ' · ' + esc(p.version || '') + '</option>';
+    }).join('');
+    sel.addEventListener('change', function () {
+      loadPreset(sel.value);
+      shared = false;
+      $('sharedBar').hidden = true;
+      renderWeek();
+      if (panelState.open) renderPanel();
+      showToast('方案：' + cur.label);
+    });
+  }
+
+  /* ── 视图切换（按星期 / 按主题） ── */
+  function setPageView(v, opts) {
+    opts = opts || {};
+    view = (v === 'theme') ? 'theme' : 'week';
+    document.documentElement.setAttribute('data-view', view);
+    if (!opts.silent) ui.set('view', view);
+    $('viewSeg').querySelectorAll('button[data-view]').forEach(function (b) {
+      var on = b.getAttribute('data-view') === view;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    $('weekRow').hidden = view !== 'week';
+    $('themeRow').hidden = view !== 'theme';
+    $('presetPick').hidden = view !== 'week';
+    $('fabEdit').hidden = view !== 'week';
+  }
+  $('viewSeg').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-view]');
+    if (!b) return;
+    setPageView(b.getAttribute('data-view'));
+    if (panelState.open) renderPanel();
+  });
 
   /* ── 周视图 ── */
   function renderWeek() {
@@ -577,48 +975,115 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     var tk = todayKey();
     host.innerHTML = days.map(function (d, i) {
       var isToday = d.key === tk;
-      var items = d.items.map(function (it, k) {
-        var e = BYID[it.id];
-        if (!e) return '';
-        var cn = e.name_cn || e.name, en = e.name_en || '';
-        var full = cn + (en ? ' · ' + en : '') + ' · ' + it.sets + ' 组 × ' + it.reps;
-        return '<li><span class="idx">' + (k + 1) + '.</span>' +
-          '<span class="nm" title="' + esc(full) + '">' +
-            '<span class="cn">' + esc(cn) + '</span>' +
-            (en ? '<span class="en">' + esc(en) + '</span>' : '') +
-          '</span>' +
-          '<span class="badge" title="' + esc(it.sets + ' 组 × ' + it.reps) + '">' + esc(it.reps) + '</span></li>';
-      }).join('');
-      return '<div class="day-card' + (isToday ? ' today' : '') + '" style="--i:' + i + '"' +
-        ' data-day="' + esc(d.key) + '" tabindex="0" role="button"' +
+      var body;
+      if (d.rest) {
+        body = '<ul class="r-list">' + (d.recover || []).map(function (t, k) {
+          return '<li><span class="r-ic">' + esc(REST_ICONS[k] || '·') + '</span>' +
+            '<span class="rt">' + esc(t) + '</span></li>';
+        }).join('') + '</ul>';
+      } else {
+        body = '<ul class="d-list">' + (d.items || []).map(function (it, k) {
+          var e = exName(it);
+          var cn = e.name_cn || e.name, en = e.name_en || '';
+          var muscle = it.muscle || e.muscle || '—';
+          var tip = cn + (en ? ' · ' + en : '') + ' · ' + muscle +
+            (it.sets ? ' · ' + it.sets + ' 组' : '') + ' × ' + it.reps;
+          return '<li><span class="idx">' + (k + 1) + '.</span>' +
+            '<span class="nm" title="' + esc(tip) + '">' +
+              '<span class="cn">' + esc(cn) + '</span>' +
+              '<span class="mt">' + esc(muscle) + '</span>' +
+            '</span>' +
+            '<span class="badge" title="' + esc(tip) + '">' + esc(it.reps) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      var done = ui.isDone(d.key);
+      return '<div class="day-card' + (isToday ? ' today' : '') + (done ? ' done' : '') +
+        '" style="--i:' + i + '" data-day="' + esc(d.key) + '" tabindex="0" role="button"' +
         ' aria-label="' + esc(d.label + ' ' + d.theme) + '">' +
         (isToday ? '<span class="today-chip">今天</span>' : '') +
         '<span class="drag" data-drag="' + esc(d.key) + '" title="按住拖拽换位（键盘 Alt+←/→）">⠿</span>' +
         '<div class="d-banner">' +
           '<div class="b-day">' + esc(d.rest ? '恢复日' : d.label) + '</div>' +
           '<div class="b-tag" title="' + esc(d.theme) + '">' + esc(d.theme) + '</div>' +
-          '<div class="b-time">' + (d.rest ? '全天休息' : '约 ' + esc(d.duration)) + '</div>' +
+          '<div class="b-time">' + (d.rest ? '全天休息' : esc(d.duration)) + '</div>' +
         '</div>' +
         '<div class="d-chip">' + esc(chipText(d)) + '</div>' +
-        '<ul class="d-list">' + (items || '<li class="nm" style="color:var(--faint)">空</li>') + '</ul>' +
+        body +
         '<div class="d-foot"><span class="s2" title="' + esc(sloganOf(d)) + '">' + esc(sloganOf(d)) + '</span></div>' +
+        '<button class="chk" type="button" data-chk="' + esc(d.key) + '"' +
+          ' aria-pressed="' + (done ? 'true' : 'false') + '" title="标记今天完成 / 取消">✓</button>' +
         '</div>';
     }).join('');
     bindDrag(host);
     host.querySelectorAll('.day-card').forEach(function (card) {
       card.addEventListener('click', function (ev) {
-        if (ev.target.closest && ev.target.closest('.drag')) return;
+        if (ev.target.closest && (ev.target.closest('.drag') || ev.target.closest('.chk'))) return;
         if (suppressClick) { suppressClick = false; return; }
-        openPanel('edit', card.getAttribute('data-day'));
+        openPanel('week', 'edit', card.getAttribute('data-day'));
+      });
+    });
+    host.querySelectorAll('.chk').forEach(function (b) {
+      b.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var key = b.getAttribute('data-chk');
+        var on = ui.toggleDone(key);
+        var card = b.closest('.day-card');
+        card.classList.toggle('done', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        showToast(on ? '已标记完成 · ' + ui.dayKey() : '已取消完成标记');
       });
     });
   }
-  /* 百叶窗：一次会话只播一次，尊重 reduced-motion；脚本失败也不影响可见性 */
+
+  /* ── 主题视图 ── */
+  function themeRows(t) {
+    return (t.items || []).map(function (it, k) {
+      var note = it.note ? '<span class="note">' + esc(it.note) + '</span>' : '';
+      return '<li><span class="idx">' + (k + 1) + '.</span>' +
+        '<span class="nm"><b>' + esc(it.cn) + '</b>' +
+          '<span class="en">' + esc(it.en) + '</span>' + note + '</span>' +
+        '<span class="m-badge" title="' + esc(it.m) + '">' + esc(it.m) + '</span></li>';
+    }).join('');
+  }
+  function themeFoot(t) {
+    if (t.video && t.video.url) {
+      return '<div class="t-foot"><a class="video-link" href="' + esc(t.video.url) + '"' +
+        ' target="_blank" rel="noopener noreferrer"><span class="v-ico">▶</span>' +
+        '<span class="v-title">' + esc(t.video.title) + '</span>' +
+        '<span class="v-arrow">↗</span></a></div>';
+    }
+    return '<div class="t-foot"><div class="no-video"><span class="v-ico">▷</span>' +
+      '<span class="v-title">跟练视频待补充</span></div></div>';
+  }
+  function renderThemes() {
+    var host = $('themeRow');
+    host.innerHTML = LAYOUTS.map(function (t, i) {
+      return '<div class="theme-card" style="--i:' + i + '" data-theme-card="' + i + '">' +
+        '<div class="d-banner">' +
+          '<div class="b-head"><span class="b-day">' + esc(t.name) + '</span>' +
+          '<span class="b-tag">' + esc(t.tag) + '</span></div>' +
+          '<div class="b-pace">' + esc(t.pace) + '</div>' +
+          '<div class="b-time">' + esc(t.time) + ' · 建议 ' + esc(t.sets) + ' 组</div>' +
+        '</div>' +
+        '<ul class="d-list tall">' + themeRows(t) + '</ul>' +
+        themeFoot(t) +
+        '</div>';
+    }).join('');
+    host.querySelectorAll('.theme-card').forEach(function (el) {
+      el.addEventListener('dblclick', function () { openPanel('theme', 'prev'); });
+      var foot = el.querySelector('.t-foot');
+      if (foot) {
+        foot.addEventListener('click', function (ev) {
+          if (!ev.target.closest('a')) openPanel('theme', 'prev');
+        });
+      }
+    });
+  }
+
+  /* ── 百叶窗：一次会话只播一次，尊重 reduced-motion ── */
   function shouldAnimate() {
-    var played = false;
-    try { played = localStorage.getItem(FX_KEY) === '1'; } catch (e) {}
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return !played && !reduce;
+    return !ui.get('fx') && !reduce;
   }
   function startReveal(animate) {
     var row = $('weekRow');
@@ -626,14 +1091,13 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     requestAnimationFrame(function () {
       setTimeout(function () {
         row.classList.add('expanded');
-        try { localStorage.setItem(FX_KEY, '1'); } catch (e) {}
+        ui.set('fx', 1);
         setTimeout(function () { document.documentElement.classList.remove('anim-in'); }, 1400);
       }, 200);
     });
   }
 
-  /* ── 拖拽：换整天方案（主题/时长/动作），星期标签不动 ── */
-  var dragState = null, suppressClick = false;
+  /* ── 拖拽：换整天方案（主题/时长/口号/动作/恢复清单一起来），星期标签不动 ── */
   function bindDrag(host) {
     host.querySelectorAll('.drag').forEach(function (h) {
       h.addEventListener('pointerdown', function (ev) {
@@ -695,7 +1159,7 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   function swapDays(aKey, bKey) {
     if (!aKey || !bKey || aKey === bKey) return;
     var a = dayBy(aKey), b = dayBy(bKey);
-    ['theme', 'duration', 'slogan', 'items'].forEach(function (k) {
+    ['theme', 'duration', 'slogan', 'items', 'setsHint', 'rest', 'recover'].forEach(function (k) {
       var t = a[k]; a[k] = b[k]; b[k] = t;
     });
     markDirty(); renderWeek();
@@ -719,12 +1183,18 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     swapDays(days[i].key, days[j].key);
   });
 
-  /* ── 统一面板：标题 / 七天页签 / 功能区（编辑 · 预览）/ 底部按钮 ── */
-  var panelState = { open: false, view: 'edit' };
-  function openPanel(view, key) {
-    if (key) activeKey = key;
-    if (!activeKey) activeKey = todayKey();
-    panelState.view = view || 'edit';
+  /* ── 统一面板（scope: week | theme） ── */
+  function openPanel(scope, v, key) {
+    panelState.scope = (scope === 'theme') ? 'theme' : 'week';
+    if (panelState.scope === 'week') {
+      if (key) activeKey = key;
+      if (!activeKey) activeKey = ui.get('day') || todayKey();
+      ui.set('day', activeKey);
+      panelState.view = (v === 'prev') ? 'prev' : 'edit';
+    } else {
+      panelState.view = 'prev';
+    }
+    ui.set('panelView', panelState.view);
     panelState.open = true;
     $('panelMask').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -736,12 +1206,24 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     document.body.style.overflow = '';
   }
   function renderPanel() {
-    $('panelTitle').textContent = '训练方案 · ' + dayBy(activeKey).label;
-    renderTabs();
-    setView(panelState.view);
+    var isTheme = panelState.scope === 'theme';
+    $('panelTitle').textContent = isTheme
+      ? '主题跟练 · ' + LAYOUTS.length + ' 套'
+      : '训练方案 · ' + dayBy(activeKey).label;
+    $('panelTabs').hidden = isTheme;
+    $('panelSeg').querySelector('button[data-view="edit"]').hidden = isTheme;
+    if (isTheme) renderTabsStatic(); else renderTabs();
+    setPanelView(panelState.view);
+  }
+  function renderTabsStatic() {
+    $('panelTabs').innerHTML = LAYOUTS.map(function (t) {
+      return '<span class="p-tab on" style="pointer-events:none">' + esc(t.tag) + '</span>';
+    }).join('');
   }
   function renderPanelBody() {
-    if (panelState.view === 'edit') renderEdit(); else renderPreview();
+    if (panelState.scope === 'theme') renderThemePreview();
+    else if (panelState.view === 'edit') renderEdit();
+    else renderPreview();
   }
   function renderTabs() {
     var tk = todayKey();
@@ -761,47 +1243,61 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   }
   function selectDay(key) {
     activeKey = key;
+    ui.set('day', key);
     $('panelTitle').textContent = '训练方案 · ' + dayBy(key).label;
     renderTabs();
     renderPanelBody();
   }
-  function setView(v) {
+  function setPanelView(v) {
     panelState.view = v;
+    ui.set('panelView', v);
     $('viewEdit').classList.toggle('on', v === 'edit');
     $('viewPrev').classList.toggle('on', v === 'prev');
     $('panelSeg').querySelectorAll('button').forEach(function (b) {
       b.classList.toggle('on', b.getAttribute('data-view') === v);
     });
-    $('btnSavePlan').disabled = v !== 'edit';
+    var isTheme = panelState.scope === 'theme';
+    $('btnSavePlan').disabled = isTheme || v !== 'edit';
     $('btnDownloadImg').disabled = v !== 'prev';
     $('btnCopyImg').disabled = v !== 'prev';
+    $('btnShare').disabled = isTheme;
+    $('btnDownloadEach').hidden = !isTheme || v !== 'prev';
     renderPanelBody();
   }
   $('panelSeg').addEventListener('click', function (ev) {
     var b = ev.target.closest('button[data-view]');
-    if (b) setView(b.getAttribute('data-view'));
+    if (b && !b.hidden) setPanelView(b.getAttribute('data-view'));
   });
   $('panelClose').addEventListener('click', closePanel);
   $('panelMask').addEventListener('click', function (ev) {
     if (ev.target === this) closePanel();
   });
-  $('fabEdit').addEventListener('click', function () { openPanel('edit', todayKey()); });
-  $('fabShot').addEventListener('click', function () { openPanel('prev', todayKey()); });
+  $('fabEdit').addEventListener('click', function () {
+    openPanel('week', 'edit', ui.get('day') || todayKey());
+  });
+  $('fabShot').addEventListener('click', function () {
+    if (view === 'theme') openPanel('theme', 'prev');
+    else openPanel('week', 'prev', ui.get('day') || todayKey());
+  });
 
   /* ── 编辑视图 ── */
   function renderEdit() {
     var d = dayBy(activeKey);
     $('editDayLabel').textContent = d.label + ' · ' + d.theme;
-    $('editDaySum').textContent = d.items.length + ' 个动作 / 共 ' + sumSets(d) + ' 组 / ' + d.duration;
+    $('editDaySum').textContent = (d.items || []).length + ' 个动作 / ' + d.duration +
+      (d.setsHint ? ' / 建议 ' + d.setsHint + ' 组' : ' / 共 ' + sumSets(d) + ' 组');
     var box = $('planList');
-    if (!d.items.length) {
-      box.innerHTML = '<div class="plan-empty">这一天还没有动作，从左栏点 + 添加。</div>';
+    if (!(d.items || []).length) {
+      box.innerHTML = '<div class="plan-empty">' +
+        (d.rest ? '恢复日不需要动作清单，左栏可手动添加。' : '这一天还没有动作，从左栏点 + 添加。') + '</div>';
     } else {
       box.innerHTML = d.items.map(function (it, i) {
-        var e = BYID[it.id] || { name: '（未知动作 ' + it.id + '）' };
+        var e = exName(it);
+        var cn = e.name_cn || e.name, en = e.name_en || '';
         return '<div class="plan-row">' +
-          '<span class="nm" title="' + esc(e.name) + '">' + esc(e.name) + '</span>' +
-          '<input data-i="' + i + '" data-k="sets" value="' + esc(it.sets) + '" inputmode="numeric" aria-label="组数">' +
+          '<span class="nm" title="' + esc(cn + (en ? ' · ' + en : '')) + '">' + esc(cn) + '</span>' +
+          '<input data-i="' + i + '" data-k="sets" value="' + esc(it.sets == null ? '' : it.sets) +
+            '" inputmode="numeric" aria-label="组数" placeholder="—">' +
           '<input data-i="' + i + '" data-k="reps" value="' + esc(it.reps) + '" aria-label="次数">' +
           '<button class="btn mini" type="button" data-act="up" data-i="' + i + '" title="上移">↑</button>' +
           '<button class="btn mini" type="button" data-act="del" data-i="' + i + '" title="删除">×</button>' +
@@ -811,7 +1307,12 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
         inp.addEventListener('change', function () {
           var i = +inp.getAttribute('data-i');
           var k = inp.getAttribute('data-k');
-          d.items[i][k] = k === 'sets' ? (parseInt(inp.value, 10) || 0) : inp.value;
+          if (k === 'sets') {
+            var n = parseInt(inp.value, 10);
+            if (n) d.items[i].sets = n; else delete d.items[i].sets;
+          } else {
+            d.items[i].reps = inp.value;
+          }
           markDirty(); renderWeek(); renderEdit();
         });
       });
@@ -830,16 +1331,19 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     renderPicker();
   }
 
-  var exFilter = 'all', exQuery = '';
   function renderPicker() {
+    var exFilter = ui.get('exFilter'), exQuery = ui.get('exQuery');
     var chips = ['all'].concat(EX.map(function (e) { return e.equip; })
       .filter(function (v, i, a) { return a.indexOf(v) === i; }));
     $('exChips').innerHTML = chips.map(function (c) {
-      return '<button type="button" class="chip' + (c === exFilter ? ' on' : '') + '" data-e="' + esc(c) + '">' +
-        (c === 'all' ? '全部' : esc(c)) + '</button>';
+      return '<button type="button" class="chip' + (c === exFilter ? ' on' : '') +
+        '" data-e="' + esc(c) + '">' + (c === 'all' ? '全部' : esc(c)) + '</button>';
     }).join('');
     $('exChips').querySelectorAll('.chip').forEach(function (b) {
-      b.addEventListener('click', function () { exFilter = b.getAttribute('data-e'); renderPicker(); });
+      b.addEventListener('click', function () {
+        ui.set('exFilter', b.getAttribute('data-e'));
+        renderPicker();
+      });
     });
     var q = exQuery.toLowerCase();
     var list = EX.filter(function (e) {
@@ -849,111 +1353,108 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     });
     var d = dayBy(activeKey);
     var has = {};
-    d.items.forEach(function (it) { has[it.id] = true; });
+    (d.items || []).forEach(function (it) { has[it.id] = true; });
     $('exList').innerHTML = list.map(function (e) {
       return '<li><span class="grow"><b>' + esc(e.name) + '</b>' +
         '<span class="sub"> ' + esc(e.muscle) + ' · ' + esc(e.sets) + '×' + esc(e.reps) + '</span></span>' +
-        '<button type="button" class="btn mini" data-add="' + esc(e.id) + '"' + (has[e.id] ? ' disabled' : '') + '>+</button></li>';
+        '<button type="button" class="btn mini" data-add="' + esc(e.id) + '"' +
+        (has[e.id] ? ' disabled' : '') + '>+</button></li>';
     }).join('') || '<li class="note" style="padding:10px">没有匹配的动作</li>';
     $('exList').querySelectorAll('button[data-add]').forEach(function (b) {
       b.addEventListener('click', function () {
         var e = BYID[b.getAttribute('data-add')];
         if (!e) return;
-        d.items.push({ id: e.id, sets: e.sets, reps: e.reps });
+        if (!d.items) d.items = [];
+        var item = { id: e.id, reps: e.reps };
+        if (d.setsHint == null && e.sets) item.sets = e.sets;
+        d.items.push(item);
         markDirty(); renderWeek(); renderEdit();
       });
     });
   }
-  $('exSearch').addEventListener('input', function () { exQuery = this.value.trim(); renderPicker(); });
+  var searchTimer = null;
+  $('exSearch').addEventListener('input', function () {
+    var v = this.value.trim();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () {
+      ui.set('exQuery', v);
+      renderPicker();
+    }, 120);
+  });
 
-  /* ── 状态：改即自动存本机；「保存方案」= 显式落盘 + 提示 ── */
+  /* ── 方案改动：改即自动存本机（按预设分开） ── */
   function markDirty() {
-    dirty = true; shared = false;
-    saveLocal(true);
+    EDITS.byPreset[cur.id] = clone(days);
+    writeEdits();
     $('panelNote').textContent = '已自动保存到本机';
   }
   function saveLocal(silent) {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify({ v: 1, days: days }));
-      dirty = false; shared = false;
-      if (!silent) {
-        showToast('已保存到本机');
-        $('panelNote').textContent = '已保存到本机 · ' + new Date().toLocaleTimeString();
-      }
-      return true;
-    } catch (e) {
-      showToast('保存失败：浏览器禁用了本地存储');
-      return false;
+    if (!cur) return false;
+    EDITS.byPreset[cur.id] = clone(days);
+    writeEdits();
+    if (!silent) {
+      showToast('已保存到本机');
+      $('panelNote').textContent = '已保存到本机 · ' + new Date().toLocaleTimeString();
     }
-  }
-  function loadLocal() {
-    try {
-      var raw = localStorage.getItem(LS_KEY);
-      if (!raw) return false;
-      var o = JSON.parse(raw);
-      if (!o || o.v !== 1 || !Array.isArray(o.days) || !o.days.length) return false;
-      days = o.days;
-      days.forEach(function (d) {
-        for (var i = 0; i < DEFAULTS.length; i++) {
-          if (DEFAULTS[i].key === d.key) {
-            if (!d.slogan) d.slogan = DEFAULTS[i].slogan;
-            if (!d.theme) d.theme = DEFAULTS[i].theme;
-            if (!d.duration) d.duration = DEFAULTS[i].duration;
-          }
-        }
-      });
-      return true;
-    } catch (e) { return false; }
+    return true;
   }
   $('btnSavePlan').addEventListener('click', function () { saveLocal(false); });
   $('btnResetDay').addEventListener('click', function () {
     var d = dayBy(activeKey);
     for (var i = 0; i < DEFAULTS.length; i++) {
       if (DEFAULTS[i].key === d.key) {
-        d.items = JSON.parse(JSON.stringify(DEFAULTS[i].items));
-        d.slogan = DEFAULTS[i].slogan;
+        var fresh = clone(DEFAULTS[i]);
+        Object.keys(d).forEach(function (k) { if (!(k in fresh)) delete d[k]; });
+        Object.keys(fresh).forEach(function (k) { d[k] = fresh[k]; });
         break;
       }
     }
     markDirty(); renderWeek(); renderEdit();
   });
   $('btnLoadDefault').addEventListener('click', function () {
-    if (!confirm('还原成默认的七天方案？本机保存的改动会丢。')) return;
-    days = JSON.parse(JSON.stringify(DEFAULTS));
-    try { localStorage.removeItem(LS_KEY); } catch (e) {}
-    dirty = false; shared = false;
+    if (!confirm('还原成「' + cur.label + '」的默认七天方案？本机保存的改动会丢。')) return;
+    days = clone(DEFAULTS);
+    delete EDITS.byPreset[cur.id];
+    writeEdits();
     renderWeek(); renderEdit();
     $('panelNote').textContent = '已还原默认方案';
     showToast('已还原默认方案');
   });
+  $('btnClearMemory').addEventListener('click', function () {
+    if (!confirm('清空本机的配色、视图、筛选、打卡与方案改动？页面会重新加载。')) return;
+    ui.clear();
+    try { localStorage.removeItem(EDITS_KEY); localStorage.removeItem(LEGACY_EDITS); } catch (e) {}
+    location.reload();
+  });
 
-  /* ── 分享编码 v2 ──
-     v2|天号=主题!时长!动作表（与默认一致时留空）；动作 = 库内序号*sets~encodeURIComponent(reps)
-     解码兼容 v1（只带动作表） */
+  /* ── 分享编码 v3：v3|预设|天号=主题!时长!动作表（动作 = 库内序号*sets~reps，sets 可空）
+     解码兼容 v1（只带动作）/ v2（主题!时长!动作） */
   function numOf(id) { return parseInt(String(id).replace(/^ex/, ''), 10); }
   function idOf(n) { return 'ex' + (n < 10 ? '0' + n : String(n)); }
   function encodePlan() {
-    return 'v2|' + days.map(function (d, i) {
+    return 'v3|' + cur.id + '|' + days.map(function (d, i) {
       var def = DEFAULTS[i] || {};
       var th = d.theme === def.theme ? '' : encodeURIComponent(d.theme);
       var du = d.duration === def.duration ? '' : encodeURIComponent(d.duration);
       return (i + 1) + '=' + th + '!' + du + '!' +
-        d.items.map(function (it) {
-          return numOf(it.id) + '*' + (parseInt(it.sets, 10) || 0) + '~' + encodeURIComponent(it.reps);
+        (d.items || []).map(function (it) {
+          return numOf(it.id) + '*' + (it.sets == null ? '' : it.sets) + '~' + encodeURIComponent(it.reps);
         }).join(',');
     }).join('|');
   }
   function decodePlan(str) {
     var out = [], unknown = 0;
     var segs = String(str).split('|');
-    var ver = segs[0];
-    if (ver !== 'v1' && ver !== 'v2') return null;
-    segs.slice(1).forEach(function (seg) {
+    var ver = segs[0], preset = '';
+    if (ver !== 'v1' && ver !== 'v2' && ver !== 'v3') return null;
+    var body = segs.slice(1);
+    if (ver === 'v3') preset = body.shift() || '';
+    body.forEach(function (seg) {
       var p = seg.split('=');
       var d = days[parseInt(p[0], 10) - 1];
       if (!d) return;
       var theme = '', duration = '', itemsStr = p[1] || '';
-      if (ver === 'v2') {
+      if (ver !== 'v1') {
         var parts = itemsStr.split('!');
         theme = decodeURIComponent(parts[0] || '');
         duration = decodeURIComponent(parts[1] || '');
@@ -962,30 +1463,35 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
       var items = [];
       itemsStr.split(',').forEach(function (tok) {
         if (!tok) return;
-        var m = /^(\d+)\*(\d+)~(.*)$/.exec(tok);
+        var m = /^(\d+)\*(\d*)~(.*)$/.exec(tok);
         if (!m) return;
         var id = idOf(parseInt(m[1], 10));
         if (!BYID[id]) { unknown++; return; }
-        items.push({ id: id, sets: parseInt(m[2], 10), reps: decodeURIComponent(m[3]) });
+        var item = { id: id, reps: decodeURIComponent(m[3]) };
+        if (m[2]) item.sets = parseInt(m[2], 10);
+        items.push(item);
       });
       out.push({ key: d.key, items: items, theme: theme, duration: duration });
     });
-    return { days: out, unknown: unknown };
+    return { days: out, unknown: unknown, preset: preset };
   }
   function buildShareUrl() {
     return location.href.split('#')[0] + '#p=' + encodePlan();
   }
   function planText() {
-    var L = ['【' + (META.title || '训练方案') + '】', ''];
+    var L = ['【' + (PLAN.title || '训练方案') + ' · ' + cur.label + '】', ''];
     days.forEach(function (d) {
       L.push(d.label + ' · ' + d.theme + '（' + d.duration + '）');
-      d.items.forEach(function (it, i) {
-        var e = BYID[it.id];
-        L.push('  ' + (i + 1) + '. ' + (e ? e.name : it.id) + ' ' + it.sets + '×' + it.reps);
+      if (d.rest) (d.recover || []).forEach(function (t) { L.push('  · ' + t); });
+      (d.items || []).forEach(function (it, i) {
+        var e = exName(it);
+        var cn = e.name_cn || e.name, en = e.name_en || '';
+        L.push('  ' + (i + 1) + '. ' + cn + (en ? ' ' + en : '') + ' ' +
+          (it.sets ? it.sets + '×' : '') + it.reps);
       });
       L.push('');
     });
-    if (META.meta) L.push(META.meta.goal + ' · ' + META.meta.steps);
+    if (cur.slogan) L.push(cur.slogan);
     return L.join('\n');
   }
 
@@ -1003,7 +1509,6 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   $('btnCopyUrl').addEventListener('click', function () { copyText(buildShareUrl(), '链接已复制'); });
   $('btnCopyText').addEventListener('click', function () { copyText(planText(), '方案文本已复制'); });
 
-  /* ── 剪贴板（文本复制走 canonical 块；图片剪贴板见 cardToBlob 调用点） ── */
   /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
   function copyText(text, okMsg, failMsg, onOk) {
     var _toast = (typeof showToast === 'function') ? showToast
@@ -1040,25 +1545,37 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
       String(d.getDate()).padStart(2, '0') + ' ' + wk;
   }
   function cardRows(d) {
-    return d.items.map(function (it, i) {
-      var e = BYID[it.id] || { name: it.id };
+    var rows = (d.items || []).map(function (it, i) {
+      var e = exName(it);
       var cn = e.name_cn || e.name, en = e.name_en || '';
+      var muscle = it.muscle || e.muscle || '';
       return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
         '<span class="n" title="' + esc(cn + (en ? ' · ' + en : '')) + '">' +
           '<span class="cn">' + esc(cn) + '</span>' +
-          (en ? '<span class="en">' + esc(en) + '</span>' : '') +
+          (muscle ? '<span class="en">' + esc(muscle) + '</span>' : '') +
         '</span>' +
-        '<span class="s">' + esc(it.sets) + ' 组</span>' +
+        (it.sets ? '<span class="s">' + esc(it.sets) + ' 组</span>' : '') +
         '<span class="b">' + esc(it.reps) + '</span></div>';
-    }).join('') || '<div class="c-row"><span class="n" style="color:var(--faint)">这一天没有安排</span></div>';
+    }).join('');
+    if (!rows && d.rest) {
+      rows = (d.recover || []).map(function (t, i) {
+        return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
+          '<span class="n"><span class="cn">' + esc(t) + '</span></span></div>';
+      }).join('');
+    }
+    return rows || '<div class="c-row"><span class="n" style="color:var(--faint)">这一天没有安排</span></div>';
   }
   function buildDayCard(key) {
     var d = dayBy(key);
+    var meta = d.rest
+      ? '全天休息 · ' + (d.recover || []).length + ' 条恢复建议'
+      : (esc(d.duration) + ' · ' + (d.items || []).length + ' 个动作' +
+         (d.setsHint ? ' · 建议 ' + esc(d.setsHint) + ' 组' : ' · 共 ' + sumSets(d) + ' 组'));
     return '<div class="card" id="shareCard">' +
       '<div class="c-banner">' +
         '<div class="k">SLIMDOWN · ' + esc(d.label) + '</div>' +
         '<h2>' + esc(d.theme) + '</h2>' +
-        '<div class="m">约 ' + esc(d.duration) + ' · ' + d.items.length + ' 个动作 · 共 ' + sumSets(d) + ' 组</div>' +
+        '<div class="m">' + meta + '</div>' +
       '</div>' +
       '<div class="c-body">' + cardRows(d) + '</div>' +
       '<div class="c-foot"><span class="sl">' + esc(sloganOf(d)) + '</span>' +
@@ -1068,104 +1585,113 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   function buildWeekCard() {
     var body = days.map(function (d) {
       return '<div class="c-row"><span class="i">' + esc(d.short || '') + '</span>' +
-        '<span class="n"><b>' + esc(d.theme) + '</b>　' + esc(d.items.map(function (it) {
-          var e = BYID[it.id];
-          return (e ? e.name : it.id) + ' ' + it.sets + '×' + it.reps;
-        }).join(' · ')) + '</span>' +
+        '<span class="n"><b>' + esc(d.theme) + '</b>　' + esc(d.rest
+          ? (d.recover || []).join(' · ')
+          : (d.items || []).map(function (it) {
+              var e = exName(it);
+              return (e.name_cn || e.name) + ' ' + (it.sets ? it.sets + '×' : '') + it.reps;
+            }).join(' · ')) + '</span>' +
         '<span class="b">' + esc(d.duration) + '</span></div>';
     }).join('');
     return '<div class="card" id="shareCard">' +
       '<div class="c-banner"><div class="k">SLIMDOWN · 7-DAY</div>' +
-      '<h2>' + esc(META.title || '七日方案') + '</h2>' +
-      '<div class="m">' + esc((META.meta && META.meta.slogan) || '') + '</div></div>' +
+      '<h2>' + esc(PLAN.title || '训练方案') + '</h2>' +
+      '<div class="m">' + esc(cur.label + ' · ' + (cur.slogan || '')) + '</div></div>' +
       '<div class="c-body">' + body + '</div>' +
-      '<div class="c-foot"><span class="sl">' + esc((META.meta && META.meta.goal) || '') + '</span>' +
+      '<div class="c-foot"><span class="sl">' + esc(cur.slogan || '') + '</span>' +
+      '<span class="dt">' + esc(dateLine()) + '</span></div>' +
+      '</div>';
+  }
+  function buildThemeCard(t) {
+    return '<div class="card tcard">' +
+      '<div class="c-banner"><div class="k">HOME WORKOUT · ' + esc(t.tag) + '</div>' +
+      '<h2>' + esc(t.name) + '</h2>' +
+      '<div class="m">' + esc(t.time) + ' · 建议 ' + esc(t.sets) + ' 组 · ' + esc(t.pace) + '</div></div>' +
+      '<div class="c-body">' + (t.items || []).map(function (it, i) {
+        return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
+          '<span class="n"><span class="cn">' + esc(it.cn) + '</span>' +
+          '<span class="en">' + esc(it.en) + '</span>' +
+          (it.note ? '<span class="note">' + esc(it.note) + '</span>' : '') + '</span>' +
+          '<span class="mb">' + esc(it.m) + '</span></div>';
+      }).join('') + '</div>' +
+      '<div class="c-foot"><span class="sl">' + esc(t.video ? t.video.title : '跟练视频待补充') + '</span>' +
       '<span class="dt">' + esc(dateLine()) + '</span></div>' +
       '</div>';
   }
   function renderPreview() {
     $('previewHost').innerHTML = buildDayCard(activeKey);
   }
+  function renderThemePreview() {
+    $('previewHost').innerHTML = '<div class="preview-stack">' +
+      LAYOUTS.map(function (t) { return buildThemeCard(t); }).join('') + '</div>';
+  }
 
-  /* ── DOM → PNG（零依赖：foreignObject + canvas） ── */
-  function collectCss() {
-    var css = '';
-    for (var i = 0; i < document.styleSheets.length; i++) {
-      var rules;
-      try { rules = document.styleSheets[i].cssRules; } catch (e) { continue; }
-      for (var j = 0; j < rules.length; j++) css += rules[j].cssText + '\n';
+  function shotHost(html) {
+    var host = $('shotHost');
+    host.innerHTML = html;
+    return host.firstElementChild;
+  }
+  function pngName(tag) {
+    return 'slimdown-' + tag + '-' + shot.stamp() + '.png';
+  }
+  function themeSheet() {
+    return shotHost('<div class="shot-sheet">' +
+      LAYOUTS.map(function (t) { return buildThemeCard(t); }).join('') + '</div>');
+  }
+  function exportEachTheme() {
+    var i = 0, doneCount = 0;
+    $('panelNote').textContent = '逐张生成中… 0/' + LAYOUTS.length;
+    function step() {
+      if (i >= LAYOUTS.length) {
+        $('panelNote').textContent = '已下载 ' + doneCount + ' 张';
+        shotHost('');
+        return;
+      }
+      var node = shotHost(buildThemeCard(LAYOUTS[i]));
+      shot.nodeToBlob(node, { maxH: 6000 }).then(function (r) {
+        shot.download(r.blob, pngName('theme' + (i + 1)));
+        doneCount++;
+        i++;
+        $('panelNote').textContent = '逐张生成中… ' + i + '/' + LAYOUTS.length;
+        setTimeout(step, 260);
+      }).catch(function (e) {
+        $('panelNote').textContent = '第 ' + (i + 1) + ' 张失败：' + e.message;
+        shotHost('');
+      });
     }
-    return css;
+    step();
   }
-  function bgColor() {
-    var v = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
-    return v || '#12100e';
-  }
-  /* 导出 = 预览实际 CSS 宽 ×1：PNG 多宽，预览就多宽；主题变量内联到克隆根，保证出图与屏幕同色 */
-  function cardToBlob(node) {
-    var w = node.offsetWidth, h = node.offsetHeight;
-    var clone = node.cloneNode(true);
-    clone.removeAttribute('id');
-    clone.setAttribute('style', themeVarsInline() + ';' + (clone.getAttribute('style') || ''));
-    var css = collectCss();
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
-      '" viewBox="0 0 ' + w + ' ' + h + '">' +
-      '<foreignObject width="100%" height="100%">' +
-      '<div xmlns="http://www.w3.org/1999/xhtml"><style><![CDATA[' + css + ']]></style>' +
-      new XMLSerializer().serializeToString(clone) + '</div></foreignObject></svg>';
-    var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    return new Promise(function (resolve, reject) {
-      var img = new Image();
-      img.onload = function () {
-        var cv = document.createElement('canvas');
-        cv.width = w; cv.height = h;
-        var ctx = cv.getContext('2d');
-        ctx.fillStyle = bgColor();
-        ctx.fillRect(0, 0, cv.width, cv.height);
-        ctx.drawImage(img, 0, 0, w, h);
-        cv.toBlob(function (b) {
-          b ? resolve({ blob: b, w: w, h: h }) : reject(new Error('toBlob failed'));
-        }, 'image/png');
-      };
-      img.onerror = function () { reject(new Error('SVG rasterize failed')); };
-      img.src = url;
-    });
-  }
-  function download(blob, name) {
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  }
-  function fileName() {
-    var d = new Date();
-    return 'slimdown-' + (activeKey || todayKey()) + '-' +
-      d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.png';
-  }
-  function currentCardNode() { return $('shareCard'); }
   $('btnDownloadImg').addEventListener('click', function () {
-    var node = currentCardNode();
+    var isTheme = panelState.scope === 'theme';
+    var node = isTheme ? themeSheet() : shotHost(buildDayCard(activeKey));
     if (!node) return;
     $('panelNote').textContent = '生成中…';
-    cardToBlob(node).then(function (r) {
-      download(r.blob, fileName());
-      $('panelNote').textContent = '已下载 ' + r.w + '×' + r.h;
-    }).catch(function (e) { $('panelNote').textContent = '导出失败：' + e.message; });
+    shot.nodeToBlob(node, { maxH: isTheme ? 6000 : 4000 }).then(function (r) {
+      shot.download(r.blob, pngName(isTheme ? 'themes' : (activeKey || todayKey())));
+      $('panelNote').textContent = '已下载 ' + r.w + '×' + r.h + (r.scaled ? '（长图已等比缩放）' : '');
+      shotHost('');
+    }).catch(function (e) {
+      $('panelNote').textContent = '导出失败：' + e.message;
+      shotHost('');
+    });
   });
+  $('btnDownloadEach').addEventListener('click', exportEachTheme);
   $('btnCopyImg').addEventListener('click', function () {
-    var node = currentCardNode();
+    var isTheme = panelState.scope === 'theme';
+    var node = isTheme ? themeSheet() : ($('previewHost').querySelector('.card') || shotHost(buildDayCard(activeKey)));
     if (!node) return;
     $('panelNote').textContent = '生成中…';
-    cardToBlob(node).then(function (r) {
+    shot.nodeToBlob(node, { maxH: isTheme ? 6000 : 4000 }).then(function (r) {
       var blob = r.blob, size = r.w + '×' + r.h;
       if (window.isSecureContext && navigator.clipboard && window.ClipboardItem) {
         return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
           .then(function () { $('panelNote').textContent = '已复制 · ' + size; })
-          .catch(function () { download(blob, fileName()); $('panelNote').textContent = '复制被拒绝，已下载 ' + size; });
+          .catch(function () {
+            shot.download(blob, pngName(activeKey || 'plan'));
+            $('panelNote').textContent = '复制被拒绝，已下载 ' + size;
+          });
       }
-      download(blob, fileName());
+      shot.download(blob, pngName(activeKey || 'plan'));
       $('panelNote').textContent = '当前环境不支持复制图片，已下载 PNG ' + size;
     }).catch(function (e) {
       $('panelNote').textContent = '导出失败：' + e.message + '（可改用截图）';
@@ -1174,7 +1700,7 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   var btnPrint = $('btnPrint');
   if (btnPrint) btnPrint.addEventListener('click', function () { window.print(); });
 
-  /* ── 卡片模式（?card=day|week[&d=mon]）：只留卡本身，方便截图 ── */
+  /* ── 卡片模式（?card=day|week|theme[&d=mon|&t=1]）：只留卡本身，方便截图 ── */
   function cardMode() {
     var q = new URLSearchParams(location.search);
     var kind = q.get('card');
@@ -1182,10 +1708,14 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     document.body.classList.add('cardonly');
     var host = document.createElement('div');
     host.id = 'standalone';
-    var k = q.get('d') || todayKey();
-    host.innerHTML = kind === 'week' ? buildWeekCard() : buildDayCard(k);
+    var k = q.get('d') || ui.get('day') || todayKey();
+    if (kind === 'week') host.innerHTML = buildWeekCard();
+    else if (kind === 'theme') {
+      var idx = Math.max(0, (parseInt(q.get('t'), 10) || 1) - 1);
+      host.innerHTML = buildThemeCard(LAYOUTS[idx] || LAYOUTS[0]);
+    } else host.innerHTML = buildDayCard(k);
     document.body.appendChild(host);
-    document.title = (kind === 'week' ? '七日方案' : dayBy(k).label) + ' · slimdown';
+    document.title = (kind === 'week' ? '七日方案' : kind === 'theme' ? '主题跟练' : dayBy(k).label) + ' · slimdown';
     return true;
   }
 
@@ -1195,6 +1725,7 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     if (!m) return false;
     var res = decodePlan(m[1]);
     if (!res || !res.days.length) { showToast('分享链接已损坏，已按本机方案显示'); return false; }
+    if (res.preset && presetById(res.preset) && res.preset !== cur.id) loadPreset(res.preset);
     res.days.forEach(function (sd) {
       var d = dayBy(sd.key);
       if (!d) return;
@@ -1206,15 +1737,27 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
     if (res.unknown) showToast('已忽略 ' + res.unknown + ' 个未知动作');
     return true;
   }
+  $('btnUnshare').addEventListener('click', function () {
+    days = clone(EDITS.byPreset[cur.id] || DEFAULTS);
+    shared = false;
+    $('sharedBar').hidden = true;
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    renderWeek();
+    showToast('已恢复我的方案');
+  });
 
-  initTheme();
-  loadLocal();
+  initSkins();
+  initPresetSel();
+  loadPreset(ui.get('preset') || PLAN.defaultPreset);
   applyHash();
-  activeKey = todayKey();
+  activeKey = ui.get('day') || todayKey();
+  setPageView(ui.get('view'));
+  $('sharedBar').hidden = !shared;
   if (!cardMode()) {
     var animate = shouldAnimate();
     if (animate) document.documentElement.classList.add('anim-in');
     renderWeek();
+    renderThemes();
     startReveal(animate);
   }
 })();

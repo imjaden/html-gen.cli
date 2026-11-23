@@ -1,212 +1,841 @@
 {
-  "version": "v1.2",
-  "updated": "2026-11-22",
-  "title": "薄肌减脂 · 七日活动方案",
-  "subtitle": "七天一眼看懂 · 右下角编辑 / 存图；改动自动存本机，可生成分享链接或下载 PNG",
+  "version": "v1.3",
+  "updated": "2026-11-23",
+  "title": "居家训练计划",
+  "subtitle": "按星期或按主题看今天练什么 · 右下角可编辑 / 存图",
   "meta": {
     "slogan": "薄肌减脂 · 阶段一",
     "goal": "周降 ≤0.31 kg",
     "steps": "8000–10000 步 / 睡眠 ≥7.5 h",
     "safety": "周降 >0.5 kg 连续两周 ⇒ 加 150–200 kcal；力量主项连续 2 周掉 >10% ⇒ 同上加。"
   },
-  "days": [
+  "defaultPreset": "home",
+  "presets": [
     {
-      "key": "mon",
-      "label": "周一",
-      "short": "一",
-      "theme": "下肢 A · 股四 + 臀",
-      "duration": "45 分",
-      "slogan": "先坚持，再谈变化！",
-      "items": [
+      "id": "home",
+      "label": "居家七日",
+      "version": "v1.3",
+      "slogan": "干净饮食 · 热量缺口 · 减脂增肌",
+      "days": [
         {
-          "id": "ex18",
-          "sets": 4,
-          "reps": "8–10",
-          "note": "膝跟脚尖方向，蹲到大腿平行"
+          "key": "mon",
+          "label": "周一",
+          "short": "一",
+          "theme": "全身激活",
+          "duration": "约 30 分",
+          "slogan": "先坚持，再谈变化！",
+          "setsHint": "3–5",
+          "items": [
+            {
+              "id": "ex73",
+              "reps": "20 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex47",
+              "reps": "15 秒",
+              "muscle": "核心"
+            },
+            {
+              "id": "ex74",
+              "reps": "25 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex75",
+              "reps": "35 次",
+              "muscle": "全身有氧"
+            },
+            {
+              "id": "ex76",
+              "reps": "15 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex77",
+              "reps": "25 秒",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex78",
+              "reps": "10 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex79",
+              "reps": "10 次",
+              "muscle": "臀·腘绳"
+            },
+            {
+              "id": "ex51",
+              "reps": "5 次",
+              "muscle": "胸·三头"
+            }
+          ]
         },
         {
-          "id": "ex19",
-          "sets": 3,
-          "reps": "10/腿"
+          "key": "tue",
+          "label": "周二",
+          "short": "二",
+          "theme": "基础耐力",
+          "duration": "约 30 分",
+          "slogan": "稳稳坚持，慢慢变好！",
+          "setsHint": "3–5",
+          "items": [
+            {
+              "id": "ex73",
+              "reps": "10 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex47",
+              "reps": "30 秒",
+              "muscle": "核心"
+            },
+            {
+              "id": "ex74",
+              "reps": "25 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex75",
+              "reps": "10 次",
+              "muscle": "全身有氧"
+            },
+            {
+              "id": "ex76",
+              "reps": "25 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex77",
+              "reps": "35 秒",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex78",
+              "reps": "10 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex79",
+              "reps": "25 次",
+              "muscle": "臀·腘绳"
+            },
+            {
+              "id": "ex51",
+              "reps": "10 次",
+              "muscle": "胸·三头"
+            }
+          ]
         },
         {
-          "id": "ex16",
-          "sets": 3,
-          "reps": "12–15"
+          "key": "wed",
+          "label": "周三",
+          "short": "三",
+          "theme": "核心强化",
+          "duration": "约 30 分",
+          "slogan": "练的是体能，也是自律！",
+          "setsHint": "3–5",
+          "items": [
+            {
+              "id": "ex73",
+              "reps": "15 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex47",
+              "reps": "40 秒",
+              "muscle": "核心"
+            },
+            {
+              "id": "ex74",
+              "reps": "30 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex75",
+              "reps": "55 次",
+              "muscle": "全身有氧"
+            },
+            {
+              "id": "ex80",
+              "reps": "65 次",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex77",
+              "reps": "45 秒",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex78",
+              "reps": "25 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex79",
+              "reps": "25 次",
+              "muscle": "臀·腘绳"
+            }
+          ]
         },
         {
-          "id": "ex70",
-          "sets": 4,
-          "reps": "15"
+          "key": "thu",
+          "label": "周四",
+          "short": "四",
+          "theme": "下肢塑形",
+          "duration": "约 30 分",
+          "slogan": "按计划练，状态会回答你！",
+          "setsHint": "3–5",
+          "items": [
+            {
+              "id": "ex73",
+              "reps": "35 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex47",
+              "reps": "30 秒",
+              "muscle": "核心"
+            },
+            {
+              "id": "ex74",
+              "reps": "20 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex75",
+              "reps": "25 次",
+              "muscle": "全身有氧"
+            },
+            {
+              "id": "ex76",
+              "reps": "15 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex77",
+              "reps": "35 秒",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex78",
+              "reps": "35 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex79",
+              "reps": "10 次",
+              "muscle": "臀·腘绳"
+            },
+            {
+              "id": "ex51",
+              "reps": "5 次",
+              "muscle": "胸·三头"
+            }
+          ]
         },
         {
-          "id": "ex47",
-          "sets": 3,
-          "reps": "40–60 秒"
+          "key": "fri",
+          "label": "周五",
+          "short": "五",
+          "theme": "后链收紧",
+          "duration": "约 30 分",
+          "slogan": "动作做到位，效果更到位！",
+          "setsHint": "3–5",
+          "items": [
+            {
+              "id": "ex73",
+              "reps": "35 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex47",
+              "reps": "30 秒",
+              "muscle": "核心"
+            },
+            {
+              "id": "ex74",
+              "reps": "20 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex75",
+              "reps": "25 次",
+              "muscle": "全身有氧"
+            },
+            {
+              "id": "ex76",
+              "reps": "15 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex77",
+              "reps": "35 秒",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex78",
+              "reps": "35 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex79",
+              "reps": "25 次",
+              "muscle": "臀·腘绳"
+            }
+          ]
+        },
+        {
+          "key": "sat",
+          "label": "周六",
+          "short": "六",
+          "theme": "周末冲刺",
+          "duration": "约 35 分",
+          "slogan": "今天多一点，明天好一点！",
+          "setsHint": "3–5",
+          "items": [
+            {
+              "id": "ex73",
+              "reps": "25 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex47",
+              "reps": "60 秒",
+              "muscle": "核心"
+            },
+            {
+              "id": "ex74",
+              "reps": "30 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex75",
+              "reps": "55 次",
+              "muscle": "全身有氧"
+            },
+            {
+              "id": "ex76",
+              "reps": "35 次",
+              "muscle": "股四·臀"
+            },
+            {
+              "id": "ex77",
+              "reps": "45 秒",
+              "muscle": "股四"
+            },
+            {
+              "id": "ex78",
+              "reps": "45 次",
+              "muscle": "腹直肌"
+            },
+            {
+              "id": "ex79",
+              "reps": "50 次",
+              "muscle": "臀·腘绳"
+            },
+            {
+              "id": "ex51",
+              "reps": "30 次",
+              "muscle": "胸·三头"
+            }
+          ]
+        },
+        {
+          "key": "sun",
+          "label": "周日",
+          "short": "日",
+          "theme": "恢复建议",
+          "duration": "全天休息",
+          "slogan": "休息不是偷懒，是为了更强！",
+          "rest": true,
+          "recover": [
+            "充足休息",
+            "放松身体",
+            "轻松散步或简单拉伸",
+            "补充水分",
+            "为下一周充电"
+          ]
         }
       ]
     },
     {
-      "key": "tue",
-      "label": "周二",
-      "short": "二",
-      "theme": "轻松跑 A",
-      "duration": "45 分",
-      "slogan": "能说话的配速，才是好配速",
+      "id": "strength",
+      "label": "力量版",
+      "version": "v1.2",
+      "days": [
+        {
+          "key": "mon",
+          "label": "周一",
+          "short": "一",
+          "theme": "下肢 A · 股四 + 臀",
+          "duration": "45 分",
+          "slogan": "先坚持，再谈变化！",
+          "items": [
+            {
+              "id": "ex18",
+              "sets": 4,
+              "reps": "8–10",
+              "note": "膝跟脚尖方向，蹲到大腿平行"
+            },
+            {
+              "id": "ex19",
+              "sets": 3,
+              "reps": "10/腿"
+            },
+            {
+              "id": "ex16",
+              "sets": 3,
+              "reps": "12–15"
+            },
+            {
+              "id": "ex70",
+              "sets": 4,
+              "reps": "15"
+            },
+            {
+              "id": "ex47",
+              "sets": 3,
+              "reps": "40–60 秒"
+            }
+          ]
+        },
+        {
+          "key": "tue",
+          "label": "周二",
+          "short": "二",
+          "theme": "轻松跑 A",
+          "duration": "45 分",
+          "slogan": "能说话的配速，才是好配速",
+          "items": [
+            {
+              "id": "ex66",
+              "sets": 1,
+              "reps": "8 km",
+              "note": "配速 6:30–6:45，能说话"
+            }
+          ]
+        },
+        {
+          "key": "wed",
+          "label": "周三",
+          "short": "三",
+          "theme": "上肢推 · 胸肩三头",
+          "duration": "40 分",
+          "slogan": "推得起，才撑得住",
+          "items": [
+            {
+              "id": "ex51",
+              "sets": 4,
+              "reps": "8–12"
+            },
+            {
+              "id": "ex52",
+              "sets": 3,
+              "reps": "10"
+            },
+            {
+              "id": "ex43",
+              "sets": 3,
+              "reps": "10"
+            },
+            {
+              "id": "ex58",
+              "sets": 3,
+              "reps": "12–15"
+            }
+          ]
+        },
+        {
+          "key": "thu",
+          "label": "周四",
+          "short": "四",
+          "theme": "轻松跑 B + 核心",
+          "duration": "50 分",
+          "slogan": "跑得稳，先稳核心",
+          "items": [
+            {
+              "id": "ex66",
+              "sets": 1,
+              "reps": "7 km"
+            },
+            {
+              "id": "ex15",
+              "sets": 3,
+              "reps": "20 秒"
+            },
+            {
+              "id": "ex12",
+              "sets": 3,
+              "reps": "10/侧"
+            },
+            {
+              "id": "ex48",
+              "sets": 3,
+              "reps": "30–45 秒/侧"
+            },
+            {
+              "id": "ex13",
+              "sets": 3,
+              "reps": "10/侧"
+            }
+          ]
+        },
+        {
+          "key": "fri",
+          "label": "周五",
+          "short": "五",
+          "theme": "后链臀 · 臀 + 腘绳",
+          "duration": "45 分",
+          "slogan": "把后链唤醒，站姿更挺拔",
+          "items": [
+            {
+              "id": "ex41",
+              "sets": 4,
+              "reps": "15",
+              "note": "髋铰链不是下蹲"
+            },
+            {
+              "id": "ex44",
+              "sets": 3,
+              "reps": "10/腿"
+            },
+            {
+              "id": "ex17",
+              "sets": 4,
+              "reps": "10–12"
+            },
+            {
+              "id": "ex71",
+              "sets": 3,
+              "reps": "12/腿"
+            },
+            {
+              "id": "ex70",
+              "sets": 4,
+              "reps": "20"
+            }
+          ]
+        },
+        {
+          "key": "sat",
+          "label": "周六",
+          "short": "六",
+          "theme": "上肢拉 · 背 + 二头",
+          "duration": "40 分",
+          "slogan": "拉得住，肩颈才松",
+          "items": [
+            {
+              "id": "ex42",
+              "sets": 4,
+              "reps": "10–12/侧"
+            },
+            {
+              "id": "ex55",
+              "sets": 3,
+              "reps": "12–15",
+              "note": "门框下拉"
+            },
+            {
+              "id": "ex57",
+              "sets": 3,
+              "reps": "15"
+            },
+            {
+              "id": "ex72",
+              "sets": 3,
+              "reps": "12"
+            }
+          ]
+        },
+        {
+          "key": "sun",
+          "label": "周日",
+          "short": "日",
+          "theme": "长距离 C · 质量课",
+          "duration": "90 分",
+          "slogan": "慢下来，才跑得远",
+          "items": [
+            {
+              "id": "ex67",
+              "sets": 1,
+              "reps": "15 km",
+              "note": "配速 6:40–7:00；隔周替换 6×800 m 间歇 + 4 km 慢跑"
+            }
+          ]
+        }
+      ]
+    }
+  ],
+  "themes": [
+    {
+      "id": "t01",
+      "tag": "全身",
+      "name": "暴汗燃脂瘦全身 · HIIT 跟练",
+      "time": "8 分钟",
+      "pace": "每个动作 20 次 · 间歇 10 秒",
+      "sets": 3,
+      "video": {
+        "title": "HIIT 极速燃脂跟练 · 全身暴汗 · 9 分钟",
+        "url": "https://www.douyin.com/video/7688023595427040575"
+      },
       "items": [
         {
-          "id": "ex66",
-          "sets": 1,
-          "reps": "8 km",
-          "note": "配速 6:30–6:45，能说话"
+          "cn": "胯下击掌",
+          "en": "Cross-body Clap",
+          "m": "核心·腹斜"
+        },
+        {
+          "cn": "内侧毽子",
+          "en": "Inner Side Kick Tap",
+          "m": "内收·臀"
+        },
+        {
+          "cn": "外侧毽子",
+          "en": "Outer Side Kick Tap",
+          "m": "臀·髋外展"
+        },
+        {
+          "cn": "提膝下压",
+          "en": "Knee Lift & Press Down",
+          "m": "核心·股四"
+        },
+        {
+          "cn": "后踢腿跳",
+          "en": "Back Kick Jump",
+          "m": "臀·腘绳"
+        },
+        {
+          "cn": "肘膝触碰",
+          "en": "Elbow to Knee Tap",
+          "m": "腹斜·核心"
+        },
+        {
+          "cn": "开合跳跃",
+          "en": "Jumping Jack",
+          "m": "全身有氧"
+        },
+        {
+          "cn": "高抬腿跳",
+          "en": "High Knee Run",
+          "m": "核心·股四"
         }
       ]
     },
     {
-      "key": "wed",
-      "label": "周三",
-      "short": "三",
-      "theme": "上肢推 · 胸肩三头",
-      "duration": "40 分",
-      "slogan": "推得起，才撑得住",
+      "id": "t02",
+      "tag": "臀腿",
+      "name": "居家臀腿练习 · Tabata 跟练",
+      "time": "9 分钟",
+      "pace": "动作 30 秒 · 休息 10 秒",
+      "sets": 3,
+      "video": {
+        "title": "居家燃脂跟练 · 臀腿练习 · 9 分钟",
+        "url": "https://www.douyin.com/video/7674779860993254245"
+      },
       "items": [
         {
-          "id": "ex51",
-          "sets": 4,
-          "reps": "8–12"
+          "cn": "徒手深蹲",
+          "en": "Bodyweight Squat",
+          "m": "股四·臀"
         },
         {
-          "id": "ex52",
-          "sets": 3,
-          "reps": "10"
+          "cn": "窄距深蹲",
+          "en": "Narrow Stance Squat",
+          "m": "股四"
         },
         {
-          "id": "ex43",
-          "sets": 3,
-          "reps": "10"
+          "cn": "宽距深蹲",
+          "en": "Wide Stance Squat",
+          "m": "臀·内收"
         },
         {
-          "id": "ex58",
-          "sets": 3,
-          "reps": "12–15"
+          "cn": "深蹲开合",
+          "en": "Squat Jack",
+          "m": "股四·有氧"
+        },
+        {
+          "cn": "左弓步蹲",
+          "en": "Left Reverse Lunge",
+          "m": "股四·臀"
+        },
+        {
+          "cn": "右弓步蹲",
+          "en": "Right Reverse Lunge",
+          "m": "股四·臀"
+        },
+        {
+          "cn": "交替弓步蹲",
+          "en": "Alternating Lunge",
+          "m": "股四·臀"
+        },
+        {
+          "cn": "哈萨克深蹲",
+          "en": "Kazakh Squat",
+          "m": "臀·腿"
+        },
+        {
+          "cn": "深蹲抬腿",
+          "en": "Squat with Leg Lift",
+          "m": "臀·核心"
+        },
+        {
+          "cn": "高抬腿跑",
+          "en": "High Knee Run",
+          "m": "核心·股四"
+        },
+        {
+          "cn": "深蹲侧抬腿",
+          "en": "Squat with Side Leg Lift",
+          "m": "臀·髋外展"
+        },
+        {
+          "cn": "胯下击拳",
+          "en": "Cross-body Punch",
+          "m": "核心·腹斜"
+        },
+        {
+          "cn": "螃蟹深蹲",
+          "en": "Crab Squat",
+          "m": "臀·肩"
         }
       ]
     },
     {
-      "key": "thu",
-      "label": "周四",
-      "short": "四",
-      "theme": "轻松跑 B + 核心",
-      "duration": "50 分",
-      "slogan": "跑得稳，先稳核心",
+      "id": "t03",
+      "tag": "全身",
+      "name": "高效燃脂全身塑形 · Tabata 跟练",
+      "time": "10 分钟",
+      "pace": "20 秒训练 · 10 秒休息",
+      "sets": 3,
+      "video": {
+        "title": "Tabata 有氧跟练 · 高效燃脂全身塑形 · 10 分钟",
+        "url": "https://www.douyin.com/video/7670754490852576552"
+      },
       "items": [
         {
-          "id": "ex66",
-          "sets": 1,
-          "reps": "7 km"
+          "cn": "开合跳",
+          "en": "Jumping Jack",
+          "m": "全身有氧"
         },
         {
-          "id": "ex15",
-          "sets": 3,
-          "reps": "20 秒"
+          "cn": "提膝下压",
+          "en": "Knee Lift & Press Down",
+          "m": "核心·股四"
         },
         {
-          "id": "ex12",
-          "sets": 3,
-          "reps": "10/侧"
+          "cn": "胯下击掌",
+          "en": "Cross-body Clap",
+          "m": "核心·腹斜"
         },
         {
-          "id": "ex48",
-          "sets": 3,
-          "reps": "30–45 秒/侧"
+          "cn": "马步左右触地",
+          "en": "Squat Pulse Side Tap",
+          "m": "股四·臀"
         },
         {
-          "id": "ex13",
-          "sets": 3,
-          "reps": "10/侧"
+          "cn": "相扑深蹲",
+          "en": "Sumo Squat",
+          "m": "臀·内收"
+        },
+        {
+          "cn": "深蹲跳跃触地",
+          "en": "Squat Jump & Touch Ground",
+          "m": "股四·臀"
+        },
+        {
+          "cn": "并步侧点地",
+          "en": "Side Step Tap",
+          "m": "髋外展·有氧"
+        },
+        {
+          "cn": "对侧提膝",
+          "en": "Cross Body Knee Lift",
+          "m": "腹斜·核心"
+        },
+        {
+          "cn": "同侧提膝",
+          "en": "Same Side Knee Lift",
+          "m": "核心·腹斜"
+        },
+        {
+          "cn": "提膝摸脚尖右",
+          "en": "Right Knee Tap Toe",
+          "m": "核心·股四"
+        },
+        {
+          "cn": "提膝摸脚尖左",
+          "en": "Left Knee Tap Toe",
+          "m": "核心·股四"
+        },
+        {
+          "cn": "波比跳 20 个",
+          "en": "Burpee (20 reps)",
+          "m": "全身"
         }
       ]
     },
     {
-      "key": "fri",
-      "label": "周五",
-      "short": "五",
-      "theme": "后链臀 · 臀 + 腘绳",
-      "duration": "45 分",
-      "slogan": "把后链唤醒，站姿更挺拔",
+      "id": "t04",
+      "tag": "养生",
+      "name": "懒人版八段锦",
+      "time": "约 10 分钟",
+      "pace": "每式缓慢重复 · 配合自然呼吸",
+      "sets": 2,
+      "video": {
+        "title": "八段锦全套完整跟练 · 国体版本 · 12分钟",
+        "url": "https://www.douyin.com/video/7702667488476291754"
+      },
       "items": [
         {
-          "id": "ex41",
-          "sets": 4,
-          "reps": "15",
-          "note": "髋铰链不是下蹲"
+          "cn": "双手托天理三焦",
+          "en": "Double Hands Lift to Regulate Triple Burner",
+          "m": "三焦·舒展",
+          "note": "双手上托，身体舒展"
         },
         {
-          "id": "ex44",
-          "sets": 3,
-          "reps": "10/腿"
+          "cn": "左右开弓似射雕",
+          "en": "Draw the Bow like Shooting an Eagle",
+          "m": "胸背·肩臂",
+          "note": "左右开弓，打开胸背"
         },
         {
-          "id": "ex17",
-          "sets": 4,
-          "reps": "10–12"
+          "cn": "调理脾胃须单举",
+          "en": "One Hand Raises to Tone Spleen & Stomach",
+          "m": "脾胃·肩臂",
+          "note": "一手上举，一手下按"
         },
         {
-          "id": "ex71",
-          "sets": 3,
-          "reps": "12/腿"
+          "cn": "五劳七伤往后瞧",
+          "en": "Turn Head Back to Relieve Fatigue",
+          "m": "颈椎·头颈",
+          "note": "身体站稳，头向后转"
         },
         {
-          "id": "ex70",
-          "sets": 4,
-          "reps": "20"
-        }
-      ]
-    },
-    {
-      "key": "sat",
-      "label": "周六",
-      "short": "六",
-      "theme": "上肢拉 · 背 + 二头",
-      "duration": "40 分",
-      "slogan": "拉得住，肩颈才松",
-      "items": [
-        {
-          "id": "ex42",
-          "sets": 4,
-          "reps": "10–12/侧"
+          "cn": "摇头摆尾去心火",
+          "en": "Shake Head & Tail to Clear Heart Fire",
+          "m": "腰胯·核心",
+          "note": "屈膝下蹲，转身摆动"
         },
         {
-          "id": "ex55",
-          "sets": 3,
-          "reps": "12–15",
-          "note": "门框下拉"
+          "cn": "两手攀足固肾腰",
+          "en": "Hands Reach Feet to Strengthen Kidney & Waist",
+          "m": "腰肾·腿后",
+          "note": "俯身向下，量力而行"
         },
         {
-          "id": "ex57",
-          "sets": 3,
-          "reps": "15"
+          "cn": "攒拳怒目增气力",
+          "en": "Thrust Fist with Angry Gaze to Boost Strength",
+          "m": "臂力·核心",
+          "note": "马步攒拳，左右出拳"
         },
         {
-          "id": "ex72",
-          "sets": 3,
-          "reps": "12"
-        }
-      ]
-    },
-    {
-      "key": "sun",
-      "label": "周日",
-      "short": "日",
-      "theme": "长距离 C · 质量课",
-      "duration": "90 分",
-      "slogan": "慢下来，才跑得远",
-      "items": [
-        {
-          "id": "ex67",
-          "sets": 1,
-          "reps": "15 km",
-          "note": "配速 6:40–7:00；隔周替换 6×800 m 间歇 + 4 km 慢跑"
+          "cn": "背后七颠百病消",
+          "en": "Seven Heel Stamps to Expel All Illness",
+          "m": "全身·足踝",
+          "note": "提踵站起，轻轻落下"
         }
       ]
     }

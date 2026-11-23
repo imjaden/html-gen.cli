@@ -1,31 +1,36 @@
-/* slimdown 训练方案页 v1.2 —— 深色周视图 / 四套主题 / 统一面板（编辑 · 预览）/ 分享 / 出图 */
+/* slimdown 训练方案页 v1.3 —— 按星期 / 按主题 双视图 + 点击态记忆（state.js）+ 出图（shot.js）
+   面板：编辑 / 预览（周视图）· 预览 / 出图（主题视图）；分享链接 v3 带预设位。 */
 (function () {
   'use strict';
 
   var DATA = window.SLIMDOWN || {};
-  var META = DATA.plan || {};
+  var PLAN = DATA.plan || {};
+  var PRESETS = PLAN.presets || [];
+  var LAYOUTS = PLAN.themes || [];
   var EX = (DATA.exercises || []).slice();
   var BYID = {};
   EX.forEach(function (e) { BYID[e.id] = e; });
 
-  var LS_KEY = 'slimdown:v1';
-  var THEME_KEY = 'slimdownPlanTheme';
-  var FX_KEY = 'slimdownPlanFx';
-
-  var THEMES = [
+  var SKINS = [
     { id: 'ember', label: '赤金' },
     { id: 'forest', label: '墨绿' },
     { id: 'indigo', label: '靛蓝' },
     { id: 'amber', label: '暖橙' }
   ];
-  var VARS = ['--bg', '--bg-2', '--glow', '--card', '--card-2', '--edge', '--edge-soft',
-              '--ink', '--muted', '--faint', '--acc', '--acc-2', '--acc-deep', '--gold', '--gold-soft'];
+  var EDITS_KEY = 'slimdown:edits:v2';
+  var LEGACY_EDITS = 'slimdown:v1';
+  var REST_ICONS = ['Z', '松', '步', '水', '电'];
 
-  var DEFAULTS = JSON.parse(JSON.stringify(META.days || []));
-  var days = JSON.parse(JSON.stringify(DEFAULTS));
-  var dirty = false;
+  var ui = window.SB.ui;
+  var shot = window.SB.shot;
+
+  var cur = null, DEFAULTS = [], days = [];
+  var EDITS = readEdits();
   var shared = false;
   var activeKey = '';
+  var view = 'week';
+  var dragState = null, suppressClick = false;
+  var panelState = { open: false, scope: 'week', view: 'edit' };
 
   var $ = function (id) { return document.getElementById(id); };
   var esc = function (s) {
@@ -45,6 +50,7 @@
     clearTimeout(t.__t);
     t.__t = setTimeout(function () { t.style.opacity = '0'; }, 1800);
   }
+  function clone(o) { return JSON.parse(JSON.stringify(o)); }
   function todayKey() {
     var map = ['sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat'];
     return map[new Date().getDay()];
@@ -53,13 +59,18 @@
     for (var i = 0; i < days.length; i++) if (days[i].key === key) return days[i];
     return days[0];
   }
+  function presetById(id) {
+    for (var i = 0; i < PRESETS.length; i++) if (PRESETS[i].id === id) return PRESETS[i];
+    return null;
+  }
   function sumSets(d) {
-    return d.items.reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
+    return (d.items || []).reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
   }
   function chipText(d) {
     if (d.rest) return '★ 恢复日 ★';
+    if (d.setsHint) return '★ 建议 ' + d.setsHint + ' 组 ★';
     var lo = 0, hi = 0;
-    d.items.forEach(function (it) {
+    (d.items || []).forEach(function (it) {
       var s = parseInt(it.sets, 10) || 0;
       if (s <= 1) return;            /* 单次有氧不参与“建议组数”，避免 1–3 组这种噪音 */
       if (!lo || s < lo) lo = s;
@@ -70,23 +81,19 @@
     return '★ 建议 ' + lo + '–' + hi + ' 组 ★';
   }
   function sloganOf(d) {
-    return d.slogan || (META.meta && META.meta.slogan) || '循序渐进 · 动作到位';
+    return d.slogan || (cur && cur.slogan) || (PLAN.meta && PLAN.meta.slogan) || '循序渐进 · 动作到位';
   }
-  function labelOfTheme(id) {
-    for (var i = 0; i < THEMES.length; i++) if (THEMES[i].id === id) return THEMES[i].label;
-    return id;
+  function exName(it) {
+    return BYID[it.id] || { name: '（未知动作 ' + it.id + '）' };
   }
 
-  /* ── 主题：data-theme + localStorage（优先级：localStorage > 默认赤金） ── */
-  function applyTheme(id, persist) {
-    var hit = THEMES.filter(function (t) { return t.id === id; })[0];
-    if (!hit) { id = 'ember'; hit = THEMES[0]; }
-    document.documentElement.setAttribute('data-theme', id);
+  /* ── 配色：data-theme + state.js（记忆优先于默认赤金） ── */
+  function applySkin(id, persist) {
+    var hit = SKINS.filter(function (t) { return t.id === id; })[0] || SKINS[0];
+    document.documentElement.setAttribute('data-theme', hit.id);
     var sel = $('themeSel');
-    if (sel && sel.value !== id) sel.value = id;
-    if (persist !== false) {
-      try { localStorage.setItem(THEME_KEY, id); } catch (e) {}
-    }
+    if (sel && sel.value !== hit.id) sel.value = hit.id;
+    if (persist !== false) ui.set('theme', hit.id);
     var meta = document.querySelector('meta[name="theme-color"]');
     if (meta) {
       meta.setAttribute('content',
@@ -94,23 +101,88 @@
     }
     return hit;
   }
-  function initTheme() {
+  function initSkins() {
     var sel = $('themeSel');
-    sel.innerHTML = THEMES.map(function (t) {
+    sel.innerHTML = SKINS.map(function (t) {
       return '<option value="' + t.id + '">' + esc(t.label) + '</option>';
     }).join('');
-    var stored = null;
-    try { stored = localStorage.getItem(THEME_KEY); } catch (e) {}
-    applyTheme((THEMES.filter(function (t) { return t.id === stored; })[0] || {}).id || 'ember', false);
+    applySkin(ui.get('theme'), false);
     sel.addEventListener('change', function () {
-      var t = applyTheme(sel.value);
-      showToast('主题：' + t.label);
+      var t = applySkin(sel.value);
+      showToast('配色：' + t.label);
     });
   }
-  function themeVarsInline() {
-    var cs = getComputedStyle(document.documentElement);
-    return VARS.map(function (n) { return n + ':' + cs.getPropertyValue(n).trim(); }).join(';');
+
+  /* ── 预设（居家七日 / 力量版）：编辑稿按预设分开存 ── */
+  function readEdits() {
+    var o = {};
+    try { o = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}') || {}; } catch (e) { o = {}; }
+    if (!o.v) {
+      try {
+        var raw = localStorage.getItem(LEGACY_EDITS);
+        if (raw) {
+          var old = JSON.parse(raw);
+          if (old && old.days && old.days.length) o.byPreset = { strength: old.days };
+        }
+      } catch (e) {}
+      o.v = 2;
+    }
+    if (!o.byPreset || typeof o.byPreset !== 'object') o.byPreset = {};
+    return o;
   }
+  function writeEdits() {
+    try {
+      localStorage.setItem(EDITS_KEY, JSON.stringify(EDITS));
+      localStorage.removeItem(LEGACY_EDITS);
+    } catch (e) {}
+  }
+  function loadPreset(id) {
+    var p = presetById(id) || presetById(PLAN.defaultPreset) || PRESETS[0];
+    if (!p) { DEFAULTS = []; days = []; return; }
+    cur = p;
+    DEFAULTS = clone(p.days || []);
+    days = clone(EDITS.byPreset[p.id] || DEFAULTS);
+    ui.set('preset', p.id);
+    var sel = $('presetSel');
+    if (sel && sel.value !== p.id) sel.value = p.id;
+  }
+  function initPresetSel() {
+    var sel = $('presetSel');
+    sel.innerHTML = PRESETS.map(function (p) {
+      return '<option value="' + esc(p.id) + '">' + esc(p.label) + ' · ' + esc(p.version || '') + '</option>';
+    }).join('');
+    sel.addEventListener('change', function () {
+      loadPreset(sel.value);
+      shared = false;
+      $('sharedBar').hidden = true;
+      renderWeek();
+      if (panelState.open) renderPanel();
+      showToast('方案：' + cur.label);
+    });
+  }
+
+  /* ── 视图切换（按星期 / 按主题） ── */
+  function setPageView(v, opts) {
+    opts = opts || {};
+    view = (v === 'theme') ? 'theme' : 'week';
+    document.documentElement.setAttribute('data-view', view);
+    if (!opts.silent) ui.set('view', view);
+    $('viewSeg').querySelectorAll('button[data-view]').forEach(function (b) {
+      var on = b.getAttribute('data-view') === view;
+      b.classList.toggle('on', on);
+      b.setAttribute('aria-selected', on ? 'true' : 'false');
+    });
+    $('weekRow').hidden = view !== 'week';
+    $('themeRow').hidden = view !== 'theme';
+    $('presetPick').hidden = view !== 'week';
+    $('fabEdit').hidden = view !== 'week';
+  }
+  $('viewSeg').addEventListener('click', function (ev) {
+    var b = ev.target.closest('button[data-view]');
+    if (!b) return;
+    setPageView(b.getAttribute('data-view'));
+    if (panelState.open) renderPanel();
+  });
 
   /* ── 周视图 ── */
   function renderWeek() {
@@ -118,48 +190,115 @@
     var tk = todayKey();
     host.innerHTML = days.map(function (d, i) {
       var isToday = d.key === tk;
-      var items = d.items.map(function (it, k) {
-        var e = BYID[it.id];
-        if (!e) return '';
-        var cn = e.name_cn || e.name, en = e.name_en || '';
-        var full = cn + (en ? ' · ' + en : '') + ' · ' + it.sets + ' 组 × ' + it.reps;
-        return '<li><span class="idx">' + (k + 1) + '.</span>' +
-          '<span class="nm" title="' + esc(full) + '">' +
-            '<span class="cn">' + esc(cn) + '</span>' +
-            (en ? '<span class="en">' + esc(en) + '</span>' : '') +
-          '</span>' +
-          '<span class="badge" title="' + esc(it.sets + ' 组 × ' + it.reps) + '">' + esc(it.reps) + '</span></li>';
-      }).join('');
-      return '<div class="day-card' + (isToday ? ' today' : '') + '" style="--i:' + i + '"' +
-        ' data-day="' + esc(d.key) + '" tabindex="0" role="button"' +
+      var body;
+      if (d.rest) {
+        body = '<ul class="r-list">' + (d.recover || []).map(function (t, k) {
+          return '<li><span class="r-ic">' + esc(REST_ICONS[k] || '·') + '</span>' +
+            '<span class="rt">' + esc(t) + '</span></li>';
+        }).join('') + '</ul>';
+      } else {
+        body = '<ul class="d-list">' + (d.items || []).map(function (it, k) {
+          var e = exName(it);
+          var cn = e.name_cn || e.name, en = e.name_en || '';
+          var muscle = it.muscle || e.muscle || '—';
+          var tip = cn + (en ? ' · ' + en : '') + ' · ' + muscle +
+            (it.sets ? ' · ' + it.sets + ' 组' : '') + ' × ' + it.reps;
+          return '<li><span class="idx">' + (k + 1) + '.</span>' +
+            '<span class="nm" title="' + esc(tip) + '">' +
+              '<span class="cn">' + esc(cn) + '</span>' +
+              '<span class="mt">' + esc(muscle) + '</span>' +
+            '</span>' +
+            '<span class="badge" title="' + esc(tip) + '">' + esc(it.reps) + '</span></li>';
+        }).join('') + '</ul>';
+      }
+      var done = ui.isDone(d.key);
+      return '<div class="day-card' + (isToday ? ' today' : '') + (done ? ' done' : '') +
+        '" style="--i:' + i + '" data-day="' + esc(d.key) + '" tabindex="0" role="button"' +
         ' aria-label="' + esc(d.label + ' ' + d.theme) + '">' +
         (isToday ? '<span class="today-chip">今天</span>' : '') +
         '<span class="drag" data-drag="' + esc(d.key) + '" title="按住拖拽换位（键盘 Alt+←/→）">⠿</span>' +
         '<div class="d-banner">' +
           '<div class="b-day">' + esc(d.rest ? '恢复日' : d.label) + '</div>' +
           '<div class="b-tag" title="' + esc(d.theme) + '">' + esc(d.theme) + '</div>' +
-          '<div class="b-time">' + (d.rest ? '全天休息' : '约 ' + esc(d.duration)) + '</div>' +
+          '<div class="b-time">' + (d.rest ? '全天休息' : esc(d.duration)) + '</div>' +
         '</div>' +
         '<div class="d-chip">' + esc(chipText(d)) + '</div>' +
-        '<ul class="d-list">' + (items || '<li class="nm" style="color:var(--faint)">空</li>') + '</ul>' +
+        body +
         '<div class="d-foot"><span class="s2" title="' + esc(sloganOf(d)) + '">' + esc(sloganOf(d)) + '</span></div>' +
+        '<button class="chk" type="button" data-chk="' + esc(d.key) + '"' +
+          ' aria-pressed="' + (done ? 'true' : 'false') + '" title="标记今天完成 / 取消">✓</button>' +
         '</div>';
     }).join('');
     bindDrag(host);
     host.querySelectorAll('.day-card').forEach(function (card) {
       card.addEventListener('click', function (ev) {
-        if (ev.target.closest && ev.target.closest('.drag')) return;
+        if (ev.target.closest && (ev.target.closest('.drag') || ev.target.closest('.chk'))) return;
         if (suppressClick) { suppressClick = false; return; }
-        openPanel('edit', card.getAttribute('data-day'));
+        openPanel('week', 'edit', card.getAttribute('data-day'));
+      });
+    });
+    host.querySelectorAll('.chk').forEach(function (b) {
+      b.addEventListener('click', function (ev) {
+        ev.stopPropagation();
+        var key = b.getAttribute('data-chk');
+        var on = ui.toggleDone(key);
+        var card = b.closest('.day-card');
+        card.classList.toggle('done', on);
+        b.setAttribute('aria-pressed', on ? 'true' : 'false');
+        showToast(on ? '已标记完成 · ' + ui.dayKey() : '已取消完成标记');
       });
     });
   }
-  /* 百叶窗：一次会话只播一次，尊重 reduced-motion；脚本失败也不影响可见性 */
+
+  /* ── 主题视图 ── */
+  function themeRows(t) {
+    return (t.items || []).map(function (it, k) {
+      var note = it.note ? '<span class="note">' + esc(it.note) + '</span>' : '';
+      return '<li><span class="idx">' + (k + 1) + '.</span>' +
+        '<span class="nm"><b>' + esc(it.cn) + '</b>' +
+          '<span class="en">' + esc(it.en) + '</span>' + note + '</span>' +
+        '<span class="m-badge" title="' + esc(it.m) + '">' + esc(it.m) + '</span></li>';
+    }).join('');
+  }
+  function themeFoot(t) {
+    if (t.video && t.video.url) {
+      return '<div class="t-foot"><a class="video-link" href="' + esc(t.video.url) + '"' +
+        ' target="_blank" rel="noopener noreferrer"><span class="v-ico">▶</span>' +
+        '<span class="v-title">' + esc(t.video.title) + '</span>' +
+        '<span class="v-arrow">↗</span></a></div>';
+    }
+    return '<div class="t-foot"><div class="no-video"><span class="v-ico">▷</span>' +
+      '<span class="v-title">跟练视频待补充</span></div></div>';
+  }
+  function renderThemes() {
+    var host = $('themeRow');
+    host.innerHTML = LAYOUTS.map(function (t, i) {
+      return '<div class="theme-card" style="--i:' + i + '" data-theme-card="' + i + '">' +
+        '<div class="d-banner">' +
+          '<div class="b-head"><span class="b-day">' + esc(t.name) + '</span>' +
+          '<span class="b-tag">' + esc(t.tag) + '</span></div>' +
+          '<div class="b-pace">' + esc(t.pace) + '</div>' +
+          '<div class="b-time">' + esc(t.time) + ' · 建议 ' + esc(t.sets) + ' 组</div>' +
+        '</div>' +
+        '<ul class="d-list tall">' + themeRows(t) + '</ul>' +
+        themeFoot(t) +
+        '</div>';
+    }).join('');
+    host.querySelectorAll('.theme-card').forEach(function (el) {
+      el.addEventListener('dblclick', function () { openPanel('theme', 'prev'); });
+      var foot = el.querySelector('.t-foot');
+      if (foot) {
+        foot.addEventListener('click', function (ev) {
+          if (!ev.target.closest('a')) openPanel('theme', 'prev');
+        });
+      }
+    });
+  }
+
+  /* ── 百叶窗：一次会话只播一次，尊重 reduced-motion ── */
   function shouldAnimate() {
-    var played = false;
-    try { played = localStorage.getItem(FX_KEY) === '1'; } catch (e) {}
     var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    return !played && !reduce;
+    return !ui.get('fx') && !reduce;
   }
   function startReveal(animate) {
     var row = $('weekRow');
@@ -167,14 +306,13 @@
     requestAnimationFrame(function () {
       setTimeout(function () {
         row.classList.add('expanded');
-        try { localStorage.setItem(FX_KEY, '1'); } catch (e) {}
+        ui.set('fx', 1);
         setTimeout(function () { document.documentElement.classList.remove('anim-in'); }, 1400);
       }, 200);
     });
   }
 
-  /* ── 拖拽：换整天方案（主题/时长/动作），星期标签不动 ── */
-  var dragState = null, suppressClick = false;
+  /* ── 拖拽：换整天方案（主题/时长/口号/动作/恢复清单一起来），星期标签不动 ── */
   function bindDrag(host) {
     host.querySelectorAll('.drag').forEach(function (h) {
       h.addEventListener('pointerdown', function (ev) {
@@ -236,7 +374,7 @@
   function swapDays(aKey, bKey) {
     if (!aKey || !bKey || aKey === bKey) return;
     var a = dayBy(aKey), b = dayBy(bKey);
-    ['theme', 'duration', 'slogan', 'items'].forEach(function (k) {
+    ['theme', 'duration', 'slogan', 'items', 'setsHint', 'rest', 'recover'].forEach(function (k) {
       var t = a[k]; a[k] = b[k]; b[k] = t;
     });
     markDirty(); renderWeek();
@@ -260,12 +398,18 @@
     swapDays(days[i].key, days[j].key);
   });
 
-  /* ── 统一面板：标题 / 七天页签 / 功能区（编辑 · 预览）/ 底部按钮 ── */
-  var panelState = { open: false, view: 'edit' };
-  function openPanel(view, key) {
-    if (key) activeKey = key;
-    if (!activeKey) activeKey = todayKey();
-    panelState.view = view || 'edit';
+  /* ── 统一面板（scope: week | theme） ── */
+  function openPanel(scope, v, key) {
+    panelState.scope = (scope === 'theme') ? 'theme' : 'week';
+    if (panelState.scope === 'week') {
+      if (key) activeKey = key;
+      if (!activeKey) activeKey = ui.get('day') || todayKey();
+      ui.set('day', activeKey);
+      panelState.view = (v === 'prev') ? 'prev' : 'edit';
+    } else {
+      panelState.view = 'prev';
+    }
+    ui.set('panelView', panelState.view);
     panelState.open = true;
     $('panelMask').classList.add('open');
     document.body.style.overflow = 'hidden';
@@ -277,12 +421,24 @@
     document.body.style.overflow = '';
   }
   function renderPanel() {
-    $('panelTitle').textContent = '训练方案 · ' + dayBy(activeKey).label;
-    renderTabs();
-    setView(panelState.view);
+    var isTheme = panelState.scope === 'theme';
+    $('panelTitle').textContent = isTheme
+      ? '主题跟练 · ' + LAYOUTS.length + ' 套'
+      : '训练方案 · ' + dayBy(activeKey).label;
+    $('panelTabs').hidden = isTheme;
+    $('panelSeg').querySelector('button[data-view="edit"]').hidden = isTheme;
+    if (isTheme) renderTabsStatic(); else renderTabs();
+    setPanelView(panelState.view);
+  }
+  function renderTabsStatic() {
+    $('panelTabs').innerHTML = LAYOUTS.map(function (t) {
+      return '<span class="p-tab on" style="pointer-events:none">' + esc(t.tag) + '</span>';
+    }).join('');
   }
   function renderPanelBody() {
-    if (panelState.view === 'edit') renderEdit(); else renderPreview();
+    if (panelState.scope === 'theme') renderThemePreview();
+    else if (panelState.view === 'edit') renderEdit();
+    else renderPreview();
   }
   function renderTabs() {
     var tk = todayKey();
@@ -302,47 +458,61 @@
   }
   function selectDay(key) {
     activeKey = key;
+    ui.set('day', key);
     $('panelTitle').textContent = '训练方案 · ' + dayBy(key).label;
     renderTabs();
     renderPanelBody();
   }
-  function setView(v) {
+  function setPanelView(v) {
     panelState.view = v;
+    ui.set('panelView', v);
     $('viewEdit').classList.toggle('on', v === 'edit');
     $('viewPrev').classList.toggle('on', v === 'prev');
     $('panelSeg').querySelectorAll('button').forEach(function (b) {
       b.classList.toggle('on', b.getAttribute('data-view') === v);
     });
-    $('btnSavePlan').disabled = v !== 'edit';
+    var isTheme = panelState.scope === 'theme';
+    $('btnSavePlan').disabled = isTheme || v !== 'edit';
     $('btnDownloadImg').disabled = v !== 'prev';
     $('btnCopyImg').disabled = v !== 'prev';
+    $('btnShare').disabled = isTheme;
+    $('btnDownloadEach').hidden = !isTheme || v !== 'prev';
     renderPanelBody();
   }
   $('panelSeg').addEventListener('click', function (ev) {
     var b = ev.target.closest('button[data-view]');
-    if (b) setView(b.getAttribute('data-view'));
+    if (b && !b.hidden) setPanelView(b.getAttribute('data-view'));
   });
   $('panelClose').addEventListener('click', closePanel);
   $('panelMask').addEventListener('click', function (ev) {
     if (ev.target === this) closePanel();
   });
-  $('fabEdit').addEventListener('click', function () { openPanel('edit', todayKey()); });
-  $('fabShot').addEventListener('click', function () { openPanel('prev', todayKey()); });
+  $('fabEdit').addEventListener('click', function () {
+    openPanel('week', 'edit', ui.get('day') || todayKey());
+  });
+  $('fabShot').addEventListener('click', function () {
+    if (view === 'theme') openPanel('theme', 'prev');
+    else openPanel('week', 'prev', ui.get('day') || todayKey());
+  });
 
   /* ── 编辑视图 ── */
   function renderEdit() {
     var d = dayBy(activeKey);
     $('editDayLabel').textContent = d.label + ' · ' + d.theme;
-    $('editDaySum').textContent = d.items.length + ' 个动作 / 共 ' + sumSets(d) + ' 组 / ' + d.duration;
+    $('editDaySum').textContent = (d.items || []).length + ' 个动作 / ' + d.duration +
+      (d.setsHint ? ' / 建议 ' + d.setsHint + ' 组' : ' / 共 ' + sumSets(d) + ' 组');
     var box = $('planList');
-    if (!d.items.length) {
-      box.innerHTML = '<div class="plan-empty">这一天还没有动作，从左栏点 + 添加。</div>';
+    if (!(d.items || []).length) {
+      box.innerHTML = '<div class="plan-empty">' +
+        (d.rest ? '恢复日不需要动作清单，左栏可手动添加。' : '这一天还没有动作，从左栏点 + 添加。') + '</div>';
     } else {
       box.innerHTML = d.items.map(function (it, i) {
-        var e = BYID[it.id] || { name: '（未知动作 ' + it.id + '）' };
+        var e = exName(it);
+        var cn = e.name_cn || e.name, en = e.name_en || '';
         return '<div class="plan-row">' +
-          '<span class="nm" title="' + esc(e.name) + '">' + esc(e.name) + '</span>' +
-          '<input data-i="' + i + '" data-k="sets" value="' + esc(it.sets) + '" inputmode="numeric" aria-label="组数">' +
+          '<span class="nm" title="' + esc(cn + (en ? ' · ' + en : '')) + '">' + esc(cn) + '</span>' +
+          '<input data-i="' + i + '" data-k="sets" value="' + esc(it.sets == null ? '' : it.sets) +
+            '" inputmode="numeric" aria-label="组数" placeholder="—">' +
           '<input data-i="' + i + '" data-k="reps" value="' + esc(it.reps) + '" aria-label="次数">' +
           '<button class="btn mini" type="button" data-act="up" data-i="' + i + '" title="上移">↑</button>' +
           '<button class="btn mini" type="button" data-act="del" data-i="' + i + '" title="删除">×</button>' +
@@ -352,7 +522,12 @@
         inp.addEventListener('change', function () {
           var i = +inp.getAttribute('data-i');
           var k = inp.getAttribute('data-k');
-          d.items[i][k] = k === 'sets' ? (parseInt(inp.value, 10) || 0) : inp.value;
+          if (k === 'sets') {
+            var n = parseInt(inp.value, 10);
+            if (n) d.items[i].sets = n; else delete d.items[i].sets;
+          } else {
+            d.items[i].reps = inp.value;
+          }
           markDirty(); renderWeek(); renderEdit();
         });
       });
@@ -371,16 +546,19 @@
     renderPicker();
   }
 
-  var exFilter = 'all', exQuery = '';
   function renderPicker() {
+    var exFilter = ui.get('exFilter'), exQuery = ui.get('exQuery');
     var chips = ['all'].concat(EX.map(function (e) { return e.equip; })
       .filter(function (v, i, a) { return a.indexOf(v) === i; }));
     $('exChips').innerHTML = chips.map(function (c) {
-      return '<button type="button" class="chip' + (c === exFilter ? ' on' : '') + '" data-e="' + esc(c) + '">' +
-        (c === 'all' ? '全部' : esc(c)) + '</button>';
+      return '<button type="button" class="chip' + (c === exFilter ? ' on' : '') +
+        '" data-e="' + esc(c) + '">' + (c === 'all' ? '全部' : esc(c)) + '</button>';
     }).join('');
     $('exChips').querySelectorAll('.chip').forEach(function (b) {
-      b.addEventListener('click', function () { exFilter = b.getAttribute('data-e'); renderPicker(); });
+      b.addEventListener('click', function () {
+        ui.set('exFilter', b.getAttribute('data-e'));
+        renderPicker();
+      });
     });
     var q = exQuery.toLowerCase();
     var list = EX.filter(function (e) {
@@ -390,111 +568,108 @@
     });
     var d = dayBy(activeKey);
     var has = {};
-    d.items.forEach(function (it) { has[it.id] = true; });
+    (d.items || []).forEach(function (it) { has[it.id] = true; });
     $('exList').innerHTML = list.map(function (e) {
       return '<li><span class="grow"><b>' + esc(e.name) + '</b>' +
         '<span class="sub"> ' + esc(e.muscle) + ' · ' + esc(e.sets) + '×' + esc(e.reps) + '</span></span>' +
-        '<button type="button" class="btn mini" data-add="' + esc(e.id) + '"' + (has[e.id] ? ' disabled' : '') + '>+</button></li>';
+        '<button type="button" class="btn mini" data-add="' + esc(e.id) + '"' +
+        (has[e.id] ? ' disabled' : '') + '>+</button></li>';
     }).join('') || '<li class="note" style="padding:10px">没有匹配的动作</li>';
     $('exList').querySelectorAll('button[data-add]').forEach(function (b) {
       b.addEventListener('click', function () {
         var e = BYID[b.getAttribute('data-add')];
         if (!e) return;
-        d.items.push({ id: e.id, sets: e.sets, reps: e.reps });
+        if (!d.items) d.items = [];
+        var item = { id: e.id, reps: e.reps };
+        if (d.setsHint == null && e.sets) item.sets = e.sets;
+        d.items.push(item);
         markDirty(); renderWeek(); renderEdit();
       });
     });
   }
-  $('exSearch').addEventListener('input', function () { exQuery = this.value.trim(); renderPicker(); });
+  var searchTimer = null;
+  $('exSearch').addEventListener('input', function () {
+    var v = this.value.trim();
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(function () {
+      ui.set('exQuery', v);
+      renderPicker();
+    }, 120);
+  });
 
-  /* ── 状态：改即自动存本机；「保存方案」= 显式落盘 + 提示 ── */
+  /* ── 方案改动：改即自动存本机（按预设分开） ── */
   function markDirty() {
-    dirty = true; shared = false;
-    saveLocal(true);
+    EDITS.byPreset[cur.id] = clone(days);
+    writeEdits();
     $('panelNote').textContent = '已自动保存到本机';
   }
   function saveLocal(silent) {
-    try {
-      localStorage.setItem(LS_KEY, JSON.stringify({ v: 1, days: days }));
-      dirty = false; shared = false;
-      if (!silent) {
-        showToast('已保存到本机');
-        $('panelNote').textContent = '已保存到本机 · ' + new Date().toLocaleTimeString();
-      }
-      return true;
-    } catch (e) {
-      showToast('保存失败：浏览器禁用了本地存储');
-      return false;
+    if (!cur) return false;
+    EDITS.byPreset[cur.id] = clone(days);
+    writeEdits();
+    if (!silent) {
+      showToast('已保存到本机');
+      $('panelNote').textContent = '已保存到本机 · ' + new Date().toLocaleTimeString();
     }
-  }
-  function loadLocal() {
-    try {
-      var raw = localStorage.getItem(LS_KEY);
-      if (!raw) return false;
-      var o = JSON.parse(raw);
-      if (!o || o.v !== 1 || !Array.isArray(o.days) || !o.days.length) return false;
-      days = o.days;
-      days.forEach(function (d) {
-        for (var i = 0; i < DEFAULTS.length; i++) {
-          if (DEFAULTS[i].key === d.key) {
-            if (!d.slogan) d.slogan = DEFAULTS[i].slogan;
-            if (!d.theme) d.theme = DEFAULTS[i].theme;
-            if (!d.duration) d.duration = DEFAULTS[i].duration;
-          }
-        }
-      });
-      return true;
-    } catch (e) { return false; }
+    return true;
   }
   $('btnSavePlan').addEventListener('click', function () { saveLocal(false); });
   $('btnResetDay').addEventListener('click', function () {
     var d = dayBy(activeKey);
     for (var i = 0; i < DEFAULTS.length; i++) {
       if (DEFAULTS[i].key === d.key) {
-        d.items = JSON.parse(JSON.stringify(DEFAULTS[i].items));
-        d.slogan = DEFAULTS[i].slogan;
+        var fresh = clone(DEFAULTS[i]);
+        Object.keys(d).forEach(function (k) { if (!(k in fresh)) delete d[k]; });
+        Object.keys(fresh).forEach(function (k) { d[k] = fresh[k]; });
         break;
       }
     }
     markDirty(); renderWeek(); renderEdit();
   });
   $('btnLoadDefault').addEventListener('click', function () {
-    if (!confirm('还原成默认的七天方案？本机保存的改动会丢。')) return;
-    days = JSON.parse(JSON.stringify(DEFAULTS));
-    try { localStorage.removeItem(LS_KEY); } catch (e) {}
-    dirty = false; shared = false;
+    if (!confirm('还原成「' + cur.label + '」的默认七天方案？本机保存的改动会丢。')) return;
+    days = clone(DEFAULTS);
+    delete EDITS.byPreset[cur.id];
+    writeEdits();
     renderWeek(); renderEdit();
     $('panelNote').textContent = '已还原默认方案';
     showToast('已还原默认方案');
   });
+  $('btnClearMemory').addEventListener('click', function () {
+    if (!confirm('清空本机的配色、视图、筛选、打卡与方案改动？页面会重新加载。')) return;
+    ui.clear();
+    try { localStorage.removeItem(EDITS_KEY); localStorage.removeItem(LEGACY_EDITS); } catch (e) {}
+    location.reload();
+  });
 
-  /* ── 分享编码 v2 ──
-     v2|天号=主题!时长!动作表（与默认一致时留空）；动作 = 库内序号*sets~encodeURIComponent(reps)
-     解码兼容 v1（只带动作表） */
+  /* ── 分享编码 v3：v3|预设|天号=主题!时长!动作表（动作 = 库内序号*sets~reps，sets 可空）
+     解码兼容 v1（只带动作）/ v2（主题!时长!动作） */
   function numOf(id) { return parseInt(String(id).replace(/^ex/, ''), 10); }
   function idOf(n) { return 'ex' + (n < 10 ? '0' + n : String(n)); }
   function encodePlan() {
-    return 'v2|' + days.map(function (d, i) {
+    return 'v3|' + cur.id + '|' + days.map(function (d, i) {
       var def = DEFAULTS[i] || {};
       var th = d.theme === def.theme ? '' : encodeURIComponent(d.theme);
       var du = d.duration === def.duration ? '' : encodeURIComponent(d.duration);
       return (i + 1) + '=' + th + '!' + du + '!' +
-        d.items.map(function (it) {
-          return numOf(it.id) + '*' + (parseInt(it.sets, 10) || 0) + '~' + encodeURIComponent(it.reps);
+        (d.items || []).map(function (it) {
+          return numOf(it.id) + '*' + (it.sets == null ? '' : it.sets) + '~' + encodeURIComponent(it.reps);
         }).join(',');
     }).join('|');
   }
   function decodePlan(str) {
     var out = [], unknown = 0;
     var segs = String(str).split('|');
-    var ver = segs[0];
-    if (ver !== 'v1' && ver !== 'v2') return null;
-    segs.slice(1).forEach(function (seg) {
+    var ver = segs[0], preset = '';
+    if (ver !== 'v1' && ver !== 'v2' && ver !== 'v3') return null;
+    var body = segs.slice(1);
+    if (ver === 'v3') preset = body.shift() || '';
+    body.forEach(function (seg) {
       var p = seg.split('=');
       var d = days[parseInt(p[0], 10) - 1];
       if (!d) return;
       var theme = '', duration = '', itemsStr = p[1] || '';
-      if (ver === 'v2') {
+      if (ver !== 'v1') {
         var parts = itemsStr.split('!');
         theme = decodeURIComponent(parts[0] || '');
         duration = decodeURIComponent(parts[1] || '');
@@ -503,30 +678,35 @@
       var items = [];
       itemsStr.split(',').forEach(function (tok) {
         if (!tok) return;
-        var m = /^(\d+)\*(\d+)~(.*)$/.exec(tok);
+        var m = /^(\d+)\*(\d*)~(.*)$/.exec(tok);
         if (!m) return;
         var id = idOf(parseInt(m[1], 10));
         if (!BYID[id]) { unknown++; return; }
-        items.push({ id: id, sets: parseInt(m[2], 10), reps: decodeURIComponent(m[3]) });
+        var item = { id: id, reps: decodeURIComponent(m[3]) };
+        if (m[2]) item.sets = parseInt(m[2], 10);
+        items.push(item);
       });
       out.push({ key: d.key, items: items, theme: theme, duration: duration });
     });
-    return { days: out, unknown: unknown };
+    return { days: out, unknown: unknown, preset: preset };
   }
   function buildShareUrl() {
     return location.href.split('#')[0] + '#p=' + encodePlan();
   }
   function planText() {
-    var L = ['【' + (META.title || '训练方案') + '】', ''];
+    var L = ['【' + (PLAN.title || '训练方案') + ' · ' + cur.label + '】', ''];
     days.forEach(function (d) {
       L.push(d.label + ' · ' + d.theme + '（' + d.duration + '）');
-      d.items.forEach(function (it, i) {
-        var e = BYID[it.id];
-        L.push('  ' + (i + 1) + '. ' + (e ? e.name : it.id) + ' ' + it.sets + '×' + it.reps);
+      if (d.rest) (d.recover || []).forEach(function (t) { L.push('  · ' + t); });
+      (d.items || []).forEach(function (it, i) {
+        var e = exName(it);
+        var cn = e.name_cn || e.name, en = e.name_en || '';
+        L.push('  ' + (i + 1) + '. ' + cn + (en ? ' ' + en : '') + ' ' +
+          (it.sets ? it.sets + '×' : '') + it.reps);
       });
       L.push('');
     });
-    if (META.meta) L.push(META.meta.goal + ' · ' + META.meta.steps);
+    if (cur.slogan) L.push(cur.slogan);
     return L.join('\n');
   }
 
@@ -544,7 +724,6 @@
   $('btnCopyUrl').addEventListener('click', function () { copyText(buildShareUrl(), '链接已复制'); });
   $('btnCopyText').addEventListener('click', function () { copyText(planText(), '方案文本已复制'); });
 
-  /* ── 剪贴板（文本复制走 canonical 块；图片剪贴板见 cardToBlob 调用点） ── */
   /* ═══════ html-gen:clipboard-copy v1 BEGIN —— canonical, 四模板逐字节一致, 守卫测试锁定 ═══════ */
   function copyText(text, okMsg, failMsg, onOk) {
     var _toast = (typeof showToast === 'function') ? showToast
@@ -581,25 +760,37 @@
       String(d.getDate()).padStart(2, '0') + ' ' + wk;
   }
   function cardRows(d) {
-    return d.items.map(function (it, i) {
-      var e = BYID[it.id] || { name: it.id };
+    var rows = (d.items || []).map(function (it, i) {
+      var e = exName(it);
       var cn = e.name_cn || e.name, en = e.name_en || '';
+      var muscle = it.muscle || e.muscle || '';
       return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
         '<span class="n" title="' + esc(cn + (en ? ' · ' + en : '')) + '">' +
           '<span class="cn">' + esc(cn) + '</span>' +
-          (en ? '<span class="en">' + esc(en) + '</span>' : '') +
+          (muscle ? '<span class="en">' + esc(muscle) + '</span>' : '') +
         '</span>' +
-        '<span class="s">' + esc(it.sets) + ' 组</span>' +
+        (it.sets ? '<span class="s">' + esc(it.sets) + ' 组</span>' : '') +
         '<span class="b">' + esc(it.reps) + '</span></div>';
-    }).join('') || '<div class="c-row"><span class="n" style="color:var(--faint)">这一天没有安排</span></div>';
+    }).join('');
+    if (!rows && d.rest) {
+      rows = (d.recover || []).map(function (t, i) {
+        return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
+          '<span class="n"><span class="cn">' + esc(t) + '</span></span></div>';
+      }).join('');
+    }
+    return rows || '<div class="c-row"><span class="n" style="color:var(--faint)">这一天没有安排</span></div>';
   }
   function buildDayCard(key) {
     var d = dayBy(key);
+    var meta = d.rest
+      ? '全天休息 · ' + (d.recover || []).length + ' 条恢复建议'
+      : (esc(d.duration) + ' · ' + (d.items || []).length + ' 个动作' +
+         (d.setsHint ? ' · 建议 ' + esc(d.setsHint) + ' 组' : ' · 共 ' + sumSets(d) + ' 组'));
     return '<div class="card" id="shareCard">' +
       '<div class="c-banner">' +
         '<div class="k">SLIMDOWN · ' + esc(d.label) + '</div>' +
         '<h2>' + esc(d.theme) + '</h2>' +
-        '<div class="m">约 ' + esc(d.duration) + ' · ' + d.items.length + ' 个动作 · 共 ' + sumSets(d) + ' 组</div>' +
+        '<div class="m">' + meta + '</div>' +
       '</div>' +
       '<div class="c-body">' + cardRows(d) + '</div>' +
       '<div class="c-foot"><span class="sl">' + esc(sloganOf(d)) + '</span>' +
@@ -609,104 +800,113 @@
   function buildWeekCard() {
     var body = days.map(function (d) {
       return '<div class="c-row"><span class="i">' + esc(d.short || '') + '</span>' +
-        '<span class="n"><b>' + esc(d.theme) + '</b>　' + esc(d.items.map(function (it) {
-          var e = BYID[it.id];
-          return (e ? e.name : it.id) + ' ' + it.sets + '×' + it.reps;
-        }).join(' · ')) + '</span>' +
+        '<span class="n"><b>' + esc(d.theme) + '</b>　' + esc(d.rest
+          ? (d.recover || []).join(' · ')
+          : (d.items || []).map(function (it) {
+              var e = exName(it);
+              return (e.name_cn || e.name) + ' ' + (it.sets ? it.sets + '×' : '') + it.reps;
+            }).join(' · ')) + '</span>' +
         '<span class="b">' + esc(d.duration) + '</span></div>';
     }).join('');
     return '<div class="card" id="shareCard">' +
       '<div class="c-banner"><div class="k">SLIMDOWN · 7-DAY</div>' +
-      '<h2>' + esc(META.title || '七日方案') + '</h2>' +
-      '<div class="m">' + esc((META.meta && META.meta.slogan) || '') + '</div></div>' +
+      '<h2>' + esc(PLAN.title || '训练方案') + '</h2>' +
+      '<div class="m">' + esc(cur.label + ' · ' + (cur.slogan || '')) + '</div></div>' +
       '<div class="c-body">' + body + '</div>' +
-      '<div class="c-foot"><span class="sl">' + esc((META.meta && META.meta.goal) || '') + '</span>' +
+      '<div class="c-foot"><span class="sl">' + esc(cur.slogan || '') + '</span>' +
+      '<span class="dt">' + esc(dateLine()) + '</span></div>' +
+      '</div>';
+  }
+  function buildThemeCard(t) {
+    return '<div class="card tcard">' +
+      '<div class="c-banner"><div class="k">HOME WORKOUT · ' + esc(t.tag) + '</div>' +
+      '<h2>' + esc(t.name) + '</h2>' +
+      '<div class="m">' + esc(t.time) + ' · 建议 ' + esc(t.sets) + ' 组 · ' + esc(t.pace) + '</div></div>' +
+      '<div class="c-body">' + (t.items || []).map(function (it, i) {
+        return '<div class="c-row"><span class="i">' + (i + 1) + '.</span>' +
+          '<span class="n"><span class="cn">' + esc(it.cn) + '</span>' +
+          '<span class="en">' + esc(it.en) + '</span>' +
+          (it.note ? '<span class="note">' + esc(it.note) + '</span>' : '') + '</span>' +
+          '<span class="mb">' + esc(it.m) + '</span></div>';
+      }).join('') + '</div>' +
+      '<div class="c-foot"><span class="sl">' + esc(t.video ? t.video.title : '跟练视频待补充') + '</span>' +
       '<span class="dt">' + esc(dateLine()) + '</span></div>' +
       '</div>';
   }
   function renderPreview() {
     $('previewHost').innerHTML = buildDayCard(activeKey);
   }
+  function renderThemePreview() {
+    $('previewHost').innerHTML = '<div class="preview-stack">' +
+      LAYOUTS.map(function (t) { return buildThemeCard(t); }).join('') + '</div>';
+  }
 
-  /* ── DOM → PNG（零依赖：foreignObject + canvas） ── */
-  function collectCss() {
-    var css = '';
-    for (var i = 0; i < document.styleSheets.length; i++) {
-      var rules;
-      try { rules = document.styleSheets[i].cssRules; } catch (e) { continue; }
-      for (var j = 0; j < rules.length; j++) css += rules[j].cssText + '\n';
+  function shotHost(html) {
+    var host = $('shotHost');
+    host.innerHTML = html;
+    return host.firstElementChild;
+  }
+  function pngName(tag) {
+    return 'slimdown-' + tag + '-' + shot.stamp() + '.png';
+  }
+  function themeSheet() {
+    return shotHost('<div class="shot-sheet">' +
+      LAYOUTS.map(function (t) { return buildThemeCard(t); }).join('') + '</div>');
+  }
+  function exportEachTheme() {
+    var i = 0, doneCount = 0;
+    $('panelNote').textContent = '逐张生成中… 0/' + LAYOUTS.length;
+    function step() {
+      if (i >= LAYOUTS.length) {
+        $('panelNote').textContent = '已下载 ' + doneCount + ' 张';
+        shotHost('');
+        return;
+      }
+      var node = shotHost(buildThemeCard(LAYOUTS[i]));
+      shot.nodeToBlob(node, { maxH: 6000 }).then(function (r) {
+        shot.download(r.blob, pngName('theme' + (i + 1)));
+        doneCount++;
+        i++;
+        $('panelNote').textContent = '逐张生成中… ' + i + '/' + LAYOUTS.length;
+        setTimeout(step, 260);
+      }).catch(function (e) {
+        $('panelNote').textContent = '第 ' + (i + 1) + ' 张失败：' + e.message;
+        shotHost('');
+      });
     }
-    return css;
+    step();
   }
-  function bgColor() {
-    var v = getComputedStyle(document.documentElement).getPropertyValue('--bg').trim();
-    return v || '#12100e';
-  }
-  /* 导出 = 预览实际 CSS 宽 ×1：PNG 多宽，预览就多宽；主题变量内联到克隆根，保证出图与屏幕同色 */
-  function cardToBlob(node) {
-    var w = node.offsetWidth, h = node.offsetHeight;
-    var clone = node.cloneNode(true);
-    clone.removeAttribute('id');
-    clone.setAttribute('style', themeVarsInline() + ';' + (clone.getAttribute('style') || ''));
-    var css = collectCss();
-    var svg = '<svg xmlns="http://www.w3.org/2000/svg" width="' + w + '" height="' + h +
-      '" viewBox="0 0 ' + w + ' ' + h + '">' +
-      '<foreignObject width="100%" height="100%">' +
-      '<div xmlns="http://www.w3.org/1999/xhtml"><style><![CDATA[' + css + ']]></style>' +
-      new XMLSerializer().serializeToString(clone) + '</div></foreignObject></svg>';
-    var url = 'data:image/svg+xml;charset=utf-8,' + encodeURIComponent(svg);
-    return new Promise(function (resolve, reject) {
-      var img = new Image();
-      img.onload = function () {
-        var cv = document.createElement('canvas');
-        cv.width = w; cv.height = h;
-        var ctx = cv.getContext('2d');
-        ctx.fillStyle = bgColor();
-        ctx.fillRect(0, 0, cv.width, cv.height);
-        ctx.drawImage(img, 0, 0, w, h);
-        cv.toBlob(function (b) {
-          b ? resolve({ blob: b, w: w, h: h }) : reject(new Error('toBlob failed'));
-        }, 'image/png');
-      };
-      img.onerror = function () { reject(new Error('SVG rasterize failed')); };
-      img.src = url;
-    });
-  }
-  function download(blob, name) {
-    var a = document.createElement('a');
-    a.href = URL.createObjectURL(blob);
-    a.download = name;
-    document.body.appendChild(a);
-    a.click();
-    setTimeout(function () { URL.revokeObjectURL(a.href); a.remove(); }, 1000);
-  }
-  function fileName() {
-    var d = new Date();
-    return 'slimdown-' + (activeKey || todayKey()) + '-' +
-      d.getFullYear() + String(d.getMonth() + 1).padStart(2, '0') + String(d.getDate()).padStart(2, '0') + '.png';
-  }
-  function currentCardNode() { return $('shareCard'); }
   $('btnDownloadImg').addEventListener('click', function () {
-    var node = currentCardNode();
+    var isTheme = panelState.scope === 'theme';
+    var node = isTheme ? themeSheet() : shotHost(buildDayCard(activeKey));
     if (!node) return;
     $('panelNote').textContent = '生成中…';
-    cardToBlob(node).then(function (r) {
-      download(r.blob, fileName());
-      $('panelNote').textContent = '已下载 ' + r.w + '×' + r.h;
-    }).catch(function (e) { $('panelNote').textContent = '导出失败：' + e.message; });
+    shot.nodeToBlob(node, { maxH: isTheme ? 6000 : 4000 }).then(function (r) {
+      shot.download(r.blob, pngName(isTheme ? 'themes' : (activeKey || todayKey())));
+      $('panelNote').textContent = '已下载 ' + r.w + '×' + r.h + (r.scaled ? '（长图已等比缩放）' : '');
+      shotHost('');
+    }).catch(function (e) {
+      $('panelNote').textContent = '导出失败：' + e.message;
+      shotHost('');
+    });
   });
+  $('btnDownloadEach').addEventListener('click', exportEachTheme);
   $('btnCopyImg').addEventListener('click', function () {
-    var node = currentCardNode();
+    var isTheme = panelState.scope === 'theme';
+    var node = isTheme ? themeSheet() : ($('previewHost').querySelector('.card') || shotHost(buildDayCard(activeKey)));
     if (!node) return;
     $('panelNote').textContent = '生成中…';
-    cardToBlob(node).then(function (r) {
+    shot.nodeToBlob(node, { maxH: isTheme ? 6000 : 4000 }).then(function (r) {
       var blob = r.blob, size = r.w + '×' + r.h;
       if (window.isSecureContext && navigator.clipboard && window.ClipboardItem) {
         return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
           .then(function () { $('panelNote').textContent = '已复制 · ' + size; })
-          .catch(function () { download(blob, fileName()); $('panelNote').textContent = '复制被拒绝，已下载 ' + size; });
+          .catch(function () {
+            shot.download(blob, pngName(activeKey || 'plan'));
+            $('panelNote').textContent = '复制被拒绝，已下载 ' + size;
+          });
       }
-      download(blob, fileName());
+      shot.download(blob, pngName(activeKey || 'plan'));
       $('panelNote').textContent = '当前环境不支持复制图片，已下载 PNG ' + size;
     }).catch(function (e) {
       $('panelNote').textContent = '导出失败：' + e.message + '（可改用截图）';
@@ -715,7 +915,7 @@
   var btnPrint = $('btnPrint');
   if (btnPrint) btnPrint.addEventListener('click', function () { window.print(); });
 
-  /* ── 卡片模式（?card=day|week[&d=mon]）：只留卡本身，方便截图 ── */
+  /* ── 卡片模式（?card=day|week|theme[&d=mon|&t=1]）：只留卡本身，方便截图 ── */
   function cardMode() {
     var q = new URLSearchParams(location.search);
     var kind = q.get('card');
@@ -723,10 +923,14 @@
     document.body.classList.add('cardonly');
     var host = document.createElement('div');
     host.id = 'standalone';
-    var k = q.get('d') || todayKey();
-    host.innerHTML = kind === 'week' ? buildWeekCard() : buildDayCard(k);
+    var k = q.get('d') || ui.get('day') || todayKey();
+    if (kind === 'week') host.innerHTML = buildWeekCard();
+    else if (kind === 'theme') {
+      var idx = Math.max(0, (parseInt(q.get('t'), 10) || 1) - 1);
+      host.innerHTML = buildThemeCard(LAYOUTS[idx] || LAYOUTS[0]);
+    } else host.innerHTML = buildDayCard(k);
     document.body.appendChild(host);
-    document.title = (kind === 'week' ? '七日方案' : dayBy(k).label) + ' · slimdown';
+    document.title = (kind === 'week' ? '七日方案' : kind === 'theme' ? '主题跟练' : dayBy(k).label) + ' · slimdown';
     return true;
   }
 
@@ -736,6 +940,7 @@
     if (!m) return false;
     var res = decodePlan(m[1]);
     if (!res || !res.days.length) { showToast('分享链接已损坏，已按本机方案显示'); return false; }
+    if (res.preset && presetById(res.preset) && res.preset !== cur.id) loadPreset(res.preset);
     res.days.forEach(function (sd) {
       var d = dayBy(sd.key);
       if (!d) return;
@@ -747,15 +952,27 @@
     if (res.unknown) showToast('已忽略 ' + res.unknown + ' 个未知动作');
     return true;
   }
+  $('btnUnshare').addEventListener('click', function () {
+    days = clone(EDITS.byPreset[cur.id] || DEFAULTS);
+    shared = false;
+    $('sharedBar').hidden = true;
+    if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    renderWeek();
+    showToast('已恢复我的方案');
+  });
 
-  initTheme();
-  loadLocal();
+  initSkins();
+  initPresetSel();
+  loadPreset(ui.get('preset') || PLAN.defaultPreset);
   applyHash();
-  activeKey = todayKey();
+  activeKey = ui.get('day') || todayKey();
+  setPageView(ui.get('view'));
+  $('sharedBar').hidden = !shared;
   if (!cardMode()) {
     var animate = shouldAnimate();
     if (animate) document.documentElement.classList.add('anim-in');
     renderWeek();
+    renderThemes();
     startReveal(animate);
   }
 })();

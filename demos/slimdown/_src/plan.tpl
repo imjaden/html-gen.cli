@@ -3,25 +3,49 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#12100e">
 <title>{{TITLE}}</title>
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
+<script>
+/* 首屏防闪烁：CSS 生效前先把记忆里的配色与视图写到 <html>，避免先赤金再变墨绿 */
+(function(){try{var o=JSON.parse(localStorage.getItem('slimdown:ui:v2')||'{}')||{};
+if(o.theme)document.documentElement.setAttribute('data-theme',o.theme);
+if(o.view)document.documentElement.setAttribute('data-view',o.view);}catch(e){}})();
+</script>
 <style>{{CSS}}</style>
 </head>
 <body>
 
 <div class="theme-bar">
   <span class="ic" aria-hidden="true">🎨</span>
-  <select id="themeSel" aria-label="主题色"></select>
+  <select id="themeSel" aria-label="配色方案"></select>
 </div>
 
 <div class="sheet" id="sheet">
   <header class="masthead">
-    <div class="kicker">SLIMDOWN · 7-DAY PLAN</div>
-    <h1>薄肌减脂 · 七日方案</h1>
-    <div class="sub">今天练什么，一眼看懂</div>
+    <div class="kicker">HOME WORKOUT PLAN</div>
+    <h1>居家训练计划</h1>
+    <div class="sub" id="pageSub">干净饮食 · 热量缺口 · 减脂增肌</div>
   </header>
 
+  <div class="view-bar">
+    <div class="v-seg" id="viewSeg" role="tablist" aria-label="视图切换">
+      <button type="button" role="tab" data-view="week" class="on">按星期</button>
+      <button type="button" role="tab" data-view="theme">按主题</button>
+    </div>
+    <label class="preset-pick" id="presetPick">
+      <span class="lbl">方案</span>
+      <select id="presetSel" aria-label="方案预设"></select>
+    </label>
+  </div>
+
+  <div class="shared-bar" id="sharedBar" hidden>
+    <span>你正在查看他人分享的方案 · 未写入本机</span>
+    <button type="button" class="btn mini" id="btnUnshare">恢复我的方案</button>
+  </div>
+
   <div id="weekRow" aria-label="七日训练方案"></div>
+  <div id="themeRow" aria-label="主题训练方案" hidden></div>
 
   <footer class="foot">
     <div>slimdown · {{VERSION}} · {{UPDATED}}</div>
@@ -81,8 +105,10 @@
         <button class="p-link" id="btnShare" type="button">分享链接</button>
         <button class="p-link" id="btnCopyImg" type="button">复制图片</button>
         <button class="p-link" id="btnPrint" type="button">打印</button>
+        <button class="p-link" id="btnClearMemory" type="button" title="清空配色 / 视图 / 筛选 / 打卡等本机记忆">清除本机记忆</button>
       </div>
       <div class="p-actions">
+        <button class="p-btn" id="btnDownloadEach" type="button" hidden>逐张下载</button>
         <button class="p-btn primary" id="btnSavePlan" type="button">保存方案</button>
         <button class="p-btn" id="btnDownloadImg" type="button" disabled>下载图片</button>
       </div>
@@ -104,6 +130,8 @@
     </div>
   </div>
 </div>
+
+<div id="shotHost" class="shot-host" aria-hidden="true"></div>
 
 <script>window.SLIMDOWN = {{DATA}};</script>
 <script>{{JS}}</script>

@@ -126,7 +126,8 @@ def main():
     ex = json.loads(read(DATA_EX))
     css_plan = read(SRC / 'plan.css')
     css_base = read(SRC / 'base.css')
-    js_plan = read(SRC / 'plan.js')
+    # 三段按加载顺序拼接：状态层 → 出图层 → 页面逻辑（都是 IIFE，经 window.SB 通信）
+    js_plan = '\n'.join(read(SRC / n) for n in ('state.js', 'shot.js', 'plan.js'))
     js_arc = read(SRC / 'archive.js')
 
     payload = {
@@ -155,8 +156,13 @@ def main():
         print(f'✅ {p.relative_to(ROOT)} ({len(content.encode("utf-8")):,} bytes)')
 
     if not dry:
-        print(f'✅ slimdown: {len(payload["exercises"])} 个动作 / {len(plan["days"])} 天 / '
-              f'{sum(len(d["items"]) for d in plan["days"])} 条安排')
+        parts = []
+        for p in plan.get('presets', []):
+            days_ = p.get('days', [])
+            parts.append(f'{p["id"]} {len(days_)} 天 / '
+                         f'{sum(len(d.get("items") or []) for d in days_)} 条')
+        print(f'✅ slimdown: {len(payload["exercises"])} 个动作 / ' + ' · '.join(parts) +
+              f' / {len(plan.get("themes", []))} 套主题')
 
 
 if __name__ == '__main__':
