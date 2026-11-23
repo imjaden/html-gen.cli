@@ -12,8 +12,8 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 import html, json, re, sys, os, time, argparse, types, unicodedata, hashlib
 from pathlib import Path
 
-__version__ = "3.5"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
-__release_date__ = "2026-11-17"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
+__version__ = "3.6"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
+__release_date__ = "2026-11-23"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent
 TEMPLATE_DOC   = SKILLS_DIR / 'layout-doc.html'
@@ -1140,7 +1140,12 @@ TEMPLATE_CONTRACT = {
                 ('output', '顶层渲染目标 (仅 data 文件识别, groups 文件忽略; 三态 CLI -o > 顶层 output > 均无则中断 exit 1)', ''),
             ],
         },
-        'section_order': ['item', 'groups', 'data_source', 'cli'],
+        'behaviors': [
+            ('根页', '点侧栏标题回根页; 根页含菜单地图 (列 = 页签, 行 = 子分类), 地图与面板均为模板内建, 无新增数据键'),
+            ('搜索', '⌘/Ctrl+K 或侧栏 🔍 打开搜索面板 (匹配 条目名/子分类/描述/全名/类目); ⌘F 归浏览器原生查找'),
+            ('记忆', 'URL group/item 与 localStorage 双层恢复; ?view=root 强制回根页'),
+        ],
+        'section_order': ['behaviors', 'item', 'groups', 'data_source', 'cli'],
     },
 }
 

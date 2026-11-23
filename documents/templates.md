@@ -78,10 +78,13 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - **键规范**（item 9 / groups 3 / 数据源与输出目标 / CLI 参数 10）见 `html-gen help knowledge` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['knowledge']`）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
 - 左侧章节列表（按 section 分组，badge 标记显式）；条目文本单行 `ellipsis`（侧栏 260px，约容 24 列），全名走 `title` 属性悬停提示：取 `item.page_title` → 回退 `item.title`
-- 侧边栏搜索（🔍 按钮，150ms debounce，≥2 字符过滤，无匹配 section 自动隐藏；`⌘F`/`Ctrl+F` 走捕获阶段
-  `preventDefault` 直接打开它并聚焦，已开时重复按不误关；按钮 `title` 标明快捷键）
-- 窄屏（≤768px）侧栏为 off-canvas（`.kw-sidebar{display:none}` + `.open` 才显示）⇒ `⌘F` 会先补 `.open`，
-  选中条目 / `Escape` 时收起；折叠态下 `⌘F` 自动展开（否则搜索框在隐藏区）
+- 搜索面板（`⌘/Ctrl+K` 或 🔍 按钮 → 浮层 Spotlight：默认输入框 + 输入即匹配清单，`↑↓←→` 选择、`Enter` 打开、
+  `Esc`/外点关闭、`<mark>` 命中高亮、无匹配空态；匹配面 = 条目标题 `title` / 副标题 `section` / 描述 `desc` /
+  全名 `page_title` / 分组，**不含 `url` 与正文**）。面板 DOM 与 script-miner `tool-nav-manager` 的 Spotlight 同构
+- `⌘F` / `Ctrl+F` **不拦截**：浏览器原生查找照旧可用（v3.6 起，撤销 v3.5 的捕获阶段拦截）
+- 根页（`#welcomePanel`）：标题 + 欢迎语（`--welcome`）+ 徽章图例 + **菜单地图表**（列 = 横向页签，行 = `section`，
+  格内条目名 + badge，点击直达该条目）；点侧栏标题 `.sidebar-title` 回根页，复制路径走标题右侧 ⧉ 按钮
+- 页签切换只切类目并回根页（v3.6 起不再自动选中该组首条）
 - **嵌入降级**：条目带 `url` 时以 iframe 加载详情页，并在该 URL 追加 `sidebar=0&toolbar=0` 使其进入 Bare 模式（知识库页自身无 sidebar/toolbar URL 状态；键口径见 `html-gen help doc` 的「URL 状态」段）
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 双内容模式：条目带详情页地址 → iframe 加载；带正文 HTML → 内联渲染（键名见 `html-gen help knowledge`）

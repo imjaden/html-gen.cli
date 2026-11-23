@@ -130,11 +130,14 @@ copyAction() / shareLink() 走 canonical copyText (execCommand('copy') 回退 + 
 条目 / 类目键规范 (item 7 / groups 3) ✅ — html-gen help knowledge
 顶部横向标签栏 (按 group 分组, 彩色圆点, 与侧边栏标题行对齐) ✅ — layout-knowledge.html
 左侧章节列表 (按 section 分组, badge 标记) ✅ — layout-knowledge.html
-侧边栏搜索 (🔍 按钮, 150ms debounce, ≥2 字符, section 自动隐藏) ✅ — layout-knowledge.html
-⌘F / Ctrl+F 打开侧边栏搜索 (捕获阶段拦截, 幂等, 窄屏自动展开侧栏) ✅ — layout-knowledge.html
+搜索面板 (⌘/Ctrl+K 与 🔍, 与 tool-nav-manager Spotlight 同构: 输入即匹配 / ↑↓←→ / Enter 打开 / Esc 关 / `<mark>` 高亮 / 无匹配空态) ✅ — layout-knowledge.html
+搜索匹配面 (条目标题 title + 副标题 section + 描述 desc + 全名 page_title + 分组; 不含 url/正文) ✅ — layout-knowledge.html
+⌘F / Ctrl+F 归还浏览器原生查找 (v3.6 起不再拦截) ✅ — layout-knowledge.html
+根页菜单地图 (列 = 横向页签 / 行 = section / 格内条目 + badge / 点击直达) ✅ — layout-knowledge.html
+根页返回 (点 sidebar-title 回根页, 清 URL `item=` 与 localStorage) ✅ — layout-knowledge.html
 侧边栏折叠/展开 (48px 收起态, `[` 快捷键, 图标点击展开) ✅ — layout-knowledge.html
 侧边栏宽度拖拽 (200-400px, localStorage 持久化) ✅ — layout-knowledge.html
-侧边栏标题点击复制路径 (textContent + URL 白名单 + Toast) ✅ — layout-knowledge.html
+侧边栏标题点击回根页 (v3.6; 复制路径迁 ⧉ 按钮: URL 解码 + Toast) ✅ — layout-knowledge.html
 中英双语 (🇨🇳/🇺🇸, 条目数 i18n) ✅ — layout-knowledge.html
 🌙/☀️ 深色/浅色主题切换 (18+ 组件覆盖) ✅ — layout-knowledge.html
 右上角工具栏 (语言/主题, glass-morphism) ✅ — layout-knowledge.html
@@ -198,6 +201,7 @@ textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-k
 剪贴板回退 canonical copyText (isSecureContext 前置 / execCommand('copy') 检查返回值 / 失败可见反馈 / 禁假成功) ✅ — layout-{doc,slide,table,knowledge}.html
 剪贴板回退统一 CL015 (v3.4, 2026-09-27) — 四模板 canonical copyText 逐字节一致 + 8 调用点收敛 + 产物全量重生成 + 守卫测试 T1-T11 ✅ — documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md
 knowledge 模板 ⌘F/Ctrl+F 打开侧栏搜索 (v3.5, 2026-11-17) — 捕获阶段拦截原生查找 + 幂等 + 窄屏补 `.open` + 按钮 title 标快捷键；产物 4 页重生成 + 静态守卫 2 例 ✅ — layout-knowledge.html
+knowledge 模板 根页地图 + 统一搜索面板 (v3.6, 2026-11-23) — 标题点击回根页（复制路径迁 ⧉）+ 菜单地图表（列=页签/行=section）+ ⌘/Ctrl+K Spotlight 面板（标题/副标题/描述/全名/分组）+ **⌘F 归还原生查找**（撤销 v3.5 拦截）；4 产物重生成 + Selenium 15 例 + 静态守卫 2 例 ✅ — layout-knowledge.html
 localStorage try/catch + 类型校验 ✅ — layout-*.html
 path traversal 校验 (_safe_path) ✅ — scripts/company-report.py
 script 上下文 </ 转义 (inject) ✅ — html-gen.py

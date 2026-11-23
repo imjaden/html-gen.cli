@@ -45,8 +45,12 @@
 .kw-section-title.active { color: var(--cobalt-400); }
 .kw-section-title .dot { width: 7px; height: 7px; border-radius: 50%; flex-shrink: 0; }
 .kw-section-title .kw-section-icon { font-size: 0.9rem; flex-shrink: 0; }
-/* 搜索/折叠功能隐藏（与顶部菜单同高同字体；按钮功能保留但不再展示） */
-#kwSearchBtn, #collapseBtn { display: none !important; }
+/* CL047: 折叠按钮仍隐藏（顶部页签已够用）；搜索按钮现在是面板入口，必须可见 */
+#collapseBtn { display: none !important; }
+#kwSearchBtn { color: var(--cobalt-400); }
+.kw-copy-path { margin-left: 6px; border: none; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.72rem; padding: 0 2px; font-family: inherit; }
+.kw-copy-path:hover { color: var(--cobalt-300); }
+.kw-title-row { display: flex; align-items: center; gap: 6px; }
 .kw-item {
   display: flex; align-items: center; gap: 8px;
   padding: 8px 16px 8px 28px; cursor: pointer; transition: all 0.12s;
@@ -62,14 +66,47 @@
 .kw-sidebar-footer .sb-btn { display: inline-flex; align-items: center; justify-content: center; width: 28px; height: 28px; border-radius: 6px; border: 1px solid #2a2a3e; background: transparent; color: #6b7280; cursor: pointer; font-size: 0.7rem; transition: all 0.15s; font-family: inherit; }
 .kw-sidebar-footer .sb-btn:hover { background: rgba(79,70,229,0.1); color: #e0e0e0; }
 
-/* ── Sidebar Search ── */
-.kw-search-wrap { display: none; padding: 6px 12px; border-bottom: 1px solid #2a2a3e; }
-.kw-search-wrap.active { display: block; }
-.kw-search-wrap input { width: 100%; box-sizing: border-box; padding: 6px 10px; border: 1px solid #2a2a3e; border-radius: 6px; background: #0d0d1a; color: #e0e0e0; font-size: 0.72rem; outline: none; font-family: inherit; }
-.kw-search-wrap input:focus { border-color: var(--cobalt-600); }
-.kw-search-wrap input::placeholder { color: #555; }
+/* ── CL047: 侧栏过滤已由搜索面板取代（保留 filtered-out 供历史产物兼容） ── */
 .kw-item.filtered-out { display: none; }
 .kw-section-title.filtered-out { display: none; }
+
+/* ── CL047: 根页菜单地图 ── */
+.kw-welcome.has-map { align-items: stretch; justify-content: flex-start; text-align: left; padding: 26px 32px 40px; gap: 8px; }
+.kw-welcome.has-map .w-title { font-size: 1.15rem; }
+.kw-welcome.has-map .w-sub { max-width: 720px; margin-bottom: 6px; }
+.kw-welcome.has-map .w-legend { justify-content: flex-start; margin-top: 0; }
+.kw-map { width: 100%; max-width: 1080px; margin-top: 14px; overflow-x: auto; border: 1px solid #2a2a3e; border-radius: 10px; }
+.kw-map-table { border-collapse: separate; border-spacing: 0; width: 100%; min-width: 560px; font-size: 0.76rem; }
+.kw-map-table th, .kw-map-table td { padding: 7px 10px; border-bottom: 1px solid #23233a; vertical-align: top; text-align: left; }
+.kw-map-table thead th { background: var(--surface-900); color: var(--cobalt-400); font-weight: 700; white-space: nowrap; }
+.kw-map-table thead th .kw-map-gicon { margin-right: 5px; }
+.kw-map-table tbody th { color: #6b7280; font-weight: 600; white-space: nowrap; position: sticky; left: 0; background: var(--surface-950); }
+.kw-map-table tbody tr:last-child th, .kw-map-table tbody tr:last-child td { border-bottom: none; }
+.kw-map-table td.kw-map-empty { color: #3a3a4e; }
+.kw-map-item { display: inline-flex; align-items: center; gap: 5px; margin: 2px 4px 2px 0; padding: 3px 8px; border-radius: 6px; border: 1px solid #2a2a3e; background: rgba(79,70,229,0.06); color: #c7c7d6; font-size: 0.74rem; cursor: pointer; font-family: inherit; }
+.kw-map-item:hover { border-color: var(--cobalt-600); color: #fff; background: rgba(79,70,229,0.16); }
+.kw-map-item .kw-item-badge { font-size: 0.6rem; padding: 0 5px; border-radius: 8px; font-weight: 600; }
+
+/* ── CL047: 统一搜索面板（与 tool-nav-manager Spotlight 同构） ── */
+.kw-spot-overlay { position: fixed; inset: 0; background: rgba(0,0,0,0.55); backdrop-filter: blur(4px); display: none; align-items: flex-start; justify-content: center; z-index: 1200; padding: 9vh 16px 24px; }
+.kw-spot-overlay.active { display: flex; }
+.kw-spot-modal { width: 100%; max-width: 760px; max-height: 74vh; display: flex; flex-direction: column; background: var(--surface-900); border: 1px solid #2a2a3e; border-radius: 12px; box-shadow: 0 24px 64px rgba(0,0,0,0.55); overflow: hidden; }
+.kw-spot-head { display: flex; align-items: center; gap: 8px; padding: 10px 12px; border-bottom: 1px solid #2a2a3e; }
+.kw-spot-head .kw-spot-icon { font-size: 0.9rem; color: #6b7280; }
+.kw-spot-head input { flex: 1; min-width: 0; border: none; outline: none; background: transparent; color: #e0e0e0; font-size: 0.95rem; font-family: inherit; }
+.kw-spot-head input::placeholder { color: #555; }
+.kw-spot-close { background: #24243a; border: none; color: #9ca3af; border-radius: 6px; padding: 4px 10px; font-size: 0.72rem; cursor: pointer; font-family: inherit; }
+.kw-spot-close:hover { background: #2f2f4a; color: #e0e0e0; }
+.kw-spot-results { overflow-y: auto; padding: 8px; display: grid; gap: 3px; }
+.kw-spot-item { display: block; width: 100%; text-align: left; background: transparent; border: none; border-radius: 8px; padding: 8px 10px; cursor: pointer; color: #9ca3af; font-family: inherit; }
+.kw-spot-item:hover, .kw-spot-item[data-sel] { background: rgba(79,70,229,0.14); color: #e0e0e0; }
+.kw-spot-title { font-size: 0.85rem; font-weight: 600; color: var(--cobalt-400); }
+.kw-spot-item[data-sel] .kw-spot-title { color: #fff; }
+.kw-spot-meta { font-size: 0.68rem; color: #6b7280; margin-top: 2px; }
+.kw-spot-desc { font-size: 0.74rem; color: #8b8b9e; margin-top: 3px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.kw-mark { background: rgba(251,191,36,0.28); color: inherit; border-radius: 2px; padding: 0 1px; }
+.kw-spot-empty { text-align: center; color: #6b7280; font-size: 0.78rem; padding: 26px 10px; line-height: 1.8; }
+.kw-spot-hint { border-top: 1px solid #2a2a3e; padding: 6px 10px; font-size: 0.68rem; color: #555; text-align: center; }
 
 /* ── Sidebar Resize ── */
 .kw-sidebar { position: relative; }
@@ -103,8 +140,23 @@
 :root.light .kw-tab:hover { color: #333; }
 :root.light .kw-tab.active { color: var(--cobalt-600); }
 :root.light .kw-content { background: #f5f5f5; }
-:root.light .kw-search-wrap { border-color: #e5e5e5; }
-:root.light .kw-search-wrap input { background: #f5f5f5; border-color: #ddd; color: #333; }
+:root.light .kw-map { border-color: #e5e5e5; }
+:root.light .kw-map-table th, :root.light .kw-map-table td { border-color: #eee; }
+:root.light .kw-map-table thead th { background: #f7f7f7; color: var(--cobalt-600); }
+:root.light .kw-map-table tbody th { background: #fafafa; color: #666; }
+:root.light .kw-map-item { border-color: #e0e0e0; background: rgba(99,102,241,0.05); color: #444; }
+:root.light .kw-map-item:hover { border-color: var(--cobalt-600); color: #111; background: rgba(99,102,241,0.12); }
+:root.light .kw-spot-modal { background: #fff; border-color: #e5e5e5; }
+:root.light .kw-spot-head { border-color: #eee; }
+:root.light .kw-spot-head input { color: #222; }
+:root.light .kw-spot-close { background: #eee; color: #555; }
+:root.light .kw-spot-close:hover { background: #e2e2e2; color: #111; }
+:root.light .kw-spot-item { color: #555; }
+:root.light .kw-spot-item:hover, :root.light .kw-spot-item[data-sel] { background: rgba(99,102,241,0.1); color: #111; }
+:root.light .kw-spot-title { color: var(--cobalt-600); }
+:root.light .kw-spot-meta { color: #888; }
+:root.light .kw-spot-desc { color: #777; }
+:root.light .kw-spot-hint { border-color: #eee; color: #999; }
 :root.light .kw-welcome .w-title { color: #333; }
 
 /* ── Main ── */
@@ -177,6 +229,8 @@
 <body>
 <!-- Top-Right Toolbar -->
 <div class="kw-toolbar" id="kwToolbar">
+  <button class="kw-tb-btn" id="kwSpotBtnTb" onclick="toggleKwSpot()" title="搜索（⌘/Ctrl+K）">🔍</button>
+  <span class="kw-tb-divider"></span>
   <button class="kw-tb-btn active" id="kwLangZh" onclick="setKwLang('zh')" title="中文">🇨🇳</button>
   <button class="kw-tb-btn" id="kwLangEn" onclick="setKwLang('en')" title="English">🇺🇸</button>
   <span class="kw-tb-divider"></span>
@@ -191,16 +245,15 @@
     <div class="kw-sidebar-resize" id="kwSbResize"></div>
     <div class="kw-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📚</div>
     <div class="kw-sidebar-header">
-      <div class="sidebar-title" title="<!--TITLE-->">📚 <!--TITLE--></div>
+      <div class="kw-title-row">
+        <div class="sidebar-title" title="回到知识库根页">📚 <!--TITLE--></div>
+        <button class="kw-copy-path" id="kwCopyPathBtn" title="复制页面路径">⧉</button>
+      </div>
       <div class="sub"><!--SUBTITLE--></div>
     </div>
     <div id="kwSectionsContainer"></div>
-    <!-- Sidebar Search -->
-    <div class="kw-search-wrap" id="kwSearchWrap">
-      <input type="text" id="kwSearchInput" placeholder="搜索...">
-    </div>
     <div class="kw-sidebar-footer">
-      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSearch()" title="搜索（⌘F / Ctrl+F）">🔍</button>
+      <button class="sb-btn" id="kwSearchBtn" onclick="toggleKwSpot()" title="搜索（⌘/Ctrl+K）">🔍</button>
       <span style="flex:1"></span>
       <button class="sb-btn" id="collapseBtn" onclick="toggleSidebar()" title="折叠侧边栏">◀◀</button>
     </div>
@@ -213,6 +266,7 @@
         <div class="w-title">📚 <!--TITLE--></div>
         <div class="w-sub"><!--WELCOME_TEXT--></div>
         <div class="w-legend" id="wLegend"></div>
+        <div class="kw-map" id="kwMap"></div>
       </div>
       <div class="kw-frame-wrap" id="frameWrap">
         <iframe id="contentFrame" src="about:blank" style="width:100%;flex:1;border:none;background:var(--surface-950);display:none;"></iframe>
@@ -221,6 +275,19 @@
     </div>
   </div>
 
+</div>
+
+<!-- CL047: 统一搜索面板（与 tool-nav-manager Spotlight 同构） -->
+<div class="kw-spot-overlay" id="kwSpotOverlay">
+  <div class="kw-spot-modal" role="dialog" aria-modal="true" aria-label="搜索知识库">
+    <div class="kw-spot-head">
+      <span class="kw-spot-icon">🔍</span>
+      <input type="text" id="kwSpotInput" placeholder="搜索条目标题、副标题、描述、分组…" autocomplete="off">
+      <button class="kw-spot-close" id="kwSpotClose">关闭</button>
+    </div>
+    <div class="kw-spot-results" id="kwSpotResults"></div>
+    <div class="kw-spot-hint">↑↓ 选择 · Enter 打开 · Esc 关闭</div>
+  </div>
 </div>
 
 <script>
@@ -274,9 +341,16 @@
   }
   updateSub();
 
-  // Title click → copy full URL（中文参数解码为原文，如 ?group=大明王朝1566）
+  // CL047: 标题点击 → 回知识库根页（复制路径迁到 ⧉ 按钮）
   document.querySelector('.kw-sidebar-header .sidebar-title').addEventListener('click', function() {
-    var m = this.title.match(/路径:\s*(.+)/);
+    kwGoRoot();
+  });
+  // 复制页面路径（CL047：标题点击改为回根页，复制迁到 ⧉ 按钮；保留 D10 的路径闸门与 toast 解析链）
+  var _copyBtn = document.getElementById('kwCopyPathBtn');
+  if (_copyBtn) _copyBtn.addEventListener('click', function(e) {
+    e.stopPropagation();
+    var el = document.querySelector('.kw-sidebar-header .sidebar-title');
+    var m = el && el.title ? el.title.match(/路径:\s*(.+)/) : null;
     var target = m ? m[1].trim() : decodeURI(window.location.href);
     if (/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)) {
       copyText(target, '已复制: ' + target);
@@ -330,24 +404,17 @@
     renderSidebar();
   }
 
-  window.switchGroup = function(key) {
+  // CL047: 页签切换只切类目并回根页（不再自动选首条，否则根页地图永远看不到）
+  window.switchGroup = function(key) { activateGroup(key); kwGoRoot(); };
+
+  // 只切类目（面板结果跨组跳转复用，不触发回根页）
+  function activateGroup(key) {
+    if (!key || key === activeGroup) return;
     activeGroup = key;
     try { localStorage.setItem('html-gen:kw_group', key); } catch(e) {}
     document.querySelectorAll('.kw-tab').forEach(function(t) { t.classList.toggle('active', t.dataset.key === key); });
     renderSidebar();
-    // 跨组保持：优先选中当前 section 在同组同名 item（如 36计策 跨组跟随），否则第一个 item
-    var targetItem = null;
-    if (activeItem) {
-      var secName = (function(){ var it = ITEMS.find(function(i){ return i.group === key && i.title === activeItem; }); return it ? it.title : null; })();
-      targetItem = secName ? ITEMS.find(function(i) { return i.group === key && i.title === secName; }) : null;
-    }
-    if (!targetItem) {
-      var curItem = ITEMS.find(function(i) { return i.group !== key && i.title === activeItem; });
-      if (curItem) targetItem = ITEMS.find(function(i) { return i.group === key && i.title === curItem.title; });
-    }
-    var firstItem = targetItem || ITEMS.find(function(i) { return i.group === key; });
-    if (firstItem) selectItem(activeGroup, firstItem.title);
-  };
+  }
 
   // ── Render sidebar sections ──
   // 侧栏条目文本是 ellipsis 单行：超宽名字只剩前缀 ⇒ 用 title 属性兜住全名（悬停可见）。
@@ -435,7 +502,6 @@
       frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (_rxW ? 'width=' + _rxW + '&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }
     else { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#6b7280;text-align:center;padding:40px;">请配置 desc 内容</div>'; }
-    _kwHideSidebarOnMobile();   // CL044: 窄屏选中条目后收起侧栏
     syncUrl();
   };
 
@@ -448,16 +514,18 @@
   var urlParams = new URLSearchParams(location.search);
   var savedGroup = urlParams.get('group') || localStorage.getItem('html-gen:kw_group');
   var savedItem = urlParams.get('item') || localStorage.getItem('html-gen:kw_item');
+  var forceRoot = urlParams.get('view') === 'root';       // CL047: 显式要求根页
   var groupValid = savedGroup && GROUPS.some(function(g) { return g.key === savedGroup; });
   var itemValid = savedItem && ITEMS.some(function(i) { return i.group === savedGroup && i.title === savedItem; });
   if (groupValid) {
     activeGroup = savedGroup; renderTabs();
-    if (itemValid) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
-    else { renderSidebar(); renderLegend(); }  // 仅恢复页签（未点条目场景）
+    if (itemValid && !forceRoot) { setTimeout(function() { selectItem(savedGroup, savedItem); }, 50); }
+    else { renderSidebar(); renderLegend(); }  // 仅恢复页签（根页）
   } else {
     renderTabs();
     renderLegend();
   }
+  renderMap();                                   // CL047: 根页菜单地图
 
   /* ═══════ Sidebar Collapse ═══════ */
   var _collapsed = false;
@@ -476,90 +544,219 @@
     }
   });
 
-  /* ═══════ CL044: ⌘F / Ctrl+F 打开侧栏搜索 ═══════
-     窄屏（@media max-width:768px）侧栏是 off-canvas（display:none + .open 才显示），
-     不加 open 就会出现「搜索框已激活、但它在隐藏容器里」⇒ 用户看不见。 */
-  function _kwRevealSidebar() {
-    var sb = document.getElementById('kwSidebar');
-    if (!sb) return;
-    if (sb.classList.contains('collapsed')) toggleSidebar();   // 折叠态下搜索框在隐藏区
-    if (getComputedStyle(sb).display === 'none') sb.classList.add('open');
-  }
-  function _kwHideSidebarOnMobile() {
-    var sb = document.getElementById('kwSidebar');
-    if (sb && sb.classList.contains('open')) sb.classList.remove('open');
-  }
-  document.addEventListener('keydown', function(e) {
-    if (!(e.metaKey || e.ctrlKey) || (e.key !== 'f' && e.key !== 'F')) return;
-    var wrap = document.getElementById('kwSearchWrap');
-    var input = document.getElementById('kwSearchInput');
-    if (!wrap || !input) return;              // 无侧栏搜索的页面不拦
-    e.preventDefault();                       // 捕获阶段: 抢在浏览器原生查找之前
-    _kwRevealSidebar();
-    if (!wrap.classList.contains('active')) toggleKwSearch();   // 幂等: 已开不误关
-    setTimeout(function() { input.focus(); input.select(); }, 0);
-  }, true);
-
-  /* ── Sidebar Search ── */
-  var _kwSearchActive = false, _kwSearchTimer;
-  window.toggleKwSearch = function() {
-    _kwSearchActive = !_kwSearchActive;
-    var wrap = document.getElementById('kwSearchWrap');
-    var input = document.getElementById('kwSearchInput');
-    var btn = document.getElementById('kwSearchBtn');
-    if (wrap) wrap.classList.toggle('active', _kwSearchActive);
-    if (btn) btn.style.color = _kwSearchActive ? 'var(--cobalt-400)' : '';
-    if (_kwSearchActive) {
-      setTimeout(function() { input.focus(); input.select(); }, 50);
-    } else {
-      input.value = '';
-      doKwFilter('');
-    }
+  /* ═══════ CL047: 根页状态机 ═══════ */
+  window.kwGoRoot = function() {
+    activeItem = null;
+    try { localStorage.removeItem('html-gen:kw_item'); } catch(e) {}
+    document.querySelectorAll('.kw-item').forEach(function(el) { el.classList.remove('active'); });
+    document.querySelectorAll('.kw-section-title').forEach(function(el) { el.classList.remove('active'); });
+    var wp = document.getElementById('welcomePanel');
+    if (wp) wp.classList.add('active');
+    var fw = document.getElementById('frameWrap');
+    if (fw) fw.classList.remove('active');
+    var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
+    if (body) { body.style.display = 'none'; body.innerHTML = ''; }
+    if (frame) { frame.style.display = 'none'; frame.src = 'about:blank'; }
+    syncUrl();
   };
 
-  function doKwFilter(q) {
-    var items = document.querySelectorAll('.kw-item');
-    var titles = document.querySelectorAll('.kw-section-title');
-    var hasMatch = false;
-    items.forEach(function(el) {
-      var text = (el.querySelector('.kw-item-text') || {}).textContent || '';
-      var match = q.length < 2 || text.toLowerCase().indexOf(q) !== -1;
-      el.classList.toggle('filtered-out', !match);
-      if (match) hasMatch = true;
+  /* ═══════ CL047: 根页菜单地图（列 = 页签，行 = section） ═══════ */
+  function escHtml(s) { return escAttr(s); }
+
+  function renderMap() {
+    var el = document.getElementById('kwMap');
+    if (!el) return;
+    var groups = GROUPS || [];
+    if (!groups.length || !ITEMS.length) { el.innerHTML = ''; return; }
+    var rows = [], cell = {}, i, j;
+    for (i = 0; i < ITEMS.length; i++) {
+      var sec0 = ITEMS[i].section || ITEMS[i].group || 'default';
+      if (rows.indexOf(sec0) === -1) rows.push(sec0);
+    }
+    for (j = 0; j < ITEMS.length; j++) {
+      var it = ITEMS[j];
+      var sec = it.section || it.group || 'default';
+      if (!cell[sec]) cell[sec] = {};
+      if (!cell[sec][it.group]) cell[sec][it.group] = [];
+      cell[sec][it.group].push(it);
+    }
+    var html = '<table class="kw-map-table"><thead><tr><th>章节 \\ 类目</th>';
+    groups.forEach(function(g) {
+      html += '<th>' + (g.icon ? '<span class="kw-map-gicon">' + escHtml(g.icon) + '</span>' : '') +
+        escHtml(g.label || g.key) + '</th>';
     });
-    // Hide section titles if all their items are filtered out
-    titles.forEach(function(title) {
-      var next = title.nextElementSibling;
-      var allHidden = true;
-      while (next && !next.classList.contains('kw-section-title')) {
-        if (!next.classList.contains('filtered-out')) { allHidden = false; break; }
-        next = next.nextElementSibling;
-      }
-      title.classList.toggle('filtered-out', allHidden);
+    html += '</tr></thead><tbody>';
+    rows.forEach(function(rowSec) {
+      html += '<tr><th>' + escHtml(rowSec) + '</th>';
+      groups.forEach(function(g) {
+        var list = (cell[rowSec] || {})[g.key] || [];
+        if (!list.length) { html += '<td class="kw-map-empty">—</td>'; return; }
+        html += '<td>' + list.map(function(it2) {
+          var b = '';
+          if (it2.badge) {
+            var bc = BADGE_COLORS[it2.badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
+            b = '<span class="kw-item-badge" style="background:' + bc.bg + ';color:' + bc.color +
+                ';border:1px solid ' + bc.border + '">' + escHtml(it2.badge) + '</span>';
+          }
+          return '<button type="button" class="kw-map-item" data-group="' + escAttr(g.key) +
+                 '" data-title="' + escAttr(it2.title) + '">' + escHtml(it2.title) + b + '</button>';
+        }).join('') + '</td>';
+      });
+      html += '</tr>';
+    });
+    html += '</tbody></table>';
+    el.innerHTML = html;
+    el.querySelectorAll('.kw-map-item').forEach(function(btn) {
+      btn.addEventListener('click', function() {
+        activateGroup(this.dataset.group);
+        selectItem(this.dataset.group, this.dataset.title);
+      });
+    });
+    var wp = document.getElementById('welcomePanel');
+    if (wp) wp.classList.add('has-map');
+  }
+
+  /* ═══════ CL047: 统一搜索面板（Spotlight，与 tool-nav-manager 同构） ═══════
+     入口 = ⌘/Ctrl+K 与 🔍 按钮；**不拦 ⌘F**（浏览器原生查找保留）。
+     匹配面 = 条目标题 / 副标题(section) / 描述(desc) / 全名(page_title) / 分组。 */
+  var _spotOpen = false, _spotSel = -1, _spotList = [];
+
+  function spotRow(it) {
+    var g = (GROUPS || []).filter(function(x) { return x.key === it.group; })[0] || {};
+    return { title: it.title || '', group: it.group || '', section: it.section || '',
+             desc: it.desc || '', page_title: it.page_title || '',
+             groupLabel: g.label || it.group || '', badge: it.badge || '' };
+  }
+
+  function querySpot(q) {
+    if (!q) return [];
+    var out = [];
+    ITEMS.forEach(function(it, i) {
+      var r = spotRow(it);
+      var t = r.title.toLowerCase(), s = r.section.toLowerCase(), d = r.desc.toLowerCase(),
+          p = r.page_title.toLowerCase(), gtxt = (r.groupLabel + ' ' + r.group).toLowerCase();
+      var score = 0;
+      if (t.indexOf(q) === 0) score = 100;                       // 标题前缀
+      else if (t.indexOf(q) !== -1) score = 80;                  // 标题包含
+      else if (p.indexOf(q) !== -1) score = 60;                  // 全名/tooltip
+      else if (s.indexOf(q) !== -1) score = 40;                  // 副标题
+      else if (gtxt.indexOf(q) !== -1) score = 20;                  // 分组
+      else if (d.indexOf(q) !== -1) score = 10;                  // 描述
+      if (score) out.push({ r: r, score: score, i: i });
+    });
+    out.sort(function(a, b) { return b.score - a.score || a.i - b.i; });
+    return out.map(function(x) { return x.r; });
+  }
+
+  // 命中片段高亮：先转义再插 <mark>，禁止 innerHTML 直插原文
+  function hl(text, q) {
+    var s = String(text == null ? '' : text);
+    if (!q) return escAttr(s);
+    var at = s.toLowerCase().indexOf(q);
+    if (at < 0) return escAttr(s);
+    return escAttr(s.slice(0, at)) + '<mark class="kw-mark">' +
+           escAttr(s.slice(at, at + q.length)) + '</mark>' + escAttr(s.slice(at + q.length));
+  }
+
+  function spotBadge(badge) {
+    if (!badge) return '';
+    var bc = BADGE_COLORS[badge] || {bg:'rgba(255,255,255,0.04)',color:'#6b7280',border:'transparent'};
+    return '<span class="kw-item-badge" style="background:' + bc.bg + ';color:' + bc.color +
+           ';border:1px solid ' + bc.border + ';margin-left:6px;">' + escHtml(badge) + '</span>';
+  }
+
+  function renderSpot(q) {
+    var box = document.getElementById('kwSpotResults');
+    if (!box) return;
+    if (!q) {
+      _spotList = []; _spotSel = -1;
+      box.innerHTML = '<div class="kw-spot-empty">输入关键词开始搜索<br>范围：条目标题 · 副标题 · 描述 · 分组</div>';
+      return;
+    }
+    _spotList = querySpot(q);
+    if (!_spotList.length) {
+      _spotSel = -1;
+      box.innerHTML = '<div class="kw-spot-empty">没有匹配的条目<br>试试更短的关键词</div>';
+      return;
+    }
+    _spotSel = 0;
+    box.innerHTML = _spotList.map(function(r, i) {
+      var meta = r.groupLabel + (r.section ? ' · ' + r.section : '');
+      return '<button type="button" class="kw-spot-item" data-group="' + escAttr(r.group) +
+        '" data-title="' + escAttr(r.title) + '"' + (i === 0 ? ' data-sel="1"' : '') + '>' +
+        '<div class="kw-spot-title">' + hl(r.title, q) + spotBadge(r.badge) + '</div>' +
+        '<div class="kw-spot-meta">' + hl(meta, q) + '</div>' +
+        (r.desc ? '<div class="kw-spot-desc">' + hl(r.desc, q) + '</div>' : '') +
+        '</button>';
+    }).join('');
+    box.querySelectorAll('.kw-spot-item').forEach(function(btn) {
+      btn.addEventListener('click', function() { openSpotResult(this.dataset.group, this.dataset.title); });
     });
   }
 
-  document.getElementById('kwSearchInput').addEventListener('input', function() {
-    var q = this.value.toLowerCase().trim();
-    clearTimeout(_kwSearchTimer);
-    _kwSearchTimer = setTimeout(function() { doKwFilter(q); }, 150);
-  });
+  function moveSpot(delta) {
+    var box = document.getElementById('kwSpotResults');
+    if (!box || !_spotList.length) return;
+    var n = _spotList.length;
+    _spotSel = ((_spotSel < 0 ? 0 : _spotSel) + delta + n) % n;
+    var els = box.querySelectorAll('.kw-spot-item');
+    els.forEach(function(el, i) { if (i === _spotSel) el.setAttribute('data-sel', '1'); else el.removeAttribute('data-sel'); });
+    if (els[_spotSel] && els[_spotSel].scrollIntoView) els[_spotSel].scrollIntoView({ block: 'nearest' });
+  }
 
-  document.getElementById('kwSearchInput').addEventListener('keydown', function(e) {
-    if (e.key === 'Escape') { _kwSearchActive = true; toggleKwSearch(); _kwHideSidebarOnMobile(); }
-    else if (e.key === 'Enter') {
-      var firstVisible = document.querySelector('.kw-item:not(.filtered-out)');
-      if (firstVisible) firstVisible.click();
-      _kwSearchActive = true; toggleKwSearch();
-    }
-  });
+  function openSpotResult(group, title) {
+    closeSpot();
+    activateGroup(group);
+    selectItem(group, title);
+  }
 
-  // Click away to close
-  document.addEventListener('click', function(e) {
-    if (_kwSearchActive && !e.target.closest('.kw-search-wrap') && e.target !== document.getElementById('kwSearchBtn')) {
-      _kwSearchActive = true; toggleKwSearch();
-    }
-  });
+  function openSpot() {
+    var ov = document.getElementById('kwSpotOverlay'), inp = document.getElementById('kwSpotInput');
+    if (!ov) return;
+    _spotOpen = true;
+    ov.classList.add('active');
+    if (inp) { inp.value = ''; }
+    renderSpot('');
+    setTimeout(function() { if (inp) inp.focus(); }, 50);
+  }
+
+  function closeSpot() {
+    var ov = document.getElementById('kwSpotOverlay');
+    _spotOpen = false; _spotSel = -1; _spotList = [];
+    if (ov) ov.classList.remove('active');
+  }
+
+  window.toggleKwSpot = function() { if (_spotOpen) closeSpot(); else openSpot(); };
+
+  (function bindSpot() {
+    var ov = document.getElementById('kwSpotOverlay');
+    var inp = document.getElementById('kwSpotInput');
+    var closeBtn = document.getElementById('kwSpotClose');
+    if (!ov || !inp) return;
+    var timer = null;
+    inp.addEventListener('input', function() {
+      var q = this.value.toLowerCase().trim();
+      clearTimeout(timer);
+      timer = setTimeout(function() { renderSpot(q); }, 120);
+    });
+    if (closeBtn) closeBtn.addEventListener('click', closeSpot);
+    ov.addEventListener('click', function(e) { if (e.target === ov) closeSpot(); });
+    document.addEventListener('keydown', function(e) {
+      // ⌘/Ctrl+K 开关面板（不拦 ⌘F ⇒ 原生查找照旧可用）
+      if ((e.metaKey || e.ctrlKey) && (e.key === 'k' || e.key === 'K')) {
+        e.preventDefault(); toggleKwSpot(); return;
+      }
+      if (!_spotOpen) return;
+      if (e.key === 'Escape') { e.preventDefault(); closeSpot(); }
+      else if (e.key === 'ArrowDown' || e.key === 'ArrowRight') { e.preventDefault(); moveSpot(1); }
+      else if (e.key === 'ArrowUp' || e.key === 'ArrowLeft') { e.preventDefault(); moveSpot(-1); }
+      else if (e.key === 'Enter') {
+        e.preventDefault();
+        var r = _spotList[_spotSel >= 0 ? _spotSel : 0];
+        if (r) openSpotResult(r.group, r.title);
+      }
+    });
+  })();
 
   /* ── Sidebar Resize ── */
   (function() {

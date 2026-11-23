@@ -286,15 +286,20 @@ class TestClipboardBehavior(unittest.TestCase):
         # D10：闸门正则须与 doc 版一致（含 [\w.\- ]+$ 兜底），否则脱敏 basename 静默无反应
         self.assertIn(r'/^(https?:|\/|~\/|[\w.\- ]+$)/.test(target)',
                       read('layout-knowledge.html'), 'D10：knowledge 闸门正则须并入 doc 版兜底')
-        # 构造脱敏 basename（products 的 sidebar-title 属性为标题而非路径，故显式置位）
+        # CL047：标题点击改为「回根页」，复制迁到 ⧉ 按钮（闸门与 toast 解析链保持不变）
         self.driver.execute_script(
             "document.querySelector('.kw-sidebar-header .sidebar-title').title = '路径: knowledge-demo.html';")
         self._fix()
-        self.driver.execute_script("document.querySelector('.kw-sidebar-header .sidebar-title').click()")
+        self.driver.execute_script("document.getElementById('kwCopyPathBtn').click()")
         time.sleep(0.3)
         self.assertEqual(self._exec_called(), 1, 'D10：basename 目标须通过闸门并复制')
         self.assertEqual(self._toast('kwToast'), '已复制: knowledge-demo.html',
                          'showKwToast 解析链须命中（否则降级 console 无 toast）')
+        # 反向：标题点击不再复制（回根页语义）
+        self.driver.execute_script(
+            "document.querySelector('.kw-sidebar-header .sidebar-title').click()")
+        time.sleep(0.2)
+        self.assertEqual(self._exec_called(), 1, 'CL047：点标题不应触发复制')
 
     # ── T9：table copyAction 两路都要有反馈（① clipboard 存在但 reject ② 假不安全上下文）──
 

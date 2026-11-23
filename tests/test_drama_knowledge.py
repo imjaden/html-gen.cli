@@ -185,7 +185,7 @@ class TestDramaKnowledge(unittest.TestCase):
         self.driver.switch_to.default_content()
 
     def test_17_section_follows_group_switch(self):
-        """需求: 切顶部 tab 时左侧 section 跨组保持（大明 36计策 → 中国历史 36计策）."""
+        """CL047 行为变更（B4）: 切顶部 tab 一律回根页，不再自动选首条/跨组跟随."""
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[2].click()  # 大明
         time.sleep(0.2)  # [speedup]
 
@@ -193,16 +193,21 @@ class TestDramaKnowledge(unittest.TestCase):
         sec36 = next(s for s in secs if '36计策' in s.text)
         sec36.click()
         time.sleep(0.25)  # [speedup]
+        self.assertFalse(self.driver.execute_script(
+            "return document.getElementById('welcomePanel').classList.contains('active');"),
+            '点 section 后应离开根页')
 
         self.driver.find_elements(By.CSS_SELECTOR, '.kw-tab')[0].click()  # 中国历史
         time.sleep(0.3)  # [speedup]
 
-        act = self.driver.execute_script(
-            "return document.querySelector('.kw-section-title.active').textContent || '';")
-        self.assertIn('36计策', act, f"跨组应保持 36计策: {act}")
-        frame = self.driver.find_element(By.ID, 'contentFrame')
-        self.assertIn('history-strategy', frame.get_attribute('src') or '',
-                      f"iframe 应为中国历史 36计策: {(frame.get_attribute('src') or '')[:70]}")
+        self.assertTrue(self.driver.execute_script(
+            "return document.getElementById('welcomePanel').classList.contains('active');"),
+            'CL047：切页签应回到根页（不再自动选首条）')
+        self.assertFalse(self.driver.execute_script(
+            "return document.getElementById('frameWrap').classList.contains('active');"),
+            'CL047：切页签后内容区应收起')
+        self.assertNotIn('item=', self.driver.execute_script("return location.search;"),
+                         'CL047：URL 的 item 参数应被清掉')
 
     def test_18_yongzheng_group(self):
         """新增雍正王朝 group：3 tab + 时间轴全量 21 行（雍正 9 行常驻高亮）+ 36计策 26 行."""

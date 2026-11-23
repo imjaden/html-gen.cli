@@ -23,5 +23,5 @@
 | documents/solutions/table-split-grid-design-v1.0-20261109.md | table-split-grid-design | design | v1.0 | 2026-11-09 | current | 160 |
 | documents/solutions/table-text-xss-escape-design-v1.0-20260911.md | table-text-xss-escape-design | design | 1.0 | 2026-09-11 | current | 118 |
 | documents/table-template-handbook-v1.0-20260908.md | html-gen | guide | 1.0 | 2026-09-08 | current | 303 |
-| documents/templates.md | html-gen | guide | 1.0 | 2026-11-09 | current | 102 |
+| documents/templates.md | html-gen | guide | 1.0 | 2026-11-09 | current | 105 |
 | documents/testing.md | html-gen | guide | 1.0 | 2026-11-09 | current | 117 |

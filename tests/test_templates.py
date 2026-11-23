@@ -377,27 +377,32 @@ class TestDocTypography(unittest.TestCase):
 
 
 class TestTemplateStaticGuards(unittest.TestCase):
-    """静态守卫（CL044）：模板级能力不得被重生成或后续改动悄悄抹掉。"""
+    """静态守卫（CL044 → CL047 改写）：模板级能力不得被重生成或后续改动悄悄抹掉。"""
 
-    CMD_F_LINE = ("if (!(e.metaKey || e.ctrlKey) || (e.key !== 'f' && e.key !== 'F')) "
-                  "return;")
+    SPOT_MARKERS = ('toggleKwSpot', 'kwSpotOverlay', 'kwGoRoot', 'kw-map-table', 'escHtml')
     KB_PRODUCTS = ('demos/knowledge-demo.html', 'demos/drama-knowledge.html',
                    'demos/chaitin-business-analysis.html',
                    'demos/cloudwise-business-analysis.html')
 
-    def test_knowledge_cmdf_branch_in_template(self):
+    def test_knowledge_spot_panel_in_template(self):
         tmpl = (PROJECT / 'layout-knowledge.html').read_text(encoding='utf-8')
-        self.assertIn(self.CMD_F_LINE, tmpl, '模板须保留 ⌘F 分支')
-        self.assertIn('_kwRevealSidebar', tmpl, '窄屏需先给侧栏加 .open')
-        self.assertIn('搜索（⌘F / Ctrl+F）', tmpl, '#kwSearchBtn 的 title 要写快捷键')
+        for m in self.SPOT_MARKERS:
+            self.assertIn(m, tmpl, f'模板缺少 CL047 标记: {m}')
+        self.assertIn("e.key === 'k'", tmpl, '⌘/Ctrl+K 入口须存在')
+        self.assertIn('搜索（⌘/Ctrl+K）', tmpl, '搜索按钮 title 要写新快捷键')
+        # CL047：⌘F 归还原生查找（CL044 的拦截段必须消失）
+        self.assertNotIn("e.key !== 'f'", tmpl, '不得再拦截 ⌘F（浏览器原生查找要保留）')
+        self.assertNotIn('kwSearchWrap', tmpl, '侧栏过滤面板应已被搜索面板取代')
 
-    def test_knowledge_cmdf_reaches_products(self):
+    def test_knowledge_spot_panel_reaches_products(self):
         for rel in self.KB_PRODUCTS:
             f = PROJECT / rel
             if not f.is_file():
                 continue
-            self.assertIn(self.CMD_F_LINE, f.read_text(encoding='utf-8'),
-                          f'{rel} 未随模板重建（跑 baseline --verify 定位）')
+            html = f.read_text(encoding='utf-8')
+            for m in self.SPOT_MARKERS:
+                self.assertIn(m, html, f'{rel} 未随模板重建（缺 {m}，跑 baseline --verify 定位）')
+            self.assertNotIn("e.key !== 'f'", html, f'{rel} 仍含 CL044 的 ⌘F 拦截段')
 
 
 if __name__ == '__main__':
