@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated": "2026-11-20",
+  "generated": "2026-11-23",
   "note": "CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）",
   "verified": true,
   "files": {
@@ -45,8 +45,8 @@
       "home": false
     },
     "demos/demos-index.html": {
-      "sha256": "c6bab3bc3066bfec8dc661b9c5dfdfb68e6c4de94de2eebd482712b753882458",
-      "bytes": 123368,
+      "sha256": "08b1b819da2bb2560b660599118a56330982ebd472298d414bf32898abe8ee77",
+      "bytes": 123376,
       "corner": false,
       "home": true
     },

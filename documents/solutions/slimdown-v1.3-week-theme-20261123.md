@@ -54,3 +54,20 @@
 |:--|:--|:--|
 | O1 | 旧版 `#p=v1\|…` 分享链接会按当前预设解释动作序号（解码不报错、结果可见） | 不处理：v1 链接已跨两版，修复收益 < 改动风险 |
 | O2 | 主题视图只读，改次数只能走「周视图 + 库内条目」 | 观察两周；要改则把主题 items 纳入编辑面板，代价是分享链接需带文本动作名（v4 编码） |
+
+## 6. v1.4 整改批（2026-11-23，用户「一条龙」实施，六项决策全采推荐）
+
+| 项 | 落定 |
+|:--|:--|
+| D1 力量版 | 数据与 UI 全删（`presets` 只留 `home`）；分享 v3 保留 preset 段恒 `home`，旧 `strength` 链接 toast 一行按当前方案渲染 |
+| D2 masthead | 真减半：实测 175px → **68px**（1440），副标题并入 view-bar 小字 |
+| D3 下载面板 | 「左方案列表 + 右预览 + 单张下载」两视图共用：周视图 8 项（本周速览+七天，默认今天）、主题视图 4 项（默认第 1 套）；`↑/↓` 切换、`Enter` 下载；选中记忆 `shotWeek`/`shotTheme` |
+| D4 次按钮 | 「复制图片」「打印」保留（作用于右栏预览那张） |
+| D5 面板尺寸 | 90vw×90vh（实测 1440×900 → 1296×810）；<760px 保留底部抽屉满宽 |
+| D6 改名 | `plan.html` → `index.html`（`/demos/slimdown/` 直达；Jekyll readme-index 让位实测成立），`plan.html` 留跳转桩（`slimdown:redirect auto` 标记，透传 ?/#）保旧链接与 `#p=` 分享；registry 行数不漂移（77 行，桩行标题「训练方案 · slimdown（已迁目录首页）」） |
+
+- 落点：`_src/{plan.tpl,plan.css,plan.js,state.js}`、`scripts/build-slimdown.py`（index+桩+`--home-url`）、
+  `scripts/slimdown-import-v13.py`（不再产出 strength）、`data/_slimdown-plan.json`、`tests/test_slimdown_plan.py`（15 例）、
+  `tests/test_clipboard_fallback.py`（IMAGE_CLIPBOARD_EXEMPT 路径）、`demos/{_registry.json,demos-index.html}` + `data/_demos-data.json`（demo --rebuild）。
+- 验收（真跑）：masthead 68px ≤100；面板 1296×810 = 90vw×90vh；列表 8/4 项、点选换预览、单张下载 720×594；
+  `plan.html#p=…` 经桩跳转后共享条出现、`恢复我的方案` 还原且清 hash；`pytest` 全量绿；`baseline.py --update` 后 50/50（demos-index 因索引行更名重钉）。

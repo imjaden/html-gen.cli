@@ -10,7 +10,8 @@
 
 产物（全部自包含单文件，无外链资源）:
   demos/slimdown/exercises.html   html-gen table 标准模板（数据 data/_slimdown-exercises.json）
-  demos/slimdown/plan.html        _src/plan.tpl + _src/plan.js + 数据内联
+  demos/slimdown/index.html       _src/plan.tpl + 数据内联（plan 页本体；目录首页，/demos/slimdown/ 直达）
+  demos/slimdown/plan.html        跳转桩（v1.4 起旧链接兼容，透传 ? 与 # 后跳 index.html）
   demos/slimdown/archive.html     _src/archive.tpl + _src/archive.js
 
 设计取舍:
@@ -35,9 +36,27 @@ HTML_GEN = ROOT / 'html-gen.py'
 
 PAGES = [
     ('exercises.html', '动作库'),
-    ('plan.html', '训练方案'),
+    ('index.html', '训练方案'),
     ('archive.html', '档案'),
 ]
+
+# 旧链接兼容桩（v1.4）：plan.html → index.html，透传 query 与 hash（含 #p= 分享链接）
+REDIRECT_STUB = '''<!DOCTYPE html>
+<!-- slimdown:redirect auto -->
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>训练方案 · slimdown（已迁目录首页）</title>
+<meta http-equiv="refresh" content="0;url=index.html">
+<meta name="robots" content="noindex,follow">
+<script>location.replace('index.html' + location.search + location.hash);</script>
+</head>
+<body>
+<p>训练方案已迁到 <a href="index.html">目录首页</a>…</p>
+</body>
+</html>
+'''
 
 
 def nav_html(active):
@@ -104,7 +123,7 @@ def build_exercises(dry):
            '-d', str(DATA_EX.relative_to(ROOT)),
            '-o', str((OUT / 'exercises.html').relative_to(ROOT)),
            '--title', '训练动作库 · slimdown',
-           '--home-url', 'plan.html']
+           '--home-url', 'index.html']
     if dry:
         print('[dry]', ' '.join(cmd))
         return
@@ -136,9 +155,10 @@ def main():
     }
 
     outputs = {
-        'plan.html': render(SRC / 'plan.tpl', css_plan, js_plan, nav_html('plan.html'), plan,
-                            '薄肌减脂 · 训练方案 · slimdown')
-                     .replace('{{DATA}}', js_safe(payload)),
+        'index.html': render(SRC / 'plan.tpl', css_plan, js_plan, nav_html('index.html'), plan,
+                             '薄肌减脂 · 训练方案 · slimdown')
+                      .replace('{{DATA}}', js_safe(payload)),
+        'plan.html': REDIRECT_STUB,
         'archive.html': render(SRC / 'archive.tpl', css_base, js_arc, nav_html('archive.html'), plan,
                                '薄肌减脂 · 档案 · slimdown'),
     }

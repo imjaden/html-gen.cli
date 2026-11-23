@@ -19,7 +19,8 @@ window.SB = window.SB || {};
     panelView: 'edit',   /* 面板分段：edit | prev */
     exFilter: 'all',     /* 编辑左栏器材筛选 */
     exQuery: '',         /* 编辑左栏搜索词 */
-    themeCard: 0,        /* 预览里的主题序号 */
+    shotWeek: '',        /* 下载面板 · 周视图选中项（day key 或 'week' 速览） */
+    shotTheme: 0,        /* 下载面板 · 主题视图选中序号 */
     checkin: {}          /* {'2026-11-23': ['mon','wed']} */
   };
   var KEEP_DAYS = 28;

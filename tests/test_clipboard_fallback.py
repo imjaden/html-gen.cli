@@ -40,7 +40,7 @@ LANDING_EXCLUDED = {'demos/index.html'}
 # 图片剪贴板例外：canonical 块只处理文本；图片必须走 ClipboardItem（无替代 API）。
 # 该页文本复制仍用 canonical 块，图片调用点自带 isSecureContext 判定 + 下载兜底，
 # 下面的分支用三条断言锁住这几件不丢，不是整文件放行。
-IMAGE_CLIPBOARD_EXEMPT = {'demos/slimdown/plan.html'}
+IMAGE_CLIPBOARD_EXEMPT = {'demos/slimdown/index.html'}   # v1.4：plan.html → index.html（plan.html 现为跳转桩，无剪贴板调用）
 
 DOC_PAGE = PROJECT / 'demos' / 'usage-guide.html'
 SLIDE_PAGE = PROJECT / 'demos' / 'slide-demo.html'

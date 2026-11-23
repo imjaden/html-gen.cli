@@ -25,18 +25,14 @@ if(o.view)document.documentElement.setAttribute('data-view',o.view);}catch(e){}}
   <header class="masthead">
     <div class="kicker">HOME WORKOUT PLAN</div>
     <h1>居家训练计划</h1>
-    <div class="sub" id="pageSub">干净饮食 · 热量缺口 · 减脂增肌</div>
   </header>
 
   <div class="view-bar">
     <div class="v-seg" id="viewSeg" role="tablist" aria-label="视图切换">
-      <button type="button" role="tab" data-view="week" class="on">按星期</button>
-      <button type="button" role="tab" data-view="theme">按主题</button>
+      <button type="button" role="tab" data-view="week" class="on">星期</button>
+      <button type="button" role="tab" data-view="theme">主题</button>
     </div>
-    <label class="preset-pick" id="presetPick">
-      <span class="lbl">方案</span>
-      <select id="presetSel" aria-label="方案预设"></select>
-    </label>
+    <div class="sub" id="pageSub">干净饮食 · 热量缺口 · 减脂增肌</div>
   </div>
 
   <div class="shared-bar" id="sharedBar" hidden>
@@ -95,7 +91,13 @@ if(o.view)document.documentElement.setAttribute('data-view',o.view);}catch(e){}}
       </div>
 
       <div class="view" id="viewPrev">
-        <div class="preview-host" id="previewHost"></div>
+        <div class="shot-grid">
+          <div class="shot-side">
+            <div class="shot-title">方案列表</div>
+            <ul id="shotList"></ul>
+          </div>
+          <div class="preview-host" id="previewHost"></div>
+        </div>
       </div>
     </div>
 
@@ -108,7 +110,6 @@ if(o.view)document.documentElement.setAttribute('data-view',o.view);}catch(e){}}
         <button class="p-link" id="btnClearMemory" type="button" title="清空配色 / 视图 / 筛选 / 打卡等本机记忆">清除本机记忆</button>
       </div>
       <div class="p-actions">
-        <button class="p-btn" id="btnDownloadEach" type="button" hidden>逐张下载</button>
         <button class="p-btn primary" id="btnSavePlan" type="button">保存方案</button>
         <button class="p-btn" id="btnDownloadImg" type="button" disabled>下载图片</button>
       </div>

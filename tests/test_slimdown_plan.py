@@ -1,7 +1,8 @@
 """slimdown 方案页 v1.3 回归：数据契约（按星期 / 按主题）+ 视图切换与点击态记忆。
 
 数据来源：scripts/slimdown-import-v13.py（两份参考页 → data/_slimdown-plan.json + 动作库 append）。
-页面：demos/slimdown/plan.html（scripts/build-slimdown.py 由 _src/{plan.tpl,plan.css,state.js,shot.js,plan.js} 生成）。
+页面：demos/slimdown/index.html（scripts/build-slimdown.py 由 _src/{plan.tpl,plan.css,state.js,shot.js,plan.js} 生成；
+plan.html 为旧链接跳转桩）。
 """
 import json
 import threading
@@ -21,7 +22,7 @@ from conftest import chromedriver_service
 PROJECT = Path(__file__).resolve().parent.parent
 DATA = PROJECT / 'data'
 DEMOS = PROJECT / 'demos'
-PAGE = DEMOS / 'slimdown' / 'plan.html'
+PAGE = DEMOS / 'slimdown' / 'index.html'
 
 
 class _Quiet(SimpleHTTPRequestHandler):
@@ -39,8 +40,9 @@ class TestSlimdownData(unittest.TestCase):
         cls.html = PAGE.read_text(encoding='utf-8')
 
     def test_01_presets(self):
+        # v1.4：力量版预设已移除，只剩 home
         ids = [p['id'] for p in self.plan['presets']]
-        self.assertEqual(ids, ['home', 'strength'])
+        self.assertEqual(ids, ['home'])
         self.assertEqual(self.plan['defaultPreset'], 'home')
         home = [p for p in self.plan['presets'] if p['id'] == 'home'][0]
         self.assertEqual(len(home['days']), 7)
@@ -68,11 +70,12 @@ class TestSlimdownData(unittest.TestCase):
                 self.assertTrue(it['muscle'])
                 self.assertNotIn('sets', it)             # v1.3 不给动作级组数
 
-    def test_04_strength_preset_kept(self):
-        st = [p for p in self.plan['presets'] if p['id'] == 'strength'][0]
-        self.assertEqual(len(st['days']), 7)
-        self.assertEqual(sum(len(d['items']) for d in st['days']), 25)   # 旧七日原样保留
-        self.assertTrue(all('sets' in it for d in st['days'] for it in d['items']))
+    def test_04_redirect_stub_keeps_old_links(self):
+        stub = (DEMOS / 'slimdown' / 'plan.html').read_text(encoding='utf-8')
+        self.assertIn('slimdown:redirect auto', stub)          # 带标记，别名清理不误删
+        self.assertIn("location.replace('index.html' + location.search + location.hash)", stub)
+        self.assertIn('noindex', stub)                         # 跳转桩不抢 canonical
+        self.assertIn('已迁目录首页', stub)                      # registry 行的标题口径
 
     def test_05_themes(self):
         th = self.plan['themes']
@@ -95,7 +98,7 @@ class TestSlimdownData(unittest.TestCase):
     def test_07_page_snapshot_matches_data(self):
         # 断言串一律小写短串 + assertTrue(msg)，失败时不把整个 HTML 倒进日志
         self.assertTrue(self.plan['version'] in self.html, '改了数据没重建')
-        for marker in ('id="viewSeg"', 'id="themeRow"', 'id="shotHost"',
+        for marker in ('id="viewSeg"', 'id="themeRow"', 'id="shotHost"', 'id="shotList"',
                        'slimdown:ui:v2', 'SB.shot', '"setsHint":"3–5"', 'theme-card'):
             self.assertTrue(marker in self.html, marker)
         for t in self.plan['themes']:
@@ -137,7 +140,7 @@ class TestSlimdownPage(unittest.TestCase):
 
     # ── helpers ──
     def url(self):
-        return f'http://127.0.0.1:{self.port}/slimdown/plan.html'
+        return f'http://127.0.0.1:{self.port}/slimdown/index.html'
 
     def js(self, code):
         return self.driver.execute_script('return ' + code)
@@ -165,11 +168,14 @@ class TestSlimdownPage(unittest.TestCase):
         self.assertEqual(self.errors(), [])
 
     def test_11_theme_view_switch(self):
+        self.assertEqual([b.text.strip() for b in
+                          self.driver.find_elements(By.CSS_SELECTOR, '#viewSeg button')],
+                         ['星期', '主题'])                      # v1.4：标签文案
         self.js("document.querySelector('#viewSeg button[data-view=theme]').click()")
         time.sleep(0.3)
         self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#themeRow .theme-card')), 4)
         self.assertTrue(self.js("document.getElementById('weekRow').hidden"))
-        self.assertTrue(self.js("document.getElementById('presetPick').hidden"))
+        self.assertIsNone(self.js("document.getElementById('presetPick')"))   # 下拉已移除
         self.assertTrue(self.js("document.getElementById('fabEdit').hidden"))
         self.assertEqual(self.js("document.querySelectorAll('.video-link').length"), 4)
         self.assertEqual(self.ui_state()['view'], 'theme')
@@ -220,30 +226,60 @@ class TestSlimdownPage(unittest.TestCase):
         time.sleep(0.3)
         self.assertEqual(self.ui_state()['day'], 'thu')
 
-    def test_15_theme_panel_export_gates(self):
+    def test_15_theme_panel_shot_list(self):
+        # v1.4：左列表 + 右预览 + 单张下载；合并长图/逐张已撤
         self.js("document.querySelector('#viewSeg button[data-view=theme]').click()")
         time.sleep(0.2)
         self.js("document.getElementById('fabShot').click()")
         time.sleep(0.4)
         self.assertIn('主题跟练', self.js("document.getElementById('panelTitle').textContent"))
-        self.assertEqual(self.js("document.querySelectorAll('#previewHost .card').length"), 4)
+        self.assertEqual(self.js("document.querySelectorAll('#shotList li').length"), 4)
+        self.assertEqual(self.js("document.querySelectorAll('#previewHost .card').length"), 1)
+        self.assertTrue(self.js("document.querySelector('#shotList li').classList.contains('on')"))
         self.assertTrue(self.js("document.getElementById('btnSavePlan').disabled"))
         self.assertTrue(self.js("document.getElementById('btnShare').disabled"))
         self.assertFalse(self.js("document.getElementById('btnDownloadImg').disabled"))
-        self.assertFalse(self.js("document.getElementById('btnDownloadEach').hidden"))
-
-    def test_16_preset_switch(self):
-        self.js("(function(){var s=document.getElementById('presetSel');s.value='strength';"
-                "s.dispatchEvent(new Event('change'));})()")
+        self.assertIsNone(self.js("document.getElementById('btnDownloadEach')"))  # 逐张按钮已删
+        # 选第 3 套 → 预览换卡
+        self.js("document.querySelectorAll('#shotList li')[2].click()")
         time.sleep(0.3)
-        self.assertEqual(self.js("document.querySelectorAll('#weekRow .day-card .d-list li').length"), 25)
-        self.assertIn('下肢 A', self.js("document.querySelector('#weekRow .day-card .b-tag').textContent"))
-        self.assertEqual(self.ui_state()['preset'], 'strength')
+        self.assertIn('Tabata', self.js("document.querySelector('#previewHost .card h2').textContent"))
+        self.assertEqual(self.ui_state()['shotTheme'], 2)
+
+    def test_16_week_shot_list_and_memory(self):
+        self.js("document.getElementById('fabEdit').click()")
+        time.sleep(0.3)
+        self.js("document.querySelector('#panelSeg button[data-view=prev]').click()")
+        time.sleep(0.3)
+        self.assertEqual(self.js("document.querySelectorAll('#shotList li').length"), 8)   # 本周速览 + 七天
+        self.js("document.querySelectorAll('#shotList li')[0].click()")
+        time.sleep(0.3)
+        self.assertIn('7-DAY', self.js("document.querySelector('#previewHost .card .k').textContent"))
+        self.assertEqual(self.ui_state()['shotWeek'], 'week')
+        self.js("document.getElementById('panelClose').click()")
         self.driver.refresh()
         WebDriverWait(self.driver, 8).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '#weekRow .day-card')))
         time.sleep(0.3)
-        self.assertEqual(self.ui_state()['preset'], 'strength')
+        self.assertEqual(self.ui_state()['shotWeek'], 'week')
+
+    def test_17_panel_and_masthead_metrics(self):
+        # v1.4：面板 90vw×90vh；masthead 减半（175px → 目标 ≤100px @1440）
+        self.driver.set_window_size(1440, 900)
+        self.driver.refresh()
+        WebDriverWait(self.driver, 8).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#weekRow .day-card')))
+        time.sleep(0.3)
+        mh = self.js("Math.round(document.querySelector('.masthead').getBoundingClientRect().height)")
+        self.assertLessEqual(mh, 100)
+        self.js("document.getElementById('fabEdit').click()")
+        time.sleep(0.3)
+        size = self.js("JSON.stringify((function(){var r=document.querySelector('.panel').getBoundingClientRect();"
+                       "return {w:Math.round(r.width), h:Math.round(r.height), vw:innerWidth, vh:innerHeight};})())")
+        import json as _json
+        sz = _json.loads(size)
+        self.assertAlmostEqual(sz['w'] / sz['vw'], 0.9, delta=0.02)
+        self.assertAlmostEqual(sz['h'] / sz['vh'], 0.9, delta=0.02)
         self.assertEqual(self.errors(), [])
 
 

@@ -136,13 +136,7 @@ def parse_themes(html):
 
 
 def build_plan(old, days, themes):
-    strength = None
-    for p in old.get('presets') or []:
-        if p.get('id') == 'strength':
-            strength = p
-    if strength is None:
-        strength = {'id': 'strength', 'label': '力量版', 'version': old.get('version', 'v1.2'),
-                    'days': old.get('days') or []}
+    # v1.4：力量版预设已按用户裁定移除（数据与 UI 一并删），旧方案只留在 git 历史与方案文档里。
     plan = {
         'version': VERSION,
         'updated': UPDATED,
@@ -153,7 +147,6 @@ def build_plan(old, days, themes):
         'presets': [
             {'id': 'home', 'label': '居家七日', 'version': VERSION,
              'slogan': '干净饮食 · 热量缺口 · 减脂增肌', 'days': days},
-            strength,
         ],
         'themes': themes,
     }
@@ -184,6 +177,7 @@ def check(plan, ex):
     items = sum(len(d.get('items') or []) for d in home['days'])
     rest = sum(len(d.get('recover') or []) for d in home['days'])
     ids = [r['id'] for r in ex['data']]
+    assert [p['id'] for p in plan['presets']] == ['home'], [p['id'] for p in plan['presets']]
     assert len(home['days']) == 7, len(home['days'])
     assert items == 52, items
     assert rest == 5, rest

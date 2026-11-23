@@ -5,7 +5,7 @@
 
   var DATA = window.SLIMDOWN || {};
   var PLAN = DATA.plan || {};
-  var PRESETS = PLAN.presets || [];
+  var PRESET = (PLAN.presets || [])[0] || { id: 'home', days: [] };
   var LAYOUTS = PLAN.themes || [];
   var EX = (DATA.exercises || []).slice();
   var BYID = {};
@@ -24,7 +24,7 @@
   var ui = window.SB.ui;
   var shot = window.SB.shot;
 
-  var cur = null, DEFAULTS = [], days = [];
+  var cur = PRESET, DEFAULTS = [], days = [];
   var EDITS = readEdits();
   var shared = false;
   var activeKey = '';
@@ -58,10 +58,6 @@
   function dayBy(key) {
     for (var i = 0; i < days.length; i++) if (days[i].key === key) return days[i];
     return days[0];
-  }
-  function presetById(id) {
-    for (var i = 0; i < PRESETS.length; i++) if (PRESETS[i].id === id) return PRESETS[i];
-    return null;
   }
   function sumSets(d) {
     return (d.items || []).reduce(function (n, it) { return n + (parseInt(it.sets, 10) || 0); }, 0);
@@ -117,17 +113,10 @@
   function readEdits() {
     var o = {};
     try { o = JSON.parse(localStorage.getItem(EDITS_KEY) || '{}') || {}; } catch (e) { o = {}; }
-    if (!o.v) {
-      try {
-        var raw = localStorage.getItem(LEGACY_EDITS);
-        if (raw) {
-          var old = JSON.parse(raw);
-          if (old && old.days && old.days.length) o.byPreset = { strength: old.days };
-        }
-      } catch (e) {}
-      o.v = 2;
-    }
-    if (!o.byPreset || typeof o.byPreset !== 'object') o.byPreset = {};
+    if (!o.v) o.v = 2;
+    /* v1.3 的 byPreset 结构一次性收编成单份（力量版预设已移除，旧 v1 编辑稿随力量版一起弃用） */
+    if (!Array.isArray(o.days) && o.byPreset && Array.isArray(o.byPreset.home)) o.days = o.byPreset.home;
+    delete o.byPreset;
     return o;
   }
   function writeEdits() {
@@ -136,29 +125,9 @@
       localStorage.removeItem(LEGACY_EDITS);
     } catch (e) {}
   }
-  function loadPreset(id) {
-    var p = presetById(id) || presetById(PLAN.defaultPreset) || PRESETS[0];
-    if (!p) { DEFAULTS = []; days = []; return; }
-    cur = p;
-    DEFAULTS = clone(p.days || []);
-    days = clone(EDITS.byPreset[p.id] || DEFAULTS);
-    ui.set('preset', p.id);
-    var sel = $('presetSel');
-    if (sel && sel.value !== p.id) sel.value = p.id;
-  }
-  function initPresetSel() {
-    var sel = $('presetSel');
-    sel.innerHTML = PRESETS.map(function (p) {
-      return '<option value="' + esc(p.id) + '">' + esc(p.label) + ' · ' + esc(p.version || '') + '</option>';
-    }).join('');
-    sel.addEventListener('change', function () {
-      loadPreset(sel.value);
-      shared = false;
-      $('sharedBar').hidden = true;
-      renderWeek();
-      if (panelState.open) renderPanel();
-      showToast('方案：' + cur.label);
-    });
+  function loadPlan() {
+    DEFAULTS = clone(cur.days || []);
+    days = clone(EDITS.days || DEFAULTS);
   }
 
   /* ── 视图切换（按星期 / 按主题） ── */
@@ -174,7 +143,6 @@
     });
     $('weekRow').hidden = view !== 'week';
     $('themeRow').hidden = view !== 'theme';
-    $('presetPick').hidden = view !== 'week';
     $('fabEdit').hidden = view !== 'week';
   }
   $('viewSeg').addEventListener('click', function (ev) {
@@ -382,6 +350,19 @@
     showToast('已交换 ' + a.label + ' ↔ ' + b.label);
   }
   document.addEventListener('keydown', function (ev) {
+    if (!ev.altKey && panelState.open && panelState.view === 'prev' && !ev.ctrlKey && !ev.metaKey &&
+        ev.key !== 'Escape' && ev.target && /^(INPUT|TEXTAREA|SELECT)$/.test(ev.target.tagName) === false) {
+      if (ev.key === 'ArrowDown' || ev.key === 'ArrowUp') {
+        ev.preventDefault();
+        selectShot(shotIndex() + (ev.key === 'ArrowDown' ? 1 : -1));
+        return;
+      }
+      if (ev.key === 'Enter') {
+        ev.preventDefault();
+        $('btnDownloadImg').click();
+        return;
+      }
+    }
     if (ev.key === 'Escape') {
       if ($('panelMask').classList.contains('open')) closePanel();
       else if ($('shareMask').classList.contains('open')) $('shareMask').classList.remove('open');
@@ -436,9 +417,7 @@
     }).join('');
   }
   function renderPanelBody() {
-    if (panelState.scope === 'theme') renderThemePreview();
-    else if (panelState.view === 'edit') renderEdit();
-    else renderPreview();
+    if (panelState.view === 'edit') renderEdit(); else renderShot();
   }
   function renderTabs() {
     var tk = todayKey();
@@ -476,7 +455,6 @@
     $('btnDownloadImg').disabled = v !== 'prev';
     $('btnCopyImg').disabled = v !== 'prev';
     $('btnShare').disabled = isTheme;
-    $('btnDownloadEach').hidden = !isTheme || v !== 'prev';
     renderPanelBody();
   }
   $('panelSeg').addEventListener('click', function (ev) {
@@ -599,13 +577,13 @@
 
   /* ── 方案改动：改即自动存本机（按预设分开） ── */
   function markDirty() {
-    EDITS.byPreset[cur.id] = clone(days);
+    EDITS.days = clone(days);
     writeEdits();
     $('panelNote').textContent = '已自动保存到本机';
   }
   function saveLocal(silent) {
     if (!cur) return false;
-    EDITS.byPreset[cur.id] = clone(days);
+    EDITS.days = clone(days);
     writeEdits();
     if (!silent) {
       showToast('已保存到本机');
@@ -629,7 +607,7 @@
   $('btnLoadDefault').addEventListener('click', function () {
     if (!confirm('还原成「' + cur.label + '」的默认七天方案？本机保存的改动会丢。')) return;
     days = clone(DEFAULTS);
-    delete EDITS.byPreset[cur.id];
+    delete EDITS.days;
     writeEdits();
     renderWeek(); renderEdit();
     $('panelNote').textContent = '已还原默认方案';
@@ -833,12 +811,57 @@
       '<span class="dt">' + esc(dateLine()) + '</span></div>' +
       '</div>';
   }
-  function renderPreview() {
-    $('previewHost').innerHTML = buildDayCard(activeKey);
+  /* ── 下载面板：左方案列表 + 右预览（预览 = 下载物），单张下载 ── */
+  function shotItems() {
+    if (panelState.scope === 'theme') {
+      return LAYOUTS.map(function (t, i) {
+        return { key: 't' + i, title: t.name,
+                 meta: t.time + ' · ' + (t.items || []).length + ' 项 · 建议 ' + t.sets + ' 组',
+                 build: (function (x) { return function () { return buildThemeCard(x); }; })(t) };
+      });
+    }
+    var items = [{ key: 'week', title: '本周速览', meta: cur.label + ' · 七日一览', build: buildWeekCard }];
+    days.forEach(function (d) {
+      items.push({ key: d.key, title: d.label + ' · ' + d.theme,
+                   meta: d.rest ? '恢复日 · ' + (d.recover || []).length + ' 条建议'
+                                : d.duration + ' · ' + (d.items || []).length + ' 项',
+                   build: (function (k) { return function () { return buildDayCard(k); }; })(d.key) });
+    });
+    return items;
   }
-  function renderThemePreview() {
-    $('previewHost').innerHTML = '<div class="preview-stack">' +
-      LAYOUTS.map(function (t) { return buildThemeCard(t); }).join('') + '</div>';
+  function shotIndex() {
+    var items = shotItems();
+    if (panelState.scope === 'theme') {
+      var i = parseInt(ui.get('shotTheme'), 10) || 0;
+      return Math.min(Math.max(i, 0), items.length - 1);
+    }
+    var want = ui.get('shotWeek') || activeKey || todayKey();
+    for (var j = 0; j < items.length; j++) if (items[j].key === want) return j;
+    return 0;
+  }
+  function renderShot() {
+    var items = shotItems(), idx = shotIndex();
+    $('shotList').innerHTML = items.map(function (it, i) {
+      return '<li class="' + (i === idx ? 'on' : '') + '" data-i="' + i + '" tabindex="0"' +
+        ' aria-selected="' + (i === idx) + '"><b>' + esc(it.title) + '</b>' +
+        '<span class="meta">' + esc(it.meta) + '</span></li>';
+    }).join('');
+    $('shotList').querySelectorAll('li').forEach(function (li) {
+      li.addEventListener('click', function () { selectShot(+li.getAttribute('data-i')); });
+    });
+    $('previewHost').innerHTML = items[idx].build();
+  }
+  function selectShot(i) {
+    var items = shotItems();
+    if (i < 0 || i >= items.length) return;
+    if (panelState.scope === 'theme') ui.set('shotTheme', i);
+    else ui.set('shotWeek', items[i].key);
+    renderShot();
+    $('panelNote').textContent = '预览：' + items[i].title;
+  }
+  function previewNode() {
+    var items = shotItems(), idx = shotIndex();
+    return shotHost(items[idx].build());
   }
 
   function shotHost(html) {
@@ -849,64 +872,35 @@
   function pngName(tag) {
     return 'slimdown-' + tag + '-' + shot.stamp() + '.png';
   }
-  function themeSheet() {
-    return shotHost('<div class="shot-sheet">' +
-      LAYOUTS.map(function (t) { return buildThemeCard(t); }).join('') + '</div>');
-  }
-  function exportEachTheme() {
-    var i = 0, doneCount = 0;
-    $('panelNote').textContent = '逐张生成中… 0/' + LAYOUTS.length;
-    function step() {
-      if (i >= LAYOUTS.length) {
-        $('panelNote').textContent = '已下载 ' + doneCount + ' 张';
-        shotHost('');
-        return;
-      }
-      var node = shotHost(buildThemeCard(LAYOUTS[i]));
-      shot.nodeToBlob(node, { maxH: 6000 }).then(function (r) {
-        shot.download(r.blob, pngName('theme' + (i + 1)));
-        doneCount++;
-        i++;
-        $('panelNote').textContent = '逐张生成中… ' + i + '/' + LAYOUTS.length;
-        setTimeout(step, 260);
-      }).catch(function (e) {
-        $('panelNote').textContent = '第 ' + (i + 1) + ' 张失败：' + e.message;
-        shotHost('');
-      });
-    }
-    step();
-  }
+  /* 单张下载：下载的就是右栏预览的那张（合并长图 / 逐张已按 v1.4 裁定撤除） */
   $('btnDownloadImg').addEventListener('click', function () {
-    var isTheme = panelState.scope === 'theme';
-    var node = isTheme ? themeSheet() : shotHost(buildDayCard(activeKey));
+    var items = shotItems(), idx = shotIndex(), node = previewNode();
     if (!node) return;
     $('panelNote').textContent = '生成中…';
-    shot.nodeToBlob(node, { maxH: isTheme ? 6000 : 4000 }).then(function (r) {
-      shot.download(r.blob, pngName(isTheme ? 'themes' : (activeKey || todayKey())));
-      $('panelNote').textContent = '已下载 ' + r.w + '×' + r.h + (r.scaled ? '（长图已等比缩放）' : '');
+    shot.nodeToBlob(node, { maxH: 6000 }).then(function (r) {
+      shot.download(r.blob, pngName(items[idx].key || 'plan'));
+      $('panelNote').textContent = '已下载 ' + r.w + '×' + r.h + ' · ' + items[idx].title;
       shotHost('');
     }).catch(function (e) {
       $('panelNote').textContent = '导出失败：' + e.message;
       shotHost('');
     });
   });
-  $('btnDownloadEach').addEventListener('click', exportEachTheme);
   $('btnCopyImg').addEventListener('click', function () {
-    var isTheme = panelState.scope === 'theme';
-    var node = isTheme ? themeSheet() : ($('previewHost').querySelector('.card') || shotHost(buildDayCard(activeKey)));
+    var items = shotItems(), idx = shotIndex(), node = previewNode();
     if (!node) return;
     $('panelNote').textContent = '生成中…';
-    shot.nodeToBlob(node, { maxH: isTheme ? 6000 : 4000 }).then(function (r) {
+    shot.nodeToBlob(node, { maxH: 6000 }).then(function (r) {
       var blob = r.blob, size = r.w + '×' + r.h;
       if (window.isSecureContext && navigator.clipboard && window.ClipboardItem) {
         return navigator.clipboard.write([new ClipboardItem({ 'image/png': blob })])
-          .then(function () { $('panelNote').textContent = '已复制 · ' + size; })
+          .then(function () { $('panelNote').textContent = '已复制 · ' + size + ' · ' + items[idx].title; })
           .catch(function () {
-            shot.download(blob, pngName(activeKey || 'plan'));
+            shot.download(blob, pngName(items[idx].key || 'plan'));
             $('panelNote').textContent = '复制被拒绝，已下载 ' + size;
           });
       }
-      shot.download(blob, pngName(activeKey || 'plan'));
+      shot.download(blob, pngName(items[idx].key || 'plan'));
       $('panelNote').textContent = '当前环境不支持复制图片，已下载 PNG ' + size;
     }).catch(function (e) {
       $('panelNote').textContent = '导出失败：' + e.message + '（可改用截图）';
@@ -940,7 +934,9 @@
     if (!m) return false;
     var res = decodePlan(m[1]);
     if (!res || !res.days.length) { showToast('分享链接已损坏，已按本机方案显示'); return false; }
-    if (res.preset && presetById(res.preset) && res.preset !== cur.id) loadPreset(res.preset);
+    if (res.preset && res.preset !== cur.id) {
+      showToast('链接里的「' + res.preset + '」预设已下线，按当前方案显示');
+    }
     res.days.forEach(function (sd) {
       var d = dayBy(sd.key);
       if (!d) return;
@@ -953,7 +949,7 @@
     return true;
   }
   $('btnUnshare').addEventListener('click', function () {
-    days = clone(EDITS.byPreset[cur.id] || DEFAULTS);
+    days = clone(EDITS.days || DEFAULTS);
     shared = false;
     $('sharedBar').hidden = true;
     if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
@@ -962,8 +958,7 @@
   });
 
   initSkins();
-  initPresetSel();
-  loadPreset(ui.get('preset') || PLAN.defaultPreset);
+  loadPlan();
   applyHash();
   activeKey = ui.get('day') || todayKey();
   setPageView(ui.get('view'));
