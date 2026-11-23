@@ -953,6 +953,7 @@
     shared = false;
     $('sharedBar').hidden = true;
     if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    setPageView(ui.get('view'), { silent: true });   /* 回到本机记忆的视图（分享期间被强制星期） */
     renderWeek();
     showToast('已恢复我的方案');
   });
@@ -962,6 +963,7 @@
   applyHash();
   activeKey = ui.get('day') || todayKey();
   setPageView(ui.get('view'));
+  if (shared) setPageView('week', { silent: true });  /* 分享的是七日方案 ⇒ 强制星期视图，不动本机记忆 */
   $('sharedBar').hidden = !shared;
   if (!cardMode()) {
     var animate = shouldAnimate();

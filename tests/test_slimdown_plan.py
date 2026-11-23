@@ -145,6 +145,11 @@ class TestSlimdownPage(unittest.TestCase):
     def js(self, code):
         return self.driver.execute_script('return ' + code)
 
+    def to_week(self):
+        """v1.5 起默认视图是主题，周视图相关用例先切过去。"""
+        self.js("document.querySelector('#viewSeg button[data-view=week]').click()")
+        time.sleep(0.3)
+
     def errors(self):
         errs = self.js('window.__testErrors') or []
         severe = [l['message'] for l in self.driver.get_log('browser') if l['level'] == 'SEVERE']
@@ -156,6 +161,7 @@ class TestSlimdownPage(unittest.TestCase):
 
     # ── 结构 ──
     def test_10_week_view(self):
+        self.to_week()
         cards = self.driver.find_elements(By.CSS_SELECTOR, '#weekRow .day-card')
         self.assertEqual(len(cards), 7)
         rows = self.js("[].map.call(document.querySelectorAll('#weekRow .day-card'),"
@@ -168,35 +174,39 @@ class TestSlimdownPage(unittest.TestCase):
         self.assertEqual(self.errors(), [])
 
     def test_11_theme_view_switch(self):
+        # v1.5：标签序「主题、星期」，默认主题
         self.assertEqual([b.text.strip() for b in
                           self.driver.find_elements(By.CSS_SELECTOR, '#viewSeg button')],
-                         ['星期', '主题'])                      # v1.4：标签文案
-        self.js("document.querySelector('#viewSeg button[data-view=theme]').click()")
-        time.sleep(0.3)
-        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#themeRow .theme-card')), 4)
+                         ['主题', '星期'])
+        self.assertFalse(self.js("document.getElementById('themeRow').hidden"))   # 默认主题
         self.assertTrue(self.js("document.getElementById('weekRow').hidden"))
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#themeRow .theme-card')), 4)
         self.assertIsNone(self.js("document.getElementById('presetPick')"))   # 下拉已移除
         self.assertTrue(self.js("document.getElementById('fabEdit').hidden"))
+        self.to_week()
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#weekRow .day-card')), 7)
+        self.assertFalse(self.js("document.getElementById('fabEdit').hidden"))
         self.assertEqual(self.js("document.querySelectorAll('.video-link').length"), 4)
-        self.assertEqual(self.ui_state()['view'], 'theme')
+        self.assertEqual(self.ui_state()['view'], 'week')      # to_week 之后应落记忆
         self.assertEqual(self.errors(), [])
 
     def test_12_reload_keeps_view_and_skin(self):
-        self.js("document.querySelector('#viewSeg button[data-view=theme]').click()")
+        self.to_week()                                   # 切星期后再验证记忆
         self.js("(function(){var s=document.getElementById('themeSel');s.value='indigo';"
                 "s.dispatchEvent(new Event('change'));})()")
         time.sleep(0.3)
         self.driver.refresh()
         WebDriverWait(self.driver, 8).until(
-            EC.presence_of_element_located((By.CSS_SELECTOR, '#themeRow .theme-card')))
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#weekRow .day-card')))
         time.sleep(0.3)
-        self.assertEqual(self.js("document.documentElement.getAttribute('data-view')"), 'theme')
-        self.assertFalse(self.js("document.getElementById('themeRow').hidden"))
+        self.assertEqual(self.js("document.documentElement.getAttribute('data-view')"), 'week')
+        self.assertFalse(self.js("document.getElementById('weekRow').hidden"))
         self.assertEqual(self.js("document.documentElement.getAttribute('data-theme')"), 'indigo')
         self.assertEqual(self.js("document.getElementById('themeSel').value"), 'indigo')
         self.assertEqual(self.errors(), [])
 
     def test_13_checkin_persists(self):
+        self.to_week()
         self.js("document.querySelector('#weekRow .day-card[data-day=wed] .chk').click()")
         time.sleep(0.2)
         self.assertEqual(self.js(
@@ -213,6 +223,7 @@ class TestSlimdownPage(unittest.TestCase):
             'true')
 
     def test_14_day_panel_and_day_memory(self):
+        self.to_week()
         self.js("document.querySelector('#weekRow .day-card[data-day=thu]').click()")
         time.sleep(0.3)
         self.assertTrue(self.js("document.getElementById('panelMask').classList.contains('open')"))
@@ -247,6 +258,7 @@ class TestSlimdownPage(unittest.TestCase):
         self.assertEqual(self.ui_state()['shotTheme'], 2)
 
     def test_16_week_shot_list_and_memory(self):
+        self.to_week()
         self.js("document.getElementById('fabEdit').click()")
         time.sleep(0.3)
         self.js("document.querySelector('#panelSeg button[data-view=prev]').click()")
@@ -271,15 +283,38 @@ class TestSlimdownPage(unittest.TestCase):
             EC.presence_of_element_located((By.CSS_SELECTOR, '#weekRow .day-card')))
         time.sleep(0.3)
         mh = self.js("Math.round(document.querySelector('.masthead').getBoundingClientRect().height)")
-        self.assertLessEqual(mh, 100)
+        self.assertLessEqual(mh, 60)                     # v1.5：标题一行
+        self.to_week()
         self.js("document.getElementById('fabEdit').click()")
         time.sleep(0.3)
-        size = self.js("JSON.stringify((function(){var r=document.querySelector('.panel').getBoundingClientRect();"
-                       "return {w:Math.round(r.width), h:Math.round(r.height), vw:innerWidth, vh:innerHeight};})())")
+        size = self.js("JSON.stringify((function(){var p=document.querySelector('.panel').getBoundingClientRect();"
+                       "var h=document.querySelector('.p-head').getBoundingClientRect();"
+                       "var f=document.querySelector('.p-foot').getBoundingClientRect();"
+                       "return {w:Math.round(p.width), h:Math.round(p.height), vw:innerWidth, vh:innerHeight,"
+                       " head:Math.round(h.height), foot:Math.round(f.height)};})())")
         import json as _json
         sz = _json.loads(size)
         self.assertAlmostEqual(sz['w'] / sz['vw'], 0.9, delta=0.02)
-        self.assertAlmostEqual(sz['h'] / sz['vh'], 0.9, delta=0.02)
+        self.assertAlmostEqual(sz['h'] / sz['vh'], 1.0, delta=0.02)   # v1.5：面板 100vh
+        self.assertLessEqual(sz['head'], 40)             # p-head 减半
+        self.assertLessEqual(sz['foot'], 40)             # p-foot 减半
+        self.assertEqual(self.errors(), [])
+
+    def test_18_shared_link_forces_week_view(self):
+        # 记忆是主题，但带 #p= 的分享链接必须落星期视图；恢复后回主题
+        self.driver.refresh()
+        WebDriverWait(self.driver, 8).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#themeRow .theme-card')))
+        self.js("location.hash = 'p=v3|home|1=!!73*~99%20次|2=!!'")
+        self.driver.refresh()                                # 页面级刷新，避免脚本内 reload 竞态
+        WebDriverWait(self.driver, 8).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#sharedBar:not([hidden])')))
+        time.sleep(0.3)
+        self.assertFalse(self.js("document.getElementById('weekRow').hidden"))
+        self.assertFalse(self.js("document.getElementById('sharedBar').hidden"))
+        self.js("document.getElementById('btnUnshare').click()")
+        time.sleep(0.3)
+        self.assertFalse(self.js("document.getElementById('themeRow').hidden"))
         self.assertEqual(self.errors(), [])
 
 

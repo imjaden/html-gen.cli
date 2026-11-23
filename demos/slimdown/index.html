@@ -69,14 +69,15 @@ a:hover{text-decoration:underline;}
 /* ═══════ 2. 页头 ═══════ */
 .sheet{max-width:none;margin:0 auto;padding:0 16px 48px;}
 .masthead{text-align:center;padding:10px 0 8px;}
-.masthead .kicker{font-size:11px;letter-spacing:.24em;color:var(--gold);margin-bottom:4px;}
 .masthead h1{
   margin:0;font-size:clamp(18px,2.2vw,24px);font-weight:900;letter-spacing:.12em;
   font-family:"Songti SC","Noto Serif SC",SimSun,serif;
   background:linear-gradient(180deg,#fff 30%,var(--gold) 100%);
   -webkit-background-clip:text;background-clip:text;color:transparent;
 }
-.view-bar .sub{font-size:11px;color:var(--muted);letter-spacing:.05em;}
+/* 标题里的英文段：主从式（中文主体 + EN 金色小字，同一行） */
+.masthead h1 .en{font-size:.46em;font-weight:700;letter-spacing:.24em;color:var(--gold);
+  font-family:"PingFang SC","Hiragino Sans GB","Microsoft YaHei",sans-serif;}
 
 /* ═══════ 3. 主题切换（左上角，玻璃底） ═══════ */
 .theme-bar{position:fixed;top:16px;left:16px;z-index:40;display:flex;align-items:center;gap:6px;
@@ -168,11 +169,11 @@ a:hover{text-decoration:underline;}
   display:none;align-items:center;justify-content:center;padding:20px;
   backdrop-filter:blur(3px);-webkit-backdrop-filter:blur(3px);}
 .panel-mask.open{display:flex;}
-.panel{width:90vw;height:90vh;display:flex;flex-direction:column;
+.panel{width:90vw;height:100vh;height:100dvh;display:flex;flex-direction:column;
   background:var(--card-2);border:1px solid var(--edge);border-radius:16px;overflow:hidden;
   box-shadow:0 24px 70px rgba(0,0,0,.6);}
-.p-head{display:flex;align-items:center;gap:12px;padding:15px 20px;border-bottom:1px solid var(--edge-soft);}
-.p-head h2{margin:0;min-width:0;flex:0 1 auto;font-size:15px;font-weight:700;font-family:"Songti SC",SimSun,serif;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
+.p-head{display:flex;align-items:center;gap:12px;padding:4px 20px;border-bottom:1px solid var(--edge-soft);}
+.p-head h2{margin:0;min-width:0;flex:0 1 auto;font-size:13px;font-weight:700;font-family:"Songti SC",SimSun,serif;letter-spacing:.04em;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;}
 .p-head .p-x{margin-left:auto;appearance:none;border:0;background:none;color:var(--muted);
   font-size:22px;line-height:1;cursor:pointer;padding:0 4px;}
 .p-head .p-x:hover{color:var(--ink);}
@@ -186,7 +187,7 @@ a:hover{text-decoration:underline;}
   margin-left:5px;vertical-align:middle;}
 
 .p-seg{display:inline-flex;gap:0;border:1px solid var(--edge-soft);border-radius:9px;overflow:hidden;flex:none;margin-left:6px;}
-.p-seg button{appearance:none;font:inherit;font-size:12.5px;padding:6px 14px;border:0;cursor:pointer;
+.p-seg button{appearance:none;font:inherit;font-size:11.5px;padding:2px 12px;border:0;cursor:pointer;
   background:transparent;color:var(--muted);}
 .p-seg button.on{background:var(--edge);color:var(--ink);font-weight:700;}
 
@@ -232,7 +233,7 @@ a:hover{text-decoration:underline;}
 /* 预览视图：左方案列表 + 右预览（预览即下载物） */
 .shot-grid{display:grid;grid-template-columns:240px minmax(0,1fr);gap:16px;align-items:start;}
 .shot-side{border:1px solid var(--edge-soft);border-radius:10px;overflow:hidden;
-  max-height:calc(90vh - 220px);display:flex;flex-direction:column;}
+  max-height:calc(100vh - 180px);display:flex;flex-direction:column;}
 .shot-title{padding:8px 12px;border-bottom:1px solid var(--edge-soft);font-size:11px;
   color:var(--faint);letter-spacing:.08em;}
 .shot-side ul{list-style:none;margin:0;padding:4px 0;overflow:auto;}
@@ -271,18 +272,18 @@ a:hover{text-decoration:underline;}
 .card .c-foot .dt{font-size:11px;color:var(--faint);white-space:nowrap;}
 .card .c-sum{padding:0 30px;font-size:11.5px;color:var(--muted);}
 
-.p-foot{display:flex;align-items:center;gap:10px;padding:13px 20px;border-top:1px solid var(--edge-soft);flex-wrap:wrap;}
+.p-foot{display:flex;align-items:center;gap:10px;padding:3px 20px;border-top:1px solid var(--edge-soft);flex-wrap:wrap;}
 .p-foot .p-note{flex:1 1 120px;min-width:0;font-size:11px;color:var(--muted);}
 .p-links{margin-left:auto;display:flex;gap:12px;align-items:center;}
 .p-actions{display:flex;gap:8px;align-items:center;}
-.p-btn{appearance:none;font:inherit;font-size:13px;padding:8px 18px;border-radius:9px;cursor:pointer;
+.p-btn{appearance:none;font:inherit;font-size:12px;padding:3px 15px;border-radius:9px;cursor:pointer;
   border:1px solid var(--edge);background:transparent;color:var(--ink);font-weight:600;}
 .p-btn:hover:not(:disabled){border-color:var(--gold);color:var(--gold);}
 .p-btn.primary{background:var(--acc);border-color:var(--acc);color:#fff;}
 .p-btn.primary:hover:not(:disabled){opacity:.9;color:#fff;}
 .p-btn:disabled{opacity:.4;cursor:not-allowed;}
-.p-link{appearance:none;border:0;background:none;font:inherit;font-size:12px;color:var(--muted);
-  text-decoration:underline;cursor:pointer;padding:4px 2px;}
+.p-link{appearance:none;border:0;background:none;font:inherit;font-size:11.5px;color:var(--muted);
+  text-decoration:underline;cursor:pointer;padding:2px 2px;}
 .p-link:hover{color:var(--gold);}
 
 /* 分享弹层（沿用） */
@@ -318,7 +319,7 @@ a:hover{text-decoration:underline;}
 }
 @media (max-width:760px){
   .panel-mask{padding:0;align-items:flex-end;}
-  .panel{max-height:94vh;height:94vh;border-radius:16px 16px 0 0;width:100%;}
+  .panel{max-height:none;height:100vh;height:100dvh;border-radius:16px 16px 0 0;width:100%;}
   .shot-grid{grid-template-columns:1fr;}
   .shot-side{max-height:26vh;}
   .p-head,.p-tabs,.p-body,.p-foot{padding-left:14px;padding-right:14px;}
@@ -488,16 +489,14 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
 
 <div class="sheet" id="sheet">
   <header class="masthead">
-    <div class="kicker">HOME WORKOUT PLAN</div>
-    <h1>居家训练计划</h1>
+    <h1>居家训练计划<span class="en"> · HOME WORKOUT PLAN</span></h1>
   </header>
 
   <div class="view-bar">
     <div class="v-seg" id="viewSeg" role="tablist" aria-label="视图切换">
-      <button type="button" role="tab" data-view="week" class="on">星期</button>
-      <button type="button" role="tab" data-view="theme">主题</button>
+      <button type="button" role="tab" data-view="theme" class="on">主题</button>
+      <button type="button" role="tab" data-view="week">星期</button>
     </div>
-    <div class="sub" id="pageSub">干净饮食 · 热量缺口 · 减脂增肌</div>
   </div>
 
   <div class="shared-bar" id="sharedBar" hidden>
@@ -613,7 +612,7 @@ window.SB = window.SB || {};
   var LEGACY = [['theme', 'slimdownPlanTheme'], ['fx', 'slimdownPlanFx']];
   var DEFAULTS = {
     v: 2,
-    view: 'week',        /* week | theme */
+    view: 'theme',       /* week | theme —— v1.5 默认主题；已存记忆优先 */
     preset: '',          /* 由页面按数据默认值补齐 */
     theme: 'ember',      /* 配色皮肤 */
     fx: 0,               /* 百叶窗动效是否已播过 */
@@ -1747,6 +1746,7 @@ window.SB = window.SB || {};
     shared = false;
     $('sharedBar').hidden = true;
     if (history.replaceState) history.replaceState(null, '', location.pathname + location.search);
+    setPageView(ui.get('view'), { silent: true });   /* 回到本机记忆的视图（分享期间被强制星期） */
     renderWeek();
     showToast('已恢复我的方案');
   });
@@ -1756,6 +1756,7 @@ window.SB = window.SB || {};
   applyHash();
   activeKey = ui.get('day') || todayKey();
   setPageView(ui.get('view'));
+  if (shared) setPageView('week', { silent: true });  /* 分享的是七日方案 ⇒ 强制星期视图，不动本机记忆 */
   $('sharedBar').hidden = !shared;
   if (!cardMode()) {
     var animate = shouldAnimate();

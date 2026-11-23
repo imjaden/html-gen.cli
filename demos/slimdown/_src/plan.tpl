@@ -23,16 +23,14 @@ if(o.view)document.documentElement.setAttribute('data-view',o.view);}catch(e){}}
 
 <div class="sheet" id="sheet">
   <header class="masthead">
-    <div class="kicker">HOME WORKOUT PLAN</div>
-    <h1>居家训练计划</h1>
+    <h1>居家训练计划<span class="en"> · HOME WORKOUT PLAN</span></h1>
   </header>
 
   <div class="view-bar">
     <div class="v-seg" id="viewSeg" role="tablist" aria-label="视图切换">
-      <button type="button" role="tab" data-view="week" class="on">星期</button>
-      <button type="button" role="tab" data-view="theme">主题</button>
+      <button type="button" role="tab" data-view="theme" class="on">主题</button>
+      <button type="button" role="tab" data-view="week">星期</button>
     </div>
-    <div class="sub" id="pageSub">干净饮食 · 热量缺口 · 减脂增肌</div>
   </div>
 
   <div class="shared-bar" id="sharedBar" hidden>

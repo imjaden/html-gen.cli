@@ -11,7 +11,7 @@ window.SB = window.SB || {};
   var LEGACY = [['theme', 'slimdownPlanTheme'], ['fx', 'slimdownPlanFx']];
   var DEFAULTS = {
     v: 2,
-    view: 'week',        /* week | theme */
+    view: 'theme',       /* week | theme —— v1.5 默认主题；已存记忆优先 */
     preset: '',          /* 由页面按数据默认值补齐 */
     theme: 'ember',      /* 配色皮肤 */
     fx: 0,               /* 百叶窗动效是否已播过 */

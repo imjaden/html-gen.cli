@@ -71,3 +71,18 @@
   `tests/test_clipboard_fallback.py`（IMAGE_CLIPBOARD_EXEMPT 路径）、`demos/{_registry.json,demos-index.html}` + `data/_demos-data.json`（demo --rebuild）。
 - 验收（真跑）：masthead 68px ≤100；面板 1296×810 = 90vw×90vh；列表 8/4 项、点选换预览、单张下载 720×594；
   `plan.html#p=…` 经桩跳转后共享条出现、`恢复我的方案` 还原且清 hash；`pytest` 全量绿；`baseline.py --update` 后 50/50（demos-index 因索引行更名重钉）。
+
+## 7. v1.5 小批（2026-11-23，用户「一条龙」实施，五项决策全采推荐）
+
+| 项 | 落定（实测 @1440×900） |
+|:--|:--|
+| D1 副标题 | 「干净饮食 · 热量缺口 · 减脂增肌」从 UI 移除（出图/分享文案仍走 `presets[home].slogan`） |
+| D2 Tab | 顺序「主题、星期」，默认主题；老记忆仍优先（`slimdown:ui:v2` 不升版）；**带 `#p=` 的分享链接强制星期视图**（不写记忆），「恢复我的方案」后回记忆视图 |
+| D3 面板 | `div.panel` 90vh → **100vh**（`height:100vh;height:100dvh`，移动地址栏不裁 foot）；<760px 抽屉同 100vh |
+| D4 head/foot | `p-head` 65→**33px**、`p-foot` 66→**34px**（恰为一半；padding 4px/3px + 字号与按钮同步收缩），`p-body` 624→777px |
+| D5 标题 | 单行「居家训练计划 · HOME WORKOUT PLAN」（中文主体 + EN 金色小字，主从式），masthead 78→56px |
+
+- 落点：`_src/{plan.tpl,plan.css,state.js,plan.js}`、`tests/test_slimdown_plan.py`（15→16 例，新增 `test_18` 分享强制星期 + 恢复回记忆）。
+- 验收（真跑）：默认主题、标签序、标题一行、面板 1296×900、head/foot 33/34、分享 `#p=` 落星期且不写记忆、恢复回主题；
+  `pytest` 502 passed / 103 subtests；`baseline --check` 50/50。已知：`-n 4` 并行下 selenium 页（test_demos_index / test_index_landing）
+  与调试用浏览器同机争用 chromedriver/CPU 时会时序 flake，串行复跑全绿（与 TODO-handoff 记载的 test_14 flake 同源）。
