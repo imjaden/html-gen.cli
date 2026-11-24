@@ -11,7 +11,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.action_chains import ActionChains
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import chromedriver_service, is_external_net_failure
 
 PROJECT = Path(__file__).resolve().parent.parent
 INDEX = PROJECT / 'index.html'
@@ -41,14 +41,33 @@ class TestIndexLanding(unittest.TestCase):
         errs = self._errors()
         self.assertEqual([], [e['message'][:120] for e in errs], "加载后出现 JS 错误")
 
+    # 外链资源网络失败不是页面缺陷: 断网/被墙时 favicon 之类会刷 SEVERE, 造成假红。
+    # 只放行「非本地 host 的 http(s) 资源 + net::ERR_*」; 本地服务器(localhost/127.0.0.1/…/file://)
+    # 的资源失败、JS 异常、语法错误一律照旧报红 —— 否则会把本仓 404 也一起吞掉。
+    # 判据真源在 conftest（同批 5 个 Selenium 文件共用），此处只做别名
+    _is_external_net_failure = staticmethod(is_external_net_failure)
+
     def _errors(self):
-        """浏览器 console 中的 SEVERE/ERROR."""
-        return [e for e in self.driver.get_log('browser') if e['level'] in ('SEVERE', 'ERROR')]
+        """浏览器 console 中的 SEVERE/ERROR，剔除外链资源的网络失败（见 _EXTERNAL_NET）。"""
+        return [e for e in self.driver.get_log('browser')
+                if e['level'] in ('SEVERE', 'ERROR')
+                and not self._is_external_net_failure(e['message'])]
 
     def test_01_no_js_errors(self):
-        """落地页无 JS 错误."""
+        """落地页无 JS 错误 + 过滤判据自检（外链网络失败放行 / 本地与 JS 错误保留）."""
         errs = self._errors()
         self.assertEqual([], [e['message'][:120] for e in errs], "应有 JS 错误")
+        drop = ['https://github.com/favicon.ico - Failed to load resource: net::ERR_CONNECTION_TIMED_OUT',
+                'https://cdn.example.com/x.js - Failed to load resource: net::ERR_NAME_NOT_RESOLVED']
+        keep = ['Uncaught TypeError: x is not a function',
+                'file:///Users/x/index.html - Failed to load resource: net::ERR_FILE_NOT_FOUND',
+                'http://127.0.0.1:8000/a.js - Failed to load resource: net::ERR_CONNECTION_REFUSED',
+                'http://localhost:8765/demos/x.html - Failed to load resource: net::ERR_FILE_NOT_FOUND',
+                'https://github.com/favicon.ico - Failed to load resource: the server responded with a status of 404 ()']
+        for m in drop:
+            self.assertTrue(self._is_external_net_failure(m), f"外链网络失败应被放行: {m}")
+        for m in keep:
+            self.assertFalse(self._is_external_net_failure(m), f"不该放过: {m}")
 
     def test_02_hero_height(self):
         """hero 首屏高度 ≥0.75vh (80vh 设计, 容差)."""

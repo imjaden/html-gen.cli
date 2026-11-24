@@ -10,6 +10,7 @@
 - `chromedriver_service()`：缺二进制时抛 `unittest.SkipTest`（带实际路径与 env 提示）。
 """
 import os
+import re
 import shutil
 import tempfile
 import unittest
@@ -41,6 +42,25 @@ def chromedriver_service():
             raise RuntimeError(f'{msg} —— CHROMEDRIVER_REQUIRED=1 要求缺驱动即失败（CI 口径）')
         raise unittest.SkipTest(msg)
     return Service(CHROMEDRIVER)
+
+
+# ── 浏览器 console 噪声过滤（CL047 附笔）────────────────────────────────────
+# 为什么：产物带外链 favicon（默认 www.jaden.tech，落地页还有 github），断网或被墙时
+# Chrome 会把「资源加载失败」记成 SEVERE，多个用例断言「console 无 SEVERE」就假红。
+# 约定：只放行「**非本地** host 的 http(s) 资源 + net::ERR_*」——本地服务器（localhost /
+# 127.0.0.1 / 0.0.0.0 / ::1 / *.local）与 file:// 的资源失败、JS 异常、HTTP 4xx/5xx 一律照旧报红，
+# 否则本仓 404 也会被一起吞掉。
+EXTERNAL_NET_RE = re.compile(r'^https?://([^\s/:]+)[^\s]* - Failed to load resource: net::ERR_')
+LOCAL_HOSTS = frozenset({'localhost', '127.0.0.1', '0.0.0.0', '::1', '[::1]'})
+
+
+def is_external_net_failure(msg):
+    """console 条目是否为「外链资源网络失败」（环境噪声，非页面缺陷）。"""
+    m = EXTERNAL_NET_RE.match(msg or '')
+    if not m:
+        return False
+    host = m.group(1).lower()
+    return host not in LOCAL_HOSTS and not host.endswith('.local')
 
 
 class TmpDirMixin:

@@ -7,7 +7,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from conftest import TmpDirMixin, chromedriver_service
+from conftest import TmpDirMixin, chromedriver_service, is_external_net_failure
 
 PROJECT = Path(__file__).resolve().parent.parent
 DEMOS = PROJECT / 'demos'
@@ -352,7 +352,9 @@ class TestDocTypography(unittest.TestCase):
         self.driver.get('file://' + str(self.page))
         WebDriverWait(self.driver, 5).until(
             EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
-        errs = [e for e in self.driver.get_log('browser') if e['level'] in ('SEVERE', 'ERROR')]
+        # 外链 favicon 断网/被墙的 net::ERR_ 不算页面缺陷（见 conftest.is_external_net_failure）
+        errs = [e for e in self.driver.get_log('browser')
+                if e['level'] in ('SEVERE', 'ERROR') and not is_external_net_failure(e['message'])]
         self.assertEqual([], [e['message'][:120] for e in errs], "加载后出现 JS 错误")
 
     def test_01_li_font_matches_p(self):

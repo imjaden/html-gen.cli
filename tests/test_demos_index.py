@@ -11,7 +11,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import chromedriver_service, is_external_net_failure
 
 PROJECT = Path(__file__).resolve().parent.parent
 DEMOS_INDEX = PROJECT / 'demos' / 'index.html'
@@ -42,7 +42,9 @@ class TestDemosIndex(unittest.TestCase):
         self.assertEqual([], [e['message'][:120] for e in errs], "加载后出现 JS 错误")
 
     def _errors(self):
-        return [e for e in self.driver.get_log('browser') if e['level'] in ('SEVERE', 'ERROR')]
+        # 外链资源网络失败是环境噪声，不是本页 JS 缺陷
+        return [e for e in self.driver.get_log('browser')
+                if e['level'] in ('SEVERE', 'ERROR') and not is_external_net_failure(e['message'])]
 
     def test_01_no_js_errors(self):
         """demos 页无 JS 错误."""

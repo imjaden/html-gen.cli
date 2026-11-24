@@ -17,7 +17,7 @@ from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.common.by import By
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from conftest import chromedriver_service
+from conftest import chromedriver_service, is_external_net_failure
 
 PROJECT = Path(__file__).resolve().parent.parent
 DATA = PROJECT / 'data'
@@ -152,7 +152,8 @@ class TestSlimdownPage(unittest.TestCase):
 
     def errors(self):
         errs = self.js('window.__testErrors') or []
-        severe = [l['message'] for l in self.driver.get_log('browser') if l['level'] == 'SEVERE']
+        severe = [l['message'] for l in self.driver.get_log('browser')
+                  if l['level'] == 'SEVERE' and not is_external_net_failure(l['message'])]
         return list(errs) + severe
 
     def ui_state(self):
