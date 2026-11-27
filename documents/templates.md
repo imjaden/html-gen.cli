@@ -75,7 +75,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - **Videos 视频列**：行字段为对象数组 `[{url,title,duration,platform}]`，每视频一个 pill（图标+标题+时长）；`col.videos.maxShow` 折叠 "+N" 点击展开（不折叠回，re-render 重置）；平台图标映射 douyin/抖音🎵 bilibili/B站/b站📺 youtube▶️ 其他📹；pill 点击新标签页（noopener,noreferrer）；默认搜索排除 videos；split/expand 数组特判渲染
 
 ### layout-knowledge.html（C 型知识库）
-- **键规范**（item 9 / groups 3 / 数据源与输出目标 / CLI 参数 10）见 `html-gen help knowledge` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['knowledge']`）
+- **键规范**（点击模式 3 / item 9 / groups 3 / 数据源与输出目标 / CLI 参数 10）见 `html-gen help knowledge` 的键规范段（单一事实源：`TEMPLATE_CONTRACT['knowledge']`）
 - 顶部横向标签栏（按 group 分组），与侧边栏标题行对齐
 - 左侧章节列表（按 section 分组，badge 标记显式）；条目文本单行 `ellipsis`（侧栏 260px，约容 24 列），全名走 `title` 属性悬停提示：取 `item.page_title` → 回退 `item.title`
 - 搜索面板（`⌘/Ctrl+K` 或 🔍 按钮 → 浮层 Spotlight：默认输入框 + 输入即匹配清单，`↑↓←→` 选择、`Enter` 打开、
@@ -89,8 +89,37 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 - 折叠/展开侧边栏（48px 收起态，`[` 快捷键）
 - 双内容模式：条目带详情页地址 → iframe 加载；带正文 HTML → 内联渲染（键名见 `html-gen help knowledge`）
 - section 标题可点击：单条目 section 点击标题直接加载 (K2)
-- 空状态显示欢迎面板
-- 上次选择状态 localStorage 恢复（group + item）
+- 根页（未选条目时的落点）：欢迎语 + 菜单地图表（列 = 页签 / 行 = section / 点格内条目直达）
+- 上次选择状态 localStorage 恢复（group + item）；`?view=root` 强制回根页
+
+## 影响面矩阵（改模板能力必查）
+
+> **单源权威**：本节是全仓唯一的「改了模板要连带改哪里」清单；`demos/*-guide.md` 只放本模板的 8 行摘要并指回本节。
+> 触发条件：新增/改名模板键、改交互行为（快捷键、根页、搜索、状态恢复）、改公共 CSS 变量或结构、升版本号。
+
+| 面 | 落点（本仓路径） | 判据命令 |
+|:---|:---|:---|
+| **指令面** | `html-gen.py` 的 `TEMPLATE_CONTRACT['<theme>']`（键名/默认值）+ `html-gen help <theme>` 渲染 | `python3 html-gen.py help <theme>`；`pytest tests/test_help_contract.py -q` |
+| **Skills 面** | `skills/html-gen-<theme>/SKILL.md`（模板专篇）+ `skills/html-gen/SKILL.md`（总入口 C/B/A/D 段与变更记录） | `python3 html-gen.py prompt html-gen-<theme> \| grep -c '<新能力关键词>'` |
+| **文档面** | `demos/<theme>-guide.md`（→ 同名 `.html`）+ `documents/templates.md`（本文件）+ `features.md` | `grep -c '<新能力关键词>' demos/<theme>-guide.md`；四份 guide 标题话术 `<名称>（模板X）` |
+| **案例面** | `demos/<theme>-demo.html` + `data/_*data.json`（数据/条目）+ `data/_demos-data.json`（demos-index 卡片话术） | `python3 html-gen.py demo --rebuild`；卡片话术计数（`🗂/📄/📚`） |
+| **测试面** | `tests/test_help_contract.py`（键名⇄契约）、`tests/test_templates.py`（静态守卫）、`tests/test_<theme>*.py`（Selenium） | `pytest tests/test_help_contract.py tests/test_templates.py tests/test_<theme>*.py -q` |
+| **基线/门禁面** | `scripts/baseline.py`（`TABLE_PRODUCTS` / `DOC_PRODUCTS` / `SLIDE_PRODUCTS` / `KB_PRODUCTS`）+ `data/_render-baseline.json` + `documents/docs-index.md` | `python3 scripts/baseline.py --update` → `--check`（50/50）→ `--verify`；`hm-docs-index.py --root . --check` |
+| **打包面** | `src/html_gen/{layout-<theme>.html, html-gen.py, style-guide.css, skills/*}`（pip 包源） | `python3 scripts/build-package.py`；`tests/test_baseline_gate.py` 的打包源 sha 守卫 |
+| **跨仓/发布面** | script-miner `skills/html-templates/layout-<theme>.html`（+ `efficiency/tests/test_html_templates_vendor.py`、`projects-manager.py:VENDORED_FILES`）；hermes-manager 对应页；版本三件 `__version__` / `README.md` / `README.zh.md` / `AGENTS.md` 计数 | 各仓自家 `--check`；`grep -c "e.key !== 'f'"` 等旧标记归零 |
+
+**标准流程（按依赖顺序，1→8）**
+
+1. `TEMPLATE_CONTRACT` 与 `html-gen help <theme>`（先定键名/默认值）
+2. `layout-<theme>.html` 行为与样式
+3. `skills/html-gen-<theme>/SKILL.md` + `skills/html-gen/SKILL.md`
+4. `demos/<theme>-guide.md` + 本文件 + `features.md`
+5. `data/_*data.json` + `_demos-data.json` 话术 + 重渲 `<theme>-demo`
+6. 测试三面：契约 / 静态守卫 / Selenium
+7. 产物重渲 → `baseline --update` → `--check` 50/50 → `--verify` → `docs-index` 重生成
+8. `build-package.py`（打包源）→ 跨仓 vendored/页面 → 版本三件与测试计数
+
+> 反例（CL047，2026-11-23）：模板改完只走了 1/2/6/7，**漏了 3、5、8**（`skills/*` 未更新、`prompts/index.html` 仍 v3.4、`src/html_gen` 打包源仍 v3.5），靠事后全量扫描才发现。本节即为堵这个洞而设。
 
 ## Markdown → HTML 转换规则
 

@@ -58,6 +58,8 @@ html-gen.cli/
     ├── chaitin-business-analysis.html  # 长亭科技商业分析知识库
     ├── cloudwise-business-analysis.html # 云智慧商业分析知识库
     ├── the-price-you-choose.html   # 人选天选论 · The Price You Choose（目录页；17 页正文在 demos/the-price-you-choose/；data/_the-price-you-choose-kb-data.json 引用登记 + …-source.json 源件 sha）
+    │                               # ⚠ 冻结（CL048, 2026-11-27）：生成后注入层产物（rx-patch + canonical + w-note），CLI 直渲 != 产物，
+    │                               #   md/数据源不在本仓 ⇒ baseline 走 SKIP 不判；模板能力变化不回溯刷新此页，脚本仓同名页同理
     ├── chaitin/                # 长亭内容子页（知识库引用）+ menu-design 菜单方案
     ├── cloudwise/              # 云智慧内容子页（知识库引用）
     ├── the-price-you-choose/   # 正文子页（chapter00..07 + highlights + 8 个旧 slug 跳转桩，均由 kb-data 标记 referenced）
