@@ -1,23 +1,23 @@
 [
   {
     "key": "table",
-    "label": "A 表格",
-    "icon": "📊"
+    "label": "表格（模板A）",
+    "icon": "🗂"
   },
   {
     "key": "doc",
-    "label": "B 文档",
+    "label": "文档（模板B）",
     "icon": "📄"
   },
   {
     "key": "knowledge",
-    "label": "C 知识库",
+    "label": "知识库（模板C）",
     "icon": "📚"
   },
   {
     "key": "slide",
-    "label": "D 幻灯片",
-    "icon": "🎞️"
+    "label": "幻灯片（模板D）",
+    "icon": "🖼"
   },
   {
     "key": "cli",

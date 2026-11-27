@@ -494,7 +494,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-knowledge</h1>
-      <div class="meta">创建: 2026-11-27 17:54 · 编辑: 2026-11-27 17:54<br>字数: 646 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
+      <div class="meta">创建: 2026-11-27 18:38 · 编辑: 2026-11-27 18:38<br>字数: 1,121 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p>C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构，以 iframe 或内联 HTML 展示内容。专为多主题知识索引场景设计。</p>
@@ -509,18 +509,89 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <blockquote>逐 flag 清单、默认值（<code>--title</code> 默认「知识库」、<code>--welcome</code> 默认欢迎文案）与输出目标三态</blockquote>
 <blockquote>见 <strong><code>html-gen help knowledge</code></strong> 的「CLI 参数」段。</blockquote>
 <h2 id="数据格式">数据格式</h2>
-<p>条目 schema（item 7 键: title / group / section / badge / desc / url / icon，含必填与</p>
-<p><code>url</code>|<code>desc</code> 二选一语义）与数据源三态（数组 / <code>{items|data}</code> / 顶层 <code>output</code>）见</p>
-<p><strong><code>html-gen help knowledge</code></strong> 的「item 条目键」「数据源与输出目标」段。示例：</p>
+<p>条目 <strong>9 键</strong>（契约真值 = <code>TEMPLATE_CONTRACT['knowledge']['data']['item']</code>，<code>html-gen help knowledge</code> 的「item 条目键」段同源）：</p>
+<table><thead><tr>
+<th>键</th>
+<th>必填</th>
+<th>说明</th>
+</tr></thead><tbody>
+<tr>
+<td><code>title</code></td>
+<td>✅</td>
+<td>条目名称（侧栏文本，单行 ellipsis；长名配 <code>page_title</code>）</td>
+</tr>
+<tr>
+<td><code>group</code></td>
+<td>✅</td>
+<td>所属类目，<strong>必须与 <code>groups[].key</code> 全等</strong>（对不上会自建 tab 或被丢弃）</td>
+</tr>
+<tr>
+<td><code>section</code></td>
+<td></td>
+<td>子分类（侧栏分组）；<code>title === section</code> 且组内仅 1 条时自动跳过该行（K2 rule）</td>
+</tr>
+<tr>
+<td><code>badge</code></td>
+<td></td>
+<td>侧栏条目右侧徽标（如 <code>P0</code> / <code>skill</code>）</td>
+</tr>
+<tr>
+<td><code>desc</code></td>
+<td>△</td>
+<td>条目正文 HTML，<strong>内联渲染</strong>；与 <code>url</code> 二选一</td>
+</tr>
+<tr>
+<td><code>url</code></td>
+<td>△</td>
+<td>详情页地址，<strong>iframe 加载</strong>；与 <code>desc</code> 二选一；必须与知识库页同源</td>
+</tr>
+<tr>
+<td><code>icon</code></td>
+<td></td>
+<td>条目 emoji（无 <code>groups</code> 文件时用它推导类目图标）</td>
+</tr>
+<tr>
+<td><code>width</code></td>
+<td></td>
+<td>iframe 宽度 <code>narrow</code> / <code>medium</code> / <code>wide</code>（追加 <code>?width=</code>；缺省 <code>medium</code>，<code>url</code> 含 <code>overview</code> 时默认 <code>wide</code>）</td>
+</tr>
+<tr>
+<td><code>page_title</code></td>
+<td></td>
+<td>侧栏悬停 tooltip 的全名（缺省用 <code>title</code>）</td>
+</tr>
+</tbody></table>
+<p>数据源三态：顶层数组 / <code>{items: […]}</code> / <code>{data: […]}</code>；结构化 dict 顶层可带 <code>"output"</code></p>
+<p>（仅 data 文件识别，groups 文件忽略）。输出目标优先级 <code>-o</code> &gt; JSON <code>output</code> &gt; 均无则 exit 1。</p>
+<h3 id="最小可跑示例-2-类目-4-条目-1-个-url-3-个-desc">最小可跑示例（2 类目 / 4 条目 / 1 个 url + 3 个 desc）</h3>
+<p><code>data.json</code>：</p>
 <pre><code class="language-json">[
-  {"title": "条目名称", "group": "所属类目", "section": "子分类",
-   "url": "detail.html", "desc": "&lt;p&gt;内联 HTML&lt;/p&gt;", "badge": "标记"}
+  {"title": "三步上手", "group": "指南", "section": "基础", "badge": "P0",
+   "desc": "&lt;p&gt;装好 → 备 JSON → 跑一条命令。&lt;/p&gt;"},
+  {"title": "常见坑", "group": "指南", "section": "基础",
+   "page_title": "常见坑（组名对不上 / url 与 desc 同时给）",
+   "desc": "&lt;p&gt;group 必须与 groups[].key 全等。&lt;/p&gt;"},
+  {"title": "宽屏嵌入", "group": "示例", "section": "iframe",
+   "url": "overview.html", "width": "wide",
+   "page_title": "宽屏嵌入（url 含 overview ⇒ 自动 wide）"},
+  {"title": "常规嵌入", "group": "示例", "section": "iframe",
+   "url": "detail.html", "width": "medium"}
 ]</code></pre>
+<p><code>groups.json</code>：</p>
+<pre><code class="language-json">[{"key": "指南", "label": "指南", "icon": "🧭"},
+ {"key": "示例", "label": "示例", "icon": "🧩"}]</code></pre>
+<p>命令与产物：</p>
+<pre><code class="language-">html-gen knowledge -d data.json -g groups.json --title "我的知识库" \
+  --welcome "点侧栏标题回根页；⌘/Ctrl+K 打开搜索面板。" -o kb.html</code></pre>
+<h3 id="写完自检-6-条-机器可判">写完自检（6 条，机器可判）</h3>
 <ul>
-<li>title 与 section 同名时自动跳过 item 行 (K2 rule)</li>
-<li>输出目标: 结构化 dict 顶层可带 <code>"output"</code>（仅 data 文件识别，groups 文件忽略）；</li>
+<li>新标记齐全：<code>grep -c 'kwGoRoot\|kw-map-table\|kw-spot-overlay' kb.html</code> ≥ 3</li>
+<li><code>⌘F</code> 已归还浏览器：<code>grep -c "e.key !== 'f'" kb.html</code> = 0；<code>grep -c kwSearchWrap kb.html</code> = 0</li>
+<li>根页地图：行数 = 去重后的 <code>section</code> 数，格内条目之和 = 条目总数</li>
+<li>每个 <code>item.group</code> 都能在 <code>groups[].key</code> 里找到；每条恰好有 <code>url</code> 或 <code>desc</code> 之一</li>
+<li>iframe 目标与 <code>kb.html</code> 同源，相对路径以 <code>kb.html</code> 所在目录为基准</li>
+<li>改的是模板能力（不是数据）时，按 <code>documents/templates.md</code> §影响面矩阵 逐面清点</li>
 </ul>
-<p>  优先级 CLI <code>-o</code> &gt; JSON <code>output</code> &gt; 均无中断 (exit 1)</p>
 <h2 id="groups-格式">groups 格式</h2>
 <p>类目键（key / label / icon）见 <code>html-gen help knowledge</code> 的「groups 类目键」段。示例：</p>
 <pre><code class="language-json">[{"key": "类目key", "label": "显示名", "icon": "🏛️"}]</code></pre>
@@ -546,6 +617,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <ul>
 <li>v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md</li>
 <li>v2.0.0 (2026-11-23): 对齐 html-gen v3.6 — 根页菜单地图 + 搜索面板（<code>⌘/Ctrl+K</code>）+ 点标题回根页 + <code>⌘F</code> 归还浏览器；移除跨组同名跟随与侧栏过滤面板</li>
+<li>v2.1.0 (2026-11-27): item 键 7 → <strong>9</strong>（补 <code>width</code> / <code>page_title</code>）；新增最小可跑示例（2 类目 4 条目）与 6 条自检清单 —— 让 AI 只读本页即可写出合规案例</li>
 </ul></div>
   </div>
 </div>
