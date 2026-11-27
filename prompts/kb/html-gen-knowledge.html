@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.4+tplf120e96b">
+<meta name="generator" content="html-gen v3.6+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>html-gen-knowledge</title>
@@ -494,7 +494,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-knowledge</h1>
-      <div class="meta">创建: 2026-11-17 17:33 · 编辑: 2026-11-17 17:33<br>字数: 487 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
+      <div class="meta">创建: 2026-11-27 17:54 · 编辑: 2026-11-27 17:54<br>字数: 646 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p>C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构，以 iframe 或内联 HTML 展示内容。专为多主题知识索引场景设计。</p>
@@ -526,14 +526,15 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <pre><code class="language-json">[{"key": "类目key", "label": "显示名", "icon": "🏛️"}]</code></pre>
 <h2 id="模板特性">模板特性</h2>
 <ul>
-<li>顶部横向标签栏 (按 group 分组)</li>
-<li>左侧 section-as-menu (section 标题可点击跳转)</li>
-<li>selectItem 双参数 (group, title) 支持跨组同名</li>
-<li>侧边栏搜索 (150ms debounce, ≥2 字符过滤)</li>
-<li>折叠/展开侧边栏 (<code>[</code> 快捷键, localStorage)</li>
-<li>双内容模式 (iframe / 内联 HTML)</li>
-<li>空状态欢迎面板</li>
-<li>localStorage 状态恢复 (group + item)</li>
+<li>顶部横向标签栏（按 group 分组）；切页签一律回根页，不再自动选中该组首条</li>
+<li>左侧 section-as-menu（section 标题可点击跳转）</li>
+<li><strong>根页 = 欢迎语 + 菜单地图表</strong>（列 = 横向页签，行 = <code>section</code>，格内条目名 + badge，点击直达）</li>
+<li>点侧栏标题回根页（清 URL <code>item=</code> 与 localStorage）；复制路径走标题右侧 ⧉ 按钮</li>
+<li><strong>搜索面板</strong>：<code>⌘/Ctrl+K</code> 或侧栏 🔍 打开（匹配 条目名 / 子分类 / 描述 / 全名 / 类目；<code>↑↓←→</code> / <code>Enter</code> / <code>Esc</code>；命中 <code>&lt;mark&gt;</code> 高亮；无匹配空态）</li>
+<li><code>⌘F</code> / <code>Ctrl+F</code> <strong>不拦截</strong>，浏览器原生查找照旧可用（面板走 <code>⌘K</code>，两条路互不冲突）</li>
+<li>折叠/展开侧边栏（<code>[</code> 快捷键，localStorage）</li>
+<li>双内容模式（<code>url</code> → iframe / <code>desc</code> → 内联）</li>
+<li>localStorage 状态恢复（group + item）；<code>?view=root</code> 强制回根页</li>
 </ul>
 <h2 id="注意事项">注意事项</h2>
 <ul>
@@ -544,6 +545,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <h2 id="变更记录">变更记录</h2>
 <ul>
 <li>v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md</li>
+<li>v2.0.0 (2026-11-23): 对齐 html-gen v3.6 — 根页菜单地图 + 搜索面板（<code>⌘/Ctrl+K</code>）+ 点标题回根页 + <code>⌘F</code> 归还浏览器；移除跨组同名跟随与侧栏过滤面板</li>
 </ul></div>
   </div>
 </div>

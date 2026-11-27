@@ -855,6 +855,13 @@ html-gen knowledge -d data.json --title "知识库" -o kb.html
 html-gen knowledge -d data.json -g groups.json --title "知识库" --welcome "从上方类目选择" -o kb.html
 ```
 
+### 交互（v3.6 起）
+
+- **根页**：欢迎语 + 菜单地图表（列 = 横向页签 / 行 = `section` / 格内条目 + badge，点击直达）；点侧栏标题回根页
+- **搜索**：`⌘/Ctrl+K` 或侧栏 🔍 打开独立面板（匹配 条目名 / 子分类 / 描述 / 全名 / 类目，不含正文），`↑↓←→` / `Enter` / `Esc`
+- **`⌘F` 归浏览器**：模板不拦截原生查找；两条搜索互不冲突
+- **复制路径**：标题右侧 ⧉（中文参数解码为原文）；切页签回根页；`?view=root` 强制根页
+
 ## AI 工作流程
 
 当用户要求生成 HTML 页面时：
@@ -910,6 +917,7 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 ## 变更记录
 - v2.7.0 (2026-09-12): prompt --site 28→31 文件（新增 github-issue-feedback skill 挂载: 跨项目 Issue 数据反馈闭环规范）
 - v2.6.0 (2026-09-10): table 专属 `--feedback-repo`（GitHub Issue 反馈通道 + scripts/countries-issue-sync.py 数据反馈闭环）
+- v3.0.0 (2026-11-23): C 型段补「交互」小节（根页地图 / `⌘K` 搜索面板 / `⌘F` 原生 / ⧉ 复制路径），对齐 html-gen v3.6
 - v2.5.0 (2026-09-02): prompt 子命令段补 `--site`（prompts/ 在线阅读站点 28 文件: C 型 knowledge 门户 5 tab + kb/{skill}.html detail + curl 契约）
 - v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明
 - v2.3.0 (2026-08-06): 新增 frontmatter 自动剥离; 修复 doc/slide 侧边栏 sticky 失效
@@ -1123,14 +1131,15 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ```
 
 ## 模板特性
-- 顶部横向标签栏 (按 group 分组)
-- 左侧 section-as-menu (section 标题可点击跳转)
-- selectItem 双参数 (group, title) 支持跨组同名
-- 侧边栏搜索 (150ms debounce, ≥2 字符过滤)
-- 折叠/展开侧边栏 (`[` 快捷键, localStorage)
-- 双内容模式 (iframe / 内联 HTML)
-- 空状态欢迎面板
-- localStorage 状态恢复 (group + item)
+- 顶部横向标签栏（按 group 分组）；切页签一律回根页，不再自动选中该组首条
+- 左侧 section-as-menu（section 标题可点击跳转）
+- **根页 = 欢迎语 + 菜单地图表**（列 = 横向页签，行 = `section`，格内条目名 + badge，点击直达）
+- 点侧栏标题回根页（清 URL `item=` 与 localStorage）；复制路径走标题右侧 ⧉ 按钮
+- **搜索面板**：`⌘/Ctrl+K` 或侧栏 🔍 打开（匹配 条目名 / 子分类 / 描述 / 全名 / 类目；`↑↓←→` / `Enter` / `Esc`；命中 `<mark>` 高亮；无匹配空态）
+- `⌘F` / `Ctrl+F` **不拦截**，浏览器原生查找照旧可用（面板走 `⌘K`，两条路互不冲突）
+- 折叠/展开侧边栏（`[` 快捷键，localStorage）
+- 双内容模式（`url` → iframe / `desc` → 内联）
+- localStorage 状态恢复（group + item）；`?view=root` 强制回根页
 
 ## 注意事项
 - iframe 内容必须与知识库页面同源
@@ -1139,6 +1148,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 ## 变更记录
 - v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md
+- v2.0.0 (2026-11-23): 对齐 html-gen v3.6 — 根页菜单地图 + 搜索面板（`⌘/Ctrl+K`）+ 点标题回根页 + `⌘F` 归还浏览器；移除跨组同名跟随与侧栏过滤面板
 
 ## html-gen-slide
 

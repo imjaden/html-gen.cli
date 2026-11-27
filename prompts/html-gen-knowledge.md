@@ -44,14 +44,15 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ```
 
 ## 模板特性
-- 顶部横向标签栏 (按 group 分组)
-- 左侧 section-as-menu (section 标题可点击跳转)
-- selectItem 双参数 (group, title) 支持跨组同名
-- 侧边栏搜索 (150ms debounce, ≥2 字符过滤)
-- 折叠/展开侧边栏 (`[` 快捷键, localStorage)
-- 双内容模式 (iframe / 内联 HTML)
-- 空状态欢迎面板
-- localStorage 状态恢复 (group + item)
+- 顶部横向标签栏（按 group 分组）；切页签一律回根页，不再自动选中该组首条
+- 左侧 section-as-menu（section 标题可点击跳转）
+- **根页 = 欢迎语 + 菜单地图表**（列 = 横向页签，行 = `section`，格内条目名 + badge，点击直达）
+- 点侧栏标题回根页（清 URL `item=` 与 localStorage）；复制路径走标题右侧 ⧉ 按钮
+- **搜索面板**：`⌘/Ctrl+K` 或侧栏 🔍 打开（匹配 条目名 / 子分类 / 描述 / 全名 / 类目；`↑↓←→` / `Enter` / `Esc`；命中 `<mark>` 高亮；无匹配空态）
+- `⌘F` / `Ctrl+F` **不拦截**，浏览器原生查找照旧可用（面板走 `⌘K`，两条路互不冲突）
+- 折叠/展开侧边栏（`[` 快捷键，localStorage）
+- 双内容模式（`url` → iframe / `desc` → 内联）
+- localStorage 状态恢复（group + item）；`?view=root` 强制回根页
 
 ## 注意事项
 - iframe 内容必须与知识库页面同源
@@ -60,3 +61,4 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 ## 变更记录
 - v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md
+- v2.0.0 (2026-11-23): 对齐 html-gen v3.6 — 根页菜单地图 + 搜索面板（`⌘/Ctrl+K`）+ 点标题回根页 + `⌘F` 归还浏览器；移除跨组同名跟随与侧栏过滤面板
