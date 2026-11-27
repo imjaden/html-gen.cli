@@ -81,7 +81,7 @@
     "kind": "skill"
   },
   {
-    "title": "🗂 表格（模板A）",
+    "title": "表格（模板A）",
     "group": "table",
     "section": "模板语法",
     "badge": "指南",
@@ -90,7 +90,7 @@
     "kind": "guide"
   },
   {
-    "title": "📄 文档（模板B）",
+    "title": "文档（模板B）",
     "group": "doc",
     "section": "模板语法",
     "badge": "指南",
@@ -99,7 +99,7 @@
     "kind": "guide"
   },
   {
-    "title": "📚 知识库（模板C）",
+    "title": "知识库（模板C）",
     "group": "knowledge",
     "section": "模板语法",
     "badge": "指南",
@@ -108,7 +108,7 @@
     "kind": "guide"
   },
   {
-    "title": "🖼 幻灯片（模板D）",
+    "title": "幻灯片（模板D）",
     "group": "slide",
     "section": "模板语法",
     "badge": "指南",
@@ -117,7 +117,7 @@
     "kind": "guide"
   },
   {
-    "title": "⚙️ CLI 使用说明",
+    "title": "CLI 使用说明",
     "group": "cli",
     "section": "指令 CLI",
     "badge": "指南",

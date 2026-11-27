@@ -1733,15 +1733,15 @@ SKILL_TO_GROUP = {
 # demos/ 指南页 (badge 指南; file 相对 demos/, group/section 门户归属, desc 一句)
 GUIDE_MAP = [
     {'file': 'table-guide.html',      'group': 'table',     'section': '模板语法',
-     'title': '🗂 表格（模板A）',  'desc': 'table 模板方案指南 (列配置/交互/案例)'},
+     'title': '表格（模板A）',  'desc': 'table 模板方案指南 (列配置/交互/案例)'},
     {'file': 'doc-guide.html',        'group': 'doc',       'section': '模板语法',
-     'title': '📄 文档（模板B）',  'desc': 'doc 模板方案指南 (Markdown/阅读)'},
+     'title': '文档（模板B）',  'desc': 'doc 模板方案指南 (Markdown/阅读)'},
     {'file': 'knowledge-guide.html',  'group': 'knowledge', 'section': '模板语法',
-     'title': '📚 知识库（模板C）',    'desc': 'knowledge 模板方案指南 (条目/分组)'},
+     'title': '知识库（模板C）',    'desc': 'knowledge 模板方案指南 (条目/分组)'},
     {'file': 'slide-guide.html',      'group': 'slide',     'section': '模板语法',
-     'title': '🖼 幻灯片（模板D）',    'desc': 'slide 模板方案指南 (分页/演示)'},
+     'title': '幻灯片（模板D）',    'desc': 'slide 模板方案指南 (分页/演示)'},
     {'file': 'usage-guide.html',      'group': 'cli',       'section': '指令 CLI',
-     'title': '⚙️ CLI 使用说明',         'desc': 'html-gen CLI 命令总览'},
+     'title': 'CLI 使用说明',         'desc': 'html-gen CLI 命令总览'},
     {'file': 'markdown-spec.html',    'group': 'doc',       'section': '模板语法',
      'title': 'Markdown 语法规范',    'desc': 'md_to_html 支持的语法子集 (随 doc 组)'},
 ]
