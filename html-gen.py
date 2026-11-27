@@ -1110,7 +1110,7 @@ TEMPLATE_CONTRACT = {
             ('--groups', '类目分组文件 (短形 -g; 缺省从条目 group 自动推导)', ''),
             ('--title', '页面标题', '知识库'),
             ('--subtitle', '页面副标题', ''),
-            ('--welcome', '空状态欢迎语', '从上方类目选择，浏览整理的知识内容。'),
+            ('--welcome', '根页欢迎语 (空态与根页显示; 菜单地图自动附在其下)', '从上方类目选择，浏览整理的知识内容。'),
             ('--output', '输出 HTML 路径 (短形 -o; 三态 CLI > 顶层 output > 均无则中断 exit 1)', ''),
             _CLI_GITHUB_URL,
             _CLI_HOME_URL,
@@ -1300,7 +1300,7 @@ HELP_TABLE_EXAMPLES = """\
 # ② 教程/示例段 (手写常量, §B.3): 示例允许含键名, 键名以契约渲染的键规范段为准
 # 三块 (条目数据 / 输出目标 / 类目分组) 与 CL012 前 HELP_KNOWLEDGE 正文逐字一致, 仅按 §B.3 补段首注记
 HELP_KNOWLEDGE_EXAMPLES = """\
-以下为示例, 键名以键规范段 (item/groups/数据源与输出目标) 为准。
+以下为示例, 键名以键规范段 (点击模式/item/groups/数据源与输出目标) 为准。
 
 条目数据:
 [
@@ -2023,7 +2023,8 @@ def cmd_demo(args):
               f"引用子页 {len(refs)})")
 
         # 顺带重建独立案例索引 (data/_demos-data.json + demos-index.html)
-        type_icons = {'knowledge': '📚 C 型', 'table': '🗂 A 型', 'doc': '📄 B 型', 'html': '🌐 独立页'}
+        type_icons = {'knowledge': '📚 知识库（模板C）', 'table': '🗂 表格（模板A）',
+                      'doc': '📄 文档（模板B）', 'html': '🌐 独立页'}
         indep = [d for d in demos if not d.get('referenced')]
         indep.sort(key=lambda d: (not d.get('featured'), d['entry']))
         idx_columns = [
