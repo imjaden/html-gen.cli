@@ -501,10 +501,10 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>📚 知识库（模板C）</h1>
-      <div class="meta">创建: 2026-11-27 17:52 · 编辑: 2026-11-27 17:52<br>字数: 2,161 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>knowledge-guide.md</code></span></div>
+      <div class="meta">创建: 2026-11-27 18:53 · 编辑: 2026-11-27 18:53<br>字数: 2,168 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>knowledge-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
-<h2 id="使用场景">使用场景</h2>
+<h2 id="一-使用场景">一、使用场景</h2>
 <p>知识库模板适合<strong>多类目知识的浏览和检索</strong>场景，是三层模板中最综合、交互最复杂的一层。</p>
 <table><thead><tr>
 <th>场景</th>
@@ -539,7 +539,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <li><strong>实时协作</strong>（C 型是只读知识索引，不是编辑器）</li>
 </ul>
 <hr>
-<h2 id="方案设计">方案设计</h2>
+<h2 id="二-方案设计">二、方案设计</h2>
 <h3 id="架构">架构</h3>
 <pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
 Layer 2: layout-knowledge.html (骨架: 顶部标签 + 左侧章节 + 右侧内容)
@@ -604,7 +604,7 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="行业对标">行业对标</h2>
+<h2 id="三-行业对标">三、行业对标</h2>
 <table><thead><tr>
 <th>维度</th>
 <th>C 型 · 知识库</th>
@@ -685,7 +685,7 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 </tbody></table>
 <p><strong>核心差异</strong>：C 型专注于「知识索引 + 快速浏览」场景，是知识库的轻量级前端。适合知识管理流程中「先收拢再深度消费」的前半步。</p>
 <hr>
-<h2 id="功能清单">功能清单</h2>
+<h2 id="四-功能清单">四、功能清单</h2>
 <h3 id="已实现">已实现 ✅</h3>
 <table><thead><tr>
 <th>功能</th>
@@ -836,7 +836,7 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="快速开始">快速开始</h2>
+<h2 id="五-快速开始">五、快速开始</h2>
 <pre><code class="language-shell"># 最简单的启动
 html-gen knowledge -d data.json -o kb.html
 
@@ -870,7 +870,7 @@ html-gen knowledge \\
   --welcome TEXT      欢迎面板文本
   -o, --output FILE   输出 HTML（必填: CLI -o 或 JSON 顶层 output 二选一）</code></pre>
 <hr>
-<h2 id="模板案例">模板案例</h2>
+<h2 id="六-模板案例">六、模板案例</h2>
 <p>该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：</p>
 <table><thead><tr>
 <th>案例</th>
@@ -899,7 +899,7 @@ html-gen knowledge \\
 </tr>
 </tbody></table>
 <hr>
-<h2 id="影响面说明">影响面说明</h2>
+<h2 id="七-影响面说明">七、影响面说明</h2>
 <blockquote>改本模板的能力/键/行为时按此表逐面清点；<strong>单源权威是 <code>documents/templates.md</code> §影响面矩阵</strong>（含判据命令与 1→8 标准流程），这里只列本模板落点。</blockquote>
 <table><thead><tr>
 <th>面</th>

@@ -81,8 +81,8 @@
       "home": false
     },
     "demos/slide-guide.html": {
-      "sha256": "89453b3309effd60c9701981d5f11bfcb26481f2dedf682a41ff51d8085b5417",
-      "bytes": 48872,
+      "sha256": "f222b2e25e929f75ba175d71ac00220ab0bb734fd98fedf085dc21f5a86baf48",
+      "bytes": 48932,
       "corner": false,
       "home": false
     },
@@ -93,20 +93,20 @@
       "home": false
     },
     "demos/doc-guide.html": {
-      "sha256": "ed1cdea969156b2f7ca72431ad7756ef1212aedca90ecc186dc1a52eb4f92d2d",
-      "bytes": 54586,
+      "sha256": "c6045a6a597cb6853071e7c2e069e82b1f3812bae44f245f0ab1da39827fb03f",
+      "bytes": 54656,
       "corner": false,
       "home": false
     },
     "demos/table-guide.html": {
-      "sha256": "eaaeef0033b80e9ca60627ee6d50f78ed8a307069732807158bcf3972c1ed69f",
-      "bytes": 59411,
+      "sha256": "ca69d927587e01e807b9fb4dcefaf152ff0319e1d960fec8e2ca90635c662449",
+      "bytes": 59481,
       "corner": true,
       "home": false
     },
     "demos/knowledge-guide.html": {
-      "sha256": "12c50fb407ba2853bb0a0db443995300c6d263ab0c48ddf34e4c7433c99b86f6",
-      "bytes": 55154,
+      "sha256": "48f29f856e053593f425ab1fd3d65273b7ea00382b0954855fa5c9b0173dce63",
+      "bytes": 55224,
       "corner": true,
       "home": false
     },

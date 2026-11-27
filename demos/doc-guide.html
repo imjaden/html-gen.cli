@@ -494,10 +494,10 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>📄 文档（模板B）</h1>
-      <div class="meta">创建: 2026-11-27 17:52 · 编辑: 2026-11-27 17:52<br>字数: 2,249 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>doc-guide.md</code></span></div>
+      <div class="meta">创建: 2026-11-27 18:53 · 编辑: 2026-11-27 18:53<br>字数: 2,256 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>doc-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
-<h2 id="使用场景">使用场景</h2>
+<h2 id="一-使用场景">一、使用场景</h2>
 <p>文档阅读模板适合<strong>长文本内容的消费和知识沉淀</strong>场景，是三层模板中功能最丰富的一层。</p>
 <table><thead><tr>
 <th>场景</th>
@@ -537,7 +537,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <li><strong>协作编辑</strong>（B 型是只读展示，不是编辑器）</li>
 </ul>
 <hr>
-<h2 id="方案设计">方案设计</h2>
+<h2 id="二-方案设计">二、方案设计</h2>
 <h3 id="架构">架构</h3>
 <pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
 Layer 2: layout-doc.html (骨架: 侧边栏TOC + 主内容区)
@@ -617,7 +617,7 @@ Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
 &gt; **Tip:** text                        — Callout 提示
 &gt; **Danger:** text                     — Callout 危险</code></pre>
 <hr>
-<h2 id="行业对标">行业对标</h2>
+<h2 id="三-行业对标">三、行业对标</h2>
 <table><thead><tr>
 <th>维度</th>
 <th>B 型 · 文档阅读</th>
@@ -705,7 +705,7 @@ Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
 </tbody></table>
 <p><strong>核心差异</strong>：B 型不是文档站框架的替代品，而是「我需要把一个 Markdown 文件发给别人看」场景下的最优解。无需安装、无需构建、无需网络，生成即用。</p>
 <hr>
-<h2 id="功能清单">功能清单</h2>
+<h2 id="四-功能清单">四、功能清单</h2>
 <h3 id="已实现">已实现 ✅</h3>
 <table><thead><tr>
 <th>功能</th>
@@ -846,7 +846,7 @@ Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="快速开始">快速开始</h2>
+<h2 id="五-快速开始">五、快速开始</h2>
 <pre><code class="language-shell"># 从 Markdown 生成文档
 html-gen doc -i report.md -o report.html
 
@@ -902,7 +902,7 @@ report.html?width=narrow</code></pre>
 <li><code>?t=</code> 时间戳用于绕过浏览器缓存，与展示参数正交</li>
 </ul>
 <hr>
-<h2 id="模板案例">模板案例</h2>
+<h2 id="六-模板案例">六、模板案例</h2>
 <p>该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：</p>
 <table><thead><tr>
 <th>案例</th>
@@ -946,7 +946,7 @@ report.html?width=narrow</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="影响面说明">影响面说明</h2>
+<h2 id="七-影响面说明">七、影响面说明</h2>
 <blockquote>改本模板的能力/键/行为时按此表逐面清点；<strong>单源权威是 <code>documents/templates.md</code> §影响面矩阵</strong>（含判据命令与 1→8 标准流程），这里只列本模板落点。</blockquote>
 <table><thead><tr>
 <th>面</th>

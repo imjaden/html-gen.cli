@@ -515,10 +515,10 @@ pre code { background: none; padding: 0; }
 <div style="display:none">
   <div class="doc-header">
     <h1>🖼 幻灯片（模板D）</h1>
-    <div class="meta">创建: 2026-11-27 17:52 · 编辑: 2026-11-27 17:52<br>字数: 939 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
+    <div class="meta">创建: 2026-11-27 18:53 · 编辑: 2026-11-27 18:53<br>字数: 945 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
   </div>
   <div id="docBody"><hr>
-<h2 id="使用场景">使用场景</h2>
+<h2 id="一-使用场景">一、使用场景</h2>
 <p>幻灯片模板适用于<strong>演示与分页展示</strong>场景，是三层模板中的演示层：每个 <code>## h2</code> 标题为一页，h1 为封面页。</p>
 <table><thead><tr>
 <th>场景</th>
@@ -553,7 +553,7 @@ pre code { background: none; padding: 0; }
 <li>D 型：h2 分页演示（键盘翻页）</li>
 </ul>
 <hr>
-<h2 id="方案设计">方案设计</h2>
+<h2 id="二-方案设计">二、方案设计</h2>
 <h3 id="架构">架构</h3>
 <pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
 Layer 2: layout-slide.html (模板骨架)
@@ -590,7 +590,7 @@ Layer 3: html-gen.py → slide 子命令 (Markdown 注入)</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="功能清单">功能清单</h2>
+<h2 id="三-功能清单">三、功能清单</h2>
 <h3 id="已实现">已实现 ✅</h3>
 <table><thead><tr>
 <th>功能</th>
@@ -648,7 +648,7 @@ Layer 3: html-gen.py → slide 子命令 (Markdown 注入)</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="快速开始">快速开始</h2>
+<h2 id="四-快速开始">四、快速开始</h2>
 <pre><code class="language-shell"># 从 Markdown 生成幻灯片
 html-gen slide -i slides.md -o slides.html
 
@@ -673,7 +673,7 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 
 细分内容（点击 H3 展开）</code></pre>
 <hr>
-<h2 id="模板案例">模板案例</h2>
+<h2 id="五-模板案例">五、模板案例</h2>
 <p>该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：</p>
 <table><thead><tr>
 <th>案例</th>
@@ -687,7 +687,7 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 </tr>
 </tbody></table>
 <hr>
-<h2 id="影响面说明">影响面说明</h2>
+<h2 id="六-影响面说明">六、影响面说明</h2>
 <blockquote>改本模板的能力/键/行为时按此表逐面清点；<strong>单源权威是 <code>documents/templates.md</code> §影响面矩阵</strong>（含判据命令与 1→8 标准流程），这里只列本模板落点。</blockquote>
 <table><thead><tr>
 <th>面</th>
