@@ -26,7 +26,7 @@ EXPECTED_TOP = (['index.html', 'all.md', '_kb-groups.json', '_kb-data.json']
 EXPECTED_KB = [f'{s}.html' for s in EXPECTED_SKILLS]
 
 # 门户 5 tab (label 断言; groups 定义见设计 §4.1)
-EXPECTED_TAB_LABELS = ['A 表格', 'B 文档', 'C 知识库', 'D 幻灯片', '通用 CLI']
+EXPECTED_TAB_LABELS = ['表格（模板A）', '文档（模板B）', '知识库（模板C）', '幻灯片（模板D）', '通用 CLI']
 
 # html-gen-slide / html-gen-table 的 references (HG-SEC-089: 共 3 个)
 REFS_BY_SKILL = {
@@ -176,7 +176,7 @@ class TestPromptSite:
             self._run_ok(d)
             text = (d / 'all.md').read_text(encoding='utf-8')
             assert not text.startswith('---'), '不以 --- 开头'
-            assert text.startswith('# html-gen Prompt 合集'), '首行唯一顶层 h1'
+            assert text.startswith('# HM Prompt 合集'), '首行唯一顶层 h1'
             # 9 个 ## {skill.name} 段标题 (各恰好一次)
             for name in EXPECTED_SKILLS:
                 assert re.search(rf'^## {re.escape(name)}$', text, re.M), f'缺段标题 ## {name}'
@@ -205,7 +205,7 @@ class TestPromptSite:
             # 5 tab 标签 (groups JSON 注入 GROUPS; kw-tab 渲染于 JS, 此处断言 JSON 标签文本)
             for label in EXPECTED_TAB_LABELS:
                 assert label in html, f'门户缺 tab 标签: {label}'
-            assert 'html-gen Prompt 站点' in html
+            assert 'HM Prompt' in html
             # HG-SEC-090: 无 github-corner 元素 (显式空串禁用)
             assert not re.search(r'<a[^>]*class="github-corner"', html)
             assert not re.search(r'<a[^>]*class="github-corner-hit"', html)
@@ -431,6 +431,6 @@ class TestPromptSite:
             # all.md 唯一顶层 h1 (fence-aware) 不变
             text = (d / 'all.md').read_text(encoding='utf-8')
             assert fence_top_h1_count(text) == 1
-            assert text.startswith('# html-gen Prompt 合集')
+            assert text.startswith('# HM Prompt 合集')
         finally:
             shutil.rmtree(d, ignore_errors=True)

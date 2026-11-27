@@ -65,7 +65,7 @@ html-gen prompt --site --dir <path> # 站点输出目录覆盖 (默认 仓库根
 ```
 
 `--site` 产物（勿手改，由生成器产出；一律剥离 YAML frontmatter）：
-- `prompts/index.html` — C 型 knowledge 门户（5 tab：A 表格 / B 文档 / C 知识库 / D 幻灯片 / 通用 CLI；纵向 = 指令 CLI / 模板语法 / 使用案例；guide/case 以 iframe 加载 demos/ 页）
+- `prompts/index.html` — HM Prompt 门户（5 tab：表格（模板A） / 文档（模板B） / 知识库（模板C） / 幻灯片（模板D） / 通用 CLI；纵向 = 指令 CLI / 模板语法 / 使用案例；guide/case 以 iframe 加载 demos/ 页）
 - `prompts/kb/{skill}.html` ×9 — 每 skill 的 doc detail 页
 - `prompts/{skill}.md` / `.json` ×18 + `prompts/all.md` — curl 契约文件
 - `prompts/_kb-groups.json` / `_kb-data.json` — 门户运行时数据（Jekyll `_` 前缀不发布，已内联 index.html）
@@ -319,6 +319,7 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 ## 变更记录
 - v2.7.0 (2026-09-12): prompt --site 28→31 文件（新增 github-issue-feedback skill 挂载: 跨项目 Issue 数据反馈闭环规范）
 - v2.6.0 (2026-09-10): table 专属 `--feedback-repo`（GitHub Issue 反馈通道 + scripts/countries-issue-sync.py 数据反馈闭环）
+- v3.1.0 (2026-11-27): prompts 门户改名 **HM Prompt** + 分组话术「表格（模板A）…」；guide/case 条目名同步模板话术
 - v3.0.0 (2026-11-23): C 型段补「交互」小节（根页地图 / `⌘K` 搜索面板 / `⌘F` 原生 / ⧉ 复制路径），对齐 html-gen v3.6
 - v2.5.0 (2026-09-02): prompt 子命令段补 `--site`（prompts/ 在线阅读站点 28 文件: C 型 knowledge 门户 5 tab + kb/{skill}.html detail + curl 契约）
 - v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明

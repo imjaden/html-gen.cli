@@ -97,7 +97,7 @@ html-gen prompt --site --dir <path>           # output dir override
 
 | File | URL | Content |
 |:--|:--|:--|
-| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | C 型 knowledge 门户（5 tab: A 表格/B 文档/C 知识库/D 幻灯片/通用 CLI; 纵向 指令 CLI/模板语法/使用案例） |
+| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | HM Prompt 门户（5 tab: 表格（模板A）/文档（模板B）/知识库（模板C）/幻灯片（模板D）/通用 CLI; 纵向 指令 CLI/模板语法/使用案例） |
 | `prompts/kb/{skill}.html` | https://html-gen.cli.jaden.tech/prompts/kb/{skill}.html | Per-skill doc detail page (×9) |
 | `prompts/all.md` | https://html-gen.cli.jaden.tech/prompts/all.md | All 9 skills in one fetch |
 | `prompts/{skill}.md` | https://html-gen.cli.jaden.tech/prompts/{skill}.md | Single skill plain markdown (body + references) |

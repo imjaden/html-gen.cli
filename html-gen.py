@@ -1711,11 +1711,11 @@ def cmd_prompt(args):
 # 数据数组内 section 首现顺序渲染, 保证组内 指令 CLI → 模板语法 → 使用案例)。
 
 SITE_GROUPS = [
-    {'key': 'table',     'label': 'A 表格',   'icon': '📊'},
-    {'key': 'doc',       'label': 'B 文档',   'icon': '📄'},
-    {'key': 'knowledge', 'label': 'C 知识库', 'icon': '📚'},
-    {'key': 'slide',     'label': 'D 幻灯片', 'icon': '🎞️'},
-    {'key': 'cli',       'label': '通用 CLI', 'icon': '🛠️'},
+    {'key': 'table',     'label': '表格（模板A）',   'icon': '🗂'},
+    {'key': 'doc',       'label': '文档（模板B）',   'icon': '📄'},
+    {'key': 'knowledge', 'label': '知识库（模板C）', 'icon': '📚'},
+    {'key': 'slide',     'label': '幻灯片（模板D）', 'icon': '🖼'},
+    {'key': 'cli',       'label': '通用 CLI',        'icon': '🛠️'},
 ]
 
 SKILL_TO_GROUP = {
@@ -1733,15 +1733,15 @@ SKILL_TO_GROUP = {
 # demos/ 指南页 (badge 指南; file 相对 demos/, group/section 门户归属, desc 一句)
 GUIDE_MAP = [
     {'file': 'table-guide.html',      'group': 'table',     'section': '模板语法',
-     'title': 'A 型 · 数据表格方案',  'desc': 'table 模板方案指南 (列配置/交互/案例)'},
+     'title': '🗂 表格（模板A）',  'desc': 'table 模板方案指南 (列配置/交互/案例)'},
     {'file': 'doc-guide.html',        'group': 'doc',       'section': '模板语法',
-     'title': 'B 型 · 文档阅读方案',  'desc': 'doc 模板方案指南 (Markdown/阅读)'},
+     'title': '📄 文档（模板B）',  'desc': 'doc 模板方案指南 (Markdown/阅读)'},
     {'file': 'knowledge-guide.html',  'group': 'knowledge', 'section': '模板语法',
-     'title': 'C 型 · 知识库方案',    'desc': 'knowledge 模板方案指南 (条目/分组)'},
+     'title': '📚 知识库（模板C）',    'desc': 'knowledge 模板方案指南 (条目/分组)'},
     {'file': 'slide-guide.html',      'group': 'slide',     'section': '模板语法',
-     'title': 'D 型 · 幻灯片方案',    'desc': 'slide 模板方案指南 (分页/演示)'},
+     'title': '🖼 幻灯片（模板D）',    'desc': 'slide 模板方案指南 (分页/演示)'},
     {'file': 'usage-guide.html',      'group': 'cli',       'section': '指令 CLI',
-     'title': 'CLI 使用说明',         'desc': 'html-gen CLI 命令总览'},
+     'title': '⚙️ CLI 使用说明',         'desc': 'html-gen CLI 命令总览'},
     {'file': 'markdown-spec.html',    'group': 'doc',       'section': '模板语法',
      'title': 'Markdown 语法规范',    'desc': 'md_to_html 支持的语法子集 (随 doc 组)'},
 ]
@@ -1926,8 +1926,8 @@ def cmd_prompt_site(args):
         data=str(out_dir / '_kb-data.json'),
         groups=str(out_dir / '_kb-groups.json'),
         output=str(out_dir / 'index.html'),
-        title='html-gen Prompt 站点',
-        welcome='从上方类目选择: 每模板维度下 指令 CLI / 模板语法 / 使用案例',
+        title='HM Prompt',
+        welcome='多项目 Prompt 索引：每模板维度下 指令 CLI / 模板语法 / 使用案例',
         subtitle=None,
         quiet=True,
         github_url='',
@@ -1968,7 +1968,7 @@ def _site_skill_section(skill, stripped, site_refs):
 
 def _site_all_md(skills, site_sections):
     """all.md 组装: 唯一顶层 h1 + 说明引用块 + 9 skill 段."""
-    header = ("# html-gen Prompt 合集\n\n"
+    header = ("# HM Prompt 合集\n\n"
               "> 在线阅读: html-gen 项目 9 个 skills prompt 全文（含 references）。\n"
               "> 单篇获取: prompts/{skill}.md（纯 markdown）· prompts/{skill}.json（JSON 信封）· all.md（全量）。\n"
               "> 重新生成: html-gen prompt --site（产物勿手改，由生成器产出）。\n")
