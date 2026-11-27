@@ -465,6 +465,10 @@
   $('panelMask').addEventListener('click', function (ev) {
     if (ev.target === this) closePanel();
   });
+  if (window.matchMedia && window.matchMedia('(max-width:759px)').matches) {
+    $('fabShot').title = '预览方案';
+    $('fabShot').setAttribute('aria-label', '预览方案');
+  }
   $('fabEdit').addEventListener('click', function () {
     openPanel('week', 'edit', ui.get('day') || todayKey());
   });

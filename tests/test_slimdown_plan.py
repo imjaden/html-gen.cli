@@ -318,6 +318,32 @@ class TestSlimdownPage(unittest.TestCase):
         self.assertFalse(self.js("document.getElementById('themeRow').hidden"))
         self.assertEqual(self.errors(), [])
 
+    def test_19_mobile_fullwidth_and_readonly(self):
+        # v1.6：手机端单卡满宽（左右切换）+ 隐藏编辑/下载图片；主题改名落地
+        self.driver.set_window_size(390, 844)
+        self.driver.refresh()
+        WebDriverWait(self.driver, 8).until(
+            EC.presence_of_element_located((By.CSS_SELECTOR, '#weekRow .day-card')))
+        time.sleep(0.3)
+        self.to_week()                                   # 默认视图是主题，先切到星期再量
+        vw = self.js("innerWidth")
+        w = self.js("Math.round(document.querySelector('#weekRow .day-card').getBoundingClientRect().width)")
+        self.assertGreaterEqual(w / vw, 0.9)                          # 星期卡满宽
+        self.assertEqual(self.js("getComputedStyle(document.getElementById('fabEdit')).display"), 'none')
+        self.assertEqual(self.js("document.getElementById('fabShot').title"), '预览方案')
+        self.js("document.getElementById('fabShot').click()")
+        time.sleep(0.4)
+        self.assertEqual(self.js("getComputedStyle(document.getElementById('btnDownloadImg')).display"), 'none')
+        self.assertTrue(self.js("!!document.querySelector('#previewHost .card')"))    # 预览仍可用
+        self.js("document.getElementById('panelClose').click()")
+        self.js("document.querySelector('#viewSeg button[data-view=theme]').click()")
+        time.sleep(0.3)
+        tw = self.js("Math.round(document.querySelector('#themeRow .theme-card').getBoundingClientRect().width)")
+        self.assertGreaterEqual(tw / vw, 0.9)                          # 主题卡满宽
+        self.assertIn('八段锦 · 养生跟练', self.js("document.getElementById('themeRow').textContent"))
+        self.assertNotIn('懒人版八段锦', self.driver.page_source)
+        self.assertEqual(self.errors(), [])
+
 
 if __name__ == '__main__':
     unittest.main()

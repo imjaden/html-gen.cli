@@ -86,3 +86,16 @@
 - 验收（真跑）：默认主题、标签序、标题一行、面板 1296×900、head/foot 33/34、分享 `#p=` 落星期且不写记忆、恢复回主题；
   `pytest` 502 passed / 103 subtests；`baseline --check` 50/50。已知：`-n 4` 并行下 selenium 页（test_demos_index / test_index_landing）
   与调试用浏览器同机争用 chromedriver/CPU 时会时序 flake，串行复跑全绿（与 TODO-handoff 记载的 test_14 flake 同源）。
+
+## 8. v1.6 小批（2026-11-24，用户「一条龙」实施，四项决策按推荐 A）
+
+| 项 | 落定（实测 @390×844 / @1440×900） |
+|:--|:--|
+| D1 范围 | 星期卡与主题卡**统一**：桌面维持平铺（1440 下 7×194px 一行无溢出） |
+| D2 移动形态 | 单卡满宽 + 左右 snap 切换：`flex:0 0 200/280px → 100%`（390 下实测卡宽 366px ≈ 94vw），满宽后排版同步放大（行高 42px、字号 14/17/18px） |
+| D3 按钮收口 | <760px 隐藏 `fabEdit`（编辑方案）与 `btnDownloadImg`（下载图片=保存图片）；`fabShot` 文案改「预览方案」，面板纯预览仍可用 |
+| D4 改名 | 「懒人版八段锦」→「八段锦 · 养生跟练」（`data/_slimdown-plan.json` t04.name 一处 + 重建；分享链接按主题序号编码，零迁移） |
+
+- 落点：`data/_slimdown-plan.json`、`_src/plan.css`（§16 移动端块）、`_src/plan.js`（fabShot 手机端 relabel）、`tests/test_slimdown_plan.py`（+`test_19`，17 例）。
+- 验收（真跑）：390 档单卡满宽/编辑与下载不可见/预览可用/改名落地且「懒人版」全页不复存在；1440 平铺不变；`pytest` 511 passed / 106 subtests；`baseline --check` 50/50（`demos/slimdown/` 在 SKIP 面，产物不重钉）。
+- 计数事实卡：本批 +1 例后应为 511；线外笔 `dbf3461` 报 506（较其自身 +4 实测差额），AGENTS.md 计数权威待批件同步 506 → 511。

@@ -464,3 +464,25 @@ body.cardonly #standalone{display:flex;justify-content:center;align-items:flex-s
   #themeRow .theme-card{break-inside:avoid;page-break-inside:avoid;}
   .t-foot{border-top:1px solid var(--edge-soft);}
 }
+
+/* ═══════ 16. v1.6 移动端：单卡满宽 + 只读收口 ═══════ */
+@media (max-width:760px){
+  /* D1-A+D2-A：星期卡与主题卡统一单卡满宽（左右 snap 切换） */
+  #weekRow .day-card{flex:0 0 100%;}
+  #themeRow .theme-card{flex:0 0 100%;}
+  /* 满宽后排版同步放大，避免大片留白 */
+  .day-card{padding:16px;}
+  .d-head .dn{font-size:17px;}
+  .d-list li{font-size:14px;height:42px;}
+  .d-list li .badge{font-size:11px;}
+  .theme-card{padding:16px;}
+  .theme-card .t-head .tn{font-size:18px;}
+  .theme-card .t-list li{font-size:14px;}
+  .card.tcard .c-row .cn{font-size:14px;}
+  /* D3-A：手机端隐藏「编辑方案」入口与「下载图片」（=保存图片），只读 + 预览 */
+  #fabEdit{display:none!important;}
+  #btnDownloadImg{display:none!important;}
+}
+@media (max-width:520px){
+  #themeRow .theme-card{flex:0 0 100%;}
+}
