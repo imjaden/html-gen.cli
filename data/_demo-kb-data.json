@@ -684,5 +684,22 @@
     "section": "planning, design, im",
     "badge": "skill",
     "desc": "<p>Write implementation plans: bite-sized tasks, paths, code.</p><p>标签: planning, design, implementation, workflow</p>"
+  },
+  {
+    "title": "iframe 模式 · 子页嵌套（cloudwise/core-products）",
+    "group": "projects",
+    "section": "iframe, 演示",
+    "badge": "演示",
+    "page_title": "iframe 模式：url 嵌入同源子页（自动追加 sidebar=0&toolbar=0 进 Bare 模式）",
+    "url": "cloudwise/core-products.html"
+  },
+  {
+    "title": "iframe 宽屏 · width=wide（cloudwise/awards）",
+    "group": "projects",
+    "section": "iframe, 演示",
+    "badge": "演示",
+    "page_title": "width 键：iframe 追加 ?width=wide，演示 1280px 宽版阅读",
+    "url": "cloudwise/awards.html",
+    "width": "wide"
   }
 ]
