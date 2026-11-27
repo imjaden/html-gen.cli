@@ -434,7 +434,10 @@ class TestImpactSurfaceDocs(unittest.TestCase):
     def test_02_guides_point_to_matrix(self):
         for name in self.GUIDES:
             body = (DEMOS / name).read_text(encoding='utf-8')
-            self.assertIn('## 影响面说明', body, f'{name} 缺「影响面说明」节')
+            # h2 一律带中文序号前缀（一、二、…），迭代记录作附录不编号
+            self.assertRegex(body, r'(?m)^## 一、\S', f'{name} 的 h2 缺中文序号前缀（一、二、…）')
+            self.assertRegex(body, r'(?m)^## [一二三四五六七八九十]+、影响面说明$',
+                             f'{name} 缺「## N、影响面说明」节')
             self.assertIn('documents/templates.md', body, f'{name} 未指回单源权威 templates.md')
 
     def test_03_guide_titles_follow_naming(self):
