@@ -4,6 +4,7 @@
 v1.1（复审返工）补：stderr 漂移提示、`--json` 错误分支形状、基线损坏 rc=3、
 `--update` 在产物落后时拒绝（越权需 --force 并标 verified=false）。
 """
+import hashlib
 import importlib.util
 import json
 import os
@@ -332,6 +333,36 @@ class TestDocsIndexGate(unittest.TestCase):
         self.assertEqual(r.returncode, 0,
                          f'文档清单落后于现状（跑 {self.GEN} --root . 重新生成）\n'
                          f'stdout: {r.stdout.strip()[:400]}\nstderr: {r.stderr.strip()[:400]}')
+
+
+class TestPackageSourceSync(unittest.TestCase):
+    """src/html_gen/ 是 scripts/build-package.py 的产物（pip 包源）。
+
+    漂移 = 改了根模板/CLI/skills 却没重跑打包 —— CL047 就是这样漏的（打包源在 v3.5 停了 5 天，
+    全靠人工全量扫描才发现）。此前仓内没有任何守卫，这条把它变成机器可判。
+    """
+
+    SRC = ROOT / 'src' / 'html_gen'
+    ROOT_FILES = ('html-gen.py', 'layout-doc.html', 'layout-knowledge.html',
+                  'layout-slide.html', 'layout-table.html', 'style-guide.css')
+
+    @staticmethod
+    def _sha(p):
+        return hashlib.sha256(p.read_bytes()).hexdigest()
+
+    def test_01_package_source_matches_root(self):
+        if not self.SRC.is_dir():
+            self.skipTest('src/html_gen 不存在（未打包）')
+        for name in self.ROOT_FILES:
+            self.assertEqual(self._sha(ROOT / name), self._sha(self.SRC / name),
+                             f'src/html_gen/{name} 与根不一致 —— 跑 python3 scripts/build-package.py')
+        # skills/ 镜像（改 SKILL.md 忘打包同样会漂）
+        drift = [p.relative_to(ROOT / 'skills').as_posix()
+                 for p in sorted((ROOT / 'skills').rglob('*.md'))
+                 if not (self.SRC / 'skills' / p.relative_to(ROOT / 'skills')).is_file()
+                 or self._sha(p) != self._sha(self.SRC / 'skills' / p.relative_to(ROOT / 'skills'))]
+        self.assertEqual([], drift,
+                         f'src/html_gen/skills 与 skills/ 漂移: {drift[:5]} —— 跑 python3 scripts/build-package.py')
 
 
 if __name__ == '__main__':

@@ -407,5 +407,41 @@ class TestTemplateStaticGuards(unittest.TestCase):
             self.assertNotIn("e.key !== 'f'", html, f'{rel} 仍含 CL044 的 ⌘F 拦截段')
 
 
+class TestImpactSurfaceDocs(unittest.TestCase):
+    """CL048: 影响面矩阵单源 + 四份 guide 摘要 + 标题话术（防「改了模板漏了说明」）.
+
+    反例: CL047 改完模板，skills/*、prompts/index.html、src/html_gen 三面全没跟上，
+    全靠事后全量扫描才发现 —— 这几条把「有没有这章/这套话术」变成机器可判。
+    """
+
+    FACES = ('指令面', 'Skills 面', '文档面', '案例面', '测试面', '基线/门禁面', '打包面', '跨仓/发布面')
+    GUIDES = ('table-guide.md', 'doc-guide.md', 'knowledge-guide.md', 'slide-guide.md')
+    TITLES = {
+        'table-guide.md': '# 🗂 表格（模板A）',
+        'doc-guide.md': '# 📄 文档（模板B）',
+        'knowledge-guide.md': '# 📚 知识库（模板C）',
+        'slide-guide.md': '# 🖼 幻灯片（模板D）',
+    }
+
+    def test_01_matrix_is_single_source(self):
+        doc = (PROJECT / 'documents' / 'templates.md').read_text(encoding='utf-8')
+        self.assertIn('## 影响面矩阵', doc, 'documents/templates.md 缺「影响面矩阵」节（单源权威）')
+        for face in self.FACES:
+            self.assertIn(face, doc, f'影响面矩阵缺「{face}」行')
+        self.assertIn('build-package.py', doc, '影响面矩阵须点名打包面入口 build-package.py')
+        self.assertIn('baseline.py', doc, '影响面矩阵须点名基线门禁入口 baseline.py')
+
+    def test_02_guides_point_to_matrix(self):
+        for name in self.GUIDES:
+            body = (DEMOS / name).read_text(encoding='utf-8')
+            self.assertIn('## 影响面说明', body, f'{name} 缺「影响面说明」节')
+            self.assertIn('documents/templates.md', body, f'{name} 未指回单源权威 templates.md')
+
+    def test_03_guide_titles_follow_naming(self):
+        for name, want in self.TITLES.items():
+            first = (DEMOS / name).read_text(encoding='utf-8').splitlines()[0].strip()
+            self.assertEqual(want, first, f'{name} 一级标题话术应为「{want}」')
+
+
 if __name__ == '__main__':
     unittest.main(verbosity=2)

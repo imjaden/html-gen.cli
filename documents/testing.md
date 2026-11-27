@@ -105,7 +105,7 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
 - 回填工具 `scripts/backfill-table-json.py` 的输入拒绝面（CL040）：源/产物行数不等或行标识重复 ⇒
   **rc=2 且不写盘**（`--drop-orphans` 才放行并清掉既有 `legacy` 段）；字段差异按 `+新增带新值 /
   -摘除带旧值 / ~变更带双值` 输出；`legacy` 里按行名 join 不到的键会报「悬空」。
-- 测试：`tests/test_baseline_gate.py` 12 例，全部在 `--root` 临时副本上跑（真仓零写入）：
+- 测试：`tests/test_baseline_gate.py` 13 例，全部在 `--root` 临时副本上跑（真仓零写入）：
   未改绿 / 改一字节红且只报该项（含 stderr 漂移提示断言）/ JSON 形状 / 缺文件 / 无基线 exit 2 /
   基线损坏 exit 3 / 产物落后时 `--update` 拒绝且 `--force` 标 `verified=false` / `--update` 复原 /
   **无页面漏网（jobs ∪ SKIP 覆盖 `demos/*.html`，子集 ⊇ 全部 jobs）/ doc·kb 作业带单源与回收标题 /
