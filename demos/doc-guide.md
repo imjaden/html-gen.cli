@@ -1,4 +1,4 @@
-# B 型 · 文档阅读方案
+# 📄 文档（模板B）
 
 ---
 
@@ -89,7 +89,7 @@ Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
 | **定位** | 单文件文档阅读 | SPA 文档站点 | SSG 文档站点 | 托管文档平台 |
 | **部署** | 单文件 HTML | 静态服务器 | 构建后静态文件 | SaaS |
 | **渲染** | 服务端预渲染 | 客户端 JS 渲染 | 构建时 SSG | 服务端渲染 |
-| **搜索** | ❌ 暂无 | ✅ 全文搜索 | ✅ algolia | ✅ 内置 |
+| **搜索** | ✅ 侧栏 TOC 过滤（章节标题；≥2 字） | ✅ 全文搜索 | ✅ algolia | ✅ 内置 |
 | **TOC** | ✅ 自动 | ✅ 插件 | ✅ 自动 | ✅ 自动 |
 | **代码高亮** | ✅ 行号 + 复制 | ✅ prism.js | ✅ prism/shiki | ✅ prism |
 | **图片** | ✅ 灯箱 | ✅ 缩放 | ✅ 缩放 | ✅ 缩放 |
@@ -207,6 +207,23 @@ report.html?width=narrow
 | [Slide 幻灯片版](slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-demo.html |
 
 ---
+
+## 影响面说明
+
+> 改本模板的能力/键/行为时按此表逐面清点；**单源权威是 `documents/templates.md` §影响面矩阵**（含判据命令与 1→8 标准流程），这里只列本模板落点。
+
+| 面 | 本模板落点 |
+|:---|:---|
+| **指令面** | `html-gen help doc`（`TEMPLATE_CONTRACT['doc']`：含 URL 状态段） |
+| **Skills 面** | `skills/html-gen-doc/SKILL.md`、`skills/html-gen/SKILL.md`（B 型段） |
+| **文档面** | 本文件（→ `doc-guide.html`）、`documents/templates.md`、`features.md` |
+| **案例面** | `demos/{usage-guide,doc-guide,table-guide,knowledge-guide,markdown-spec}.html` ← 同名 `.md`（`demo --rebuild`） |
+| **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`、`tests/test_doc_sidebar.py`、`tests/test_doc_bare.py`、`tests/test_doc_width.py`、`tests/test_heading_levels.py`、`tests/test_word_count.py`、`tests/test_link_safety.py` |
+| **基线/门禁面** | `scripts/baseline.py`（`DOC_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
+| **打包面** | `src/html_gen/layout-doc.html` → `scripts/build-package.py`；`prompts/` 站由 `html-gen prompt --site` 出（doc 页模板） |
+| **跨仓/发布面** | hermes-manager `web/knowledge/pages/*`（68 篇 doc 页，`scripts/hm-docs-site-gen.py`）、script-miner `skills/html-templates/layout-doc.html`（+ 其 vendor 测试）、版本三件 |
+
+> 反例参照 CL047（2026-11-23）：模板改完漏了 Skills 面、案例面、打包面三处，靠事后全量扫描才发现。
 
 ## 迭代记录
 

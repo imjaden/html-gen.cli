@@ -1,4 +1,4 @@
-# A 型 · 数据表格方案
+# 🗂 表格（模板A）
 
 ---
 
@@ -273,6 +273,23 @@ html-gen table -h
 | [操作按钮 demo](table-actions-demo.html) | copyKey/hrefKey/handler 操作列 | table-actions-demo.html |
 
 ---
+
+## 影响面说明
+
+> 改本模板的能力/键/行为时按此表逐面清点；**单源权威是 `documents/templates.md` §影响面矩阵**（含判据命令与 1→8 标准流程），这里只列本模板落点。
+
+| 面 | 本模板落点 |
+|:---|:---|
+| **指令面** | `html-gen help table`（`TEMPLATE_CONTRACT['table']`：列类型/列属性/options） |
+| **Skills 面** | `skills/html-gen-table/SKILL.md`、`skills/html-gen/SKILL.md`（A 型段） |
+| **文档面** | 本文件（→ `table-guide.html`）、`documents/templates.md`、`features.md` |
+| **案例面** | `demos/{countries-table,provinces-table,table-features-demo,table-actions-demo,hermes-profile-skills-list}.html` + `data/_*table*.json` + `data/_demos-data.json` 卡片话术 |
+| **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`、`tests/test_countries_table.py`、`tests/test_provinces_table.py`、`tests/test_table_features.py`、`tests/test_table_default_state.py`、`tests/test_json_output.py`、`tests/test_issue_feedback.py` |
+| **基线/门禁面** | `scripts/baseline.py`（`TABLE_PRODUCTS` / `CASE_TABLE_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
+| **打包面** | `src/html_gen/layout-table.html`、`src/html_gen/html-gen.py` → `scripts/build-package.py` |
+| **跨仓/发布面** | script-miner `skills/html-templates/layout-table.html`（+ 其 vendor 测试）、hermes-manager `skills-active/hermes-skills.html` 等表格页、`__version__` / `README×2` / `AGENTS.md` 计数 |
+
+> 反例参照 CL047（2026-11-23）：模板改完漏了 Skills 面、案例面、打包面三处，靠事后全量扫描才发现。
 
 ## 迭代记录
 

@@ -1,4 +1,4 @@
-# C 型 · 知识库方案
+# 📚 知识库（模板C）
 
 ---
 
@@ -78,12 +78,12 @@ JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
 | **部署** | 单文件 HTML | SaaS | SaaS/自建 | SaaS |
 | **数据源** | JSON 注入 | 内置数据库 | 内置数据库 | Markdown |
 | **导航** | 标签 + 章节 | 侧边栏树 | 侧边栏树 | 侧边栏树 |
-| **搜索** | ❌ 暂无 | ✅ 全文 | ✅ 全文 | ✅ 全文 |
+| **搜索** | ✅ 面板（条目名/子分类/描述/全名/类目；`⌘K`） | ✅ 全文 | ✅ 全文 | ✅ 全文 |
 | **标签切换** | ✅ | ⚠️ 需配置 | ✅ | ⚠️ 需配置 |
 | **熟练度 badge** | ✅ 内置 | ❌ 自建 | ❌ 插件 | ❌ 自建 |
 | **离线** | ✅ 单文件 | ❌ 需网络 | ❌ 需网络 | ❌ 需网络 |
 | **外部依赖** | 零 | 需要 JS 框架 | 需要网络 | CDN |
-| **文件大小** | ~22KB（含 15 条） | N/A | N/A | N/A |
+| **文件大小** | ~82KB（98 条，`demos/knowledge-demo.html`） | N/A | N/A | N/A |
 
 **核心差异**：C 型专注于「知识索引 + 快速浏览」场景，是知识库的轻量级前端。适合知识管理流程中「先收拢再深度消费」的前半步。
 
@@ -98,7 +98,7 @@ JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
 | 顶部标签栏 | 按大类目切换，标签自动匹配 | P0 |
 | 左侧章节列表 | 当前类目下的条目列表，含熟练度 badge | P0 |
 | 右侧内容面板 | 选中条目后展示内容（HTML 内联渲染） | P0 |
-| 欢迎面板 | 未选定条目时显示提示信息 | P0 |
+| 根页（欢迎语 + 菜单地图） | 未选条目时落在根页：欢迎语 + 菜单地图表（列 = 页签 / 行 = section / 点格内条目直达） | P0 |
 | 自动分组推导 | 从数据 JSON 的 `group` 字段自动归类 | P0 |
 | 可选 groups.json | 自定义类目顺序、图标、显示名称 | P0 |
 | 深色主题 | 与 style-guide.css 一致的 surface-950 深色主题 | P0 |
@@ -107,9 +107,11 @@ JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
 | 记忆恢复 | URL 参数优先 > localStorage（kw_group/kw_item）> 默认；group 单独恢复 | P0 |
 | iframe 加载 + 内联渲染 | 有 url → iframe 加载；有 desc → 内联渲染；空态欢迎面板 | P0 |
 | 概述页宽屏 | url 含 overview 时 iframe 自动附加 width=wide（doc 1280px） | P0 |
-| 跨组 section 保持 | 切顶部 tab 时左侧选中 section 跨组跟随（如 36计策 ↔ 36计策） | P0 |
+| 切页签回根页 | 切顶部 tab 一律回根页，不再自动选中该组首条（v3.6 起，取代原「跨组 section 保持」） | P0 |
 | section 图标 | 数据 section_icon 字段渲染图标前缀（📋/📅/🧮） | P1 |
-| 侧边栏折叠/搜索 | 折叠 48px（`[` 快捷键）；🔍 搜索 150ms debounce 过滤 | P1 |
+| 侧边栏折叠 + 搜索面板 | 折叠 48px（`[` 快捷键）；`⌘/Ctrl+K` 或 🔍 打开独立面板（匹配 条目名/子分类/描述/全名/类目；`↑↓←→`/`Enter`/`Esc`；`<mark>` 高亮） | P0 |
+| 回根页 / 复制路径 | 点侧栏标题回根页（清 URL `item=` 与 localStorage）；复制路径走标题右侧 ⧉（中文参数解码） | P0 |
+| `⌘F` 归浏览器 | 模板不拦截原生查找，与面板（`⌘K`）并存 | P0 |
 | 裸模式 (Bare) | 默认隐藏 sidebar/toolbar，?sidebar=1&toolbar=1 展示；嵌入 iframe 自动降级 | P1 |
 | 单条目 section 直开 | 单条目 section 点击标题直接加载 (K2) | P1 |
 
@@ -117,7 +119,7 @@ JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
 
 | 功能 | 说明 | 优先级 |
 |:---|:---|:---:|
-| 搜索 | 跨类目搜索条目标题和内容 | P1 |
+| 正文全文检索 | iframe / desc 正文不做索引（现仅索引 条目名/子分类/描述/全名/类目） | P2 |
 | 标签筛选 | 按标签/熟练度筛选当前类目下的条目 | P2 |
 | 书签/收藏 | 标记常用条目，在顶部显示收藏夹 | P2 |
 | iframe 深度内容 | 点击条目后在 iframe 中加载外部内容 | P2 |
@@ -193,6 +195,23 @@ html-gen knowledge -h
 
 ---
 
+## 影响面说明
+
+> 改本模板的能力/键/行为时按此表逐面清点；**单源权威是 `documents/templates.md` §影响面矩阵**（含判据命令与 1→8 标准流程），这里只列本模板落点。
+
+| 面 | 本模板落点 |
+|:---|:---|
+| **指令面** | `html-gen help knowledge`（`TEMPLATE_CONTRACT['knowledge']`：item / groups / 数据源 / CLI / 点击模式） |
+| **Skills 面** | `skills/html-gen-knowledge/SKILL.md`、`skills/html-gen/SKILL.md`（C 型段 + 交互小节） |
+| **文档面** | 本文件（→ `knowledge-guide.html`）、`documents/templates.md`、`features.md` |
+| **案例面** | `demos/knowledge-demo.html` + `data/_demo-kb-data.json` + `data/_demo-groups.json`；其余 3 个 kb 产物同理；`data/_demos-data.json` 卡片话术 |
+| **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`、`tests/test_knowledge_sidebar.py`、`tests/test_knowledge_width.py`、`tests/test_drama_knowledge.py`、`tests/test_clipboard_fallback.py` |
+| **基线/门禁面** | `scripts/baseline.py`（`KB_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
+| **打包面** | `src/html_gen/layout-knowledge.html` → `scripts/build-package.py`；`prompts/index.html` 由 `html-gen prompt --site` 出（C 型门户） |
+| **跨仓/发布面** | script-miner `skills/html-templates/layout-knowledge.html`（+ 其 vendor 测试）、hermes-manager `web/knowledge/index.html`（`hm-docs-site-gen.py build`）、版本三件 |
+
+> 反例参照 CL047（2026-11-23）：模板改完漏了 Skills 面、案例面、打包面三处，靠事后全量扫描才发现。
+
 ## 迭代记录
 
 | 版本 | 日期 | 变更 |
@@ -202,3 +221,4 @@ html-gen knowledge -h
 | v2.1 | 2026-08-18 | URL 参数同步（group/item 实时写 URL + 恢复优先）+ section 图标 + 隐藏搜索/折叠按钮 |
 | v2.2 | 2026-08-19 | 跨组 section 保持；概述页 iframe 宽屏 width=wide；标题点击复制中文 URL |
 | v2.3 | 2026-08-23 | 新增「模板案例」章节（★ featured 精选） |
+| v2.4 | 2026-11-23 | 根页菜单地图 + 搜索面板（`⌘/Ctrl+K`）+ 点标题回根页 + `⌘F` 归还浏览器；移除跨组同名跟随与侧栏过滤 |

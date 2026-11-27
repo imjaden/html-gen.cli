@@ -1,4 +1,4 @@
-# D 型 · 幻灯片方案
+# 🖼 幻灯片（模板D）
 
 ---
 
@@ -122,6 +122,23 @@ html-gen slide -h
 | [Slide 幻灯片版](slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-demo.html |
 
 ---
+
+## 影响面说明
+
+> 改本模板的能力/键/行为时按此表逐面清点；**单源权威是 `documents/templates.md` §影响面矩阵**（含判据命令与 1→8 标准流程），这里只列本模板落点。
+
+| 面 | 本模板落点 |
+|:---|:---|
+| **指令面** | `html-gen help slide`（`TEMPLATE_CONTRACT['slide']`） |
+| **Skills 面** | `skills/html-gen-slide/SKILL.md`、`skills/html-gen/SKILL.md`（D 型段） |
+| **文档面** | 本文件（→ `slide-guide.html`）、`documents/templates.md`、`features.md` |
+| **案例面** | `demos/slide-guide.html`（← `slide-guide.md`，`demo --rebuild`）、`demos/slide-demo.html`（手写页，无 md 源） |
+| **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`（slide 段）、`tests/test_slide_h3_toggle.py` |
+| **基线/门禁面** | `scripts/baseline.py`（`SLIDE_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
+| **打包面** | `src/html_gen/layout-slide.html` → `scripts/build-package.py` |
+| **跨仓/发布面** | script-miner `skills/html-templates/layout-slide.html`（+ 其 vendor 测试）、版本三件 |
+
+> 反例参照 CL047（2026-11-23）：模板改完漏了 Skills 面、案例面、打包面三处，靠事后全量扫描才发现。
 
 ## 迭代记录
 
