@@ -2,7 +2,7 @@
 
 ---
 
-## 使用场景
+## 一、使用场景
 
 数据表格适用于**结构化数据的浏览和检索**场景，是三层模板中最基础、最通用的一层。
 
@@ -22,7 +22,7 @@
 
 ---
 
-## 方案设计
+## 二、方案设计
 
 ### 架构
 
@@ -59,7 +59,7 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 
 ---
 
-## 行业对标
+## 三、行业对标
 
 | 维度 | A 型 · 数据表格 | Airtable | Notion 表格 | Excel Online |
 |:---|:---|:---|:---|:---|
@@ -77,7 +77,7 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 
 ---
 
-## 功能清单
+## 四、功能清单
 
 > 键规范（列属性 / 列类型 / options / Tab / actions / videos）**只在**
 > `html-gen help table` 的键规范段（实现: `html-gen.py` 的 `TEMPLATE_CONTRACT['table']`）。
@@ -127,7 +127,7 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 
 ---
 
-## 快速开始
+## 五、快速开始
 
 ```shell
 # 准备数据
@@ -259,7 +259,7 @@ html-gen table -h
 
 ---
 
-## 模板案例
+## 六、模板案例
 
 该模板的精选案例（html-gen demo list ★ featured，路径相对 demos/）：
 
@@ -274,7 +274,7 @@ html-gen table -h
 
 ---
 
-## 影响面说明
+## 七、影响面说明
 
 > 改本模板的能力/键/行为时按此表逐面清点；**单源权威是 `documents/templates.md` §影响面矩阵**（含判据命令与 1→8 标准流程），这里只列本模板落点。
 
