@@ -29,20 +29,64 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 ## 数据格式
 
-条目 schema（item 7 键: title / group / section / badge / desc / url / icon，含必填与
-`url`|`desc` 二选一语义）与数据源三态（数组 / `{items|data}` / 顶层 `output`）见
-**`html-gen help knowledge`** 的「item 条目键」「数据源与输出目标」段。示例：
+条目 **9 键**（契约真值 = `TEMPLATE_CONTRACT['knowledge']['data']['item']`，`html-gen help knowledge` 的「item 条目键」段同源）：
+
+| 键 | 必填 | 说明 |
+|:---|:---:|:---|
+| `title` | ✅ | 条目名称（侧栏文本，单行 ellipsis；长名配 `page_title`） |
+| `group` | ✅ | 所属类目，**必须与 `groups[].key` 全等**（对不上会自建 tab 或被丢弃） |
+| `section` | | 子分类（侧栏分组）；`title === section` 且组内仅 1 条时自动跳过该行（K2 rule） |
+| `badge` | | 侧栏条目右侧徽标（如 `P0` / `skill`） |
+| `desc` | △ | 条目正文 HTML，**内联渲染**；与 `url` 二选一 |
+| `url` | △ | 详情页地址，**iframe 加载**；与 `desc` 二选一；必须与知识库页同源 |
+| `icon` | | 条目 emoji（无 `groups` 文件时用它推导类目图标） |
+| `width` | | iframe 宽度 `narrow` / `medium` / `wide`（追加 `?width=`；缺省 `medium`，`url` 含 `overview` 时默认 `wide`） |
+| `page_title` | | 侧栏悬停 tooltip 的全名（缺省用 `title`） |
+
+数据源三态：顶层数组 / `{items: […]}` / `{data: […]}`；结构化 dict 顶层可带 `"output"`
+（仅 data 文件识别，groups 文件忽略）。输出目标优先级 `-o` > JSON `output` > 均无则 exit 1。
+
+### 最小可跑示例（2 类目 / 4 条目 / 1 个 url + 3 个 desc）
+
+`data.json`：
 
 ```json
 [
-  {"title": "条目名称", "group": "所属类目", "section": "子分类",
-   "url": "detail.html", "desc": "<p>内联 HTML</p>", "badge": "标记"}
+  {"title": "三步上手", "group": "指南", "section": "基础", "badge": "P0",
+   "desc": "<p>装好 → 备 JSON → 跑一条命令。</p>"},
+  {"title": "常见坑", "group": "指南", "section": "基础",
+   "page_title": "常见坑（组名对不上 / url 与 desc 同时给）",
+   "desc": "<p>group 必须与 groups[].key 全等。</p>"},
+  {"title": "宽屏嵌入", "group": "示例", "section": "iframe",
+   "url": "overview.html", "width": "wide",
+   "page_title": "宽屏嵌入（url 含 overview ⇒ 自动 wide）"},
+  {"title": "常规嵌入", "group": "示例", "section": "iframe",
+   "url": "detail.html", "width": "medium"}
 ]
 ```
 
-- title 与 section 同名时自动跳过 item 行 (K2 rule)
-- 输出目标: 结构化 dict 顶层可带 `"output"`（仅 data 文件识别，groups 文件忽略）；
-  优先级 CLI `-o` > JSON `output` > 均无中断 (exit 1)
+`groups.json`：
+
+```json
+[{"key": "指南", "label": "指南", "icon": "🧭"},
+ {"key": "示例", "label": "示例", "icon": "🧩"}]
+```
+
+命令与产物：
+
+```
+html-gen knowledge -d data.json -g groups.json --title "我的知识库" \
+  --welcome "点侧栏标题回根页；⌘/Ctrl+K 打开搜索面板。" -o kb.html
+```
+
+### 写完自检（6 条，机器可判）
+
+1. 新标记齐全：`grep -c 'kwGoRoot\|kw-map-table\|kw-spot-overlay' kb.html` ≥ 3
+2. `⌘F` 已归还浏览器：`grep -c "e.key !== 'f'" kb.html` = 0；`grep -c kwSearchWrap kb.html` = 0
+3. 根页地图：行数 = 去重后的 `section` 数，格内条目之和 = 条目总数
+4. 每个 `item.group` 都能在 `groups[].key` 里找到；每条恰好有 `url` 或 `desc` 之一
+5. iframe 目标与 `kb.html` 同源，相对路径以 `kb.html` 所在目录为基准
+6. 改的是模板能力（不是数据）时，按 `documents/templates.md` §影响面矩阵 逐面清点
 
 ## groups 格式
 
@@ -71,3 +115,4 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 ## 变更记录
 - v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md
 - v2.0.0 (2026-11-23): 对齐 html-gen v3.6 — 根页菜单地图 + 搜索面板（`⌘/Ctrl+K`）+ 点标题回根页 + `⌘F` 归还浏览器；移除跨组同名跟随与侧栏过滤面板
+- v2.1.0 (2026-11-27): item 键 7 → **9**（补 `width` / `page_title`）；新增最小可跑示例（2 类目 4 条目）与 6 条自检清单 —— 让 AI 只读本页即可写出合规案例
