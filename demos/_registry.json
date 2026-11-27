@@ -160,6 +160,7 @@
       "featured": false,
       "referenced": true,
       "referenced_by": [
+        "_demo-kb-data",
         "_cloudwise-kb-data"
       ]
     },
@@ -215,6 +216,7 @@
       "featured": false,
       "referenced": true,
       "referenced_by": [
+        "_demo-kb-data",
         "_cloudwise-kb-data"
       ]
     },
@@ -335,7 +337,7 @@
     },
     {
       "name": "doc-guide",
-      "title": "B 型 · 文档阅读方案",
+      "title": "📄 文档（模板B）",
       "type": "doc",
       "entry": "doc-guide.html",
       "featured": true,
@@ -503,7 +505,7 @@
     },
     {
       "name": "knowledge-guide",
-      "title": "C 型 · 知识库方案",
+      "title": "📚 知识库（模板C）",
       "type": "doc",
       "entry": "knowledge-guide.html",
       "featured": true,
@@ -539,7 +541,7 @@
     },
     {
       "name": "slide-guide",
-      "title": "D 型 · 幻灯片方案",
+      "title": "🖼 幻灯片（模板D）",
       "type": "doc",
       "entry": "slide-guide.html",
       "featured": true,
@@ -593,7 +595,7 @@
     },
     {
       "name": "table-guide",
-      "title": "A 型 · 数据表格方案",
+      "title": "🗂 表格（模板A）",
       "type": "doc",
       "entry": "table-guide.html",
       "featured": true,
@@ -798,7 +800,7 @@
     },
     {
       "name": "usage-guide",
-      "title": "html-gen · CLI 使用说明",
+      "title": "⚙️ CLI 使用说明",
       "type": "doc",
       "entry": "usage-guide.html",
       "featured": true,

@@ -1,6 +1,6 @@
 {
   "version": 2,
-  "generated": "2026-11-24",
+  "generated": "2026-11-27",
   "note": "CL029 渲染基线：改模板/产物后跑 scripts/baseline.py --update（默认先 --verify）",
   "verified": true,
   "files": {
@@ -45,8 +45,8 @@
       "home": false
     },
     "demos/demos-index.html": {
-      "sha256": "396e7f203b87c4f3b58453eb7f6d3cbe4c1f3725f2af4119ee4ec314f13902b3",
-      "bytes": 123376,
+      "sha256": "11fb62ed1ee8d73363e12f227721883688692fd7ad22ef607cb94dfa4b73e593",
+      "bytes": 123666,
       "corner": false,
       "home": true
     },
@@ -81,32 +81,32 @@
       "home": false
     },
     "demos/slide-guide.html": {
-      "sha256": "6eb8c65844509b2b8954b55b77dca365a6198e602c746f2295ba66e29ea3dc85",
-      "bytes": 46914,
+      "sha256": "89453b3309effd60c9701981d5f11bfcb26481f2dedf682a41ff51d8085b5417",
+      "bytes": 48872,
       "corner": false,
       "home": false
     },
     "demos/usage-guide.html": {
-      "sha256": "7769e67418b8393c8465adab093c3a76e8174b85c80f029de153af11181a2d6b",
-      "bytes": 54149,
+      "sha256": "e082be1e9a3b3f26ff1e421db729d80e1f1220dd7ca842a964a702370494c00f",
+      "bytes": 54129,
       "corner": true,
       "home": false
     },
     "demos/doc-guide.html": {
-      "sha256": "6442485b726b599b42636412fafe93592f764ff8131183db7e0b3da0fa8f8f28",
-      "bytes": 52235,
+      "sha256": "ed1cdea969156b2f7ca72431ad7756ef1212aedca90ecc186dc1a52eb4f92d2d",
+      "bytes": 54586,
       "corner": false,
       "home": false
     },
     "demos/table-guide.html": {
-      "sha256": "b38e0f9d289e2d79f150064fc61d1cdc58600aa9dd3350dc33e38e6a67f3423b",
-      "bytes": 56972,
+      "sha256": "eaaeef0033b80e9ca60627ee6d50f78ed8a307069732807158bcf3972c1ed69f",
+      "bytes": 59411,
       "corner": true,
       "home": false
     },
     "demos/knowledge-guide.html": {
-      "sha256": "579ab2fb4a5f9467e42b30cabdd7c5273dfb0df57f9626c5a5a8d8594780408c",
-      "bytes": 51733,
+      "sha256": "12c50fb407ba2853bb0a0db443995300c6d263ab0c48ddf34e4c7433c99b86f6",
+      "bytes": 55154,
       "corner": true,
       "home": false
     },
@@ -117,8 +117,8 @@
       "home": false
     },
     "demos/knowledge-demo.html": {
-      "sha256": "b5fa59eb7f5e4a94d386b6b94045266280523be46e870e06aa6fb38c7aaa3b7b",
-      "bytes": 82499,
+      "sha256": "84b8092d4dbdf8fb8fabde287e086c8ee98796249c91866998b6ccb1362a2bc5",
+      "bytes": 83125,
       "corner": true,
       "home": false
     },

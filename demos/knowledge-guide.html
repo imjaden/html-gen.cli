@@ -4,7 +4,7 @@
 <meta name="generator" content="html-gen v3.6+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>C 型 · 知识库方案</title>
+<title>📚 知识库（模板C）</title>
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
@@ -481,7 +481,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
     <div class="doc-sidebar-resize" id="sbResize"></div>
     <div class="doc-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">📄</div>
     <div class="doc-sidebar-header">
-      <div class="sidebar-title" title="C 型 · 知识库方案" id="sidebarTitle">📄 C 型 · 知识库方案</div>
+      <div class="sidebar-title" title="📚 知识库（模板C）" id="sidebarTitle">📄 📚 知识库（模板C）</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="doc-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -500,8 +500,8 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   </aside>
   <div class="doc-main" id="docMain">
     <div class="doc-header">
-      <h1>C 型 · 知识库方案</h1>
-      <div class="meta">创建: 2026-08-29 10:32 · 编辑: 2026-08-29 10:32<br>字数: 1,709 · 阅读约 5 分钟<span class="meta-path"> · 路径: <code>knowledge-guide.md</code></span></div>
+      <h1>📚 知识库（模板C）</h1>
+      <div class="meta">创建: 2026-11-27 17:52 · 编辑: 2026-11-27 17:52<br>字数: 2,161 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>knowledge-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
@@ -642,7 +642,7 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 </tr>
 <tr>
 <td><strong>搜索</strong></td>
-<td>❌ 暂无</td>
+<td>✅ 面板（条目名/子分类/描述/全名/类目；<code>⌘K</code>）</td>
 <td>✅ 全文</td>
 <td>✅ 全文</td>
 <td>✅ 全文</td>
@@ -677,7 +677,7 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 </tr>
 <tr>
 <td><strong>文件大小</strong></td>
-<td>~22KB（含 15 条）</td>
+<td>~82KB（98 条，<code>demos/knowledge-demo.html</code>）</td>
 <td>N/A</td>
 <td>N/A</td>
 <td>N/A</td>
@@ -708,8 +708,8 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 <td>P0</td>
 </tr>
 <tr>
-<td>欢迎面板</td>
-<td>未选定条目时显示提示信息</td>
+<td>根页（欢迎语 + 菜单地图）</td>
+<td>未选条目时落在根页：欢迎语 + 菜单地图表（列 = 页签 / 行 = section / 点格内条目直达）</td>
 <td>P0</td>
 </tr>
 <tr>
@@ -753,8 +753,8 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 <td>P0</td>
 </tr>
 <tr>
-<td>跨组 section 保持</td>
-<td>切顶部 tab 时左侧选中 section 跨组跟随（如 36计策 ↔ 36计策）</td>
+<td>切页签回根页</td>
+<td>切顶部 tab 一律回根页，不再自动选中该组首条（v3.6 起，取代原「跨组 section 保持」）</td>
 <td>P0</td>
 </tr>
 <tr>
@@ -763,9 +763,19 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 <td>P1</td>
 </tr>
 <tr>
-<td>侧边栏折叠/搜索</td>
-<td>折叠 48px（<code>[</code> 快捷键）；🔍 搜索 150ms debounce 过滤</td>
-<td>P1</td>
+<td>侧边栏折叠 + 搜索面板</td>
+<td>折叠 48px（<code>[</code> 快捷键）；<code>⌘/Ctrl+K</code> 或 🔍 打开独立面板（匹配 条目名/子分类/描述/全名/类目；<code>↑↓←→</code>/<code>Enter</code>/<code>Esc</code>；<code><mark></code> 高亮）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td>回根页 / 复制路径</td>
+<td>点侧栏标题回根页（清 URL <code>item=</code> 与 localStorage）；复制路径走标题右侧 ⧉（中文参数解码）</td>
+<td>P0</td>
+</tr>
+<tr>
+<td><code>⌘F</code> 归浏览器</td>
+<td>模板不拦截原生查找，与面板（<code>⌘K</code>）并存</td>
+<td>P0</td>
 </tr>
 <tr>
 <td>裸模式 (Bare)</td>
@@ -785,9 +795,9 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)</code></pre>
 <th>优先级</th>
 </tr></thead><tbody>
 <tr>
-<td>搜索</td>
-<td>跨类目搜索条目标题和内容</td>
-<td>P1</td>
+<td>正文全文检索</td>
+<td>iframe / desc 正文不做索引（现仅索引 条目名/子分类/描述/全名/类目）</td>
+<td>P2</td>
 </tr>
 <tr>
 <td>标签筛选</td>
@@ -889,6 +899,46 @@ html-gen knowledge \\
 </tr>
 </tbody></table>
 <hr>
+<h2 id="影响面说明">影响面说明</h2>
+<blockquote>改本模板的能力/键/行为时按此表逐面清点；<strong>单源权威是 <code>documents/templates.md</code> §影响面矩阵</strong>（含判据命令与 1→8 标准流程），这里只列本模板落点。</blockquote>
+<table><thead><tr>
+<th>面</th>
+<th>本模板落点</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>指令面</strong></td>
+<td><code>html-gen help knowledge</code>（<code>TEMPLATE_CONTRACT['knowledge']</code>：item / groups / 数据源 / CLI / 点击模式）</td>
+</tr>
+<tr>
+<td><strong>Skills 面</strong></td>
+<td><code>skills/html-gen-knowledge/SKILL.md</code>、<code>skills/html-gen/SKILL.md</code>（C 型段 + 交互小节）</td>
+</tr>
+<tr>
+<td><strong>文档面</strong></td>
+<td>本文件（→ <code>knowledge-guide.html</code>）、<code>documents/templates.md</code>、<code>features.md</code></td>
+</tr>
+<tr>
+<td><strong>案例面</strong></td>
+<td><code>demos/knowledge-demo.html</code> + <code>data/_demo-kb-data.json</code> + <code>data/_demo-groups.json</code>；其余 3 个 kb 产物同理；<code>data/_demos-data.json</code> 卡片话术</td>
+</tr>
+<tr>
+<td><strong>测试面</strong></td>
+<td><code>tests/test_help_contract.py</code>、<code>tests/test_templates.py</code>、<code>tests/test_knowledge_sidebar.py</code>、<code>tests/test_knowledge_width.py</code>、<code>tests/test_drama_knowledge.py</code>、<code>tests/test_clipboard_fallback.py</code></td>
+</tr>
+<tr>
+<td><strong>基线/门禁面</strong></td>
+<td><code>scripts/baseline.py</code>（<code>KB_PRODUCTS</code>）、<code>data/_render-baseline.json</code>、<code>documents/docs-index.md</code></td>
+</tr>
+<tr>
+<td><strong>打包面</strong></td>
+<td><code>src/html_gen/layout-knowledge.html</code> → <code>scripts/build-package.py</code>；<code>prompts/index.html</code> 由 <code>html-gen prompt --site</code> 出（C 型门户）</td>
+</tr>
+<tr>
+<td><strong>跨仓/发布面</strong></td>
+<td>script-miner <code>skills/html-templates/layout-knowledge.html</code>（+ 其 vendor 测试）、hermes-manager <code>web/knowledge/index.html</code>（<code>hm-docs-site-gen.py build</code>）、版本三件</td>
+</tr>
+</tbody></table>
+<blockquote>反例参照 CL047（2026-11-23）：模板改完漏了 Skills 面、案例面、打包面三处，靠事后全量扫描才发现。</blockquote>
 <h2 id="迭代记录">迭代记录</h2>
 <table><thead><tr>
 <th>版本</th>
@@ -919,6 +969,11 @@ html-gen knowledge \\
 <td>v2.3</td>
 <td>2026-08-23</td>
 <td>新增「模板案例」章节（★ featured 精选）</td>
+</tr>
+<tr>
+<td>v2.4</td>
+<td>2026-11-23</td>
+<td>根页菜单地图 + 搜索面板（<code>⌘/Ctrl+K</code>）+ 点标题回根页 + <code>⌘F</code> 归还浏览器；移除跨组同名跟随与侧栏过滤</td>
 </tr>
 </tbody></table></div>
   </div>

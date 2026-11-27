@@ -4,7 +4,7 @@
 <meta name="generator" content="html-gen v3.6+tpl8d844975">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>D 型 · 幻灯片方案</title>
+<title>🖼 幻灯片（模板D）</title>
 <link rel="icon" href="https://www.jaden.tech/static/img/favicon.png" type="image/png">
 <style>
 /* ═══════════════════════════════════════════
@@ -470,7 +470,7 @@ pre code { background: none; padding: 0; }
     <div class="slide-sidebar-resize" id="sbResize"></div>
     <div class="slide-sidebar-icon" onclick="toggleSidebar()" title="展开侧边栏">🎞️</div>
     <div class="slide-sidebar-header">
-      <div class="slide-title" title="D 型 · 幻灯片方案" id="slideTitle">🎞️ D 型 · 幻灯片方案</div>
+      <div class="slide-title" title="🖼 幻灯片（模板D）" id="slideTitle">🎞️ 🖼 幻灯片（模板D）</div>
       <div class="sub-row">
         <div class="sub"></div>
         <div class="slide-h3-toggle" id="h3Toggle" onclick="toggleH3()">H3</div>
@@ -514,8 +514,8 @@ pre code { background: none; padding: 0; }
 <!-- Hidden: content source for DOM cloning -->
 <div style="display:none">
   <div class="doc-header">
-    <h1>D 型 · 幻灯片方案</h1>
-    <div class="meta">创建: 2026-08-24 16:05 · 编辑: 2026-08-24 16:05<br>字数: 726 · 阅读约 2 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
+    <h1>🖼 幻灯片（模板D）</h1>
+    <div class="meta">创建: 2026-11-27 17:52 · 编辑: 2026-11-27 17:52<br>字数: 939 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
   </div>
   <div id="docBody"><hr>
 <h2 id="使用场景">使用场景</h2>
@@ -687,6 +687,46 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 </tr>
 </tbody></table>
 <hr>
+<h2 id="影响面说明">影响面说明</h2>
+<blockquote>改本模板的能力/键/行为时按此表逐面清点；<strong>单源权威是 <code>documents/templates.md</code> §影响面矩阵</strong>（含判据命令与 1→8 标准流程），这里只列本模板落点。</blockquote>
+<table><thead><tr>
+<th>面</th>
+<th>本模板落点</th>
+</tr></thead><tbody>
+<tr>
+<td><strong>指令面</strong></td>
+<td><code>html-gen help slide</code>（<code>TEMPLATE_CONTRACT['slide']</code>）</td>
+</tr>
+<tr>
+<td><strong>Skills 面</strong></td>
+<td><code>skills/html-gen-slide/SKILL.md</code>、<code>skills/html-gen/SKILL.md</code>（D 型段）</td>
+</tr>
+<tr>
+<td><strong>文档面</strong></td>
+<td>本文件（→ <code>slide-guide.html</code>）、<code>documents/templates.md</code>、<code>features.md</code></td>
+</tr>
+<tr>
+<td><strong>案例面</strong></td>
+<td><code>demos/slide-guide.html</code>（← <code>slide-guide.md</code>，<code>demo --rebuild</code>）、<code>demos/slide-demo.html</code>（手写页，无 md 源）</td>
+</tr>
+<tr>
+<td><strong>测试面</strong></td>
+<td><code>tests/test_help_contract.py</code>、<code>tests/test_templates.py</code>（slide 段）、<code>tests/test_slide_h3_toggle.py</code></td>
+</tr>
+<tr>
+<td><strong>基线/门禁面</strong></td>
+<td><code>scripts/baseline.py</code>（<code>SLIDE_PRODUCTS</code>）、<code>data/_render-baseline.json</code>、<code>documents/docs-index.md</code></td>
+</tr>
+<tr>
+<td><strong>打包面</strong></td>
+<td><code>src/html_gen/layout-slide.html</code> → <code>scripts/build-package.py</code></td>
+</tr>
+<tr>
+<td><strong>跨仓/发布面</strong></td>
+<td>script-miner <code>skills/html-templates/layout-slide.html</code>（+ 其 vendor 测试）、版本三件</td>
+</tr>
+</tbody></table>
+<blockquote>反例参照 CL047（2026-11-23）：模板改完漏了 Skills 面、案例面、打包面三处，靠事后全量扫描才发现。</blockquote>
 <h2 id="迭代记录">迭代记录</h2>
 <table><thead><tr>
 <th>版本</th>
