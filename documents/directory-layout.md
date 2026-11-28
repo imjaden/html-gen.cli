@@ -41,13 +41,13 @@ html-gen.cli/
     └── demos/                      # 生成的 HTML 示例（独立案例根级扁平，URL=/demos/{name}.html）
     ├── index.html              # 模板展示首页
     ├── demos-index.html        # A 型文档索引（数据源 data/_demos-data.json）
-    ├── usage-guide.html        # CLI 使用说明
+    ├── cli-guide.html        # CLI 使用说明
     ├── table-guide.html        # A 型 · 数据表格方案
     ├── doc-guide.html          # B 型 · 文档阅读方案
-    ├── markdown-spec.html      # Markdown 语法规范
+    ├── doc-features-demo.html      # Markdown 语法规范
     ├── knowledge-guide.html    # C 型 · 知识库方案
     ├── slide-guide.html        # D 型 · 幻灯片方案
-    ├── slide-demo.html         # D 型 Slide 演示
+    ├── slide-features-demo.html         # D 型 Slide 演示
     ├── hermes-profile-skills-list.html  # 主力 demo: Hermes Skills 列表
     ├── table-features-demo.html # 表格能力总览（功能 + 操作按钮列；数据源 data/_table-features-demo.json）
     ├── knowledge-demo.html     # 知识库功能 demo

@@ -12,7 +12,7 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 import html, json, re, sys, os, time, argparse, types, unicodedata, hashlib
 from pathlib import Path
 
-__version__ = "3.7"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
+__version__ = "3.8"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
 __release_date__ = "2026-11-28"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent
@@ -849,7 +849,9 @@ def cmd_table(args):
 
     tmpl = inline_style(read_template(TEMPLATE_TABLE))
     gc, hl = corner_args(args)
-    result = inject(tmpl, title=title, description=description,
+    # CL048: <title> 可与 h1 不同（案例索引 = h1「HG 案例索引」/ <title>「HG 案例索引 · v3.8」）
+    page_title = getattr(args, 'page_title', None) or title
+    result = inject(tmpl, title=title, page_title=page_title, description=description,
                     columns=json.dumps(columns, ensure_ascii=False),
                     data=json.dumps(data, ensure_ascii=False),
                     tabs=json.dumps(tabs, ensure_ascii=False),
@@ -1779,9 +1781,9 @@ GUIDE_MAP = [
      'title': '知识库（模板C）',    'desc': 'knowledge 模板方案指南 (条目/分组)'},
     {'file': 'slide-guide.html',      'group': 'slide',     'section': '模板语法',
      'title': '幻灯片（模板D）',    'desc': 'slide 模板方案指南 (分页/演示)'},
-    {'file': 'usage-guide.html',      'group': 'cli',       'section': '指令 CLI',
+    {'file': 'cli-guide.html',      'group': 'cli',       'section': '指令 CLI',
      'title': 'CLI 使用说明',         'desc': 'html-gen CLI 命令总览'},
-    {'file': 'markdown-spec.html',    'group': 'doc',       'section': '模板语法',
+    {'file': 'doc-features-demo.html',    'group': 'doc',       'section': '模板语法',
      'title': 'Markdown 语法规范',    'desc': 'md_to_html 支持的语法子集 (随 doc 组)'},
 ]
 
@@ -1813,7 +1815,7 @@ CASE_MAP = [
     {'file': 'knowledge-demo.html',           'group': 'knowledge', 'section': '使用案例',
      'title': '知识库功能演示',               'desc': '知识库功能演示 (C 型)'},
     # slide
-    {'file': 'slide-demo.html',               'group': 'slide',     'section': '使用案例',
+    {'file': 'slide-features-demo.html',               'group': 'slide',     'section': '使用案例',
      'title': '幻灯片演示',                   'desc': 'D 型幻灯片演示'},
 ]
 
@@ -1823,19 +1825,44 @@ CASE_INDEX_SKIP = {
     'slimdown/plan.html': '已迁目录首页的跳转桩（516B）',
     'demos-index.html': '索引页自身，不是案例',
     'chaitin/menu-design.html': 'chaitin 知识库的引用子页（价值在 chaitin 案例内部）',
+    'slimdown/archive.html': '薄肌减脂 · 档案：独立页未使用四型模板，按裁定移出索引（页面保留）',
 }
 CASE_SCENE_DEFAULT = '案例型'
 CASE_SCENE = {
     'countries.html': '功能性', 'provinces.html': '功能性',
     'hermes-profile-skills-list.html': '功能性',
-    'slimdown/exercises.html': '功能性', 'slimdown/archive.html': '功能性',
+    'slimdown/exercises.html': '功能性',
     'table-features-demo.html': '演示性',
-    'knowledge-demo.html': '演示性', 'slide-demo.html': '演示性',
+    'knowledge-demo.html': '演示性', 'slide-features-demo.html': '演示性',
     'chaitin.html': '案例型', 'cloudwise.html': '案例型', 'drama.html': '案例型',
     'the-price-you-choose.html': '案例型',
     'table-guide.html': '说明文档', 'doc-guide.html': '说明文档',
     'knowledge-guide.html': '说明文档', 'slide-guide.html': '说明文档',
-    'usage-guide.html': '说明文档', 'markdown-spec.html': '说明文档',
+    'cli-guide.html': '说明文档', 'doc-features-demo.html': '演示性',
+}
+
+# CL048: 案例索引的「模板」列 —— 说明性文档是 B 型页面「讲」别的模板，
+# DOM 嗅探（doc-header）只会得到「文档（模板B）」，必须显式覆盖。
+CASE_TEMPLATE = {
+    'table-guide.html': '表格（模板A）', 'table-features-demo.html': '表格（模板A）',
+    'doc-guide.html': '文档（模板B）', 'doc-features-demo.html': '文档（模板B）',
+    'knowledge-guide.html': '知识库（模板C）', 'knowledge-demo.html': '知识库（模板C）',
+    'slide-guide.html': '幻灯片（模板D）', 'slide-features-demo.html': '幻灯片（模板D）',
+    'cli-guide.html': '独立页',
+}
+
+# CL048: 案例标题统一为「{X} 模板 · {中文名}[ · 功能演示]」，与首页 index.html 的
+# 「A 模板 · 数据表格」同一套话术；未列出的条目沿用页面 <title>。
+CASE_TITLE = {
+    'doc-guide.html': 'B 模板 · 文档阅读',
+    'doc-features-demo.html': 'B 模板 · 文档阅读 · 功能演示',
+    'table-guide.html': 'A 模板 · 数据表格',
+    'table-features-demo.html': 'A 模板 · 数据表格 · 功能演示',
+    'knowledge-guide.html': 'C 模板 · 知识库',
+    'knowledge-demo.html': 'C 模板 · 知识库 · 功能演示',
+    'slide-guide.html': 'D 模板 · 幻灯片',
+    'slide-features-demo.html': 'D 模板 · 幻灯片 · 功能演示',
+    'cli-guide.html': 'CLI · 使用说明',
 }
 
 
@@ -2085,8 +2112,8 @@ def cmd_demo(args):
               f"引用子页 {len(refs)})")
 
         # 顺带重建独立案例索引 (data/_demos-data.json + demos-index.html)
-        type_icons = {'knowledge': '📚 知识库（模板C）', 'table': '🗂 表格（模板A）',
-                      'doc': '📄 文档（模板B）', 'html': '🌐 独立页'}
+        type_icons = {'knowledge': '知识库（模板C）', 'table': '表格（模板A）',
+                      'doc': '文档（模板B）', 'html': '独立页'}
         indep = [d for d in demos
                  if not d.get('referenced') and d['entry'] not in CASE_INDEX_SKIP]
         indep.sort(key=lambda d: (not d.get('featured'), d['entry']))
@@ -2099,12 +2126,13 @@ def cmd_demo(args):
         ]
         idx_rows = []
         for d in indep:
-            title_txt = ('★ ' if d.get('featured') else '') + d['title']
+            title_txt = ('★ ' if d.get('featured') else '') + \
+                CASE_TITLE.get(d['entry'], d['title'])
             fname = d['entry'].rsplit('/', 1)[-1]
             idx_rows.append({
                 '标题': (f'<a href="{d["entry"]}" target="_blank" rel="noopener" '
                          f'onclick="event.stopPropagation()">{title_txt}</a>'),
-                '模板': type_icons.get(d['type'], '🌐 独立页'),
+                '模板': CASE_TEMPLATE.get(d['entry'], type_icons.get(d['type'], '独立页')),
                 '场景': CASE_SCENE.get(d['entry'], CASE_SCENE_DEFAULT),
                 '文档链接': f'<a href="{d["entry"]}" target="_blank" rel="noopener">{fname} ↗</a>',
             })
@@ -2116,7 +2144,9 @@ def cmd_demo(args):
                                 'filterBar': {'column': '模板', 'allLabel': '所有', 'persist': True}}}
         idx_file = DATA_DIR / '_demos-data.json'
         idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
-        a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',
+        major_minor = '.'.join(__version__.split('.')[:2])
+        a = types.SimpleNamespace(data=str(idx_file), title='HG 案例索引',
+                                  page_title=f'HG 案例索引 · v{major_minor}',
                                   subtitle=None,
                                   github_url=None,
                                   home_url='https://html-gen.cli.jaden.tech/',  # G1(CL005): demo 首页入口, 与 syncer rebuild 缺省一致

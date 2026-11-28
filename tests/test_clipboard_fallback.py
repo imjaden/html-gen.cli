@@ -42,8 +42,8 @@ LANDING_EXCLUDED = {'demos/index.html'}
 # 下面的分支用三条断言锁住这几件不丢，不是整文件放行。
 IMAGE_CLIPBOARD_EXEMPT = {'demos/slimdown/index.html'}   # v1.4：plan.html → index.html（plan.html 现为跳转桩，无剪贴板调用）
 
-DOC_PAGE = PROJECT / 'demos' / 'usage-guide.html'
-SLIDE_PAGE = PROJECT / 'demos' / 'slide-demo.html'
+DOC_PAGE = PROJECT / 'demos' / 'cli-guide.html'
+SLIDE_PAGE = PROJECT / 'demos' / 'slide-features-demo.html'
 KW_PAGE = PROJECT / 'demos' / 'knowledge-demo.html'
 TABLE_PAGE = PROJECT / 'demos' / 'countries.html'
 
@@ -225,7 +225,7 @@ class TestClipboardBehavior(unittest.TestCase):
         self.driver.find_element(By.ID, 'sidebarTitle').click()
         time.sleep(0.3)
         self.assertEqual(self._exec_called(), 1, '非安全上下文下必须走 execCommand 回退（修前 spy=0）')
-        self.assertEqual(self._toast('docToast'), '已复制: usage-guide.md', '成功文案应来自调用点传入的 okMsg')
+        self.assertEqual(self._toast('docToast'), '已复制: cli-guide.md', '成功文案应来自调用点传入的 okMsg')
 
         # 代码块复制按钮（调用点 #3：okMsg/failMsg 为空 ⇒ 走默认失败文案 + onOk 承担按钮文案）
         self._load(DOC_PAGE)
@@ -268,7 +268,7 @@ class TestClipboardBehavior(unittest.TestCase):
         self.driver.find_element(By.ID, 'slideTitle').click()
         time.sleep(0.3)
         self.assertEqual(self._exec_called(), 1, 'slide 标题点击须走回退（修前 fallbackCopy 不查返回值）')
-        self.assertEqual(self._toast('slideToast'), '已复制: markdown-spec.md')
+        self.assertEqual(self._toast('slideToast'), '已复制: doc-features-demo.md')
 
         self._load(SLIDE_PAGE)
         self._fix()
@@ -392,7 +392,7 @@ class TestClipboardRealOrigin(unittest.TestCase):
         threading.Thread(target=srv.serve_forever, daemon=True).start()
         try:
             self.driver.set_window_size(1280, 900)
-            self.driver.get(f'http://{ip}:{port}/demos/usage-guide.html')
+            self.driver.get(f'http://{ip}:{port}/demos/cli-guide.html')
             WebDriverWait(self.driver, 5).until(
                 EC.presence_of_element_located((By.CSS_SELECTOR, '.doc-body')))
             self.assertFalse(self.driver.execute_script('return window.isSecureContext'),
@@ -409,7 +409,7 @@ class TestClipboardRealOrigin(unittest.TestCase):
             self.assertEqual(
                 self.driver.execute_script(
                     "var e = document.getElementById('docToast'); return e ? e.textContent : null;"),
-                '已复制: usage-guide.md')
+                '已复制: cli-guide.md')
         finally:
             srv.shutdown()
             srv.server_close()

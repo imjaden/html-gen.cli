@@ -173,7 +173,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 ### 6.5 排版审计（documents/archive/review-20260908/html-gen-typography-review-v1.0-20260827.md）
 
 - 决策依据 1A 容器基座 / 2A blockquote 紧凑 / 3A callout 保持 / 4A 仅 doc/slide / 5A 重生成产物。
-- 初轮 CONDITIONAL 80/B：HG-SEC-041（🔴 slide-demo.html 变量基座丢失，深色失效）+ HG-SEC-042（🟡 双 style 块旧覆新）。
+- 初轮 CONDITIONAL 80/B：HG-SEC-041（🔴 slide-features-demo.html 变量基座丢失，深色失效）+ HG-SEC-042（🟡 双 style 块旧覆新）。
 - recheck（8347dd8）PASS 100/A：单 style 块、:root 37 变量恢复、blockquote 紧凑生效。
 
 ## 7. 已知坑
@@ -190,7 +190,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | P8 | id 用 textContent 生成非法 id | fallback 用索引 `'section-'+i`（复检观察） |
 | P9 | 产物同步误伤第一个 style 块 | 「从模板提取替换」须区分基座块 vs 业务样式块（HG-SEC-041 根因） |
 | P10 | 重复 style 块旧覆新 | 修复看似做了实际没生效（HG-SEC-042） |
-| P11 | 排版测试盲区 | 新用例未覆盖 slide-demo → SEC-041/042 不被测试暴露 |
+| P11 | 排版测试盲区 | 新用例未覆盖 slide-features-demo → SEC-041/042 不被测试暴露 |
 | P12 | knowledge iframe 断言须去 `?t=` | src 含时间戳，比对先剥离（N3/D5） |
 | P13 | clipboard 需 secure context | 不可用时 execCommand textarea 兜底，两路 try/catch |
 | P14 | localStorage 键前缀演进 | 素材裸键 → `html-gen:doc:*`/`html-gen:layoutslide_*`；引用键名注明版本 |

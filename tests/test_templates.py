@@ -25,10 +25,10 @@ class TestDoc(TmpDirMixin, unittest.TestCase):
 
     def test_gen_all_demos(self):
         for md_name, title in [
-            ('usage-guide.md', '使用指南'),
+            ('cli-guide.md', '使用指南'),
             ('table-guide.md', 'A 型'),
             ('doc-guide.md', 'B 型'),
-            ('markdown-spec.md', 'B 型规范'),
+            ('doc-features-demo.md', 'B 型规范'),
             ('knowledge-guide.md', 'C 型'),
         ]:
             out = self.tmpdir / f'test-doc-{md_name.replace(".md", ".html")}'
@@ -85,8 +85,8 @@ class TestSlide(TmpDirMixin, unittest.TestCase):
     """Slide mode — standalone template, no doc/slide toggle."""
 
     def test_gen_slide(self):
-        out = self.tmpdir / 'test-slide-demo.html'
-        run_gen('slide', '-i', str(DEMOS / 'markdown-spec.md'),
+        out = self.tmpdir / 'test-slide-features-demo.html'
+        run_gen('slide', '-i', str(DEMOS / 'doc-features-demo.md'),
                 '--title', 'Slide Test', '-o', str(out))
         html = out.read_text()
         self.assertTrue(html.startswith('<!DOCTYPE html>'))
@@ -349,7 +349,7 @@ class TestDocTypography(unittest.TestCase):
         opts.add_argument('--disable-dev-shm-usage')
         cls.driver = webdriver.Chrome(
             service=chromedriver_service(), options=opts)
-        cls.page = DEMOS / 'markdown-spec.html'  # 含 p/li/blockquote 的真实产物
+        cls.page = DEMOS / 'doc-features-demo.html'  # 含 p/li/blockquote 的真实产物
 
     @classmethod
     def tearDownClass(cls):

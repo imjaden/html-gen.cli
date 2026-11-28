@@ -50,11 +50,11 @@ SUBSET = [
     'demos/table-features-demo.html',
     'demos/hermes-profile-skills-list.html',
     'demos/slide-guide.html',
-    'demos/usage-guide.html',
+    'demos/cli-guide.html',
     'demos/doc-guide.html',
     'demos/table-guide.html',
     'demos/knowledge-guide.html',
-    'demos/markdown-spec.html',
+    'demos/doc-features-demo.html',
     'demos/knowledge-demo.html',
     'demos/drama.html',
     'demos/chaitin.html',
@@ -72,11 +72,11 @@ TABLE_PRODUCTS = {
 SLIDE_PRODUCTS = ['demos/slide-guide.html']
 # doc 产物没有 md 路径痕迹可回收（产物里只有 basename），走**同目录同名约定**: demos/<name>.html ← demos/<name>.md
 DOC_PRODUCTS = [
-    'demos/usage-guide.html',
+    'demos/cli-guide.html',
     'demos/doc-guide.html',
     'demos/table-guide.html',
     'demos/knowledge-guide.html',
-    'demos/markdown-spec.html',
+    'demos/doc-features-demo.html',
 ]
 # knowledge 产物 → (kb-data, groups)。groups 缺失的页（the-price-you-choose）走 SKIP：
 # 它是生成后注入层产物（rx-patch + canonical + w-note），CLI 直渲 != 产物。
@@ -91,7 +91,7 @@ SKIP_PRODUCTS = {
     'demos/demos-index.html': '就地重建型（demo --rebuild），verify 不判定',
     'demos/index.html': '半手写落地页（demo featured 源），无单源数据可回收',
     'index.html': '手写落地页（仓根），无生成器',
-    'demos/slide-demo.html': '手写页（无 .md 源），style/JS 手工同步',
+    'demos/slide-features-demo.html': '手写页（无 .md 源），style/JS 手工同步',
     'demos/the-price-you-choose.html': '生成后注入层产物（rx-patch），CLI 直渲 != 产物',
 }
 
@@ -110,6 +110,9 @@ CASE_TABLE_PRODUCTS = {
     'demos/drama/zhuyuanzhang-strategy-table.html': 'data/_drama-table-zhuyuanzhang-strategy.json',
 }
 CASE_SKIP = {
+    'demos/markdown-spec.html': '改名 doc-features-demo.html 后的旧路径跳转桩',
+    'demos/usage-guide.html': '改名 cli-guide.html 后的旧路径跳转桩',
+    'demos/slide-demo.html': '改名 slide-features-demo.html 后的旧路径跳转桩',
     'demos/table-actions-demo.html': '并入 table-features-demo.html 后的旧路径跳转桩',
     # CL048 改名后的旧路径跳转桩（demos/<旧名>.html 内含 '<!-- html-gen:alias auto -->'）
     'demos/chaitin-business-analysis.html': '旧路径跳转桩 → chaitin.html（改名后保留外链兼容）',

@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'slide-demo.html'
+DEMO = PROJECT / 'demos' / 'slide-features-demo.html'
 
 
 class TestH3Toggle(unittest.TestCase):

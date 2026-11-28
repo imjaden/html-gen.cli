@@ -153,6 +153,15 @@
       "referenced_by": []
     },
     {
+      "name": "cli-guide",
+      "title": "⚙️ CLI 使用说明",
+      "type": "doc",
+      "entry": "cli-guide.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
       "name": "cloudwise-awards",
       "title": "荣誉认证",
       "type": "doc",
@@ -328,9 +337,18 @@
     },
     {
       "name": "demos-index",
-      "title": "DEMO 案例索引",
+      "title": "HG 案例索引 · v3.8",
       "type": "table",
       "entry": "demos-index.html",
+      "featured": true,
+      "referenced": false,
+      "referenced_by": []
+    },
+    {
+      "name": "doc-features-demo",
+      "title": "方案B · Markdown 规范说明",
+      "type": "doc",
+      "entry": "doc-features-demo.html",
       "featured": true,
       "referenced": false,
       "referenced_by": []
@@ -513,15 +531,6 @@
       "referenced_by": []
     },
     {
-      "name": "markdown-spec",
-      "title": "方案B · Markdown 规范说明",
-      "type": "doc",
-      "entry": "markdown-spec.html",
-      "featured": true,
-      "referenced": false,
-      "referenced_by": []
-    },
-    {
       "name": "provinces",
       "title": "中国省份速查表",
       "type": "table",
@@ -531,10 +540,10 @@
       "referenced_by": []
     },
     {
-      "name": "slide-demo",
+      "name": "slide-features-demo",
       "title": "D 型幻灯片演示",
       "type": "doc",
-      "entry": "slide-demo.html",
+      "entry": "slide-features-demo.html",
       "featured": true,
       "referenced": false,
       "referenced_by": []
@@ -786,15 +795,6 @@
       "type": "knowledge",
       "entry": "the-price-you-choose.html",
       "featured": false,
-      "referenced": false,
-      "referenced_by": []
-    },
-    {
-      "name": "usage-guide",
-      "title": "⚙️ CLI 使用说明",
-      "type": "doc",
-      "entry": "usage-guide.html",
-      "featured": true,
       "referenced": false,
       "referenced_by": []
     }

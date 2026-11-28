@@ -41,7 +41,7 @@ tags: [html-gen, index, landing, demos, drama, provinces, countries, pages-index
   - `.scroll-hint`（↓ 滑屏）+ A/B 双形式回顶 + 主题切换 themeBtn（`html-gen:index_theme` key，与模板页 key 隔离）+ footer（GitHub/Gitee/PyPI favicon 外链）。
   - 动态两屏：`updateHeroHeight() = (window.innerHeight - 55) + 'px'`（resize 重算；CSS 80vh 兜底；常量三处同步 index.html/AGENTS.md/SKILL.md）。
   - 复制按钮双通道：clipboard API + execCommand fallback；hero 1 + 四卡 4 + 优化轮新增 = 现仓 11 处 data-copy。
-- **demos/index.html（4 模板展示页）**：被 README/usage-guide/hermes-profile-skills-list 多处引用不能移动；demo --rebuild featured 数据源。
+- **demos/index.html（4 模板展示页）**：被 README/cli-guide/hermes-profile-skills-list 多处引用不能移动；demo --rebuild featured 数据源。
 - **README.md**：精简 27 行（-68%），一句话定位 + 目录 + 站点链接 + 本地开发（`python3 -m http.server 8089`）+ 精简快速开始。
 - **skills/pages-index/SKILL.md**：沉淀落地页行为（骨架/主题/corner/两屏/复制/双源/测试/坑 八节），代码片段与实现逐行一致；`html-gen prompt pages-index --brief` 输出 9 章节。
 - **demos/demos-index.html**：A 型 table 索引（`html-gen table -d data/_demos-data.json` 生成，--title「DEMO 案例索引」）。

@@ -39,6 +39,21 @@
       "demo": "table-features-demo",
       "alias": "table-actions-demo",
       "canonical": false
+    },
+    {
+      "demo": "doc-features-demo",
+      "alias": "markdown-spec",
+      "canonical": false
+    },
+    {
+      "demo": "cli-guide",
+      "alias": "usage-guide",
+      "canonical": false
+    },
+    {
+      "demo": "slide-features-demo",
+      "alias": "slide-demo",
+      "canonical": false
     }
   ]
 }

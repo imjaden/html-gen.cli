@@ -40,110 +40,104 @@
   ],
   "data": [
     {
-      "标题": "<a href=\"doc-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ 📄 文档（模板B）</a>",
-      "模板": "📄 文档（模板B）",
+      "标题": "<a href=\"cli-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ CLI · 使用说明</a>",
+      "模板": "独立页",
+      "场景": "说明文档",
+      "文档链接": "<a href=\"cli-guide.html\" target=\"_blank\" rel=\"noopener\">cli-guide.html ↗</a>"
+    },
+    {
+      "标题": "<a href=\"doc-features-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ B 模板 · 文档阅读 · 功能演示</a>",
+      "模板": "文档（模板B）",
+      "场景": "演示性",
+      "文档链接": "<a href=\"doc-features-demo.html\" target=\"_blank\" rel=\"noopener\">doc-features-demo.html ↗</a>"
+    },
+    {
+      "标题": "<a href=\"doc-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ B 模板 · 文档阅读</a>",
+      "模板": "文档（模板B）",
       "场景": "说明文档",
       "文档链接": "<a href=\"doc-guide.html\" target=\"_blank\" rel=\"noopener\">doc-guide.html ↗</a>"
     },
     {
-      "标题": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ 知识库功能演示</a>",
-      "模板": "📚 知识库（模板C）",
+      "标题": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ C 模板 · 知识库 · 功能演示</a>",
+      "模板": "知识库（模板C）",
       "场景": "演示性",
       "文档链接": "<a href=\"knowledge-demo.html\" target=\"_blank\" rel=\"noopener\">knowledge-demo.html ↗</a>"
     },
     {
-      "标题": "<a href=\"knowledge-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ 📚 知识库（模板C）</a>",
-      "模板": "📄 文档（模板B）",
+      "标题": "<a href=\"knowledge-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ C 模板 · 知识库</a>",
+      "模板": "知识库（模板C）",
       "场景": "说明文档",
       "文档链接": "<a href=\"knowledge-guide.html\" target=\"_blank\" rel=\"noopener\">knowledge-guide.html ↗</a>"
     },
     {
-      "标题": "<a href=\"markdown-spec.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ 方案B · Markdown 规范说明</a>",
-      "模板": "📄 文档（模板B）",
-      "场景": "说明文档",
-      "文档链接": "<a href=\"markdown-spec.html\" target=\"_blank\" rel=\"noopener\">markdown-spec.html ↗</a>"
-    },
-    {
-      "标题": "<a href=\"slide-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ D 型幻灯片演示</a>",
-      "模板": "📄 文档（模板B）",
+      "标题": "<a href=\"slide-features-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ D 模板 · 幻灯片 · 功能演示</a>",
+      "模板": "幻灯片（模板D）",
       "场景": "演示性",
-      "文档链接": "<a href=\"slide-demo.html\" target=\"_blank\" rel=\"noopener\">slide-demo.html ↗</a>"
+      "文档链接": "<a href=\"slide-features-demo.html\" target=\"_blank\" rel=\"noopener\">slide-features-demo.html ↗</a>"
     },
     {
-      "标题": "<a href=\"slide-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ 🖼 幻灯片（模板D）</a>",
-      "模板": "📄 文档（模板B）",
+      "标题": "<a href=\"slide-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ D 模板 · 幻灯片</a>",
+      "模板": "幻灯片（模板D）",
       "场景": "说明文档",
       "文档链接": "<a href=\"slide-guide.html\" target=\"_blank\" rel=\"noopener\">slide-guide.html ↗</a>"
     },
     {
-      "标题": "<a href=\"table-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ 🗂 表格（模板A）</a>",
-      "模板": "📄 文档（模板B）",
+      "标题": "<a href=\"table-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ A 模板 · 数据表格</a>",
+      "模板": "表格（模板A）",
       "场景": "说明文档",
       "文档链接": "<a href=\"table-guide.html\" target=\"_blank\" rel=\"noopener\">table-guide.html ↗</a>"
     },
     {
-      "标题": "<a href=\"usage-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ ⚙️ CLI 使用说明</a>",
-      "模板": "📄 文档（模板B）",
-      "场景": "说明文档",
-      "文档链接": "<a href=\"usage-guide.html\" target=\"_blank\" rel=\"noopener\">usage-guide.html ↗</a>"
-    },
-    {
       "标题": "<a href=\"chaitin.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">长亭科技 · 商业分析</a>",
-      "模板": "📚 知识库（模板C）",
+      "模板": "知识库（模板C）",
       "场景": "案例型",
       "文档链接": "<a href=\"chaitin.html\" target=\"_blank\" rel=\"noopener\">chaitin.html ↗</a>"
     },
     {
       "标题": "<a href=\"cloudwise.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">云智慧 · 商业分析</a>",
-      "模板": "📚 知识库（模板C）",
+      "模板": "知识库（模板C）",
       "场景": "案例型",
       "文档链接": "<a href=\"cloudwise.html\" target=\"_blank\" rel=\"noopener\">cloudwise.html ↗</a>"
     },
     {
       "标题": "<a href=\"countries.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">全球国家速查表（195 国）</a>",
-      "模板": "🗂 表格（模板A）",
+      "模板": "表格（模板A）",
       "场景": "功能性",
       "文档链接": "<a href=\"countries.html\" target=\"_blank\" rel=\"noopener\">countries.html ↗</a>"
     },
     {
       "标题": "<a href=\"drama.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">以剧读史 · 以史明智</a>",
-      "模板": "📚 知识库（模板C）",
+      "模板": "知识库（模板C）",
       "场景": "案例型",
       "文档链接": "<a href=\"drama.html\" target=\"_blank\" rel=\"noopener\">drama.html ↗</a>"
     },
     {
       "标题": "<a href=\"hermes-profile-skills-list.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">Hermes Skills 列表</a>",
-      "模板": "🗂 表格（模板A）",
+      "模板": "表格（模板A）",
       "场景": "功能性",
       "文档链接": "<a href=\"hermes-profile-skills-list.html\" target=\"_blank\" rel=\"noopener\">hermes-profile-skills-list.html ↗</a>"
     },
     {
       "标题": "<a href=\"provinces.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">中国省份速查表</a>",
-      "模板": "🗂 表格（模板A）",
+      "模板": "表格（模板A）",
       "场景": "功能性",
       "文档链接": "<a href=\"provinces.html\" target=\"_blank\" rel=\"noopener\">provinces.html ↗</a>"
     },
     {
-      "标题": "<a href=\"slimdown/archive.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">薄肌减脂 · 档案 · slimdown</a>",
-      "模板": "🌐 独立页",
-      "场景": "功能性",
-      "文档链接": "<a href=\"slimdown/archive.html\" target=\"_blank\" rel=\"noopener\">archive.html ↗</a>"
-    },
-    {
       "标题": "<a href=\"slimdown/exercises.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">训练动作库 · slimdown</a>",
-      "模板": "🗂 表格（模板A）",
+      "模板": "表格（模板A）",
       "场景": "功能性",
       "文档链接": "<a href=\"slimdown/exercises.html\" target=\"_blank\" rel=\"noopener\">exercises.html ↗</a>"
     },
     {
-      "标题": "<a href=\"table-features-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">表格功能全演示</a>",
-      "模板": "🗂 表格（模板A）",
+      "标题": "<a href=\"table-features-demo.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">A 模板 · 数据表格 · 功能演示</a>",
+      "模板": "表格（模板A）",
       "场景": "演示性",
       "文档链接": "<a href=\"table-features-demo.html\" target=\"_blank\" rel=\"noopener\">table-features-demo.html ↗</a>"
     },
     {
       "标题": "<a href=\"the-price-you-choose.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">人选天选论</a>",
-      "模板": "📚 知识库（模板C）",
+      "模板": "知识库（模板C）",
       "场景": "案例型",
       "文档链接": "<a href=\"the-price-you-choose.html\" target=\"_blank\" rel=\"noopener\">the-price-you-choose.html ↗</a>"
     }

@@ -74,14 +74,14 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   后者用**从产物回收的参数集**（title/subtitle/welcome/corner/home 全从产物解析）重渲到临时目录比 sha，
   脚本里不维护第二份参数副本 —— 参数漂移是 CL002 FIND-002 的老坑。
 - **覆盖清单（v1.3）**：table 5（countries / provinces / table-features / table-actions / hermes-skills）+ slide 1（slide-guide）
-  + doc 5（usage-guide / doc-guide / table-guide / knowledge-guide / markdown-spec，md 源走**同目录同名约定**
+  + doc 5（cli-guide / doc-guide / table-guide / knowledge-guide / doc-features-demo，md 源走**同目录同名约定**
   `demos/<name>.html` ← `demos/<name>.md`）+ knowledge 4（knowledge-demo / drama / chaitin / cloudwise，
   台账逐页登记 `产物 → (kb-data, groups)`）= 基础 **15 件判定**；
   **+ 案例目录产物（v1.3 新增）**：`demos/{chaitin,cloudwise,drama}/*.md` 有同名 html 的 19 件 doc 页自动列举
   （`case_doc_products()`，新目录须显式加进 `CASE_DOC_DIRS`）+ `CASE_TABLE_PRODUCTS` 8 件 table 页
   （4 个 drama timeline + 4 个 strategy）= **42 件判定**。
 - **SKIP 逐条带理由（禁静默漏过），含目录型**：`demos/demos-index.html`（就地重建型）/ `demos/index.html`（半手写落地页）/
-  `index.html`（仓根手写）/ `demos/slide-demo.html`（无 .md 源，手工同步）/ `demos/the-price-you-choose.html`
+  `index.html`（仓根手写）/ `demos/slide-features-demo.html`（无 .md 源，手工同步）/ `demos/the-price-you-choose.html`
   （生成后注入层 rx-patch，CLI 直渲 ≠ 产物）；`CASE_SKIP` 里 `demos/chaitin/`（无 md 源的自建页，**展开时排除已判定的
   `menu-design.html`**）/ `demos/slimdown/`（自建构建链 `scripts/build-slimdown.py`，重跑逐字节可复现）/
   `demos/the-price-you-choose/`（md 源不在本仓；01-08 为旧 slug 跳转桩）。
