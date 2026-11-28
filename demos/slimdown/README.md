@@ -1,5 +1,10 @@
 # slimdown · 减脂训练方案案例
 
+> **已迁出，本目录冻结（2026-11-28）**：案例真源已迁至 `script-miner` 仓 `projects/slimdown/`
+> （SCRIPT-MINER-CL389：源模板 + 数据 JSON + 构建器 + 契约测试 + 上站页 `training-plan` / `exercise-library` / `training-archive`）。
+> 此后**只改 script-miner 侧**，不要在这里双写页面/数据；本目录仅留档，构建脚本不再维护。
+> 本地服务 `http://jaden.local:8082/demos/slimdown/` 仍可打开旧快照（停止更新）。
+
 来源：用户 2026-11-11 的两份单页（`训练动作库 v1.1`、`薄肌减脂执行档案 v2.4`），
 2026-11-12 由 ops 会话收敛成可重建的案例（三页 + 单一数据源 + 生成脚本）。
 2026-11-23 接 v1.3：方案页拆成「按星期 / 按主题」双视图，点击态全部浏览器记忆（见 `## v1.3`）。
