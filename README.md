@@ -28,7 +28,7 @@
 ## Installation
 
 ```bash
-pip install html-gen-cli        # installs the `html-gen` command
+pip install html-gen-cli        # installs `html-gen` (alias: `htmlgen`)
 ```
 
 Or run from source (no install):

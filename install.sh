@@ -7,6 +7,7 @@ SCRIPT_DIR="$(cd "$(dirname "$0")" && pwd)"
 GEN_PY="$SCRIPT_DIR/html-gen.py"
 BIN_DIR="${HOME}/.local/bin"
 LINK_PATH="$BIN_DIR/html-gen"
+ALIAS_PATH="$BIN_DIR/htmlgen"   # 短别名（不用 hg：与 Mercurial 官方命令冲突）
 PYTHON_BIN="python3"
 
 DO_INSTALL=0
@@ -36,6 +37,9 @@ while [[ $# -gt 0 ]]; do
     esac
 done
 
+# -p/--prefix 会改 BIN_DIR，别名路径随之重算
+ALIAS_PATH="$BIN_DIR/htmlgen"
+
 # 无参数时显示帮助（对齐治理规范"无参数默认 help"）
 if [[ $HAS_ARGS -eq 0 ]]; then
     SHOW_HELP=1
@@ -53,6 +57,7 @@ if [[ $SHOW_HELP -eq 1 ]]; then
     echo "  -s, --status        查看注册状态（wrapper / PATH）"
     echo "  -p, --prefix <dir>  安装目录（默认 \$HOME/.local/bin）"
     echo "  -n, --dry-run       预览将执行的命令（不实际执行）"
+    echo "  安装会同时注册 html-gen 与短别名 htmlgen"
     echo "  -v, --verbose       详细输出"
     echo "  -h, --help          显示帮助（无参数时默认显示）"
     echo ""
@@ -81,6 +86,11 @@ if [[ $DO_STATUS -eq 1 ]]; then
     else
         echo "  ⚠️  未注册: $LINK_PATH"
     fi
+    if [[ -L "$ALIAS_PATH" || -f "$ALIAS_PATH" ]]; then
+        echo "  ✅ 别名已注册: $ALIAS_PATH"
+    else
+        echo "  ⚠️  别名未注册: $ALIAS_PATH"
+    fi
     if echo "$PATH" | grep -q "$BIN_DIR"; then
         echo "  ✅ $BIN_DIR 已在 PATH"
     else
@@ -98,6 +108,10 @@ if [[ $DO_UNINSTALL -eq 1 ]]; then
     if [[ -L "$LINK_PATH" || -f "$LINK_PATH" ]]; then
         run rm "$LINK_PATH"
         echo "✅ 已移除: $LINK_PATH"
+        if [[ -L "$ALIAS_PATH" || -f "$ALIAS_PATH" ]]; then
+            run rm "$ALIAS_PATH"
+            echo "✅ 已移除别名: $ALIAS_PATH"
+        fi
     else
         echo "⚠️  未找到: $LINK_PATH"
     fi
@@ -115,6 +129,9 @@ if [[ $DO_INSTALL -eq 1 || $HAS_ARGS -eq 1 ]]; then
 exec $PYTHON_BIN \"$GEN_PY\" \"\$@\"
 WRAPPER"
     run chmod +x "$LINK_PATH"
+    # 短别名 htmlgen → 同一 wrapper（内容一致，独立一份便于单独移除）
+    run bash -c "sed \"s#$LINK_PATH#$ALIAS_PATH#\" \"$LINK_PATH\" > \"$ALIAS_PATH\""
+    run chmod +x "$ALIAS_PATH"
 
     if [[ $VERBOSE -eq 1 || $DRY_RUN -eq 1 ]]; then
         if [[ $DRY_RUN -eq 1 ]]; then

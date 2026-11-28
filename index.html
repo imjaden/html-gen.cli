@@ -186,12 +186,12 @@ html { scroll-behavior: smooth; }
 .tpl-body { padding: 16px 20px 20px; flex: 1; }
 .scenarios { display: flex; flex-wrap: wrap; gap: 5px; margin-bottom: 14px; }
 .scenario-pill { display: inline-block; padding: 2px 10px; border-radius: 9999px; font-size: 0.7rem; border: 1px solid var(--border-strong); color: var(--text-secondary); }
-.features { margin-bottom: 14px; }
-.features li { font-size: 0.78rem; color: var(--text-body); line-height: 1.7; padding-left: 18px; position: relative; }
+.features { margin-bottom: 14px; list-style: none; padding-left: 0; }
+.features li { font-size: 0.78rem; color: var(--text-body); line-height: 1.7; padding-left: 18px; position: relative; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
 .features li::before { content: '▸'; position: absolute; left: 0; color: var(--text-faint); }
-.cli-box { background: var(--code-bg); border: 1px solid var(--border-strong); border-radius: 8px; padding: 10px 12px; font-family: var(--font-mono); font-size: 0.72rem; line-height: 1.6; color: var(--code-text); margin-bottom: 14px; overflow-x: auto; }
+.cli-box { display: flex; align-items: center; gap: 6px; white-space: nowrap; overflow: hidden; min-width: 0; background: var(--code-bg); border: 1px solid var(--border-strong); border-radius: 8px; padding: 10px 12px;}
 .cli-box .prompt { color: var(--text-muted); }
-.cli-box .cmd { color: var(--code-cmd); }
+.cli-box .cmd { color: var(--code-cmd); min-width: 0; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
 .demos { }
 .demos-title { font-size: 0.7rem; color: var(--text-muted); text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 8px; }
 .demo-item { display: flex; align-items: center; gap: 10px; padding: 8px 12px; border: 1px solid var(--border-soft); border-radius: 8px; margin-bottom: 6px; transition: all 0.15s; text-decoration: none; }
@@ -203,7 +203,12 @@ html { scroll-behavior: smooth; }
 .demo-item .demo-arrow { color: var(--text-faint); font-size: 0.8rem; }
 @media (max-width: 1500px) { .template-grid { grid-template-columns: repeat(2, 1fr); } }
 @media (max-width: 1100px) { .template-grid { grid-template-columns: 1fr; } }
-@media (max-width: 760px) { .hero-blocks { flex-direction: column; } }
+@media (max-width: 760px) {
+  .hero { padding: 56px 14px 48px; }
+  .hero-blocks { flex-direction: column; width: 100%; gap: 14px; }
+  .hero-block { flex: 1 1 auto; width: 100%; padding: 16px; }
+  .compare-table { display: block; overflow-x: auto; white-space: nowrap; }
+}
 .tpl-name { display: flex; align-items: center; justify-content: space-between; gap: 8px; }
 .tpl-name .tpl-guide { font-size: 0.65rem; color: var(--cobalt-400); text-decoration: none; white-space: nowrap; border: 1px solid rgba(99,102,241,0.35); padding: 1px 8px; border-radius: 4px; }
 .tpl-name .tpl-guide:hover { background: rgba(99,102,241,0.12); color: var(--cobalt-300); }
@@ -282,7 +287,7 @@ html { scroll-behavior: smooth; }
 </a>
 <section class="hero">
   <h1 class="hero-title"><img class="hero-logo" src="https://www.jaden.tech/static/img/favicon.png?=20260705" alt="">html-gen</h1>
-  <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML · 深色主题 · 中文优先</p>
+  <p class="hero-tagline">零依赖 Python CLI：Markdown/JSON → 自包含单文件 HTML</p>
   <p class="hero-badges"><span>⚡ 零依赖</span><span>📦 单文件输出</span><a href="/prompts/?group=cli&item=html-gen">📖 在线 Prompts</a></p>
   <div class="hero-blocks">
     <div class="hero-block">
@@ -323,7 +328,7 @@ html { scroll-behavior: smooth; }
       <div class="tpl-head">
         <div class="tpl-icon ia">📊</div>
         <div>
-          <div class="tpl-name">A 模板 · 数据表格 <a class="tpl-guide" href="demos/table-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
+          <div class="tpl-name">A 模板 · 数据表格 <a class="tpl-guide" href="demos/table-guide.html" target="_blank" rel="noopener">在线说明 ↗</a></div>
           <div class="tpl-file">layout-table.html (1110 行)</div>
         </div>
       </div>
@@ -333,14 +338,14 @@ html { scroll-behavior: smooth; }
           <span class="scenario-pill">数据浏览</span><span class="scenario-pill">技能清单</span>
         </div>
         <ul class="features">
-          <li>🔍 实时搜索 + Cmd+F Spotlight 弹窗</li>
-          <li>🔽 多字段排序 + Shift 二级排序 + 中文 locale</li>
-          <li>📏 密度切换 (紧凑/标准/舒适)</li>
-          <li>🖱️ 四种点击模式 (新标签/弹出面板/分栏预览/行内展开)</li>
-          <li>📌 快速过滤 (点击单元格值) + 列冻结</li>
-          <li>⌨️ 键盘导航 ↑↓ + F 全屏 + 批量操作</li>
+          <li title="🔍 实时搜索 + Cmd+F Spotlight 弹窗">🔍 实时搜索 + Cmd+F Spotlight 弹窗</li>
+          <li title="🔽 多字段排序 + Shift 二级排序 + 中文 locale">🔽 多字段排序 + Shift 二级排序 + 中文 locale</li>
+          <li title="📏 密度切换 (紧凑/标准/舒适)">📏 密度切换 (紧凑/标准/舒适)</li>
+          <li title="🖱️ 四种点击模式 (新标签/弹出面板/分栏预览/行内展开)">🖱️ 四种点击模式 (新标签/弹出面板/分栏预览/行内展开)</li>
+          <li title="📌 快速过滤 (点击单元格值) + 列冻结">📌 快速过滤 (点击单元格值) + 列冻结</li>
+          <li title="⌨️ 键盘导航 ↑↓ + F 全屏 + 批量操作">⌨️ 键盘导航 ↑↓ + F 全屏 + 批量操作</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span><button class="copy-btn" data-copy="html-gen table -d data.json -o index.html" aria-label="复制命令">📋</button></div>
+        <div class="cli-box" title="html-gen 命令：html-gen table -d data.json -o index.html"><span class="prompt">$</span> <span class="cmd">html-gen table -d data.json -o index.html</span><button class="copy-btn" data-copy="html-gen table -d data.json -o index.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/demos-index.html" target="_blank" rel="noopener">
@@ -358,7 +363,7 @@ html { scroll-behavior: smooth; }
       <div class="tpl-head">
         <div class="tpl-icon ib">📄</div>
         <div>
-          <div class="tpl-name">B 模板 · 文档阅读 <a class="tpl-guide" href="demos/doc-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
+          <div class="tpl-name">B 模板 · 文档阅读 <a class="tpl-guide" href="demos/doc-guide.html" target="_blank" rel="noopener">在线说明 ↗</a></div>
           <div class="tpl-file">layout-doc.html (436 行)</div>
         </div>
       </div>
@@ -368,17 +373,17 @@ html { scroll-behavior: smooth; }
           <span class="scenario-pill">长文阅读</span><span class="scenario-pill">技术文档</span>
         </div>
         <ul class="features">
-          <li>📑 自动 TOC + 🔍 TOC 搜索 (150ms debounce)</li>
-          <li>◀▶ 侧边栏折叠/展开 (48px 收起, [ 快捷键)</li>
-          <li>↔ 侧边栏宽度拖拽 (200-400px)</li>
-          <li>🌙☀️ 深色/浅色主题 + 🇨🇳🇺🇸 中英双语</li>
-          <li>📋 代码复制 + 行号 + Callout + 阅读进度条</li>
-          <li>🖼️ 图片灯箱 + 📌 锚点链接 + 🔗 外链归档</li>
+          <li title="📑 自动 TOC + 🔍 TOC 搜索 (150ms debounce)">📑 自动 TOC + 🔍 TOC 搜索 (150ms debounce)</li>
+          <li title="◀▶ 侧边栏折叠/展开 (48px 收起, [ 快捷键)">◀▶ 侧边栏折叠/展开 (48px 收起, [ 快捷键)</li>
+          <li title="↔ 侧边栏宽度拖拽 (200-400px)">↔ 侧边栏宽度拖拽 (200-400px)</li>
+          <li title="🌙☀️ 深色/浅色主题 + 🇨🇳🇺🇸 中英双语">🌙☀️ 深色/浅色主题 + 🇨🇳🇺🇸 中英双语</li>
+          <li title="📋 代码复制 + 行号 + Callout + 阅读进度条">📋 代码复制 + 行号 + Callout + 阅读进度条</li>
+          <li title="🖼️ 图片灯箱 + 📌 锚点链接 + 🔗 外链归档">🖼️ 图片灯箱 + 📌 锚点链接 + 🔗 外链归档</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span><button class="copy-btn" data-copy="html-gen doc -i report.md -o report.html" aria-label="复制命令">📋</button></div>
+        <div class="cli-box" title="html-gen 命令：html-gen doc -i report.md -o report.html"><span class="prompt">$</span> <span class="cmd">html-gen doc -i report.md -o report.html</span><button class="copy-btn" data-copy="html-gen doc -i report.md -o report.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
-          <a class="demo-item" href="demos/markdown-spec.html" target="_blank" rel="noopener">
+          <a class="demo-item" href="demos/doc-features-demo.html" target="_blank" rel="noopener">
             <span class="demo-icon">📐</span><span class="demo-info"><span class="demo-name">Markdown 语法规范</span><span class="demo-desc">支持的语法子集 · 规则 · 常见错误</span></span><span class="demo-arrow">→</span></a>
           <a class="demo-item" href="demos/table-guide.html" target="_blank" rel="noopener">
             <span class="demo-icon">📊</span><span class="demo-info"><span class="demo-name">A 模板 · 表格模板说明</span><span class="demo-desc">使用场景 · 方案设计 · 功能清单</span></span><span class="demo-arrow">→</span></a>
@@ -393,7 +398,7 @@ html { scroll-behavior: smooth; }
       <div class="tpl-head">
         <div class="tpl-icon ic">📚</div>
         <div>
-          <div class="tpl-name">C 模板 · 知识库 <a class="tpl-guide" href="demos/knowledge-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
+          <div class="tpl-name">C 模板 · 知识库 <a class="tpl-guide" href="demos/knowledge-guide.html" target="_blank" rel="noopener">在线说明 ↗</a></div>
           <div class="tpl-file">layout-knowledge.html (342 行)</div>
         </div>
       </div>
@@ -403,14 +408,14 @@ html { scroll-behavior: smooth; }
           <span class="scenario-pill">技术文档</span><span class="scenario-pill">项目 Wiki</span>
         </div>
         <ul class="features">
-          <li>📑 顶部标签栏 + 左侧章节列表 (badge 标记)</li>
-          <li>🔍 侧边栏搜索 (150ms debounce, section 自动隐藏)</li>
-          <li>◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)</li>
-          <li>🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏</li>
-          <li>📖 iframe / 内联 desc 双内容模式 + 欢迎面板</li>
-          <li>💾 localStorage 状态记忆 (group + item)</li>
+          <li title="📑 顶部标签栏 + 左侧章节列表 (badge 标记)">📑 顶部标签栏 + 左侧章节列表 (badge 标记)</li>
+          <li title="🔍 侧边栏搜索 (150ms debounce, section 自动隐藏)">🔍 侧边栏搜索 (150ms debounce, section 自动隐藏)</li>
+          <li title="◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)">◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)</li>
+          <li title="🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏">🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏</li>
+          <li title="📖 iframe / 内联 desc 双内容模式 + 欢迎面板">📖 iframe / 内联 desc 双内容模式 + 欢迎面板</li>
+          <li title="💾 localStorage 状态记忆 (group + item)">💾 localStorage 状态记忆 (group + item)</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span><button class="copy-btn" data-copy="html-gen knowledge -d data.json -o kb.html" aria-label="复制命令">📋</button></div>
+        <div class="cli-box" title="html-gen 命令：html-gen knowledge -d data.json -o kb.html"><span class="prompt">$</span> <span class="cmd">html-gen knowledge -d data.json -o kb.html</span><button class="copy-btn" data-copy="html-gen knowledge -d data.json -o kb.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
           <a class="demo-item" href="demos/drama-knowledge.html" target="_blank" rel="noopener">
@@ -428,7 +433,7 @@ html { scroll-behavior: smooth; }
       <div class="tpl-head">
         <div class="tpl-icon id">🖼️</div>
         <div>
-          <div class="tpl-name">D 模板 · 幻灯片 <a class="tpl-guide" href="demos/slide-guide.html" target="_blank" rel="noopener">模板使用说明 ↗</a></div>
+          <div class="tpl-name">D 模板 · 幻灯片 <a class="tpl-guide" href="demos/slide-guide.html" target="_blank" rel="noopener">在线说明 ↗</a></div>
           <div class="tpl-file">layout-slide.html (673 行)</div>
         </div>
       </div>
@@ -438,17 +443,17 @@ html { scroll-behavior: smooth; }
           <span class="scenario-pill">分段阅读</span><span class="scenario-pill">演讲投屏</span>
         </div>
         <ul class="features">
-          <li>📄 h2 自动分页 + 🖼️ 封面页 + H3 双列模式</li>
-          <li>🔍 TOC 搜索 + 章节高亮 (翻页联动)</li>
-          <li>◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)</li>
-          <li>🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏</li>
-          <li>⌨️ 键盘翻页 (←→ Space Home End) + ● 圆点导航</li>
-          <li>💾 localStorage 进度保存 + 页码实时更新 (i18n)</li>
+          <li title="📄 h2 自动分页 + 🖼️ 封面页 + H3 双列模式">📄 h2 自动分页 + 🖼️ 封面页 + H3 双列模式</li>
+          <li title="🔍 TOC 搜索 + 章节高亮 (翻页联动)">🔍 TOC 搜索 + 章节高亮 (翻页联动)</li>
+          <li title="◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)">◀▶ 侧边栏折叠 + ↔ 宽度拖拽 (200-400px)</li>
+          <li title="🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏">🌙☀️ 主题 + 🇨🇳🇺🇸 双语 + 右上角工具栏</li>
+          <li title="⌨️ 键盘翻页 (←→ Space Home End) + ● 圆点导航">⌨️ 键盘翻页 (←→ Space Home End) + ● 圆点导航</li>
+          <li title="💾 localStorage 进度保存 + 页码实时更新 (i18n)">💾 localStorage 进度保存 + 页码实时更新 (i18n)</li>
         </ul>
-        <div class="cli-box"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span><button class="copy-btn" data-copy="html-gen slide -i slides.md -o slides.html" aria-label="复制命令">📋</button></div>
+        <div class="cli-box" title="html-gen 命令：html-gen slide -i slides.md -o slides.html"><span class="prompt">$</span> <span class="cmd">html-gen slide -i slides.md -o slides.html</span><button class="copy-btn" data-copy="html-gen slide -i slides.md -o slides.html" aria-label="复制命令">📋</button></div>
         <div class="demos">
           <div class="demos-title">案例演示</div>
-          <a class="demo-item" href="demos/slide-demo.html" target="_blank" rel="noopener">
+          <a class="demo-item" href="demos/slide-features-demo.html" target="_blank" rel="noopener">
             <span class="demo-icon">🖼️</span><span class="demo-info"><span class="demo-name">B 模板方案 · Slide 幻灯片版</span><span class="demo-desc">h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示</span></span><span class="demo-arrow">→</span></a>
         </div>
       </div>

@@ -22,6 +22,8 @@ Homepage = "https://github.com/imjaden/html-gen.cli"
 
 [project.scripts]
 html-gen = "html_gen:main"
+# 短别名：`hg` 与 Mercurial 官方 CLI 同名（console script 冲突不报错），故用 htmlgen
+htmlgen = "html_gen:main"
 
 [tool.setuptools]
 package-dir = {"" = "src"}

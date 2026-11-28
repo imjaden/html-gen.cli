@@ -28,7 +28,7 @@
 ## 安装
 
 ```bash
-pip install html-gen-cli        # 安装 `html-gen` 命令
+pip install html-gen-cli        # 安装 `html-gen` 命令（短别名 `htmlgen`）
 ```
 
 或源码运行（免安装）：
