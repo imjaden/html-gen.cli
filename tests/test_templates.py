@@ -50,12 +50,20 @@ class TestDoc(TmpDirMixin, unittest.TestCase):
             self.assertIn('doc-toc', html)
 
     def test_doc_meta_has_path(self):
-        """meta 含 路径: 行, 且为脱敏文件名 (不含 /)."""
+        """meta 含 路径: 行(脱敏为纯文件名) + 不含 mtime 型时间戳(可复现渲染)."""
         tmp_md = self.tmpdir / 'test-meta-path.md'
         tmp_md.write_text('# 标题\n## S1\n内容')
         out = self.tmpdir / 'test-meta-path.html'
         run_gen('doc', '-i', str(tmp_md), '-o', str(out))
         html = out.read_text()
+        # CL048: 文档时间取自 frontmatter，不取 mtime —— 否则同源两渲两哈希，基线来回抖
+        self.assertNotIn('创建:', html, 'meta 不应再出现 mtime 型「创建」时间')
+        st = tmp_md.stat()
+        os.utime(tmp_md, (st.st_atime, st.st_mtime + 120))   # 动 mtime 后重渲，字节必须一致
+        out2 = self.tmpdir / 'test-meta-path-2.html'
+        run_gen('doc', '-i', str(tmp_md), '-o', str(out2))
+        self.assertEqual(html, out2.read_text(), '同一 md 两渲应字节一致（mtime 不得进产物）')
+        out2.unlink(missing_ok=True)
         self.assertIn('路径:', html)
         m = re.search(r'路径:\s*<code>([^<]+)</code>', html)
         self.assertIsNotNone(m, "meta 应含 路径: <code>文件名</code>")

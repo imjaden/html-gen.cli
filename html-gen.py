@@ -392,6 +392,42 @@ def _word_stats(text):
     return cjk + latin, max(1, round(cjk / 400 + latin / 200))
 
 
+
+def _frontmatter_scalars(text):
+    """取 md 顶部 frontmatter 的一级标量键（只认 `key: value`，不解析嵌套）。
+
+    CL048: 文档时间改用 frontmatter，**不再取文件 mtime** —— mtime 每次落盘都变，
+    会让 `demo --rebuild` / `prompt --site` 的产物不可复现（同源两渲两哈希，基线来回抖）。
+    """
+    scalars = {}
+    if not text.startswith('---'):
+        return scalars
+    end = text.find('\n---', 3)
+    if end < 0:
+        return scalars
+    for line in text[3:end].split('\n'):
+        m = re.match(r'^([A-Za-z_][\w-]*):\s*(.+?)\s*$', line)
+        if m:
+            scalars[m.group(1).lower()] = m.group(2).strip().strip('"\'')
+    return scalars
+
+
+def _doc_meta_dates(text):
+    """frontmatter 的 created/date/updated/modified → (创建, 编辑)；都没有则 (None, None)。
+
+    只取 `YYYY-MM-DD`（去掉时分），保证同一份 md 任何时候渲染都得到同一字符串。
+    """
+    fm = _frontmatter_scalars(text)
+
+    def _norm(value):
+        if not value:
+            return None
+        m = re.match(r'^(\d{4}-\d{2}-\d{2})', value)
+        return m.group(1) if m else None
+
+    return _norm(fm.get('created') or fm.get('date')), _norm(fm.get('updated') or fm.get('modified'))
+
+
 def _collect_demo_refs(data_dir):
     """收集 *kb-data.json 里的 url → 引用来源（demo --rebuild 用）。
 
@@ -604,14 +640,15 @@ def cmd_doc(args):
         rel = '~/' + str(md.resolve().relative_to(Path.home()))
     except ValueError:
         rel = str(md.resolve())
-    stat = md.stat()
+    stat = md.stat()                      # 供 print_summary 报体积（日期不再取自 mtime）
     wc, rt = _word_stats(text)
-    ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
-    et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+    d_ct, d_et = _doc_meta_dates(text)
+    date_line = ' · '.join([b for b in (f'创建: {d_ct}' if d_ct else '',
+                                        f'编辑: {d_et}' if d_et else '') if b])
     md_name = os.path.basename(str(md))
-    meta = (f"创建: {ct} · 编辑: {et}<br>"
-            f"字数: {wc:,} · 阅读约 {rt} 分钟"
-            f"<span class=\"meta-path\"> · 路径: <code>{md_name}</code></span>")
+    meta = ((date_line + '<br>') if date_line else ''
+            ) + (f"字数: {wc:,} · 阅读约 {rt} 分钟"
+                 f"<span class=\"meta-path\"> · 路径: <code>{md_name}</code></span>")
 
     # External link archive at document bottom
     ext_links = sorted(set(re.findall(r'href="(https?://[^"]+)"', content)))
@@ -674,14 +711,15 @@ def cmd_slide(args):
         rel = '~/' + str(md.resolve().relative_to(Path.home()))
     except ValueError:
         rel = str(md.resolve())
-    stat = md.stat()
+    stat = md.stat()                      # 供 print_summary 报体积（日期不再取自 mtime）
     wc, rt = _word_stats(text)
-    ct = datetime.fromtimestamp(stat.st_ctime).strftime('%Y-%m-%d %H:%M')
-    et = datetime.fromtimestamp(stat.st_mtime).strftime('%Y-%m-%d %H:%M')
+    d_ct, d_et = _doc_meta_dates(text)
+    date_line = ' · '.join([b for b in (f'创建: {d_ct}' if d_ct else '',
+                                        f'编辑: {d_et}' if d_et else '') if b])
     md_name = os.path.basename(str(md))
-    meta = (f"创建: {ct} · 编辑: {et}<br>"
-            f"字数: {wc:,} · 阅读约 {rt} 分钟"
-            f"<span class=\"meta-path\"> · 路径: <code>{md_name}</code></span>")
+    meta = ((date_line + '<br>') if date_line else ''
+            ) + (f"字数: {wc:,} · 阅读约 {rt} 分钟"
+                 f"<span class=\"meta-path\"> · 路径: <code>{md_name}</code></span>")
 
     # External link archive
     ext_links = sorted(set(re.findall(r'href="(https?://[^\"]+)"', content)))
@@ -1049,7 +1087,7 @@ TEMPLATE_CONTRACT = {
             ('--output', '输出 HTML 路径 (短形 -o; 缺省与输入同名的 .html)', ''),
             ('--title', '页面标题 (优先级 CLI > frontmatter title > 正文 h1 > 文件名)', ''),
             ('--subtitle', '页面副标题', ''),
-            ('--metadata', 'meta 区补充信息 (缺省自动生成创建/编辑时间与字数)', ''),
+            ('--metadata', 'meta 区补充信息 (缺省自动生成字数/阅读时间；日期只取 md frontmatter 的 created/date/updated/modified，无则省略 —— 不由 mtime 推导，保证可复现)', ''),
             _CLI_GITHUB_URL,
             _CLI_HOME_URL,
             _CLI_FAVICON,
