@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.6+tpl204aeb64">
+<meta name="generator" content="html-gen v3.7+tplb5dd17e9">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Hermes Skills 列表</title>
@@ -291,6 +291,16 @@ pre code { background: none; padding: 0; }
 .data-table td.clickable-cell { cursor:pointer; }
 .data-table td.clickable-cell:hover { background:rgba(79,70,229,0.08); }
 .data-table .cell-pills { }
+/* ── 顶部筛选条（options.filterBar: 「所有」+ 各值 chips 带计数；选中态可持久化） ── */
+.filter-bar { display:inline-flex; align-items:center; gap:6px; flex-wrap:wrap; }
+.fb-chip { display:inline-flex; align-items:center; gap:4px; padding:3px 10px; border-radius:9999px;
+  border:1px solid #2a2a3e; background:transparent; color:#9ca3af;
+  font-size:calc(var(--table-fs) * 0.8); cursor:pointer;
+  transition:background .15s, color .15s, border-color .15s; }
+.fb-chip:hover { background:rgba(79,70,229,0.18); color:#e0e0e0; }
+.fb-chip:focus-visible { outline:2px solid var(--cobalt-400); outline-offset:2px; }
+.fb-chip.active { background:rgba(79,70,229,0.28); border-color:rgba(79,70,229,0.6); color:#fff; font-weight:600; }
+.fb-count { font-variant-numeric:tabular-nums; opacity:.75; font-size:.9em; }
 .data-table .cell-pill { display:inline-block; padding:0 6px; border-radius:9999px; font-size:calc(var(--table-fs) * 0.86); line-height:1.5; vertical-align:middle; white-space:nowrap; background:rgba(79,70,229,0.12); color:var(--cobalt-400); border:1px solid rgba(79,70,229,0.2); margin:0 2px; }
 .data-table .cell-pill.pill-clickable { cursor:pointer; }
 .data-table .cell-pill.pill-clickable:hover { background:rgba(79,70,229,0.25); border-color:rgba(79,70,229,0.5); color:#fff; }
@@ -565,6 +575,7 @@ pre code { background: none; padding: 0; }
   <span class="stat-pill" style="display:none" id="statFilteredPill"><span class="num" id="statFiltered">0</span> 已筛选</span>
   <span class="stat-pill" style="display:none" id="statSelectedPill"><span class="num" id="statSelected">0</span> 已选</span>
   <span class="filter-pill" style="display:none" id="quickFilterPill"></span>
+  <div class="filter-bar" id="filterBar" style="display:none"></div>
   <!-- CL036: 分享/Home 紧随统计 pill（原先在 tabs-row, 单视图页会退化成「只有按钮的一行」） -->
   
   <button class="share-link" id="shareBtn" onclick="shareLink()" title="拷贝含当前视图的分享链接" aria-label="拷贝含当前视图的分享链接">🔗</button>
@@ -1206,6 +1217,7 @@ pre code { background: none; padding: 0; }
       sp.style.display = cnt > 0 ? 'inline-flex' : 'none';
       document.getElementById('statSelected').textContent = cnt;
     }
+    syncFilterBar();
     // Quick filter pill
     var qfEl = document.getElementById('quickFilterPill');
     if (quickFilter) {
@@ -1229,13 +1241,55 @@ pre code { background: none; padding: 0; }
     expandedIdx = -1;
     currentPage = 1;
     render();
+    _fbPersist();
   };
+
+  /* ── 顶部筛选条（options.filterBar {column, allLabel, persist}）── */
+  var _FB_KEY = 'html-gen:table:filter';
+  function _fbCfg() {
+    var fb = OPTIONS && OPTIONS.filterBar;      // 变量名避开 c.* / col.* (help_contract 提取正则)
+    return (fb && fb.column) ? fb : null;
+  }
+  function syncFilterBar() {
+    var bar = document.getElementById('filterBar'); if (!bar) return;
+    var cfg = _fbCfg();
+    if (!cfg) { bar.style.display = 'none'; return; }
+    var counts = {}, order = [];
+    DATA.forEach(function(r) {
+      var v = r[cfg.column];
+      if (v === undefined || v === null || v === '') return;
+      if (!(v in counts)) { counts[v] = 0; order.push(v); }
+      counts[v]++;
+    });
+    var active = (quickFilter && quickFilter.key === cfg.column) ? quickFilter.value : '';
+    var h = '<button class="fb-chip' + (active === '' ? ' active' : '') + '" onclick="clearQuickFilter()">' +
+            escapeHtml(cfg.allLabel || '所有') + '<span class="fb-count">' + DATA.length + '</span></button>';
+    order.forEach(function(v) {
+      h += '<button class="fb-chip' + (active === v ? ' active' : '') + '" onclick="quickFilterBy(\'' +
+           escapeAttr(cfg.column) + '\',\'' + escapeAttr(v) + '\',\'exact\')">' +
+           escapeHtml(v) + '<span class="fb-count">' + counts[v] + '</span></button>';
+    });
+    bar.innerHTML = h;
+    bar.style.display = 'inline-flex';
+  }
+  function _fbPersist() {
+    var cfg = _fbCfg(); if (!cfg) return;
+    if (cfg.persist === false) return;
+    try {
+      if (quickFilter && quickFilter.key === cfg.column) {
+        localStorage.setItem(_FB_KEY, JSON.stringify(quickFilter));
+      } else {
+        localStorage.removeItem(_FB_KEY);
+      }
+    } catch (e) {}
+  }
 
   window.clearQuickFilter = function() {
     if (splitActive) closeSplit();  // HG-SEC-075
     quickFilter = null;
     currentPage = 1;
     render();
+    _fbPersist();
   };
 
   /* ── Pagination ── */
@@ -2176,6 +2230,16 @@ pre code { background: none; padding: 0; }
     applyDensity();
     render();
     initSplitDrag();
+    // filterBar 记忆优先：用户上次点的 chip 覆盖 defaultFilter
+    var _fbBoot = _fbCfg();
+    if (_fbBoot && _fbBoot.persist !== false) {
+      try {
+        var _fbSaved = JSON.parse(localStorage.getItem(_FB_KEY) || 'null');
+        if (_fbSaved && _fbSaved.key === _fbBoot.column && _fbSaved.value) {
+          quickFilterBy(_fbSaved.key, _fbSaved.value, _fbSaved.mode || 'exact');
+        }
+      } catch (e) {}
+    }
     // 默认筛选：options.defaultFilter {key, value, mode} 加载后自动筛选（如大明时间轴默认选中嘉靖）
     var _df = OPTIONS && OPTIONS.defaultFilter;
     if (_df && _df.key && _df.value) {

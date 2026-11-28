@@ -267,8 +267,8 @@ html-gen table -h
 |:---|:---|:---|
 | [DEMO 案例索引](demos-index.html) | 全量案例索引 · 标题/模板/链接 | demos-index.html |
 | [Hermes Skills 清单](hermes-profile-skills-list.html) | 98 个 Skill · 15 个分类 · 全 Profile | hermes-profile-skills-list.html |
-| [全球国家速查表](countries-table.html) | 国家速查 · 地区/首都/货币 | countries-table.html |
-| [中国省份速查表](provinces-table.html) | 34 省 · 面积/GDP/人口 | provinces-table.html |
+| [全球国家速查表](countries.html) | 国家速查 · 地区/首都/货币 | countries.html |
+| [中国省份速查表](provinces.html) | 34 省 · 面积/GDP/人口 | provinces.html |
 | [表格功能全演示](table-features-demo.html) | 密度/模态/分栏/展开/过滤/冻结/预设 | table-features-demo.html |
 | [操作按钮 demo](table-actions-demo.html) | copyKey/hrefKey/handler 操作列 | table-actions-demo.html |
 
@@ -283,7 +283,7 @@ html-gen table -h
 | **指令面** | `html-gen help table`（`TEMPLATE_CONTRACT['table']`：列类型/列属性/options） |
 | **Skills 面** | `skills/html-gen-table/SKILL.md`、`skills/html-gen/SKILL.md`（A 型段） |
 | **文档面** | 本文件（→ `table-guide.html`）、`documents/templates.md`、`features.md` |
-| **案例面** | `demos/{countries-table,provinces-table,table-features-demo,table-actions-demo,hermes-profile-skills-list}.html` + `data/_*table*.json` + `data/_demos-data.json` 卡片话术 |
+| **案例面** | `demos/{countries,provinces,table-features-demo,table-actions-demo,hermes-profile-skills-list}.html` + `data/_*table*.json` + `data/_demos-data.json` 卡片话术 |
 | **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`、`tests/test_countries_table.py`、`tests/test_provinces_table.py`、`tests/test_table_features.py`、`tests/test_table_default_state.py`、`tests/test_json_output.py`、`tests/test_issue_feedback.py` |
 | **基线/门禁面** | `scripts/baseline.py`（`TABLE_PRODUCTS` / `CASE_TABLE_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
 | **打包面** | `src/html_gen/layout-table.html`、`src/html_gen/html-gen.py` → `scripts/build-package.py` |

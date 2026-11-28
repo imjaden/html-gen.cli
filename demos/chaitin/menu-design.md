@@ -144,8 +144,8 @@ C 型模板（`layout-knowledge.html`）的数据模型：
 
 ## 五、生成的 HTML 文件
 
-- **C 型 HTML**: `chaitin-business-analysis-v1.0-20260707.html`（从 JSON 生成）
-- **放置路径**: `html-demos/chaitin-business-analysis-v1.0-20260707.html`
+- **C 型 HTML**: `chaitin-v1.0-20260707.html`（从 JSON 生成）
+- **放置路径**: `html-demos/chaitin-v1.0-20260707.html`
 - **挂载**: `html-demos/index.html` → C 列案例演示
 
 ---

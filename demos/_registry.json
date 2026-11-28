@@ -144,11 +144,11 @@
       ]
     },
     {
-      "name": "chaitin-business-analysis",
+      "name": "chaitin",
       "title": "长亭科技 · 商业分析",
       "type": "knowledge",
-      "entry": "chaitin-business-analysis.html",
-      "featured": true,
+      "entry": "chaitin.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
@@ -309,20 +309,20 @@
       ]
     },
     {
-      "name": "cloudwise-business-analysis",
+      "name": "cloudwise",
       "title": "云智慧 · 商业分析",
       "type": "knowledge",
-      "entry": "cloudwise-business-analysis.html",
-      "featured": true,
+      "entry": "cloudwise.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
     {
-      "name": "countries-table",
+      "name": "countries",
       "title": "全球国家速查表（195 国）",
       "type": "table",
-      "entry": "countries-table.html",
-      "featured": true,
+      "entry": "countries.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
@@ -477,11 +477,11 @@
       ]
     },
     {
-      "name": "drama-knowledge",
+      "name": "drama",
       "title": "以剧读史 · 以史明智",
       "type": "knowledge",
-      "entry": "drama-knowledge.html",
-      "featured": true,
+      "entry": "drama.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
@@ -522,11 +522,11 @@
       "referenced_by": []
     },
     {
-      "name": "provinces-table",
+      "name": "provinces",
       "title": "中国省份速查表",
       "type": "table",
-      "entry": "provinces-table.html",
-      "featured": true,
+      "entry": "provinces.html",
+      "featured": false,
       "referenced": false,
       "referenced_by": []
     },
