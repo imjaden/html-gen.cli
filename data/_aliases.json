@@ -34,6 +34,11 @@
       "demo": "provinces",
       "alias": "provinces-table",
       "canonical": false
+    },
+    {
+      "demo": "table-features-demo",
+      "alias": "table-actions-demo",
+      "canonical": false
     }
   ]
 }

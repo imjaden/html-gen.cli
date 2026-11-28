@@ -54,7 +54,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 
 ## 渲染基线门禁（CL029 → v1.2 CL032 → v1.3 CL032 尾项）
 
-`scripts/baseline.py`：对**可判定子集**（5 个模板/样式源含 `layout-slide.html` + 2 个手写落地页 + `demos-index` 就地重建 + **42 个可 verify 产物** = **50 项**）钉 sha256+字节数，
+`scripts/baseline.py`：对**可判定子集**（5 个模板/样式源含 `layout-slide.html` + 2 个手写落地页 + `demos-index` 就地重建 + **41 个可 verify 产物** = **49 项**）钉 sha256+字节数，
 基线文件 `data/_render-baseline.json` 随仓入库（`version: 2`，带 `verified` 标记）。
 
 ```bash
@@ -68,7 +68,7 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   `--verify` 的参数是**从产物自己回收**的 ⇒ 某次重建漏了 `--github-url`/`--home-url` 时，回收也一起消失、
   verify 永远绿（实测：CL032 首次重刷 5 个产物丢 corner 而全绿）。故 `--update` 在基线里额外记
   `corner`/`home` 存在性，`--check` 见「基线有、产物没有」即报 `param-lost:corner|home`。
-  变异实证：漏 `--github-url` 重生成 ⇒ `--check --json` 出现 1 条 `param-lost`；补回 ⇒ 50/50 一致。
+  变异实证：漏 `--github-url` 重生成 ⇒ `--check --json` 出现 1 条 `param-lost`；补回 ⇒ 49/49 一致。
   **`--update` 同批也拦（HG-SEC-245）**：漏参重建后立刻 `--update` 会被拒（rc=1，基线不动，提示按原参数重刷），
   否则新基线会把 `corner:false` 写进去、钉子当场洗白；确属产品决策要摘角标时才 `--force`（并标 `verified=false`）。
   后者用**从产物回收的参数集**（title/subtitle/welcome/corner/home 全从产物解析）重渲到临时目录比 sha，

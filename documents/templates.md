@@ -116,7 +116,7 @@ source: AGENTS.md 外移（HTML-GEN-CL023）
 4. `demos/<theme>-guide.md` + 本文件 + `features.md`
 5. `data/_*data.json` + `_demos-data.json` 话术 + 重渲 `<theme>-demo`
 6. 测试三面：契约 / 静态守卫 / Selenium
-7. 产物重渲 → `baseline --update` → `--check` 50/50 → `--verify` → `docs-index` 重生成
+7. 产物重渲 → `baseline --update` → `--check` 49/49 → `--verify` → `docs-index` 重生成
 8. `build-package.py`（打包源）→ 跨仓 vendored/页面 → 版本三件与测试计数
 
 > 反例（CL047，2026-11-23）：模板改完只走了 1/2/6/7，**漏了 3、5、8**（`skills/*` 未更新、`prompts/index.html` 仍 v3.4、`src/html_gen` 打包源仍 v3.5），靠事后全量扫描才发现。本节即为堵这个洞而设。

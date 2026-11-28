@@ -49,8 +49,7 @@ html-gen.cli/
     ├── slide-guide.html        # D 型 · 幻灯片方案
     ├── slide-demo.html         # D 型 Slide 演示
     ├── hermes-profile-skills-list.html  # 主力 demo: Hermes Skills 列表
-    ├── table-features-demo.html # 表格功能全演示（数据源 data/_table-features-demo.json）
-    ├── table-actions-demo.html # 操作按钮 demo
+    ├── table-features-demo.html # 表格能力总览（功能 + 操作按钮列；数据源 data/_table-features-demo.json）
     ├── knowledge-demo.html     # 知识库功能 demo
     ├── countries.html    # 全球 195 国速查表（数据源说明 countries.md）
     ├── provinces.html    # 中国 34 省速查表（数据源说明 provinces.md）

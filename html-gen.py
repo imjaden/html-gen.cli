@@ -1791,7 +1791,7 @@ CASE_SCENE = {
     'countries.html': '功能性', 'provinces.html': '功能性',
     'hermes-profile-skills-list.html': '功能性',
     'slimdown/exercises.html': '功能性', 'slimdown/archive.html': '功能性',
-    'table-features-demo.html': '演示性', 'table-actions-demo.html': '演示性',
+    'table-features-demo.html': '演示性',
     'knowledge-demo.html': '演示性', 'slide-demo.html': '演示性',
     'chaitin.html': '案例型', 'cloudwise.html': '案例型', 'drama.html': '案例型',
     'the-price-you-choose.html': '案例型',

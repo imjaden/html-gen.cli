@@ -56,7 +56,7 @@ CL 前置：CL001 → CL002 →（CL004 参数扩展）→ CL006。族 A/B 无 C
   - `desc`：点击弹 Toast 展示 `<icon> <label>: <desc>`，2.5s 自动消失（demo 模式）。
 - ActionButton 字段：`icon`(emoji)/`label`(title 提示)/`copyKey?`/`hrefKey?`/`desc?`/`class?`；三模式可同列混合。
 - 所有 onclick 必须 `event.stopPropagation()`（防触发行点击/分栏）；URL 入 onclick 用 `JSON.stringify(...).replace(/"/g,'&quot;')` 转义。
-- demo 数据源 `data/_table-actions-demo.json`（顶层 `{columns,data,options}`）→ `demos/table-actions-demo.html`。
+- 操作按钮 demo 已并入 `data/_table-features-demo.json`（顶层 `{columns,data,options}`）→ `demos/table-features-demo.html`。
 
 ### 3.3 单元格点击默认语义（族 B，quickfilter）
 

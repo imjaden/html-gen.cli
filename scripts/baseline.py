@@ -48,7 +48,6 @@ SUBSET = [
     'demos/countries.html',
     'demos/provinces.html',
     'demos/table-features-demo.html',
-    'demos/table-actions-demo.html',
     'demos/hermes-profile-skills-list.html',
     'demos/slide-guide.html',
     'demos/usage-guide.html',
@@ -68,7 +67,6 @@ TABLE_PRODUCTS = {
     'demos/countries.html': 'data/_countries-data.json',
     'demos/provinces.html': 'data/_provinces-data.json',
     'demos/table-features-demo.html': 'data/_table-features-demo.json',
-    'demos/table-actions-demo.html': 'data/_table-actions-demo.json',
     'demos/hermes-profile-skills-list.html': 'data/_skills-table-config.json',
 }
 SLIDE_PRODUCTS = ['demos/slide-guide.html']
@@ -112,6 +110,7 @@ CASE_TABLE_PRODUCTS = {
     'demos/drama/zhuyuanzhang-strategy-table.html': 'data/_drama-table-zhuyuanzhang-strategy.json',
 }
 CASE_SKIP = {
+    'demos/table-actions-demo.html': '并入 table-features-demo.html 后的旧路径跳转桩',
     # CL048 改名后的旧路径跳转桩（demos/<旧名>.html 内含 '<!-- html-gen:alias auto -->'）
     'demos/chaitin-business-analysis.html': '旧路径跳转桩 → chaitin.html（改名后保留外链兼容）',
     'demos/cloudwise-business-analysis.html': '旧路径跳转桩 → cloudwise.html',
