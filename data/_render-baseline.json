@@ -45,8 +45,8 @@
       "home": false
     },
     "demos/demos-index.html": {
-      "sha256": "9657abccae49bf0f1845cfc1ba3801364a468cd0e75faa4c767a36b29ea42c1c",
-      "bytes": 128785,
+      "sha256": "872b9979cbcf236252347afb3853ed8efdca49bd8a31d1aeae4d27aa0f3a1820",
+      "bytes": 128445,
       "corner": false,
       "home": true
     },
@@ -63,14 +63,8 @@
       "home": false
     },
     "demos/table-features-demo.html": {
-      "sha256": "eaff80ae6734f8d0ec4d76a90f7914f36738d8dbe5d014bab38e04231baf0c8b",
-      "bytes": 124974,
-      "corner": true,
-      "home": false
-    },
-    "demos/table-actions-demo.html": {
-      "sha256": "f5a6d7a021cd987d9dd9bfbcb05842d0704fa9d035f9700fd1a0bdd2dcb0fd32",
-      "bytes": 124690,
+      "sha256": "0e3045ec0d131a3ac7868bab13f57349130fdc5c5cbf7e3a62f29719a2a46490",
+      "bytes": 125917,
       "corner": true,
       "home": false
     },
@@ -99,8 +93,8 @@
       "home": false
     },
     "demos/table-guide.html": {
-      "sha256": "c064a24ff2b643120471a1620c73d857479267cd8e563a164771d232595bfb27",
-      "bytes": 59445,
+      "sha256": "25e69eefdb9eaf5d3fb4a7e0334d9b67fe5a647aea5be94fa14ff732dc200dca",
+      "bytes": 59302,
       "corner": true,
       "home": false
     },

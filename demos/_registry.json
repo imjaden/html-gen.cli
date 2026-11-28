@@ -1,6 +1,6 @@
 {
   "version": 3,
-  "count": 77,
+  "count": 76,
   "demos": [
     {
       "name": "chaitin-business-model",
@@ -572,15 +572,6 @@
       "type": "html",
       "entry": "slimdown/plan.html",
       "featured": false,
-      "referenced": false,
-      "referenced_by": []
-    },
-    {
-      "name": "table-actions-demo",
-      "title": "表格操作按钮演示",
-      "type": "table",
-      "entry": "table-actions-demo.html",
-      "featured": true,
       "referenced": false,
       "referenced_by": []
     },

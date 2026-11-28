@@ -8,7 +8,7 @@
 | documents/README.md | html-gen | readme | 1.0 | 2026-09-08 | current | 49 |
 | documents/cli-reference.md | html-gen | guide | 1.0 | 2026-11-09 | current | 143 |
 | documents/data-formats.md | html-gen | guide | 1.0 | 2026-11-09 | current | 82 |
-| documents/directory-layout.md | html-gen | guide | 1.0 | 2026-11-09 | current | 69 |
+| documents/directory-layout.md | html-gen | guide | 1.0 | 2026-11-09 | current | 68 |
 | documents/doc-slide-template-handbook-v1.0-20260908.md | html-gen | guide | 1.0 | 2026-09-08 | current | 226 |
 | documents/engineering-testing-handbook-v1.0-20260908.md | html-gen | guide | 1.0 | 2026-09-08 | current | 121 |
 | documents/html-gen-cli-handbook-v1.0-20260908.md | html-gen | guide | 1.0 | 2026-09-08 | current | 285 |
