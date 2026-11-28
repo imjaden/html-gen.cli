@@ -19,7 +19,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import chromedriver_service, tmp_stamp
 
 PROJECT = Path(__file__).resolve().parent.parent
 
@@ -83,7 +83,7 @@ class TestUrlState(unittest.TestCase):
 
     def _gen_page(self, url_suffix=''):
         """用 html-gen.py table 生成临时 URL 状态测试页并加载（唯一文件名防 file:// 缓存）。"""
-        stamp = str(int(time.time() * 1000))
+        stamp = tmp_stamp()
         src = PROJECT / 'tests' / f'_tmp_urlstate_{stamp}.json'
         out = PROJECT / 'tests' / f'_tmp_urlstate_{stamp}.html'
         self._tmp_files += [src, out]
@@ -227,7 +227,7 @@ class TestUrlState(unittest.TestCase):
                       'CL036: 分享按钮应落在表头而非 tabs 行')
         self.assertIn('🔗', btn.text)
         # --home-url 生成页: home-link 与 shareBtn 同容器（tabs 行居右）
-        stamp = str(int(time.time() * 1000))
+        stamp = tmp_stamp()
         src = PROJECT / 'tests' / f'_tmp_cl005home_{stamp}.json'
         out = PROJECT / 'tests' / f'_tmp_cl005home_{stamp}.html'
         self._tmp_files += [src, out]

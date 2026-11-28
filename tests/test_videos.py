@@ -10,7 +10,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.chrome.options import Options
-from conftest import chromedriver_service
+from conftest import chromedriver_service, tmp_stamp
 
 PROJECT = Path(__file__).resolve().parent.parent
 
@@ -63,7 +63,7 @@ class TestVideos(unittest.TestCase):
     def _gen_page(self, videos_col=None, rows=None, title='videos 测试'):
         """用 html-gen.py table 生成临时 videos 测试页并加载（无 searchFields，默认搜索全列）.
         临时文件用唯一名（时间戳），彻底规避 Chrome file:// 缓存/旧页命中偶发."""
-        stamp = str(int(time.time() * 1000))
+        stamp = tmp_stamp()
         src = PROJECT / 'tests' / f'_tmp_videos_{stamp}.json'
         out = PROJECT / 'tests' / f'_tmp_videos_{stamp}.html'
         self._tmp_files += [src, out]

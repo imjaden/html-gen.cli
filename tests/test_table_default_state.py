@@ -20,7 +20,7 @@ from selenium.webdriver.common.by import By
 from selenium.webdriver.chrome.options import Options
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.ui import WebDriverWait
-from conftest import chromedriver_service
+from conftest import chromedriver_service, tmp_stamp
 
 PROJECT = Path(__file__).resolve().parent.parent
 DRAMA = PROJECT / 'demos' / 'drama'
@@ -126,7 +126,7 @@ class TestTableDefaultState(unittest.TestCase):
         return row.find_elements(By.TAG_NAME, 'td')[idx].text.strip()
 
     def _gen_page(self, payload):
-        stamp = str(int(time.time() * 1000))
+        stamp = tmp_stamp()
         src = PROJECT / 'tests' / f'_tmp_defstate_{stamp}.json'
         out = PROJECT / 'tests' / f'_tmp_defstate_{stamp}.html'
         self._tmp_files += [src, out]

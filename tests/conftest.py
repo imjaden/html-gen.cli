@@ -11,6 +11,8 @@
 """
 import os
 import re
+import time
+import uuid
 import shutil
 import tempfile
 import unittest
@@ -52,6 +54,15 @@ def chromedriver_service():
 # 否则本仓 404 也会被一起吞掉。
 EXTERNAL_NET_RE = re.compile(r'^https?://([^\s/:]+)[^\s]* - Failed to load resource: net::ERR_')
 LOCAL_HOSTS = frozenset({'localhost', '127.0.0.1', '0.0.0.0', '::1', '[::1]'})
+
+
+def tmp_stamp():
+    """并行用例的唯一文件名戳（pid + 微秒 + 随机串）。
+
+    旧写法 `int(time.time() * 1000)` 只有毫秒精度，pytest -n 4 下同毫秒并发会撞名 →
+    一个用例正在读的 JSON 被另一个用例重写 ⇒ `JSONDecodeError: Extra data` 偶发红。
+    """
+    return f'{os.getpid()}_{time.time_ns()}_{uuid.uuid4().hex[:6]}'
 
 
 def is_external_net_failure(msg):
