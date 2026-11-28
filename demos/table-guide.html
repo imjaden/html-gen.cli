@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.7+tplf120e96b">
+<meta name="generator" content="html-gen v3.8+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🗂 表格（模板A）</title>
@@ -501,7 +501,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>🗂 表格（模板A）</h1>
-      <div class="meta">字数: 2,936 · 阅读约 9 分钟<span class="meta-path"> · 路径: <code>table-guide.md</code></span></div>
+      <div class="meta">字数: 2,971 · 阅读约 9 分钟<span class="meta-path"> · 路径: <code>table-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="一-使用场景">一、使用场景</h2>
@@ -550,11 +550,11 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 Layer 2: layout-table.html (模板骨架)
 Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 <h3 id="数据流">数据流</h3>
-<pre><code class="language-">JSON 文件 ──→ html-gen table ──→ 单文件 HTML
-             │                    ├── 搜索
-             │                    ├── 排序
-             │                    └── 分页
-             └── 列定义自动推导</code></pre>
+<pre><code class="language-">JSON file ──→ html-gen table ──→ single-file HTML
+            │                  ├── search
+            │                  ├── sort
+            │                  └── pagination
+            └── columns auto-derived</code></pre>
 <h3 id="关键设计决策">关键设计决策</h3>
 <table><thead><tr>
 <th>决策</th>
@@ -849,6 +849,10 @@ Layer 3: html-gen.py → table 子命令 (数据注入)</code></pre>
 </tbody></table>
 <hr>
 <h2 id="五-快速开始">五、快速开始</h2>
+<pre><code class="language-shell"># 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli &amp;&amp; cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑</code></pre>
 <pre><code class="language-shell"># 准备数据
 cat data.json
 

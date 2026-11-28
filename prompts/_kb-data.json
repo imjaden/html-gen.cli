@@ -122,7 +122,7 @@
     "section": "指令 CLI",
     "badge": "指南",
     "desc": "html-gen CLI 命令总览",
-    "url": "../demos/usage-guide.html",
+    "url": "../demos/cli-guide.html",
     "kind": "guide"
   },
   {
@@ -131,7 +131,7 @@
     "section": "模板语法",
     "badge": "指南",
     "desc": "md_to_html 支持的语法子集 (随 doc 组)",
-    "url": "../demos/markdown-spec.html",
+    "url": "../demos/doc-features-demo.html",
     "kind": "guide"
   },
   {
@@ -239,7 +239,7 @@
     "section": "使用案例",
     "badge": "案例",
     "desc": "D 型幻灯片演示",
-    "url": "../demos/slide-demo.html",
+    "url": "../demos/slide-features-demo.html",
     "kind": "case"
   }
 ]

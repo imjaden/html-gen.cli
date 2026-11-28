@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.7+tplf120e96b">
+<meta name="generator" content="html-gen v3.8+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>📄 文档（模板B）</title>
@@ -494,7 +494,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>📄 文档（模板B）</h1>
-      <div class="meta">字数: 2,256 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>doc-guide.md</code></span></div>
+      <div class="meta">字数: 2,279 · 阅读约 7 分钟<span class="meta-path"> · 路径: <code>doc-guide.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><hr>
 <h2 id="一-使用场景">一、使用场景</h2>
@@ -543,16 +543,16 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 Layer 2: layout-doc.html (骨架: 侧边栏TOC + 主内容区)
 Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
 <h3 id="数据流">数据流</h3>
-<pre><code class="language-">Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
-                 │                  ├── 自动 TOC
-                 │                  ├── 表格渲染
-                 │                  ├── 代码高亮
-                 │                  ├── 进度条
-                 │                  ├── callout 提示框
-                 │                  ├── 锚点链接
-                 │                  ├── 代码行号
-                 │                  └── 外链归档
-                 └── 元信息自动计算</code></pre>
+<pre><code class="language-">Markdown file ──→ html-gen doc ──→ single-file HTML
+                │                ├── auto TOC
+                │                ├── tables
+                │                ├── code highlight
+                │                ├── progress bar
+                │                ├── callouts
+                │                ├── anchor links
+                │                ├── code line numbers
+                │                └── external links
+                └── meta auto-computed</code></pre>
 <h3 id="关键设计决策">关键设计决策</h3>
 <table><thead><tr>
 <th>决策</th>
@@ -847,6 +847,10 @@ Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)</code></pre>
 </tbody></table>
 <hr>
 <h2 id="五-快速开始">五、快速开始</h2>
+<pre><code class="language-shell"># 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli &amp;&amp; cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑</code></pre>
 <pre><code class="language-shell"># 从 Markdown 生成文档
 html-gen doc -i report.md -o report.html
 
@@ -910,9 +914,9 @@ report.html?width=narrow</code></pre>
 <th>文件</th>
 </tr></thead><tbody>
 <tr>
-<td><a href="usage-guide.html" target="_blank" rel="noopener">使用指南</a></td>
+<td><a href="cli-guide.html" target="_blank" rel="noopener">使用指南</a></td>
 <td>html-gen 完整使用说明</td>
-<td>usage-guide.html</td>
+<td>cli-guide.html</td>
 </tr>
 <tr>
 <td><a href="table-guide.html" target="_blank" rel="noopener">A 型 · 表格模板说明</a></td>
@@ -925,9 +929,9 @@ report.html?width=narrow</code></pre>
 <td>doc-guide.html</td>
 </tr>
 <tr>
-<td><a href="markdown-spec.html" target="_blank" rel="noopener">Markdown 语法规范</a></td>
+<td><a href="doc-features-demo.html" target="_blank" rel="noopener">Markdown 语法规范</a></td>
 <td>支持的语法子集 · 规则 · 常见错误</td>
-<td>markdown-spec.html</td>
+<td>doc-features-demo.html</td>
 </tr>
 <tr>
 <td><a href="knowledge-guide.html" target="_blank" rel="noopener">C 型 · 知识库模板说明</a></td>
@@ -940,9 +944,9 @@ report.html?width=narrow</code></pre>
 <td>slide-guide.html</td>
 </tr>
 <tr>
-<td><a href="slide-demo.html" target="_blank" rel="noopener">Slide 幻灯片版</a></td>
+<td><a href="slide-features-demo.html" target="_blank" rel="noopener">Slide 幻灯片版</a></td>
 <td>h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示</td>
-<td>slide-demo.html</td>
+<td>slide-features-demo.html</td>
 </tr>
 </tbody></table>
 <hr>
@@ -966,7 +970,7 @@ report.html?width=narrow</code></pre>
 </tr>
 <tr>
 <td><strong>案例面</strong></td>
-<td><code>demos/{usage-guide,doc-guide,table-guide,knowledge-guide,markdown-spec}.html</code> ← 同名 <code>.md</code>（<code>demo --rebuild</code>）</td>
+<td><code>demos/{cli-guide,doc-guide,table-guide,knowledge-guide,doc-features-demo}.html</code> ← 同名 <code>.md</code>（<code>demo --rebuild</code>）</td>
 </tr>
 <tr>
 <td><strong>测试面</strong></td>

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.7+tpl8d844975">
+<meta name="generator" content="html-gen v3.8+tpl8d844975">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>🖼 幻灯片（模板D）</title>
@@ -515,7 +515,7 @@ pre code { background: none; padding: 0; }
 <div style="display:none">
   <div class="doc-header">
     <h1>🖼 幻灯片（模板D）</h1>
-    <div class="meta">字数: 945 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
+    <div class="meta">字数: 965 · 阅读约 3 分钟<span class="meta-path"> · 路径: <code>slide-guide.md</code></span></div>
   </div>
   <div id="docBody"><hr>
 <h2 id="一-使用场景">一、使用场景</h2>
@@ -555,13 +555,13 @@ pre code { background: none; padding: 0; }
 <hr>
 <h2 id="二-方案设计">二、方案设计</h2>
 <h3 id="架构">架构</h3>
-<pre><code class="language-">Layer 1: style-guide.css (CSS 变量 + 组件基座)
-Layer 2: layout-slide.html (模板骨架)
-Layer 3: html-gen.py → slide 子命令 (Markdown 注入)</code></pre>
+<pre><code class="language-">Layer 1: style-guide.css (CSS variables + component base)
+Layer 2: layout-slide.html (template skeleton)
+Layer 3: html-gen.py → slide subcommand (Markdown injection)</code></pre>
 <h3 id="分页规则">分页规则</h3>
-<pre><code class="language-"># 标题          → 封面页（h1，含 slide-cover + 页数统计）
-## 章节         → 每页一个 h2（分页单元）
-### 子标题       → 页内 H3 小节（默认隐藏，点击展开）</code></pre>
+<pre><code class="language-"># Title        → cover page (h1; slide-cover + page counter)
+## Chapter     → one page per h2 (page unit)
+### Subheading → in-page H3 section (collapsed by default)</code></pre>
 <h3 id="关键设计决策">关键设计决策</h3>
 <table><thead><tr>
 <th>决策</th>
@@ -649,6 +649,10 @@ Layer 3: html-gen.py → slide 子命令 (Markdown 注入)</code></pre>
 </tbody></table>
 <hr>
 <h2 id="四-快速开始">四、快速开始</h2>
+<pre><code class="language-shell"># 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli &amp;&amp; cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑</code></pre>
 <pre><code class="language-shell"># 从 Markdown 生成幻灯片
 html-gen slide -i slides.md -o slides.html
 
@@ -681,9 +685,9 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 <th>文件</th>
 </tr></thead><tbody>
 <tr>
-<td><a href="slide-demo.html" target="_blank" rel="noopener">Slide 幻灯片版</a></td>
+<td><a href="slide-features-demo.html" target="_blank" rel="noopener">Slide 幻灯片版</a></td>
 <td>h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示</td>
-<td>slide-demo.html</td>
+<td>slide-features-demo.html</td>
 </tr>
 </tbody></table>
 <hr>
@@ -707,7 +711,7 @@ html-gen slide -i slides.md -o slides.html --title "方案评审"</code></pre>
 </tr>
 <tr>
 <td><strong>案例面</strong></td>
-<td><code>demos/slide-guide.html</code>（← <code>slide-guide.md</code>，<code>demo --rebuild</code>）、<code>demos/slide-demo.html</code>（手写页，无 md 源）</td>
+<td><code>demos/slide-guide.html</code>（← <code>slide-guide.md</code>，<code>demo --rebuild</code>）、<code>demos/slide-features-demo.html</code>（手写页，无 md 源）</td>
 </tr>
 <tr>
 <td><strong>测试面</strong></td>

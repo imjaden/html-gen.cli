@@ -203,6 +203,11 @@ textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-k
 knowledge 模板 ⌘F/Ctrl+F 打开侧栏搜索 (v3.5, 2026-11-17) — 捕获阶段拦截原生查找 + 幂等 + 窄屏补 `.open` + 按钮 title 标快捷键；产物 4 页重生成 + 静态守卫 2 例 ✅ — layout-knowledge.html
 table 模板 顶部筛选条 options.filterBar {column,allLabel,persist} (v3.7, 2026-11-28) — 「所有 + 各值(带计数)」chips，点击即按该列精确筛选、与单元格 pills 双向联动、选中态存 localStorage(html-gen:table:filter)；契约/help/守卫同步 ✅ — layout-table.html
 demos-index 案例索引改造 (v3.7) — 场景列(功能性/演示性/案例型/说明文档) + 标题即新页签链接 + 剔除跳转桩/自引用/引用子页(22→19) + 5 例主题改名(chaitin/cloudwise/drama/countries/provinces) 保留旧路径与根级短链跳转 ✅ — html-gen.py cmd_demo
+demos-index 案例索引定名与话术统一 (v3.8, 2026-11-28) — 页面 h1「HG 案例索引」/ `<title>`「HG 案例索引 · v{major}.{minor}」；标题去 emoji 并统一为「{X} 模板 · {中文名}[ · 功能演示]」；模板列改显式 `CASE_TEMPLATE` 覆盖（说明性文档不再被 DOM 嗅探误判成「文档（模板B）」：slide-guide→幻灯片（模板D）等）；`CASE_INDEX_SKIP` 增 `slimdown/archive.html`（未用模板的独立页）18→17 行；3 例改名 markdown-spec→doc-features-demo / usage-guide→cli-guide / slide-demo→slide-features-demo（旧路径桩 + 别名 canonical:false） ✅ — html-gen.py / demos/demos-index.html
+table 模板 `<title>` 与 h1 可分离 `PAGE_TITLE` 键 (v3.8) — 缺省回退 TITLE，供「h1 简洁 / title 带版本」的索引页使用 ✅ — layout-table.html
+落地页 index.html 展示优化 (v3.8) — 去 tagline 尾缀「深色主题 · 中文优先」；「模板使用说明」→「在线说明」；`.cli-box` 单行截断+`title` 兜底（拷贝仍走 `data-copy` 全量命令）；`.features li` 去 `::marker` 只留 `::before`、单行截断；移动端 hero 边距 24→14px、卡片占满、竞品对比表横向滚动 ✅ — index.html
+CLI 短别名 `htmlgen` (v3.8) — `pyproject.toml [project.scripts]` 与 `install.sh` 同步注册（不用 `hg`：与 Mercurial 官方命令冲突） ✅ — pyproject.toml / install.sh
+说明性文档图表英文化 + 安装前置 (v3.8) — 5 份 guide 的 7 个数据流/结构块改纯英文（中文在等宽字体占 2 格导致框线错位，实测 3 块必然错位）；table/doc/knowledge/slide 四份 guide 的「快速开始」补 pip install / git clone / 直跑三选一 ✅ — demos/*-guide.md
 knowledge 模板 根页地图 + 统一搜索面板 (v3.6, 2026-11-23) — 标题点击回根页（复制路径迁 ⧉）+ 菜单地图表（列=页签/行=section）+ ⌘/Ctrl+K Spotlight 面板（标题/副标题/描述/全名/分组）+ **⌘F 归还原生查找**（撤销 v3.5 拦截）；4 产物重生成 + Selenium 15 例 + 静态守卫 2 例 ✅ — layout-knowledge.html
 localStorage try/catch + 类型校验 ✅ — layout-*.html
 path traversal 校验 (_safe_path) ✅ — scripts/company-report.py
