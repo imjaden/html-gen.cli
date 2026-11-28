@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.8+tpl0c03c5f3">
+<meta name="generator" content="html-gen v3.8+tpl87741509">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>雍正王朝 · 36计策</title>
@@ -800,9 +800,12 @@ pre code { background: none; padding: 0; }
     if (q) {
       var searchKeys = (OPTIONS && OPTIONS.searchFields) ||
         COLUMNS.filter(function(c){ return c.type !== 'actions' && c.type !== 'videos' && c.type !== 'image' && c.key; }).map(function(c){ return c.key; });
+      var colByKey = {};
+      COLUMNS.forEach(function(c) { colByKey[c.key] = c; });
       filtered = filtered.filter(function(row) {
         return searchKeys.some(function(k) {
-          return String(row[k] || '').toLowerCase().indexOf(q) !== -1;
+          // 走 plainCellText：escape:false 的 HTML 列按纯文本匹配，别让 href/标签串被搜到
+          return cellTextFor(colByKey[k], row[k]).toLowerCase().indexOf(q) !== -1;
         });
       });
     }
@@ -1147,10 +1150,22 @@ pre code { background: none; padding: 0; }
     if (typeof m === 'object') return String(m.alt || m.title || m.src || m.url || '');
     return String(m);
   }
-  // 搜索 / 排序 / 筛选 / CSV 的统一文本口径：媒体类型走 mediaTextValue，其余沿用 String(v)
+  // escape:false 的列存的是 HTML（如案例索引的标题链接），取「文本」时须剥标签 ——
+  // 否则分栏标题/CSV/搜索里会露出 `<a href=...>` 原文
+  function stripTagsText(s) {
+    var d = document.createElement('div');
+    d.innerHTML = String(s);
+    return (d.textContent || '').replace(/\s+/g, ' ').trim();
+  }
+  function plainCellText(col, v) {
+    var s = String(v === null || v === undefined ? '' : v);
+    if (col && col.escape === false && /<[a-z!\/]/i.test(s)) return stripTagsText(s);
+    return s;
+  }
+  // 搜索 / 排序 / 筛选 / CSV 的统一文本口径：媒体类型走 mediaTextValue，其余走 plainCellText
   function cellTextFor(col, v) {
     if (col && (col.type === 'image' || col.type === 'videos')) return mediaTextValue(v);
-    return String(v === null || v === undefined ? '' : v);
+    return plainCellText(col, v);
   }
   function imageCellHtml(v, col) {
     var src = mediaSrc(v);
@@ -1411,11 +1426,11 @@ pre code { background: none; padding: 0; }
   /* ── Modal Panel ── */
   function showModal(row) {
     var cols = visibleCols({requireKey: true, excludeActions: true});
-    var title = row[cols[0] && cols[0].key] || '详情';
+    var title = plainCellText(cols[0], row[cols[0] && cols[0].key] || '详情');
     var html = '<div style="position:relative"><button class="modal-close" onclick="closeModal()" style="position:sticky;top:0;float:right;">✕</button><h3>'+escapeHtml(String(title))+'</h3>';
     html += cols.map(function(c) {
       var v = row[c.key]; if (v === null || v === undefined) v = '';
-      return '<div class="modal-field"><span class="mf-label">'+escapeHtml(c.label)+'</span><span class="mf-value">'+escapeHtml(String(v))+'</span></div>';
+      return '<div class="modal-field"><span class="mf-label">'+escapeHtml(c.label)+'</span><span class="mf-value">'+splitValueHtml(c, v, false)+'</span></div>';
     }).join('');
     html += '</div>';
     document.getElementById('modalPanel').innerHTML = html;
@@ -1669,7 +1684,7 @@ pre code { background: none; padding: 0; }
       : '';
     header.innerHTML = '<button class="sp-nav" onclick="splitNav(-1)" title="上一个">▲</button>' +
       '<button class="sp-nav" onclick="splitNav(1)" title="下一个">▼</button>' +
-      ' ' + (titleCol ? escapeHtml(String(row[titleCol.key]||'')) : '详情') +
+      ' ' + (titleCol ? escapeHtml(plainCellText(titleCol, row[titleCol.key] || '')) : '详情') +
       fbBtn +
       '<button class="sp-close" onclick="closeSplit()">✕</button>';
 

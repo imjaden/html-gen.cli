@@ -1848,7 +1848,7 @@ CASE_TEMPLATE = {
     'doc-guide.html': '文档（模板B）', 'doc-features-demo.html': '文档（模板B）',
     'knowledge-guide.html': '知识库（模板C）', 'knowledge-demo.html': '知识库（模板C）',
     'slide-guide.html': '幻灯片（模板D）', 'slide-features-demo.html': '幻灯片（模板D）',
-    'cli-guide.html': '独立页',
+    'cli-guide.html': '文档（模板B）',
 }
 
 # CL048: 案例标题统一为「{X} 模板 · {中文名}[ · 功能演示]」，与首页 index.html 的

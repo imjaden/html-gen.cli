@@ -41,7 +41,7 @@
   "data": [
     {
       "标题": "<a href=\"cli-guide.html\" target=\"_blank\" rel=\"noopener\" onclick=\"event.stopPropagation()\">★ CLI · 使用说明</a>",
-      "模板": "独立页",
+      "模板": "文档（模板B）",
       "场景": "说明文档",
       "文档链接": "<a href=\"cli-guide.html\" target=\"_blank\" rel=\"noopener\">cli-guide.html ↗</a>"
     },

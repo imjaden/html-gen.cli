@@ -5,8 +5,8 @@
   "verified": true,
   "files": {
     "layout-table.html": {
-      "sha256": "0c03c5f356e78680d5926e580f2c47bb1be5c5f32d4a8ef78e604d5cf0a0e9d9",
-      "bytes": 113559,
+      "sha256": "877415092fc69f4006063e0bb2778d482bccb99ffd097932989d443518c1432f",
+      "bytes": 114343,
       "corner": false,
       "home": false
     },
@@ -45,32 +45,32 @@
       "home": false
     },
     "demos/demos-index.html": {
-      "sha256": "36d733ca8edb50720eb521cf4941788645301473e10cad069a9fee32813434b1",
-      "bytes": 128116,
+      "sha256": "e7e3c05f5970e88e64352f3728c88421040a5e28b02b67409ec196b276ec5289",
+      "bytes": 128910,
       "corner": false,
       "home": true
     },
     "demos/countries.html": {
-      "sha256": "77ded0288087b4fbf05a319c61bff270028246cf31b28f2cb60c518fd9fbe7a5",
-      "bytes": 258326,
+      "sha256": "25a2da839fb4f7505671a8c367ff2e40f5402e6f73515c6a480d8b23aa2deff6",
+      "bytes": 259110,
       "corner": true,
       "home": true
     },
     "demos/provinces.html": {
-      "sha256": "1a334eb2faaf909f4523ee457e2eb9d5f5534645fe7dda3106db011e6b5763d8",
-      "bytes": 135885,
+      "sha256": "f437933c1a78bce1bffb0c6a329cba3930445d47dbcfbbf907cef3c8780ca0ac",
+      "bytes": 136669,
       "corner": true,
       "home": false
     },
     "demos/table-features-demo.html": {
-      "sha256": "4416280f8c76b8c3217690580260b94fe6a0b18530a95833eb5e098256129726",
-      "bytes": 125917,
+      "sha256": "53cc218035558a4134e99ee77867b959806a3d77c6fd18f8b0930299aa77a37e",
+      "bytes": 126701,
       "corner": true,
       "home": false
     },
     "demos/hermes-profile-skills-list.html": {
-      "sha256": "bb85d99196ef1f500b1d9ed0826569bb39db26ca6c7e6ab319f1437d98521517",
-      "bytes": 174000,
+      "sha256": "9e1334740992c70d35c7eaa52386a0b1af825f2895c72c6ae1ab27ff14f33edb",
+      "bytes": 174784,
       "corner": true,
       "home": false
     },
@@ -249,50 +249,50 @@
       "home": false
     },
     "demos/drama/daming-strategy-table.html": {
-      "sha256": "0edae7896c602fbdc1dcf661de1c100d819543f8f2860ecf1eebcb221cae1d57",
-      "bytes": 133654,
+      "sha256": "122c60e8b3e0aa629958a00daeed365876689683cc577dae97ecdda14a72dfff",
+      "bytes": 134438,
       "corner": true,
       "home": false
     },
     "demos/drama/daming-timeline-table.html": {
-      "sha256": "8b27dd1ce4a7af446867ceccd279754bcddca7a976911e493ea8837267e1ad88",
-      "bytes": 127922,
+      "sha256": "c4e8b88245e086c6b8e45ab3c2a90fb11a2bd74b87ee16251debcda99a81e865",
+      "bytes": 128706,
       "corner": false,
       "home": false
     },
     "demos/drama/history-strategy-table.html": {
-      "sha256": "af26d081942d2c08deed68945cc17780a5f3c8c0aa97529c4e850af3a4f2a968",
-      "bytes": 159860,
+      "sha256": "b4e6983bb57353f2324670843170062ff11576e3cfd1c0a58074ff1f5f1f2ea4",
+      "bytes": 160644,
       "corner": true,
       "home": false
     },
     "demos/drama/history-timeline-table.html": {
-      "sha256": "847b35c01087d9eabd63c8cc159d57f9d31302e8de8529aa4d9bd5ee6c2608ea",
-      "bytes": 137380,
+      "sha256": "68266e99b291ffec38a2daacd85c4326e070b9a773bbe905e28f9c106d1c12bc",
+      "bytes": 138164,
       "corner": false,
       "home": false
     },
     "demos/drama/yongzheng-strategy-table.html": {
-      "sha256": "92cba8de875136dc8a90f014d008dc47690082de01e83b3da2aaeddbbc49de2c",
-      "bytes": 134473,
+      "sha256": "160bae72933e0a7ac1d92451bb02489d3a9ccb5978e7e426efc0c8f52f4e1ed7",
+      "bytes": 135257,
       "corner": true,
       "home": false
     },
     "demos/drama/yongzheng-timeline-table.html": {
-      "sha256": "a5da0d8f50ba4e38e94b41aad72b3293a67fb8a3dfd188faf4e24f615bf8d5c5",
-      "bytes": 127201,
+      "sha256": "5017d43131fc1776939ce4df131d43fa05f666c23fa1d1f3a61eed01d7876e94",
+      "bytes": 127985,
       "corner": false,
       "home": false
     },
     "demos/drama/zhuyuanzhang-strategy-table.html": {
-      "sha256": "2e17eff6b385c3448308414438426b52cbaa84e5e9c0affdeacfa29d237e844f",
-      "bytes": 133458,
+      "sha256": "eaa484cb1fe9619bbb8a376d1b0623c11ec8b4a175dc4f30146e289f70d5e43f",
+      "bytes": 134242,
       "corner": true,
       "home": false
     },
     "demos/drama/zhuyuanzhang-timeline-table.html": {
-      "sha256": "2d0a69b46f7cb9c560ef61b69387f27d58c27cd1699509402f13b52dffb19123",
-      "bytes": 124485,
+      "sha256": "1d0134699342cc87021c4d28b93246cbe33326585172ce6a63b99b0b62052392",
+      "bytes": 125269,
       "corner": false,
       "home": false
     }
