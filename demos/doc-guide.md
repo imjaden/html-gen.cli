@@ -35,16 +35,16 @@ Layer 3: html-gen.py → doc 子命令 (Markdown→HTML 渲染器)
 ### 数据流
 
 ```
-Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
-                 │                  ├── 自动 TOC
-                 │                  ├── 表格渲染
-                 │                  ├── 代码高亮
-                 │                  ├── 进度条
-                 │                  ├── callout 提示框
-                 │                  ├── 锚点链接
-                 │                  ├── 代码行号
-                 │                  └── 外链归档
-                 └── 元信息自动计算
+Markdown file ──→ html-gen doc ──→ single-file HTML
+                │                ├── auto TOC
+                │                ├── tables
+                │                ├── code highlight
+                │                ├── progress bar
+                │                ├── callouts
+                │                ├── anchor links
+                │                ├── code line numbers
+                │                └── external links
+                └── meta auto-computed
 ```
 
 ### 关键设计决策
@@ -144,6 +144,13 @@ Markdown 文件 ──→ html-gen doc ──→ 单文件 HTML
 ## 五、快速开始
 
 ```shell
+# 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli && cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑
+```
+
+```shell
 # 从 Markdown 生成文档
 html-gen doc -i report.md -o report.html
 
@@ -198,13 +205,13 @@ report.html?width=narrow
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [使用指南](usage-guide.html) | html-gen 完整使用说明 | usage-guide.html |
+| [使用指南](cli-guide.html) | html-gen 完整使用说明 | cli-guide.html |
 | [A 型 · 表格模板说明](table-guide.html) | 使用场景 · 方案设计 · 功能清单 | table-guide.html |
 | [B 型 · 文档模板说明](doc-guide.html) | 使用场景 · 方案设计 · URL 入参控制 | doc-guide.html |
-| [Markdown 语法规范](markdown-spec.html) | 支持的语法子集 · 规则 · 常见错误 | markdown-spec.html |
+| [Markdown 语法规范](doc-features-demo.html) | 支持的语法子集 · 规则 · 常见错误 | doc-features-demo.html |
 | [C 型 · 知识库模板说明](knowledge-guide.html) | 使用场景 · 方案设计 · 数据格式 | knowledge-guide.html |
 | [D 型 · 幻灯片模板说明](slide-guide.html) | 使用场景 · 方案设计 · 演示模式 | slide-guide.html |
-| [Slide 幻灯片版](slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-demo.html |
+| [Slide 幻灯片版](slide-features-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-features-demo.html |
 
 ---
 
@@ -217,7 +224,7 @@ report.html?width=narrow
 | **指令面** | `html-gen help doc`（`TEMPLATE_CONTRACT['doc']`：含 URL 状态段） |
 | **Skills 面** | `skills/html-gen-doc/SKILL.md`、`skills/html-gen/SKILL.md`（B 型段） |
 | **文档面** | 本文件（→ `doc-guide.html`）、`documents/templates.md`、`features.md` |
-| **案例面** | `demos/{usage-guide,doc-guide,table-guide,knowledge-guide,markdown-spec}.html` ← 同名 `.md`（`demo --rebuild`） |
+| **案例面** | `demos/{cli-guide,doc-guide,table-guide,knowledge-guide,doc-features-demo}.html` ← 同名 `.md`（`demo --rebuild`） |
 | **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`、`tests/test_doc_sidebar.py`、`tests/test_doc_bare.py`、`tests/test_doc_width.py`、`tests/test_heading_levels.py`、`tests/test_word_count.py`、`tests/test_link_safety.py` |
 | **基线/门禁面** | `scripts/baseline.py`（`DOC_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
 | **打包面** | `src/html_gen/layout-doc.html` → `scripts/build-package.py`；`prompts/` 站由 `html-gen prompt --site` 出（doc 页模板） |

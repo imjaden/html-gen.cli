@@ -34,26 +34,26 @@ Layer 3: html-gen.py → knowledge 子命令 (JSON 数据注入)
 ### 数据流
 
 ```
-JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
-                  │                       ├── 顶部标签栏
-  (可选)          │                       ├── 左侧章节列表
-  groups.json ────┤                       ├── 右侧内容面板
-                  │                       └── 欢迎面板
-                  └── 自动推导类目分组
+JSON data ─────→ html-gen knowledge ──→ single-file HTML
+                │                       ├── top tab bar
+(optional)      │                       ├── left chapter list
+groups.json ────┤                       ├── right content pane
+                │                       └── welcome panel
+                └── categories auto-derived
 ```
 
 ### 界面结构
 
 ```
-┌─ 顶部标签栏 ─────────────────────────────────────────────────┐
-│  [技能]  [工具]  [框架]  [最佳实践]                           │
-├─ 左侧章节 ──────────┬─ 右侧内容 ─────────────────────────────┤
-│  ▸ Hermes Agent     │  # 标题                                │
-│  ▸ OpenClaw         │                                        │
-│  ▸ Claude Code      │  内联内容 / iframe / 欢迎面板          │
-│  ▸ Codex CLI        │                                        │
-│  ▸ OpenCode         │                                        │
-└──────────────────────┴────────────────────────────────────────┘
+┌─ Top tab bar ────────────────────────────────────────────────────┐
+│  [Skills]  [Tools]  [Frameworks]  [Best Practices]               │
+├────────────────────┬─────────────────────────────────────────────┤
+│  ▸ Hermes Agent    │  # Title                                    │
+│  ▸ OpenClaw        │                                             │
+│  ▸ Claude Code     │  inline content / iframe / welcome panel    │
+│  ▸ Codex CLI       │                                             │
+│  ▸ OpenCode        │                                             │
+└────────────────────┴─────────────────────────────────────────────┘
 ```
 
 ### 关键设计决策
@@ -131,6 +131,13 @@ JSON 数据文件 ──→ html-gen knowledge ──→ 单文件 HTML
 ---
 
 ## 五、快速开始
+
+```shell
+# 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli && cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑
+```
 
 ```shell
 # 最简单的启动

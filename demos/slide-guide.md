@@ -26,17 +26,17 @@ D 型与 B 型共用同一 Markdown 渲染器，区别在于排版与交互：
 ### 架构
 
 ```
-Layer 1: style-guide.css (CSS 变量 + 组件基座)
-Layer 2: layout-slide.html (模板骨架)
-Layer 3: html-gen.py → slide 子命令 (Markdown 注入)
+Layer 1: style-guide.css (CSS variables + component base)
+Layer 2: layout-slide.html (template skeleton)
+Layer 3: html-gen.py → slide subcommand (Markdown injection)
 ```
 
 ### 分页规则
 
 ```
-# 标题          → 封面页（h1，含 slide-cover + 页数统计）
-## 章节         → 每页一个 h2（分页单元）
-### 子标题       → 页内 H3 小节（默认隐藏，点击展开）
+# Title        → cover page (h1; slide-cover + page counter)
+## Chapter     → one page per h2 (page unit)
+### Subheading → in-page H3 section (collapsed by default)
 ```
 
 ### 关键设计决策
@@ -76,6 +76,13 @@ Layer 3: html-gen.py → slide 子命令 (Markdown 注入)
 ---
 
 ## 四、快速开始
+
+```shell
+# 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli && cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑
+```
 
 ```shell
 # 从 Markdown 生成幻灯片
@@ -119,7 +126,7 @@ html-gen slide -h
 
 | 案例 | 说明 | 文件 |
 |:---|:---|:---|
-| [Slide 幻灯片版](slide-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-demo.html |
+| [Slide 幻灯片版](slide-features-demo.html) | h2 分页 · 键盘翻页 · 圆点导航 · 全屏演示 | slide-features-demo.html |
 
 ---
 
@@ -132,7 +139,7 @@ html-gen slide -h
 | **指令面** | `html-gen help slide`（`TEMPLATE_CONTRACT['slide']`） |
 | **Skills 面** | `skills/html-gen-slide/SKILL.md`、`skills/html-gen/SKILL.md`（D 型段） |
 | **文档面** | 本文件（→ `slide-guide.html`）、`documents/templates.md`、`features.md` |
-| **案例面** | `demos/slide-guide.html`（← `slide-guide.md`，`demo --rebuild`）、`demos/slide-demo.html`（手写页，无 md 源） |
+| **案例面** | `demos/slide-guide.html`（← `slide-guide.md`，`demo --rebuild`）、`demos/slide-features-demo.html`（手写页，无 md 源） |
 | **测试面** | `tests/test_help_contract.py`、`tests/test_templates.py`（slide 段）、`tests/test_slide_h3_toggle.py` |
 | **基线/门禁面** | `scripts/baseline.py`（`SLIDE_PRODUCTS`）、`data/_render-baseline.json`、`documents/docs-index.md` |
 | **打包面** | `src/html_gen/layout-slide.html` → `scripts/build-package.py` |

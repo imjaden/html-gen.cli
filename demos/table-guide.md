@@ -35,11 +35,11 @@ Layer 3: html-gen.py → table 子命令 (数据注入)
 ### 数据流
 
 ```
-JSON 文件 ──→ html-gen table ──→ 单文件 HTML
-             │                    ├── 搜索
-             │                    ├── 排序
-             │                    └── 分页
-             └── 列定义自动推导
+JSON file ──→ html-gen table ──→ single-file HTML
+            │                  ├── search
+            │                  ├── sort
+            │                  └── pagination
+            └── columns auto-derived
 ```
 
 ### 关键设计决策
@@ -128,6 +128,13 @@ JSON 文件 ──→ html-gen table ──→ 单文件 HTML
 ---
 
 ## 五、快速开始
+
+```shell
+# 安装（三选一）
+pip install html-gen-cli               # PyPI 包，命令 html-gen（短别名 htmlgen）
+git clone https://github.com/imjaden/html-gen.cli && cd html-gen.cli   # 源码方式
+python3 html-gen.py version            # 零依赖：不装也能直跑
+```
 
 ```shell
 # 准备数据
