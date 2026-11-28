@@ -1,4 +1,4 @@
-"""Selenium test: drama-knowledge.html — 以剧读史影视历史知识库 (v2: section-as-menu)."""
+"""Selenium test: drama.html — 以剧读史影视历史知识库 (v2: section-as-menu)."""
 import time, unittest
 from pathlib import Path
 
@@ -10,7 +10,7 @@ from selenium.webdriver.chrome.options import Options
 from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'drama-knowledge.html'
+DEMO = PROJECT / 'demos' / 'drama.html'
 
 
 class TestDramaKnowledge(unittest.TestCase):

@@ -6,7 +6,7 @@
 3. options.defaultSort   → 加载即按该列排序（表头箭头点亮; 数值列按起始年 + 稳定序）
 
 覆盖四张影视时间轴（daming / zhuyuanzhang / yongzheng / history）
-+ 未配置页 countries-table 的默认行为回归（分享按钮仍在、无高亮、无强制排序）。
++ 未配置页 countries 的默认行为回归（分享按钮仍在、无高亮、无强制排序）。
 """
 import json
 import subprocess
@@ -255,7 +255,7 @@ class TestTableDefaultState(unittest.TestCase):
 
     def test_10_legacy_page_unaffected(self):
         """未配置默认态的既有表页（countries）：分享按钮仍在、无 hl-row、无默认排序。"""
-        self._load(PROJECT / 'demos' / 'countries-table.html')
+        self._load(PROJECT / 'demos' / 'countries.html')
         self.assertTrue(self.driver.find_elements(By.ID, 'shareBtn'),
                         'countries 表分享按钮应仍在')
         self.assertEqual(len(self._hl_rows()), 0, 'countries 表不应有常驻高亮')

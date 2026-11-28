@@ -73,7 +73,7 @@ class TestUrlState(unittest.TestCase):
     def setUp(self):
         self.driver.set_window_size(1280, 800)
         # 先加载一页清掉 localStorage（列可见性等状态跨用例隔离）
-        self.driver.get('file://' + str(PROJECT / 'demos' / 'countries-table.html'))
+        self.driver.get('file://' + str(PROJECT / 'demos' / 'countries.html'))
         self.driver.execute_script("localStorage.clear();")
         self._tmp_files = []
 

@@ -61,7 +61,7 @@ with open(out, 'w', encoding='utf-8') as f:
 YAML_TEMPLATE = """\
 target:
 - data: data/_countries-data.json
-- html: demos/countries-table.html
+- html: demos/countries.html
 
 countries:
 {countries}
@@ -131,7 +131,7 @@ class SyncVideosTestBase(unittest.TestCase):
     def snapshot(self):
         """(mtime_ns, 内容) 快照，用于零写盘断言。"""
         out = {}
-        for name in ('data/_countries-data.json', 'input.yaml', 'demos/countries-table.html'):
+        for name in ('data/_countries-data.json', 'input.yaml', 'demos/countries.html'):
             p = self.tmp / name
             out[name] = (p.stat().st_mtime_ns, p.read_bytes()) if p.exists() else None
         return out
@@ -302,7 +302,7 @@ class TestSyncVideos(SyncVideosTestBase):
         yaml_doc = self.read_yaml()
         # target 段保留
         self.assertEqual(yaml_doc['target'], [{'data': 'data/_countries-data.json'},
-                                              {'html': 'demos/countries-table.html'}])
+                                              {'html': 'demos/countries.html'}])
         # countries 段 == json 全部 videos 展平（顺序、字段一致；platform 写现值）
         expected = []
         for row in json_doc['data']:
@@ -371,7 +371,7 @@ class TestSyncVideos(SyncVideosTestBase):
         )
         yaml_path = self.setup_fixture(make_base_data(), countries)
         # 预置旧产物：含 github-corner（HG-SEC-014 demo 页规范），E 重建应提取并透传
-        old_html = self.tmp / 'demos' / 'countries-table.html'
+        old_html = self.tmp / 'demos' / 'countries.html'
         old_html.parent.mkdir(parents=True, exist_ok=True)
         old_html.write_text(
             '<html><head><title>测试国家表</title></head><body>'
@@ -380,8 +380,8 @@ class TestSyncVideos(SyncVideosTestBase):
             encoding='utf-8')
         r = self.run_script(yaml_path, '--apply')
         self.assertEqual(r.returncode, 0, r.stdout + r.stderr)
-        self.assertIn('[重建] demos/countries-table.html', r.stdout)
-        html = (self.tmp / 'demos' / 'countries-table.html').read_text(encoding='utf-8')
+        self.assertIn('[重建] demos/countries.html', r.stdout)
+        html = (self.tmp / 'demos' / 'countries.html').read_text(encoding='utf-8')
         self.assertIn('<title>测试国家表</title>', html)
         self.assertIn('缅甸-散装缅甸', html)
         self.assertIn('中东为何永不团结', html)
@@ -412,7 +412,7 @@ class TestSyncVideos(SyncVideosTestBase):
         self.assertRegex(r.stdout,
                          r'\[执行\].*--favicon https://www\.jaden\.tech/static/img/favicon\.png')
         # 重建产物仍含新视频（stub 忽略未知参数, 行为不变）
-        html = (self.tmp / 'demos' / 'countries-table.html').read_text(encoding='utf-8')
+        html = (self.tmp / 'demos' / 'countries.html').read_text(encoding='utf-8')
         self.assertIn('缅甸-散装缅甸', html)
 
     def test_12_empty_video_lists_and_mutex(self):
@@ -649,7 +649,7 @@ class TestSyncVideos(SyncVideosTestBase):
         yaml_path.write_text(
             'target:\n'
             '- data: data/_countries-data.json\n'
-            '- html: demos/countries-table.html\n'
+            '- html: demos/countries.html\n'
             '- rebuild:\n'
             '    github_url: https://github.com/other/repo\n'
             '    home_url: https://other.example.com/\n'

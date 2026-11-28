@@ -13,7 +13,7 @@ body:
     attributes:
       label: 页面
       description: 请勿修改（由页面自动填充）
-      placeholder: demos/countries-table.html
+      placeholder: demos/countries.html
     validations:
       required: true
   - type: input

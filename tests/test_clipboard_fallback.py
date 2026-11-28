@@ -45,7 +45,7 @@ IMAGE_CLIPBOARD_EXEMPT = {'demos/slimdown/index.html'}   # v1.4：plan.html → 
 DOC_PAGE = PROJECT / 'demos' / 'usage-guide.html'
 SLIDE_PAGE = PROJECT / 'demos' / 'slide-demo.html'
 KW_PAGE = PROJECT / 'demos' / 'knowledge-demo.html'
-TABLE_PAGE = PROJECT / 'demos' / 'countries-table.html'
+TABLE_PAGE = PROJECT / 'demos' / 'countries.html'
 
 # ── 假不安全上下文夹具（clipboard 不存在 + isSecureContext=false）──
 FIX_INSECURE = """

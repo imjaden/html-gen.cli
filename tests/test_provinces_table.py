@@ -1,4 +1,4 @@
-"""Selenium test: provinces-table.html — 中国省份速查表（34 省级行政区 + 国家双向关联）。
+"""Selenium test: provinces.html — 中国省份速查表（34 省级行政区 + 国家双向关联）。
 
 覆盖 T1-T10（参照 test_countries_table 模式）：
   T1 表头 11 列 + 序号列（含 width）
@@ -28,8 +28,8 @@ from selenium.webdriver.chrome.options import Options
 from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'provinces-table.html'
-COUNTRIES_DEMO = PROJECT / 'demos' / 'countries-table.html'
+DEMO = PROJECT / 'demos' / 'provinces.html'
+COUNTRIES_DEMO = PROJECT / 'demos' / 'countries.html'
 DATA_JSON = PROJECT / 'data' / '_provinces-data.json'
 
 

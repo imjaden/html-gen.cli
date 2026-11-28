@@ -134,7 +134,7 @@ class TestRenderBaseline(unittest.TestCase):
     def test_07_update_refuses_when_products_stale(self):
         """产物落后于模板时 --update 必须拒绝（否则把漂移拍成绿）；--force 才越权且标 verified=false。"""
         tmp = self._temp_root()
-        prod = tmp / 'demos' / 'countries-table.html'
+        prod = tmp / 'demos' / 'countries.html'
         prod.parent.mkdir(parents=True, exist_ok=True)
         prod.write_text('<html><body><h1>旧产物</h1></body></html>', encoding='utf-8')
         (tmp / 'data').mkdir(exist_ok=True)
@@ -214,12 +214,12 @@ class TestRenderBaseline(unittest.TestCase):
         (tmp / 'data').mkdir(exist_ok=True)
         shutil.copy2(ROOT / 'data' / '_countries-data.json', tmp / 'data' / '_countries-data.json')
 
-        prod = tmp / 'demos' / 'countries-table.html'
+        prod = tmp / 'demos' / 'countries.html'
         prod.parent.mkdir(parents=True, exist_ok=True)
 
         def render(with_corner):
             cmd = [sys.executable, 'html-gen.py', 'table', '-d', 'data/_countries-data.json',
-                   '-o', 'demos/countries-table.html', '--title', '全球国家速查表', '--quiet']
+                   '-o', 'demos/countries.html', '--title', '全球国家速查表', '--quiet']
             if with_corner:
                 cmd.append('--github-url=https://github.com/imjaden/html-gen.cli')
             r = subprocess.run(cmd, cwd=str(tmp), capture_output=True, text=True)
@@ -230,7 +230,7 @@ class TestRenderBaseline(unittest.TestCase):
         r = run(['--update', '--quiet'], tmp)
         self.assertEqual(r.returncode, 0, f'首次建基线应成功:\n{r.stdout}{r.stderr}')
         base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
-        self.assertTrue(base['files']['demos/countries-table.html']['corner'])
+        self.assertTrue(base['files']['demos/countries.html']['corner'])
         self.assertTrue(base['verified'], 'verify 绿 + 无 drops ⇒ verified 必须为 True')
         sha_before = (tmp / BASELINE_REL).read_bytes()
 
@@ -261,7 +261,7 @@ class TestRenderBaseline(unittest.TestCase):
         r = run(['--update', '--quiet', '--force'], tmp)
         self.assertEqual(r.returncode, 0, f'--force 应可越权重建:\n{r.stdout}{r.stderr}')
         base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
-        self.assertFalse(base['files']['demos/countries-table.html']['corner'])
+        self.assertFalse(base['files']['demos/countries.html']['corner'])
         self.assertFalse(base['verified'], '有参数回归时 --force 不得写 verified=true')
 
         # 6) ★ HG-SEC-249 回归：越权建立后，普通 --update 一律拒（否则一次 force 就洗白）
@@ -270,7 +270,7 @@ class TestRenderBaseline(unittest.TestCase):
         self.assertIn('越权建立', r.stderr)
         base = json.loads((tmp / BASELINE_REL).read_text(encoding='utf-8'))
         self.assertFalse(base['verified'], '拒绝路径不得把 verified 翻回 true')
-        self.assertFalse(base['files']['demos/countries-table.html']['corner'])
+        self.assertFalse(base['files']['demos/countries.html']['corner'])
 
         # 7) --check 仍绿（钉子一致），但必须留痕
         r = run(['--check'], tmp)

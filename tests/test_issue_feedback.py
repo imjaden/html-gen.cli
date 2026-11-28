@@ -47,7 +47,7 @@ FIXTURE = {
 
 ISSUE_BODY = """### 页面
 
-demos/countries-table.html
+demos/countries.html
 
 ### 数据集
 
@@ -222,7 +222,7 @@ class TestIssueSyncScript(unittest.TestCase):
         fields = self.mod.parse_issue_body(ISSUE_BODY, self.mod.yaml.safe_load(
             (PROJECT / 'scripts' / 'feedback-targets.yaml').read_text(encoding='utf-8')
         )['targets']['countries']['parse_fields'])
-        self.assertEqual(fields['page'], 'demos/countries-table.html')
+        self.assertEqual(fields['page'], 'demos/countries.html')
         self.assertEqual(fields['dataset'], 'countries')
         self.assertEqual(fields['row'], '伊朗')
         self.assertEqual(fields['row_en'], 'Iran')
@@ -234,7 +234,7 @@ class TestIssueSyncScript(unittest.TestCase):
 
     def test_12_stray_section_merged(self):
         """HG-SEC-115: 值内 '### <未知>' 段并入上一字段，不丢失也不新建字段。"""
-        body = ("### 页面\n\ndemos/countries-table.html\n\n### 数据集\n\ncountries\n\n"
+        body = ("### 页面\n\ndemos/countries.html\n\n### 数据集\n\ncountries\n\n"
                 "### 行标识\n\n伊朗\n\n### 字段\n\npop_wan\n\n### 建议值\n\n9200\n\n"
                 "### 来源\n\nhttps://example.org/s\n\n### 补充说明\n\n第一行\n\n"
                 "### 备注手写\n\n第二行\n")
@@ -267,7 +267,7 @@ class TestIssueSyncScript(unittest.TestCase):
     def _plan(self, fields_patch, created='2026-09-10T00:00:00Z', target=None):
         t = target or self._target()
         rows = self._rows()
-        fields = dict(page='demos/countries-table.html', dataset='countries', row='伊朗',
+        fields = dict(page='demos/countries.html', dataset='countries', row='伊朗',
                       row_en='Iran', field='pop_wan', current='9157', suggested='9200',
                       source='s', note='')
         fields.update(fields_patch)
@@ -289,7 +289,7 @@ class TestIssueSyncScript(unittest.TestCase):
         self.assertEqual(actions[0]['old'], 9157)
 
     def test_13_page_mismatch(self):
-        actions, skips = self._plan({'page': 'demos/provinces-table.html'})
+        actions, skips = self._plan({'page': 'demos/provinces.html'})
         self.assertEqual(actions, [])
         self.assertIn('page 不匹配', skips[0][1])
 
@@ -319,7 +319,7 @@ class TestIssueSyncScript(unittest.TestCase):
         rows = self._rows()
         rows[1]['country_zh'] = '伊朗'          # 与首行 country_zh 重复
         idx = self.mod.build_row_index(rows, t)
-        fields = {'page': 'demos/countries-table.html', 'dataset': 'countries', 'row': '伊朗',
+        fields = {'page': 'demos/countries.html', 'dataset': 'countries', 'row': '伊朗',
                   'row_en': 'Iran', 'field': 'pop_wan', 'current': '9157', 'suggested': '9200',
                   'source': 's', 'note': ''}
         real = self.mod.parse_issue_body          # HG-SEC-132: patch 时捕获，避免跨用例恢复失真
@@ -344,7 +344,7 @@ class TestIssueSyncScript(unittest.TestCase):
         t = self._target()
         rows = self._rows()
         idx = self.mod.build_row_index(rows, t)
-        base = {'page': 'demos/countries-table.html', 'dataset': 'countries', 'row': '伊朗',
+        base = {'page': 'demos/countries.html', 'dataset': 'countries', 'row': '伊朗',
                 'row_en': 'Iran', 'field': 'pop_wan', 'current': '9157', 'source': 's', 'note': ''}
         issues = [
             {'number': 10, 'body': dict(base, suggested='9200'), 'createdAt': '2026-09-10T00:00:00Z'},
@@ -466,8 +466,8 @@ class TestIssueSyncScript(unittest.TestCase):
         cfg = tmp / 'cfg.yaml'
         cfg.write_text(json.dumps({'targets': {'countries': {
             'repo': 'o/r', 'label': 'data-fix', 'dataset': 'countries',
-            'page': 'demos/countries-table.html', 'data': 'data/d.json',
-            'html': 'demos/countries-table.html', 'key_field': 'country_zh',
+            'page': 'demos/countries.html', 'data': 'data/d.json',
+            'html': 'demos/countries.html', 'key_field': 'country_zh',
             'alt_key': 'country_en', 'editable': ['pop_wan', 'note'],
             'protected': ['videos'], 'types': {'pop_wan': 'number'},
             'parse_fields': {'page': '页面', 'dataset': '数据集', 'row': '行标识',
@@ -642,7 +642,7 @@ class TestIssueSyncScript(unittest.TestCase):
             self.assertEqual(rc, 0)
             self.assertIn('commit', calls)
             title, body, paths = calls['commit']
-            self.assertEqual(paths, ['data/d.json', 'demos/countries-table.html'])
+            self.assertEqual(paths, ['data/d.json', 'demos/countries.html'])
             self.assertIn('本地提交 `abc1234`（待推送）', calls['comment_body'])
             self.assertNotIn('提交由维护者完成', calls['comment_body'])
         finally:
@@ -658,7 +658,7 @@ class TestIssueSyncScript(unittest.TestCase):
             self.assertEqual(title, 'data@countries: apply #7 pop_wan 更新 (HTML-GEN-CL009)')
             self.assertIn('#7 伊朗.pop_wan:', body)
             self.assertIn('→ 9200', body)
-            self.assertIn('demos/countries-table.html', body)
+            self.assertIn('demos/countries.html', body)
         finally:
             shutil.rmtree(tmp, ignore_errors=True)
 
@@ -736,7 +736,7 @@ class TestIssueSyncScript(unittest.TestCase):
                 {'number': 7, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
                  'body': ISSUE_BODY, 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]},
                 {'number': 8, 'title': 't', 'url': '', 'createdAt': '2026-09-10T00:00:00Z',
-                 'body': '### 页面\n\ndemos/countries-table.html\n\n### 字段\n\ncountry_zh\n\n'
+                 'body': '### 页面\n\ndemos/countries.html\n\n### 字段\n\ncountry_zh\n\n'
                          '### 建议值\n\nX\n', 'state': 'OPEN', 'labels': [{'name': 'data-fix'}]}], None)
             mod.rebuild = lambda target: 0
             mod.gh_comment = lambda *a, **k: True

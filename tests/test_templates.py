@@ -382,9 +382,9 @@ class TestTemplateStaticGuards(unittest.TestCase):
     """静态守卫（CL044 → CL047 改写）：模板级能力不得被重生成或后续改动悄悄抹掉。"""
 
     SPOT_MARKERS = ('toggleKwSpot', 'kwSpotOverlay', 'kwGoRoot', 'kw-map-table', 'escHtml')
-    KB_PRODUCTS = ('demos/knowledge-demo.html', 'demos/drama-knowledge.html',
-                   'demos/chaitin-business-analysis.html',
-                   'demos/cloudwise-business-analysis.html')
+    KB_PRODUCTS = ('demos/knowledge-demo.html', 'demos/drama.html',
+                   'demos/chaitin.html',
+                   'demos/cloudwise.html')
 
     def test_knowledge_spot_panel_in_template(self):
         tmpl = (PROJECT / 'layout-knowledge.html').read_text(encoding='utf-8')

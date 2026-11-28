@@ -18,8 +18,8 @@ from selenium.webdriver.chrome.options import Options
 from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'chaitin-business-analysis.html'
-DEMO_DESC = PROJECT / 'demos' / 'cloudwise-business-analysis.html'   # 有 desc 的数据源
+DEMO = PROJECT / 'demos' / 'chaitin.html'
+DEMO_DESC = PROJECT / 'demos' / 'cloudwise.html'   # 有 desc 的数据源
 
 
 def _items_of(html_path):

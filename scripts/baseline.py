@@ -45,8 +45,8 @@ SUBSET = [
     'index.html',
     'demos/index.html',
     'demos/demos-index.html',
-    'demos/countries-table.html',
-    'demos/provinces-table.html',
+    'demos/countries.html',
+    'demos/provinces.html',
     'demos/table-features-demo.html',
     'demos/table-actions-demo.html',
     'demos/hermes-profile-skills-list.html',
@@ -57,16 +57,16 @@ SUBSET = [
     'demos/knowledge-guide.html',
     'demos/markdown-spec.html',
     'demos/knowledge-demo.html',
-    'demos/drama-knowledge.html',
-    'demos/chaitin-business-analysis.html',
-    'demos/cloudwise-business-analysis.html',
+    'demos/drama.html',
+    'demos/chaitin.html',
+    'demos/cloudwise.html',
 ]
 
 # --verify 作业表: 产物 → 数据源。title/subtitle/corner/home 全部从产物回收，
 # 不在脚本里维护第二份参数副本（参数漂移是 CL002 FIND-002 的老坑）。
 TABLE_PRODUCTS = {
-    'demos/countries-table.html': 'data/_countries-data.json',
-    'demos/provinces-table.html': 'data/_provinces-data.json',
+    'demos/countries.html': 'data/_countries-data.json',
+    'demos/provinces.html': 'data/_provinces-data.json',
     'demos/table-features-demo.html': 'data/_table-features-demo.json',
     'demos/table-actions-demo.html': 'data/_table-actions-demo.json',
     'demos/hermes-profile-skills-list.html': 'data/_skills-table-config.json',
@@ -84,9 +84,9 @@ DOC_PRODUCTS = [
 # 它是生成后注入层产物（rx-patch + canonical + w-note），CLI 直渲 != 产物。
 KB_PRODUCTS = {
     'demos/knowledge-demo.html': ('data/_demo-kb-data.json', 'data/_demo-groups.json'),
-    'demos/drama-knowledge.html': ('data/_drama-kb-data.json', 'data/_drama-groups.json'),
-    'demos/chaitin-business-analysis.html': ('data/_chaitin-kb-data.json', 'data/_chaitin-groups.json'),
-    'demos/cloudwise-business-analysis.html': ('data/_cloudwise-kb-data.json', 'data/_cloudwise-groups.json'),
+    'demos/drama.html': ('data/_drama-kb-data.json', 'data/_drama-groups.json'),
+    'demos/chaitin.html': ('data/_chaitin-kb-data.json', 'data/_chaitin-groups.json'),
+    'demos/cloudwise.html': ('data/_cloudwise-kb-data.json', 'data/_cloudwise-groups.json'),
 }
 # 不可判定型：就地重建 / 手写页 / 生成后注入 ⇒ verify 输出里逐条标注 skip 与理由（不静默漏过）
 SKIP_PRODUCTS = {
@@ -112,6 +112,12 @@ CASE_TABLE_PRODUCTS = {
     'demos/drama/zhuyuanzhang-strategy-table.html': 'data/_drama-table-zhuyuanzhang-strategy.json',
 }
 CASE_SKIP = {
+    # CL048 改名后的旧路径跳转桩（demos/<旧名>.html 内含 '<!-- html-gen:alias auto -->'）
+    'demos/chaitin-business-analysis.html': '旧路径跳转桩 → chaitin.html（改名后保留外链兼容）',
+    'demos/cloudwise-business-analysis.html': '旧路径跳转桩 → cloudwise.html',
+    'demos/drama-knowledge.html': '旧路径跳转桩 → drama.html',
+    'demos/countries-table.html': '旧路径跳转桩 → countries.html',
+    'demos/provinces-table.html': '旧路径跳转桩 → provinces.html',
     'demos/chaitin/': 'custom 手写页（stat-box/card），无模板也无单源 JSON',
     'demos/slimdown/': '自建构建链 scripts/build-slimdown.py（非 CLI 直渲；重跑逐字节可复现，已实测 plan/archive 零差异）',
     'demos/the-price-you-choose/': 'doc 页 md 源不在本仓（产物内只有 basename）；01-08 为旧 slug 跳转桩',

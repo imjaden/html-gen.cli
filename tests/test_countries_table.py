@@ -1,4 +1,4 @@
-"""Selenium test: countries-table.html — pills 标签筛选、tab 优先级、quickFilter 关闭、
+"""Selenium test: countries.html — pills 标签筛选、tab 优先级、quickFilter 关闭、
 定位 actions、国家列 split 详情（民族/信仰）、pageSize 50、tabs 计数."""
 import time, unittest
 from pathlib import Path
@@ -11,7 +11,7 @@ from selenium.webdriver.chrome.options import Options
 from conftest import chromedriver_service
 
 PROJECT = Path(__file__).resolve().parent.parent
-DEMO = PROJECT / 'demos' / 'countries-table.html'
+DEMO = PROJECT / 'demos' / 'countries.html'
 
 
 class TestCountriesTable(unittest.TestCase):

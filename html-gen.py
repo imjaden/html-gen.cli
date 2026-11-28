@@ -12,8 +12,8 @@ Layer 3: 将 JSON/Markdown 注入模板，输出单文件 HTML
 import html, json, re, sys, os, time, argparse, types, unicodedata, hashlib
 from pathlib import Path
 
-__version__ = "3.6"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
-__release_date__ = "2026-11-23"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
+__version__ = "3.7"              # CL016: 版本号 (格式 \d+\.\d+) —— 唯一来源(勿在 docstring 写死)
+__release_date__ = "2026-11-28"  # CL016: 发版日期 (格式 YYYY-MM-DD, 与版本同步)
 
 SKILLS_DIR = Path(__file__).resolve().parent
 TEMPLATE_DOC   = SKILLS_DIR / 'layout-doc.html'
@@ -990,6 +990,7 @@ TEMPLATE_CONTRACT = {
                 ('splitGrid', '分栏详情声明式行布局 {grid:[[key | {key,span:"full"|N} | "*"]], hide:[key], skipEmpty:bool}; catch-all "*" 展开剩余列且空集零节点; 缺省无 = 扁平自动填充', ''),
                 ('modalRenderer', '自定义模态框渲染器 (如 skills 结构化详情)', ''),
                 ('defaultFilter', '初始筛选 {key,value,mode} 加载后自动按该列筛选', ''),
+                ('filterBar', '顶部筛选条 {column,allLabel,persist}: 渲染「所有 + 该列各值(带计数)」chips, 点击即按该列精确筛选, 选中态存 localStorage(html-gen:table:filter)', ''),
                 ('defaultSort', '初始排序 {key,asc} 加载即按该列排序 (asc 缺省 true; 缺省保持数据原序)', ''),
                 ('highlight', '常驻行高亮 {key,values,mode} 命中行的 row 加 hl-row 类 (mode 缺省 exact, contains 按标签切分匹配; 不筛选)', ''),
                 ('share', '右上角分享按钮 (↗️ 拷贝带 URL 状态的链接; false 不渲染)', 'true'),
@@ -1749,9 +1750,9 @@ GUIDE_MAP = [
 # demos/ 使用案例 (badge 案例; cli 组无案例维, G1b-1)
 CASE_MAP = [
     # table
-    {'file': 'countries-table.html',          'group': 'table',     'section': '使用案例',
+    {'file': 'countries.html',          'group': 'table',     'section': '使用案例',
      'title': '全球国家速查表',               'desc': '全球 195 国速查表 (A 型)'},
-    {'file': 'provinces-table.html',          'group': 'table',     'section': '使用案例',
+    {'file': 'provinces.html',          'group': 'table',     'section': '使用案例',
      'title': '中国省份速查表',               'desc': '中国 34 省速查表 (A 型)'},
     {'file': 'table-features-demo.html',      'group': 'table',     'section': '使用案例',
      'title': '表格功能全演示',               'desc': '表格功能全演示 (A 型)'},
@@ -1765,11 +1766,11 @@ CASE_MAP = [
     {'file': 'chaitin/business-model.html',   'group': 'doc',       'section': '使用案例',
      'title': '长亭商业模式',                 'desc': '长亭商业模式 (B 型内容页)'},
     # knowledge
-    {'file': 'drama-knowledge.html',          'group': 'knowledge', 'section': '使用案例',
+    {'file': 'drama.html',          'group': 'knowledge', 'section': '使用案例',
      'title': '以剧读史知识库',               'desc': '以剧读史影视历史知识库 (C 型)'},
-    {'file': 'chaitin-business-analysis.html', 'group': 'knowledge', 'section': '使用案例',
+    {'file': 'chaitin.html', 'group': 'knowledge', 'section': '使用案例',
      'title': '长亭商业分析',                 'desc': '长亭科技商业分析知识库 (C 型)'},
-    {'file': 'cloudwise-business-analysis.html', 'group': 'knowledge', 'section': '使用案例',
+    {'file': 'cloudwise.html', 'group': 'knowledge', 'section': '使用案例',
      'title': '云智慧商业分析',               'desc': '云智慧商业分析知识库 (C 型)'},
     {'file': 'knowledge-demo.html',           'group': 'knowledge', 'section': '使用案例',
      'title': '知识库功能演示',               'desc': '知识库功能演示 (C 型)'},
@@ -1777,6 +1778,27 @@ CASE_MAP = [
     {'file': 'slide-demo.html',               'group': 'slide',     'section': '使用案例',
      'title': '幻灯片演示',                   'desc': 'D 型幻灯片演示'},
 ]
+
+
+# CL048: 案例索引（data/_demos-data.json / demos-index.html）的排除集与「场景」标签
+CASE_INDEX_SKIP = {
+    'slimdown/plan.html': '已迁目录首页的跳转桩（516B）',
+    'demos-index.html': '索引页自身，不是案例',
+    'chaitin/menu-design.html': 'chaitin 知识库的引用子页（价值在 chaitin 案例内部）',
+}
+CASE_SCENE_DEFAULT = '案例型'
+CASE_SCENE = {
+    'countries.html': '功能性', 'provinces.html': '功能性',
+    'hermes-profile-skills-list.html': '功能性',
+    'slimdown/exercises.html': '功能性', 'slimdown/archive.html': '功能性',
+    'table-features-demo.html': '演示性', 'table-actions-demo.html': '演示性',
+    'knowledge-demo.html': '演示性', 'slide-demo.html': '演示性',
+    'chaitin.html': '案例型', 'cloudwise.html': '案例型', 'drama.html': '案例型',
+    'the-price-you-choose.html': '案例型',
+    'table-guide.html': '说明文档', 'doc-guide.html': '说明文档',
+    'knowledge-guide.html': '说明文档', 'slide-guide.html': '说明文档',
+    'usage-guide.html': '说明文档', 'markdown-spec.html': '说明文档',
+}
 
 
 def _site_kb_items(skills):
@@ -1926,7 +1948,7 @@ def cmd_prompt_site(args):
         data=str(out_dir / '_kb-data.json'),
         groups=str(out_dir / '_kb-groups.json'),
         output=str(out_dir / 'index.html'),
-        title='HM Prompt',
+        title='HG Prompt',
         welcome='多项目 Prompt 索引：每模板维度下 指令 CLI / 模板语法 / 使用案例',
         subtitle=None,
         quiet=True,
@@ -1968,7 +1990,7 @@ def _site_skill_section(skill, stripped, site_refs):
 
 def _site_all_md(skills, site_sections):
     """all.md 组装: 唯一顶层 h1 + 说明引用块 + 9 skill 段."""
-    header = ("# HM Prompt 合集\n\n"
+    header = ("# HG Prompt 合集\n\n"
               "> 在线阅读: html-gen 项目 9 个 skills prompt 全文（含 references）。\n"
               "> 单篇获取: prompts/{skill}.md（纯 markdown）· prompts/{skill}.json（JSON 信封）· all.md（全量）。\n"
               "> 重新生成: html-gen prompt --site（产物勿手改，由生成器产出）。\n")
@@ -2011,6 +2033,8 @@ def cmd_demo(args):
             # name 唯一化: 根级=stem; 子目录页={topic}-{stem} (防 chaitin/cloudwise 等跨主题撞名)
             name = f.stem if f.parent == DEMOS_DIR else f.parent.name + '-' + f.stem
             h = f.read_text(encoding='utf-8', errors='ignore')
+            if ALIAS_MARKER in h:          # CL048: 跳转桩不是案例（防止档案页污染 registry/索引）
+                continue
             t = _re.search(r'<title>(.*?)</title>', h, _re.S)
             demos.append({
                 'name': name, 'title': t.group(1).strip() if t else f.stem,
@@ -2025,11 +2049,14 @@ def cmd_demo(args):
         # 顺带重建独立案例索引 (data/_demos-data.json + demos-index.html)
         type_icons = {'knowledge': '📚 知识库（模板C）', 'table': '🗂 表格（模板A）',
                       'doc': '📄 文档（模板B）', 'html': '🌐 独立页'}
-        indep = [d for d in demos if not d.get('referenced')]
+        indep = [d for d in demos
+                 if not d.get('referenced') and d['entry'] not in CASE_INDEX_SKIP]
         indep.sort(key=lambda d: (not d.get('featured'), d['entry']))
         idx_columns = [
-            {'key': '标题', 'label': '标题', 'sortable': True, 'locale': 'zh', 'width': '200px', 'freeze': True, 'preview': True},
+            {'key': '标题', 'label': '标题', 'sortable': True, 'locale': 'zh', 'width': '200px', 'freeze': True,
+             'preview': True, 'escape': False},   # CL048: 标题即新页签链接（见下方 idx_rows）
             {'key': '模板', 'label': '模板', 'type': 'pills', 'sortable': True, 'locale': 'zh', 'width': '120px', 'preview': True},
+            {'key': '场景', 'label': '场景', 'type': 'pills', 'sortable': True, 'locale': 'zh', 'width': '110px', 'preview': True},
             {'key': '文档链接', 'label': '文档链接', 'sortable': True, 'locale': 'zh', 'width': '260px', 'preview': True, 'escape': False},
         ]
         idx_rows = []
@@ -2037,14 +2064,18 @@ def cmd_demo(args):
             title_txt = ('★ ' if d.get('featured') else '') + d['title']
             fname = d['entry'].rsplit('/', 1)[-1]
             idx_rows.append({
-                '标题': title_txt,
+                '标题': (f'<a href="{d["entry"]}" target="_blank" rel="noopener" '
+                         f'onclick="event.stopPropagation()">{title_txt}</a>'),
                 '模板': type_icons.get(d['type'], '🌐 独立页'),
+                '场景': CASE_SCENE.get(d['entry'], CASE_SCENE_DEFAULT),
                 '文档链接': f'<a href="{d["entry"]}" target="_blank" rel="noopener">{fname} ↗</a>',
             })
         idx_data = {'columns': idx_columns, 'data': idx_rows, 'tabs': [],
                     # CL018: 默认分栏预览 + 分栏左表只显标题列（D1/D9）
                     'options': {'pageSize': 30, 'exportCSV': True, 'search': True, 'showIndex': True,
-                                'clickMode': 'split', 'columnsSplit': ['标题']}}
+                                'clickMode': 'split', 'columnsSplit': ['标题'],
+                                # CL048: 顶部筛选条 —— 所有 + 4 模板（带计数），点击即筛，选中态记忆
+                                'filterBar': {'column': '模板', 'allLabel': '所有', 'persist': True}}}
         idx_file = DATA_DIR / '_demos-data.json'
         idx_file.write_text(_json.dumps(idx_data, ensure_ascii=False, indent=2) + '\n', encoding='utf-8')
         a = types.SimpleNamespace(data=str(idx_file), title='DEMO 案例索引',

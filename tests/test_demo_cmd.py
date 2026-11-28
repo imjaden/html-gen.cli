@@ -20,7 +20,7 @@ class TestDemoCmd(unittest.TestCase):
         out = r.stdout
         self.assertIn('共', out)
         self.assertIn('★', out, "应有精选标记")
-        self.assertIn('drama-knowledge', out)
+        self.assertIn('drama', out)
         self.assertIn('hermes-profile-skills-list.html', out, "归位后路径")
         self.assertIn('table-guide.html', out)
 
@@ -32,16 +32,16 @@ class TestDemoCmd(unittest.TestCase):
         self.assertGreaterEqual(len(d['data']), 40, f"应有 40+ demos: {len(d['data'])}")
         # 类型识别
         by_name = {x['name']: x['type'] for x in d['data']}
-        self.assertEqual(by_name.get('drama-knowledge'), 'knowledge')
+        self.assertEqual(by_name.get('drama'), 'knowledge')
         self.assertEqual(by_name.get('drama-history-timeline-table'), 'table')
         self.assertEqual(by_name.get('table-guide'), 'doc')
         self.assertGreaterEqual(sum(1 for x in d['data'] if x.get('featured')), 9, "精选 ≥9")
 
     def test_03_detail(self):
-        r = run('drama-knowledge')
+        r = run('drama')
         self.assertEqual(r.returncode, 0)
         self.assertIn('以剧读史', r.stdout)
-        self.assertIn('demos/drama-knowledge.html', r.stdout)
+        self.assertIn('demos/drama.html', r.stdout)
         self.assertIn('预览:', r.stdout)
 
     def test_04_detail_json(self):
@@ -109,8 +109,11 @@ class TestDemoCmd(unittest.TestCase):
         reg = json.loads((DEMOS / '_registry.json').read_text())
         self.assertEqual(reg['version'], 3, "registry 版本应为 3（name 唯一化）")
         entries = {d['entry'] for d in reg['demos']}
+        # CL048: 跳转桩（含 '<!-- html-gen:alias auto -->'）不是案例，不进 registry
         htmls = {str(f.relative_to(DEMOS)).replace('\\', '/')
-                 for f in DEMOS.rglob('*.html') if f.name not in ('index.html', '_registry.json')}
+                 for f in DEMOS.rglob('*.html')
+                 if f.name not in ('index.html', '_registry.json')
+                 and '<!-- html-gen:alias auto -->' not in f.read_text(encoding='utf-8', errors='ignore')}
         self.assertEqual(entries, htmls, "registry entry 应与实际 html 文件一一对应")
 
 

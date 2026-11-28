@@ -9,6 +9,31 @@
       "demo": "the-price-you-choose",
       "alias": "renxuan",
       "canonical": false
+    },
+    {
+      "demo": "chaitin",
+      "alias": "chaitin-business-analysis",
+      "canonical": false
+    },
+    {
+      "demo": "cloudwise",
+      "alias": "cloudwise-business-analysis",
+      "canonical": false
+    },
+    {
+      "demo": "drama",
+      "alias": "drama-knowledge",
+      "canonical": false
+    },
+    {
+      "demo": "countries",
+      "alias": "countries-table",
+      "canonical": false
+    },
+    {
+      "demo": "provinces",
+      "alias": "provinces-table",
+      "canonical": false
     }
   ]
 }

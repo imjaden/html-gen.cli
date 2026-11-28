@@ -176,7 +176,7 @@ class TestPromptSite:
             self._run_ok(d)
             text = (d / 'all.md').read_text(encoding='utf-8')
             assert not text.startswith('---'), '不以 --- 开头'
-            assert text.startswith('# HM Prompt 合集'), '首行唯一顶层 h1'
+            assert text.startswith('# HG Prompt 合集'), '首行唯一顶层 h1'
             # 9 个 ## {skill.name} 段标题 (各恰好一次)
             for name in EXPECTED_SKILLS:
                 assert re.search(rf'^## {re.escape(name)}$', text, re.M), f'缺段标题 ## {name}'
@@ -205,7 +205,7 @@ class TestPromptSite:
             # 5 tab 标签 (groups JSON 注入 GROUPS; kw-tab 渲染于 JS, 此处断言 JSON 标签文本)
             for label in EXPECTED_TAB_LABELS:
                 assert label in html, f'门户缺 tab 标签: {label}'
-            assert 'HM Prompt' in html
+            assert 'HG Prompt' in html
             # HG-SEC-090: 无 github-corner 元素 (显式空串禁用)
             assert not re.search(r'<a[^>]*class="github-corner"', html)
             assert not re.search(r'<a[^>]*class="github-corner-hit"', html)
@@ -431,6 +431,6 @@ class TestPromptSite:
             # all.md 唯一顶层 h1 (fence-aware) 不变
             text = (d / 'all.md').read_text(encoding='utf-8')
             assert fence_top_h1_count(text) == 1
-            assert text.startswith('# HM Prompt 合集')
+            assert text.startswith('# HG Prompt 合集')
         finally:
             shutil.rmtree(d, ignore_errors=True)
