@@ -135,7 +135,7 @@ items.forEach(function (it, idx) {
 | 批 | 内容 | 预估 |
 |:--|:--|:--|
 | CL031 实施 | 模板 `splitGrid` 渲染分支 + CSS 显式栅格 + 契约/help/文档 + 新增 8 例守卫 + 变异实证 | 0.5–1 天 |
-| CL032（可选） | 代表 demo 页示范 `splitGrid`（如 countries-table 分栏用 2 行显式布局），让能力可被眼见 | 0.2 天 |
+| CL032（可选） | 代表 demo 页示范 `splitGrid`（如 countries 分栏用 2 行显式布局），让能力可被眼见 | 0.2 天 |
 | 对端迁移 | daily-checker 按 §6 判据替换 `dcKvRowsHtml`（~60 行）+ 删兼容层 CSS（~10 行）+ 判据瘦身（370 行） | 对端排期 |
 
 ## 8. 边界（本设计不做的事）

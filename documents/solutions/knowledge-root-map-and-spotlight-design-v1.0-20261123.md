@@ -103,7 +103,7 @@ DOM（对齐 tool-nav-manager，前缀 `kw` 避免与 table 的 `qs-` 混淆）�
 ### 3.7 版本与产物
 
 - `__version__ = "3.6"`，`__release_date__ = "2026-11-23"`；README ×2 版本行同步。
-- 重渲 4 个 knowledge 产物：`demos/knowledge-demo.html`、`demos/drama-knowledge.html`、`demos/chaitin-business-analysis.html`、`demos/cloudwise-business-analysis.html`；`scripts/baseline.py --update` 后 `--check` 须 50/50。
+- 重渲 4 个 knowledge 产物：`demos/knowledge-demo.html`、`demos/drama.html`、`demos/chaitin.html`、`demos/cloudwise.html`；`scripts/baseline.py --update` 后 `--check` 须 50/50。
 - 产物戳应为 `html-gen v3.6+tpl<新 sha>`；`--table-fs` / 结构计数不在 knowledge 判据内，无需变。
 
 ### 3.8 测试计划（486 → 预计 491）

@@ -82,7 +82,7 @@ v1.3 设计（B1/A1/D1/N1/L1/O1/I1 + C1/E1/F2/G1/H1/K1/M1）逐条核对命中�
 
 ### HG-SEC-134（🟡 pre-existing，非阻断）
 
-可写文本列（`note`/`capital_zh`/`capital_en`/`ethnic_groups`/`religions`）`escape=None`，在 `layout-table.html` L586-589 走 raw `innerHTML` 渲染（仅 `col.escape` 或 `pills` 类型会 `escapeHtml`）。攻击者可通过公开 data-fix issue 提交 `<img onerror>` / `<script>` 值，维护者 `--apply` 后写入 `demos/countries-table.html`，访客浏览器执行 → stored XSS。
+可写文本列（`note`/`capital_zh`/`capital_en`/`ethnic_groups`/`religions`）`escape=None`，在 `layout-table.html` L586-589 走 raw `innerHTML` 渲染（仅 `col.escape` 或 `pills` 类型会 `escapeHtml`）。攻击者可通过公开 data-fix issue 提交 `<img onerror>` / `<script>` 值，维护者 `--apply` 后写入 `demos/countries.html`，访客浏览器执行 → stored XSS。
 
 - **定性**：本 delta（v1.3）**未引入**此面 —— v1.0~v1.2 已存在同款 write→raw-render 路径；v1.3 通过「textarea 多行长文本 + issue #2 note 大段正文处置」**放大暴露面**（note 成为首要文本注入目标）。
 - **缓解**：需维护者 review 后 `--apply`（`--list`/`--dry-run` 预览 `old → new` 有人工闸门）；当前数据 0 处 `<`/`>`（线上安全）。

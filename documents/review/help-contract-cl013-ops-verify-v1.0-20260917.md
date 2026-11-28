@@ -45,7 +45,7 @@ $PYTEST tests/ -q -n 0 | tail -2
 python3 html-gen.py table -d data/_countries-data.json -o /tmp/rb.html \
   --github-url https://github.com/imjaden/html-gen.cli --home-url https://html-gen.cli.jaden.tech/ \
   --favicon https://www.jaden.tech/static/img/favicon.png --feedback-repo imjaden/html-gen.cli
-cmp /tmp/rb.html demos/countries-table.html && echo BYTE-IDENTICAL
+cmp /tmp/rb.html demos/countries.html && echo BYTE-IDENTICAL
 
 # 6) demo 产物重生成保真（D7 三问）                            预期 Q1/Q2/Q3 全 True
 python3 cache/closed-loop/cl013-d7-fidelity.py

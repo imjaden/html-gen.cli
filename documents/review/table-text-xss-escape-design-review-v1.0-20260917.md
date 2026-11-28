@@ -120,7 +120,7 @@ demos-index「文档链接」列的修复目标，实为 `html-gen demo --rebuil
 |:--|:--|:--|:--|
 | `html-gen.py:1366` idx_columns 补 `escape:false` | 实现多做 | 设计 §6 未列；demos-index 文档链接列的真正生成源，属「设计漏列」 | 可接受且**必要**（HG-SEC-172） |
 | `AGENTS.md` / `features.md` 计数 305→311 | 实现多做 | 文档/计数同步，设计 §6 未列（常规约定） | 可接受（惯例） |
-| `demos/countries-table.html` / `demos/demos-index.html` 重建 | 实现多做 | 产物重建，设计 §6 未列（产物不入设计文件清单惯例） | 可接受（惯例） |
+| `demos/countries.html` / `demos/demos-index.html` 重建 | 实现多做 | 产物重建，设计 §6 未列（产物不入设计文件清单惯例） | 可接受（惯例） |
 | expand 路径测试降级为等效覆盖 | 实现少做（相对 §5.1 overclaim） | 设计声称四路径直接断言，实现 test_06 仅等效 | 可接受（等效论证成立；设计应预先声明） |
 
 无「实现少做安全项」的偏差：A2/C1/D1/E1 四决策逐字落地，四路径转义全部生效（实现审计 `72e76f4` 已独立 PASS）。

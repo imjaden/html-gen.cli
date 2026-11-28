@@ -32,23 +32,23 @@
 
 ### 1.1 HG-SEC-249 二次洗白：完整复现
 
-临时根只放 1 个可 verify 产物（`demos/countries-table.html`），四步走：
+临时根只放 1 个可 verify 产物（`demos/countries.html`），四步走：
 
 ```bash
 T=$(mktemp -d "$TMPDIR/cl040-XXXX")
 cp html-gen.py style-guide.css layout-*.html "$T"/ ; mkdir -p "$T"/data "$T"/demos
 cp data/_countries-data.json "$T"/data/
 python3 html-gen.py table -d data/_countries-data.json --title=国家 \
-    --github-url=https://github.com/x/y -o "$T"/demos/countries-table.html
+    --github-url=https://github.com/x/y -o "$T"/demos/countries.html
 python3 scripts/baseline.py --update --root "$T"                    # ① corner=True verified=True
-python3 html-gen.py table -d data/_countries-data.json --title=国家 -o "$T"/demos/countries-table.html   # ② 漏 --github-url
+python3 html-gen.py table -d data/_countries-data.json --title=国家 -o "$T"/demos/countries.html   # ② 漏 --github-url
 ```
 
 实测输出（本次逐字）：
 
 ```
 --- 2) 漏参后 --update 应拒 ---
-❌ demos/countries-table.html: 基线有 corner、新快照没有（重建时丢了对应 CLI 参数？）
+❌ demos/countries.html: 基线有 corner、新快照没有（重建时丢了对应 CLI 参数？）
    拒绝重建基线：先按产物原参数（--github-url/--home-url）重刷；确属产品决策要摘掉角标，加 --force。
 rc=1
 --- 3) --update --force ---
@@ -318,7 +318,7 @@ python3 scripts/baseline.py --update --root "$T"; echo rc=$?          # 洗白�
 rc=1
 ```
 ```bash
-python3 -c "import json;d=json.load(open('$T/data/_render-baseline.json'));print(d['files']['demos/countries-table.html'].get('corner'), d['verified'])"
+python3 -c "import json;d=json.load(open('$T/data/_render-baseline.json'));print(d['files']['demos/countries.html'].get('corner'), d['verified'])"
 # 预期: False False        ← 未被翻回 true
 python3 scripts/baseline.py --update --force --root "$T"; echo rc=$?  # 第二次显式 force 才允许
 # 预期 rc=0，且 verified=True（verify 绿、无 drops）

@@ -79,7 +79,7 @@
 ### 🟢 HG-SEC-266 · 同一产物 `changed` + `param-lost` 各记一条，漂移计数虚高（既有行为）
 
 - 位置：`scripts/baseline.py:413-418`
-- 实测：漏参重渲后 `--check` 报 `漂移 2/50`，实际只有 1 个产物变了（`demos/countries-table.html` 同时命中 `changed` 与 `param-lost:corner`）。
+- 实测：漏参重渲后 `--check` 报 `漂移 2/50`，实际只有 1 个产物变了（`demos/countries.html` 同时命中 `changed` 与 `param-lost:corner`）。
 - 影响：仅计数可读性（rc 正确），但会让人误判影响面。CL040 之前即如此，非本批引入。
 - 修法：同一 `rel` 命中多条时按 `rel` 聚合打印（`changed+param-lost:corner`），`total` 口径不变。
 

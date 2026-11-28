@@ -329,7 +329,7 @@ script-miner 侧 SCRIPT-MINER-CL044 的同类诉求，本仓先行落地）。
 | 生成器 | 命令 | 产物 | 数 |
 |:--|:--|:--|:--|
 | doc | `html-gen doc -i demos/<x>.md -o demos/<x>.html`（不带 `--title`，复现原 title） | 6 guide + 4 drama overview + 14 cloudwise + `chaitin/menu-design.html` | 25 |
-| knowledge | `html-gen knowledge -d data/_<x>-kb-data.json -g data/_<x>-groups.json -o demos/<x>.html` | `chaitin-business-analysis` / `cloudwise-business-analysis` / `drama-knowledge` / `knowledge-demo` | 4 |
+| knowledge | `html-gen knowledge -d data/_<x>-kb-data.json -g data/_<x>-groups.json -o demos/<x>.html` | `chaitin` / `cloudwise` / `drama` / `knowledge-demo` | 4 |
 | table | `html-gen table -d data/_<x>.json`（顶层 `output` 已带；无则显式 `-o`） | countries / provinces / demos-index / table-features / table-actions / hermes-profile-skills + 8 drama 表 | 14 |
 | demo | `html-gen demo --rebuild` | `data/_demos-data.json` + `demos/demos-index.html` + `demos/_registry.json` | 3 |
 | slide | **无 md 源** ⇒ 手工同步 canonical 块（+ 校验 style-guide 变量基座仍在，单 `<style>` 块） | `demos/slide-demo.html` | 1 |

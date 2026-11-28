@@ -85,8 +85,8 @@ if '<' in new or '>' in new:
 ## 4. 影响面与回归评估
 
 受影响页面（数据侧无 HTML，转义后视觉不变）:
-- countries-table.html（195 行 × 18 列）
-- provinces-table.html（34 行 × 11 列）
+- countries.html（195 行 × 18 列）
+- provinces.html（34 行 × 11 列）
 - hermes-profile-skills-list.html（98 行 × 6 列）
 - table-features-demo.html / table-actions-demo.html
 - 所有 drama 策略/时间轴表

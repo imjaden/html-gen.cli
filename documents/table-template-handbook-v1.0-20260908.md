@@ -102,7 +102,7 @@ cache/data/_countries-data.videos.yaml（手工增量草稿，gitignored，随�
    │   → append/覆盖 data/<target.data> 行 videos
    │   → build_mirror_countries 全局镜像回写 yaml（target 段保留）
    ▼   → subprocess html-gen.py table（--github-url/--home-url/--favicon 显式传入 + 打印 [执行]）
-data/_countries-data.json（事实源）── html-gen table ──▶ demos/countries-table.html
+data/_countries-data.json（事实源）── html-gen table ──▶ demos/countries.html
 ```
 
 ### 4.2 用法
@@ -132,7 +132,7 @@ python3 scripts/tool-table-videos-syncer.py <yaml-path> --empty-video  # 只读�
 
 ```shell
 # table 生成（JSON 顶层可含 title/subtitle/output）
-html-gen table -d data/_countries-data.json -o demos/countries-table.html \
+html-gen table -d data/_countries-data.json -o demos/countries.html \
   --title "全球国家速查表（195 国）"
 
 # videos 同步（三态增量）
@@ -145,7 +145,7 @@ python3 scripts/tool-table-videos-syncer.py --empty-video            # 找 video
 # cache/data/_countries-data.videos.yaml（手工草稿示例）
 target:
 - data: data/_countries-data.json
-- html: demos/countries-table.html
+- html: demos/countries.html
 - rebuild: {github_url: "https://github.com/imjaden/html-gen.cli", home_url: "https://html-gen.cli.jaden.tech/", favicon: ""}
 
 countries:
@@ -259,7 +259,7 @@ countries:
 - `.video-pill` CSS 已从设计期 `word-break:break-all` 演进为现行 `white-space:nowrap; overflow:hidden; text-overflow:ellipsis`（成因待核）。
 - shareBtn 图标设计写作 🔗，现行实现为 `↗️`（行为一致；成因待核）。
 - `data/_phase2-demo.json` / `demos/phase2-demo.html`（quickfilter 测试载体）现仓已不在；现行 data/ 有 `_table-features-demo.json`（疑为后继，待核）。
-- 设计 D6 一处路径 `demos/countries/countries-table.html` 为文档笔误（实际根路径 `demos/countries-table.html`）。
+- 设计 D6 一处路径 `demos/countries/countries.html` 为文档笔误（实际根路径 `demos/countries.html`）。
 
 ## 9. GitHub Issue 反馈通道（CL009，2026-09-10）
 
@@ -284,7 +284,7 @@ doc / knowledge / slide 模板无「数据行」概念不适用。设计:
 
 ## 10. 参考文档
 
-- 保留原位：features.md、layout-table.html、html-gen.py、scripts/tool-table-videos-syncer.py、data/_countries-data.json、demos/countries-table.html、review-log.md / .review-level.yaml（历史不追改）。
+- 保留原位：features.md、layout-table.html、html-gen.py、scripts/tool-table-videos-syncer.py、data/_countries-data.json、demos/countries.html、review-log.md / .review-level.yaml（历史不追改）。
 - **源码引用面（已随归档同步至 archive 路径，2026-09-08）**：scripts/tool-table-videos-syncer.py docstring L21-23 引 3 份设计（syncer v1.2/v1.1 + favicon §5）；tests/test_sync_videos.py docstring L4 引 table-videos-syncer-design-v1.1（§5 测试计划）；tests/test_url_state.py docstring L5 引 favicon 设计 §6。
 - 本族过程文档（23 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 

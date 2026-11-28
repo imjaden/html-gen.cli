@@ -51,12 +51,12 @@ pytest tests/ -q -n 0  →  312 passed in 130.60s
 
 - `data/_countries-data.json`: 195 行；text 字段含 `<`/`>` = **0 处** → 转义后视觉零变化（设计 §4 论断成立）。
 - 重建幂等: 按 `scripts/feedback-targets.yaml` 的 `rebuild.args` 复跑
-  （`--github-url/--home-url/--favicon/--feedback-repo`）→ `diff` 与入库 `demos/countries-table.html` **字节一致**。✅
+  （`--github-url/--home-url/--favicon/--feedback-repo`）→ `diff` 与入库 `demos/countries.html` **字节一致**。✅
 
 ## 6. OV-6 变更面核对（5f447fc）
 
 ```
-AGENTS.md(2) data/_demos-data.json(3) demos/countries-table.html(3) demos/demos-index.html(5)
+AGENTS.md(2) data/_demos-data.json(3) demos/countries.html(3) demos/demos-index.html(5)
 documents/solutions/table-text-xss-escape-design-v1.0-20260911.md(118)
 features.md(2) html-gen.py(2) layout-table.html(3) scripts/countries-issue-sync.py(4)
 tests/test_xss_escape.py(148)

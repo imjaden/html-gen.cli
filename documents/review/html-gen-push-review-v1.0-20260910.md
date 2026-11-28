@@ -25,8 +25,8 @@
 | 3 | 无悬挂引用 | `grep -rn "html-gen-fix-design-v1.0-20260806\|heading-levels-fix-design-v1.0-20260812\|handoff-html-gen-dev" --include=*.md .`（排除 .git/ cache/） | 0 行 | **0 行** | ✅ |
 | 4 | 回归串行 | `python3 -m pytest tests/ -q -n 0` | 288 passed | **288 passed**（128.48s） | ✅ |
 | 4 | 回归并行 | `python3 -m pytest tests/ -q -n 4` | 288 passed | **288 passed**（37.96s，见 §4 flaky 说明） | ✅ |
-| 5a | CL009 交付 | `grep -c spFeedbackBtn demos/countries-table.html` | 1 | **1** | ✅ |
-| 5b | CL009 交付 | `grep -c 'class="github-corner"' demos/countries-table.html` | 1 | **1** | ✅ |
+| 5a | CL009 交付 | `grep -c spFeedbackBtn demos/countries.html` | 1 | **1** | ✅ |
+| 5b | CL009 交付 | `grep -c 'class="github-corner"' demos/countries.html` | 1 | **1** | ✅ |
 | 5c | CL009 交付 | `scripts/countries-issue-sync.py --list` | 正常退出 | **「无待处理 issue」exit 0** | ✅ |
 | 6 | commit 类型扫描 | 12 笔 `type@scope` | 无 add@/fixed@/remove@ | **全规范**（见 §5） | ✅ |
 
@@ -41,7 +41,7 @@
 - 原历史含 5 笔 code-inventory 提交（来源 MyVideos 项目 documents 番号主表），其中 `data/_code-inventory-data.json`（334 KB，832 番号 + 649 magnet + 成人片商名）构成公开仓库合规风险（上轮判 🔴 HG-SEC-125）。
 - 已整体从历史移除 + `reflog expire --expire=now --all` + `git gc --prune=now` 物理清除本地对象。
 - `git rev-list --all --objects` 中 code-inventory 计数 = **0**（§1 核验 2b），确认对象库已无该内容。
-- `demos/countries-table.md` 来源行改「公开数据集（World Bank + UN M49 + zh_names 手工校核表）」（`510c5b4`）。
+- `demos/countries.md` 来源行改「公开数据集（World Bank + UN M49 + zh_names 手工校核表）」（`510c5b4`）。
 
 ### 清理 2（`1b060b9`，用户指令「删除提及 MyVideos 的文档」）
 

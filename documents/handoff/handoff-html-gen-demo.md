@@ -32,7 +32,7 @@ risk: *下一步建议**：review 审计 prompt 已打印待授权→push github
 - /Users/jadenli/CodeSpace/daily-tracker
 - /Users/jadenli/CodeSpace/html-gen
 - /Users/jadenli/CodeSpace/html-gen/demos
-- /Users/jadenli/CodeSpace/html-gen/demos/drama-knowledge.html
+- /Users/jadenli/CodeSpace/html-gen/demos/drama.html
 - /Users/jadenli/CodeSpace/http-server-cli/scripts/release-local.sh
 - /Users/jadenli/CodeSpace/www.jaden.tech/index.html
 - ~/.local/bin

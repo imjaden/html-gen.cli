@@ -94,8 +94,8 @@
 | 生成器 | 设计命令 | 实测结论 |
 |:--|:--|:--|
 | doc | `html-gen doc -i demos/<x>.md -o demos/<x>.html`（不带 `--title`，复现原 title） | md 源 **25/25 齐全** ✅；title 全部可由 md h1 复现 ✅；但 **10/25 需补 `--github-url`**（否则抹掉 GitHub corner），且其中 9 个产物 favicon link 位置与现行不同（陈旧） |
-| knowledge | `html-gen knowledge -d … -g … -o …` | **4/4 缺 `--title`/`--subtitle`/`--welcome`**：按原文执行 → 标题退化为「知识库」、欢迎语退化为默认（用户可见回归）；`data/_<x>-kb-data.json` + `_<x>-groups.json` **4/4 齐全** ✅；补参后 cloudwise-business-analysis **byte-IDENTICAL** |
-| table | `html-gen table -d data/_<x>.json`（顶层 `output` 已带；无则显式 `-o`） | **「顶层 `output` 已带」与实测不符**：8 个表数据 JSON 全部**无** `output`（须全部显式 `-o`）；且 **14/14 缺 `--title`**（如 provinces 现行 title「中国省份速查表」不可复现）+ 部分缺 `--github-url`/`--home-url`；countries-table 补 `--github-url + --home-url` 后 **byte-IDENTICAL**（反证参数集缺项） |
+| knowledge | `html-gen knowledge -d … -g … -o …` | **4/4 缺 `--title`/`--subtitle`/`--welcome`**：按原文执行 → 标题退化为「知识库」、欢迎语退化为默认（用户可见回归）；`data/_<x>-kb-data.json` + `_<x>-groups.json` **4/4 齐全** ✅；补参后 cloudwise **byte-IDENTICAL** |
+| table | `html-gen table -d data/_<x>.json`（顶层 `output` 已带；无则显式 `-o`） | **「顶层 `output` 已带」与实测不符**：8 个表数据 JSON 全部**无** `output`（须全部显式 `-o`）；且 **14/14 缺 `--title`**（如 provinces 现行 title「中国省份速查表」不可复现）+ 部分缺 `--github-url`/`--home-url`；countries 补 `--github-url + --home-url` 后 **byte-IDENTICAL**（反证参数集缺项） |
 | demo | `html-gen demo --rebuild` | ✅ **3/3 产物 byte-IDENTICAL**（副本实跑），`demos/index.html` 未变、featured 15 集稳定 |
 | slide | 无 md 源 ⇒ 手工同步 | ✅ 成立（`demos/slide-demo*` 仅 `.html`，全仓无生成脚本引用） |
 | prompt | `html-gen prompt --site` | ✅ 22/31 byte-IDENTICAL；9 个 `kb/*.html` 各差 2 行 = doc 模板 meta 行（`创建/编辑` 取 md 文件 mtime，重生成后为当日）⇒ 「meta 时间戳」差异真实且可解释 |
@@ -105,7 +105,7 @@
 
 - **IDENTICAL 18**（可复现，但参数集未记录于设计）
 - **仅 favicon 位置差异 2**（`knowledge-guide` / `usage-guide`，2 行、字节长度不变）
-- **STALE-DIFF 22**（差异 10–728 行，与当前模板/样式基座不一致）：doc 7（`chaitin/menu-design`、`markdown-spec`、`slide-guide`、4 个 drama overview，各 10 行：`.home-link` CSS 基座缺失 + favicon 顺序）、knowledge 3（`chaitin-business-analysis` 61 / `drama-knowledge` 61 / `knowledge-demo` 69 行）、table 12（`provinces`/`table-features`/`table-actions`/`hermes-profile-skills` 各 321 行含 `--text-primary` 等 CSS 变量基座缺失；8 个 drama 表 168–728 行）
+- **STALE-DIFF 22**（差异 10–728 行，与当前模板/样式基座不一致）：doc 7（`chaitin/menu-design`、`markdown-spec`、`slide-guide`、4 个 drama overview，各 10 行：`.home-link` CSS 基座缺失 + favicon 顺序）、knowledge 3（`chaitin` 61 / `drama` 61 / `knowledge-demo` 69 行）、table 12（`provinces`/`table-features`/`table-actions`/`hermes-profile-skills` 各 321 行含 `--text-primary` 等 CSS 变量基座缺失；8 个 drama 表 168–728 行）
 
 ⇒ **「重生成后逐文件只差 canonical 块 + meta 时间戳」这一纪律前提对 22/43（51%）不成立**。不阻断机制，但直接决定 [3/6]/[4/6] 的工作形态与 [5/6] 审计可判性（详见 HG-SEC-187/188）。
 
@@ -139,7 +139,7 @@
 
 | 编号 | 严重度 | 描述（证据） | 处置建议 |
 |:--|:--|:--|:--|
-| **HG-SEC-187** | 🟡 非阻断 | **§5 重生成矩阵命令集不完整、按原文执行会产出回归产物**。实测：knowledge 4/4 缺 `--title/--subtitle/--welcome`（执行后标题退化为「知识库」、欢迎语变默认）；10/25 doc 缺 `--github-url`（抹掉 GitHub corner）；14/14 table 缺 `--title`（如 provinces 丢「中国省份速查表」）+ 部分缺 `--github-url`/`--home-url`。反证：`countries-table` 补 `--github-url + --home-url` 后 byte-IDENTICAL；`cloudwise-business-analysis` 补 `--title + --welcome` 后 byte-IDENTICAL | §5 增「逐产物**实测参数集**」表（本报告 §5 已回收并可复算），并把纪律 2「先试跑 1 个」明确为「先试跑**每种生成器 1 个 + 参数最全的 1 个**」 |
+| **HG-SEC-187** | 🟡 非阻断 | **§5 重生成矩阵命令集不完整、按原文执行会产出回归产物**。实测：knowledge 4/4 缺 `--title/--subtitle/--welcome`（执行后标题退化为「知识库」、欢迎语变默认）；10/25 doc 缺 `--github-url`（抹掉 GitHub corner）；14/14 table 缺 `--title`（如 provinces 丢「中国省份速查表」）+ 部分缺 `--github-url`/`--home-url`。反证：`countries` 补 `--github-url + --home-url` 后 byte-IDENTICAL；`cloudwise` 补 `--title + --welcome` 后 byte-IDENTICAL | §5 增「逐产物**实测参数集**」表（本报告 §5 已回收并可复算），并把纪律 2「先试跑 1 个」明确为「先试跑**每种生成器 1 个 + 参数最全的 1 个**」 |
 | **HG-SEC-188** | 🟡 非阻断 | **§5 纪律 1 前提（「只差 canonical 块 + meta 时间戳」）对 22/43 产物不成立**：补齐参数后仍有 10–728 行差异（`.home-link` CSS 基座、`--text-primary` 等样式变量、模板特性历史漂移），仅 18 个 byte-IDENTICAL、2 个仅 favicon 顺序差 2 行 | ① [3/6] 先做一次**零改动基线重生成**（当前模板 × 当前数据）并单独成笔，把历史漂移与 canonical 改动分离；② 或明确「本批接受历史漂移并入同一笔」并在提交消息/审计报告中登记差异白名单（否则 [5/6] 无法区分 canonical 改动与顺带漂移） |
 | **HG-SEC-189** | 🟡 非阻断 | **A3/T4「产物面 0 FAIL / 0 WARN」在 `demos/usage-guide.html:961` 不可达**：该处是 md **正文 prose** 提及（源在 `demos/usage-guide.md:274`，非 §G 所写「md:961」），探针按花括号启发式判 **FAIL**（`blocklen=34709`，不含 `isSecureContext`/`execCommand('copy')`）。§G 只说「订正表述」未给出**判级可达**的写法 | 改写该行为含 `document.execCommand('copy')` 字面量的表述（例：「…在 `http://` 等非安全上下文下不可用，须先 `window.isSecureContext` 前置判断，回退用 `document.execCommand('copy')`」）；行号改为 `demos/usage-guide.md:274`；并把「A3 前逐文件跑探针」写入 §5 纪律 |
 | **HG-SEC-190** | 🟡 非阻断 | **T9① 夹具与用例目标不自洽**：§6 夹具固定 `isSecureContext=false`，此时 canonical 块走 `else` 分支，`navigator.clipboard.writeText(...).catch(...)` **永不被执行** ⇒ 「clipboard 存在但 reject」用例空转（不会因修复缺失而转红） | §6 增第二套夹具 `secure` 变体（`isSecureContext=true` + `navigator.clipboard={writeText:()=>Promise.reject(...)}`），T9① 用之；同理若需覆盖「安全上下文成功路径」亦须用它 |

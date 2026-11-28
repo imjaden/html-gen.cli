@@ -63,7 +63,7 @@ tags: [html-gen, index, landing, demos, drama, provinces, countries, pages-index
 ### 4.1 形态
 
 ```
-demos/drama-knowledge.html（knowledge 入口，C 型：groups + kb-data items）
+demos/drama.html（knowledge 入口，C 型：groups + kb-data items）
   ├─ 每剧：drama/{drama}-overview.html（doc，章节式，?width=wide 适配 iframe 嵌入）
   ├─ drama/{drama}-timeline-table.html（table：时间轴，可 tabs 双表/options.defaultFilter）
   └─ drama/{drama}-strategy-table.html（table：36 计策/剧中有实例的计谋）
@@ -109,9 +109,9 @@ demos/the-price-you-choose.html（knowledge 入口，C 型；成品拷贝自 scr
 
 ```
 data/_provinces-data.json（34 省级行政区，11 列）
-   └─ html-gen table → demos/provinces-table.html（现仓平铺根，design 期 demos/provinces/ 子目录）
+   └─ html-gen table → demos/provinces.html（现仓平铺根，design 期 demos/provinces/ 子目录）
 data/_countries-data.json（195 国，现仓 18 列：provinces 关联 3 列 + videos + note）
-   └─ html-gen table → demos/countries-table.html
+   └─ html-gen table → demos/countries.html
 scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双向独立 top-3 命中 → 草稿不入 git）
 ```
 
@@ -120,12 +120,12 @@ scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双�
 - 数据口径：省份面积 = 官方万km²；人口 = 七普 2020（万）；GDP = 2023 亿元。国家侧归一化：area_km2÷10000 → 万km²；gdp_yi×7.08（2023 年均汇率）→ 亿元；人口直比。
 - 匹配规则：阈值 面积 |Δ|≤30% / 人口 ≤20% / GDP ≤30%（归一化后，禁止跨单位比较）；优先级 = 地理相邻 > 知名度 > 发展阶段相近；每项 2-3 个；v1.2 后**双向独立 top-3**（不强求对称）。
 - 无命中国家留空 + note 标注超限（动态取极值：新疆 166.49 / 澳门 0.0033 / 广东 / 西藏，非硬编码）；None 防护按维度（6 国缺 gdp_yi 仅 GDP 维度跳过；梵蒂冈 3 列全空）。
-- 数据源说明：demos/provinces-table.md / countries-table.md（主题/创建日期/来源（国家统计局、各省统计公报、七普 2020）/模板类型/数据文件/特性/字段清单/双向关联口径）。
+- 数据源说明：demos/provinces.md / countries.md（主题/创建日期/来源（国家统计局、各省统计公报、七普 2020）/模板类型/数据文件/特性/字段清单/双向关联口径）。
 - company-research-*.json + company-report.py/cloudwise-*.py 属 C 型公司知识库体系，与 provinces（A 型表格 + 匹配脚本）**零代码依赖**（勿混为一谈）。
 
 ### 5.2 数据纪律
 
-- 生成命令：`html-gen table -d data/_provinces-data.json -o demos/provinces-table.html --title "中国省份速查表"`；countries 同理（195 国）；`html-gen demo --rebuild` 注册。
+- 生成命令：`html-gen table -d data/_provinces-data.json -o demos/provinces.html --title "中国省份速查表"`；countries 同理（195 国）；`html-gen demo --rebuild` 注册。
 - 单位换算先行（RIG-1 🔴：naive 跨单位比较静默 0 命中）；测试对照断言钉死 0-命中错误模式。
 - backfill 事实源 = 最终 _provinces-data.json（HG-SEC-027：脚本硬编码 PROVINCES 致人工复核编辑后不对称格 → a331ac1 修复读最终表）。
 - 草稿 data/_provinces-source.json 必须 gitignore（.gitignore 命中），防 git add . 误提交。
@@ -199,7 +199,7 @@ scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双�
 ## 8. 漂移与待核记录（文档时代 vs 现仓）
 
 - 国家表列序：design 14+3 = 15/16/17 位 → 现仓 18 列（provinces 3 列在 14/15/16，videos 17，note 18）。
-- provinces 产物路径：demos/provinces/provinces-table.html（子目录）→ 现仓平铺 demos/provinces-table.html + .md。
+- provinces 产物路径：demos/provinces/provinces.html（子目录）→ 现仓平铺 demos/provinces.html + .md。
 - registry 计数 59/60 → 56（过期 demo 清理后）→ 65（CL017 案例）→ 74（CL019 更名 + 9 内容 + 8 桩）。
 - drama kb 组数 2 → 4（文案滞后：根 index.html C 卡 desc「3 组」、AGENTS.md「2 组」）。
 - 落地页 hero 常量 −110 → −55（三处同步）。
@@ -207,7 +207,7 @@ scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双�
 
 ## 9. 参考文档
 
-- 保留原位：根 index.html、demos/index.html、demos/demos-index.html、demos/drama-knowledge.html、demos/drama/、demos/countries-table.html、demos/provinces-table.html、data/_drama-*.json、data/_provinces-data.json、data/_countries-data.json、scripts/provinces-match.py、skills/pages-index/SKILL.md、demos/_registry.json、features.md、AGENTS.md、review-log.md / .review-level.yaml（历史不追改）。
+- 保留原位：根 index.html、demos/index.html、demos/demos-index.html、demos/drama.html、demos/drama/、demos/countries.html、demos/provinces.html、data/_drama-*.json、data/_provinces-data.json、data/_countries-data.json、scripts/provinces-match.py、skills/pages-index/SKILL.md、demos/_registry.json、features.md、AGENTS.md、review-log.md / .review-level.yaml（历史不追改）。
 - 本族过程文档（18 份）已归档（2026-09-08 执行） → `documents/archive/{solutions,root,review}-20260908/`：
 
 | 素材 | 归档路径 | 归档桶 |
@@ -220,5 +220,5 @@ scripts/provinces-match.py（匹配脚本：读两数据 → 归一化 → 双�
 | drama-kb-table 设计 | documents/archive/root-20260908/drama-kb-table-design-v1.0-20260806.md | root |
 | drama 验证 prompt | documents/archive/root-20260908/verify-prompt-doc-drama-20260806.md | root |
 | drama kb 评审 / 实现评审 / 朱院长实现评审 | documents/archive/review-20260908/drama-{kb-table-review-v1.0,kb-table-implementation-review-v1.0,zhuyuanzhang-implementation-review-v1.0}-20260806/20260822.md | review |
-| provinces 设计 v1.2 | documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md | solutions |
-| provinces 设计评审 v1.0/v1.1 / v1.2 变更 / 实现评审 | documents/archive/review-20260908/provinces-table-{design-review-v1.0,design-review-v1.1,design-v1.2-change-review,implementation-review-v1.0}-20260824.md | review |
+| provinces 设计 v1.2 | documents/archive/solutions-20260908/provinces-design-v1.2-20260824.md | solutions |
+| provinces 设计评审 v1.0/v1.1 / v1.2 变更 / 实现评审 | documents/archive/review-20260908/provinces-{design-review-v1.0,design-review-v1.1,design-v1.2-change-review,implementation-review-v1.0}-20260824.md | review |

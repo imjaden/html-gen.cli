@@ -2,17 +2,17 @@
 
 > 闭环: HTML-GEN-CL009 · 模式: 独立（不入调度队列）
 > 探讨确认: A1 B1 C1 D1 E1 F1 G1 H1 I1 J1 K1 L1 M1 N1 + A0-1 A′1 O1 P1 Q1 + S1 T1 U1 V1（2026-09-10）
-> 试点: demos/countries-table.html ← data/_countries-data.json（后续可复用至其他 A 型表格案例）
+> 试点: demos/countries.html ← data/_countries-data.json（后续可复用至其他 A 型表格案例）
 > 前置: HTML-GEN-CL002 / CL004 / CL006（table 模板 + videos 同步器 + rebuild 三参数）
 
 ## 1. 背景与需求
 
 A 型表格案例（countries / provinces / drama 系列）数据为人工整理，读者发现错误时没有
 反馈入口；维护者也无从收集结构化纠错。本闭环建立「页面 → GitHub Issue → 数据回写 →
-产物重建」的最小闭环，以 countries-table 为试点，设计上支持后续案例复用。
+产物重建」的最小闭环，以 countries 为试点，设计上支持后续案例复用。
 
 需求（用户原文）：
-1. 以 `demos/countries-table.html?split=0` 为例，添加反馈/编辑图标按钮，点击跳转 GitHub
+1. 以 `demos/countries.html?split=0` 为例，添加反馈/编辑图标按钮，点击跳转 GitHub
    Issue 页面，自动填充该案例相关信息 + 手工填写；
 2. 获取 issue 数据，更新至 `data/_countries-data.json`。
 
@@ -40,7 +40,7 @@ A 型表格案例（countries / provinces / drama 系列）数据为人工整理
 | I1 | apply 后回评「旧→新」；`--close` 显式开关才关 issue | 默认只回评 |
 | J1 | 需预填字段用 `input`（字段 key 列在 description 里） | 受 form schema 硬约束 |
 | K1 | 新增 `--feedback-repo` + env `HTML_GEN_FEEDBACK_REPO`，默认不注入 | 隐私默认（同 `--github-url` 语义）；显式空串禁用 |
-| L1 / Q1 | 一期只做 A 型表格 + countries-table 试点 | provinces / drama 二期 |
+| L1 / Q1 | 一期只做 A 型表格 + countries 试点 | provinces / drama 二期 |
 | M1 | 新增 `tests/test_issue_feedback.py` + 1 条 HG-SEC 登记 | Selenium 渲染条件 + 脚本解析/apply 单测 |
 | N1 | 本地脚本路线（GitHub Actions 留二期） | gh CLI 已登录 `imjaden`（token 含 repo scope） |
 | O1 | `openSplitAt(rowIdx, colKey)` 携带被点列 → 预填 `field` | 改动 3 处调用 + 1 个形参 |
@@ -63,7 +63,7 @@ A 型表格案例（countries / provinces / drama 系列）数据为人工整理
 
 | id | label | 控件 | 预填 | 必填 | 说明 |
 |:---|:---|:---|:---|:---|:---|
-| page | 页面 | input | ✅ | ✅ | 如 `demos/countries-table.html`，脚本用其路由 target |
+| page | 页面 | input | ✅ | ✅ | 如 `demos/countries.html`，脚本用其路由 target |
 | dataset | 数据集 | input | ✅ | ✅ | 如 `countries`，与 config `dataset` 比对 |
 | row | 行标识 | input | ✅ | ✅ | `country_zh` 值 |
 | row_en | 行英文标识 | input | ✅ | ⬜ | `country_en`，二次校验（防改名歧义） |
@@ -169,7 +169,7 @@ body:
     attributes:
       value: |
         感谢反馈！**带「请勿修改」提示的字段由页面自动填充**，如被改动将导致本条被脚本跳过。
-  - { type: input, id: page,    attributes: { label: 页面, description: 请勿修改, placeholder: demos/countries-table.html }, validations: { required: true } }
+  - { type: input, id: page,    attributes: { label: 页面, description: 请勿修改, placeholder: demos/countries.html }, validations: { required: true } }
   - { type: input, id: dataset, attributes: { label: 数据集, description: 请勿修改 }, validations: { required: true } }
   - { type: input, id: row,     attributes: { label: 行标识, description: 请勿修改 }, validations: { required: true } }
   - { type: input, id: row_en,  attributes: { label: 行英文标识, description: 请勿修改（可选校验） }, validations: { required: false } }
@@ -231,13 +231,13 @@ python3 scripts/countries-issue-sync.py [--config scripts/feedback-targets.yaml]
 
 ```
 [列表] 待处理 2 条
-  #12 demos/countries-table.html · 伊朗 · pop_wan: 9157 → 9200 (来源: …)
-  #13 demos/provinces-table.html · 广东 · … (跳过: page 不匹配)
+  #12 demos/countries.html · 伊朗 · pop_wan: 9157 → 9200 (来源: …)
+  #13 demos/provinces.html · 广东 · … (跳过: page 不匹配)
 [预览] 将更新 1 字段:
   - 伊朗.pop_wan: 9157 → 9200   (#12)
 [预览] 跳过 1 条:
   - #13 page 不匹配（target=countries）
-[预览] 将重建 demos/countries-table.html
+[预览] 将重建 demos/countries.html
 [提示] 使用 --apply 执行
 ```
 
@@ -262,9 +262,9 @@ targets:
     repo: imjaden/html-gen.cli
     label: data-fix
     dataset: countries
-    page: demos/countries-table.html      # basename 亦可匹配
+    page: demos/countries.html      # basename 亦可匹配
     data: data/_countries-data.json
-    html: demos/countries-table.html
+    html: demos/countries.html
     key_field: country_zh
     alt_key: country_en
     editable: [country_zh, country_en, capital_zh, capital_en, capital_lat, capital_lon,
@@ -324,7 +324,7 @@ FIND-002 同类缺陷，2026-09-10 又在手工重建中复发过一次）。
 - [ ] 脚本四态（`--list/--dry-run/--apply/--close`）+ 六类校验 + 冲突/幂等
 - [ ] JSON 往返逐字（indent=2 无尾换行）；videos 列不可写
 - [ ] 重建命令含 `--github-url/--home-url/--feedback-repo` 三参数并打印 `[执行]`
-- [ ] countries-table 重建后：按钮在位 + corner/home 保持在位（防回归）
+- [ ] countries 重建后：按钮在位 + corner/home 保持在位（防回归）
 - [ ] `tests/test_issue_feedback.py` 全通过；全量 pytest 零回归
 - [ ] 端到端实测：真实提交 1 条测试 issue → dry-run → apply → 回评（`--close`）→ 数据/产物 diff 仅目标字段
 - [ ] 设计评审 + 实现审计 PASS（review 子会话）

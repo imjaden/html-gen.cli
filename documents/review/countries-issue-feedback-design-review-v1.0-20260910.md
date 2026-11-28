@@ -6,7 +6,7 @@
 > 待 push commit: 4e14795（docs@design: GitHub Issue 反馈通道设计 v1.0 · HTML-GEN-CL009）
 > review 维度: 合理性 / 严格性 / 安全性
 > 前置: HTML-GEN-CL002 / CL004 / CL006（table 模板 + videos 同步器 + rebuild 三参数）已闭环
-> 模式: 独立（不入调度队列）；试点 demos/countries-table.html ← data/_countries-data.json
+> 模式: 独立（不入调度队列）；试点 demos/countries.html ← data/_countries-data.json
 
 ## 数据验证
 
@@ -70,7 +70,7 @@
 
 🟡 HG-SEC-111 — 跨重建漂移：videos syncer 重建会丢失反馈按钮
 
-实测 videos syncer 的 `resolve_rebuild_args`（tool-table-videos-syncer.py:216-244）仅发 `--github-url/--home-url/--favicon` 三键，**永不发 `--feedback-repo`**。而 §2.1 定义 options.feedback 仅 `{dataset,key,altKey}`（repo 不在 JSON），repo 由 CLI/env 注入。因此 videos syncer 每周重建 countries-table.html 时：cmd_table 读到的 options.feedback 无 repo → FEEDBACK=false → 反馈按钮消失。§12「任意 html-gen table 页面重建时加 --feedback-repo 即得」与 §13「重建参数漂移治理」均只覆盖 feedback syncer 自身，未覆盖 videos syncer 这一**独立重建路径**对反馈按钮的冲刷。
+实测 videos syncer 的 `resolve_rebuild_args`（tool-table-videos-syncer.py:216-244）仅发 `--github-url/--home-url/--favicon` 三键，**永不发 `--feedback-repo`**。而 §2.1 定义 options.feedback 仅 `{dataset,key,altKey}`（repo 不在 JSON），repo 由 CLI/env 注入。因此 videos syncer 每周重建 countries.html 时：cmd_table 读到的 options.feedback 无 repo → FEEDBACK=false → 反馈按钮消失。§12「任意 html-gen table 页面重建时加 --feedback-repo 即得」与 §13「重建参数漂移治理」均只覆盖 feedback syncer 自身，未覆盖 videos syncer 这一**独立重建路径**对反馈按钮的冲刷。
 
 修复建议（三选一，推荐 a）：(a) 把 repo 也写进 data JSON 的 options.feedback（§5 已把 JSON 列为优先级 3，仅 §2.1 未列 repo——补上即可），使**任何**重建路径（videos/feedback/手工）都拾取 repo，从机制上根除漂移；countries 已是公开 demo（github-corner 已暴露 imjaden/html-gen.cli），无隐私回退；(b) videos syncer resolve_rebuild_args 增发 --feedback-repo（需读反馈配置，跨脚本耦合）；(c) 文档注明 videos 重建后须重跑 feedback 重建（脆弱，不推荐）。
 

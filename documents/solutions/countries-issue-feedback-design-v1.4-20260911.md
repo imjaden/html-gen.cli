@@ -27,7 +27,7 @@
 
 ### 2.2 范围（B1，安全关键）
 ```python
-paths = [target['data'], target['html']]     # data/_countries-data.json, demos/countries-table.html
+paths = [target['data'], target['html']]     # data/_countries-data.json, demos/countries.html
 ```
 - 一律使用**显式 pathspec**，禁止 `git add -A`
 - 理由：本仓历史上存在并行会话 WIP（CL002 FIND-002 / code-inventory 并发提交），`add -A` 会裹走非本次改动
@@ -107,7 +107,7 @@ targets:
 
 ## 7. 验收标准
 
-1. `--apply` 后：`git log -1 --name-only` 仅含 `data/_countries-data.json` + `demos/countries-table.html`
+1. `--apply` 后：`git log -1 --name-only` 仅含 `data/_countries-data.json` + `demos/countries.html`
 2. 回评正文含真实本地短 sha，且措辞为「待推送」
 3. `--no-commit` 时无提交、工作区保留改动
 4. 目标文件脏时 `--apply` 在写盘前拒绝（exit 1）

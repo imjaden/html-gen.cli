@@ -68,7 +68,7 @@ git status --porcelain    → 'A  staged.txt'                    # 无关文件�
 v1.3 将模板 `data-fix.yml` 重命名为 `data-fix-countries.yml`，但两处**回退默认值**未同步更新：
 
 - `scripts/countries-issue-sync.py:373`：`tmpl_rel = target.get('template') or 'data-fix.yml'`（`check_template` 默认路径）
-- `layout-table.html:1100`（及 demos/countries-table.html:1340、demos/demos-index.html:1333 生成物）：`add('template', (FB_CFG && FB_CFG.template) || 'data-fix.yml')`
+- `layout-table.html:1100`（及 demos/countries.html:1340、demos/demos-index.html:1333 生成物）：`add('template', (FB_CFG && FB_CFG.template) || 'data-fix.yml')`
 
 当前唯一案例 countries 两处均显式指定 `data-fix-countries.yml`（feedback-targets.yaml:18 `template:` / data/_countries-data.json `options.feedback.template`），故回退分支从未命中，**零当前影响**。未来新增 target 若漏配 `template`：浏览器侧会拼出指向不存在模板的 `?template=data-fix.yml`（死链），脚本侧 `check_template` 会以「模板不存在」exit 1（安全失败）。建议 follow-up：回退默认改 `data-fix-countries.yml`（或删除回退、强制显式声明）。非阻断。
 

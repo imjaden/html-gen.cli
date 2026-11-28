@@ -490,17 +490,17 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 ---
 
-## 2026-08-24 — 省份表 + 国家双向关联设计评审（provinces-table-design v1.0）
+## 2026-08-24 — 省份表 + 国家双向关联设计评审（provinces-design v1.0）
 
 - **review 者**: Security Reviewer（L2）
-- **Scope**: commit `51bf5b5`（docs@html-gen: provinces table + countries cross-link design v1.0，未 push）；设计文档 `documents/solutions/provinces-table-design-v1.0-20260824.md`；探讨确认清单 1A-6A 全选
+- **Scope**: commit `51bf5b5`（docs@html-gen: provinces table + countries cross-link design v1.0，未 push）；设计文档 `documents/solutions/provinces-design-v1.0-20260824.md`；探讨确认清单 1A-6A 全选
 - **Verdict**: ⏳ CONDITIONAL PASS 70/B（🔴 1 / 🟡 3 / 🟢 6）— 非 PASS，不生成 dev 实施 prompt
 
 ### Findings
 
 | # | Severity | Title | File | Status |
 |:--:|:---:|:---|:---|:---:|
-| HG-SEC-018 | 🔴 | RIG-1 单位换算缺失：国家表 gdp_yi 为亿美元、area_km2 为 km²，与省份亿元/万km² 直接比较 → 实测 0 命中（归一化后 10/15 命中）；§三"GDP 统一亿元"与国家表实际单位自相矛盾 | provinces-table-design-v1.0 §三/§四 | ⏳ Open |
+| HG-SEC-018 | 🔴 | RIG-1 单位换算缺失：国家表 gdp_yi 为亿美元、area_km2 为 km²，与省份亿元/万km² 直接比较 → 实测 0 命中（归一化后 10/15 命中）；§三"GDP 统一亿元"与国家表实际单位自相矛盾 | provinces-design-v1.0 §三/§四 | ⏳ Open |
 | HG-SEC-019 | 🟡 | RIG-2 列宽未指定：影院模型 11+3 列默认 120px，备注/3 标签 pills 列截断 | §二 A/B | ⏳ Open |
 | HG-SEC-020 | 🟡 | RIG-3 测试基线过时：§七/TC-09"146"应为 154；T 清单 10 条 vs "~13 tests"表述不一 | §七/§九 | ⏳ Open |
 | HG-SEC-021 | 🟡 | RIG-4 双向一致性示例错误：荷兰 vs 广东面积 Δ76.9%（阈值 30%），示例与规则矛盾 | §四 4 | ⏳ Open |
@@ -526,15 +526,15 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 | HG-SEC-021 | 荷兰示例与规则矛盾 | 🟡 | P2 | ⏳ Open |
 | HG-SEC-022~025 | OBS-1~4（随 v1.1 处理） | 🟢 | P3 | ⏳ Open |
 
-- 报告: `documents/review/provinces-table-design-review-v1.0-20260824.md`
+- 报告: `documents/review/provinces-design-review-v1.0-20260824.md`
 - 待处理: ops 修 v1.1 后复审；未 push（CONDITIONAL 不 push）
 
 ---
 
-## 2026-08-24 — 省份表 + 国家双向关联设计复审（provinces-table-design v1.1）
+## 2026-08-24 — 省份表 + 国家双向关联设计复审（provinces-design v1.1）
 
 - **review 者**: Security Reviewer（L2）
-- **Scope**: commit `93009fd`（docs@html-gen: provinces design v1.1 — fix review RIG-1~4 + OBS-1~4，rename v1.0→v1.1 + .gitignore）；设计文档 `documents/solutions/provinces-table-design-v1.1-20260824.md`
+- **Scope**: commit `93009fd`（docs@html-gen: provinces design v1.1 — fix review RIG-1~4 + OBS-1~4，rename v1.0→v1.1 + .gitignore）；设计文档 `documents/solutions/provinces-design-v1.1-20260824.md`
 - **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 1）— v1.0 扣分项全部修复，生成 dev 实施 prompt
 
 ### Fix Verification
@@ -567,21 +567,21 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 | HG-SEC-022~025 | OBS-1~4 | 🟢 | P3 | ✅ Closed（v1.1） |
 | HG-SEC-026 | 人口示例数字口径偏差 | 🟢 | P3 | ⏳ 记录 |
 
-- 报告: `documents/review/provinces-table-design-review-v1.1-20260824.md`
+- 报告: `documents/review/provinces-design-review-v1.1-20260824.md`
 - 实现 prompt: ✅ 已生成（cache/review-prep/prompt-provinces-dev-20260824.md，转 dev）
 - 处理: PASS → 审计交付物 commit + push（连同设计文档 51bf5b5 + 93009fd 共 3 commits）
 
 ---
 
-## 2026-08-24 — 省份表 + 国家双向关联实现审计（provinces-table implementation）
+## 2026-08-24 — 省份表 + 国家双向关联实现审计（provinces implementation）
 
 - **review 者**: Security Reviewer（L2）
-- **Scope**: 未 push 5 commits（`73bc988` chore@ provinces-match 脚本 / `f6a3e7c` feat@ 省份表 data+demos / `323771a` feat@ 国家表回填 3 列 / `7dd1c18` test@ 省份表测试 / `31c8c60` fix@ backfill 同对规则）；设计 `documents/solutions/provinces-table-design-v1.1-20260824.md`（复审 PASS 100/A）
+- **Scope**: 未 push 5 commits（`73bc988` chore@ provinces-match 脚本 / `f6a3e7c` feat@ 省份表 data+demos / `323771a` feat@ 国家表回填 3 列 / `7dd1c18` test@ 省份表测试 / `31c8c60` fix@ backfill 同对规则）；设计 `documents/solutions/provinces-design-v1.1-20260824.md`（复审 PASS 100/A）
 - **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 1）
 
 ### Summary
 
-5 commits 与设计 v1.1 逐项一致，TC-01~10 全部成立：省份表 34 行 11 列（width 110/60/100/90/110/110/110/170/170/170/200 与 §二 A 一致）+ tabs 全部/7 区域 + options pageSize30/exportCSV/searchFields；港澳台 region_tags=华南 + note 口径说明；国家表 195 行 17 列（新 3 列 15/16/17 pills 170px），中国行 3 列留空（设计允许）。单位归一化独立复算：304 个省份侧 pills 阈值违规 0，广东 GDP↔韩国/西班牙/墨西哥、面积↔柬埔寨/乌拉圭/叙利亚在表内，杜绝 0-命中；`31c8c60` 修复后国家表 backfill 与脚本重跑输出 0 差异（同对回填规则成立）；None 防护恰 6 国缺 gdp_yi + 梵蒂冈全缺不参与匹配。双向互证 271/304=89.1%（与 ops 报告一致，TC-05 抽查 12 对 10 命中）。生成物 provinces-table.html COLUMNS/DATA/TABS/OPTIONS 与 JSON 零差异；registry count 59→60 可见（featured=false 符合设计）。测试 26 passed（13+13，含韩国 gdp_province 含广东、柬埔寨 area_province 含广东断言）；全量 166 passed + 1 环境性失败（test_history_tables::test_01 系其他会话重生成 demos/drama/history-strategy-table.html 9 列 schema 导致，与本次零交集，不代修不扣分）。commit 5/5 type@scope 小写英文 subject、无 WIP 混入；命名 provinces-*/countries-* 一致；凭证扫描 0 命中。1 个 🟢 记录（HG-SEC-027 人工复核 3 处省份侧单元格在 backfill 生成后修改 → 4 个不对称格：德国/西班牙回填空 + 土库曼斯坦/澳大利亚保留过期项，互证率 89.1% 而非 100%，建议后续复核后以最终省份表为事实源重跑回填）。授权 push 5 commits 至 github/main。
+5 commits 与设计 v1.1 逐项一致，TC-01~10 全部成立：省份表 34 行 11 列（width 110/60/100/90/110/110/110/170/170/170/200 与 §二 A 一致）+ tabs 全部/7 区域 + options pageSize30/exportCSV/searchFields；港澳台 region_tags=华南 + note 口径说明；国家表 195 行 17 列（新 3 列 15/16/17 pills 170px），中国行 3 列留空（设计允许）。单位归一化独立复算：304 个省份侧 pills 阈值违规 0，广东 GDP↔韩国/西班牙/墨西哥、面积↔柬埔寨/乌拉圭/叙利亚在表内，杜绝 0-命中；`31c8c60` 修复后国家表 backfill 与脚本重跑输出 0 差异（同对回填规则成立）；None 防护恰 6 国缺 gdp_yi + 梵蒂冈全缺不参与匹配。双向互证 271/304=89.1%（与 ops 报告一致，TC-05 抽查 12 对 10 命中）。生成物 provinces.html COLUMNS/DATA/TABS/OPTIONS 与 JSON 零差异；registry count 59→60 可见（featured=false 符合设计）。测试 26 passed（13+13，含韩国 gdp_province 含广东、柬埔寨 area_province 含广东断言）；全量 166 passed + 1 环境性失败（test_history_tables::test_01 系其他会话重生成 demos/drama/history-strategy-table.html 9 列 schema 导致，与本次零交集，不代修不扣分）。commit 5/5 type@scope 小写英文 subject、无 WIP 混入；命名 provinces-*/countries-* 一致；凭证扫描 0 命中。1 个 🟢 记录（HG-SEC-027 人工复核 3 处省份侧单元格在 backfill 生成后修改 → 4 个不对称格：德国/西班牙回填空 + 土库曼斯坦/澳大利亚保留过期项，互证率 89.1% 而非 100%，建议后续复核后以最终省份表为事实源重跑回填）。授权 push 5 commits 至 github/main。
 
 ### Findings
 
@@ -604,7 +604,7 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 |:---|:---|:---:|:---:|:---:|
 | HG-SEC-027 | 复核后未重跑 backfill（4 格不对称） | 🟢 | P3 | ✅ Closed（a331ac1 fix backfill 事实源，2026-08-24 尾项复核） |
 
-- 报告: `documents/review/provinces-table-implementation-review-v1.0-20260824.md`
+- 报告: `documents/review/provinces-implementation-review-v1.0-20260824.md`
 - 处理: PASS → 授权 push 5 commits（73bc988/f6a3e7c/323771a/7dd1c18/31c8c60）至 github/main
 
 ---
@@ -617,7 +617,7 @@ GitHub Pages 站点首页落地页设计评审通过。根 index.html 新建（�
 
 ### Summary
 
-a331ac1 将反向回填事实源从脚本内硬编码 PROVINCES 常量改为读取最终 `data/_provinces-data.json`（含人工复核编辑），关联列按「、」split；独立重跑 backfill vs 提交态 195 国 × 3 列 585 格 **0 差异**。5 字段变化全部符合预期：3 处补全（德国 area_province=黑龙江 / 西班牙 gdp_province=广东 / 斯里兰卡 pop_province=北京、上海）+ 2 处过期残留清除（土库曼斯坦 area_province=四川 / 澳大利亚 gdp_province=江苏）。双向互证率 271/304=89.1% → **274/304=90.1%**，30 个剩余 miss 全部为双侧 top-3 截断（rank 4-8），**0 个非截断/不对称格**，原 4 格不对称全部修复。省份表 `_provinces-data.json` 零改动；生成物 countries-table.html 195 行与 JSON 逐字段 0 差异。专项 26 passed（test_provinces_table 13 + test_countries_table 13）；全量 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy-table 系并发会话重生成 9 列 schema，与本次零交集，不代修不扣分）。commit 仅 3 文件（脚本 +11/-3 / 国家表 JSON / 生成物 1 行），无 WIP 混入。授权 push 1 commit 至 github/main。
+a331ac1 将反向回填事实源从脚本内硬编码 PROVINCES 常量改为读取最终 `data/_provinces-data.json`（含人工复核编辑），关联列按「、」split；独立重跑 backfill vs 提交态 195 国 × 3 列 585 格 **0 差异**。5 字段变化全部符合预期：3 处补全（德国 area_province=黑龙江 / 西班牙 gdp_province=广东 / 斯里兰卡 pop_province=北京、上海）+ 2 处过期残留清除（土库曼斯坦 area_province=四川 / 澳大利亚 gdp_province=江苏）。双向互证率 271/304=89.1% → **274/304=90.1%**，30 个剩余 miss 全部为双侧 top-3 截断（rank 4-8），**0 个非截断/不对称格**，原 4 格不对称全部修复。省份表 `_provinces-data.json` 零改动；生成物 countries.html 195 行与 JSON 逐字段 0 差异。专项 26 passed（test_provinces_table 13 + test_countries_table 13）；全量 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy-table 系并发会话重生成 9 列 schema，与本次零交集，不代修不扣分）。commit 仅 3 文件（脚本 +11/-3 / 国家表 JSON / 生成物 1 行），无 WIP 混入。授权 push 1 commit 至 github/main。
 
 ### Tracking
 
@@ -625,7 +625,7 @@ a331ac1 将反向回填事实源从脚本内硬编码 PROVINCES 常量改为读�
 |:---|:---|:---:|:---:|:---:|
 | HG-SEC-027 | 复核后未重跑 backfill（4 格不对称） | 🟢 | P3 | ✅ Closed（a331ac1，2026-08-24 尾项复核） |
 
-- 报告: `documents/review/provinces-table-implementation-review-v1.0-20260824.md`（追加「尾项复核 — HG-SEC-027 关闭」章节）
+- 报告: `documents/review/provinces-implementation-review-v1.0-20260824.md`（追加「尾项复核 — HG-SEC-027 关闭」章节）
 - 处理: PASS → 授权 push 1 commit（a331ac1）至 github/main
 
 ---
@@ -633,12 +633,12 @@ a331ac1 将反向回填事实源从脚本内硬编码 PROVINCES 常量改为读�
 ## 2026-08-24 — provinces 匹配规则 v1.2 变更复核（用户决策 1A/2A/3A/4B）
 
 - **review 者**: Security Reviewer（L2）
-- **Scope**: 未 push 2 commits（`a148b8d` docs rename provinces-table-design v1.1→v1.2 / `db4d818` fix@html-gen: countries provinces columns as country-basis independent match + overflow notes）；ops 直改 + review 尾项复核（不走设计评审）
+- **Scope**: 未 push 2 commits（`a148b8d` docs rename provinces-design v1.1→v1.2 / `db4d818` fix@html-gen: countries provinces columns as country-basis independent match + overflow notes）；ops 直改 + review 尾项复核（不走设计评审）
 - **Verdict**: ✅ PASS 100/A（🔴 0 / 🟡 0 / 🟢 1 record：HG-SEC-028）
 
 ### Summary
 
-v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078 仅 1 文件），db4d818 恰 3 文件（provinces-match.py / _countries-data.json / countries-table.html），无 WIP 混入。**匹配语义**（决策 1A/3A）国家侧由"同对回填"改为"国家为基准独立 pick_hits"（Δ 以国家值为基准，阈值 30/20/30%），独立复算 JSON 856 组合对 / 386 维度对 **0 阈值违规**（用户"506 对"为口径差异，0 违规一致）；独立 top-3 与 JSON 无损镜像（0 遗漏/0 多余）。抽查全对：亚美尼亚 面积=海南/台湾（Δ19.2% 不再被省份侧 top-3 挤掉，v1.1 缺陷修复）、加拿大 人口=福建/辽宁/陕西（陕西 Δ4.2%）、俄罗斯 人口=广东 + GDP=广东/江苏、韩国 GDP=广东/江苏、柬埔寨 面积=广东/贵州/湖北。**超限 note**（决策 2A）与设计 §四 6 逐字一致（动态极值新疆/澳门/广东/西藏，`; ` 连接，既有前缀保留如"无世界银行数据"/"实际行政科托努; GDP: 无相近..."），超限但 note 缺失 0、陈旧 note 0；范围内无命中仅留空符合设计语义。**空国家** 3 列全空 28 国全部可解释（中国/印度/美国大国超限 note 完整、梵蒂冈数据缺口、其余微国家）。**测试** 专项 26 passed；全量 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy 表被另一会话 13:15-13:35 重生成，工作区表头 ≠ HEAD，与 db4d818 零交集，不代修不扣分）。**生成物** countries-table.html 195 行与 JSON 逐字段 0 差异；`_provinces-data.json` 零改动。唯一 🟢 HG-SEC-028 为脚本 pick_hits 命名/docstring 仍为省份侧语义（国家侧复用），纯注释陈旧不影响产物。授权 push 2 commits 至 github/main。
+v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078 仅 1 文件），db4d818 恰 3 文件（provinces-match.py / _countries-data.json / countries.html），无 WIP 混入。**匹配语义**（决策 1A/3A）国家侧由"同对回填"改为"国家为基准独立 pick_hits"（Δ 以国家值为基准，阈值 30/20/30%），独立复算 JSON 856 组合对 / 386 维度对 **0 阈值违规**（用户"506 对"为口径差异，0 违规一致）；独立 top-3 与 JSON 无损镜像（0 遗漏/0 多余）。抽查全对：亚美尼亚 面积=海南/台湾（Δ19.2% 不再被省份侧 top-3 挤掉，v1.1 缺陷修复）、加拿大 人口=福建/辽宁/陕西（陕西 Δ4.2%）、俄罗斯 人口=广东 + GDP=广东/江苏、韩国 GDP=广东/江苏、柬埔寨 面积=广东/贵州/湖北。**超限 note**（决策 2A）与设计 §四 6 逐字一致（动态极值新疆/澳门/广东/西藏，`; ` 连接，既有前缀保留如"无世界银行数据"/"实际行政科托努; GDP: 无相近..."），超限但 note 缺失 0、陈旧 note 0；范围内无命中仅留空符合设计语义。**空国家** 3 列全空 28 国全部可解释（中国/印度/美国大国超限 note 完整、梵蒂冈数据缺口、其余微国家）。**测试** 专项 26 passed；全量 164 passed + 3 环境性 WIP 失败（daming/yongzheng/history strategy 表被另一会话 13:15-13:35 重生成，工作区表头 ≠ HEAD，与 db4d818 零交集，不代修不扣分）。**生成物** countries.html 195 行与 JSON 逐字段 0 差异；`_provinces-data.json` 零改动。唯一 🟢 HG-SEC-028 为脚本 pick_hits 命名/docstring 仍为省份侧语义（国家侧复用），纯注释陈旧不影响产物。授权 push 2 commits 至 github/main。
 
 ### Tracking
 
@@ -646,7 +646,7 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 |:---|:---|:---:|:---:|:---:|
 | HG-SEC-028 | pick_hits 命名/docstring 仍为省份侧语义（v1.2 国家侧复用），注释陈旧 | 🟢 | P3 | 📌 Record（下轮整理脚本时泛化命名） |
 
-- 报告: `documents/review/provinces-table-design-v1.2-change-review-20260824.md`
+- 报告: `documents/review/provinces-design-v1.2-change-review-20260824.md`
 - 处理: PASS → 授权 push 2 commits（a148b8d / db4d818）至 github/main
 
 
@@ -901,7 +901,7 @@ v1.2 匹配规则变更复核通过：**范围** a148b8d 纯文档 rename（R078
 | body | background rgb(10,10,20) 深色（原透明）、color rgb(224,224,224) 浅色（原黑） |
 | slide-page 排版 | font-size 0.88rem + blockquote 紧凑 0.1rem/2px 16px + callout 特异性覆盖保留 |
 | JS 错误 | window.__testErrors = []（加载 + refresh 两轮） |
-| git status | 仅 2 个非范围文件（countries-table.html / history-strategy-table.html，其他 session） |
+| git status | 仅 2 个非范围文件（countries.html / history-strategy-table.html，其他 session） |
 
 ### Summary
 
@@ -1661,7 +1661,7 @@ phase-1 盘点 M1-M5 五族（80 份）+ HIST 7 共 87 份 process 文档，phas
 
 ### Findings
 
-- 🟡 HG-SEC-109：scripts/provinces-match.py:4 docstring 仍引 `documents/solutions/provinces-table-design-v1.1-20260824.md` —— 双陈旧（v1.1 已于 a148b8d 更名 v1.2；solutions/ 本次归档后清空）。cfd91ff「reference updates」同步了 table-template 族 syncer+2 test 的 docstring（手册 §9 显式列「源码引用面」），但 pages-content 族未列 provinces-match.py 的 docstring 引用面 → 覆盖缺口。非功能、非 87 basename、非阻断；修法一行：改 `documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md`。
+- 🟡 HG-SEC-109：scripts/provinces-match.py:4 docstring 仍引 `documents/solutions/provinces-design-v1.1-20260824.md` —— 双陈旧（v1.1 已于 a148b8d 更名 v1.2；solutions/ 本次归档后清空）。cfd91ff「reference updates」同步了 table-template 族 syncer+2 test 的 docstring（手册 §9 显式列「源码引用面」），但 pages-content 族未列 provinces-match.py 的 docstring 引用面 → 覆盖缺口。非功能、非 87 basename、非阻断；修法一行：改 `documents/archive/solutions-20260908/provinces-design-v1.2-20260824.md`。
 
 ### Positives
 
@@ -1692,7 +1692,7 @@ phase-1 盘点 M1-M5 五族（80 份）+ HIST 7 共 87 份 process 文档，phas
 
 ### Summary
 
-HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:4 docstring 从 `documents/solutions/provinces-table-design-v1.1-20260824.md`（双陈旧：v1.1→v1.2 + solutions/ 已归档）改为 `documents/archive/solutions-20260908/provinces-table-design-v1.2-20260824.md`。验证：diff 仅 1 行（1 文件 1 增 1 删）；目标 archive 文件存在（11630 字节，§三/§四 齐全）；grep 'provinces-table-design-v1.1' scripts/ 零命中；py_compile OK；工作树干净；无 -A。镜像 gitee 已由用户授权补推同步至 da27ba2，与 github 一致。
+HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:4 docstring 从 `documents/solutions/provinces-design-v1.1-20260824.md`（双陈旧：v1.1→v1.2 + solutions/ 已归档）改为 `documents/archive/solutions-20260908/provinces-design-v1.2-20260824.md`。验证：diff 仅 1 行（1 文件 1 增 1 删）；目标 archive 文件存在（11630 字节，§三/§四 齐全）；grep 'provinces-design-v1.1' scripts/ 零命中；py_compile OK；工作树干净；无 -A。镜像 gitee 已由用户授权补推同步至 da27ba2，与 github 一致。
 
 ### 处理
 
@@ -1704,7 +1704,7 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 
 - **Reviewer**: Security Reviewer
 - **Level**: L2 (design-document-review)
-- **Scope**: countries-issue-feedback-design v1.0 — A 型表格 GitHub Issue 反馈通道（页面 ✏️纠错按钮 → Issue Form 预填 → 本地脚本解析 → 白名单回写 → 重建产物，HTML-GEN-CL009 kind=independent，试点 countries-table）；commit 4e14795；前置 CL002/CL004/CL006
+- **Scope**: countries-issue-feedback-design v1.0 — A 型表格 GitHub Issue 反馈通道（页面 ✏️纠错按钮 → Issue Form 预填 → 本地脚本解析 → 白名单回写 → 重建产物，HTML-GEN-CL009 kind=independent，试点 countries）；commit 4e14795；前置 CL002/CL004/CL006
 - **Verdict**: 🟢 **PASS 85/100（A）** — 架构正确，4 🟡 非阻断折叠实施 + 5 🟢 记录，无 🔴
 - **Score**: 85 / 100
 - **Tracking**: HG-SEC-110..113（🟡×4 折叠 dev 实施）+ HG-SEC-114..118（🟢 records）
@@ -1718,7 +1718,7 @@ HG-SEC-109 遗留一行修复核通过：bea6fdf 将 scripts/provinces-match.py:
 
 - 🔴 0 / 🟡 4（HG-SEC-110..113，非阻断折叠实施）/ 🟢 5（HG-SEC-114..118，记录）：
   - HG-SEC-110：§7.2 gh 调用（list/comment/close）未像 step 7 显式规定 list-form + shell=False；comment body 含用户数据 → 注入面。须统一 `subprocess.run([...], shell=False)`（RIG-002 同款）
-  - HG-SEC-111：跨重建漂移——videos syncer resolve_rebuild_args 永不发 --feedback-repo，而 §2.1 options.feedback 无 repo（仅 dataset/key/altKey）→ videos 周更重建 countries-table 后反馈按钮丢失。建议 repo 落 JSON options.feedback（§5 已列 JSON 为优先级 3，仅 §2.1 漏列）或 videos syncer 增发 --feedback-repo
+  - HG-SEC-111：跨重建漂移——videos syncer resolve_rebuild_args 永不发 --feedback-repo，而 §2.1 options.feedback 无 repo（仅 dataset/key/altKey）→ videos 周更重建 countries 后反馈按钮丢失。建议 repo 落 JSON options.feedback（§5 已列 JSON 为优先级 3，仅 §2.1 漏列）或 videos syncer 增发 --feedback-repo
   - HG-SEC-112：TC-01「HTML 无 issues/new」与 §4.4 buildFeedbackUrl 常驻 JS 字面量矛盾（FEEDBACK=false 时函数体仍含 issues/new）→ 断言收紧为「无 .sp-feedback 按钮 + 无渲染 feedback 链接」或 URL 构造 FEEDBACK 门控
   - HG-SEC-113：§10 文档同步面遗漏 documents/html-gen-cli-handbook（L48 隐私参数枚举，--feedback-repo 同语义）+ features.md（L261「CLI 参数 15」→16；§10「若有则同步」弱化，实为已确认存在）
   - HG-SEC-114：A0-1「零变更」= 视觉/行为零变更非 byte-identical（FB/FEEDBACK/buildFeedbackUrl 常驻 JS）；设计用词「视觉零变更」准确，仅记录

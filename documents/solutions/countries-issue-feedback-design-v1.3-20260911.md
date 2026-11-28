@@ -162,9 +162,9 @@ targets:
     label: data-fix
     dataset: countries
     template: data-fix-countries.yml      # 新增（M1）
-    page: demos/countries-table.html
+    page: demos/countries.html
     data: data/_countries-data.json
-    html: demos/countries-table.html
+    html: demos/countries.html
     key_field: country_zh
     alt_key: country_en
     editable: [capital_zh, capital_en, capital_lat, capital_lon, region_tags, area_km2,

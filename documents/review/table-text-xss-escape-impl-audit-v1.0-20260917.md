@@ -109,7 +109,7 @@ python3 html-gen.py table -d data/_countries-data.json -o /tmp/countries-rebuild
   --home-url https://html-gen.cli.jaden.tech/ \
   --favicon https://www.jaden.tech/static/img/favicon.png \
   --feedback-repo imjaden/html-gen.cli
-cmp /tmp/countries-rebuild.html demos/countries-table.html   → 字节一致 (exit 0)
+cmp /tmp/countries-rebuild.html demos/countries.html   → 字节一致 (exit 0)
 sha256 两文件一致: 556d58839fe0c000cc7553d4db9d5e83545ca1600078d623c5313888c572cbba
 ```
 

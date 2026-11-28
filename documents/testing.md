@@ -75,7 +75,7 @@ python3 scripts/baseline.py --update         # 重建基线（默认先 --verify
   脚本里不维护第二份参数副本 —— 参数漂移是 CL002 FIND-002 的老坑。
 - **覆盖清单（v1.3）**：table 5（countries / provinces / table-features / table-actions / hermes-skills）+ slide 1（slide-guide）
   + doc 5（usage-guide / doc-guide / table-guide / knowledge-guide / markdown-spec，md 源走**同目录同名约定**
-  `demos/<name>.html` ← `demos/<name>.md`）+ knowledge 4（knowledge-demo / drama-knowledge / chaitin / cloudwise，
+  `demos/<name>.html` ← `demos/<name>.md`）+ knowledge 4（knowledge-demo / drama / chaitin / cloudwise，
   台账逐页登记 `产物 → (kb-data, groups)`）= 基础 **15 件判定**；
   **+ 案例目录产物（v1.3 新增）**：`demos/{chaitin,cloudwise,drama}/*.md` 有同名 html 的 19 件 doc 页自动列举
   （`case_doc_products()`，新目录须显式加进 `CASE_DOC_DIRS`）+ `CASE_TABLE_PRODUCTS` 8 件 table 页

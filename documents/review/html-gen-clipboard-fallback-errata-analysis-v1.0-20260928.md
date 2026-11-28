@@ -89,7 +89,7 @@ TC8 报「文档面（声明项）10 行」。
 
 **场景**：两侧 harness 均出现「判据本身错」的情形：
 - 审计侧：① 4 个 strategy 表初版按静态 `<table>` 解析（产物表由 JS 注入 ⇒ 0 列 0 行「平凡 PASS」）；
-  ② 全量重生成比对初版把 `countries-table.md` / `provinces-table.md` 等**数据源说明 md** 当 doc 源，
+  ② 全量重生成比对初版把 `countries.md` / `provinces.md` 等**数据源说明 md** 当 doc 源，
   与 table 产物**同名碰撞** ⇒ 误报 2 例 DIFF（sha256 核实实为逐字节相同）。
 - ops 侧（本批 3 轮，已记于核查报告 §4）：关键词分类漏 `<script>` 区间判定 / TC11 硬编码列名 /
   `§3.3` 与 `83.3%` 误命中版本正则 / 不容忍 meta 时间戳 / 同一改动的删除侧未对称归类。

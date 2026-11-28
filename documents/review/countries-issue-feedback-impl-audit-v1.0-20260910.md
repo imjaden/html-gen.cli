@@ -17,7 +17,7 @@
 | 4 | 同步脚本 --list | 真实 gh 调用 | ✅ 「无待处理 issue（repo=imjaden/html-gen.cli, label=data-fix）」exit 0（测试 issue #1 已关闭） |
 | 5 | 同步脚本 --dry-run | 真实 gh 调用 + `git status --short` | ✅ 零写盘，工作树干净 |
 | 6 | 互斥组 / 退出码 | `--list --apply` / `--target nonexistent` / `--json` | ✅ 互斥冲突 exit 2；未知 target exit 2；`--json` 输出 `{"status":"ok",...}` exit 0 |
-| 7 | 产物反馈按钮 | `grep -c spFeedbackBtn demos/countries-table.html` | ✅ 1（按钮定义在位） |
+| 7 | 产物反馈按钮 | `grep -c spFeedbackBtn demos/countries.html` | ✅ 1（按钮定义在位） |
 | 8 | 产物 issues/new + corner/home/favicon | grep 计数 | ✅ issues/new 1 / github-corner 5 / favicon.png 1 / home URL（html-gen.cli.jaden.tech）1 |
 | 9 | OPTIONS.feedback 内联 | `grep -o 'feedback": {'` | ✅ `"feedback": {"dataset": "countries", ...}` 随 OPTIONS json.dumps 注入 |
 | 10 | demos-index.html 无按钮 | `grep -c spFeedbackBtn` + `grep -c feedback data/_demos-data.json` | ✅ spFeedbackBtn 1（仅模板定义，非渲染）；_demos-data.json 无 feedback（0）→ 按钮不渲染 |

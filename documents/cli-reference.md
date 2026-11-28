@@ -36,7 +36,7 @@ html-gen knowledge -d data.json [-g groups.json] [--title "标题"] [--welcome "
 
 # demo — 案例清单与详情（按模板分组 / --json / --all / --open / --rebuild）
 html-gen demo list
-html-gen demo drama-knowledge
+html-gen demo drama
 html-gen demo --rebuild
 
 # prompt — 项目 skills 输出
