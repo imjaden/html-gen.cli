@@ -1099,7 +1099,7 @@ TEMPLATE_CONTRACT = {
             'url_state': [
                 ('?sidebar', 'Bare 模式: sidebar=0 隐藏侧边栏 (默认隐藏, 知识库嵌入自动降级)', ''),
                 ('?toolbar', 'Bare 模式: toolbar=0 隐藏工具栏 (默认隐藏)', ''),
-                ('?width', '正文宽度三级 width=narrow|medium|wide (默认 medium 即 960px; 不持久化)', ''),
+                ('?width', '正文宽度 width=narrow|medium|wide|xwide (默认 medium 即 960px; xwide 跟随容器上限 1600px; 不持久化)', ''),
                 # CL014: 模板真实消费的 URL 键 (layout-doc.html L81-83/L272-273), 与上三条同一渲染清单;
                 # 说明文本只用等号/裸词形态 (勿含 ASCII「词元:」片段, 免污染 spec_key_tokens() 口径)。
                 ('?show-md', 'meta 区源文件名显示开关 show-md=1 (默认隐藏, 仅显示 basename 脱敏文件名)', ''),
@@ -1167,7 +1167,7 @@ TEMPLATE_CONTRACT = {
                 ('desc', '条目正文 HTML (内联渲染; 与 url 二选一)', ''),
                 ('url', '详情页地址 (iframe 加载; 与 desc 二选一)', ''),
                 ('icon', '条目图标 emoji (缺省无 groups 文件时用于推导类目图标)', ''),
-                ('width', '详情页宽度 narrow|medium|wide (iframe 追加 ?width=; 缺省 medium, url 含 overview 时默认 wide)', ''),
+                ('width', '详情页宽度 narrow|medium|wide|xwide (iframe 追加 ?width=; 缺省 medium, url 含 overview 时默认 wide)', ''),
                 ('page_title', '侧栏悬停 tooltip 的全名 (可选; 缺省用 title —— 侧栏文本是单行 ellipsis, 长名靠它兜)', ''),
             ],
             'groups': [

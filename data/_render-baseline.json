@@ -17,8 +17,8 @@
       "home": false
     },
     "layout-knowledge.html": {
-      "sha256": "0a23a45fe797b1286a54845075c7f25889cea2f64db1dac629a12bf8e16f34c7",
-      "bytes": 42246,
+      "sha256": "6a4fd50dc243c387be20e8e5fb78c50a3b3d8d9798969685b1cdb443492f5c6e",
+      "bytes": 42391,
       "corner": false,
       "home": false
     },
@@ -111,26 +111,26 @@
       "home": false
     },
     "demos/knowledge-demo.html": {
-      "sha256": "1d2782e76a92f00f88504ae7089c1def271377b12e27581b1f0ba1a92aa64980",
-      "bytes": 83125,
+      "sha256": "68bb5f6362f71eeefae1251a1bf74296f34df9a33e7894dfdff96ffbfed992b3",
+      "bytes": 83270,
       "corner": true,
       "home": false
     },
     "demos/drama.html": {
-      "sha256": "2918e5c39fd1e1db2c95cb6353cd6223cf1572a1a2beecb6293532ee7a437d46",
-      "bytes": 53879,
+      "sha256": "3b81a9e64f5507929a82ed651d5fc729edbd1585c463ce13df763a23c652eacf",
+      "bytes": 54024,
       "corner": true,
       "home": false
     },
     "demos/chaitin.html": {
-      "sha256": "6edd7b7967876b7d4a5b45813fc1ddc17db4eed165cd483918429534f5dfa9f1",
-      "bytes": 53749,
+      "sha256": "70e7be0fb68cb432ee52d939cc2482745334de688a858844f3bd5e10fdb15351",
+      "bytes": 53894,
       "corner": true,
       "home": false
     },
     "demos/cloudwise.html": {
-      "sha256": "79784e6b79a32c907b95158cb15ca7dbfdb4d34f331dd02dfa59138115a36baf",
-      "bytes": 63382,
+      "sha256": "8c0a0fd6c9087cdae6bf85879ad4cd8f91f5b12aefe01070a484b67f027e25ff",
+      "bytes": 63527,
       "corner": false,
       "home": false
     },

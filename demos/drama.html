@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.8+tpl0a23a45f">
+<meta name="generator" content="html-gen v3.8+tpl6a4fd50d">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>以剧读史 · 以史明智</title>
@@ -747,8 +747,9 @@ pre code { background: none; padding: 0; }
     document.getElementById('frameWrap').classList.add('active');
     var body = document.getElementById('kwBody'), frame = document.getElementById('contentFrame');
     if (item.url) { body.style.display = 'none'; frame.style.display = 'block';
-      // CL018: 条目级宽度声明 width=narrow|medium|wide（缺省 medium；url 含 overview 时默认 wide）
-      var _rxW = (item.width === 'narrow' || item.width === 'medium' || item.width === 'wide') ? item.width
+      // CL018: 条目级宽度声明 width=narrow|medium|wide|xwide（缺省 medium；url 含 overview 时默认 wide）
+      // CL048: 白名单与 layout-doc 的 body.width-* 保持同集（上游新增档位必须同步扩这里，否则条目 width 被静默忽略）
+      var _rxW = ['narrow', 'medium', 'wide', 'xwide'].indexOf(item.width) !== -1 ? item.width
                : (item.url.indexOf('overview') !== -1 ? 'wide' : '');
       frame.src = item.url + (item.url.indexOf('?') !== -1 ? '&' : '?') + (_rxW ? 'width=' + _rxW + '&' : '') + 'sidebar=0&toolbar=0&t=' + Date.now(); }
     else if (item.desc) { frame.style.display = 'none'; body.style.display = 'block'; body.innerHTML = '<div style="color:#e0e0e0;line-height:1.8;font-size:0.88rem;">' + item.desc.replace(/\n/g,'<br>') + '</div>'; }

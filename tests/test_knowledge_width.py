@@ -1,4 +1,4 @@
-"""回归测试: knowledge 条目级宽度 width=narrow|medium|wide（CL018 T2）。"""
+"""回归测试: knowledge 条目级宽度 width=narrow|medium|wide|xwide（CL018 T2 / CL048 xwide）。"""
 import json
 import subprocess
 import tempfile
@@ -29,8 +29,10 @@ class TestKnowledgeWidth(unittest.TestCase):
             {'title': 'B', 'group': 'g2', 'section': 'SB', 'url': 'b.html'},
             {'title': 'C', 'group': 'g3', 'section': 'SC', 'url': 'c-overview.html'},
             {'title': 'D', 'group': 'g4', 'section': 'SD', 'url': 'a.html', 'width': 'narrow'},
+            {'title': 'E', 'group': 'g5', 'section': 'SE', 'url': 'b.html', 'width': 'xwide'},
+            {'title': 'F', 'group': 'g6', 'section': 'SF', 'url': 'b.html', 'width': 'huge'},
         ]
-        groups = [{'key': f'g{i}', 'label': f'G{i}'} for i in range(1, 5)]
+        groups = [{'key': f'g{i}', 'label': f'G{i}'} for i in range(1, 7)]
         (cls.tmp / 'data.json').write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
         (cls.tmp / 'groups.json').write_text(json.dumps(groups, ensure_ascii=False), encoding='utf-8')
         cls.out = cls.tmp / 'kb.html'
@@ -80,6 +82,14 @@ class TestKnowledgeWidth(unittest.TestCase):
 
     def test_04_explicit_narrow(self):
         self.assertIn('width=narrow', self._frame_src('g4', 'SD'))
+
+    def test_05b_explicit_xwide(self):
+        # CL048: 白名单必须认 xwide，否则条目宽度被静默忽略、iframe 退回 doc 默认 960
+        self.assertIn('width=xwide', self._frame_src('g5', 'SE'))
+
+    def test_05c_unknown_width_ignored(self):
+        # 非白名单值静默忽略（保持 CL018 旧行为）
+        self.assertNotIn('width=', self._frame_src('g6', 'SF'))
 
     def test_05_params_keep_sidebar_toolbar(self):
         src = self._frame_src('g1', 'SA')
