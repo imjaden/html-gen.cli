@@ -201,6 +201,8 @@ textContent 渲染 (desc 绝不用 innerHTML) ✅ — layout-table.html/layout-k
 剪贴板回退 canonical copyText (isSecureContext 前置 / execCommand('copy') 检查返回值 / 失败可见反馈 / 禁假成功) ✅ — layout-{doc,slide,table,knowledge}.html
 剪贴板回退统一 CL015 (v3.4, 2026-09-27) — 四模板 canonical copyText 逐字节一致 + 8 调用点收敛 + 产物全量重生成 + 守卫测试 T1-T11 ✅ — documents/solutions/html-gen-clipboard-fallback-design-v1.2-20260927.md
 knowledge 模板 ⌘F/Ctrl+F 打开侧栏搜索 (v3.5, 2026-11-17) — 捕获阶段拦截原生查找 + 幂等 + 窄屏补 `.open` + 按钮 title 标快捷键；产物 4 页重生成 + 静态守卫 2 例 ✅ — layout-knowledge.html
+table 模板 顶部筛选条 options.filterBar {column,allLabel,persist} (v3.7, 2026-11-28) — 「所有 + 各值(带计数)」chips，点击即按该列精确筛选、与单元格 pills 双向联动、选中态存 localStorage(html-gen:table:filter)；契约/help/守卫同步 ✅ — layout-table.html
+demos-index 案例索引改造 (v3.7) — 场景列(功能性/演示性/案例型/说明文档) + 标题即新页签链接 + 剔除跳转桩/自引用/引用子页(22→19) + 5 例主题改名(chaitin/cloudwise/drama/countries/provinces) 保留旧路径与根级短链跳转 ✅ — html-gen.py cmd_demo
 knowledge 模板 根页地图 + 统一搜索面板 (v3.6, 2026-11-23) — 标题点击回根页（复制路径迁 ⧉）+ 菜单地图表（列=页签/行=section）+ ⌘/Ctrl+K Spotlight 面板（标题/副标题/描述/全名/分组）+ **⌘F 归还原生查找**（撤销 v3.5 拦截）；4 产物重生成 + Selenium 15 例 + 静态守卫 2 例 ✅ — layout-knowledge.html
 localStorage try/catch + 类型校验 ✅ — layout-*.html
 path traversal 校验 (_safe_path) ✅ — scripts/company-report.py
