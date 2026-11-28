@@ -128,6 +128,96 @@ class TestSplitDetail(unittest.TestCase):
         self.assertEqual(active[0].get_attribute('data-idx'), '10')
         self.assertIn('行10', active[0].text)
 
+    # ── escape:false（HTML）列的「取文本」口径（CL048 守卫）──
+
+    def test_06_html_column_split_header_is_plain_text(self):
+        """标题列存 HTML 时，分栏标题必须是纯文本，不能露出 `<a href=...>` 原文。"""
+        tmp = Path(tempfile.mkdtemp(prefix='_tmp_split_'))
+        data = {
+            'columns': [
+                {'key': 'name', 'label': '名称', 'escape': False, 'preview': True, 'width': '220px'},
+                {'key': 'note', 'label': '备注', 'escape': False},
+            ],
+            'data': [
+                {'name': '<a href="a1.html" target="_blank" rel="noopener">★ 甲 案例</a>',
+                 'note': '<b>粗</b>'},
+                {'name': '<a href="a2.html" target="_blank" rel="noopener">乙 案例</a>',
+                 'note': 'plain'},
+            ],
+            'options': {'clickMode': 'split'},
+        }
+        dfile = tmp / 'd.json'
+        dfile.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+        out = tmp / 'out.html'
+        r = subprocess.run(['python3', str(GEN), 'table', '-d', str(dfile), '-o', str(out), '--quiet'],
+                           capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+        self._load(out)
+        self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr')[0].click()
+        time.sleep(0.4)
+        head = self.driver.find_element(By.CSS_SELECTOR, '#splitPreviewHeader').text
+        self.assertIn('★ 甲 案例', head)
+        self.assertNotIn('<', head, f'分栏标题露出标签: {head!r}')
+        self.assertNotIn('href', head, f'分栏标题露出属性: {head!r}')
+
+    def test_07_html_column_not_searchable_by_markup(self):
+        """搜 `href` 不得命中任何行（HTML 列按纯文本参与搜索）。"""
+        tmp = Path(tempfile.mkdtemp(prefix='_tmp_split_'))
+        data = {
+            'columns': [
+                {'key': 'name', 'label': '名称', 'escape': False, 'preview': True, 'width': '220px'},
+                {'key': 'note', 'label': '备注'},
+            ],
+            'data': [
+                {'name': '<a href="a1.html">甲</a>', 'note': 'x'},
+                {'name': '<a href="a2.html">乙</a>', 'note': 'y'},
+            ],
+            'options': {'clickMode': 'split'},
+        }
+        dfile = tmp / 'd.json'
+        dfile.write_text(json.dumps(data, ensure_ascii=False), encoding='utf-8')
+        out = tmp / 'out.html'
+        r = subprocess.run(['python3', str(GEN), 'table', '-d', str(dfile), '-o', str(out), '--quiet'],
+                           capture_output=True, text=True, timeout=60)
+        self.assertEqual(r.returncode, 0, r.stderr)
+
+        self._load(out)
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr')), 2)
+        self.driver.execute_script(
+            "var i=document.getElementById('searchInput'); i.value='href';"
+            "i.dispatchEvent(new Event('input',{bubbles:true}));")
+        time.sleep(0.6)
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr')), 0,
+                         '搜 href 命中说明 HTML 列被当纯串匹配')
+        self.driver.execute_script(
+            "var i=document.getElementById('searchInput'); i.value='甲';"
+            "i.dispatchEvent(new Event('input',{bubbles:true}));")
+        time.sleep(0.6)
+        self.assertEqual(len(self.driver.find_elements(By.CSS_SELECTOR, '#tbody tr')), 1,
+                         'HTML 列的可见文本仍应可搜')
+
+
+class TestHtmlColumnTextContract(unittest.TestCase):
+    """CL048 静态守卫：escape:false 列存 HTML，所有取文本路径必须走 plainCellText/cellTextFor。"""
+
+    def setUp(self):
+        self.tpl = (PROJECT / 'layout-table.html').read_text(encoding='utf-8')
+
+    def test_helper_exists(self):
+        self.assertIn('function plainCellText(col, v)', self.tpl)
+
+    def test_split_header_uses_plain_text(self):
+        self.assertIn('escapeHtml(plainCellText(titleCol', self.tpl)
+
+    def test_search_uses_cell_text_for(self):
+        self.assertIn('cellTextFor(colByKey[k], row[k])', self.tpl)
+        self.assertNotIn("String(row[k] || '').toLowerCase().indexOf(q)", self.tpl,
+                         '搜索退回了裸 String()，HTML 列会被标记串命中')
+
+    def test_csv_uses_cell_text_for(self):
+        self.assertIn('var v = cellTextFor(c, row[c.key]);', self.tpl)
+
 
 if __name__ == '__main__':
     unittest.main()
