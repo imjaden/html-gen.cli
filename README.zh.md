@@ -36,7 +36,7 @@ pip install html-gen-cli        # 安装 `html-gen` 命令
 ```bash
 git clone https://github.com/imjaden/html-gen.cli
 cd html-gen.cli
-python3 html-gen.py version     # html-gen v3.6 (2026-11-23)
+python3 html-gen.py version     # html-gen v3.7 (2026-11-28)
 ```
 
 ## 快速开始
@@ -96,7 +96,7 @@ html-gen prompt --site --dir <path>           # 输出目录覆盖
 
 | 文件 | URL | 内容 |
 |:--|:--|:--|
-| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | HM Prompt 门户（5 tab: 表格（模板A）/文档（模板B）/知识库（模板C）/幻灯片（模板D）/通用 CLI; 纵向 指令 CLI/模板语法/使用案例） |
+| `prompts/index.html` | https://html-gen.cli.jaden.tech/prompts/ | HG Prompt 门户（5 tab: 表格（模板A）/文档（模板B）/知识库（模板C）/幻灯片（模板D）/通用 CLI; 纵向 指令 CLI/模板语法/使用案例） |
 | `prompts/kb/{skill}.html` | https://html-gen.cli.jaden.tech/prompts/kb/{skill}.html | 每 skill doc detail 页（×9） |
 | `prompts/all.md` | https://html-gen.cli.jaden.tech/prompts/all.md | 9 skills 全量（一次拉取） |
 | `prompts/{skill}.md` | https://html-gen.cli.jaden.tech/prompts/{skill}.md | 单 skill 纯 markdown（正文 + references） |

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.6+tplf120e96b">
+<meta name="generator" content="html-gen v3.7+tplf120e96b">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>html-gen-knowledge</title>
@@ -494,7 +494,7 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   <div class="doc-main" id="docMain">
     <div class="doc-header">
       <h1>html-gen-knowledge</h1>
-      <div class="meta">创建: 2026-11-27 18:53 · 编辑: 2026-11-27 18:53<br>字数: 1,121 · 阅读约 4 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
+      <div class="meta">创建: 2026-11-28 11:18 · 编辑: 2026-11-28 11:18<br>字数: 1,463 · 阅读约 5 分钟<span class="meta-path"> · 路径: <code>html-gen-knowledge.md</code></span></div>
     </div>
     <div class="doc-body" id="docBody"><h2 id="概述">概述</h2>
 <p>C 型知识库通过顶部 tab 分组、左侧 section-as-menu 的导航结构，以 iframe 或内联 HTML 展示内容。专为多主题知识索引场景设计。</p>
@@ -613,6 +613,42 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
 <li>单条 section (title<mark class="hl">=section &amp;&amp; count</mark>=1) 自动跳过 kw-item 渲染</li>
 <li>Selenium headless 测试: iframe 内元素需 <code>driver.switch_to.frame()</code> 切换</li>
 </ul>
+<h2 id="内部分发-不同-agent-怎么拿到本规范">内部分发（不同 Agent 怎么拿到本规范）</h2>
+<p>同一份规范有 4 个出口，<strong>按调用方能力选</strong>，不要让人去猜：</p>
+<table><thead><tr>
+<th>场景</th>
+<th>能力</th>
+<th>推荐通道</th>
+<th>命令 / 地址</th>
+</tr></thead><tbody>
+<tr>
+<td>Hermes 其他会话（本机、能跑 CLI）</td>
+<td>执行命令 + 读文件</td>
+<td>① <code>html-gen prompt html-gen-knowledge</code>（stdout 即本页 markdown）<br>② 直接读 <code>skills/html-gen-knowledge/SKILL.md</code>（含 <code>references/</code>）</td>
+<td><code>html-gen prompt html-gen-knowledge --json</code> → <code>data.content</code> / <code>data.references</code></td>
+</tr>
+<tr>
+<td>Hermes 会话（要一次吃全量上下文）</td>
+<td>同上</td>
+<td><code>prompts/all.md</code>：9 个 skill 的正文 + references 原文合集</td>
+<td><code>html-gen prompt --site --dir /tmp/hgp && cat /tmp/hgp/all.md</code></td>
+</tr>
+<tr>
+<td>只读网页的 Agent（Doubao / 浏览器插件 / 无 shell）</td>
+<td>只能抓 URL，不能跑命令</td>
+<td>① 单页文档 <code>…/prompts/kb/html-gen-knowledge.html</code>（一页装完，解析最省事）<br>② 门户深链 <code>…/prompts/?group=knowledge&item=html-gen-knowledge</code>（可切其它模板）<br>③ <code>…/prompts/html-gen-knowledge.md</code>（纯 markdown，噪声最小）</td>
+<td>线上根：<code>https://html-gen.cli.jaden.tech/</code></td>
+</tr>
+<tr>
+<td>CI / 脚本</td>
+<td>无交互</td>
+<td><code>--json</code> 信封 <code>{status,error,data:{content,references}}</code></td>
+<td>便于程序解析，不依赖终端宽度</td>
+</tr>
+</tbody></table>
+<p><strong>给外部 Agent 的开场句（可直接粘）</strong>：</p>
+<blockquote>你是 html-gen C 型知识库案例作者。先完整读取 <code>&lt;URL&gt;</code>，按其中「数据格式（9 键）」「最小可跑示例」「写完自检」三节产出 <code>data.json</code> 与 <code>groups.json</code>，再按「影响面矩阵」确认改动面。</blockquote>
+<p>⚠️ 只读型 Agent <strong>优先给 <code>kb/<em>.html</code> 或 <code></em>.md</code> 原始地址</strong>：<code>?group=&amp;item=</code> 深链靠 JS 路由（C 型模板），抓取工具常常只拿到门户骨架。</p>
 <h2 id="变更记录">变更记录</h2>
 <ul>
 <li>v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md</li>

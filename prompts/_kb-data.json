@@ -140,7 +140,7 @@
     "section": "使用案例",
     "badge": "案例",
     "desc": "全球 195 国速查表 (A 型)",
-    "url": "../demos/countries-table.html",
+    "url": "../demos/countries.html",
     "kind": "case"
   },
   {
@@ -149,7 +149,7 @@
     "section": "使用案例",
     "badge": "案例",
     "desc": "中国 34 省速查表 (A 型)",
-    "url": "../demos/provinces-table.html",
+    "url": "../demos/provinces.html",
     "kind": "case"
   },
   {
@@ -203,7 +203,7 @@
     "section": "使用案例",
     "badge": "案例",
     "desc": "以剧读史影视历史知识库 (C 型)",
-    "url": "../demos/drama-knowledge.html",
+    "url": "../demos/drama.html",
     "kind": "case"
   },
   {
@@ -212,7 +212,7 @@
     "section": "使用案例",
     "badge": "案例",
     "desc": "长亭科技商业分析知识库 (C 型)",
-    "url": "../demos/chaitin-business-analysis.html",
+    "url": "../demos/chaitin.html",
     "kind": "case"
   },
   {
@@ -221,7 +221,7 @@
     "section": "使用案例",
     "badge": "案例",
     "desc": "云智慧商业分析知识库 (C 型)",
-    "url": "../demos/cloudwise-business-analysis.html",
+    "url": "../demos/cloudwise.html",
     "kind": "case"
   },
   {

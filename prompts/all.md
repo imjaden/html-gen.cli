@@ -1,4 +1,4 @@
-# HM Prompt 合集
+# HG Prompt 合集
 
 > 在线阅读: html-gen 项目 9 个 skills prompt 全文（含 references）。
 > 单篇获取: prompts/{skill}.md（纯 markdown）· prompts/{skill}.json（JSON 信封）· all.md（全量）。
@@ -663,7 +663,7 @@ html-gen prompt --site --dir <path> # 站点输出目录覆盖 (默认 仓库根
 ```
 
 `--site` 产物（勿手改，由生成器产出；一律剥离 YAML frontmatter）：
-- `prompts/index.html` — HM Prompt 门户（5 tab：表格（模板A） / 文档（模板B） / 知识库（模板C） / 幻灯片（模板D） / 通用 CLI；纵向 = 指令 CLI / 模板语法 / 使用案例；guide/case 以 iframe 加载 demos/ 页）
+- `prompts/index.html` — HG Prompt 门户（5 tab：表格（模板A） / 文档（模板B） / 知识库（模板C） / 幻灯片（模板D） / 通用 CLI；纵向 = 指令 CLI / 模板语法 / 使用案例；guide/case 以 iframe 加载 demos/ 页）
 - `prompts/kb/{skill}.html` ×9 — 每 skill 的 doc detail 页
 - `prompts/{skill}.md` / `.json` ×18 + `prompts/all.md` — curl 契约文件
 - `prompts/_kb-groups.json` / `_kb-data.json` — 门户运行时数据（Jekyll `_` 前缀不发布，已内联 index.html）
@@ -917,7 +917,8 @@ Markdown 图片语法 `![alt](url)` 不解析。用 `<img src="...">` 代替。
 ## 变更记录
 - v2.7.0 (2026-09-12): prompt --site 28→31 文件（新增 github-issue-feedback skill 挂载: 跨项目 Issue 数据反馈闭环规范）
 - v2.6.0 (2026-09-10): table 专属 `--feedback-repo`（GitHub Issue 反馈通道 + scripts/countries-issue-sync.py 数据反馈闭环）
-- v3.1.0 (2026-11-27): prompts 门户改名 **HM Prompt** + 分组话术「表格（模板A）…」；guide/case 条目名同步模板话术
+- v3.2.0 (2026-11-28): 门户定名 **HG Prompt**（`all.md` → `# HG Prompt 合集`）+ knowledge 规范补「内部分发（不同 Agent 接入）」
+- v3.1.0 (2026-11-27): prompts 门户改名 HM Prompt → 分组话术「表格（模板A）…」；guide/case 条目名同步模板话术
 - v3.0.0 (2026-11-23): C 型段补「交互」小节（根页地图 / `⌘K` 搜索面板 / `⌘F` 原生 / ⧉ 复制路径），对齐 html-gen v3.6
 - v2.5.0 (2026-09-02): prompt 子命令段补 `--site`（prompts/ 在线阅读站点 28 文件: C 型 knowledge 门户 5 tab + kb/{skill}.html detail + curl 契约）
 - v2.4.0 (2026-08-29): 新增 favicon 默认注入（--favicon 覆盖/空串禁用）+ --github-url/--home-url/--quiet 通用参数说明
@@ -1190,6 +1191,23 @@ html-gen knowledge -d data.json -g groups.json --title "我的知识库" \
 - iframe 内容必须与知识库页面同源
 - 单条 section (title===section && count===1) 自动跳过 kw-item 渲染
 - Selenium headless 测试: iframe 内元素需 `driver.switch_to.frame()` 切换
+
+## 内部分发（不同 Agent 怎么拿到本规范）
+
+同一份规范有 4 个出口，**按调用方能力选**，不要让人去猜：
+
+| 场景 | 能力 | 推荐通道 | 命令 / 地址 |
+|:---|:---|:---|:---|
+| Hermes 其他会话（本机、能跑 CLI） | 执行命令 + 读文件 | ① `html-gen prompt html-gen-knowledge`（stdout 即本页 markdown）<br>② 直接读 `skills/html-gen-knowledge/SKILL.md`（含 `references/`） | `html-gen prompt html-gen-knowledge --json` → `data.content` / `data.references` |
+| Hermes 会话（要一次吃全量上下文） | 同上 | `prompts/all.md`：9 个 skill 的正文 + references 原文合集 | `html-gen prompt --site --dir /tmp/hgp && cat /tmp/hgp/all.md` |
+| 只读网页的 Agent（Doubao / 浏览器插件 / 无 shell） | 只能抓 URL，不能跑命令 | ① 单页文档 `…/prompts/kb/html-gen-knowledge.html`（一页装完，解析最省事）<br>② 门户深链 `…/prompts/?group=knowledge&item=html-gen-knowledge`（可切其它模板）<br>③ `…/prompts/html-gen-knowledge.md`（纯 markdown，噪声最小） | 线上根：`https://html-gen.cli.jaden.tech/` |
+| CI / 脚本 | 无交互 | `--json` 信封 `{status,error,data:{content,references}}` | 便于程序解析，不依赖终端宽度 |
+
+**给外部 Agent 的开场句（可直接粘）**：
+
+> 你是 html-gen C 型知识库案例作者。先完整读取 `<URL>`，按其中「数据格式（9 键）」「最小可跑示例」「写完自检」三节产出 `data.json` 与 `groups.json`，再按「影响面矩阵」确认改动面。
+
+⚠️ 只读型 Agent **优先给 `kb/*.html` 或 `*.md` 原始地址**：`?group=&item=` 深链靠 JS 路由（C 型模板），抓取工具常常只拿到门户骨架。
 
 ## 变更记录
 - v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md
@@ -1902,6 +1920,46 @@ missing_root = [f for f in features if f not in root]   # 同样查 demos
 ## Footer favicon 图标化
 
 平台链接前置 14px favicon: `<img class="favicon" src="https://github.com/favicon.ico" alt="">` + 文本。样式 `.favicon { width:14px; height:14px; vertical-align:-2px; margin-right:5px; }`。前提: 逐个 `curl -sL -o /dev/null -w "%{http_code}" <url>` 验证 200（部分平台 favicon 带 hash 易 404，如 PyPI）。
+
+## 样式规范（CSS）
+
+> 落地页与模板共用 `style-guide.css`：**先复用既有变量与类，确认没有对应物再新写**。以下是唯一需要手写的三类样式及其生效前提。
+
+### 单行截断（列表 / 表格 / 卡片标题）
+
+```css
+.truncate { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+```
+
+三个前提，缺一个「写了也不生效」：
+
+1. **flex / grid 子项必须 `min-width: 0`** —— 默认 `min-width:auto` 会顶到内容宽，省略号永不出现
+2. **表格必须 `table-layout: fixed` + 列 `width`** —— `layout-table.html:102` 已设；auto 布局会把列撑到内容宽
+3. **元素要有可计算宽度上限** —— `max-width` 或父级定宽
+
+截断必须配兜底：`title="完整文本"`（表格/列表）或 hover 浮层（卡片），否则用户永远读不到后半句。
+
+### 多行截断（摘要 / 卡片描述）
+
+```css
+.clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+```
+
+只用于摘要类（2~3 行）；**正文与表格数据列禁止 clamp**（要让人能看全）。
+
+### 颜色与尺寸
+
+- 颜色只用 `--cobalt-*` / `--surface-*` 变量；`#2a2a3e` / `#1a1a2e` 这类硬编码边框是历史遗留，**新代码不要新增**
+- 字号用 `rem` 或 `--table-fs`；正文不写死 `px`
+- 可点击元素沿用 `.pill-clickable` / `.filter-pill` 范式：hover `rgba(79,70,229,.25)`，且必须有 focus 态
+
+### 自检
+
+```bash
+grep -c "text-overflow: ellipsis" <page>.html     # 有长列表/表格的页应 ≥1
+grep -c "min-width: 0" <page>.html               # 同理（缺失即 truncate 类会被 flex 顶开）
+grep -c "table-layout: fixed" <page>.html        # 表格页应 = 1
+```
 
 ## 测试规范
 

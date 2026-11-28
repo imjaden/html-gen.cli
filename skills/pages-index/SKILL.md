@@ -114,6 +114,46 @@ missing_root = [f for f in features if f not in root]   # 同样查 demos
 
 平台链接前置 14px favicon: `<img class="favicon" src="https://github.com/favicon.ico" alt="">` + 文本。样式 `.favicon { width:14px; height:14px; vertical-align:-2px; margin-right:5px; }`。前提: 逐个 `curl -sL -o /dev/null -w "%{http_code}" <url>` 验证 200（部分平台 favicon 带 hash 易 404，如 PyPI）。
 
+## 样式规范（CSS）
+
+> 落地页与模板共用 `style-guide.css`：**先复用既有变量与类，确认没有对应物再新写**。以下是唯一需要手写的三类样式及其生效前提。
+
+### 单行截断（列表 / 表格 / 卡片标题）
+
+```css
+.truncate { min-width: 0; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+```
+
+三个前提，缺一个「写了也不生效」：
+
+1. **flex / grid 子项必须 `min-width: 0`** —— 默认 `min-width:auto` 会顶到内容宽，省略号永不出现
+2. **表格必须 `table-layout: fixed` + 列 `width`** —— `layout-table.html:102` 已设；auto 布局会把列撑到内容宽
+3. **元素要有可计算宽度上限** —— `max-width` 或父级定宽
+
+截断必须配兜底：`title="完整文本"`（表格/列表）或 hover 浮层（卡片），否则用户永远读不到后半句。
+
+### 多行截断（摘要 / 卡片描述）
+
+```css
+.clamp-2 { display: -webkit-box; -webkit-line-clamp: 2; -webkit-box-orient: vertical; overflow: hidden; }
+```
+
+只用于摘要类（2~3 行）；**正文与表格数据列禁止 clamp**（要让人能看全）。
+
+### 颜色与尺寸
+
+- 颜色只用 `--cobalt-*` / `--surface-*` 变量；`#2a2a3e` / `#1a1a2e` 这类硬编码边框是历史遗留，**新代码不要新增**
+- 字号用 `rem` 或 `--table-fs`；正文不写死 `px`
+- 可点击元素沿用 `.pill-clickable` / `.filter-pill` 范式：hover `rgba(79,70,229,.25)`，且必须有 focus 态
+
+### 自检
+
+```bash
+grep -c "text-overflow: ellipsis" <page>.html     # 有长列表/表格的页应 ≥1
+grep -c "min-width: 0" <page>.html               # 同理（缺失即 truncate 类会被 flex 顶开）
+grep -c "table-layout: fixed" <page>.html        # 表格页应 = 1
+```
+
 ## 测试规范
 
 - 沿用项目模式: headless Chrome + `window.__testErrors` JS 错误检查 + `WebDriverWait` 主元素

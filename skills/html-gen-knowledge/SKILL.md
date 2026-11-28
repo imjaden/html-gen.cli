@@ -112,6 +112,23 @@ html-gen knowledge -d data.json -g groups.json --title "我的知识库" \
 - 单条 section (title===section && count===1) 自动跳过 kw-item 渲染
 - Selenium headless 测试: iframe 内元素需 `driver.switch_to.frame()` 切换
 
+## 内部分发（不同 Agent 怎么拿到本规范）
+
+同一份规范有 4 个出口，**按调用方能力选**，不要让人去猜：
+
+| 场景 | 能力 | 推荐通道 | 命令 / 地址 |
+|:---|:---|:---|:---|
+| Hermes 其他会话（本机、能跑 CLI） | 执行命令 + 读文件 | ① `html-gen prompt html-gen-knowledge`（stdout 即本页 markdown）<br>② 直接读 `skills/html-gen-knowledge/SKILL.md`（含 `references/`） | `html-gen prompt html-gen-knowledge --json` → `data.content` / `data.references` |
+| Hermes 会话（要一次吃全量上下文） | 同上 | `prompts/all.md`：9 个 skill 的正文 + references 原文合集 | `html-gen prompt --site --dir /tmp/hgp && cat /tmp/hgp/all.md` |
+| 只读网页的 Agent（Doubao / 浏览器插件 / 无 shell） | 只能抓 URL，不能跑命令 | ① 单页文档 `…/prompts/kb/html-gen-knowledge.html`（一页装完，解析最省事）<br>② 门户深链 `…/prompts/?group=knowledge&item=html-gen-knowledge`（可切其它模板）<br>③ `…/prompts/html-gen-knowledge.md`（纯 markdown，噪声最小） | 线上根：`https://html-gen.cli.jaden.tech/` |
+| CI / 脚本 | 无交互 | `--json` 信封 `{status,error,data:{content,references}}` | 便于程序解析，不依赖终端宽度 |
+
+**给外部 Agent 的开场句（可直接粘）**：
+
+> 你是 html-gen C 型知识库案例作者。先完整读取 `<URL>`，按其中「数据格式（9 键）」「最小可跑示例」「写完自检」三节产出 `data.json` 与 `groups.json`，再按「影响面矩阵」确认改动面。
+
+⚠️ 只读型 Agent **优先给 `kb/*.html` 或 `*.md` 原始地址**：`?group=&item=` 深链靠 JS 路由（C 型模板），抓取工具常常只拿到门户骨架。
+
 ## 变更记录
 - v1.0.0 (2026-08-08): 首次提炼自 drama 知识库实施经验 + AGENTS.md
 - v2.0.0 (2026-11-23): 对齐 html-gen v3.6 — 根页菜单地图 + 搜索面板（`⌘/Ctrl+K`）+ 点标题回根页 + `⌘F` 归还浏览器；移除跨组同名跟随与侧栏过滤面板
