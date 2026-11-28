@@ -37,6 +37,13 @@ class TestDocWidthRegression(TmpDirMixin, unittest.TestCase):
     def test_width_wide_css(self):
         self.assertIn('body.width-wide .doc-body { max-width: 1280px; }', self.html)
 
+    def test_width_xwide_css(self):
+        # CL048: xwide 跟随容器、上限 1600px（上游转交 20261128）
+        self.assertIn('body.width-xwide .doc-body { max-width: min(100%, 1600px); }', self.html)
+
+    def test_width_xwide_url_param(self):
+        self.assertIn("w === 'xwide'", self.html, 'xwide 须进 ?width= 解析白名单')
+
     def test_width_default_960(self):
         # 默认 .doc-body max-width 960px
         self.assertIn('.doc-body { padding: 0 80px; max-width: 960px;', self.html)
@@ -96,6 +103,27 @@ class TestDocWidthSelenium(unittest.TestCase):
         self._load('?width=wide')
         self.assertEqual(self._max_width(), '1280px', "wide 应为 1280px")
         self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
+
+    def _rendered_width(self):
+        return self.driver.execute_script(
+            "return Math.round(document.querySelector('.doc-body').getBoundingClientRect().width);")
+
+    def test_width_xwide_caps_at_1600(self):
+        """?width=xwide：视口 2100（容器 ≈1740）时上限 1600."""
+        self.driver.set_window_size(2100, 900)
+        self._load('?width=xwide')
+        w = self._rendered_width()
+        self.assertEqual(w, 1600, f"xwide 上限应为 1600px, got {w}")
+        self.assertEqual(self._errors(), [], f"JS errors: {self._errors()}")
+
+    def test_width_xwide_follows_container(self):
+        """?width=xwide：容器比 1600 窄时跟随容器（1280 视口 ≈1014）."""
+        self._load('?width=xwide')
+        w = self._rendered_width()
+        parent = self.driver.execute_script(
+            "return Math.round(document.querySelector('.doc-body').parentElement.clientWidth);")
+        self.assertEqual(w, parent, f"xwide 应跟随容器, body={w} parent={parent}")
+        self.assertLess(w, 1600)
 
     def test_width_embed(self):
         """嵌入降级 (?sidebar=0&toolbar=0) + wide 组合."""

@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-<meta name="generator" content="html-gen v3.8+tplf120e96b">
+<meta name="generator" content="html-gen v3.8+tplba8eebac">
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>荣誉认证</title>
@@ -326,9 +326,12 @@ body.show-toolbar .top-toolbar { display: flex; }
 .meta-path { display: none; }
 body.show-md .meta-path { display: inline; }
 .doc-body { padding: 0 80px; max-width: 960px; padding-bottom: 40px; font-size: 0.88rem; }
-/* ── Content width levels: ?width=narrow|medium|wide (default medium=960px) ── */
+/* ── Content width levels: ?width=narrow|medium|wide|xwide (default medium=960px) ── */
 body.width-narrow .doc-body { max-width: 720px; }
 body.width-wide .doc-body { max-width: 1280px; }
+/* xwide（CL048）: 跟随容器、上限 1600px —— 供嵌在宽容器（≈1340-1600）的知识站正文用，
+   避免 `wide` 1280 在 1600 视口留 ~60px、1920 留 ~250px 右侧空白（上游转交 20261128）。 */
+body.width-xwide .doc-body { max-width: min(100%, 1600px); }
 
 .doc-body h1 { font-size: 1.5rem; font-weight: 700; color: #f0f0f0; margin: 0.25rem 0 0.5rem; padding-bottom: 8px; border-bottom: 1px solid #2a2a3e; }
 .doc-body h1:first-child { margin-top: 0; }
@@ -554,10 +557,11 @@ body:not(.show-toolbar) .github-corner, body:not(.show-toolbar) .github-corner-h
   if (params.get('sidebar') !== '0') document.body.classList.add('show-sidebar');
   if (params.get('toolbar') !== '0') document.body.classList.add('show-toolbar');
 
-  // ── Content width: ?width=narrow|medium|wide (不持久化, 默认 medium) ──
+  // ── Content width: ?width=narrow|medium|wide|xwide (不持久化, 默认 medium) ──
   var w = params.get('width');
   if (w === 'narrow') document.body.classList.add('width-narrow');
   else if (w === 'wide') document.body.classList.add('width-wide');
+  else if (w === 'xwide') document.body.classList.add('width-xwide');   // CL048: 跟随容器, 上限 1600
   // medium 或未指定: 不加 class, 用默认 960px
 
   // ── md 路径: ?show-md=1 显示 (默认隐藏, 隐私) ──

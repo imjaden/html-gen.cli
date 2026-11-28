@@ -32,7 +32,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | slide 工具栏设计 v1.0（内文 v2.3） | 2026-07-14 | 标题区重构 + 右上语言/主题工具栏 | 设计级（无 review） |
 | layout-doc bare 模式 v1.0→v1.1 | 2026-08-06~12 | sidebar/toolbar URL 入参显隐 | 初审 CONDITIONAL（🔴 N1/N2）→ 复审 PASS |
 | h4-h6 标题渲染 | 2026-08-12 | 标题泄漏修复 + 锚点 | 初版 CONDITIONAL → 复检 PASS → verify（100 passed） |
-| doc-body 三级宽度 | 2026-08-19 | `?width=narrow\|medium\|wide` | review PASS 100/A |
+| doc-body 四级宽度 | 2026-08-19（xwide 2026-11-28） | `?width=narrow\|medium\|wide\|xwide` | review PASS 100/A |
 | doc meta 路径 show-md | 2026-08-19~21 | 脱敏文件名路径行 + `?show-md=1` | **REJECT 85/B（🔴 M4-1）→ dev-prompt 修正实施，无独立 audit 文件** |
 | 排版审计（字体倒挂修复） | 2026-08-27 | 容器基座 + blockquote 紧凑 | commit-range 初轮 80/B → recheck PASS 100/A |
 
@@ -47,6 +47,7 @@ doc/slide 共用同一 Markdown 引擎（html-gen.py `md_to_html()`），模板�
 | `?width=narrow` | `width-narrow` → `.doc-body{max-width:720px}` |
 | `?width=medium` 或缺省 | 不加 class → 默认 960px |
 | `?width=wide` | `width-wide` → `.doc-body{max-width:1280px}` |
+| `?width=xwide` | `width-xwide` → `.doc-body{max-width:min(100%,1600px)}`（跟随容器、上限 1600；供嵌套在宽容器里的知识站正文） |
 | `?show-md=1` | `show-md` → `.meta-path{display:inline}`（默认 display:none，隐私） |
 | `?sidebar=0` | **不加** `show-sidebar` → 侧边栏隐藏（缺省/`=1` 展示——默认展示语义） |
 | `?toolbar=0` | **不加** `show-toolbar` → 语言/主题工具栏隐藏（同上） |
